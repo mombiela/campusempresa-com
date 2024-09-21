@@ -9,6 +9,7 @@ function checkCookies()
 {
 	var x = Cookies.get('cookies_informed');
 	if (x == "OK") $("#cookies_adv").remove();
+	else $("#cookies_adv").show();
 }
 
 function accept()
