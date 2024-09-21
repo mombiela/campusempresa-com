@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/mongodb/aggregation-performance-tips" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las operaciones de agregación en MongoDB te permiten procesar registros de datos y devolver resultados calculados. Son esenciales para el análisis de datos y la elaboración de informes. Sin embargo, a medida que tus conjuntos de datos crecen, el rendimiento puede convertirse en una preocupación. Esta sección proporcionará consejos para optimizar tus pipelines de agregación para un mejor rendimiento.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Pipeline de Agregación</strong>: Un marco para la agregación de datos modelado en el concepto de pipelines de procesamiento de datos. Los documentos entran en un pipeline de múltiples etapas que transforma los documentos en resultados agregados.</li>
+<li><strong>Etapas</strong>: Cada etapa en el pipeline realiza una operación en los documentos de entrada y pasa los resultados a la siguiente etapa.</li>
+<li><strong>Índices</strong>: Estructuras de datos que mejoran la velocidad de las operaciones de recuperación de datos en una tabla de base de datos a costa de escrituras adicionales y espacio de almacenamiento.</li>
+</ul>
+</div><h1>Consejos para Optimizar el Rendimiento de la Agregación</h1>
+<div class='content'></div><h2>1. Usa Índices Sabiamente</h2>
+<div class='content'><p>Los índices pueden acelerar significativamente el rendimiento de tus consultas de agregación.</p>
+<ul>
+<li><strong>Crea Índices en los Campos Usados en <code>$match</code></strong>: La etapa <code>$match</code> filtra documentos por una condición especificada. Al indexar los campos usados en <code>$match</code>, MongoDB puede localizar rápidamente los documentos que coinciden con los criterios.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ3JlYXIgdW4gw61uZGljZSBlbiBlbCBjYW1wbyAnc3RhdHVzJwpkYi5vcmRlcnMuY3JlYXRlSW5kZXgoeyBzdGF0dXM6IDEgfSk7CgovLyBQaXBlbGluZSBkZSBhZ3JlZ2FjacOzbiBjb24gZXRhcGEgJG1hdGNoCmRiLm9yZGVycy5hZ2dyZWdhdGUoWwogIHsgJG1hdGNoOiB7IHN0YXR1czogInNoaXBwZWQiIH0gfSwKICB7ICRncm91cDogeyBfaWQ6ICIkY3VzdG9tZXJJZCIsIHRvdGFsOiB7ICRzdW06ICIkYW1vdW50IiB9IH0gfQpdKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Crear un &iacute;ndice en el campo 'status'
+db.orders.createIndex({ status: 1 });
+
+// Pipeline de agregaci&oacute;n con etapa $match
+db.orders.aggregate([
+  { $match: { status: &quot;shipped&quot; } },
+  { $group: { _id: &quot;$customerId&quot;, total: { $sum: &quot;$amount&quot; } } }
+]);</pre></div><div class='content'></div><h2>2. Coloca `$match` y `$sort` Temprano en el Pipeline</h2>
+<div class='content'><p>Filtrar y ordenar temprano en el pipeline reduce el número de documentos que necesitan ser procesados en etapas posteriores.</p>
+<ul>
+<li><strong>Ejemplo</strong>: Coloca <code>$match</code> antes de <code>$group</code> para filtrar documentos innecesarios temprano.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIub3JkZXJzLmFnZ3JlZ2F0ZShbCiAgeyAkbWF0Y2g6IHsgc3RhdHVzOiAic2hpcHBlZCIgfSB9LAogIHsgJGdyb3VwOiB7IF9pZDogIiRjdXN0b21lcklkIiwgdG90YWw6IHsgJHN1bTogIiRhbW91bnQiIH0gfSB9LAogIHsgJHNvcnQ6IHsgdG90YWw6IC0xIH0gfQpdKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.orders.aggregate([
+  { $match: { status: &quot;shipped&quot; } },
+  { $group: { _id: &quot;$customerId&quot;, total: { $sum: &quot;$amount&quot; } } },
+  { $sort: { total: -1 } }
+]);</pre></div><div class='content'></div><h2>3. Limita el Número de Documentos Procesados</h2>
+<div class='content'><p>Usa la etapa <code>$limit</code> para restringir el número de documentos que pasan por el pipeline.</p>
+<ul>
+<li><strong>Ejemplo</strong>: Limita los resultados a los 10 principales clientes por monto total.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIub3JkZXJzLmFnZ3JlZ2F0ZShbCiAgeyAkbWF0Y2g6IHsgc3RhdHVzOiAic2hpcHBlZCIgfSB9LAogIHsgJGdyb3VwOiB7IF9pZDogIiRjdXN0b21lcklkIiwgdG90YWw6IHsgJHN1bTogIiRhbW91bnQiIH0gfSB9LAogIHsgJHNvcnQ6IHsgdG90YWw6IC0xIH0gfSwKICB7ICRsaW1pdDogMTAgfQpdKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.orders.aggregate([
+  { $match: { status: &quot;shipped&quot; } },
+  { $group: { _id: &quot;$customerId&quot;, total: { $sum: &quot;$amount&quot; } } },
+  { $sort: { total: -1 } },
+  { $limit: 10 }
+]);</pre></div><div class='content'></div><h2>4. Optimiza la Etapa `$group`</h2>
+<div class='content'><p>La etapa <code>$group</code> puede ser intensiva en recursos. Asegúrate de agrupar en campos indexados y evita cálculos innecesarios.</p>
+<ul>
+<li><strong>Ejemplo</strong>: Agrupa por un campo indexado y calcula la suma.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIub3JkZXJzLmFnZ3JlZ2F0ZShbCiAgeyAkbWF0Y2g6IHsgc3RhdHVzOiAic2hpcHBlZCIgfSB9LAogIHsgJGdyb3VwOiB7IF9pZDogIiRjdXN0b21lcklkIiwgdG90YWw6IHsgJHN1bTogIiRhbW91bnQiIH0gfSB9Cl0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.orders.aggregate([
+  { $match: { status: &quot;shipped&quot; } },
+  { $group: { _id: &quot;$customerId&quot;, total: { $sum: &quot;$amount&quot; } } }
+]);</pre></div><div class='content'></div><h2>5. Usa Proyección para Incluir Solo los Campos Necesarios</h2>
+<div class='content'><p>La etapa <code>$project</code> puede ser usada para incluir solo los campos que necesitas, reduciendo la cantidad de datos procesados.</p>
+<ul>
+<li><strong>Ejemplo</strong>: Proyecta solo los campos <code>customerId</code> y <code>amount</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIub3JkZXJzLmFnZ3JlZ2F0ZShbCiAgeyAkbWF0Y2g6IHsgc3RhdHVzOiAic2hpcHBlZCIgfSB9LAogIHsgJHByb2plY3Q6IHsgY3VzdG9tZXJJZDogMSwgYW1vdW50OiAxIH0gfSwKICB7ICRncm91cDogeyBfaWQ6ICIkY3VzdG9tZXJJZCIsIHRvdGFsOiB7ICRzdW06ICIkYW1vdW50IiB9IH0gfQpdKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.orders.aggregate([
+  { $match: { status: &quot;shipped&quot; } },
+  { $project: { customerId: 1, amount: 1 } },
+  { $group: { _id: &quot;$customerId&quot;, total: { $sum: &quot;$amount&quot; } } }
+]);</pre></div><div class='content'></div><h2>6. Usa `$facet` para Agregación Multifacética</h2>
+<div class='content'><p>La etapa <code>$facet</code> te permite realizar múltiples agregaciones en paralelo y es útil para consultas complejas.</p>
+<ul>
+<li><strong>Ejemplo</strong>: Realiza múltiples agregaciones en paralelo.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIub3JkZXJzLmFnZ3JlZ2F0ZShbCiAgeyAkZmFjZXQ6IHsKICAgICAgInRvdGFsQW1vdW50IjogWwogICAgICAgIHsgJGdyb3VwOiB7IF9pZDogbnVsbCwgdG90YWw6IHsgJHN1bTogIiRhbW91bnQiIH0gfSB9CiAgICAgIF0sCiAgICAgICJhdmVyYWdlQW1vdW50IjogWwogICAgICAgIHsgJGdyb3VwOiB7IF9pZDogbnVsbCwgYXZlcmFnZTogeyAkYXZnOiAiJGFtb3VudCIgfSB9IH0KICAgICAgXQogICAgfQogIH0KXSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.orders.aggregate([
+  { $facet: {
+      &quot;totalAmount&quot;: [
+        { $group: { _id: null, total: { $sum: &quot;$amount&quot; } } }
+      ],
+      &quot;averageAmount&quot;: [
+        { $group: { _id: null, average: { $avg: &quot;$amount&quot; } } }
+      ]
+    }
+  }
+]);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Optimizar el rendimiento de la agregación en MongoDB implica una combinación de usar índices, ordenar etapas efectivamente, limitar los documentos procesados y usar proyección para minimizar los datos. Siguiendo estos consejos, puedes asegurarte de que tus pipelines de agregación funcionen eficientemente, incluso a medida que tus conjuntos de datos crecen. Recuerda siempre analizar y monitorear tus consultas para identificar y abordar cuellos de botella en el rendimiento.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/elasticsearch/audit-logging" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción al Registro de Auditoría</h1>
+<div class='content'><p>El registro de auditoría es una característica crítica para monitorear y rastrear las actividades de los usuarios dentro de un clúster de Elasticsearch. Ayuda a mantener la seguridad, el cumplimiento y la supervisión operativa registrando eventos como inicios de sesión de usuarios, acceso a datos y cambios de configuración.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Registros de Auditoría</strong>: Registros de eventos que capturan acciones de usuarios y cambios en el sistema.</li>
+<li><strong>Cumplimiento</strong>: Asegurar que el sistema cumpla con los requisitos regulatorios.</li>
+<li><strong>Seguridad</strong>: Monitorear accesos no autorizados y posibles brechas de seguridad.</li>
+<li><strong>Supervisión Operativa</strong>: Rastrear cambios y actividades para la resolución de problemas y la gestión del sistema.</li>
+</ul>
+</div><h1>Configuración del Registro de Auditoría</h1>
+<div class='content'><p>Para habilitar el registro de auditoría en Elasticsearch, necesitas configurar el archivo <code>elasticsearch.yml</code>. Aquí tienes una guía paso a paso:</p>
+</div><h2>Pasos de Configuración</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Habilitar el Registro de Auditoría</strong>:</p>
+<pre><code class="language-yaml">xpack.security.audit.enabled: true
+</code></pre>
+</li>
+<li>
+<p><strong>Especificar el Destino de Salida</strong>:</p>
+<ul>
+<li><strong>Archivo de Registro</strong>:
+<pre><code class="language-yaml">xpack.security.audit.outputs: [file]
+xpack.security.audit.logfile.events.emit_request_body: true
+xpack.security.audit.logfile.prefix: &quot;audit&quot;
+xpack.security.audit.logfile.events.include: [&quot;access_granted&quot;, &quot;access_denied&quot;]
+</code></pre>
+</li>
+<li><strong>Índice</strong>:
+<pre><code class="language-yaml">xpack.security.audit.outputs: [index]
+xpack.security.audit.index.events.emit_request_body: true
+xpack.security.audit.index.events.include: [&quot;access_granted&quot;, &quot;access_denied&quot;]
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Filtrar Eventos</strong>:</p>
+<ul>
+<li>Incluir eventos específicos:
+<pre><code class="language-yaml">xpack.security.audit.logfile.events.include: [&quot;access_granted&quot;, &quot;access_denied&quot;]
+</code></pre>
+</li>
+<li>Excluir eventos específicos:
+<pre><code class="language-yaml">xpack.security.audit.logfile.events.exclude: [&quot;authentication_success&quot;]
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo de Configuración</h2>
+<div class='content'><p>Aquí tienes un ejemplo completo de una configuración <code>elasticsearch.yml</code> para el registro de auditoría:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eHBhY2suc2VjdXJpdHkuYXVkaXQuZW5hYmxlZDogdHJ1ZQp4cGFjay5zZWN1cml0eS5hdWRpdC5vdXRwdXRzOiBbZmlsZSwgaW5kZXhdCnhwYWNrLnNlY3VyaXR5LmF1ZGl0LmxvZ2ZpbGUuZXZlbnRzLmVtaXRfcmVxdWVzdF9ib2R5OiB0cnVlCnhwYWNrLnNlY3VyaXR5LmF1ZGl0LmxvZ2ZpbGUucHJlZml4OiAiYXVkaXQiCnhwYWNrLnNlY3VyaXR5LmF1ZGl0LmxvZ2ZpbGUuZXZlbnRzLmluY2x1ZGU6IFsiYWNjZXNzX2dyYW50ZWQiLCAiYWNjZXNzX2RlbmllZCJdCnhwYWNrLnNlY3VyaXR5LmF1ZGl0LmluZGV4LmV2ZW50cy5lbWl0X3JlcXVlc3RfYm9keTogdHJ1ZQp4cGFjay5zZWN1cml0eS5hdWRpdC5pbmRleC5ldmVudHMuaW5jbHVkZTogWyJhY2Nlc3NfZ3JhbnRlZCIsICJhY2Nlc3NfZGVuaWVkIl0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>xpack.security.audit.enabled: true
+xpack.security.audit.outputs: [file, index]
+xpack.security.audit.logfile.events.emit_request_body: true
+xpack.security.audit.logfile.prefix: &quot;audit&quot;
+xpack.security.audit.logfile.events.include: [&quot;access_granted&quot;, &quot;access_denied&quot;]
+xpack.security.audit.index.events.emit_request_body: true
+xpack.security.audit.index.events.include: [&quot;access_granted&quot;, &quot;access_denied&quot;]</pre></div><div class='content'></div><h1>Análisis de los Registros de Auditoría</h1>
+<div class='content'><p>Una vez habilitado el registro de auditoría, puedes analizar los registros para monitorear las actividades de los usuarios y los cambios en el sistema.</p>
+</div><h2>Acceso a los Archivos de Registro</h2>
+<div class='content'><p>Los registros de auditoría se almacenan en el archivo de registro o índice especificado. Por ejemplo, si los registros se almacenan en un archivo, puedes acceder a ellos en la ubicación configurada:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("L3Zhci9sb2cvZWxhc3RpY3NlYXJjaC9hdWRpdC5sb2c="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>/var/log/elasticsearch/audit.log</pre></div><div class='content'></div><h2>Consultar los Registros de Auditoría en Kibana</h2>
+<div class='content'><p>Si los registros de auditoría se almacenan en un índice, puedes usar Kibana para consultar y visualizar los registros:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9fc2VhcmNoCnsKICAicXVlcnkiOiB7CiAgICAibWF0Y2giOiB7CiAgICAgICJldmVudC50eXBlIjogImFjY2Vzc19ncmFudGVkIgogICAgfQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;event.type&quot;: &quot;access_granted&quot;
+    }
+  }
+}</pre></div><div class='content'></div><h2>Ejemplo de Entrada de Registro</h2>
+<div class='content'><p>Aquí tienes un ejemplo de una entrada de registro de auditoría:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ0aW1lc3RhbXAiOiAiMjAyMy0xMC0wMVQxMjozNDo1NloiLAogICJwcmluY2lwYWwiOiAidXNlcjEiLAogICJhY3Rpb24iOiAiYWNjZXNzX2dyYW50ZWQiLAogICJpbmRpY2VzIjogWyJpbmRleDEiXSwKICAicmVxdWVzdCI6IHsKICAgICJtZXRob2QiOiAiR0VUIiwKICAgICJ1cmkiOiAiL2luZGV4MS9fc2VhcmNoIgogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;timestamp&quot;: &quot;2023-10-01T12:34:56Z&quot;,
+  &quot;principal&quot;: &quot;user1&quot;,
+  &quot;action&quot;: &quot;access_granted&quot;,
+  &quot;indices&quot;: [&quot;index1&quot;],
+  &quot;request&quot;: {
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;uri&quot;: &quot;/index1/_search&quot;
+  }
+}</pre></div><div class='content'></div><h1>Mejores Prácticas</h1>
+<div class='content'><ul>
+<li><strong>Monitoreo Regular</strong>: Revisa regularmente los registros de auditoría para detectar cualquier actividad inusual.</li>
+<li><strong>Políticas de Retención</strong>: Implementa políticas de retención de registros para gestionar el almacenamiento y el cumplimiento.</li>
+<li><strong>Alertas</strong>: Configura alertas para eventos críticos como access_denied o authentication_failures.</li>
+<li><strong>Almacenamiento Seguro</strong>: Asegúrate de que los registros de auditoría se almacenen de manera segura para prevenir manipulaciones.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El registro de auditoría en Elasticsearch es una característica esencial para mantener la seguridad, el cumplimiento y la supervisión operativa. Al habilitar y configurar adecuadamente el registro de auditoría, puedes monitorear las actividades de los usuarios, detectar accesos no autorizados y asegurarte de que tu clúster de Elasticsearch opere dentro de los requisitos regulatorios. El análisis regular y las mejores prácticas te ayudarán a aprovechar al máximo las capacidades del registro de auditoría.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

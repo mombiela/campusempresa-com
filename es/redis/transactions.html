@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/redis/transactions" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a las Transacciones</h1>
+<div class='content'><p>Las transacciones en Redis te permiten ejecutar una serie de comandos en una sola operación atómica. Esto asegura que o bien se ejecutan todos los comandos, o ninguno, manteniendo la integridad de los datos.</p>
+<ul>
+<li><strong>Atomicidad</strong>: Todos los comandos en una transacción se ejecutan como una sola unidad.</li>
+<li><strong>Aislamiento</strong>: No se ejecutan otros comandos concurrentemente con una transacción.</li>
+</ul>
+</div><h1>Comandos Básicos para Transacciones</h1>
+<div class='content'><p>Redis proporciona algunos comandos clave para gestionar transacciones:</p>
+<ul>
+<li><code>MULTI</code>: Marca el inicio de un bloque de transacción.</li>
+<li><code>EXEC</code>: Ejecuta todos los comandos emitidos después de <code>MULTI</code>.</li>
+<li><code>DISCARD</code>: Cancela la transacción.</li>
+<li><code>WATCH</code>: Monitorea una o más claves para determinar si la transacción debe ser abortada.</li>
+</ul>
+</div><h2>Ejemplo: Transacción Básica</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TVVMVEkKU0VUIGtleTEgInZhbHVlMSIKU0VUIGtleTIgInZhbHVlMiIKRVhFQw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>MULTI
+SET key1 &quot;value1&quot;
+SET key2 &quot;value2&quot;
+EXEC</pre></div><div class='content'><p>En este ejemplo:</p>
+<ol>
+<li><code>MULTI</code> inicia la transacción.</li>
+<li><code>SET key1 &quot;value1&quot;</code> y <code>SET key2 &quot;value2&quot;</code> se ponen en cola.</li>
+<li><code>EXEC</code> ejecuta ambos comandos de manera atómica.</li>
+</ol>
+</div><h1>Manejo de Errores en Transacciones</h1>
+<div class='content'><p>Las transacciones en Redis manejan errores de dos maneras:</p>
+<ul>
+<li><strong>Errores de Encolado de Comandos</strong>: Si un comando es sintácticamente incorrecto, se detectará y reportará cuando se ponga en cola.</li>
+<li><strong>Errores en Tiempo de Ejecución</strong>: Los errores que ocurren durante la ejecución de los comandos se reportan, pero la transacción aún ejecutará todos los comandos.</li>
+</ul>
+</div><h2>Ejemplo: Manejo de Errores</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TVVMVEkKU0VUIGtleTEgInZhbHVlMSIKSU5DUiBrZXkxICAjIEVzdG8gY2F1c2Fyw6EgdW4gZXJyb3IgcG9ycXVlIGtleTEgbm8gZXMgdW4gZW50ZXJvCkVYRUM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>MULTI
+SET key1 &quot;value1&quot;
+INCR key1  # Esto causar&aacute; un error porque key1 no es un entero
+EXEC</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li>El comando <code>INCR key1</code> causará un error en tiempo de ejecución.</li>
+<li>A pesar del error, <code>SET key1 &quot;value1&quot;</code> aún se ejecutará.</li>
+</ul>
+</div><h1>Bloqueo Optimista con WATCH</h1>
+<div class='content'><p>El comando <code>WATCH</code> se utiliza para implementar el bloqueo optimista. Monitorea las claves especificadas y aborta la transacción si alguna de ellas es modificada antes de que la transacción sea ejecutada.</p>
+</div><h2>Ejemplo: Bloqueo Optimista</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0FUQ0gga2V5MQpNVUxUSQpTRVQga2V5MSAibmV3X3ZhbHVlIgpFWEVD"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WATCH key1
+MULTI
+SET key1 &quot;new_value&quot;
+EXEC</pre></div><div class='content'><p>En este ejemplo:</p>
+<ol>
+<li><code>WATCH key1</code> monitorea <code>key1</code>.</li>
+<li>Si <code>key1</code> es modificada por otro cliente antes de <code>EXEC</code>, la transacción será abortada.</li>
+</ol>
+</div><h1>Casos de Uso Prácticos</h1>
+<div class='content'><ul>
+<li><strong>Operaciones Atómicas</strong>: Asegurar que una serie de comandos se ejecuten como una sola unidad.</li>
+<li><strong>Contadores y Secuencias</strong>: Incrementar contadores de manera segura.</li>
+<li><strong>Actualizaciones Condicionales</strong>: Usar <code>WATCH</code> para asegurar la consistencia de los datos.</li>
+</ul>
+</div><h2>Ejemplo: Incremento de Contador</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0FUQ0ggY291bnRlcgp2YWwgPSBHRVQgY291bnRlcgp2YWwgPSB2YWwgKyAxCk1VTFRJClNFVCBjb3VudGVyIHZhbApFWEVD"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WATCH counter
+val = GET counter
+val = val + 1
+MULTI
+SET counter val
+EXEC</pre></div><div class='content'><p>En este ejemplo:</p>
+<ol>
+<li><code>WATCH counter</code> asegura que el contador no sea modificado por otro cliente.</li>
+<li>El contador se lee, se incrementa y se establece dentro de una transacción.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las transacciones en Redis proporcionan un mecanismo poderoso para asegurar la atomicidad y consistencia en tus operaciones de datos. Al entender y utilizar comandos como <code>MULTI</code>, <code>EXEC</code>, <code>DISCARD</code> y <code>WATCH</code>, puedes gestionar efectivamente manipulaciones de datos complejas y mantener la integridad de los datos en tus aplicaciones Redis.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

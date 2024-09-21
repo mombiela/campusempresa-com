@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/junit/junit-5-extensions" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a las Extensiones de JUnit 5</h1>
+<div class='content'><p>Las extensiones de JUnit 5 te permiten extender la funcionalidad de JUnit 5 creando comportamientos personalizados que pueden ser reutilizados en múltiples clases de prueba. Esta característica es poderosa para crear lógica de prueba reutilizable, anotaciones personalizadas y más.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Puntos de Extensión</strong>: JUnit 5 proporciona varios puntos de extensión que te permiten engancharte en el ciclo de vida de la prueba.</li>
+<li><strong>Modelo de Extensión</strong>: Las extensiones se implementan creando clases que implementan una o más de las interfaces de extensión proporcionadas por JUnit 5.</li>
+<li><strong>Registro</strong>: Las extensiones pueden registrarse de manera declarativa a través de anotaciones o programáticamente.</li>
+</ul>
+</div><h1>Puntos de Extensión Comunes</h1>
+<div class='content'><ul>
+<li><strong>Post-Procesamiento de Instancias de Prueba</strong>: Modificar instancias de prueba después de que se crean.</li>
+<li><strong>Condición de Ejecución de Pruebas</strong>: Controlar si las pruebas deben ejecutarse o saltarse.</li>
+<li><strong>Resolución de Parámetros</strong>: Proporcionar parámetros personalizados a los métodos de prueba.</li>
+<li><strong>Callbacks de Ciclo de Vida</strong>: Engancharse en varias etapas del ciclo de vida de la prueba (por ejemplo, antes de todas las pruebas, antes de cada prueba).</li>
+</ul>
+</div><h1>Creando una Extensión Simple</h1>
+<div class='content'><p>Vamos a crear una extensión simple que registre mensajes antes y después de cada método de prueba.</p>
+</div><h2>Ejemplo Paso a Paso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Definir la Clase de Extensión</strong>:</p>
+<pre><code class="language-java">import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+public class LoggingExtension implements BeforeEachCallback, AfterEachCallback {
+    @Override
+    public void beforeEach(ExtensionContext context) {
+        System.out.println(&quot;Antes del método de prueba: &quot; + context.getDisplayName());
+    }
+
+    @Override
+    public void afterEach(ExtensionContext context) {
+        System.out.println(&quot;Después del método de prueba: &quot; + context.getDisplayName());
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Registrar la Extensión</strong>:</p>
+<ul>
+<li>
+<p><strong>De manera Declarativa</strong>: Usar la anotación <code>@ExtendWith</code>.</p>
+<pre><code class="language-java">import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(LoggingExtension.class)
+public class MyTests {
+    @Test
+    void testExample() {
+        System.out.println(&quot;Ejecutando testExample&quot;);
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Programáticamente</strong>: Usar la anotación <code>@RegisterExtension</code>.</p>
+<pre><code class="language-java">import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
+public class MyTests {
+    @RegisterExtension
+    static LoggingExtension loggingExtension = new LoggingExtension();
+
+    @Test
+    void testExample() {
+        System.out.println(&quot;Ejecutando testExample&quot;);
+    }
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Clase LoggingExtension</strong>: Implementa <code>BeforeEachCallback</code> y <code>AfterEachCallback</code> para registrar mensajes antes y después de cada método de prueba.</li>
+<li><strong>Anotación @ExtendWith</strong>: Registra la extensión de manera declarativa a nivel de clase.</li>
+<li><strong>Anotación @RegisterExtension</strong>: Registra la extensión programáticamente a nivel de campo.</li>
+</ul>
+</div><h1>Extensiones Avanzadas</h1>
+<h2>Ejecución Condicional de Pruebas</h2>
+<div class='content'><p>Puedes crear extensiones para ejecutar pruebas condicionalmente basadas en lógica personalizada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uRXhlY3V0aW9uQ29uZGl0aW9uOwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLmV4dGVuc2lvbi5FeHRlbnNpb25Db250ZXh0OwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLmV4dGVuc2lvbi5Db25kaXRpb25FdmFsdWF0aW9uUmVzdWx0OwoKcHVibGljIGNsYXNzIEN1c3RvbUNvbmRpdGlvbiBpbXBsZW1lbnRzIEV4ZWN1dGlvbkNvbmRpdGlvbiB7CiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBDb25kaXRpb25FdmFsdWF0aW9uUmVzdWx0IGV2YWx1YXRlRXhlY3V0aW9uQ29uZGl0aW9uKEV4dGVuc2lvbkNvbnRleHQgY29udGV4dCkgewogICAgICAgIGJvb2xlYW4gY29uZGl0aW9uID0gLy8gdHUgbMOzZ2ljYSBkZSBjb25kaWNpw7NuIHBlcnNvbmFsaXphZGEKICAgICAgICByZXR1cm4gY29uZGl0aW9uID8gQ29uZGl0aW9uRXZhbHVhdGlvblJlc3VsdC5lbmFibGVkKCJDb25kaWNpw7NuIGN1bXBsaWRhIikgOgogICAgICAgICAgICAgICAgICAgICAgICAgICBDb25kaXRpb25FdmFsdWF0aW9uUmVzdWx0LmRpc2FibGVkKCJDb25kaWNpw7NuIG5vIGN1bXBsaWRhIik7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.extension.ExecutionCondition;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.ConditionEvaluationResult;
+
+public class CustomCondition implements ExecutionCondition {
+    @Override
+    public ConditionEvaluationResult evaluateExecutionCondition(ExtensionContext context) {
+        boolean condition = // tu l&oacute;gica de condici&oacute;n personalizada
+        return condition ? ConditionEvaluationResult.enabled(&quot;Condici&oacute;n cumplida&quot;) :
+                           ConditionEvaluationResult.disabled(&quot;Condici&oacute;n no cumplida&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Resolución de Parámetros</h2>
+<div class='content'><p>Puedes crear extensiones para proporcionar parámetros personalizados a los métodos de prueba.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uUGFyYW1ldGVyQ29udGV4dDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5leHRlbnNpb24uUGFyYW1ldGVyUmVzb2x2ZXI7CmltcG9ydCBvcmcuanVuaXQuanVwaXRlci5hcGkuZXh0ZW5zaW9uLkV4dGVuc2lvbkNvbnRleHQ7CgpwdWJsaWMgY2xhc3MgQ3VzdG9tUGFyYW1ldGVyUmVzb2x2ZXIgaW1wbGVtZW50cyBQYXJhbWV0ZXJSZXNvbHZlciB7CiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBib29sZWFuIHN1cHBvcnRzUGFyYW1ldGVyKFBhcmFtZXRlckNvbnRleHQgcGFyYW1ldGVyQ29udGV4dCwgRXh0ZW5zaW9uQ29udGV4dCBleHRlbnNpb25Db250ZXh0KSB7CiAgICAgICAgcmV0dXJuIHBhcmFtZXRlckNvbnRleHQuZ2V0UGFyYW1ldGVyKCkuZ2V0VHlwZSgpID09IFN0cmluZy5jbGFzczsKICAgIH0KCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBPYmplY3QgcmVzb2x2ZVBhcmFtZXRlcihQYXJhbWV0ZXJDb250ZXh0IHBhcmFtZXRlckNvbnRleHQsIEV4dGVuc2lvbkNvbnRleHQgZXh0ZW5zaW9uQ29udGV4dCkgewogICAgICAgIHJldHVybiAiUGFyw6FtZXRybyBQZXJzb25hbGl6YWRvIjsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.ParameterResolver;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
+public class CustomParameterResolver implements ParameterResolver {
+    @Override
+    public boolean supportsParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
+        return parameterContext.getParameter().getType() == String.class;
+    }
+
+    @Override
+    public Object resolveParameter(ParameterContext parameterContext, ExtensionContext extensionContext) {
+        return &quot;Par&aacute;metro Personalizado&quot;;
+    }
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>Las extensiones de JUnit 5 proporcionan una manera poderosa de extender la funcionalidad de tus pruebas. Al implementar varios puntos de extensión, puedes crear lógica de prueba reutilizable y modular. Las extensiones pueden registrarse de manera declarativa o programática, dándote flexibilidad en cómo las aplicas. Ya sea que necesites registrar mensajes, ejecutar pruebas condicionalmente o proporcionar parámetros personalizados, las extensiones de JUnit 5 ofrecen una solución robusta para mejorar tu marco de pruebas.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

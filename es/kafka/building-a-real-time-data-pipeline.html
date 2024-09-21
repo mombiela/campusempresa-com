@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/kafka/building-a-real-time-data-pipeline" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a las Canalizaciones de Datos en Tiempo Real</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Una canalización de datos en tiempo real es un sistema que procesa datos en tiempo real, permitiendo obtener conocimientos y acciones inmediatas.</li>
+<li><strong>Importancia</strong>: El procesamiento de datos en tiempo real es crucial para aplicaciones que requieren análisis de datos oportunos, como la detección de fraudes, sistemas de recomendación y sistemas de monitoreo.</li>
+</ul>
+</div><h1>Descripción General de Apache Kafka</h1>
+<div class='content'><ul>
+<li><strong>¿Qué es Kafka?</strong>: Kafka es una plataforma de transmisión distribuida capaz de manejar flujos de datos en tiempo real.</li>
+<li><strong>Conceptos Básicos</strong>:
+<ul>
+<li><strong>Productor</strong>: Envía datos a los temas de Kafka.</li>
+<li><strong>Consumidor</strong>: Lee datos de los temas de Kafka.</li>
+<li><strong>Tema</strong>: Una categoría o nombre de feed al que se envían los registros.</li>
+<li><strong>Partición</strong>: Un tema se divide en particiones para escalabilidad.</li>
+<li><strong>Broker</strong>: Un servidor de Kafka que almacena datos y atiende a los clientes.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Configuración de Kafka</h1>
+<div class='content'><ul>
+<li><strong>Instalación</strong>:
+<ul>
+<li>Descarga Kafka desde el sitio web oficial.</li>
+<li>Extrae el archivo descargado.</li>
+<li>Inicia el servidor ZooKeeper:
+<pre><code class="language-sh">bin/zookeeper-server-start.sh config/zookeeper.properties
+</code></pre>
+</li>
+<li>Inicia el servidor Kafka:
+<pre><code class="language-sh">bin/kafka-server-start.sh config/server.properties
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Creación de un Productor de Kafka</h1>
+<div class='content'><ul>
+<li><strong>Configuración del Productor</strong>:
+<ul>
+<li>Define propiedades como <code>bootstrap.servers</code>, <code>key.serializer</code> y <code>value.serializer</code>.</li>
+</ul>
+</li>
+<li><strong>Código de Ejemplo</strong>:
+<pre><code class="language-java">import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import java.util.Properties;
+
+public class SimpleProducer {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+        props.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+        props.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+
+        KafkaProducer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+        producer.send(new ProducerRecord&lt;&gt;(&quot;my-topic&quot;, &quot;key&quot;, &quot;value&quot;));
+        producer.close();
+    }
+}
+</code></pre>
+</li>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>bootstrap.servers</code>: Especifica las direcciones de los brokers de Kafka.</li>
+<li><code>key.serializer</code> y <code>value.serializer</code>: Serializadores para la clave y el valor.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Creación de un Consumidor de Kafka</h1>
+<div class='content'><ul>
+<li><strong>Configuración del Consumidor</strong>:
+<ul>
+<li>Define propiedades como <code>bootstrap.servers</code>, <code>group.id</code>, <code>key.deserializer</code> y <code>value.deserializer</code>.</li>
+</ul>
+</li>
+<li><strong>Código de Ejemplo</strong>:
+<pre><code class="language-java">import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.consumer.ConsumerRecords;
+import org.apache.kafka.clients.consumer.KafkaConsumer;
+import java.util.Collections;
+import java.util.Properties;
+
+public class SimpleConsumer {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+        props.put(&quot;group.id&quot;, &quot;test-group&quot;);
+        props.put(&quot;key.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+        props.put(&quot;value.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+
+        KafkaConsumer&lt;String, String&gt; consumer = new KafkaConsumer&lt;&gt;(props);
+        consumer.subscribe(Collections.singletonList(&quot;my-topic&quot;));
+
+        while (true) {
+            ConsumerRecords&lt;String, String&gt; records = consumer.poll(100);
+            for (ConsumerRecord&lt;String, String&gt; record : records) {
+                System.out.printf(&quot;offset = %d, key = %s, value = %s%n&quot;, record.offset(), record.key(), record.value());
+            }
+        }
+    }
+}
+</code></pre>
+</li>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>group.id</code>: Identifica el grupo de consumidores.</li>
+<li><code>key.deserializer</code> y <code>value.deserializer</code>: Deserializadores para la clave y el valor.</li>
+<li><code>subscribe</code>: Se suscribe al tema especificado.</li>
+<li><code>poll</code>: Obtiene datos del tema.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Características Avanzadas de Kafka</h1>
+<div class='content'><ul>
+<li><strong>Particionamiento</strong>:
+<ul>
+<li>Asegura que los datos se distribuyan entre múltiples brokers.</li>
+<li>Permite el procesamiento paralelo.</li>
+</ul>
+</li>
+<li><strong>Replicación</strong>:
+<ul>
+<li>Proporciona tolerancia a fallos replicando datos entre múltiples brokers.</li>
+</ul>
+</li>
+<li><strong>Kafka Streams</strong>:
+<ul>
+<li>Una biblioteca cliente para construir aplicaciones en tiempo real.</li>
+<li>Ejemplo:
+<pre><code class="language-java">import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
+import org.apache.kafka.streams.kstream.KStream;
+
+public class SimpleStream {
+    public static void main(String[] args) {
+        StreamsBuilder builder = new StreamsBuilder();
+        KStream&lt;String, String&gt; source = builder.stream(&quot;source-topic&quot;);
+        source.to(&quot;sink-topic&quot;);
+
+        KafkaStreams streams = new KafkaStreams(builder.build(), new Properties());
+        streams.start();
+    }
+}
+</code></pre>
+</li>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>StreamsBuilder</code>: Se utiliza para construir la topología de procesamiento de flujos.</li>
+<li><code>KStream</code>: Representa un flujo de registros.</li>
+<li><code>to</code>: Envía los datos procesados a otro tema.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Monitoreo y Gestión de Kafka</h1>
+<div class='content'><ul>
+<li><strong>Herramientas de Gestión de Kafka</strong>:
+<ul>
+<li><strong>Kafka Manager</strong>: Una herramienta basada en web para gestionar clústeres de Kafka.</li>
+<li><strong>Prometheus y Grafana</strong>: Para monitorear métricas de Kafka.</li>
+</ul>
+</li>
+<li><strong>Métricas Clave</strong>:
+<ul>
+<li><strong>Throughput</strong>: Número de registros procesados por segundo.</li>
+<li><strong>Latencia</strong>: Tiempo tomado para procesar un registro.</li>
+<li><strong>Retraso del Consumidor</strong>: Diferencia entre el último offset y el offset actual del consumidor.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Construir una canalización de datos en tiempo real con Kafka implica configurar Kafka, crear productores y consumidores, y aprovechar características avanzadas como el particionamiento, la replicación y Kafka Streams. El monitoreo y la gestión adecuados son esenciales para asegurar la eficiencia y confiabilidad de la canalización. Al entender estos conceptos y practicar con los ejemplos proporcionados, puedes construir robustas canalizaciones de datos en tiempo real para diversas aplicaciones.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

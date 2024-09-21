@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/storage-classes" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a las Clases de Almacenamiento</h1>
+<div class='content'><p>Las Clases de Almacenamiento en Kubernetes proporcionan una forma de describir las &quot;clases&quot; de almacenamiento disponibles en un clúster. Permiten a los administradores definir diferentes tipos de almacenamiento (por ejemplo, SSD, HDD) y sus propiedades (por ejemplo, rendimiento, disponibilidad).</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>StorageClass</strong>: Un recurso de Kubernetes que define una clase de almacenamiento.</li>
+<li><strong>PersistentVolume (PV)</strong>: Una pieza de almacenamiento en el clúster que ha sido provisionada por un administrador o provisionada dinámicamente usando Clases de Almacenamiento.</li>
+<li><strong>PersistentVolumeClaim (PVC)</strong>: Una solicitud de almacenamiento por parte de un usuario. Puede solicitar un tamaño específico y modos de acceso.</li>
+<li><strong>Dynamic Provisioning</strong>: El proceso de crear automáticamente un PersistentVolume cuando se crea un PersistentVolumeClaim.</li>
+</ul>
+</div><h1>Creando una StorageClass</h1>
+<div class='content'><p>Para crear una StorageClass, necesitas definirla en un archivo YAML. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogc3RvcmFnZS5rOHMuaW8vdjEKa2luZDogU3RvcmFnZUNsYXNzCm1ldGFkYXRhOgogIG5hbWU6IGZhc3QKcHJvdmlzaW9uZXI6IGt1YmVybmV0ZXMuaW8vYXdzLWVicwpwYXJhbWV0ZXJzOgogIHR5cGU6IGdwMgogIGZzVHlwZTogZXh0NA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+  fsType: ext4</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes.</li>
+<li><strong>kind</strong>: El tipo de recurso, en este caso, <code>StorageClass</code>.</li>
+<li><strong>metadata</strong>: Metadatos sobre el recurso, incluyendo su nombre.</li>
+<li><strong>provisioner</strong>: El tipo de provisionador a usar (por ejemplo, AWS EBS, GCE PD).</li>
+<li><strong>parameters</strong>: Parámetros específicos para el provisionador, como el tipo de disco y sistema de archivos.</li>
+</ul>
+</div><h1>Usando una StorageClass</h1>
+<div class='content'><p>Para usar una StorageClass, creas un PersistentVolumeClaim que la referencie. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IG15cHZjCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICByZXNvdXJjZXM6CiAgICByZXF1ZXN0czoKICAgICAgc3RvcmFnZTogMTBHaQogIHN0b3JhZ2VDbGFzc05hbWU6IGZhc3Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mypvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: fast</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes.</li>
+<li><strong>kind</strong>: El tipo de recurso, en este caso, <code>PersistentVolumeClaim</code>.</li>
+<li><strong>metadata</strong>: Metadatos sobre el recurso, incluyendo su nombre.</li>
+<li><strong>spec</strong>: La especificación de la solicitud.
+<ul>
+<li><strong>accessModes</strong>: Los modos de acceso para el volumen (por ejemplo, ReadWriteOnce, ReadOnlyMany, ReadWriteMany).</li>
+<li><strong>resources</strong>: Los recursos solicitados, incluyendo la cantidad de almacenamiento.</li>
+<li><strong>storageClassName</strong>: El nombre de la StorageClass a usar.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Provisionamiento Dinámico</h1>
+<div class='content'><p>Cuando se crea un PersistentVolumeClaim y referencia una StorageClass, Kubernetes creará automáticamente un PersistentVolume que coincida con los requisitos de la solicitud.</p>
+</div><h2>Ejemplo</h2>
+<div class='content'><p>Aquí hay un ejemplo de un PersistentVolume provisionado dinámicamente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZQptZXRhZGF0YToKICBuYW1lOiBwdjAwMDEKc3BlYzoKICBjYXBhY2l0eToKICAgIHN0b3JhZ2U6IDEwR2kKICBhY2Nlc3NNb2RlczoKICAgIC0gUmVhZFdyaXRlT25jZQogIHBlcnNpc3RlbnRWb2x1bWVSZWNsYWltUG9saWN5OiBSZXRhaW4KICBzdG9yYWdlQ2xhc3NOYW1lOiBmYXN0CiAgYXdzRWxhc3RpY0Jsb2NrU3RvcmU6CiAgICB2b2x1bWVJRDogdm9sLTBhODliN2U3YzZlNWY4YjlhCiAgICBmc1R5cGU6IGV4dDQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv0001
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: fast
+  awsElasticBlockStore:
+    volumeID: vol-0a89b7e7c6e5f8b9a
+    fsType: ext4</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes.</li>
+<li><strong>kind</strong>: El tipo de recurso, en este caso, <code>PersistentVolume</code>.</li>
+<li><strong>metadata</strong>: Metadatos sobre el recurso, incluyendo su nombre.</li>
+<li><strong>spec</strong>: La especificación del volumen.
+<ul>
+<li><strong>capacity</strong>: La capacidad del volumen.</li>
+<li><strong>accessModes</strong>: Los modos de acceso para el volumen.</li>
+<li><strong>persistentVolumeReclaimPolicy</strong>: La política de reclamo para el volumen (por ejemplo, Retain, Recycle, Delete).</li>
+<li><strong>storageClassName</strong>: El nombre de la StorageClass.</li>
+<li><strong>awsElasticBlockStore</strong>: Configuración específica para volúmenes AWS EBS.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Temas Avanzados</h1>
+<h2>Parámetros Personalizados</h2>
+<div class='content'><p>Puedes definir parámetros personalizados en tu StorageClass para ajustar finamente el provisionamiento del almacenamiento. Por ejemplo, puedes especificar IOPS para AWS EBS:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogc3RvcmFnZS5rOHMuaW8vdjEKa2luZDogU3RvcmFnZUNsYXNzCm1ldGFkYXRhOgogIG5hbWU6IGhpZ2gtaW9wcwpwcm92aXNpb25lcjoga3ViZXJuZXRlcy5pby9hd3MtZWJzCnBhcmFtZXRlcnM6CiAgdHlwZTogaW8xCiAgaW9wc1BlckdCOiAiMTAiCiAgZnNUeXBlOiBleHQ0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: high-iops
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: &quot;10&quot;
+  fsType: ext4</pre></div><div class='content'></div><h2>Políticas de Reclamo</h2>
+<div class='content'><p>Las políticas de reclamo determinan qué sucede con un PersistentVolume cuando es liberado. Los valores posibles son:</p>
+<ul>
+<li><strong>Retain</strong>: El volumen se retiene después de que el PVC es eliminado.</li>
+<li><strong>Recycle</strong>: El volumen se limpia y se pone disponible nuevamente.</li>
+<li><strong>Delete</strong>: El volumen se elimina.</li>
+</ul>
+</div><h2>Modos de Vinculación</h2>
+<div class='content'><p>Los modos de vinculación controlan cuándo el PersistentVolume se vincula al PersistentVolumeClaim. Los valores posibles son:</p>
+<ul>
+<li><strong>Immediate</strong>: El volumen se vincula inmediatamente.</li>
+<li><strong>WaitForFirstConsumer</strong>: El volumen se vincula solo cuando un pod usa el PVC.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las Clases de Almacenamiento en Kubernetes proporcionan una forma flexible y poderosa de gestionar el almacenamiento en tu clúster. Al definir diferentes clases de almacenamiento, puedes asegurarte de que tus aplicaciones tengan el tipo correcto de almacenamiento para sus necesidades. El provisionamiento dinámico simplifica el proceso de gestión del almacenamiento, permitiéndote enfocarte en tus aplicaciones en lugar de en la infraestructura subyacente. Entender y usar eficazmente las Clases de Almacenamiento puede mejorar enormemente el rendimiento y la fiabilidad de tus despliegues en Kubernetes.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

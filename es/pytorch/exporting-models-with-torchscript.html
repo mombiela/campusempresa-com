@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/pytorch/exporting-models-with-torchscript" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a TorchScript</h1>
+<div class='content'><p>TorchScript es una forma de crear modelos serializables y optimizables a partir de código PyTorch. Permite guardar tus modelos y ejecutarlos independientemente de Python, lo cual es útil para desplegar modelos en entornos de producción.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>TorchScript</strong>: Una forma de convertir modelos de PyTorch a un formato que puede ejecutarse en un entorno no Python.</li>
+<li><strong>Tracing</strong>: Un método para convertir un modelo registrando las operaciones a medida que se ejecutan con entradas de ejemplo.</li>
+<li><strong>Scripting</strong>: Un método para convertir un modelo compilando directamente el código Python en TorchScript.</li>
+</ul>
+</div><h1>Métodos para Exportar Modelos</h1>
+<div class='content'></div><h2>Tracing</h2>
+<div class='content'><p>Tracing captura las operaciones en el modelo ejecutando una entrada de ejemplo a través de él. Este método es sencillo pero tiene limitaciones, especialmente con operaciones de control de flujo como bucles y condicionales.</p>
+<h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgoKIyBEZWZpbmlyIHVuIG1vZGVsbyBzaW1wbGUKY2xhc3MgU2ltcGxlTW9kZWwobm4uTW9kdWxlKToKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBzdXBlcihTaW1wbGVNb2RlbCwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYuZmMgPSBubi5MaW5lYXIoMTAsIDUpCiAgICAKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIHJldHVybiBzZWxmLmZjKHgpCgojIEluc3RhbmNpYXIgZWwgbW9kZWxvIHkgY3JlYXIgdW5hIGVudHJhZGEgZGUgZWplbXBsbwptb2RlbCA9IFNpbXBsZU1vZGVsKCkKZXhhbXBsZV9pbnB1dCA9IHRvcmNoLnJhbmRuKDEsIDEwKQoKIyBUcmF6YXIgZWwgbW9kZWxvCnRyYWNlZF9tb2RlbCA9IHRvcmNoLmppdC50cmFjZShtb2RlbCwgZXhhbXBsZV9pbnB1dCkKCiMgR3VhcmRhciBlbCBtb2RlbG8gdHJhemFkbwp0cmFjZWRfbW9kZWwuc2F2ZSgidHJhY2VkX21vZGVsLnB0Iik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+
+# Definir un modelo simple
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc = nn.Linear(10, 5)
+    
+    def forward(self, x):
+        return self.fc(x)
+
+# Instanciar el modelo y crear una entrada de ejemplo
+model = SimpleModel()
+example_input = torch.randn(1, 10)
+
+# Trazar el modelo
+traced_model = torch.jit.trace(model, example_input)
+
+# Guardar el modelo trazado
+traced_model.save(&quot;traced_model.pt&quot;)</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li>Definimos un modelo lineal simple.</li>
+<li>Creamos un tensor de entrada de ejemplo.</li>
+<li>Usamos <code>torch.jit.trace</code> para trazar el modelo con la entrada de ejemplo.</li>
+<li>Guardamos el modelo trazado en un archivo.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Scripting</h2>
+<div class='content'><p>Scripting convierte el modelo compilando directamente el código Python. Este método es más flexible y puede manejar modelos con flujo de control dinámico.</p>
+<h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgoKIyBEZWZpbmlyIHVuIG1vZGVsbyBjb24gZmx1am8gZGUgY29udHJvbApjbGFzcyBDb250cm9sRmxvd01vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoQ29udHJvbEZsb3dNb2RlbCwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYuZmMxID0gbm4uTGluZWFyKDEwLCA1KQogICAgICAgIHNlbGYuZmMyID0gbm4uTGluZWFyKDUsIDIpCiAgICAKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIGlmIHguc3VtKCkgPiAwOgogICAgICAgICAgICByZXR1cm4gc2VsZi5mYzEoeCkKICAgICAgICBlbHNlOgogICAgICAgICAgICByZXR1cm4gc2VsZi5mYzIoeCkKCiMgSW5zdGFuY2lhciBlbCBtb2RlbG8KbW9kZWwgPSBDb250cm9sRmxvd01vZGVsKCkKCiMgQ29tcGlsYXIgZWwgbW9kZWxvCnNjcmlwdGVkX21vZGVsID0gdG9yY2guaml0LnNjcmlwdChtb2RlbCkKCiMgR3VhcmRhciBlbCBtb2RlbG8gY29tcGlsYWRvCnNjcmlwdGVkX21vZGVsLnNhdmUoInNjcmlwdGVkX21vZGVsLnB0Iik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+
+# Definir un modelo con flujo de control
+class ControlFlowModel(nn.Module):
+    def __init__(self):
+        super(ControlFlowModel, self).__init__()
+        self.fc1 = nn.Linear(10, 5)
+        self.fc2 = nn.Linear(5, 2)
+    
+    def forward(self, x):
+        if x.sum() &gt; 0:
+            return self.fc1(x)
+        else:
+            return self.fc2(x)
+
+# Instanciar el modelo
+model = ControlFlowModel()
+
+# Compilar el modelo
+scripted_model = torch.jit.script(model)
+
+# Guardar el modelo compilado
+scripted_model.save(&quot;scripted_model.pt&quot;)</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li>Definimos un modelo con una declaración condicional en el método forward.</li>
+<li>Usamos <code>torch.jit.script</code> para compilar el modelo.</li>
+<li>Guardamos el modelo compilado en un archivo.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Comparando Tracing y Scripting</h1>
+<div class='content'><p>| Característica         | Tracing                            | Scripting                          |
+|------------------------|------------------------------------|------------------------------------|
+| <strong>Facilidad de Uso</strong>   | Más fácil, requiere entrada de ejemplo | Ligeramente más complejo           |
+| <strong>Flujo de Control</strong>   | Limitado, no puede manejar flujo dinámico | Maneja flujo de control dinámico   |
+| <strong>Rendimiento</strong>        | Generalmente más rápido para modelos estáticos | Puede ser más lento debido a la flexibilidad |
+| <strong>Casos de Uso</strong>       | Modelos simples y estáticos        | Modelos complejos con flujo de control |</p>
+</div><h1>Cargando y Usando Modelos Exportados</h1>
+<div class='content'><p>Una vez que un modelo es exportado, puede ser cargado y usado en cualquier entorno que soporte TorchScript.</p>
+<h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCgojIENhcmdhciBlbCBtb2RlbG8gdHJhemFkbwpsb2FkZWRfdHJhY2VkX21vZGVsID0gdG9yY2guaml0LmxvYWQoInRyYWNlZF9tb2RlbC5wdCIpCgojIENhcmdhciBlbCBtb2RlbG8gY29tcGlsYWRvCmxvYWRlZF9zY3JpcHRlZF9tb2RlbCA9IHRvcmNoLmppdC5sb2FkKCJzY3JpcHRlZF9tb2RlbC5wdCIpCgojIENyZWFyIHVuYSBlbnRyYWRhIGRlIGVqZW1wbG8KZXhhbXBsZV9pbnB1dCA9IHRvcmNoLnJhbmRuKDEsIDEwKQoKIyBVc2FyIGxvcyBtb2RlbG9zIGNhcmdhZG9zCm91dHB1dF90cmFjZWQgPSBsb2FkZWRfdHJhY2VkX21vZGVsKGV4YW1wbGVfaW5wdXQpCm91dHB1dF9zY3JpcHRlZCA9IGxvYWRlZF9zY3JpcHRlZF9tb2RlbChleGFtcGxlX2lucHV0KQoKcHJpbnQob3V0cHV0X3RyYWNlZCkKcHJpbnQob3V0cHV0X3NjcmlwdGVkKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+
+# Cargar el modelo trazado
+loaded_traced_model = torch.jit.load(&quot;traced_model.pt&quot;)
+
+# Cargar el modelo compilado
+loaded_scripted_model = torch.jit.load(&quot;scripted_model.pt&quot;)
+
+# Crear una entrada de ejemplo
+example_input = torch.randn(1, 10)
+
+# Usar los modelos cargados
+output_traced = loaded_traced_model(example_input)
+output_scripted = loaded_scripted_model(example_input)
+
+print(output_traced)
+print(output_scripted)</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li>Cargamos los modelos trazados y compilados previamente guardados usando <code>torch.jit.load</code>.</li>
+<li>Creamos un tensor de entrada de ejemplo.</li>
+<li>Ejecutamos la entrada de ejemplo a través de los modelos cargados e imprimimos las salidas.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Exportar modelos con TorchScript es una característica poderosa de PyTorch que permite el despliegue de modelos en entornos de producción. Tracing es adecuado para modelos simples y estáticos, mientras que scripting es más flexible y puede manejar modelos complejos con flujo de control dinámico. Entender cuándo usar cada método y cómo cargar y usar modelos exportados es esencial para un despliegue efectivo de modelos.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

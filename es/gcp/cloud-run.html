@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/gcp/cloud-run" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a Cloud Run</h1>
+<div class='content'><p>Cloud Run es una plataforma de computación completamente gestionada que escala automáticamente tus contenedores sin estado. Abstrae toda la gestión de infraestructura, permitiéndote enfocarte en escribir código.</p>
+<ul>
+<li><strong>Completamente Gestionado</strong>: No necesitas gestionar servidores o clústeres.</li>
+<li><strong>Escalable</strong>: Escala automáticamente hacia arriba y hacia abajo según el tráfico.</li>
+<li><strong>Contenedores Sin Estado</strong>: Ejecuta cualquier contenedor sin estado.</li>
+</ul>
+</div><h1>Configuración de Cloud Run</h1>
+<div class='content'><p>Antes de desplegar en Cloud Run, necesitas configurar tu entorno de Google Cloud Platform (GCP).</p>
+<ol>
+<li>
+<p><strong>Crear un Proyecto GCP</strong>:</p>
+<ul>
+<li>Ve a la <a href="https://console.cloud.google.com/">Consola de GCP</a>.</li>
+<li>Haz clic en el desplegable de proyectos y selecciona &quot;Nuevo Proyecto&quot;.</li>
+<li>Nombra tu proyecto y haz clic en &quot;Crear&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Habilitar Facturación</strong>:</p>
+<ul>
+<li>Ve a la sección de Facturación en la Consola de GCP.</li>
+<li>Vincula una cuenta de facturación a tu proyecto.</li>
+</ul>
+</li>
+<li>
+<p><strong>Habilitar la API de Cloud Run</strong>:</p>
+<ul>
+<li>Navega a la sección de API y Servicios.</li>
+<li>Busca &quot;Cloud Run&quot; y habilita la API.</li>
+</ul>
+</li>
+<li>
+<p><strong>Instalar Google Cloud SDK</strong>:</p>
+<ul>
+<li>Sigue las instrucciones de instalación para tu sistema operativo desde la <a href="https://cloud.google.com/sdk/docs/install">documentación de Google Cloud SDK</a>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Desplegando un Contenedor en Cloud Run</h1>
+<h2>Guía Paso a Paso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Escribe Tu Aplicación</strong>:</p>
+<ul>
+<li>Crea un servidor web simple usando tu lenguaje preferido. Aquí tienes un ejemplo en Python usando Flask:</li>
+</ul>
+<pre><code class="language-python"># app.py
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def hello():
+    return &quot;¡Hola, Mundo!&quot;
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
+</code></pre>
+</li>
+<li>
+<p><strong>Crea un Dockerfile</strong>:</p>
+<ul>
+<li>Dockerfile se usa para contenerizar tu aplicación.</li>
+</ul>
+<pre><code class="language-dockerfile"># Dockerfile
+FROM python:3.8-slim
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Construye y Sube la Imagen del Contenedor</strong>:</p>
+<ul>
+<li>Usa Google Container Registry (GCR) para almacenar tus imágenes de contenedor.</li>
+</ul>
+<pre><code class="language-sh"># Construye la imagen Docker
+docker build -t gcr.io/[ID-PROYECTO]/[NOMBRE-IMAGEN]:[ETIQUETA] .
+
+# Sube la imagen Docker a GCR
+docker push gcr.io/[ID-PROYECTO]/[NOMBRE-IMAGEN]:[ETIQUETA]
+</code></pre>
+</li>
+<li>
+<p><strong>Despliega en Cloud Run</strong>:</p>
+<ul>
+<li>Usa la herramienta de línea de comandos <code>gcloud</code> para desplegar tu contenedor.</li>
+</ul>
+<pre><code class="language-sh">gcloud run deploy --image gcr.io/[ID-PROYECTO]/[NOMBRE-IMAGEN]:[ETIQUETA] --platform managed
+</code></pre>
+<ul>
+<li>Sigue las indicaciones para especificar el nombre del servicio y la región.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Funcionalidades Avanzadas de Cloud Run</h1>
+<h2>Dominios Personalizados</h2>
+<div class='content'><ul>
+<li><strong>Mapeo de Dominios Personalizados</strong>: Puedes mapear dominios personalizados a tus servicios de Cloud Run.
+<ul>
+<li>Ve a la página de detalles del servicio de Cloud Run.</li>
+<li>Haz clic en &quot;Gestionar dominios personalizados&quot; y sigue las instrucciones.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Gestión de Tráfico</h2>
+<div class='content'><ul>
+<li><strong>División de Tráfico</strong>: Puedes dividir el tráfico entre diferentes revisiones de tu servicio.
+<ul>
+<li>Navega a la página de detalles del servicio de Cloud Run.</li>
+<li>Haz clic en &quot;Gestionar tráfico&quot; y asigna porcentajes a diferentes revisiones.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Autenticación y Autorización</h2>
+<div class='content'><ul>
+<li><strong>Roles de IAM</strong>: Controla quién puede desplegar e invocar tus servicios usando roles de IAM.
+<ul>
+<li>Asigna roles como <code>roles/run.admin</code> y <code>roles/run.invoker</code> a usuarios o cuentas de servicio.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Monitoreo y Registro</h1>
+<div class='content'><ul>
+<li><strong>Monitoreo en la Nube</strong>: Usa Cloud Monitoring para rastrear el rendimiento de tus servicios.
+<ul>
+<li>Configura paneles de control y alertas personalizadas.</li>
+</ul>
+</li>
+<li><strong>Registro en la Nube</strong>: Recoge automáticamente los registros de tus servicios.
+<ul>
+<li>Visualiza los registros en la sección de Cloud Logging de la Consola de GCP.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Mejores Prácticas</h1>
+<div class='content'><ul>
+<li><strong>Servicios Sin Estado</strong>: Asegúrate de que tus servicios sean sin estado para una mejor escalabilidad.</li>
+<li><strong>Variables de Entorno</strong>: Usa variables de entorno para gestionar la configuración.</li>
+<li><strong>Verificaciones de Salud</strong>: Implementa verificaciones de salud para asegurar que tu servicio esté funcionando correctamente.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Cloud Run simplifica el despliegue y la gestión de aplicaciones contenerizadas al abstraer la infraestructura subyacente. Ofrece funcionalidades potentes como escalado automático, dominios personalizados, gestión de tráfico y un robusto monitoreo y registro. Siguiendo las mejores prácticas y aprovechando estas funcionalidades, puedes desplegar y gestionar eficientemente tus aplicaciones en GCP.</p>
+<p>Al final de este tema, deberías tener una comprensión sólida de cómo configurar, desplegar y gestionar aplicaciones usando Cloud Run en Google Cloud Platform.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

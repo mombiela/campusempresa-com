@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/hadoop/mock-exams" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>Los exámenes simulados son una parte esencial del proceso de aprendizaje, especialmente para materias complejas como Hadoop. Te ayudan a evaluar tu comprensión, identificar áreas de mejora y acostumbrarte al formato y tipos de preguntas que podrías encontrar en exámenes reales o entrevistas de trabajo.</p>
+</div><h1>Nivel Principiante</h1>
+<div class='content'><p>En el nivel principiante, los exámenes simulados se centrarán en conceptos fundamentales y operaciones básicas en Hadoop.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li>Comprensión del Ecosistema Hadoop</li>
+<li>Comandos básicos de HDFS</li>
+<li>Introducción a MapReduce</li>
+<li>Consultas básicas de Hive</li>
+</ul>
+</div><h2>Preguntas de Ejemplo</h2>
+<div class='content'><h4>Opción Múltiple</h4>
+<ol>
+<li>
+<p><strong>¿Cuál es la función principal de HDFS en Hadoop?</strong></p>
+<ul>
+<li>A. Procesamiento de Datos</li>
+<li>B. Almacenamiento de Datos</li>
+<li>C. Análisis de Datos</li>
+<li>D. Visualización de Datos</li>
+</ul>
+<p><strong>Respuesta:</strong> B. Almacenamiento de Datos</p>
+</li>
+<li>
+<p><strong>¿Cuál de los siguientes es un componente central de Hadoop?</strong></p>
+<ul>
+<li>A. Apache Spark</li>
+<li>B. Apache Kafka</li>
+<li>C. HDFS</li>
+<li>D. Apache Flink</li>
+</ul>
+<p><strong>Respuesta:</strong> C. HDFS</p>
+</li>
+</ol>
+<h4>Tareas Prácticas</h4>
+<ol>
+<li>
+<p><strong>Lista todos los archivos en el directorio raíz de HDFS.</strong></p>
+<pre><code class="language-bash">hdfs dfs -ls /
+</code></pre>
+</li>
+<li>
+<p><strong>Escribe un trabajo simple de MapReduce para contar el número de ocurrencias de cada palabra en un archivo de texto.</strong></p>
+<pre><code class="language-java">import java.io.IOException;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class WordCount {
+    public static class TokenizerMapper extends Mapper&lt;Object, Text, Text, IntWritable&gt;{
+        private final static IntWritable one = new IntWritable(1);
+        private Text word = new Text();
+
+        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+            String[] words = value.toString().split(&quot;\\s+&quot;);
+            for (String str : words) {
+                word.set(str);
+                context.write(word, one);
+            }
+        }
+    }
+
+    public static class IntSumReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+        private IntWritable result = new IntWritable();
+
+        public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) throws IOException, InterruptedException {
+            int sum = 0;
+            for (IntWritable val : values) {
+                sum += val.get();
+            }
+            result.set(sum);
+            context.write(key, result);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, &quot;word count&quot;);
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(TokenizerMapper.class);
+        job.setCombinerClass(IntSumReducer.class);
+        job.setReducerClass(IntSumReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Nivel Intermedio</h1>
+<div class='content'><p>En el nivel intermedio, los exámenes simulados cubrirán temas más avanzados y aplicaciones prácticas.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li>Operaciones avanzadas de HDFS</li>
+<li>Trabajos complejos de MapReduce</li>
+<li>Introducción a YARN</li>
+<li>Consultas avanzadas de Hive y Pig</li>
+</ul>
+</div><h2>Preguntas de Ejemplo</h2>
+<div class='content'><h4>Opción Múltiple</h4>
+<ol>
+<li>
+<p><strong>¿Cuál es el papel de YARN en Hadoop?</strong></p>
+<ul>
+<li>A. Almacenamiento de Datos</li>
+<li>B. Gestión de Recursos</li>
+<li>C. Análisis de Datos</li>
+<li>D. Visualización de Datos</li>
+</ul>
+<p><strong>Respuesta:</strong> B. Gestión de Recursos</p>
+</li>
+<li>
+<p><strong>¿Qué comando se usa para mover archivos en HDFS?</strong></p>
+<ul>
+<li>A. hdfs dfs -mv</li>
+<li>B. hdfs dfs -cp</li>
+<li>C. hdfs dfs -rm</li>
+<li>D. hdfs dfs -put</li>
+</ul>
+<p><strong>Respuesta:</strong> A. hdfs dfs -mv</p>
+</li>
+</ol>
+<h4>Tareas Prácticas</h4>
+<ol>
+<li>
+<p><strong>Escribe una consulta de Hive para encontrar los 5 empleados mejor pagados de una tabla de empleados.</strong></p>
+<pre><code class="language-sql">SELECT name, salary 
+FROM employee 
+ORDER BY salary DESC 
+LIMIT 5;
+</code></pre>
+</li>
+<li>
+<p><strong>Crea un script de Pig para cargar datos desde un archivo CSV y filtrar registros donde la edad sea mayor a 30.</strong></p>
+<pre><code class="language-pig">data = LOAD 'employee.csv' USING PigStorage(',') AS (name:chararray, age:int, salary:float);
+filtered_data = FILTER data BY age &gt; 30;
+DUMP filtered_data;
+</code></pre>
+</li>
+</ol>
+</div><h1>Nivel Avanzado</h1>
+<div class='content'><p>En el nivel avanzado, los exámenes simulados evaluarán tu capacidad para manejar escenarios complejos y optimizar operaciones de Hadoop.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li>Gestión de Clústeres Hadoop</li>
+<li>Optimización del Rendimiento</li>
+<li>Configuraciones avanzadas de YARN</li>
+<li>Integración con otras herramientas de Big Data</li>
+</ul>
+</div><h2>Preguntas de Ejemplo</h2>
+<div class='content'><h4>Opción Múltiple</h4>
+<ol>
+<li>
+<p><strong>¿Cuál de los siguientes es un método para mejorar el rendimiento de un clúster Hadoop?</strong></p>
+<ul>
+<li>A. Aumentar el número de mappers</li>
+<li>B. Disminuir el tamaño del bloque</li>
+<li>C. Usar compresión</li>
+<li>D. Reducir el número de reducers</li>
+</ul>
+<p><strong>Respuesta:</strong> C. Usar compresión</p>
+</li>
+<li>
+<p><strong>¿Cuál es el propósito del Secondary NameNode en Hadoop?</strong></p>
+<ul>
+<li>A. Reemplazar el NameNode en caso de falla</li>
+<li>B. Realizar recolección de basura</li>
+<li>C. Fusionar el registro de ediciones con la imagen del sistema</li>
+<li>D. Gestionar la replicación de datos</li>
+</ul>
+<p><strong>Respuesta:</strong> C. Fusionar el registro de ediciones con la imagen del sistema</p>
+</li>
+</ol>
+<h4>Tareas Prácticas</h4>
+<ol>
+<li>
+<p><strong>Configura YARN para asignar más memoria a ApplicationMaster.</strong></p>
+<pre><code class="language-xml">&lt;property&gt;
+    &lt;name&gt;yarn.app.mapreduce.am.resource.mb&lt;/name&gt;
+    &lt;value&gt;2048&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Escribe un trabajo de Spark para leer datos desde HDFS y realizar un conteo de palabras.</strong></p>
+<pre><code class="language-python">from pyspark import SparkContext, SparkConf
+
+conf = SparkConf().setAppName(&quot;WordCount&quot;)
+sc = SparkContext(conf=conf)
+
+text_file = sc.textFile(&quot;hdfs:///user/hadoop/input.txt&quot;)
+counts = text_file.flatMap(lambda line: line.split(&quot; &quot;)) <br>                     .map(lambda word: (word, 1)) <br>                     .reduceByKey(lambda a, b: a + b)
+
+counts.saveAsTextFile(&quot;hdfs:///user/hadoop/output&quot;)
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los exámenes simulados son una herramienta valiosa para reforzar tu conocimiento y prepararte para aplicaciones del mundo real de Hadoop. Al practicar con exámenes simulados en varios niveles, puedes construir confianza y asegurarte de tener una comprensión sólida de los conceptos fundamentales y avanzados de Hadoop. Recuerda revisar tus respuestas y entender cualquier error para mejorar continuamente tus habilidades.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/dynamic-provisioning" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>El aprovisionamiento dinámico en Kubernetes permite la creación automática de recursos de almacenamiento cuando son necesarios por las aplicaciones. Esta característica simplifica la gestión del almacenamiento y mejora la flexibilidad y escalabilidad de los clústeres de Kubernetes.</p>
+</div><h1>Introducción al Aprovisionamiento Dinámico</h1>
+<div class='content'><p>El aprovisionamiento dinámico automatiza el proceso de creación y gestión de volúmenes de almacenamiento, lo cual es esencial para aplicaciones con estado. Esta sección cubre los conceptos básicos y la importancia del aprovisionamiento dinámico en Kubernetes.</p>
+<ul>
+<li><strong>Definición</strong>: El aprovisionamiento dinámico es el proceso por el cual Kubernetes aprovisiona automáticamente recursos de almacenamiento cuando se crea un PersistentVolumeClaim (PVC).</li>
+<li><strong>Importancia</strong>:
+<ul>
+<li>Simplifica la gestión del almacenamiento.</li>
+<li>Mejora la escalabilidad y flexibilidad.</li>
+<li>Reduce la intervención manual y los posibles errores.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><p>Entender los conceptos clave es crucial para dominar el aprovisionamiento dinámico en Kubernetes.</p>
+<ul>
+<li><strong>PersistentVolume (PV)</strong>: Una pieza de almacenamiento en el clúster que ha sido aprovisionada por un administrador o aprovisionada dinámicamente usando StorageClasses.</li>
+<li><strong>PersistentVolumeClaim (PVC)</strong>: Una solicitud de almacenamiento por parte de un usuario. Es similar a un pod en que los pods consumen recursos de nodo y los PVCs consumen recursos de PV.</li>
+<li><strong>StorageClass</strong>: Define el tipo de almacenamiento y la configuración para el aprovisionamiento dinámico. Se utiliza para especificar el provisioner, los parámetros y la política de recuperación.</li>
+</ul>
+</div><h1>Cómo Funciona el Aprovisionamiento Dinámico</h1>
+<div class='content'><p>El aprovisionamiento dinámico involucra varios componentes y pasos. Esta sección explica el flujo de trabajo y los componentes involucrados.</p>
+<ol>
+<li><strong>Crear una StorageClass</strong>: Definir el tipo de almacenamiento y la configuración.</li>
+<li><strong>Crear un PersistentVolumeClaim (PVC)</strong>: Solicitar almacenamiento usando la StorageClass.</li>
+<li><strong>Aprovisionamiento</strong>: Kubernetes aprovisiona automáticamente un PersistentVolume (PV) que coincida con la solicitud del PVC.</li>
+<li><strong>Vinculación</strong>: El PVC se vincula al PV recién creado.</li>
+</ol>
+</div><h2>Ejemplo de Flujo de Trabajo</h2>
+<div class='content'><p>Vamos a través de un ejemplo para ilustrar el proceso de aprovisionamiento dinámico.</p>
+<ol>
+<li>
+<p><strong>Crear una StorageClass</strong>:</p>
+<pre><code class="language-yaml">apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: gp2
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un PersistentVolumeClaim (PVC)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mypvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: fast
+</code></pre>
+</li>
+<li>
+<p><strong>Aprovisionamiento y Vinculación</strong>:</p>
+<ul>
+<li>Kubernetes detecta el PVC y usa la StorageClass especificada para aprovisionar un nuevo PV.</li>
+<li>El PV se crea y se vincula automáticamente al PVC.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuración Avanzada</h1>
+<div class='content'><p>Para usuarios avanzados, el aprovisionamiento dinámico puede personalizarse aún más.</p>
+<ul>
+<li><strong>Parámetros Personalizados</strong>: Las StorageClasses pueden incluir parámetros personalizados específicos para el backend de almacenamiento.</li>
+<li><strong>Política de Recuperación</strong>: Define qué sucede con el PV cuando se elimina el PVC. Las políticas comunes son <code>Retain</code>, <code>Recycle</code> y <code>Delete</code>.</li>
+<li><strong>Modo de Vinculación</strong>: Controla cuándo debe ocurrir la vinculación de volúmenes y el aprovisionamiento dinámico. Las opciones incluyen <code>Immediate</code> y <code>WaitForFirstConsumer</code>.</li>
+</ul>
+</div><h2>Ejemplo con Parámetros Personalizados</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogc3RvcmFnZS5rOHMuaW8vdjEKa2luZDogU3RvcmFnZUNsYXNzCm1ldGFkYXRhOgogIG5hbWU6IGN1c3RvbS1mYXN0CnByb3Zpc2lvbmVyOiBrdWJlcm5ldGVzLmlvL2F3cy1lYnMKcGFyYW1ldGVyczoKICB0eXBlOiBpbzEKICBpb3BzUGVyR0I6ICIxMCIKcmVjbGFpbVBvbGljeTogUmV0YWluCnZvbHVtZUJpbmRpbmdNb2RlOiBXYWl0Rm9yRmlyc3RDb25zdW1lcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: custom-fast
+provisioner: kubernetes.io/aws-ebs
+parameters:
+  type: io1
+  iopsPerGB: &quot;10&quot;
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer</pre></div><div class='content'></div><h1>Solución de Problemas</h1>
+<div class='content'><p>Problemas comunes y pasos para solucionar problemas de aprovisionamiento dinámico.</p>
+<ul>
+<li><strong>PVC Pendiente</strong>: Asegúrese de que la StorageClass exista y esté correctamente configurada.</li>
+<li><strong>PV No Vinculado</strong>: Verifique si el backend de almacenamiento tiene suficientes recursos.</li>
+<li><strong>Fallos de Aprovisionamiento</strong>: Revise los eventos y registros de Kubernetes para errores relacionados con el provisioner de almacenamiento.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El aprovisionamiento dinámico en Kubernetes automatiza la creación y gestión de recursos de almacenamiento, facilitando el despliegue y escalado de aplicaciones con estado. Al entender los conceptos clave, el flujo de trabajo y las configuraciones avanzadas, puede gestionar eficazmente el almacenamiento en sus clústeres de Kubernetes.</p>
+<ul>
+<li><strong>Puntos Clave</strong>:
+<ul>
+<li>El aprovisionamiento dinámico simplifica la gestión del almacenamiento.</li>
+<li>Las StorageClasses juegan un papel crucial en la definición de configuraciones de almacenamiento.</li>
+<li>Las configuraciones avanzadas y la solución de problemas son esenciales para optimizar y mantener el aprovisionamiento dinámico.</li>
+</ul>
+</li>
+</ul>
+<p>Al dominar el aprovisionamiento dinámico, puede asegurarse de que sus aplicaciones en Kubernetes tengan los recursos de almacenamiento necesarios para operar de manera eficiente y confiable.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

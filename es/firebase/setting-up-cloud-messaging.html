@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/firebase/setting-up-cloud-messaging" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>Firebase Cloud Messaging (FCM) es una solución de mensajería multiplataforma que te permite enviar mensajes de manera confiable y sin costo. Este tema te guiará a través de la configuración de FCM desde un nivel principiante hasta un nivel avanzado.</p>
+</div><h1>Introducción a Firebase Cloud Messaging</h1>
+<div class='content'><ul>
+<li><strong>¿Qué es FCM?</strong>
+<ul>
+<li>Un servicio para enviar notificaciones y mensajes a usuarios en diferentes plataformas.</li>
+<li>Soporta tanto mensajes directos como mensajes basados en temas.</li>
+</ul>
+</li>
+<li><strong>¿Por qué usar FCM?</strong>
+<ul>
+<li>Gratis y escalable.</li>
+<li>Fácil integración con los servicios de Firebase.</li>
+<li>Soporta varios tipos de mensajes (notificación, datos, etc.).</li>
+</ul>
+</li>
+</ul>
+</div><h1>Prerrequisitos</h1>
+<div class='content'><ul>
+<li>Comprensión básica de Firebase.</li>
+<li>Proyecto de Firebase configurado en la Consola de Firebase.</li>
+<li>Conocimientos básicos de desarrollo Android/iOS.</li>
+</ul>
+</div><h1>Configuración de FCM para Android</h1>
+<div class='content'></div><h2>Paso 1: Agregar Firebase a Tu Proyecto Android</h2>
+<div class='content'><ol>
+<li><strong>Crea un proyecto de Firebase</strong> en la Consola de Firebase.</li>
+<li><strong>Registra tu aplicación</strong> con Firebase:
+<ul>
+<li>Agrega el nombre del paquete de tu aplicación Android.</li>
+<li>Descarga el archivo <code>google-services.json</code>.</li>
+</ul>
+</li>
+<li><strong>Agrega el archivo <code>google-services.json</code></strong> a tu proyecto:
+<ul>
+<li>Colócalo en el directorio <code>app</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 2: Agregar el SDK de Firebase a Tu Proyecto</h2>
+<div class='content'><ol>
+<li>Abre tu archivo <code>build.gradle</code> (nivel de proyecto) y agrega lo siguiente:
+<pre><code class="language-gradle">buildscript {
+    dependencies {
+        // Agrega esta línea
+        classpath 'com.google.gms:google-services:4.3.10'
+    }
+}
+</code></pre>
+</li>
+<li>Abre tu archivo <code>build.gradle</code> (nivel de aplicación) y agrega lo siguiente:
+<pre><code class="language-gradle">dependencies {
+    // Agrega el SDK de Firebase para FCM
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+}
+
+// Agrega esta línea al final del archivo
+apply plugin: 'com.google.gms.google-services'
+</code></pre>
+</li>
+</ol>
+</div><h2>Paso 3: Configurar FCM en Tu Aplicación</h2>
+<div class='content'><ol>
+<li><strong>Inicializa Firebase</strong> en tu <code>MainActivity.java</code>:
+<pre><code class="language-java">import com.google.firebase.messaging.FirebaseMessaging;
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Inicializa Firebase
+        FirebaseMessaging.getInstance().subscribeToTopic(&quot;news&quot;)
+            .addOnCompleteListener(task -&gt; {
+                String msg = &quot;Suscrito al tema de noticias&quot;;
+                if (!task.isSuccessful()) {
+                    msg = &quot;Suscripción fallida&quot;;
+                }
+                Log.d(&quot;FCM&quot;, msg);
+            });
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Configuración de FCM para iOS</h1>
+<div class='content'></div><h2>Paso 1: Agregar Firebase a Tu Proyecto iOS</h2>
+<div class='content'><ol>
+<li><strong>Crea un proyecto de Firebase</strong> en la Consola de Firebase.</li>
+<li><strong>Registra tu aplicación</strong> con Firebase:
+<ul>
+<li>Agrega el ID del paquete de tu aplicación iOS.</li>
+<li>Descarga el archivo <code>GoogleService-Info.plist</code>.</li>
+</ul>
+</li>
+<li><strong>Agrega el archivo <code>GoogleService-Info.plist</code></strong> a tu proyecto:
+<ul>
+<li>Arrástralo y suéltalo en tu proyecto de Xcode.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 2: Agregar el SDK de Firebase a Tu Proyecto</h2>
+<div class='content'><ol>
+<li>Abre tu <code>Podfile</code> y agrega lo siguiente:
+<pre><code class="language-ruby">pod 'Firebase/Messaging'
+</code></pre>
+</li>
+<li>Ejecuta <code>pod install</code> para instalar el SDK de Firebase.</li>
+</ol>
+</div><h2>Paso 3: Configurar FCM en Tu Aplicación</h2>
+<div class='content'><ol>
+<li><strong>Inicializa Firebase</strong> en tu <code>AppDelegate.swift</code>:
+<pre><code class="language-swift">import Firebase
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+
+    func application(_ application: UIApplication,
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool {
+        // Inicializa Firebase
+        FirebaseApp.configure()
+
+        // Suscribirse a un tema
+        Messaging.messaging().subscribe(toTopic: &quot;news&quot;) { error in
+            print(&quot;Suscrito al tema de noticias&quot;)
+        }
+
+        return true
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Envío de Mensajes con FCM</h1>
+<div class='content'></div><h2>Envío de un Mensaje de Notificación</h2>
+<div class='content'><ul>
+<li><strong>A través de la Consola de Firebase</strong>:
+<ul>
+<li>Navega a la Consola de Firebase.</li>
+<li>Selecciona tu proyecto y ve a la sección de Cloud Messaging.</li>
+<li>Haz clic en &quot;Enviar tu primer mensaje&quot;.</li>
+<li>Rellena los detalles del mensaje y el objetivo (por ejemplo, tema &quot;news&quot;).</li>
+<li>Haz clic en &quot;Enviar&quot;.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Envío de un Mensaje de Datos</h2>
+<div class='content'><ul>
+<li><strong>A través del SDK de Administración de Firebase</strong>:
+<pre><code class="language-javascript">const admin = require('firebase-admin');
+admin.initializeApp();
+
+const message = {
+  data: {
+    score: '850',
+    time: '2:45'
+  },
+  topic: 'news'
+};
+
+admin.messaging().send(message)
+  .then((response) =&gt; {
+    console.log('Mensaje enviado exitosamente:', response);
+  })
+  .catch((error) =&gt; {
+    console.log('Error al enviar el mensaje:', error);
+  });
+</code></pre>
+</li>
+</ul>
+</div><h1>Temas Avanzados</h1>
+<div class='content'></div><h2>Manejo de Cargas Útiles de Mensajes</h2>
+<div class='content'><ul>
+<li><strong>Mensajes de Notificación</strong>: Mostrados automáticamente por el sistema.</li>
+<li><strong>Mensajes de Datos</strong>: Manejado por la aplicación en segundo plano o en primer plano.</li>
+</ul>
+</div><h2>Personalización de Notificaciones</h2>
+<div class='content'><ul>
+<li><strong>Sonido Personalizado</strong>: Especifica un archivo de sonido personalizado en la carga útil de la notificación.</li>
+<li><strong>Acciones Personalizadas</strong>: Agrega botones de acción a las notificaciones.</li>
+</ul>
+</div><h2>Manejo de Errores</h2>
+<div class='content'><ul>
+<li><strong>Errores Comunes</strong>:
+<ul>
+<li>Token de registro inválido.</li>
+<li>Límite de tasa de mensajes excedido.</li>
+</ul>
+</li>
+<li><strong>Consejos de Depuración</strong>:
+<ul>
+<li>Revisa los registros de la Consola de Firebase.</li>
+<li>Usa Firebase DebugView.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Configurar Firebase Cloud Messaging implica integrar el SDK de Firebase en tu proyecto Android o iOS, configurar tu aplicación para recibir mensajes y enviar mensajes a través de la Consola de Firebase o el SDK de Administración. Con FCM, puedes enviar tanto mensajes de notificación como de datos, personalizar notificaciones y manejar errores de manera efectiva. Esta configuración proporciona una base robusta para implementar mensajería en tiempo real en tus aplicaciones.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

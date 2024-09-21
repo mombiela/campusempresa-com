@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/angular2/angular-universal" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a Angular Universal</h1>
+<div class='content'><p>Angular Universal es una tecnología que permite renderizar aplicaciones Angular en el lado del servidor. Esto puede mejorar el rendimiento, SEO y la experiencia del usuario al entregar páginas completamente renderizadas al cliente.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Renderizado del Lado del Servidor (SSR)</strong>: El proceso de renderizar páginas web en el servidor en lugar del cliente.</li>
+<li><strong>Angular Universal</strong>: Un conjunto de herramientas y bibliotecas que habilitan SSR para aplicaciones Angular.</li>
+<li><strong>Beneficios de SEO</strong>: Los motores de búsqueda pueden indexar páginas renderizadas en el servidor de manera más efectiva.</li>
+<li><strong>Mejoras en el Rendimiento</strong>: Tiempos de carga inicial más rápidos y mejor rendimiento percibido.</li>
+</ul>
+</div><h1>Configuración de Angular Universal</h1>
+<div class='content'><p>Para comenzar con Angular Universal, necesitas agregar los paquetes necesarios y configurar tu aplicación Angular.</p>
+</div><h2>Configuración Paso a Paso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar Paquetes de Angular Universal</strong>:</p>
+<pre><code class="language-bash">ng add @nguniversal/express-engine
+</code></pre>
+<p>Este comando instalará los paquetes requeridos y hará los cambios necesarios en tu proyecto Angular.</p>
+</li>
+<li>
+<p><strong>Actualizar Configuración de Angular</strong>:
+El comando <code>ng add</code> actualizará automáticamente tu archivo <code>angular.json</code> para incluir configuraciones de renderizado del lado del servidor.</p>
+</li>
+<li>
+<p><strong>Crear Módulo del Servidor</strong>:
+Angular Universal requiere un módulo del servidor para manejar el renderizado del lado del servidor.</p>
+<pre><code class="language-typescript">// src/app/app.server.module.ts
+import { NgModule } from '@angular/core';
+import { ServerModule } from '@angular/platform-server';
+import { AppModule } from './app.module';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  imports: [
+    AppModule,
+    ServerModule,
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppServerModule {}
+</code></pre>
+</li>
+<li>
+<p><strong>Crear Archivo del Servidor</strong>:
+Crea un archivo del servidor para inicializar la aplicación Angular en el servidor.</p>
+<pre><code class="language-typescript">// server.ts
+import 'zone.js/dist/zone-node';
+import { ngExpressEngine } from '@nguniversal/express-engine';
+import * as express from 'express';
+import { join } from 'path';
+import { APP_BASE_HREF } from '@angular/common';
+import { existsSync } from 'fs';
+
+import { AppServerModule } from './src/main.server';
+import { APP_BASE_HREF } from '@angular/common;
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+const DIST_FOLDER = join(process.cwd(), 'dist/browser');
+
+app.engine('html', ngExpressEngine({
+  bootstrap: AppServerModule,
+}));
+
+app.set('view engine', 'html');
+app.set('views', DIST_FOLDER);
+
+app.get('*.*', express.static(DIST_FOLDER, {
+  maxAge: '1y'
+}));
+
+app.get('*', (req, res) =&gt; {
+  res.render('index', { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+});
+
+app.listen(PORT, () =&gt; {
+  console.log(`Servidor Node escuchando en http://localhost:${PORT}`);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Construir y Servir</strong>:
+Construye la aplicación tanto para el cliente como para el servidor:</p>
+<pre><code class="language-bash">npm run build:ssr
+npm run serve:ssr
+</code></pre>
+</li>
+</ol>
+</div><h1>Configuración Avanzada</h1>
+<div class='content'><p>Una vez que tengas la configuración básica, puedes optimizar y configurar Angular Universal para tus necesidades específicas.</p>
+</div><h2>Carga Diferida de Módulos</h2>
+<div class='content'><p>La carga diferida puede configurarse para trabajar con Angular Universal para mejorar el rendimiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYXBwLXJvdXRpbmcubW9kdWxlLnRzCmNvbnN0IHJvdXRlczogUm91dGVzID0gWwogIHsKICAgIHBhdGg6ICcnLAogICAgbG9hZENoaWxkcmVuOiAoKSA9PiBpbXBvcnQoJy4vaG9tZS9ob21lLm1vZHVsZScpLnRoZW4obSA9PiBtLkhvbWVNb2R1bGUpCiAgfQpdOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// app-routing.module.ts
+const routes: Routes = [
+  {
+    path: '',
+    loadChildren: () =&gt; import('./home/home.module').then(m =&gt; m.HomeModule)
+  }
+];</pre></div><div class='content'></div><h2>Manejo de Solicitudes API</h2>
+<div class='content'><p>El renderizado del lado del servidor puede manejar las solicitudes API de manera diferente. Asegúrate de que tu código del lado del servidor pueda manejar estas solicitudes adecuadamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc2VydmVyLnRzCmFwcC5nZXQoJy9hcGkvZGF0YScsIChyZXEsIHJlcykgPT4gewogIHJlcy5qc29uKHsgZGF0YTogJ0RhdG9zIGRlbCBsYWRvIGRlbCBzZXJ2aWRvcicgfSk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// server.ts
+app.get('/api/data', (req, res) =&gt; {
+  res.json({ data: 'Datos del lado del servidor' });
+});</pre></div><div class='content'></div><h2>Estrategias de Caché</h2>
+<div class='content'><p>Implementa estrategias de caché para mejorar el rendimiento y reducir la carga del servidor.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc2VydmVyLnRzCmFwcC5nZXQoJyonLCAocmVxLCByZXMpID0+IHsKICBjb25zdCBjYWNoZUtleSA9IHJlcS51cmw7CiAgaWYgKGNhY2hlLmhhcyhjYWNoZUtleSkpIHsKICAgIHJlcy5zZW5kKGNhY2hlLmdldChjYWNoZUtleSkpOwogIH0gZWxzZSB7CiAgICByZXMucmVuZGVyKCdpbmRleCcsIHsgcmVxIH0sIChlcnIsIGh0bWwpID0+IHsKICAgICAgY2FjaGUuc2V0KGNhY2hlS2V5LCBodG1sKTsKICAgICAgcmVzLnNlbmQoaHRtbCk7CiAgICB9KTsKICB9Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// server.ts
+app.get('*', (req, res) =&gt; {
+  const cacheKey = req.url;
+  if (cache.has(cacheKey)) {
+    res.send(cache.get(cacheKey));
+  } else {
+    res.render('index', { req }, (err, html) =&gt; {
+      cache.set(cacheKey, html);
+      res.send(html);
+    });
+  }
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Angular Universal proporciona una forma poderosa de mejorar el rendimiento y SEO de tus aplicaciones Angular a través del renderizado del lado del servidor. Siguiendo los pasos de configuración, puedes aprovechar SSR para entregar aplicaciones web más rápidas y eficientes. Configuraciones avanzadas como la carga diferida, el manejo de solicitudes API y la implementación de estrategias de caché pueden optimizar aún más tu aplicación para un mejor rendimiento y escalabilidad.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

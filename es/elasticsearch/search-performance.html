@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/elasticsearch/search-performance" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>El rendimiento de búsqueda es un aspecto crítico al trabajar con Elasticsearch, especialmente a medida que tus datos crecen. Entender cómo optimizar las consultas de búsqueda y gestionar los recursos de manera efectiva puede mejorar significativamente la velocidad y eficiencia de tu clúster de Elasticsearch.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Latencia de Búsqueda</strong>: El tiempo que tarda en obtener una respuesta después de enviar una consulta de búsqueda.</li>
+<li><strong>Rendimiento</strong>: El número de consultas de búsqueda que se pueden manejar por segundo.</li>
+<li><strong>Utilización de Recursos</strong>: La cantidad de CPU, memoria y recursos de E/S consumidos por las operaciones de búsqueda.</li>
+<li><strong>Indexación vs. Búsqueda</strong>: Balancear el rendimiento entre la indexación de nuevos datos y la búsqueda de datos existentes.</li>
+</ul>
+</div><h1>Factores que Afectan el Rendimiento de Búsqueda</h1>
+<div class='content'><ul>
+<li><strong>Configuración del Clúster</strong>: Número de nodos, fragmentos y réplicas.</li>
+<li><strong>Complejidad de la Consulta</strong>: La complejidad de las consultas de búsqueda que se están ejecutando.</li>
+<li><strong>Volumen de Datos</strong>: La cantidad de datos almacenados en los índices.</li>
+<li><strong>Recursos de Hardware</strong>: Capacidades de CPU, memoria y E/S de disco de los nodos de Elasticsearch.</li>
+</ul>
+</div><h1>Optimización del Rendimiento de Búsqueda</h1>
+<div class='content'></div><h2>Configuración del Clúster</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Fragmentación</strong>: Distribuir datos a través de múltiples fragmentos para paralelizar las operaciones de búsqueda.</p>
+<pre><code class="language-yaml">PUT /my_index
+{
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 3,
+    &quot;number_of_replicas&quot;: 1
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Esta configuración crea un índice con 3 fragmentos primarios y 1 réplica para cada fragmento, permitiendo una mejor distribución de carga y tolerancia a fallos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Tipos de Nodos</strong>: Utilizar nodos dedicados a maestro, datos y cliente para optimizar la asignación de recursos.</p>
+<pre><code class="language-yaml">node.master: true
+node.data: false
+node.ingest: false
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Esta configuración configura un nodo como un nodo maestro dedicado, que no maneja operaciones de datos o ingestión, mejorando así la estabilidad del clúster.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Optimización de Consultas</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Contexto de Filtro vs. Contexto de Consulta</strong>: Usar filtros para condiciones que no afectan la puntuación.</p>
+<pre><code class="language-json">GET /my_index/_search
+{
+  &quot;query&quot;: {
+    &quot;bool&quot;: {
+      &quot;must&quot;: {
+        &quot;match&quot;: { &quot;field&quot;: &quot;value&quot; }
+      },
+      &quot;filter&quot;: {
+        &quot;term&quot;: { &quot;status&quot;: &quot;active&quot; }
+      }
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: La cláusula <code>filter</code> se usa para condiciones que no necesitan puntuación, las cuales pueden ser almacenadas en caché y mejorar el rendimiento.</li>
+</ul>
+</li>
+<li>
+<p><strong>Evitar Consultas con Comodines</strong>: Usar consultas más específicas para reducir el espacio de búsqueda.</p>
+<pre><code class="language-json">GET /my_index/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: { &quot;field&quot;: &quot;specific_value&quot; }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Usar consultas <code>match</code> en lugar de consultas con comodines (<code>*value*</code>) puede reducir significativamente el tiempo de búsqueda.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Gestión de Datos</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Gestión del Ciclo de Vida del Índice (ILM)</strong>: Automatizar la gestión de índices para optimizar el rendimiento.</p>
+<pre><code class="language-yaml">PUT _ilm/policy/my_policy
+{
+  &quot;policy&quot;: {
+    &quot;phases&quot;: {
+      &quot;hot&quot;: {
+        &quot;actions&quot;: {
+          &quot;rollover&quot;: {
+            &quot;max_size&quot;: &quot;50GB&quot;,
+            &quot;max_age&quot;: &quot;30d&quot;
+          }
+        }
+      },
+      &quot;delete&quot;: {
+        &quot;min_age&quot;: &quot;90d&quot;,
+        &quot;actions&quot;: {
+          &quot;delete&quot;: {}
+        }
+      }
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Esta política ILM rota los índices cuando alcanzan 50GB o 30 días de antigüedad y los elimina después de 90 días, asegurando que el clúster no se sobrecargue con datos antiguos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Plantillas de Índice</strong>: Usar plantillas para aplicar configuraciones y mapeos a nuevos índices automáticamente.</p>
+<pre><code class="language-yaml">PUT _template/my_template
+{
+  &quot;index_patterns&quot;: [&quot;log-*&quot;],
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 3
+  },
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;timestamp&quot;: { &quot;type&quot;: &quot;date&quot; }
+    }
+  }
+}
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Esta plantilla se aplica a cualquier índice que coincida con el patrón <code>log-*</code>, asegurando configuraciones y mapeos consistentes.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Monitoreo y Solución de Problemas</h1>
+<div class='content'><ul>
+<li><strong>Monitoreo de Elasticsearch</strong>: Usar herramientas como Kibana y las características de monitoreo integradas de Elasticsearch para rastrear métricas de rendimiento.</li>
+<li><strong>Registro Lento</strong>: Habilitar registros lentos para identificar consultas lentas.
+<pre><code class="language-yaml">PUT /my_index/_settings
+{
+  &quot;index.search.slowlog.threshold.query.warn&quot;: &quot;10s&quot;,
+  &quot;index.search.slowlog.threshold.fetch.warn&quot;: &quot;1s&quot;
+}
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Esta configuración registra consultas que tardan más de 10 segundos y operaciones de búsqueda que tardan más de 1 segundo, ayudando a identificar cuellos de botella en el rendimiento.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Optimizar el rendimiento de búsqueda en Elasticsearch implica una combinación de una configuración adecuada del clúster, un diseño eficiente de consultas y una gestión efectiva de datos. Al entender y aplicar estos principios, puedes asegurar que tu clúster de Elasticsearch se mantenga rápido y receptivo, incluso a medida que tus datos crecen. El monitoreo regular y los ajustes basados en métricas de rendimiento también son cruciales para mantener un rendimiento de búsqueda óptimo.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/nodejs/role-based-access-control" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>El Control de Acceso Basado en Roles (RBAC) es un método de regulación del acceso a recursos basado en los roles de los usuarios individuales dentro de una organización. Este tema te guiará a través de la implementación de RBAC en una aplicación Node.js, desde conceptos básicos hasta técnicas avanzadas.</p>
+</div><h1>Introducción al Control de Acceso Basado en Roles</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: RBAC es un mecanismo de control de acceso neutral en cuanto a políticas, definido en torno a roles y privilegios.</li>
+<li><strong>Propósito</strong>: Simplificar la gestión de permisos asignando roles a los usuarios y asociando permisos con estos roles.</li>
+<li><strong>Beneficios</strong>:
+<ul>
+<li>Simplifica la gestión de permisos de usuario.</li>
+<li>Mejora la seguridad al garantizar que los usuarios solo tengan los permisos que necesitan.</li>
+<li>Escala bien con el crecimiento de la aplicación.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Configuración de un Proyecto Node.js</h1>
+<div class='content'><p>Antes de profundizar en RBAC, configuremos un proyecto básico de Node.js.</p>
+<ol>
+<li>
+<p><strong>Inicializar un nuevo proyecto Node.js</strong>:</p>
+<pre><code class="language-bash">mkdir rbac-example
+cd rbac-example
+npm init -y
+</code></pre>
+</li>
+<li>
+<p><strong>Instalar paquetes necesarios</strong>:</p>
+<pre><code class="language-bash">npm install express jsonwebtoken bcryptjs
+</code></pre>
+</li>
+<li>
+<p><strong>Crear la estructura del proyecto</strong>:</p>
+<pre><code class="language-bash">mkdir src
+touch src/app.js src/routes.js src/controllers.js src/middleware.js
+</code></pre>
+</li>
+</ol>
+</div><h1>Conceptos Básicos de RBAC</h1>
+<div class='content'></div><h2>Roles y Permisos</h2>
+<div class='content'><ul>
+<li><strong>Roles</strong>: Un rol es una colección de permisos. Ejemplos incluyen <code>admin</code>, <code>editor</code> y <code>viewer</code>.</li>
+<li><strong>Permisos</strong>: Los permisos son derechos de acceso específicos a recursos, como <code>read</code>, <code>write</code> y <code>delete</code>.</li>
+</ul>
+</div><h2>Ejemplo de Mapeo de Roles y Permisos</h2>
+<div class='content'><p>| Rol    | Permisos            |
+|--------|----------------------|
+| Admin  | read, write, delete  |
+| Editor | read, write          |
+| Viewer | read                 |</p>
+</div><h1>Implementación de RBAC en Node.js</h1>
+<div class='content'></div><h2>Paso 1: Definir Roles y Permisos</h2>
+<div class='content'><p>Cree un archivo <code>src/roles.js</code> para definir roles y sus permisos asociados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgcm9sZXMgPSB7CiAgICBhZG1pbjogWydyZWFkJywgJ3dyaXRlJywgJ2RlbGV0ZSddLAogICAgZWRpdG9yOiBbJ3JlYWQnLCAnd3JpdGUnXSwKICAgIHZpZXdlcjogWydyZWFkJ10KfTsKCm1vZHVsZS5leHBvcnRzID0gcm9sZXM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const roles = {
+    admin: ['read', 'write', 'delete'],
+    editor: ['read', 'write'],
+    viewer: ['read']
+};
+
+module.exports = roles;</pre></div><div class='content'></div><h2>Paso 2: Middleware para Verificación de Roles</h2>
+<div class='content'><p>Cree un middleware para verificar si un usuario tiene el rol requerido para acceder a un recurso.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL21pZGRsZXdhcmUuanMKY29uc3Qgcm9sZXMgPSByZXF1aXJlKCcuL3JvbGVzJyk7CgpmdW5jdGlvbiBhdXRob3JpemUocmVxdWlyZWRSb2xlKSB7CiAgICByZXR1cm4gKHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgICAgICAgY29uc3QgdXNlclJvbGUgPSByZXEudXNlci5yb2xlOyAvLyBTdXBvbmllbmRvIHF1ZSByZXEudXNlciBlcyBwb2JsYWRvIHBvciBlbCBtaWRkbGV3YXJlIGRlIGF1dGVudGljYWNpw7NuCiAgICAgICAgaWYgKHJvbGVzW3VzZXJSb2xlXSAmJiByb2xlc1t1c2VyUm9sZV0uaW5jbHVkZXMocmVxdWlyZWRSb2xlKSkgewogICAgICAgICAgICBuZXh0KCk7CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgcmVzLnN0YXR1cyg0MDMpLmpzb24oeyBtZXNzYWdlOiAnRm9yYmlkZGVuJyB9KTsKICAgICAgICB9CiAgICB9Owp9Cgptb2R1bGUuZXhwb3J0cyA9IHsgYXV0aG9yaXplIH07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/middleware.js
+const roles = require('./roles');
+
+function authorize(requiredRole) {
+    return (req, res, next) =&gt; {
+        const userRole = req.user.role; // Suponiendo que req.user es poblado por el middleware de autenticaci&oacute;n
+        if (roles[userRole] &amp;&amp; roles[userRole].includes(requiredRole)) {
+            next();
+        } else {
+            res.status(403).json({ message: 'Forbidden' });
+        }
+    };
+}
+
+module.exports = { authorize };</pre></div><div class='content'></div><h2>Paso 3: Aplicar Middleware a Rutas</h2>
+<div class='content'><p>Use el middleware en sus rutas para proteger los puntos finales basados en roles.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL3JvdXRlcy5qcwpjb25zdCBleHByZXNzID0gcmVxdWlyZSgnZXhwcmVzcycpOwpjb25zdCB7IGF1dGhvcml6ZSB9ID0gcmVxdWlyZSgnLi9taWRkbGV3YXJlJyk7CmNvbnN0IHJvdXRlciA9IGV4cHJlc3MuUm91dGVyKCk7Cgpyb3V0ZXIuZ2V0KCcvYWRtaW4nLCBhdXRob3JpemUoJ2FkbWluJyksIChyZXEsIHJlcykgPT4gewogICAgcmVzLnNlbmQoJ0FkbWluIGNvbnRlbnQnKTsKfSk7Cgpyb3V0ZXIuZ2V0KCcvZWRpdG9yJywgYXV0aG9yaXplKCdlZGl0b3InKSwgKHJlcSwgcmVzKSA9PiB7CiAgICByZXMuc2VuZCgnRWRpdG9yIGNvbnRlbnQnKTsKfSk7Cgpyb3V0ZXIuZ2V0KCcvdmlld2VyJywgYXV0aG9yaXplKCd2aWV3ZXInKSwgKHJlcSwgcmVzKSA9PiB7CiAgICByZXMuc2VuZCgnVmlld2VyIGNvbnRlbnQnKTsKfSk7Cgptb2R1bGUuZXhwb3J0cyA9IHJvdXRlcjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/routes.js
+const express = require('express');
+const { authorize } = require('./middleware');
+const router = express.Router();
+
+router.get('/admin', authorize('admin'), (req, res) =&gt; {
+    res.send('Admin content');
+});
+
+router.get('/editor', authorize('editor'), (req, res) =&gt; {
+    res.send('Editor content');
+});
+
+router.get('/viewer', authorize('viewer'), (req, res) =&gt; {
+    res.send('Viewer content');
+});
+
+module.exports = router;</pre></div><div class='content'></div><h2>Paso 4: Integrar Rutas en la Aplicación</h2>
+<div class='content'><p>Integre las rutas en su archivo principal de la aplicación.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC5qcwpjb25zdCBleHByZXNzID0gcmVxdWlyZSgnZXhwcmVzcycpOwpjb25zdCBhcHAgPSBleHByZXNzKCk7CmNvbnN0IHJvdXRlcyA9IHJlcXVpcmUoJy4vcm91dGVzJyk7CgovLyBNaWRkbGV3YXJlIHBhcmEgc2ltdWxhciBsYSBhdXRlbnRpY2FjacOzbiBkZSB1c3VhcmlvCmFwcC51c2UoKHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgICByZXEudXNlciA9IHsgcm9sZTogJ2FkbWluJyB9OyAvLyBTaW11bGFyIHVuIHVzdWFyaW8gYXV0ZW50aWNhZG8gY29uIHJvbCAnYWRtaW4nCiAgICBuZXh0KCk7Cn0pOwoKYXBwLnVzZSgnL2FwaScsIHJvdXRlcyk7Cgpjb25zdCBQT1JUID0gcHJvY2Vzcy5lbnYuUE9SVCB8fCAzMDAwOwphcHAubGlzdGVuKFBPUlQsICgpID0+IHsKICAgIGNvbnNvbGUubG9nKGBTZXJ2ZXIgaXMgcnVubmluZyBvbiBwb3J0ICR7UE9SVH1gKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app.js
+const express = require('express');
+const app = express();
+const routes = require('./routes');
+
+// Middleware para simular la autenticaci&oacute;n de usuario
+app.use((req, res, next) =&gt; {
+    req.user = { role: 'admin' }; // Simular un usuario autenticado con rol 'admin'
+    next();
+});
+
+app.use('/api', routes);
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =&gt; {
+    console.log(`Server is running on port ${PORT}`);
+});</pre></div><div class='content'></div><h1>Técnicas Avanzadas de RBAC</h1>
+<div class='content'></div><h2>Asignación Dinámica de Roles</h2>
+<div class='content'><p>Los roles pueden asignarse dinámicamente basándose en datos de usuario de una base de datos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL21pZGRsZXdhcmUuanMKY29uc3Qgcm9sZXMgPSByZXF1aXJlKCcuL3JvbGVzJyk7CmNvbnN0IFVzZXIgPSByZXF1aXJlKCcuL21vZGVscy9Vc2VyJyk7IC8vIFN1cG9uaWVuZG8gcXVlIHRpZW5lIHVuIG1vZGVsbyBkZSBVc3VhcmlvCgphc3luYyBmdW5jdGlvbiBhdXRob3JpemUocmVxdWlyZWRSb2xlKSB7CiAgICByZXR1cm4gYXN5bmMgKHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgICAgICAgY29uc3QgdXNlciA9IGF3YWl0IFVzZXIuZmluZEJ5SWQocmVxLnVzZXIuaWQpOyAvLyBPYnRlbmVyIHVzdWFyaW8gZGUgbGEgYmFzZSBkZSBkYXRvcwogICAgICAgIGNvbnN0IHVzZXJSb2xlID0gdXNlci5yb2xlOwogICAgICAgIGlmIChyb2xlc1t1c2VyUm9sZV0gJiYgcm9sZXNbdXNlclJvbGVdLmluY2x1ZGVzKHJlcXVpcmVkUm9sZSkpIHsKICAgICAgICAgICAgbmV4dCgpOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgIHJlcy5zdGF0dXMoNDAzKS5qc29uKHsgbWVzc2FnZTogJ0ZvcmJpZGRlbicgfSk7CiAgICAgICAgfQogICAgfTsKfQoKbW9kdWxlLmV4cG9ydHMgPSB7IGF1dGhvcml6ZSB9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/middleware.js
+const roles = require('./roles');
+const User = require('./models/User'); // Suponiendo que tiene un modelo de Usuario
+
+async function authorize(requiredRole) {
+    return async (req, res, next) =&gt; {
+        const user = await User.findById(req.user.id); // Obtener usuario de la base de datos
+        const userRole = user.role;
+        if (roles[userRole] &amp;&amp; roles[userRole].includes(requiredRole)) {
+            next();
+        } else {
+            res.status(403).json({ message: 'Forbidden' });
+        }
+    };
+}
+
+module.exports = { authorize };</pre></div><div class='content'></div><h2>Jerarquías de Roles</h2>
+<div class='content'><p>Implemente jerarquías de roles donde los roles superiores heredan permisos de roles inferiores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgcm9sZXMgPSB7CiAgICBhZG1pbjogWydyZWFkJywgJ3dyaXRlJywgJ2RlbGV0ZSddLAogICAgZWRpdG9yOiBbJ3JlYWQnLCAnd3JpdGUnXSwKICAgIHZpZXdlcjogWydyZWFkJ10KfTsKCmZ1bmN0aW9uIGdldFBlcm1pc3Npb25zKHJvbGUpIHsKICAgIGNvbnN0IHJvbGVIaWVyYXJjaHkgPSB7CiAgICAgICAgYWRtaW46IFsnZWRpdG9yJywgJ3ZpZXdlciddLAogICAgICAgIGVkaXRvcjogWyd2aWV3ZXInXSwKICAgICAgICB2aWV3ZXI6IFtdCiAgICB9OwoKICAgIGxldCBwZXJtaXNzaW9ucyA9IG5ldyBTZXQocm9sZXNbcm9sZV0pOwogICAgKHJvbGVIaWVyYXJjaHlbcm9sZV0gfHwgW10pLmZvckVhY2goc3ViUm9sZSA9PiB7CiAgICAgICAgcm9sZXNbc3ViUm9sZV0uZm9yRWFjaChwZXJtaXNzaW9uID0+IHBlcm1pc3Npb25zLmFkZChwZXJtaXNzaW9uKSk7CiAgICB9KTsKCiAgICByZXR1cm4gQXJyYXkuZnJvbShwZXJtaXNzaW9ucyk7Cn0KCm1vZHVsZS5leHBvcnRzID0geyBnZXRQZXJtaXNzaW9ucyB9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const roles = {
+    admin: ['read', 'write', 'delete'],
+    editor: ['read', 'write'],
+    viewer: ['read']
+};
+
+function getPermissions(role) {
+    const roleHierarchy = {
+        admin: ['editor', 'viewer'],
+        editor: ['viewer'],
+        viewer: []
+    };
+
+    let permissions = new Set(roles[role]);
+    (roleHierarchy[role] || []).forEach(subRole =&gt; {
+        roles[subRole].forEach(permission =&gt; permissions.add(permission));
+    });
+
+    return Array.from(permissions);
+}
+
+module.exports = { getPermissions };</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El Control de Acceso Basado en Roles es un método poderoso para gestionar los permisos de usuario en una aplicación Node.js. Al definir roles y permisos, crear middleware para la autorización y aplicar estos conceptos a sus rutas, puede construir un sistema de control de acceso seguro y escalable. Las técnicas avanzadas como la asignación dinámica de roles y las jerarquías de roles mejoran aún más la flexibilidad y robustez de su implementación de RBAC.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

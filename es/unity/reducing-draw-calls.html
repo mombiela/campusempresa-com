@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/unity/reducing-draw-calls" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>Reducir los draw calls es una técnica de optimización crucial en Unity para mejorar el rendimiento de tu juego. Este tema te guiará desde los conceptos básicos hasta estrategias avanzadas para minimizar los draw calls.</p>
+</div><h1>¿Qué son los Draw Calls?</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Un draw call es un comando enviado a la GPU para dibujar un conjunto de vértices. Cada draw call implica una sobrecarga en la CPU.</li>
+<li><strong>Impacto en el Rendimiento</strong>: Un alto número de draw calls puede reducir significativamente la tasa de fotogramas de tu juego, especialmente en dispositivos móviles.</li>
+</ul>
+</div><h1>Estrategias Básicas para Reducir Draw Calls</h1>
+<div class='content'></div><h2>Combinación de Mallas</h2>
+<div class='content'><ul>
+<li><strong>Static Batching</strong>: Combina objetos estáticos (no móviles) en una sola malla en el momento de la compilación.
+<pre><code class="language-csharp">// Ejemplo: Marcar un GameObject como estático para batching
+gameObject.isStatic = true;
+</code></pre>
+</li>
+<li><strong>Dynamic Batching</strong>: Combina pequeños objetos dinámicos (móviles) en una sola malla en tiempo de ejecución.
+<pre><code class="language-csharp">// Asegúrate de que los objetos sean lo suficientemente pequeños para ser batched dinámicamente
+// Unity maneja esto automáticamente si se cumplen las condiciones
+</code></pre>
+</li>
+</ul>
+</div><h2>Uso de Materiales Eficientes</h2>
+<div class='content'><ul>
+<li><strong>Material Instancing</strong>: Usa el mismo material para múltiples objetos para reducir los draw calls.
+<pre><code class="language-csharp">// Ejemplo: Asignar el mismo material a múltiples objetos
+Renderer renderer1 = object1.GetComponent&lt;Renderer&gt;();
+Renderer renderer2 = object2.GetComponent&lt;Renderer&gt;();
+renderer2.material = renderer1.material;
+</code></pre>
+</li>
+<li><strong>Texture Atlases</strong>: Combina múltiples texturas en una sola textura para reducir los cambios de material.
+<pre><code class="language-csharp">// Ejemplo: Usar un atlas de texturas
+// Crea un atlas de texturas en un software de edición de imágenes y aplícalo a tus materiales
+</code></pre>
+</li>
+</ul>
+</div><h1>Estrategias Intermedias para Reducir Draw Calls</h1>
+<div class='content'></div><h2>Nivel de Detalle (LOD)</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Usa diferentes modelos con distintos niveles de detalle según la distancia de la cámara.
+<pre><code class="language-csharp">// Ejemplo: Configuración de LOD en Unity
+LODGroup lodGroup = gameObject.AddComponent&lt;LODGroup&gt;();
+LOD[] lods = new LOD[3];
+lods[0] = new LOD(0.6f, new Renderer[] { highDetailRenderer });
+lods[1] = new LOD(0.3f, new Renderer[] { mediumDetailRenderer });
+lods[2] = new LOD(0.1f, new Renderer[] { lowDetailRenderer });
+lodGroup.SetLODs(lods);
+lodGroup.RecalculateBounds();
+</code></pre>
+</li>
+</ul>
+</div><h2>Occlusion Culling</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Evita renderizar objetos que no son visibles para la cámara.
+<pre><code class="language-csharp">// Ejemplo: Configuración de occlusion culling en Unity
+// Habilita occlusion culling en la configuración del componente Camera
+Camera.main.useOcclusionCulling = true;
+</code></pre>
+</li>
+</ul>
+</div><h1>Estrategias Avanzadas para Reducir Draw Calls</h1>
+<div class='content'></div><h2>GPU Instancing</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Dibuja muchas instancias de la misma malla con un solo draw call.
+<pre><code class="language-csharp">// Ejemplo: Habilitar GPU instancing en un material
+material.enableInstancing = true;
+</code></pre>
+</li>
+<li><strong>Shaders Personalizados</strong>: Escribe shaders que soporten instancing.
+<pre><code class="language-glsl">// Ejemplo: Shader básico de instancing
+Shader &quot;Custom/InstancingShader&quot; {
+    Properties {
+        _Color (&quot;Color&quot;, Color) = (1,1,1,1)
+    }
+    SubShader {
+        Pass {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            #include &quot;UnityCG.cginc&quot;
+
+            struct appdata {
+                float4 vertex : POSITION;
+                UNITY_INSTANCE_ID
+            };
+
+            struct v2f {
+                float4 pos : SV_POSITION;
+            };
+
+            UNITY_INSTANCING_BUFFER_START(Props)
+                UNITY_INSTANCING_BUFFER_END(Props)
+
+            v2f vert (appdata v) {
+                v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                o.pos = UnityObjectToClipPos(v.vertex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_Target {
+                return fixed4(1,1,1,1);
+            }
+            ENDCG
+        }
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>Command Buffers</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Te permite controlar el pipeline de renderizado de manera más directa.
+<pre><code class="language-csharp">// Ejemplo: Uso de command buffers
+CommandBuffer commandBuffer = new CommandBuffer();
+commandBuffer.DrawRenderer(renderer, material);
+Camera.main.AddCommandBuffer(CameraEvent.AfterForwardOpaque, commandBuffer);
+</code></pre>
+</li>
+</ul>
+</div><h1>Resumen</h1>
+<div class='content'><p>Reducir los draw calls es esencial para optimizar el rendimiento de tu juego en Unity. Al combinar mallas, usar materiales eficientes, implementar LOD y aprovechar técnicas avanzadas como GPU instancing y command buffers, puedes reducir significativamente el número de draw calls y mejorar la tasa de fotogramas de tu juego. Siempre perfila tu juego para identificar cuellos de botella y aplica estas estrategias donde tendrán el mayor impacto.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

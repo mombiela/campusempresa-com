@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/case-study-2" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este estudio de caso, exploraremos cómo escalar aplicaciones utilizando Kubernetes. El escalado es un aspecto crítico de la gestión de aplicaciones en producción, asegurando que tu aplicación pueda manejar cargas variables de manera eficiente. Cubriremos tanto el escalado horizontal como el vertical, y proporcionaremos ejemplos prácticos para ayudarte a entender los conceptos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Escalado Horizontal</strong>: Añadir más instancias de tu aplicación para manejar una carga aumentada.</li>
+<li><strong>Escalado Vertical</strong>: Aumentar los recursos (CPU, memoria) de las instancias existentes para manejar una carga aumentada.</li>
+<li><strong>Autoscaler Horizontal de Pods de Kubernetes (HPA)</strong>: Escala automáticamente el número de pods en un despliegue basado en la utilización observada de la CPU u otras métricas seleccionadas.</li>
+<li><strong>Solicitudes y Límites de Recursos</strong>: Definen los recursos mínimos y máximos que un contenedor puede usar.</li>
+</ul>
+</div><h1>Escalado Horizontal</h1>
+<div class='content'></div><h2>Entendiendo el Escalado Horizontal</h2>
+<div class='content'><p>El escalado horizontal implica añadir más instancias (pods) de tu aplicación para distribuir la carga. Esto a menudo es más rentable y proporciona mejor tolerancia a fallos en comparación con el escalado vertical.</p>
+</div><h2>Ejemplo: Configuración del Autoscaler Horizontal de Pods (HPA)</h2>
+<div class='content'><p>Vamos a crear un despliegue y configurar HPA para escalarlo basado en el uso de la CPU.</p>
+<ol>
+<li>
+<p><strong>Crear un Despliegue</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app-image
+        resources:
+          requests:
+            cpu: &quot;100m&quot;
+          limits:
+            cpu: &quot;500m&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Aplicar el Despliegue</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f deployment.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un HPA</strong>:</p>
+<pre><code class="language-yaml">apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-app-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: my-app
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+</code></pre>
+</li>
+<li>
+<p><strong>Aplicar el HPA</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f hpa.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Despliegue</strong>: Define una sola réplica de <code>my-app</code> con solicitudes y límites de CPU.</li>
+<li><strong>HPA</strong>: Monitorea la utilización de la CPU del despliegue <code>my-app</code> y escala el número de pods entre 1 y 10 para mantener una utilización promedio de CPU del 50%.</li>
+</ul>
+</div><h1>Escalado Vertical</h1>
+<div class='content'></div><h2>Entendiendo el Escalado Vertical</h2>
+<div class='content'><p>El escalado vertical implica aumentar los límites de recursos de los pods existentes. Esto puede ser útil cuando tu aplicación necesita más recursos para manejar una carga aumentada.</p>
+</div><h2>Ejemplo: Ajuste de Límites de Recursos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Actualizar el Despliegue</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app-image
+        resources:
+          requests:
+            cpu: &quot;200m&quot;
+            memory: &quot;256Mi&quot;
+          limits:
+            cpu: &quot;1&quot;
+            memory: &quot;512Mi&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Aplicar el Despliegue Actualizado</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f deployment.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Solicitudes de Recursos</strong>: Los recursos mínimos garantizados para el contenedor.</li>
+<li><strong>Límites de Recursos</strong>: Los recursos máximos que el contenedor puede usar.</li>
+</ul>
+</div><h1>Comparación del Escalado Horizontal y Vertical</h1>
+<div class='content'><p>| Aspecto               | Escalado Horizontal                      | Escalado Vertical                         |
+|-----------------------|------------------------------------------|-------------------------------------------|
+| Enfoque               | Añadir más instancias (pods)             | Aumentar recursos de instancias existentes|
+| Costo                 | Generalmente más rentable                | Puede ser costoso                         |
+| Tolerancia a Fallos   | Mayor                                     | Menor                                     |
+| Complejidad           | Requiere balanceo de carga               | Más simple                                |
+| Caso de Uso           | Manejar tráfico aumentado                | Manejar tareas intensivas en recursos     |</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Escalar aplicaciones en Kubernetes es esencial para mantener el rendimiento y la fiabilidad bajo cargas variables. El escalado horizontal, logrado a través de herramientas como el Autoscaler Horizontal de Pods, es generalmente más rentable y proporciona mejor tolerancia a fallos. El escalado vertical, por otro lado, es útil para aplicaciones intensivas en recursos pero puede ser más costoso. Entender cuándo y cómo usar estas estrategias de escalado te ayudará a gestionar tus aplicaciones de manera más efectiva en un entorno de Kubernetes.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

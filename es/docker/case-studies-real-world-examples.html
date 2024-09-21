@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/docker/case-studies-real-world-examples" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En esta sección, exploraremos varios estudios de caso y ejemplos del mundo real para entender cómo se usa Docker en diferentes escenarios. Estos ejemplos te ayudarán a comprender las aplicaciones prácticas de Docker, desde casos de uso simples hasta implementaciones más complejas y avanzadas.</p>
+</div><h1>Estudio de Caso 1: Simplificación de Entornos de Desarrollo</h1>
+<div class='content'></div><h2>Problema</h2>
+<div class='content'><p>Un equipo de desarrollo de software enfrenta problemas con entornos de desarrollo inconsistentes. Diferentes desarrolladores tienen diferentes versiones de dependencias, lo que lleva a problemas de &quot;funciona en mi máquina&quot;.</p>
+</div><h2>Solución</h2>
+<div class='content'><ul>
+<li><strong>Contenedores Docker</strong>: Usar Docker para crear un entorno de desarrollo consistente.</li>
+<li><strong>Docker Compose</strong>: Usar Docker Compose para gestionar aplicaciones de múltiples contenedores.</li>
+</ul>
+</div><h2>Implementación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un Dockerfile</strong>:</p>
+<pre><code class="language-dockerfile"># Usar una imagen oficial de Python como imagen base
+FROM python:3.8-slim
+
+# Establecer el directorio de trabajo en el contenedor
+WORKDIR /app
+
+# Copiar el contenido del directorio actual al contenedor en /app
+COPY . /app
+
+# Instalar los paquetes necesarios especificados en requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Hacer el puerto 80 disponible para el mundo fuera de este contenedor
+EXPOSE 80
+
+# Definir una variable de entorno
+ENV NAME World
+
+# Ejecutar app.py cuando se inicie el contenedor
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un archivo <code>docker-compose.yml</code></strong>:</p>
+<pre><code class="language-yaml">version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - &quot;5000:80&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Ejecutar la aplicación</strong>:</p>
+<pre><code class="language-sh">docker-compose up
+</code></pre>
+</li>
+</ol>
+</div><h2>Beneficios</h2>
+<div class='content'><ul>
+<li>Entorno de desarrollo consistente para todos los miembros del equipo.</li>
+<li>Fácil de configurar y desmantelar el entorno de desarrollo.</li>
+<li>Simplifica la gestión de dependencias.</li>
+</ul>
+</div><h1>Estudio de Caso 2: Arquitectura de Microservicios</h1>
+<div class='content'></div><h2>Problema</h2>
+<div class='content'><p>Una empresa quiere descomponer su aplicación monolítica en microservicios para mejorar la escalabilidad y el mantenimiento.</p>
+</div><h2>Solución</h2>
+<div class='content'><ul>
+<li><strong>Contenedores Docker</strong>: Usar Docker para contenerizar cada microservicio.</li>
+<li><strong>Docker Compose</strong>: Usar Docker Compose para gestionar la aplicación de múltiples contenedores.</li>
+</ul>
+</div><h2>Implementación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear Dockerfiles para cada microservicio</strong>:</p>
+<ul>
+<li><strong>Servicio de Usuario</strong>:
+<pre><code class="language-dockerfile">FROM node:14
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 8080
+CMD [&quot;node&quot;, &quot;user-service.js&quot;]
+</code></pre>
+</li>
+<li><strong>Servicio de Pedidos</strong>:
+<pre><code class="language-dockerfile">FROM node:14
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . .
+EXPOSE 8081
+CMD [&quot;node&quot;, &quot;order-service.js&quot;]
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear un archivo <code>docker-compose.yml</code></strong>:</p>
+<pre><code class="language-yaml">version: '3'
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - &quot;8080:8080&quot;
+  order-service:
+    build: ./order-service
+    ports:
+      - &quot;8081:8081&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Ejecutar la aplicación</strong>:</p>
+<pre><code class="language-sh">docker-compose up
+</code></pre>
+</li>
+</ol>
+</div><h2>Beneficios</h2>
+<div class='content'><ul>
+<li>Mejora la escalabilidad y el mantenimiento.</li>
+<li>Cada microservicio puede desarrollarse, desplegarse y escalarse de manera independiente.</li>
+<li>Más fácil de gestionar las dependencias de cada microservicio.</li>
+</ul>
+</div><h1>Estudio de Caso 3: Integración y Despliegue Continuos (CI/CD)</h1>
+<div class='content'></div><h2>Problema</h2>
+<div class='content'><p>Una empresa quiere automatizar el proceso de despliegue para asegurar que los últimos cambios de código siempre se desplieguen en producción.</p>
+</div><h2>Solución</h2>
+<div class='content'><ul>
+<li><strong>Contenedores Docker</strong>: Usar Docker para crear entornos consistentes para pruebas y despliegue.</li>
+<li><strong>Herramientas CI/CD</strong>: Integrar Docker con herramientas CI/CD como Jenkins, GitLab CI o GitHub Actions.</li>
+</ul>
+</div><h2>Implementación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un pipeline de Jenkins</strong>:</p>
+<pre><code class="language-groovy">pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    docker.build('my-app')
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    docker.image('my-app').inside {
+                        sh 'pytest'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    docker.image('my-app').push('my-repo/my-app:latest')
+                }
+            }
+        }
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un flujo de trabajo de GitHub Actions</strong>:</p>
+<pre><code class="language-yaml">name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t my-app .
+
+      - name: Run tests
+        run: docker run my-app pytest
+
+      - name: Push Docker image
+        run: |
+          echo &quot;${{ secrets.DOCKER_PASSWORD }}&quot; | docker login -u &quot;${{ secrets.DOCKER_USERNAME }}&quot; --password-stdin
+          docker tag my-app my-repo/my-app:latest
+          docker push my-repo/my-app:latest
+</code></pre>
+</li>
+</ol>
+</div><h2>Beneficios</h2>
+<div class='content'><ul>
+<li>Proceso de despliegue automatizado y consistente.</li>
+<li>Ciclo de retroalimentación más rápido con pruebas automatizadas.</li>
+<li>Reducción de errores humanos en el proceso de despliegue.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Al examinar estos estudios de caso, hemos visto cómo Docker puede aplicarse para resolver problemas del mundo real en el desarrollo de software, la arquitectura de microservicios y los pipelines de CI/CD. Docker proporciona una forma consistente y eficiente de gestionar entornos, dependencias y despliegues, convirtiéndolo en una herramienta invaluable para las prácticas modernas de desarrollo de software.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

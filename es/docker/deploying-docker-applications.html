@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/docker/deploying-docker-applications" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>Desplegar aplicaciones Docker implica empaquetar tu aplicación y sus dependencias en un contenedor Docker y luego ejecutar ese contenedor en una máquina host. Esta sección te guiará a través del proceso desde niveles principiantes hasta avanzados.</p>
+</div><h1>Introducción al Despliegue con Docker</h1>
+<div class='content'><ul>
+<li>
+<p><strong>¿Qué es el Despliegue con Docker?</strong></p>
+<ul>
+<li>El proceso de ejecutar tu aplicación en un contenedor Docker.</li>
+<li>Asegura consistencia a través de diferentes entornos (desarrollo, pruebas, producción).</li>
+</ul>
+</li>
+<li>
+<p><strong>¿Por qué Desplegar con Docker?</strong></p>
+<ul>
+<li>Simplifica la gestión de dependencias.</li>
+<li>Mejora la escalabilidad y portabilidad.</li>
+<li>Facilita la integración continua y el despliegue continuo (CI/CD).</li>
+</ul>
+</li>
+</ul>
+</div><h1>Configurando tu Entorno</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Requisitos Previos:</strong></p>
+<ul>
+<li>Docker instalado en tu máquina.</li>
+<li>Comprensión básica de los conceptos de Docker (imágenes, contenedores, Dockerfile).</li>
+</ul>
+</li>
+<li>
+<p><strong>Instalando Docker:</strong></p>
+<ul>
+<li>Sigue la guía oficial de instalación de Docker para tu sistema operativo: <a href="https://docs.docker.com/get-docker/">Instalación de Docker</a></li>
+</ul>
+</li>
+</ul>
+</div><h1>Creando un Dockerfile</h1>
+<div class='content'><p>Un Dockerfile es un script que contiene una serie de instrucciones sobre cómo construir una imagen Docker para tu aplicación.</p>
+<ul>
+<li>
+<p><strong>Estructura Básica de un Dockerfile:</strong></p>
+<pre><code class="language-dockerfile"># Usa una imagen oficial de Python como imagen base
+FROM python:3.8-slim
+
+# Establece el directorio de trabajo en el contenedor
+WORKDIR /app
+
+# Copia el contenido del directorio actual en el contenedor en /app
+COPY . /app
+
+# Instala cualquier paquete necesario especificado en requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Hace que el puerto 80 esté disponible para el mundo fuera de este contenedor
+EXPOSE 80
+
+# Define una variable de entorno
+ENV NAME World
+
+# Ejecuta app.py cuando el contenedor se inicie
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Explicación:</strong></p>
+<ul>
+<li><code>FROM</code>: Especifica la imagen base.</li>
+<li><code>WORKDIR</code>: Establece el directorio de trabajo dentro del contenedor.</li>
+<li><code>COPY</code>: Copia archivos del host al contenedor.</li>
+<li><code>RUN</code>: Ejecuta comandos en el contenedor.</li>
+<li><code>EXPOSE</code>: Expone un puerto.</li>
+<li><code>ENV</code>: Establece variables de entorno.</li>
+<li><code>CMD</code>: Especifica el comando a ejecutar dentro del contenedor.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Construyendo y Ejecutando tu Imagen Docker</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Construir la Imagen Docker:</strong></p>
+<pre><code class="language-sh">docker build -t my-python-app .
+</code></pre>
+<ul>
+<li><code>-t my-python-app</code>: Etiqueta la imagen con el nombre <code>my-python-app</code>.</li>
+<li><code>.</code>: Especifica el directorio actual como el contexto de construcción.</li>
+</ul>
+</li>
+<li>
+<p><strong>Ejecutar el Contenedor Docker:</strong></p>
+<pre><code class="language-sh">docker run -p 4000:80 my-python-app
+</code></pre>
+<ul>
+<li><code>-p 4000:80</code>: Mapea el puerto 4000 en el host al puerto 80 en el contenedor.</li>
+<li><code>my-python-app</code>: El nombre de la imagen a ejecutar.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Estrategias Avanzadas de Despliegue</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Docker Compose:</strong></p>
+<ul>
+<li>Herramienta para definir y ejecutar aplicaciones Docker de múltiples contenedores.</li>
+<li>Ejemplo de <code>docker-compose.yml</code>:
+<pre><code class="language-yaml">version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - &quot;4000:80&quot;
+    volumes:
+      - .:/code
+    environment:
+      FLASK_ENV: development
+  redis:
+    image: &quot;redis:alpine&quot;
+</code></pre>
+</li>
+<li>Comandos:
+<pre><code class="language-sh">docker-compose up
+docker-compose down
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Escalando Servicios:</strong></p>
+<ul>
+<li>Usa Docker Compose para escalar servicios.</li>
+<li>Ejemplo:
+<pre><code class="language-sh">docker-compose up --scale web=3
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Desplegando en Producción:</strong></p>
+<ul>
+<li>Usa herramientas de orquestación como Kubernetes o Docker Swarm.</li>
+<li>Asegura una configuración adecuada para seguridad, redes y almacenamiento.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Monitoreo y Registro</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Herramientas de Monitoreo:</strong></p>
+<ul>
+<li>Prometheus</li>
+<li>Grafana</li>
+<li>Docker Stats</li>
+</ul>
+</li>
+<li>
+<p><strong>Registro:</strong></p>
+<ul>
+<li>Usa controladores de registro de Docker (json-file, syslog, journald).</li>
+<li>Ejemplo:
+<pre><code class="language-sh">docker run --log-driver syslog my-python-app
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Desplegar aplicaciones Docker implica crear un Dockerfile, construir una imagen y ejecutar contenedores. Las estrategias avanzadas incluyen el uso de Docker Compose para aplicaciones de múltiples contenedores y la escalabilidad de servicios. El monitoreo y el registro son cruciales para mantener la salud y el rendimiento de tus aplicaciones. Al dominar estos conceptos, puedes asegurar que tus aplicaciones se desplieguen consistentemente a través de diferentes entornos, mejorando la fiabilidad y la escalabilidad.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

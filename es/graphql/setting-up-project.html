@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/graphql/setting-up-project" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>En esta sección, cubriremos cómo configurar un proyecto GraphQL desde cero. Esto incluye la instalación de herramientas necesarias, la inicialización del proyecto y la configuración de la estructura básica. Al final de esta sección, tendrás un servidor GraphQL funcional sobre el cual podrás construir en lecciones posteriores.</p>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener lo siguiente instalado en tu máquina:</p>
+<ul>
+<li>Node.js (versión 12.x o posterior)</li>
+<li>npm (Node Package Manager) o yarn</li>
+</ul>
+<p>Puedes verificar si Node.js y npm están instalados ejecutando los siguientes comandos en tu terminal:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bm9kZSAtdgpucG0gLXY="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>node -v
+npm -v</pre></div><div class='content'></div><h1>Inicializando el Proyecto</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Crea un nuevo directorio para tu proyecto:</strong></p>
+<pre><code class="language-bash">mkdir graphql-project
+cd graphql-project
+</code></pre>
+</li>
+<li>
+<p><strong>Inicializa un nuevo proyecto de Node.js:</strong></p>
+<pre><code class="language-bash">npm init -y
+</code></pre>
+<p>Este comando creará un archivo <code>package.json</code> con configuraciones predeterminadas.</p>
+</li>
+</ol>
+</div><h1>Instalando Dependencias</h1>
+<div class='content'><p>Necesitaremos varios paquetes para configurar nuestro servidor GraphQL. Los paquetes principales son <code>express</code> para nuestro servidor, <code>graphql</code> para la funcionalidad de GraphQL y <code>express-graphql</code> para integrar GraphQL con Express.</p>
+<ol>
+<li><strong>Instala los paquetes necesarios:</strong>
+<pre><code class="language-bash">npm install express graphql express-graphql
+</code></pre>
+</li>
+</ol>
+</div><h1>Configurando el Servidor</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Crea un nuevo archivo llamado <code>server.js</code> en el directorio raíz:</strong></p>
+<pre><code class="language-bash">touch server.js
+</code></pre>
+</li>
+<li>
+<p><strong>Abre <code>server.js</code> y agrega el siguiente código:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+
+// Construye un esquema, usando el lenguaje de esquemas de GraphQL
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// El root proporciona una función de resolución para cada endpoint de la API
+const root = {
+  hello: () =&gt; {
+    return '¡Hola mundo!';
+  },
+};
+
+const app = express();
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Ahora navega a localhost:4000/graphql'));
+</code></pre>
+</li>
+</ol>
+</div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Importando Módulos:</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+</code></pre>
+<p>Importamos los módulos necesarios para configurar nuestro servidor e integración con GraphQL.</p>
+</li>
+<li>
+<p><strong>Definiendo el Esquema:</strong></p>
+<pre><code class="language-javascript">const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+</code></pre>
+<p>Definimos un esquema simple con una única consulta <code>hello</code> que devuelve un <code>String</code>.</p>
+</li>
+<li>
+<p><strong>Creando el Resolver Root:</strong></p>
+<pre><code class="language-javascript">const root = {
+  hello: () =&gt; {
+    return '¡Hola mundo!';
+  },
+};
+</code></pre>
+<p>La función de resolución para la consulta <code>hello</code> devuelve la cadena &quot;¡Hola mundo!&quot;.</p>
+</li>
+<li>
+<p><strong>Configurando el Servidor Express:</strong></p>
+<pre><code class="language-javascript">const app = express();
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Ahora navega a localhost:4000/graphql'));
+</code></pre>
+<p>Configuramos un servidor Express y configuramos el endpoint <code>/graphql</code> para usar <code>express-graphql</code> con nuestro esquema y resolver root. También habilitamos la interfaz GraphiQL para probar nuestras consultas GraphQL.</p>
+</li>
+</ul>
+</div><h1>Ejecutando el Servidor</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Inicia el servidor ejecutando:</strong></p>
+<pre><code class="language-bash">node server.js
+</code></pre>
+</li>
+<li>
+<p><strong>Abre tu navegador y navega a:</strong></p>
+<pre><code>http://localhost:4000/graphql
+</code></pre>
+<p>Deberías ver la interfaz de GraphiQL donde puedes probar tus consultas GraphQL.</p>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos configurado exitosamente un servidor GraphQL básico usando Node.js, Express y el middleware <code>express-graphql</code>. Creamos un esquema y un resolver simples, y configuramos nuestro servidor para usar GraphiQL para pruebas. Esta configuración fundamental nos permitirá construir APIs GraphQL más complejas en las siguientes secciones.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

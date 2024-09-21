@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/tensorflow/custom-project" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En esta sección, te guiaremos a través de la creación de un proyecto personalizado utilizando TensorFlow. Este proyecto consolidará tu comprensión de los conceptos de TensorFlow y te dará experiencia práctica en la construcción y despliegue de un modelo de aprendizaje automático.</p>
+</div><h1>Descripción del Proyecto</h1>
+<div class='content'><ul>
+<li><strong>Objetivo</strong>: Construir una red neuronal para clasificar imágenes del conjunto de datos CIFAR-10.</li>
+<li><strong>Conjunto de datos</strong>: CIFAR-10, que consta de 60,000 imágenes en color de 32x32 en 10 clases.</li>
+<li><strong>Herramientas</strong>: TensorFlow, Keras y otras bibliotecas esenciales.</li>
+</ul>
+</div><h1>Guía Paso a Paso</h1>
+<div class='content'></div><h2>Paso 1: Configuración del Entorno</h2>
+<div class='content'><p>Antes de comenzar, asegúrate de tener instaladas TensorFlow y otras bibliotecas necesarias.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgdGVuc29yZmxvdyBudW1weSBtYXRwbG90bGli"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install tensorflow numpy matplotlib</pre></div><div class='content'></div><h2>Paso 2: Importación de Bibliotecas</h2>
+<div class='content'><p>Comienza importando las bibliotecas requeridas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzIGltcG9ydCBkYXRhc2V0cywgbGF5ZXJzLCBtb2RlbHMKaW1wb3J0IG1hdHBsb3RsaWIucHlwbG90IGFzIHBsdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras import datasets, layers, models
+import matplotlib.pyplot as plt</pre></div><div class='content'></div><h2>Paso 3: Carga y Preprocesamiento de Datos</h2>
+<div class='content'><p>Carga el conjunto de datos CIFAR-10 y prepáralo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgY29uanVudG8gZGUgZGF0b3MKKHRyYWluX2ltYWdlcywgdHJhaW5fbGFiZWxzKSwgKHRlc3RfaW1hZ2VzLCB0ZXN0X2xhYmVscykgPSBkYXRhc2V0cy5jaWZhcjEwLmxvYWRfZGF0YSgpCgojIE5vcm1hbGl6YXIgdmFsb3JlcyBkZSBww614ZWxlcyBwYXJhIHF1ZSBlc3TDqW4gZW50cmUgMCB5IDEKdHJhaW5faW1hZ2VzLCB0ZXN0X2ltYWdlcyA9IHRyYWluX2ltYWdlcyAvIDI1NS4wLCB0ZXN0X2ltYWdlcyAvIDI1NS4w"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar conjunto de datos
+(train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
+
+# Normalizar valores de p&iacute;xeles para que est&eacute;n entre 0 y 1
+train_images, test_images = train_images / 255.0, test_images / 255.0</pre></div><div class='content'></div><h2>Paso 4: Visualización de Datos</h2>
+<div class='content'><p>Visualiza algunas imágenes del conjunto de datos para entender con qué estás trabajando.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3NfbmFtZXMgPSBbJ2FpcnBsYW5lJywgJ2F1dG9tb2JpbGUnLCAnYmlyZCcsICdjYXQnLCAnZGVlcicsICdkb2cnLCAnZnJvZycsICdob3JzZScsICdzaGlwJywgJ3RydWNrJ10KCnBsdC5maWd1cmUoZmlnc2l6ZT0oMTAsMTApKQpmb3IgaSBpbiByYW5nZSgyNSk6CiAgICBwbHQuc3VicGxvdCg1LDUsaSsxKQogICAgcGx0Lnh0aWNrcyhbXSkKICAgIHBsdC55dGlja3MoW10pCiAgICBwbHQuZ3JpZChGYWxzZSkKICAgIHBsdC5pbXNob3codHJhaW5faW1hZ2VzW2ldKQogICAgcGx0LnhsYWJlbChjbGFzc19uYW1lc1t0cmFpbl9sYWJlbHNbaV1bMF1dKQpwbHQuc2hvdygp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
+
+plt.figure(figsize=(10,10))
+for i in range(25):
+    plt.subplot(5,5,i+1)
+    plt.xticks([])
+    plt.yticks([])
+    plt.grid(False)
+    plt.imshow(train_images[i])
+    plt.xlabel(class_names[train_labels[i][0]])
+plt.show()</pre></div><div class='content'></div><h2>Paso 5: Construcción del Modelo</h2>
+<div class='content'><p>Crea un modelo de Red Neuronal Convolucional (CNN).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwgPSBtb2RlbHMuU2VxdWVudGlhbCgpCm1vZGVsLmFkZChsYXllcnMuQ29udjJEKDMyLCAoMywgMyksIGFjdGl2YXRpb249J3JlbHUnLCBpbnB1dF9zaGFwZT0oMzIsIDMyLCAzKSkpCm1vZGVsLmFkZChsYXllcnMuTWF4UG9vbGluZzJEKCgyLCAyKSkpCm1vZGVsLmFkZChsYXllcnMuQ29udjJEKDY0LCAoMywgMyksIGFjdGl2YXRpb249J3JlbHUnKSkKbW9kZWwuYWRkKGxheWVycy5NYXhQb29saW5nMkQoKDIsIDIpKSkKbW9kZWwuYWRkKGxheWVycy5Db252MkQoNjQsICgzLCAzKSwgYWN0aXZhdGlvbj0ncmVsdScpKQoKbW9kZWwuYWRkKGxheWVycy5GbGF0dGVuKCkpCm1vZGVsLmFkZChsYXllcnMuRGVuc2UoNjQsIGFjdGl2YXRpb249J3JlbHUnKSkKbW9kZWwuYWRkKGxheWVycy5EZW5zZSgxMCkp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model = models.Sequential()
+model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+model.add(layers.MaxPooling2D((2, 2)))
+model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+
+model.add(layers.Flatten())
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dense(10))</pre></div><div class='content'></div><h2>Paso 6: Compilación del Modelo</h2>
+<div class='content'><p>Compila el modelo con la función de pérdida, el optimizador y las métricas apropiadas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuY29tcGlsZShvcHRpbWl6ZXI9J2FkYW0nLAogICAgICAgICAgICAgIGxvc3M9dGYua2VyYXMubG9zc2VzLlNwYXJzZUNhdGVnb3JpY2FsQ3Jvc3NlbnRyb3B5KGZyb21fbG9naXRzPVRydWUpLAogICAgICAgICAgICAgIG1ldHJpY3M9WydhY2N1cmFjeSddKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.compile(optimizer='adam',
+              loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+              metrics=['accuracy'])</pre></div><div class='content'></div><h2>Paso 7: Entrenamiento del Modelo</h2>
+<div class='content'><p>Entrena el modelo utilizando los datos de entrenamiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGlzdG9yeSA9IG1vZGVsLmZpdCh0cmFpbl9pbWFnZXMsIHRyYWluX2xhYmVscywgZXBvY2hzPTEwLCAKICAgICAgICAgICAgICAgICAgICB2YWxpZGF0aW9uX2RhdGE9KHRlc3RfaW1hZ2VzLCB0ZXN0X2xhYmVscykp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>history = model.fit(train_images, train_labels, epochs=10, 
+                    validation_data=(test_images, test_labels))</pre></div><div class='content'></div><h2>Paso 8: Evaluación del Modelo</h2>
+<div class='content'><p>Evalúa el rendimiento del modelo en el conjunto de datos de prueba.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVzdF9sb3NzLCB0ZXN0X2FjYyA9IG1vZGVsLmV2YWx1YXRlKHRlc3RfaW1hZ2VzLCB0ZXN0X2xhYmVscywgdmVyYm9zZT0yKQpwcmludChmJ1xuVGVzdCBhY2N1cmFjeToge3Rlc3RfYWNjfScp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
+print(f'\nTest accuracy: {test_acc}')</pre></div><div class='content'></div><h2>Paso 9: Realización de Predicciones</h2>
+<div class='content'><p>Utiliza el modelo entrenado para hacer predicciones sobre nuevos datos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvYmFiaWxpdHlfbW9kZWwgPSB0Zi5rZXJhcy5TZXF1ZW50aWFsKFttb2RlbCwgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgdGYua2VyYXMubGF5ZXJzLlNvZnRtYXgoKV0pCgpwcmVkaWN0aW9ucyA9IHByb2JhYmlsaXR5X21vZGVsLnByZWRpY3QodGVzdF9pbWFnZXMpCnByaW50KHByZWRpY3Rpb25zWzBdKQpwcmludChmJ1ByZWRpY3RlZCBsYWJlbDoge2NsYXNzX25hbWVzW25wLmFyZ21heChwcmVkaWN0aW9uc1swXSldfScp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>probability_model = tf.keras.Sequential([model, 
+                                         tf.keras.layers.Softmax()])
+
+predictions = probability_model.predict(test_images)
+print(predictions[0])
+print(f'Predicted label: {class_names[np.argmax(predictions[0])]}')</pre></div><div class='content'></div><h2>Paso 10: Visualización de Predicciones</h2>
+<div class='content'><p>Visualiza las predicciones para entender el rendimiento del modelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHBsb3RfaW1hZ2UoaSwgcHJlZGljdGlvbnNfYXJyYXksIHRydWVfbGFiZWwsIGltZyk6CiAgICB0cnVlX2xhYmVsLCBpbWcgPSB0cnVlX2xhYmVsW2ldLCBpbWdbaV0KICAgIHBsdC5ncmlkKEZhbHNlKQogICAgcGx0Lnh0aWNrcyhbXSkKICAgIHBsdC55dGlja3MoW10pCiAgICAKICAgIHBsdC5pbXNob3coaW1nLCBjbWFwPXBsdC5jbS5iaW5hcnkpCiAgICAKICAgIHByZWRpY3RlZF9sYWJlbCA9IG5wLmFyZ21heChwcmVkaWN0aW9uc19hcnJheSkKICAgIGlmIHByZWRpY3RlZF9sYWJlbCA9PSB0cnVlX2xhYmVsOgogICAgICAgIGNvbG9yID0gJ2JsdWUnCiAgICBlbHNlOgogICAgICAgIGNvbG9yID0gJ3JlZCcKICAgIAogICAgcGx0LnhsYWJlbChmIntjbGFzc19uYW1lc1twcmVkaWN0ZWRfbGFiZWxdfSB7MTAwKm5wLm1heChwcmVkaWN0aW9uc19hcnJheSk6Mi4wZn0lICh7Y2xhc3NfbmFtZXNbdHJ1ZV9sYWJlbF19KSIsIGNvbG9yPWNvbG9yKQoKZGVmIHBsb3RfdmFsdWVfYXJyYXkoaSwgcHJlZGljdGlvbnNfYXJyYXksIHRydWVfbGFiZWwpOgogICAgdHJ1ZV9sYWJlbCA9IHRydWVfbGFiZWxbaV0KICAgIHBsdC5ncmlkKEZhbHNlKQogICAgcGx0Lnh0aWNrcyhyYW5nZSgxMCkpCiAgICBwbHQueXRpY2tzKFtdKQogICAgdGhpc3Bsb3QgPSBwbHQuYmFyKHJhbmdlKDEwKSwgcHJlZGljdGlvbnNfYXJyYXksIGNvbG9yPSIjNzc3Nzc3IikKICAgIHBsdC55bGltKFswLCAxXSkKICAgIHByZWRpY3RlZF9sYWJlbCA9IG5wLmFyZ21heChwcmVkaWN0aW9uc19hcnJheSkKICAgIAogICAgdGhpc3Bsb3RbcHJlZGljdGVkX2xhYmVsXS5zZXRfY29sb3IoJ3JlZCcpCiAgICB0aGlzcGxvdFt0cnVlX2xhYmVsXS5zZXRfY29sb3IoJ2JsdWUnKQoKaSA9IDAKcGx0LmZpZ3VyZShmaWdzaXplPSg2LDMpKQpwbHQuc3VicGxvdCgxLDIsMSkKcGxvdF9pbWFnZShpLCBwcmVkaWN0aW9uc1tpXSwgdGVzdF9sYWJlbHMsIHRlc3RfaW1hZ2VzKQpwbHQuc3VicGxvdCgxLDIsMikKcGxvdF92YWx1ZV9hcnJheShpLCBwcmVkaWN0aW9uc1tpXSwgdGVzdF9sYWJlbHMpCnBsdC5zaG93KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def plot_image(i, predictions_array, true_label, img):
+    true_label, img = true_label[i], img[i]
+    plt.grid(False)
+    plt.xticks([])
+    plt.yticks([])
+    
+    plt.imshow(img, cmap=plt.cm.binary)
+    
+    predicted_label = np.argmax(predictions_array)
+    if predicted_label == true_label:
+        color = 'blue'
+    else:
+        color = 'red'
+    
+    plt.xlabel(f&quot;{class_names[predicted_label]} {100*np.max(predictions_array):2.0f}% ({class_names[true_label]})&quot;, color=color)
+
+def plot_value_array(i, predictions_array, true_label):
+    true_label = true_label[i]
+    plt.grid(False)
+    plt.xticks(range(10))
+    plt.yticks([])
+    thisplot = plt.bar(range(10), predictions_array, color=&quot;#777777&quot;)
+    plt.ylim([0, 1])
+    predicted_label = np.argmax(predictions_array)
+    
+    thisplot[predicted_label].set_color('red')
+    thisplot[true_label].set_color('blue')
+
+i = 0
+plt.figure(figsize=(6,3))
+plt.subplot(1,2,1)
+plot_image(i, predictions[i], test_labels, test_images)
+plt.subplot(1,2,2)
+plot_value_array(i, predictions[i], test_labels)
+plt.show()</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este proyecto personalizado, has aprendido a:</p>
+<ul>
+<li>Configurar un entorno de TensorFlow.</li>
+<li>Cargar y preprocesar el conjunto de datos CIFAR-10.</li>
+<li>Construir, compilar y entrenar un modelo CNN.</li>
+<li>Evaluar el rendimiento del modelo.</li>
+<li>Realizar y visualizar predicciones.</li>
+</ul>
+<p>Al completar este proyecto, has adquirido experiencia práctica en el uso de TensorFlow para tareas de clasificación de imágenes. Continúa experimentando con diferentes arquitecturas e hiperparámetros para mejorar aún más el rendimiento de tu modelo.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

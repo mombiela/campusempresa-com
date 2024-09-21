@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/springboot/pagination-and-sorting" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>La paginación y la ordenación son características esenciales para gestionar grandes conjuntos de datos en aplicaciones web. Ayudan a dividir grandes datos en fragmentos manejables y a ordenar los datos de una manera significativa. En esta sección, cubriremos cómo implementar la paginación y la ordenación en una aplicación Spring Boot.</p>
+</div><h1>Introducción a la Paginación y Ordenación</h1>
+<div class='content'><ul>
+<li><strong>Paginación</strong>: El proceso de dividir un conjunto de datos en páginas discretas.</li>
+<li><strong>Ordenación</strong>: Organizar datos en un orden particular (ascendente o descendente) basado en uno o más campos.</li>
+</ul>
+</div><h1>Configuración del Proyecto</h1>
+<div class='content'><p>Antes de profundizar en la paginación y la ordenación, asegúrate de tener configurado un proyecto Spring Boot. Puedes crear un nuevo proyecto Spring Boot usando Spring Initializr o tu IDE preferido.</p>
+</div><h2>Dependencias</h2>
+<div class='content'><p>Agrega las siguientes dependencias a tu archivo <code>pom.xml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY3k+CiAgICA8Z3JvdXBJZD5vcmcuc3ByaW5nZnJhbWV3b3JrLmJvb3Q8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLWRhdGEtanBhPC9hcnRpZmFjdElkPgo8L2RlcGVuZGVuY3k+CjxkZXBlbmRlbmN5PgogICAgPGdyb3VwSWQ+Y29tLmgyZGF0YWJhc2U8L2dyb3VwSWQ+CiAgICA8YXJ0aWZhY3RJZD5oMjwvYXJ0aWZhY3RJZD4KICAgIDxzY29wZT5ydW50aW1lPC9zY29wZT4KPC9kZXBlbmRlbmN5Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-jpa&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.h2database&lt;/groupId&gt;
+    &lt;artifactId&gt;h2&lt;/artifactId&gt;
+    &lt;scope&gt;runtime&lt;/scope&gt;
+&lt;/dependency&gt;</pre></div><div class='content'></div><h1>Configuración del Modelo de Datos</h1>
+<div class='content'><p>Vamos a crear una clase de entidad simple <code>Product</code> para trabajar.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QEVudGl0eQpwdWJsaWMgY2xhc3MgUHJvZHVjdCB7CiAgICBASWQKICAgIEBHZW5lcmF0ZWRWYWx1ZShzdHJhdGVneSA9IEdlbmVyYXRpb25UeXBlLklERU5USVRZKQogICAgcHJpdmF0ZSBMb25nIGlkOwogICAgcHJpdmF0ZSBTdHJpbmcgbmFtZTsKICAgIHByaXZhdGUgRG91YmxlIHByaWNlOwoKICAgIC8vIEdldHRlcnMgeSBTZXR0ZXJzCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Entity
+public class Product {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String name;
+    private Double price;
+
+    // Getters y Setters
+}</pre></div><div class='content'></div><h1>Creación del Repositorio</h1>
+<div class='content'><p>Spring Data JPA proporciona soporte integrado para la paginación y la ordenación. Crea una interfaz de repositorio para la entidad <code>Product</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGludGVyZmFjZSBQcm9kdWN0UmVwb3NpdG9yeSBleHRlbmRzIEpwYVJlcG9zaXRvcnk8UHJvZHVjdCwgTG9uZz4gewp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public interface ProductRepository extends JpaRepository&lt;Product, Long&gt; {
+}</pre></div><div class='content'></div><h1>Implementación de la Paginación</h1>
+<div class='content'><p>Para implementar la paginación, necesitas usar la interfaz <code>Pageable</code> proporcionada por Spring Data JPA.</p>
+</div><h2>Ejemplo: Obtener una Página de Productos</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QFJlc3RDb250cm9sbGVyCkBSZXF1ZXN0TWFwcGluZygiL3Byb2R1Y3RzIikKcHVibGljIGNsYXNzIFByb2R1Y3RDb250cm9sbGVyIHsKCiAgICBAQXV0b3dpcmVkCiAgICBwcml2YXRlIFByb2R1Y3RSZXBvc2l0b3J5IHByb2R1Y3RSZXBvc2l0b3J5OwoKICAgIEBHZXRNYXBwaW5nCiAgICBwdWJsaWMgUGFnZTxQcm9kdWN0PiBnZXRQcm9kdWN0cyhAUmVxdWVzdFBhcmFtIGludCBwYWdlLCBAUmVxdWVzdFBhcmFtIGludCBzaXplKSB7CiAgICAgICAgUGFnZWFibGUgcGFnZWFibGUgPSBQYWdlUmVxdWVzdC5vZihwYWdlLCBzaXplKTsKICAgICAgICByZXR1cm4gcHJvZHVjdFJlcG9zaXRvcnkuZmluZEFsbChwYWdlYWJsZSk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@RestController
+@RequestMapping(&quot;/products&quot;)
+public class ProductController {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @GetMapping
+    public Page&lt;Product&gt; getProducts(@RequestParam int page, @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productRepository.findAll(pageable);
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>@RequestParam int page</code>: El número de página a obtener.</li>
+<li><code>@RequestParam int size</code>: El tamaño de la página.</li>
+<li><code>PageRequest.of(page, size)</code>: Crea un objeto <code>Pageable</code> con el número de página y tamaño especificados.</li>
+<li><code>productRepository.findAll(pageable)</code>: Obtiene la página de productos.</li>
+</ul>
+</div><h1>Implementación de la Ordenación</h1>
+<div class='content'><p>La ordenación se puede agregar fácilmente a la lógica de paginación usando la clase <code>Sort</code>.</p>
+</div><h2>Ejemplo: Obtener Productos Ordenados</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QEdldE1hcHBpbmcoIi9zb3J0ZWQiKQpwdWJsaWMgUGFnZTxQcm9kdWN0PiBnZXRTb3J0ZWRQcm9kdWN0cyhAUmVxdWVzdFBhcmFtIGludCBwYWdlLCBAUmVxdWVzdFBhcmFtIGludCBzaXplLCBAUmVxdWVzdFBhcmFtIFN0cmluZyBzb3J0QnkpIHsKICAgIFBhZ2VhYmxlIHBhZ2VhYmxlID0gUGFnZVJlcXVlc3Qub2YocGFnZSwgc2l6ZSwgU29ydC5ieShzb3J0QnkpKTsKICAgIHJldHVybiBwcm9kdWN0UmVwb3NpdG9yeS5maW5kQWxsKHBhZ2VhYmxlKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@GetMapping(&quot;/sorted&quot;)
+public Page&lt;Product&gt; getSortedProducts(@RequestParam int page, @RequestParam int size, @RequestParam String sortBy) {
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
+    return productRepository.findAll(pageable);
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>@RequestParam String sortBy</code>: El campo por el cual ordenar.</li>
+<li><code>Sort.by(sortBy)</code>: Crea un objeto <code>Sort</code> para especificar el campo de ordenación.</li>
+</ul>
+</div><h1>Combinando Paginación y Ordenación</h1>
+<div class='content'><p>Puedes combinar la paginación y la ordenación en una sola solicitud.</p>
+</div><h2>Ejemplo: Obtener una Página de Productos Ordenados</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QEdldE1hcHBpbmcoIi9wYWdlZC1zb3J0ZWQiKQpwdWJsaWMgUGFnZTxQcm9kdWN0PiBnZXRQYWdlZFNvcnRlZFByb2R1Y3RzKEBSZXF1ZXN0UGFyYW0gaW50IHBhZ2UsIEBSZXF1ZXN0UGFyYW0gaW50IHNpemUsIEBSZXF1ZXN0UGFyYW0gU3RyaW5nIHNvcnRCeSwgQFJlcXVlc3RQYXJhbSBTdHJpbmcgZGlyZWN0aW9uKSB7CiAgICBTb3J0LkRpcmVjdGlvbiBzb3J0RGlyZWN0aW9uID0gU29ydC5EaXJlY3Rpb24uZnJvbVN0cmluZyhkaXJlY3Rpb24pOwogICAgUGFnZWFibGUgcGFnZWFibGUgPSBQYWdlUmVxdWVzdC5vZihwYWdlLCBzaXplLCBTb3J0LmJ5KHNvcnREaXJlY3Rpb24sIHNvcnRCeSkpOwogICAgcmV0dXJuIHByb2R1Y3RSZXBvc2l0b3J5LmZpbmRBbGwocGFnZWFibGUpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@GetMapping(&quot;/paged-sorted&quot;)
+public Page&lt;Product&gt; getPagedSortedProducts(@RequestParam int page, @RequestParam int size, @RequestParam String sortBy, @RequestParam String direction) {
+    Sort.Direction sortDirection = Sort.Direction.fromString(direction);
+    Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sortBy));
+    return productRepository.findAll(pageable);
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>@RequestParam String direction</code>: La dirección de la ordenación (ASC o DESC).</li>
+<li><code>Sort.Direction.fromString(direction)</code>: Convierte la cadena de dirección a un objeto <code>Sort.Direction</code>.</li>
+<li><code>Sort.by(sortDirection, sortBy)</code>: Crea un objeto <code>Sort</code> con la dirección y el campo especificados.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, cubrimos los conceptos básicos de la implementación de la paginación y la ordenación en una aplicación Spring Boot usando Spring Data JPA. Aprendimos cómo:</p>
+<ul>
+<li>Configurar el proyecto y las dependencias.</li>
+<li>Crear un modelo de datos y un repositorio.</li>
+<li>Implementar la paginación y la ordenación.</li>
+<li>Combinar la paginación y la ordenación en una sola solicitud.</li>
+</ul>
+<p>Estas características son cruciales para construir aplicaciones web eficientes y fáciles de usar que manejen grandes conjuntos de datos. Al dominar la paginación y la ordenación, puedes mejorar significativamente el rendimiento y la usabilidad de tus aplicaciones.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

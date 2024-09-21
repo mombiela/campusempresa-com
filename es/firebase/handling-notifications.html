@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/firebase/handling-notifications" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Firebase Cloud Messaging (FCM) es una solución de mensajería multiplataforma que te permite enviar mensajes de manera confiable y sin costo. Esta sección cubrirá cómo manejar notificaciones en tu aplicación usando Firebase, desde la configuración básica hasta la personalización avanzada.</p>
+</div><h1>Configuración de Firebase Cloud Messaging</h1>
+<div class='content'></div><h2>Prerrequisitos</h2>
+<div class='content'><ul>
+<li>Un proyecto de Firebase configurado en la Consola de Firebase.</li>
+<li>SDK de Firebase integrado en tu aplicación (iOS, Android o Web).</li>
+</ul>
+</div><h2>Añadiendo FCM a tu Aplicación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>iOS:</strong></p>
+<ul>
+<li>Añade el SDK de Firebase a tu proyecto usando CocoaPods.</li>
+<li>Configura tu aplicación para notificaciones push.</li>
+<li>Regístrate para notificaciones remotas en tu delegado de la aplicación.</li>
+</ul>
+<pre><code class="language-swift">import Firebase
+import UserNotifications
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool {
+        FirebaseApp.configure()
+        UNUserNotificationCenter.current().delegate = self
+        application.registerForRemoteNotifications()
+        return true
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Android:</strong></p>
+<ul>
+<li>Añade el SDK de Firebase a tu proyecto vía Gradle.</li>
+<li>Configura tu aplicación para recibir notificaciones modificando el <code>AndroidManifest.xml</code>.</li>
+</ul>
+<pre><code class="language-xml">&lt;service
+    android:name=&quot;.MyFirebaseMessagingService&quot;&gt;
+    &lt;intent-filter&gt;
+        &lt;action android:name=&quot;com.google.firebase.MESSAGING_EVENT&quot;/&gt;
+    &lt;/intent-filter&gt;
+&lt;/service&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Web:</strong></p>
+<ul>
+<li>Añade el SDK de Firebase a tu proyecto.</li>
+<li>Solicita permiso para enviar notificaciones.</li>
+</ul>
+<pre><code class="language-javascript">import { getMessaging, getToken } from &quot;firebase/messaging&quot;;
+
+const messaging = getMessaging();
+getToken(messaging, { vapidKey: &quot;YOUR_PUBLIC_VAPID_KEY&quot; }).then((currentToken) =&gt; {
+    if (currentToken) {
+        console.log('Token received: ', currentToken);
+    } else {
+        console.log('No registration token available.');
+    }
+}).catch((err) =&gt; {
+    console.log('An error occurred while retrieving token. ', err);
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Enviando Notificaciones</h1>
+<div class='content'></div><h2>Usando la Consola de Firebase</h2>
+<div class='content'><ul>
+<li>Navega a la Consola de Firebase.</li>
+<li>Selecciona tu proyecto y ve a la sección de Cloud Messaging.</li>
+<li>Haz clic en &quot;Enviar tu primer mensaje&quot;.</li>
+<li>Rellena los detalles de la notificación y dirige tu audiencia.</li>
+</ul>
+</div><h2>Usando el SDK de Firebase Admin</h2>
+<div class='content'><ul>
+<li>Instala el SDK de Firebase Admin en tu entorno de servidor.</li>
+<li>Envía una notificación usando el SDK.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgYWRtaW4gPSByZXF1aXJlKCdmaXJlYmFzZS1hZG1pbicpOwphZG1pbi5pbml0aWFsaXplQXBwKCk7Cgpjb25zdCBtZXNzYWdlID0gewogICAgbm90aWZpY2F0aW9uOiB7CiAgICAgICAgdGl0bGU6ICdIZWxsbyBXb3JsZCcsCiAgICAgICAgYm9keTogJ1RoaXMgaXMgYSB0ZXN0IG5vdGlmaWNhdGlvbicKICAgIH0sCiAgICB0b2tlbjogJ1JFQ0lQSUVOVF9ERVZJQ0VfVE9LRU4nCn07CgphZG1pbi5tZXNzYWdpbmcoKS5zZW5kKG1lc3NhZ2UpCiAgICAudGhlbigocmVzcG9uc2UpID0+IHsKICAgICAgICBjb25zb2xlLmxvZygnU3VjY2Vzc2Z1bGx5IHNlbnQgbWVzc2FnZTonLCByZXNwb25zZSk7CiAgICB9KQogICAgLmNhdGNoKChlcnJvcikgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdFcnJvciBzZW5kaW5nIG1lc3NhZ2U6JywgZXJyb3IpOwogICAgfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const admin = require('firebase-admin');
+admin.initializeApp();
+
+const message = {
+    notification: {
+        title: 'Hello World',
+        body: 'This is a test notification'
+    },
+    token: 'RECIPIENT_DEVICE_TOKEN'
+};
+
+admin.messaging().send(message)
+    .then((response) =&gt; {
+        console.log('Successfully sent message:', response);
+    })
+    .catch((error) =&gt; {
+        console.log('Error sending message:', error);
+    });</pre></div><div class='content'></div><h1>Manejo de Notificaciones en la Aplicación</h1>
+<div class='content'></div><h2>Notificaciones en Primer Plano</h2>
+<div class='content'><ul>
+<li>
+<p><strong>iOS:</strong></p>
+<ul>
+<li>Implementa los métodos de <code>UNUserNotificationCenterDelegate</code> para manejar notificaciones mientras la aplicación está en primer plano.</li>
+</ul>
+<pre><code class="language-swift">func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -&gt; Void) {
+    completionHandler([.alert, .sound])
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Android:</strong></p>
+<ul>
+<li>Sobrescribe el método <code>onMessageReceived</code> en tu <code>FirebaseMessagingService</code>.</li>
+</ul>
+<pre><code class="language-java">public class MyFirebaseMessagingService extends FirebaseMessagingService {
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        // Handle the message here
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Web:</strong></p>
+<ul>
+<li>Maneja mensajes usando el método <code>onMessage</code> de la instancia de Firebase Messaging.</li>
+</ul>
+<pre><code class="language-javascript">import { getMessaging, onMessage } from &quot;firebase/messaging&quot;;
+
+const messaging = getMessaging();
+onMessage(messaging, (payload) =&gt; {
+    console.log('Message received. ', payload);
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>Notificaciones en Segundo Plano</h2>
+<div class='content'><ul>
+<li>
+<p><strong>iOS &amp; Android:</strong></p>
+<ul>
+<li>Las notificaciones son manejadas por el sistema y mostradas en la bandeja de notificaciones.</li>
+</ul>
+</li>
+<li>
+<p><strong>Web:</strong></p>
+<ul>
+<li>Usa un service worker para manejar notificaciones en segundo plano.</li>
+</ul>
+<pre><code class="language-javascript">self.addEventListener('push', function(event) {
+    const data = event.data.json();
+    const options = {
+        body: data.body,
+        icon: 'icon.png'
+    };
+    event.waitUntil(
+        self.registration.showNotification(data.title, options)
+    );
+});
+</code></pre>
+</li>
+</ul>
+</div><h1>Personalización Avanzada</h1>
+<div class='content'></div><h2>Cargas Útiles de Datos Personalizados</h2>
+<div class='content'><ul>
+<li>Envía datos personalizados junto con notificaciones para manejar acciones específicas o mostrar elementos de UI personalizados.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbWVzc2FnZSA9IHsKICAgIGRhdGE6IHsKICAgICAgICBrZXkxOiAndmFsdWUxJywKICAgICAgICBrZXkyOiAndmFsdWUyJwogICAgfSwKICAgIHRva2VuOiAnUkVDSVBJRU5UX0RFVklDRV9UT0tFTicKfTsKCmFkbWluLm1lc3NhZ2luZygpLnNlbmQobWVzc2FnZSkKICAgIC50aGVuKChyZXNwb25zZSkgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdTdWNjZXNzZnVsbHkgc2VudCBtZXNzYWdlOicsIHJlc3BvbnNlKTsKICAgIH0pCiAgICAuY2F0Y2goKGVycm9yKSA9PiB7CiAgICAgICAgY29uc29sZS5sb2coJ0Vycm9yIHNlbmRpbmcgbWVzc2FnZTonLCBlcnJvcik7CiAgICB9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const message = {
+    data: {
+        key1: 'value1',
+        key2: 'value2'
+    },
+    token: 'RECIPIENT_DEVICE_TOKEN'
+};
+
+admin.messaging().send(message)
+    .then((response) =&gt; {
+        console.log('Successfully sent message:', response);
+    })
+    .catch((error) =&gt; {
+        console.log('Error sending message:', error);
+    });</pre></div><div class='content'></div><h2>Canales de Notificación (Android)</h2>
+<div class='content'><ul>
+<li>Crea canales de notificación para categorizar notificaciones.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKEJ1aWxkLlZFUlNJT04uU0RLX0lOVCA+PSBCdWlsZC5WRVJTSU9OX0NPREVTLk8pIHsKICAgIE5vdGlmaWNhdGlvbkNoYW5uZWwgY2hhbm5lbCA9IG5ldyBOb3RpZmljYXRpb25DaGFubmVsKCJDSEFOTkVMX0lEIiwgIkNoYW5uZWwgTmFtZSIsIE5vdGlmaWNhdGlvbk1hbmFnZXIuSU1QT1JUQU5DRV9ERUZBVUxUKTsKICAgIE5vdGlmaWNhdGlvbk1hbmFnZXIgbWFuYWdlciA9IGdldFN5c3RlbVNlcnZpY2UoTm90aWZpY2F0aW9uTWFuYWdlci5jbGFzcyk7CiAgICBtYW5hZ2VyLmNyZWF0ZU5vdGlmaWNhdGlvbkNoYW5uZWwoY2hhbm5lbCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) {
+    NotificationChannel channel = new NotificationChannel(&quot;CHANNEL_ID&quot;, &quot;Channel Name&quot;, NotificationManager.IMPORTANCE_DEFAULT);
+    NotificationManager manager = getSystemService(NotificationManager.class);
+    manager.createNotificationChannel(channel);
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Manejar notificaciones con Firebase Cloud Messaging implica configurar los SDKs necesarios, enviar notificaciones a través de la Consola de Firebase o el SDK Admin, y manejar notificaciones en tu aplicación tanto en estados de primer plano como de segundo plano. La personalización avanzada permite experiencias de usuario a medida y una mejor gestión de notificaciones. Siguiendo estos pasos, puedes integrar y gestionar notificaciones de manera efectiva en tu aplicación.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

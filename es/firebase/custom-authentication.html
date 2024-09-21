@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/firebase/custom-authentication" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'><p>Firebase Authentication proporciona servicios de backend para ayudar a autenticar usuarios en tu aplicación. Aunque Firebase ofrece varios métodos de autenticación integrados, hay casos en los que necesitas más control sobre el proceso de autenticación. Aquí es donde entra la autenticación personalizada.</p>
+</div><h1>Introducción a la Autenticación Personalizada</h1>
+<div class='content'><p>La Autenticación Personalizada te permite integrar tu propio sistema de autenticación con Firebase. Esto significa que puedes usar tu base de datos de usuarios existente, proveedores de autenticación de terceros o cualquier otro método para autenticar usuarios.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Token Personalizado</strong>: Un JWT (JSON Web Token) que generas en tu servidor para autenticar usuarios.</li>
+<li><strong>Firebase Admin SDK</strong>: Un conjunto de bibliotecas de servidor que te ayudan a generar tokens personalizados.</li>
+<li><strong>Client SDK</strong>: SDK de Firebase utilizado en el lado del cliente para autenticar usuarios con el token personalizado.</li>
+</ul>
+</div><h1>Configuración del Firebase Admin SDK</h1>
+<div class='content'><p>Para generar tokens personalizados, necesitas configurar el Firebase Admin SDK en tu entorno de servidor.</p>
+</div><h2>Pasos para Configurar el Firebase Admin SDK</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar el Firebase Admin SDK</strong>:</p>
+<pre><code class="language-bash">npm install firebase-admin --save
+</code></pre>
+</li>
+<li>
+<p><strong>Inicializar el SDK</strong>:</p>
+<pre><code class="language-javascript">const admin = require('firebase-admin');
+const serviceAccount = require('path/to/serviceAccountKey.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Generar un Token Personalizado</strong>:</p>
+<pre><code class="language-javascript">const uid = 'some-unique-identifier';
+
+admin.auth().createCustomToken(uid)
+  .then((customToken) =&gt; {
+    // Enviar token de vuelta al cliente
+  })
+  .catch((error) =&gt; {
+    console.log('Error creando token personalizado:', error);
+  });
+</code></pre>
+</li>
+</ol>
+</div><h1>Autenticación de Usuarios con Tokens Personalizados</h1>
+<div class='content'><p>Una vez que has generado un token personalizado en tu servidor, necesitas enviarlo al cliente y usarlo para autenticar con Firebase.</p>
+</div><h2>Pasos para Autenticar con Tokens Personalizados</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Recibir el Token Personalizado en el Cliente</strong>:</p>
+<pre><code class="language-javascript">// Supongamos que recibiste el token personalizado de tu servidor
+const customToken = 'YOUR_CUSTOM_TOKEN';
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Sesión con el Token Personalizado</strong>:</p>
+<pre><code class="language-javascript">firebase.auth().signInWithCustomToken(customToken)
+  .then((userCredential) =&gt; {
+    // El usuario ha iniciado sesión
+    console.log('Usuario ha iniciado sesión:', userCredential.user);
+  })
+  .catch((error) =&gt; {
+    console.log('Error iniciando sesión con token personalizado:', error);
+  });
+</code></pre>
+</li>
+</ol>
+</div><h1>Escenarios Avanzados de Autenticación Personalizada</h1>
+<div class='content'></div><h2>Uso de Proveedores de Autenticación de Terceros</h2>
+<div class='content'><p>Puedes integrar proveedores de autenticación de terceros como OAuth, SAML o cualquier otro proveedor con la Autenticación Personalizada de Firebase.</p>
+<h4>Ejemplo: Integración de OAuth</h4>
+<ol>
+<li>
+<p><strong>Autenticar con el Proveedor OAuth</strong>:</p>
+<pre><code class="language-javascript">// Ejemplo usando OAuth2.0
+const oauth2Client = new OAuth2Client(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+const { tokens } = await oauth2Client.getToken(code);
+oauth2Client.setCredentials(tokens);
+</code></pre>
+</li>
+<li>
+<p><strong>Generar Token Personalizado con el UID de OAuth</strong>:</p>
+<pre><code class="language-javascript">const uid = 'oauth-unique-identifier';
+
+admin.auth().createCustomToken(uid)
+  .then((customToken) =&gt; {
+    // Enviar token de vuelta al cliente
+  })
+  .catch((error) =&gt; {
+    console.log('Error creando token personalizado:', error);
+  });
+</code></pre>
+</li>
+</ol>
+</div><h2>Claims Personalizados</h2>
+<div class='content'><p>Los claims personalizados te permiten agregar información adicional al token de ID del usuario, que puede ser utilizada para controlar el acceso a diferentes partes de tu aplicación.</p>
+<h4>Agregar Claims Personalizados</h4>
+<ol>
+<li>
+<p><strong>Establecer Claims Personalizados</strong>:</p>
+<pre><code class="language-javascript">const uid = 'some-unique-identifier';
+const customClaims = {
+  admin: true,
+  premiumAccount: true
+};
+
+admin.auth().setCustomUserClaims(uid, customClaims)
+  .then(() =&gt; {
+    // Los nuevos claims personalizados se propagarán al token de ID del usuario la próxima vez que se emita uno nuevo.
+  })
+  .catch((error) =&gt; {
+    console.log('Error estableciendo claims personalizados:', error);
+  });
+</code></pre>
+</li>
+<li>
+<p><strong>Acceder a Claims Personalizados en el Cliente</strong>:</p>
+<pre><code class="language-javascript">firebase.auth().currentUser.getIdTokenResult()
+  .then((idTokenResult) =&gt; {
+    // Confirmar que el usuario es un Administrador.
+    if (!!idTokenResult.claims.admin) {
+      console.log('El usuario es un administrador');
+    }
+  })
+  .catch((error) =&gt; {
+    console.log('Error obteniendo resultado del token de ID:', error);
+  });
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La Autenticación Personalizada en Firebase proporciona la flexibilidad para integrar tu propio sistema de autenticación, usar proveedores de terceros y agregar claims personalizados para controlar el acceso dentro de tu aplicación. Al entender cómo generar y usar tokens personalizados, puedes aprovechar las potentes características de autenticación de Firebase mientras mantienes el control sobre tu proceso de autenticación de usuarios.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>

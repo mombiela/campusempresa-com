@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy<br> y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es">Castellano</b>
+				|
+				<a href="https://campusempresa.cat/elasticsearch/elasticsearch-beats" id="lnk_lang_ca" data-lang="ca">Català</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="objective">El Proyecto</a>
+				<a href="about">Sobre nosotros</a>
+				<a href="contribute">Contribuir</a>
+				<a href="donate">Donaciones</a>
+				<a href="licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='content'></div><h1>Introducción a Beats</h1>
+<div class='content'><p>Beats son agentes ligeros de envío de datos que instalas en tus servidores para enviar datos operativos a Elasticsearch. Están diseñados para ser simples y eficientes, facilitando la recolección y envío de datos desde diversas fuentes.</p>
+<ul>
+<li><strong>Filebeat</strong>: Envía archivos de registro.</li>
+<li><strong>Metricbeat</strong>: Recoge métricas del sistema operativo y servicios.</li>
+<li><strong>Packetbeat</strong>: Monitorea el tráfico de red.</li>
+<li><strong>Winlogbeat</strong>: Envía registros de eventos de Windows.</li>
+<li><strong>Auditbeat</strong>: Recoge datos de auditoría del marco de auditoría de Linux.</li>
+<li><strong>Heartbeat</strong>: Monitorea la disponibilidad de servicios.</li>
+</ul>
+</div><h1>Instalación y Configuración de Beats</h1>
+<h2>Instalación de Filebeat</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Descargar e instalar Filebeat</strong>:</p>
+<pre><code class="language-bash">curl -L -O https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.10.0-amd64.deb
+sudo dpkg -i filebeat-7.10.0-amd64.deb
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Filebeat</strong>:
+Edita el archivo de configuración <code>filebeat.yml</code> para especificar los archivos de registro a monitorear y la instancia de Elasticsearch a la que enviar datos:</p>
+<pre><code class="language-yaml">filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/*.log
+
+output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Filebeat</strong>:</p>
+<pre><code class="language-bash">sudo service filebeat start
+</code></pre>
+</li>
+</ol>
+</div><h2>Instalación de Metricbeat</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Descargar e instalar Metricbeat</strong>:</p>
+<pre><code class="language-bash">curl -L -O https://artifacts.elastic.co/downloads/beats/metricbeat/metricbeat-7.10.0-amd64.deb
+sudo dpkg -i metricbeat-7.10.0-amd64.deb
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Metricbeat</strong>:
+Edita el archivo de configuración <code>metricbeat.yml</code> para especificar los módulos a habilitar y la instancia de Elasticsearch a la que enviar datos:</p>
+<pre><code class="language-yaml">metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu
+    - memory
+    - network
+  enabled: true
+  period: 10s
+  processes: ['.*']
+
+output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Metricbeat</strong>:</p>
+<pre><code class="language-bash">sudo service metricbeat start
+</code></pre>
+</li>
+</ol>
+</div><h1>Usando Beats con Elasticsearch</h1>
+<h2>Enviando Datos a Elasticsearch</h2>
+<div class='content'><p>Beats pueden ser configurados para enviar datos directamente a Elasticsearch o a través de Logstash para procesamiento adicional.</p>
+<ul>
+<li><strong>Directo a Elasticsearch</strong>: Esta es la configuración más simple donde Beats envían datos directamente a Elasticsearch.</li>
+<li><strong>A través de Logstash</strong>: Esta configuración permite un procesamiento y transformación de datos más complejos antes de que los datos sean indexados en Elasticsearch.</li>
+</ul>
+</div><h2>Ejemplo: Filebeat a Elasticsearch</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar Filebeat</strong>:</p>
+<pre><code class="language-yaml">filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/*.log
+
+output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Filebeat</strong>:</p>
+<pre><code class="language-bash">sudo service filebeat start
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejemplo: Metricbeat a Elasticsearch</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar Metricbeat</strong>:</p>
+<pre><code class="language-yaml">metricbeat.modules:
+- module: system
+  metricsets:
+    - cpu
+    - memory
+    - network
+  enabled: true
+  period: 10s
+  processes: ['.*']
+
+output.elasticsearch:
+  hosts: [&quot;localhost:9200&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Metricbeat</strong>:</p>
+<pre><code class="language-bash">sudo service metricbeat start
+</code></pre>
+</li>
+</ol>
+</div><h1>Monitoreo y Visualización de Datos</h1>
+<h2>Usando Kibana</h2>
+<div class='content'><p>Kibana es la herramienta de visualización para Elasticsearch. Te permite crear paneles y visualizaciones basadas en los datos recolectados por Beats.</p>
+<ol>
+<li>
+<p><strong>Acceder a Kibana</strong>:
+Abre tu navegador y navega a <code>http://localhost:5601</code>.</p>
+</li>
+<li>
+<p><strong>Crear Patrones de Índice</strong>:</p>
+<ul>
+<li>Ve a la sección &quot;Management&quot;.</li>
+<li>Crea un patrón de índice para los datos recolectados por Beats (por ejemplo, <code>filebeat-*</code>, <code>metricbeat-*</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear Visualizaciones</strong>:</p>
+<ul>
+<li>Usa la sección &quot;Visualize&quot; para crear visualizaciones basadas en los datos.</li>
+<li>Combina visualizaciones en paneles para un monitoreo integral.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo: Creando un Panel</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear Visualizaciones</strong>:</p>
+<ul>
+<li>Crea visualizaciones para el uso de CPU, uso de memoria y tráfico de red usando datos de Metricbeat.</li>
+</ul>
+</li>
+<li>
+<p><strong>Combinar Visualizaciones en un Panel</strong>:</p>
+<ul>
+<li>Ve a la sección &quot;Dashboard&quot;.</li>
+<li>Añade las visualizaciones creadas en el paso anterior a un nuevo panel.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Beats son herramientas poderosas para recolectar y enviar datos a Elasticsearch. Son ligeras y fáciles de configurar, lo que las hace ideales para monitorear varios aspectos de tu infraestructura. Al integrar Beats con Elasticsearch y Kibana, puedes crear soluciones de monitoreo completas que proporcionan valiosos conocimientos sobre tus sistemas y aplicaciones.</p>
+</div></div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+       <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+       <a href="cookies">Més informació</a>
+   </div>	
+	</div>    
+</body>
+</html>
