@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currying y Aplicación Parcial</title>
+
+    <link rel="alternate" href="https://campusempresa.com/es/haskell/currying-partial-application" hreflang="es" />
+    <link rel="alternate" href="https://campusempresa.com/es/haskell/currying-partial-application" hreflang="x-default" />
+	<link rel="alternate" href="https://campusempresa.com/ca/haskell/currying-partial-application" hreflang="ca" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/es/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es" class="px-2">ES</b>
+				|
+				<a href="/ca/haskell/currying-partial-application" id="lnk_lang_ca" data-lang="ca" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/es/objective">El Proyecto</a>
+				<a href="/es/about">Sobre nosotros</a>
+				<a href="/es/contribute">Contribuir</a>
+				<a href="/es/donate">Donaciones</a>
+				<a href="/es/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='lambda-expressions'>&#x25C4;Expresiones Lambda</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Currying y Aplicación Parcial</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='type-inference'>Inferencia de Tipos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a Currying y Aplicación Parcial</h1>
+<div class='content'><p>Currying y la aplicación parcial son conceptos fundamentales en Haskell que permiten un código más flexible y modular. Permiten que las funciones se apliquen en etapas, lo que puede llevar a un código más legible y reutilizable.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Currying</strong>: El proceso de transformar una función que toma múltiples argumentos en una secuencia de funciones, cada una tomando un solo argumento.</li>
+<li><strong>Aplicación Parcial</strong>: El proceso de fijar algunos argumentos de una función, produciendo otra función de menor aridad.</li>
+</ul>
+</div><h1>Entendiendo Currying</h1>
+<div class='content'><p>Currying lleva el nombre del matemático Haskell Curry. En Haskell, todas las funciones son curried por defecto.</p>
+</div><h2>Ejemplo de Currying</h2>
+<div class='content'><p>Considera una función simple que suma dos números:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YWRkIDo6IEludCAtPiBJbnQgLT4gSW50CmFkZCB4IHkgPSB4ICsgeQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>add :: Int -&gt; Int -&gt; Int
+add x y = x + y</pre></div><div class='content'><p>Esta función puede ser curried:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YWRkQ3VycmllZCA6OiBJbnQgLT4gKEludCAtPiBJbnQpCmFkZEN1cnJpZWQgeCA9IFx5IC0+IHggKyB5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>addCurried :: Int -&gt; (Int -&gt; Int)
+addCurried x = \y -&gt; x + y</pre></div><div class='content'><p>En Haskell, <code>add</code> y <code>addCurried</code> son esencialmente lo mismo debido al currying inherente de Haskell.</p>
+</div><h2>Usando Funciones Curried</h2>
+<div class='content'><p>Puedes aplicar argumentos uno a la vez:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGFkZEZpdmUgPSBhZGQgNQphZGRGaXZlIDMgIC0tIFJlc3VsdGFkbzogOA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let addFive = add 5
+addFive 3  -- Resultado: 8</pre></div><div class='content'><p>Aquí, <code>add 5</code> devuelve una nueva función que suma 5 a su argumento.</p>
+</div><h1>Aplicación Parcial</h1>
+<div class='content'><p>La aplicación parcial está estrechamente relacionada con currying. Involucra aplicar una función a algunos de sus argumentos, produciendo otra función que toma los argumentos restantes.</p>
+</div><h2>Ejemplo de Aplicación Parcial</h2>
+<div class='content'><p>Usando la misma función <code>add</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGFkZFRlbiA9IGFkZCAxMAphZGRUZW4gNyAgLS0gUmVzdWx0YWRvOiAxNw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let addTen = add 10
+addTen 7  -- Resultado: 17</pre></div><div class='content'><p>Aquí, <code>add 10</code> es una función parcialmente aplicada que suma 10 a cualquier número dado.</p>
+</div><h2>Casos de Uso Prácticos</h2>
+<div class='content'><p>La aplicación parcial es útil para crear funciones especializadas a partir de otras más generales:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXVsdGlwbHkgOjogSW50IC0+IEludCAtPiBJbnQKbXVsdGlwbHkgeCB5ID0geCAqIHkKCmxldCBkb3VibGUgPSBtdWx0aXBseSAyCmRvdWJsZSA4ICAtLSBSZXN1bHRhZG86IDE2CgpsZXQgdHJpcGxlID0gbXVsdGlwbHkgMwp0cmlwbGUgNSAgLS0gUmVzdWx0YWRvOiAxNQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>multiply :: Int -&gt; Int -&gt; Int
+multiply x y = x * y
+
+let double = multiply 2
+double 8  -- Resultado: 16
+
+let triple = multiply 3
+triple 5  -- Resultado: 15</pre></div><div class='content'></div><h1>Comparación de Currying y Aplicación Parcial</h1>
+<div class='content'><p>| Concepto           | Descripción                                                                 | Ejemplo                                      |
+|--------------------|-----------------------------------------------------------------------------|----------------------------------------------|
+| Currying           | Transformar una función con múltiples argumentos en una secuencia de funciones | <code>addCurried x = \y -&gt; x + y</code>                 |
+| Aplicación Parcial | Aplicar una función a algunos de sus argumentos para obtener una nueva función | <code>let addFive = add 5</code>                        |</p>
+</div><h1>Uso Avanzado</h1>
+<h2>Funciones de Orden Superior</h2>
+<div class='content'><p>Currying y la aplicación parcial brillan cuando se usan con funciones de orden superior:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWFwIChhZGQgMykgWzEsIDIsIDNdICAtLSBSZXN1bHRhZG86IFs0LCA1LCA2XQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>map (add 3) [1, 2, 3]  -- Resultado: [4, 5, 6]</pre></div><div class='content'><p>Aquí, <code>add 3</code> se aplica parcialmente y luego se mapea sobre una lista.</p>
+</div><h2>Composición de Funciones</h2>
+<div class='content'><p>Puedes componer funciones curried para construir operaciones más complejas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGluY3JlbWVudCA9IGFkZCAxCmxldCBkb3VibGUgPSBtdWx0aXBseSAyCmxldCBpbmNyZW1lbnRUaGVuRG91YmxlID0gZG91YmxlIC4gaW5jcmVtZW50CgppbmNyZW1lbnRUaGVuRG91YmxlIDMgIC0tIFJlc3VsdGFkbzogOA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let increment = add 1
+let double = multiply 2
+let incrementThenDouble = double . increment
+
+incrementThenDouble 3  -- Resultado: 8</pre></div><div class='content'></div><h1>Ejercicios</h1>
+<div class='content'><ol>
+<li><strong>Práctica de Currying</strong>: Escribe una función curried que concatene tres cadenas.
+<pre><code class="language-haskell">concatThree :: String -&gt; String -&gt; String -&gt; String
+concatThree a b c = a ++ b ++ c
+</code></pre>
+</li>
+<li><strong>Práctica de Aplicación Parcial</strong>: Crea una función parcialmente aplicada a partir de una función curried que multiplica tres números.
+<pre><code class="language-haskell">multiplyThree :: Int -&gt; Int -&gt; Int -&gt; Int
+multiplyThree x y z = x * y * z
+
+let multiplyByTwoAndThree = multiplyThree 2 3
+multiplyByTwoAndThree 4  -- Resultado: 24
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Currying y la aplicación parcial son técnicas poderosas en Haskell que mejoran la modularidad y reutilización del código. Al entender y utilizar estos conceptos, puedes escribir programas en Haskell más concisos y flexibles. Practica estas técnicas con varias funciones para volverte competente en su uso.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='lambda-expressions'>&#x25C4;Expresiones Lambda</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Currying y Aplicación Parcial</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='type-inference'>Inferencia de Tipos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/es/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

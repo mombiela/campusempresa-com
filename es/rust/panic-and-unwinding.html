@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pánico y Desenrollado</title>
+
+    <link rel="alternate" href="https://campusempresa.com/es/rust/panic-and-unwinding" hreflang="es" />
+    <link rel="alternate" href="https://campusempresa.com/es/rust/panic-and-unwinding" hreflang="x-default" />
+	<link rel="alternate" href="https://campusempresa.com/ca/rust/panic-and-unwinding" hreflang="ca" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/es/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es" class="px-2">ES</b>
+				|
+				<a href="/ca/rust/panic-and-unwinding" id="lnk_lang_ca" data-lang="ca" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/es/objective">El Proyecto</a>
+				<a href="/es/about">Sobre nosotros</a>
+				<a href="/es/contribute">Contribuir</a>
+				<a href="/es/donate">Donaciones</a>
+				<a href="/es/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-with-option'>&#x25C4;Manejo de Errores con Option</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pánico y Desenrollado</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='modules'>Módulos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, exploraremos los conceptos de pánico y desenrollado en Rust. Entender estos conceptos es crucial para escribir programas en Rust robustos y resistentes a errores.</p>
+</div><h1>¿Qué es el Pánico?</h1>
+<div class='content'><p>El pánico es la forma en que Rust maneja los errores irrecuperables. Cuando un programa encuentra una situación en la que no puede continuar la ejecución de manera segura, entrará en pánico. Esto es similar a las excepciones en otros lenguajes de programación, pero con algunas diferencias clave.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Pánico</strong>: Un error irrecuperable que causa que el programa detenga su ejecución.</li>
+<li><strong>Desenrollado</strong>: El proceso de limpiar la pila cuando ocurre un pánico.</li>
+<li><strong>Abortar</strong>: Una alternativa al desenrollado donde el programa termina inmediatamente sin limpiar.</li>
+</ul>
+</div><h2>¿Cuándo Ocurre el Pánico?</h2>
+<div class='content'><p>El pánico puede ocurrir en varias situaciones, tales como:</p>
+<ul>
+<li>Indexar fuera de los límites en un array.</li>
+<li>Llamar a <code>unwrap</code> en un <code>Option</code> que es <code>None</code>.</li>
+<li>Llamar explícitamente al macro <code>panic!</code>.</li>
+</ul>
+</div><h2>Ejemplo de Pánico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCB2ID0gdmVjIVsxLCAyLCAzXTsKICAgIHByaW50bG4hKCJ7fSIsIHZbOTldKTsgLy8gRXN0byBjYXVzYXLDoSB1biBww6FuaWNvIHBvcnF1ZSBlbCDDrW5kaWNlIGVzdMOhIGZ1ZXJhIGRlIGxvcyBsw61taXRlcy4KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let v = vec![1, 2, 3];
+    println!(&quot;{}&quot;, v[99]); // Esto causar&aacute; un p&aacute;nico porque el &iacute;ndice est&aacute; fuera de los l&iacute;mites.
+}</pre></div><div class='content'><p>En este ejemplo, intentar acceder al elemento 99 de un vector con solo 3 elementos causará un pánico.</p>
+</div><h1>Desenrollado</h1>
+<div class='content'><p>Cuando ocurre un pánico, Rust comienza el proceso de desenrollado. Esto significa que retrocederá a través de la pila, limpiando a medida que avanza. Esto incluye ejecutar destructores para cualquier variable que salga del alcance.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Desenrollado de la Pila</strong>: El proceso de limpiar la pila cuando ocurre un pánico.</li>
+<li><strong>Destructores</strong>: Funciones que se llaman cuando un objeto sale del alcance, típicamente usadas para liberar recursos.</li>
+</ul>
+</div><h2>Ejemplo de Desenrollado</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFJlc291cmNlOwoKaW1wbCBEcm9wIGZvciBSZXNvdXJjZSB7CiAgICBmbiBkcm9wKCZtdXQgc2VsZikgewogICAgICAgIHByaW50bG4hKCJFbCByZWN1cnNvIGVzdMOhIHNpZW5kbyBsaW1waWFkby4iKTsKICAgIH0KfQoKZm4gbWFpbigpIHsKICAgIGxldCBfciA9IFJlc291cmNlOwogICAgcGFuaWMhKCLCoUVzdG8gZXMgdW4gcMOhbmljbyEiKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct Resource;
+
+impl Drop for Resource {
+    fn drop(&amp;mut self) {
+        println!(&quot;El recurso est&aacute; siendo limpiado.&quot;);
+    }
+}
+
+fn main() {
+    let _r = Resource;
+    panic!(&quot;&iexcl;Esto es un p&aacute;nico!&quot;);
+}</pre></div><div class='content'><p>En este ejemplo, aunque ocurra un pánico, la implementación de <code>Drop</code> para <code>Resource</code> aún será llamada, demostrando el proceso de desenrollado.</p>
+</div><h1>Abortar</h1>
+<div class='content'><p>En algunos casos, puede que desees evitar la sobrecarga del desenrollado y en su lugar terminar el programa inmediatamente. Esto se puede hacer configurando la estrategia de pánico para abortar.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Abortar</strong>: Terminar el programa inmediatamente sin desenrollar.</li>
+<li><strong>Estrategia de Pánico</strong>: Comportamiento configurable para manejar pánicos.</li>
+</ul>
+</div><h2>Configurar la Estrategia de Pánico para Abortar</h2>
+<div class='content'><p>Puedes configurar la estrategia de pánico para abortar en tu archivo <code>Cargo.toml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("W3Byb2ZpbGUucmVsZWFzZV0KcGFuaWMgPSAnYWJvcnQn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[profile.release]
+panic = 'abort'</pre></div><div class='content'><p>Esta configuración se usa a menudo en aplicaciones críticas para el rendimiento donde la sobrecarga del desenrollado es indeseable.</p>
+</div><h1>Manejar Pánicos</h1>
+<div class='content'><p>Aunque los pánicos están destinados a errores irrecuperables, Rust proporciona formas de manejarlos de manera elegante en algunas situaciones.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong><code>std::panic::catch_unwind</code></strong>: Una función que te permite capturar un pánico y manejarlo.</li>
+<li><strong>Degradación Elegante</strong>: La práctica de manejar errores de una manera que permita que el programa continúe ejecutándose.</li>
+</ul>
+</div><h2>Ejemplo de Captura de un Pánico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6cGFuaWM7CgpmbiBtYWluKCkgewogICAgbGV0IHJlc3VsdCA9IHBhbmljOjpjYXRjaF91bndpbmQofHwgewogICAgICAgIHByaW50bG4hKCLCoUEgcHVudG8gZGUgZW50cmFyIGVuIHDDoW5pY28hIik7CiAgICAgICAgcGFuaWMhKCLCoUVzdG8gZXMgdW4gcMOhbmljbyEiKTsKICAgIH0pOwoKICAgIG1hdGNoIHJlc3VsdCB7CiAgICAgICAgT2soXykgPT4gcHJpbnRsbiEoIk5vIG9jdXJyacOzIG5pbmfDum4gcMOhbmljby4iKSwKICAgICAgICBFcnIoXykgPT4gcHJpbnRsbiEoIlNlIGNhcHR1csOzIHVuIHDDoW5pY28uIiksCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::panic;
+
+fn main() {
+    let result = panic::catch_unwind(|| {
+        println!(&quot;&iexcl;A punto de entrar en p&aacute;nico!&quot;);
+        panic!(&quot;&iexcl;Esto es un p&aacute;nico!&quot;);
+    });
+
+    match result {
+        Ok(_) =&gt; println!(&quot;No ocurri&oacute; ning&uacute;n p&aacute;nico.&quot;),
+        Err(_) =&gt; println!(&quot;Se captur&oacute; un p&aacute;nico.&quot;),
+    }
+}</pre></div><div class='content'><p>En este ejemplo, el pánico es capturado por <code>catch_unwind</code>, permitiendo que el programa lo maneje de manera elegante.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Entender el pánico y el desenrollado es esencial para escribir programas en Rust robustos. Aunque los pánicos indican errores irrecuperables, Rust proporciona mecanismos para manejarlos de manera elegante cuando sea necesario. Al usar estrategias de desenrollado y aborto adecuadamente, puedes asegurar que tus programas sean tanto eficientes como resilientes.</p>
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li><strong>Pánico</strong>: Usado para errores irrecuperables.</li>
+<li><strong>Desenrollado</strong>: Limpia la pila cuando ocurre un pánico.</li>
+<li><strong>Abortar</strong>: Termina el programa inmediatamente sin desenrollar.</li>
+<li><strong>Manejar Pánicos</strong>: Usa <code>std::panic::catch_unwind</code> para capturar y manejar pánicos de manera elegante.</li>
+</ul>
+<p>Al dominar estos conceptos, estarás mejor equipado para manejar errores en tus programas en Rust de manera efectiva.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-with-option'>&#x25C4;Manejo de Errores con Option</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pánico y Desenrollado</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='modules'>Módulos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/es/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

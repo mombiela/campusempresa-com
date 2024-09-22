@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procesamiento de JSON y XML en F#</title>
+
+    <link rel="alternate" href="https://campusempresa.com/es/fsharp/json-and-xml-processing" hreflang="es" />
+    <link rel="alternate" href="https://campusempresa.com/es/fsharp/json-and-xml-processing" hreflang="x-default" />
+	<link rel="alternate" href="https://campusempresa.com/ca/fsharp/json-and-xml-processing" hreflang="ca" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/es/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<b id="lit_lang_es" class="px-2">ES</b>
+				|
+				<a href="/ca/fsharp/json-and-xml-processing" id="lnk_lang_ca" data-lang="ca" class="px-2">CA</a>
+					</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/es/objective">El Proyecto</a>
+				<a href="/es/about">Sobre nosotros</a>
+				<a href="/es/contribute">Contribuir</a>
+				<a href="/es/donate">Donaciones</a>
+				<a href="/es/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='file-io'>&#x25C4;Entrada/Salida de Archivos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Procesamiento de JSON y XML en F#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='database-access'>Acceso a Bases de Datos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En esta sección, exploraremos cómo manejar datos JSON y XML en F#. JSON (JavaScript Object Notation) y XML (eXtensible Markup Language) son formatos ampliamente utilizados para el intercambio de datos. Entender cómo analizar, manipular y generar estos formatos es crucial para muchas tareas de programación, incluyendo desarrollo web, análisis de datos e integración de API.</p>
+</div><h1>Procesamiento de JSON</h1>
+<div class='content'></div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Estructura de JSON</strong>: JSON es un formato de intercambio de datos ligero que es fácil de leer y escribir para los humanos, y fácil de analizar y generar para las máquinas. Se construye sobre dos estructuras:
+<ul>
+<li>Una colección de pares nombre/valor (a menudo llamada un objeto).</li>
+<li>Una lista ordenada de valores (a menudo llamada una matriz).</li>
+</ul>
+</li>
+<li><strong>Bibliotecas de F# para JSON</strong>: F# proporciona varias bibliotecas para trabajar con JSON, incluyendo <code>Newtonsoft.Json</code> (Json.NET) y <code>FSharp.Data</code>.</li>
+</ul>
+</div><h2>Análisis de JSON</h2>
+<div class='content'><p>Para analizar JSON en F#, puedes usar la biblioteca <code>FSharp.Data</code>, que proporciona un proveedor de tipos para JSON.</p>
+<h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3IgIm51Z2V0OiBGU2hhcnAuRGF0YSIKb3BlbiBGU2hhcnAuRGF0YQoKbGV0IGpzb24gPSAiIiJ7ICJuYW1lIjogIkpvaG4iLCAiYWdlIjogMzAsICJpc1N0dWRlbnQiOiBmYWxzZSB9IiIiCmxldCBwYXJzZWRKc29uID0gSnNvblZhbHVlLlBhcnNlKGpzb24pCgpsZXQgbmFtZSA9IHBhcnNlZEpzb24/bmFtZS5Bc1N0cmluZygpCmxldCBhZ2UgPSBwYXJzZWRKc29uP2FnZS5Bc0ludGVnZXIoKQpsZXQgaXNTdHVkZW50ID0gcGFyc2VkSnNvbj9pc1N0dWRlbnQuQXNCb29sZWFuKCkKCnByaW50Zm4gIk5hbWU6ICVzLCBBZ2U6ICVkLCBJcyBTdHVkZW50OiAlYiIgbmFtZSBhZ2UgaXNTdHVkZW50"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#r &quot;nuget: FSharp.Data&quot;
+open FSharp.Data
+
+let json = &quot;&quot;&quot;{ &quot;name&quot;: &quot;John&quot;, &quot;age&quot;: 30, &quot;isStudent&quot;: false }&quot;&quot;&quot;
+let parsedJson = JsonValue.Parse(json)
+
+let name = parsedJson?name.AsString()
+let age = parsedJson?age.AsInteger()
+let isStudent = parsedJson?isStudent.AsBoolean()
+
+printfn &quot;Name: %s, Age: %d, Is Student: %b&quot; name age isStudent</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li>Referenciamos la biblioteca <code>FSharp.Data</code>.</li>
+<li>Definimos una cadena JSON y la analizamos usando <code>JsonValue.Parse</code>.</li>
+<li>Extraemos valores usando el operador <code>?</code> y los métodos de conversión de tipo apropiados (<code>AsString</code>, <code>AsInteger</code>, <code>AsBoolean</code>).</li>
+</ul>
+</div><h2>Generación de JSON</h2>
+<div class='content'><p>Generar JSON implica crear un objeto JSON y convertirlo a una cadena.</p>
+<h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBGU2hhcnAuRGF0YS5Kc29uRXh0ZW5zaW9ucwoKbGV0IGpzb25PYmplY3QgPSBKc29uVmFsdWUuUmVjb3JkIFt8CiAgICAibmFtZSIsIEpzb25WYWx1ZS5TdHJpbmcgIkpvaG4iCiAgICAiYWdlIiwgSnNvblZhbHVlLk51bWJlciAzME0KICAgICJpc1N0dWRlbnQiLCBKc29uVmFsdWUuQm9vbGVhbiBmYWxzZQp8XQoKbGV0IGpzb25TdHJpbmcgPSBqc29uT2JqZWN0LlRvU3RyaW5nKCkKcHJpbnRmbiAiR2VuZXJhdGVkIEpTT046ICVzIiBqc29uU3RyaW5n"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open FSharp.Data.JsonExtensions
+
+let jsonObject = JsonValue.Record [|
+    &quot;name&quot;, JsonValue.String &quot;John&quot;
+    &quot;age&quot;, JsonValue.Number 30M
+    &quot;isStudent&quot;, JsonValue.Boolean false
+|]
+
+let jsonString = jsonObject.ToString()
+printfn &quot;Generated JSON: %s&quot; jsonString</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li>Usamos <code>JsonValue.Record</code> para crear un objeto JSON.</li>
+<li>Convertimos el objeto JSON a una cadena usando <code>ToString</code>.</li>
+</ul>
+</div><h1>Procesamiento de XML</h1>
+<div class='content'></div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Estructura de XML</strong>: XML es un lenguaje de marcado que define un conjunto de reglas para codificar documentos en un formato que es legible tanto para humanos como para máquinas. Utiliza una estructura de árbol con elementos, atributos y texto.</li>
+<li><strong>Bibliotecas de F# para XML</strong>: F# proporciona el espacio de nombres <code>System.Xml</code> y la biblioteca <code>FSharp.Data</code> para trabajar con XML.</li>
+</ul>
+</div><h2>Análisis de XML</h2>
+<div class='content'><p>Para analizar XML en F#, puedes usar el espacio de nombres <code>System.Xml.Linq</code>.</p>
+<h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0uWG1sLkxpbnEKCmxldCB4bWwgPSAiPHBlcnNvbj48bmFtZT5Kb2huPC9uYW1lPjxhZ2U+MzA8L2FnZT48aXNTdHVkZW50PmZhbHNlPC9pc1N0dWRlbnQ+PC9wZXJzb24+IgpsZXQgcGFyc2VkWG1sID0gWERvY3VtZW50LlBhcnNlKHhtbCkKCmxldCBuYW1lID0gcGFyc2VkWG1sLlJvb3QuRWxlbWVudChYTmFtZS5HZXQoIm5hbWUiKSkuVmFsdWUKbGV0IGFnZSA9IHBhcnNlZFhtbC5Sb290LkVsZW1lbnQoWE5hbWUuR2V0KCJhZ2UiKSkuVmFsdWUKbGV0IGlzU3R1ZGVudCA9IHBhcnNlZFhtbC5Sb290LkVsZW1lbnQoWE5hbWUuR2V0KCJpc1N0dWRlbnQiKSkuVmFsdWUKCnByaW50Zm4gIk5hbWU6ICVzLCBBZ2U6ICVzLCBJcyBTdHVkZW50OiAlcyIgbmFtZSBhZ2UgaXNTdHVkZW50"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System.Xml.Linq
+
+let xml = &quot;&lt;person&gt;&lt;name&gt;John&lt;/name&gt;&lt;age&gt;30&lt;/age&gt;&lt;isStudent&gt;false&lt;/isStudent&gt;&lt;/person&gt;&quot;
+let parsedXml = XDocument.Parse(xml)
+
+let name = parsedXml.Root.Element(XName.Get(&quot;name&quot;)).Value
+let age = parsedXml.Root.Element(XName.Get(&quot;age&quot;)).Value
+let isStudent = parsedXml.Root.Element(XName.Get(&quot;isStudent&quot;)).Value
+
+printfn &quot;Name: %s, Age: %s, Is Student: %s&quot; name age isStudent</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li>Usamos <code>XDocument.Parse</code> para analizar la cadena XML.</li>
+<li>Navegamos por el árbol XML usando <code>Root.Element</code> y extraemos valores usando <code>Value</code>.</li>
+</ul>
+</div><h2>Generación de XML</h2>
+<div class='content'><p>Generar XML implica crear un árbol XML y convertirlo a una cadena.</p>
+<h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IHhtbFRyZWUgPSAKICAgIFhFbGVtZW50KFhOYW1lLkdldCgicGVyc29uIiksCiAgICAgICAgWEVsZW1lbnQoWE5hbWUuR2V0KCJuYW1lIiksICJKb2huIiksCiAgICAgICAgWEVsZW1lbnQoWE5hbWUuR2V0KCJhZ2UiKSwgIjMwIiksCiAgICAgICAgWEVsZW1lbnQoWE5hbWUuR2V0KCJpc1N0dWRlbnQiKSwgImZhbHNlIikKICAgICkKCmxldCB4bWxTdHJpbmcgPSB4bWxUcmVlLlRvU3RyaW5nKCkKcHJpbnRmbiAiR2VuZXJhdGVkIFhNTDogJXMiIHhtbFN0cmluZw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let xmlTree = 
+    XElement(XName.Get(&quot;person&quot;),
+        XElement(XName.Get(&quot;name&quot;), &quot;John&quot;),
+        XElement(XName.Get(&quot;age&quot;), &quot;30&quot;),
+        XElement(XName.Get(&quot;isStudent&quot;), &quot;false&quot;)
+    )
+
+let xmlString = xmlTree.ToString()
+printfn &quot;Generated XML: %s&quot; xmlString</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li>Usamos <code>XElement</code> para crear un árbol XML.</li>
+<li>Convertimos el árbol XML a una cadena usando <code>ToString</code>.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, cubrimos los conceptos básicos del procesamiento de JSON y XML en F#. Aprendimos cómo analizar y generar JSON usando la biblioteca <code>FSharp.Data</code> y cómo analizar y generar XML usando el espacio de nombres <code>System.Xml.Linq</code>. Dominar estas habilidades te permitirá manejar formatos de intercambio de datos de manera efectiva en tus aplicaciones F#.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='file-io'>&#x25C4;Entrada/Salida de Archivos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Procesamiento de JSON y XML en F#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='database-access'>Acceso a Bases de Datos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/es/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>
