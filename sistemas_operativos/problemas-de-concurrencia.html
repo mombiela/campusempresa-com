@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problemas de concurrencia: condiciones de carrera y deadlocks</title>
+
+    <link rel="alternate" href="https://campusempresa.com/sistemas_operativos/problemas-de-concurrencia" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/sistemas_operativos/problemas-de-concurrencia" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/sistemas_operativos/problemas-de-concurrencia" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/sistemas_operativos/problemas-de-concurrencia" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/sistemas_operativos/problemas-de-concurrencia" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='sincronizacion-y-comunicacion'>&#x25C4;Sincronización y comunicación entre procesos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Problemas de concurrencia: condiciones de carrera y deadlocks</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='algoritmos-de-sincronizacion'>Algoritmos de sincronización &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En los sistemas operativos modernos, la concurrencia es un aspecto crucial que permite la ejecución simultánea de múltiples procesos o hilos. Sin embargo, la concurrencia también introduce problemas complejos como las condiciones de carrera y los deadlocks. Este tema abordará estos problemas, sus causas, y cómo pueden ser mitigados.</p>
+</div><h1>Condiciones de carrera</h1>
+<div class='content'></div><h2>Definición</h2>
+<div class='content'><p>Una condición de carrera ocurre cuando el comportamiento de un software depende del orden en que se ejecutan las operaciones de los hilos o procesos concurrentes. Esto puede llevar a resultados inesperados y errores difíciles de reproducir.</p>
+</div><h2>Ejemplo de condición de carrera</h2>
+<div class='content'><p>Consideremos un contador compartido entre dos hilos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxwdGhyZWFkLmg+CgppbnQgY291bnRlciA9IDA7CnB0aHJlYWRfbXV0ZXhfdCBsb2NrOwoKdm9pZCogaW5jcmVtZW50KHZvaWQqIGFyZykgewogICAgZm9yIChpbnQgaSA9IDA7IGkgPCAxMDAwMDAwOyBpKyspIHsKICAgICAgICBwdGhyZWFkX211dGV4X2xvY2soJmxvY2spOwogICAgICAgIGNvdW50ZXIrKzsKICAgICAgICBwdGhyZWFkX211dGV4X3VubG9jaygmbG9jayk7CiAgICB9CiAgICByZXR1cm4gTlVMTDsKfQoKaW50IG1haW4oKSB7CiAgICBwdGhyZWFkX3QgdDEsIHQyOwogICAgcHRocmVhZF9tdXRleF9pbml0KCZsb2NrLCBOVUxMKTsKCiAgICBwdGhyZWFkX2NyZWF0ZSgmdDEsIE5VTEwsIGluY3JlbWVudCwgTlVMTCk7CiAgICBwdGhyZWFkX2NyZWF0ZSgmdDIsIE5VTEwsIGluY3JlbWVudCwgTlVMTCk7CgogICAgcHRocmVhZF9qb2luKHQxLCBOVUxMKTsKICAgIHB0aHJlYWRfam9pbih0MiwgTlVMTCk7CgogICAgcHJpbnRmKCJGaW5hbCBjb3VudGVyIHZhbHVlOiAlZFxuIiwgY291bnRlcik7CiAgICBwdGhyZWFkX211dGV4X2Rlc3Ryb3koJmxvY2spOwogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+int counter = 0;
+pthread_mutex_t lock;
+
+void* increment(void* arg) {
+    for (int i = 0; i &lt; 1000000; i++) {
+        pthread_mutex_lock(&amp;lock);
+        counter++;
+        pthread_mutex_unlock(&amp;lock);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    pthread_mutex_init(&amp;lock, NULL);
+
+    pthread_create(&amp;t1, NULL, increment, NULL);
+    pthread_create(&amp;t2, NULL, increment, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    printf(&quot;Final counter value: %d\n&quot;, counter);
+    pthread_mutex_destroy(&amp;lock);
+    return 0;
+}</pre></div><div class='content'></div><h2>Mitigación</h2>
+<div class='content'><ul>
+<li><strong>Bloqueos (Locks):</strong> Utilizar mecanismos de sincronización como mutexes para asegurar que solo un hilo pueda acceder a una sección crítica a la vez.</li>
+<li><strong>Variables atómicas:</strong> Utilizar variables atómicas que garantizan operaciones indivisibles.</li>
+</ul>
+</div><h1>Deadlocks</h1>
+<div class='content'></div><h2>Definición</h2>
+<div class='content'><p>Un deadlock es una situación en la que dos o más procesos o hilos están bloqueados indefinidamente, esperando recursos que están siendo retenidos por otros procesos o hilos en el mismo conjunto.</p>
+</div><h2>Ejemplo de deadlock</h2>
+<div class='content'><p>Consideremos dos hilos que intentan adquirir dos bloqueos en orden inverso:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxwdGhyZWFkLmg+CgpwdGhyZWFkX211dGV4X3QgbG9jazE7CnB0aHJlYWRfbXV0ZXhfdCBsb2NrMjsKCnZvaWQqIHRocmVhZDEodm9pZCogYXJnKSB7CiAgICBwdGhyZWFkX211dGV4X2xvY2soJmxvY2sxKTsKICAgIHNsZWVwKDEpOyAvLyBTaW11bGEgYWxndW5hIG9wZXJhY2nDs24KICAgIHB0aHJlYWRfbXV0ZXhfbG9jaygmbG9jazIpOwoKICAgIHByaW50ZigiVGhyZWFkIDEgYWNxdWlyZWQgYm90aCBsb2Nrc1xuIik7CgogICAgcHRocmVhZF9tdXRleF91bmxvY2soJmxvY2syKTsKICAgIHB0aHJlYWRfbXV0ZXhfdW5sb2NrKCZsb2NrMSk7CiAgICByZXR1cm4gTlVMTDsKfQoKdm9pZCogdGhyZWFkMih2b2lkKiBhcmcpIHsKICAgIHB0aHJlYWRfbXV0ZXhfbG9jaygmbG9jazIpOwogICAgc2xlZXAoMSk7IC8vIFNpbXVsYSBhbGd1bmEgb3BlcmFjacOzbgogICAgcHRocmVhZF9tdXRleF9sb2NrKCZsb2NrMSk7CgogICAgcHJpbnRmKCJUaHJlYWQgMiBhY3F1aXJlZCBib3RoIGxvY2tzXG4iKTsKCiAgICBwdGhyZWFkX211dGV4X3VubG9jaygmbG9jazEpOwogICAgcHRocmVhZF9tdXRleF91bmxvY2soJmxvY2syKTsKICAgIHJldHVybiBOVUxMOwp9CgppbnQgbWFpbigpIHsKICAgIHB0aHJlYWRfdCB0MSwgdDI7CiAgICBwdGhyZWFkX211dGV4X2luaXQoJmxvY2sxLCBOVUxMKTsKICAgIHB0aHJlYWRfbXV0ZXhfaW5pdCgmbG9jazIsIE5VTEwpOwoKICAgIHB0aHJlYWRfY3JlYXRlKCZ0MSwgTlVMTCwgdGhyZWFkMSwgTlVMTCk7CiAgICBwdGhyZWFkX2NyZWF0ZSgmdDIsIE5VTEwsIHRocmVhZDIsIE5VTEwpOwoKICAgIHB0aHJlYWRfam9pbih0MSwgTlVMTCk7CiAgICBwdGhyZWFkX2pvaW4odDIsIE5VTEwpOwoKICAgIHB0aHJlYWRfbXV0ZXhfZGVzdHJveSgmbG9jazEpOwogICAgcHRocmVhZF9tdXRleF9kZXN0cm95KCZsb2NrMik7CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+
+pthread_mutex_t lock1;
+pthread_mutex_t lock2;
+
+void* thread1(void* arg) {
+    pthread_mutex_lock(&amp;lock1);
+    sleep(1); // Simula alguna operaci&oacute;n
+    pthread_mutex_lock(&amp;lock2);
+
+    printf(&quot;Thread 1 acquired both locks\n&quot;);
+
+    pthread_mutex_unlock(&amp;lock2);
+    pthread_mutex_unlock(&amp;lock1);
+    return NULL;
+}
+
+void* thread2(void* arg) {
+    pthread_mutex_lock(&amp;lock2);
+    sleep(1); // Simula alguna operaci&oacute;n
+    pthread_mutex_lock(&amp;lock1);
+
+    printf(&quot;Thread 2 acquired both locks\n&quot;);
+
+    pthread_mutex_unlock(&amp;lock1);
+    pthread_mutex_unlock(&amp;lock2);
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+    pthread_mutex_init(&amp;lock1, NULL);
+    pthread_mutex_init(&amp;lock2, NULL);
+
+    pthread_create(&amp;t1, NULL, thread1, NULL);
+    pthread_create(&amp;t2, NULL, thread2, NULL);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    pthread_mutex_destroy(&amp;lock1);
+    pthread_mutex_destroy(&amp;lock2);
+    return 0;
+}</pre></div><div class='content'></div><h2>Mitigación</h2>
+<div class='content'><ul>
+<li><strong>Evitar la espera circular:</strong> Asegurarse de que todos los procesos adquieran los recursos en el mismo orden.</li>
+<li><strong>Detección y recuperación:</strong> Implementar algoritmos que detecten deadlocks y tomen acciones correctivas.</li>
+<li><strong>Asignación de recursos:</strong> Utilizar técnicas como el algoritmo del banquero para evitar la asignación de recursos que pueda llevar a un deadlock.</li>
+</ul>
+</div><h1>Comparación de Condiciones de Carrera y Deadlocks</h1>
+<div class='content'><p>| Aspecto                | Condición de Carrera                         | Deadlock                                  |
+|------------------------|----------------------------------------------|-------------------------------------------|
+| Definición             | Comportamiento depende del orden de ejecución| Bloqueo indefinido esperando recursos     |
+| Causa                  | Acceso concurrente a recursos compartidos    | Espera circular de recursos               |
+| Mitigación             | Bloqueos, variables atómicas                 | Evitar espera circular, detección y recuperación |
+| Detección              | Difícil de reproducir y detectar             | Algoritmos específicos pueden detectarlo  |</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los problemas de concurrencia como las condiciones de carrera y los deadlocks son desafíos críticos en el diseño de sistemas operativos y aplicaciones concurrentes. Comprender estos problemas y aplicar técnicas adecuadas para mitigarlos es esencial para desarrollar software robusto y eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='sincronizacion-y-comunicacion'>&#x25C4;Sincronización y comunicación entre procesos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Problemas de concurrencia: condiciones de carrera y deadlocks</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='algoritmos-de-sincronizacion'>Algoritmos de sincronización &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

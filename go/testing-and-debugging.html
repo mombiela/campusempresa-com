@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas y Depuración en Go</title>
+
+    <link rel="alternate" href="https://campusempresa.com/go/testing-and-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/go/testing-and-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/go/testing-and-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/go/testing-and-debugging" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/go/testing-and-debugging" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementing-features'>&#x25C4;Implementación de Funcionalidades</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pruebas y Depuración en Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='deploying-the-application'>Despliegue de la Aplicación &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las pruebas y la depuración son habilidades cruciales para cualquier programador. En esta sección, cubriremos los conceptos básicos de las pruebas y la depuración en Go, progresando desde técnicas para principiantes hasta técnicas avanzadas. Al final de esta sección, deberías sentirte cómodo escribiendo pruebas, utilizando las herramientas de prueba de Go y depurando tus programas en Go de manera efectiva.</p>
+</div><h1>Pruebas en Go</h1>
+<div class='content'></div><h2>Conceptos Básicos de las Pruebas</h2>
+<div class='content'><ul>
+<li><strong>Paquete de Pruebas de Go</strong>: Go tiene un paquete de pruebas incorporado <code>testing</code> que proporciona soporte para pruebas automatizadas.</li>
+<li><strong>Funciones de Prueba</strong>: Las funciones de prueba en Go se identifican por el prefijo <code>Test</code> seguido del nombre de la función que se está probando.</li>
+</ul>
+<h4>Ejemplo de una Prueba Básica</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQWRkKGEsIGIgaW50KSBpbnQgewogICAgcmV0dXJuIGEgKyBiCn0KCmZ1bmMgVGVzdEFkZCh0ICp0ZXN0aW5nLlQpIHsKICAgIHJlc3VsdCA6PSBBZGQoMiwgMykKICAgIGV4cGVjdGVkIDo9IDUKICAgIGlmIHJlc3VsdCAhPSBleHBlY3RlZCB7CiAgICAgICAgdC5FcnJvcmYoIkFkZCgyLCAzKSA9ICVkOyB3YW50ICVkIiwgcmVzdWx0LCBleHBlY3RlZCkKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func Add(a, b int) int {
+    return a + b
+}
+
+func TestAdd(t *testing.T) {
+    result := Add(2, 3)
+    expected := 5
+    if result != expected {
+        t.Errorf(&quot;Add(2, 3) = %d; want %d&quot;, result, expected)
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Ejecutar Pruebas</strong>: Usa el comando <code>go test</code> para ejecutar pruebas en tu paquete de Go.</li>
+</ul>
+</div><h2>Pruebas Basadas en Tablas</h2>
+<div class='content'><ul>
+<li><strong>Concepto</strong>: Las pruebas basadas en tablas usan una tabla de entradas y salidas esperadas para ejecutar múltiples casos de prueba en una sola función de prueba.</li>
+<li><strong>Ventajas</strong>: Facilitan la adición de nuevos casos de prueba y mejoran la legibilidad de las pruebas.</li>
+</ul>
+<h4>Ejemplo de Prueba Basada en Tablas</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgTXVsdGlwbHkoYSwgYiBpbnQpIGludCB7CiAgICByZXR1cm4gYSAqIGIKfQoKZnVuYyBUZXN0TXVsdGlwbHkodCAqdGVzdGluZy5UKSB7CiAgICB0ZXN0cyA6PSBbXXN0cnVjdCB7CiAgICAgICAgYSwgYiwgZXhwZWN0ZWQgaW50CiAgICB9ewogICAgICAgIHsyLCAzLCA2fSwKICAgICAgICB7NCwgNSwgMjB9LAogICAgICAgIHswLCAxMCwgMH0sCiAgICB9CgogICAgZm9yIF8sIHR0IDo9IHJhbmdlIHRlc3RzIHsKICAgICAgICByZXN1bHQgOj0gTXVsdGlwbHkodHQuYSwgdHQuYikKICAgICAgICBpZiByZXN1bHQgIT0gdHQuZXhwZWN0ZWQgewogICAgICAgICAgICB0LkVycm9yZigiTXVsdGlwbHkoJWQsICVkKSA9ICVkOyB3YW50ICVkIiwgdHQuYSwgdHQuYiwgcmVzdWx0LCB0dC5leHBlY3RlZCkKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func Multiply(a, b int) int {
+    return a * b
+}
+
+func TestMultiply(t *testing.T) {
+    tests := []struct {
+        a, b, expected int
+    }{
+        {2, 3, 6},
+        {4, 5, 20},
+        {0, 10, 0},
+    }
+
+    for _, tt := range tests {
+        result := Multiply(tt.a, tt.b)
+        if result != tt.expected {
+            t.Errorf(&quot;Multiply(%d, %d) = %d; want %d&quot;, tt.a, tt.b, result, tt.expected)
+        }
+    }
+}</pre></div><div class='content'></div><h2>Pruebas de Rendimiento</h2>
+<div class='content'><ul>
+<li><strong>Propósito</strong>: Las pruebas de rendimiento ayudan a medir el rendimiento de tu código.</li>
+<li><strong>Funciones de Rendimiento</strong>: Se identifican por el prefijo <code>Benchmark</code> y toman un parámetro <code>*testing.B</code>.</li>
+</ul>
+<h4>Ejemplo de Prueba de Rendimiento</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrQWRkKGIgKnRlc3RpbmcuQikgewogICAgZm9yIGkgOj0gMDsgaSA8IGIuTjsgaSsrIHsKICAgICAgICBBZGQoMiwgMykKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkAdd(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        Add(2, 3)
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Ejecutar Pruebas de Rendimiento</strong>: Usa el comando <code>go test -bench .</code> para ejecutar pruebas de rendimiento.</li>
+</ul>
+</div><h2>Cobertura de Pruebas</h2>
+<div class='content'><ul>
+<li><strong>Concepto</strong>: La cobertura de pruebas mide el porcentaje de tu código que está cubierto por pruebas.</li>
+<li><strong>Comando</strong>: Usa <code>go test -cover</code> para ver la cobertura de pruebas de tu paquete.</li>
+</ul>
+</div><h1>Depuración en Go</h1>
+<div class='content'></div><h2>Uso de Sentencias Print</h2>
+<div class='content'><ul>
+<li><strong>Técnica Básica</strong>: Insertar sentencias print (<code>fmt.Println</code>) en tu código para entender el flujo y el estado de las variables.</li>
+<li><strong>Limitaciones</strong>: Puede ser un proceso que consume tiempo y desordenar el código.</li>
+</ul>
+</div><h2>Uso del Depurador Delve</h2>
+<div class='content'><ul>
+<li><strong>Delve</strong>: Un depurador poderoso para Go que te permite establecer puntos de interrupción, inspeccionar variables y controlar el flujo de ejecución.</li>
+<li><strong>Instalación</strong>: Instala Delve usando <code>go install github.com/go-delve/delve/cmd/dlv@latest</code>.</li>
+</ul>
+<h4>Comandos Básicos en Delve</h4>
+<ul>
+<li><strong>Iniciar Delve</strong>: <code>dlv debug</code> para iniciar la depuración de tu programa.</li>
+<li><strong>Establecer Puntos de Interrupción</strong>: <code>break main.go:10</code> para establecer un punto de interrupción en la línea 10 de <code>main.go</code>.</li>
+<li><strong>Ejecutar el Programa</strong>: <code>continue</code> para ejecutar el programa hasta el siguiente punto de interrupción.</li>
+<li><strong>Inspeccionar Variables</strong>: <code>print variableName</code> para inspeccionar el valor de una variable.</li>
+<li><strong>Avanzar en el Código</strong>: <code>step</code> para entrar en funciones, <code>next</code> para avanzar sobre funciones y <code>stepout</code> para salir de la función actual.</li>
+</ul>
+</div><h2>Ejemplo de Sesión de Depuración</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JCBkbHYgZGVidWcKVHlwZSAnaGVscCcgZm9yIGxpc3Qgb2YgY29tbWFuZHMuCihkbHYpIGJyZWFrIG1haW4uZ286MTAKQnJlYWtwb2ludCAxIHNldCBhdCAweDQ5ZjFjNiBmb3IgbWFpbi5tYWluKCkgLi9tYWluLmdvOjEwCihkbHYpIGNvbnRpbnVlCj4gbWFpbi5tYWluKCkgLi9tYWluLmdvOjEwIChoaXRzIGdvcm91dGluZSgxKToxKQogICAgNTogZnVuYyBtYWluKCkgewogICAgNjogICAgIGEgOj0gMgogICAgNzogICAgIGIgOj0gMwogICAgODogICAgIHJlc3VsdCA6PSBBZGQoYSwgYikKICAgIDk6ICAgICBmbXQuUHJpbnRsbigiUmVzdWx0OiIsIHJlc3VsdCkKPT4gMTA6IH0KKGRsdikgcHJpbnQgYQoyCihkbHYpIG5leHQKKGRsdikgcHJpbnQgYgozCihkbHYpIGNvbnRpbnVl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$ dlv debug
+Type 'help' for list of commands.
+(dlv) break main.go:10
+Breakpoint 1 set at 0x49f1c6 for main.main() ./main.go:10
+(dlv) continue
+&gt; main.main() ./main.go:10 (hits goroutine(1):1)
+    5: func main() {
+    6:     a := 2
+    7:     b := 3
+    8:     result := Add(a, b)
+    9:     fmt.Println(&quot;Result:&quot;, result)
+=&gt; 10: }
+(dlv) print a
+2
+(dlv) next
+(dlv) print b
+3
+(dlv) continue</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Las pruebas y la depuración son prácticas esenciales para escribir código en Go que sea confiable y mantenible. Al dominar el paquete de pruebas de Go, escribir pruebas efectivas y usar herramientas como Delve para la depuración, puedes mejorar significativamente la calidad de tu código. Recuerda escribir pruebas para tu código regularmente y usar herramientas de depuración para identificar y solucionar problemas rápidamente.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementing-features'>&#x25C4;Implementación de Funcionalidades</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pruebas y Depuración en Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='deploying-the-application'>Despliegue de la Aplicación &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de Gráficos de Dispersión</title>
+
+    <link rel="alternate" href="https://campusempresa.com/d3_js/creating-scatter-plots" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/d3_js/creating-scatter-plots" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/d3_js/creating-scatter-plots" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/d3_js/creating-scatter-plots" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/d3_js/creating-scatter-plots" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-pie-charts'>&#x25C4;Creación de Gráficos de Pastel</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creación de Gráficos de Dispersión</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='hierarchical-data-and-tree-layouts'>Datos Jerárquicos y Diseños de Árbol &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los gráficos de dispersión son una poderosa herramienta de visualización utilizada para mostrar la relación entre dos variables. En esta sección, aprenderemos a crear gráficos de dispersión usando D3.js, una biblioteca de JavaScript para producir visualizaciones de datos dinámicas e interactivas en navegadores web.</p>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'><p>Antes de comenzar a crear gráficos de dispersión, asegúrate de tener lo siguiente:</p>
+<ul>
+<li>Un conocimiento básico de HTML, CSS y JavaScript.</li>
+<li>La biblioteca D3.js incluida en tu proyecto.</li>
+</ul>
+</div><h2>Incluir D3.js</h2>
+<div class='content'><p>Puedes incluir D3.js en tu archivo HTML añadiendo la siguiente etiqueta de script en la sección <code>&lt;head&gt;</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVzIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+R3LDoWZpY28gZGUgRGlzcGVyc2nDs24gY29uIEQzLmpzPC90aXRsZT4KICAgIDxzY3JpcHQgc3JjPSJodHRwczovL2QzanMub3JnL2QzLnY3Lm1pbi5qcyI+PC9zY3JpcHQ+CjwvaGVhZD4KPGJvZHk+CiAgICA8IS0tIFR1IGNvbnRlbmlkbyBpcsOhIGFxdcOtIC0tPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Gr&aacute;fico de Dispersi&oacute;n con D3.js&lt;/title&gt;
+    &lt;script src=&quot;https://d3js.org/d3.v7.min.js&quot;&gt;&lt;/script&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;!-- Tu contenido ir&aacute; aqu&iacute; --&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Creación de un Gráfico de Dispersión Básico</h1>
+<div class='content'><p>Comencemos creando un gráfico de dispersión simple.</p>
+</div><h2>Estructura HTML</h2>
+<div class='content'><p>Primero, configura la estructura básica de HTML:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGJvZHk+CiAgICA8ZGl2IGlkPSJzY2F0dGVyLXBsb3QiPjwvZGl2PgogICAgPHNjcmlwdCBzcmM9InNjYXR0ZXItcGxvdC5qcyI+PC9zY3JpcHQ+CjwvYm9keT4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;body&gt;
+    &lt;div id=&quot;scatter-plot&quot;&gt;&lt;/div&gt;
+    &lt;script src=&quot;scatter-plot.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;</pre></div><div class='content'></div><h2>Código JavaScript</h2>
+<div class='content'><p>A continuación, crea un archivo <code>scatter-plot.js</code> y añade el siguiente código:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRXN0YWJsZWNlIGxhcyBkaW1lbnNpb25lcyB5IG3DoXJnZW5lcyBkZWwgZ3LDoWZpY28KY29uc3QgbWFyZ2luID0ge3RvcDogMjAsIHJpZ2h0OiAzMCwgYm90dG9tOiA0MCwgbGVmdDogNTB9LAogICAgICB3aWR0aCA9IDQ2MCAtIG1hcmdpbi5sZWZ0IC0gbWFyZ2luLnJpZ2h0LAogICAgICBoZWlnaHQgPSA0MDAgLSBtYXJnaW4udG9wIC0gbWFyZ2luLmJvdHRvbTsKCi8vIEHDsWFkZSBlbCBvYmpldG8gc3ZnIGFsIGN1ZXJwbyBkZSBsYSBww6FnaW5hCmNvbnN0IHN2ZyA9IGQzLnNlbGVjdCgiI3NjYXR0ZXItcGxvdCIpCiAgLmFwcGVuZCgic3ZnIikKICAgIC5hdHRyKCJ3aWR0aCIsIHdpZHRoICsgbWFyZ2luLmxlZnQgKyBtYXJnaW4ucmlnaHQpCiAgICAuYXR0cigiaGVpZ2h0IiwgaGVpZ2h0ICsgbWFyZ2luLnRvcCArIG1hcmdpbi5ib3R0b20pCiAgLmFwcGVuZCgiZyIpCiAgICAuYXR0cigidHJhbnNmb3JtIiwgYHRyYW5zbGF0ZSgke21hcmdpbi5sZWZ0fSwke21hcmdpbi50b3B9KWApOwoKLy8gRGF0b3MgZGUgZWplbXBsbwpjb25zdCBkYXRhID0gWwogIHt4OiAzMCwgeTogMjB9LCB7eDogNTAsIHk6IDkwfSwge3g6IDcwLCB5OiA1MH0sCiAge3g6IDkwLCB5OiAxMjB9LCB7eDogMTEwLCB5OiA4MH0sIHt4OiAxMzAsIHk6IDE1MH0KXTsKCi8vIEHDsWFkaXIgZWplIFgKY29uc3QgeCA9IGQzLnNjYWxlTGluZWFyKCkKICAuZG9tYWluKFswLCBkMy5tYXgoZGF0YSwgZCA9PiBkLngpXSkKICAucmFuZ2UoWyAwLCB3aWR0aCBdKTsKc3ZnLmFwcGVuZCgiZyIpCiAgLmF0dHIoInRyYW5zZm9ybSIsIGB0cmFuc2xhdGUoMCwke2hlaWdodH0pYCkKICAuY2FsbChkMy5heGlzQm90dG9tKHgpKTsKCi8vIEHDsWFkaXIgZWplIFkKY29uc3QgeSA9IGQzLnNjYWxlTGluZWFyKCkKICAuZG9tYWluKFswLCBkMy5tYXgoZGF0YSwgZCA9PiBkLnkpXSkKICAucmFuZ2UoWyBoZWlnaHQsIDBdKTsKc3ZnLmFwcGVuZCgiZyIpCiAgLmNhbGwoZDMuYXhpc0xlZnQoeSkpOwoKLy8gQcOxYWRpciBwdW50b3MKc3ZnLmFwcGVuZCgnZycpCiAgLnNlbGVjdEFsbCgiZG90IikKICAuZGF0YShkYXRhKQogIC5lbnRlcigpCiAgLmFwcGVuZCgiY2lyY2xlIikKICAgIC5hdHRyKCJjeCIsIGQgPT4geChkLngpICkKICAgIC5hdHRyKCJjeSIsIGQgPT4geShkLnkpICkKICAgIC5hdHRyKCJyIiwgNSkKICAgIC5zdHlsZSgiZmlsbCIsICIjNjliM2EyIik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Establece las dimensiones y m&aacute;rgenes del gr&aacute;fico
+const margin = {top: 20, right: 30, bottom: 40, left: 50},
+      width = 460 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+
+// A&ntilde;ade el objeto svg al cuerpo de la p&aacute;gina
+const svg = d3.select(&quot;#scatter-plot&quot;)
+  .append(&quot;svg&quot;)
+    .attr(&quot;width&quot;, width + margin.left + margin.right)
+    .attr(&quot;height&quot;, height + margin.top + margin.bottom)
+  .append(&quot;g&quot;)
+    .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`);
+
+// Datos de ejemplo
+const data = [
+  {x: 30, y: 20}, {x: 50, y: 90}, {x: 70, y: 50},
+  {x: 90, y: 120}, {x: 110, y: 80}, {x: 130, y: 150}
+];
+
+// A&ntilde;adir eje X
+const x = d3.scaleLinear()
+  .domain([0, d3.max(data, d =&gt; d.x)])
+  .range([ 0, width ]);
+svg.append(&quot;g&quot;)
+  .attr(&quot;transform&quot;, `translate(0,${height})`)
+  .call(d3.axisBottom(x));
+
+// A&ntilde;adir eje Y
+const y = d3.scaleLinear()
+  .domain([0, d3.max(data, d =&gt; d.y)])
+  .range([ height, 0]);
+svg.append(&quot;g&quot;)
+  .call(d3.axisLeft(y));
+
+// A&ntilde;adir puntos
+svg.append('g')
+  .selectAll(&quot;dot&quot;)
+  .data(data)
+  .enter()
+  .append(&quot;circle&quot;)
+    .attr(&quot;cx&quot;, d =&gt; x(d.x) )
+    .attr(&quot;cy&quot;, d =&gt; y(d.y) )
+    .attr(&quot;r&quot;, 5)
+    .style(&quot;fill&quot;, &quot;#69b3a2&quot;);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Márgenes y Dimensiones</strong>: Define los márgenes y dimensiones del contenedor SVG.</li>
+<li><strong>Contenedor SVG</strong>: Añade un elemento SVG al div <code>#scatter-plot</code> y establece sus dimensiones.</li>
+<li><strong>Datos de Ejemplo</strong>: Usa un array de objetos para representar los puntos de datos.</li>
+<li><strong>Escalas</strong>: Crea escalas lineales para los ejes X e Y basadas en los datos.</li>
+<li><strong>Ejes</strong>: Añade los ejes X e Y al SVG.</li>
+<li><strong>Puntos</strong>: Añade círculos para representar los puntos de datos.</li>
+</ul>
+</div><h1>Mejorando el Gráfico de Dispersión</h1>
+<div class='content'><p>Ahora que tenemos un gráfico de dispersión básico, vamos a mejorarlo con características adicionales.</p>
+</div><h2>Añadir Etiquetas y Títulos</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQcOxYWRpciBldGlxdWV0YSBkZWwgZWplIFgKc3ZnLmFwcGVuZCgidGV4dCIpCiAgLmF0dHIoInRleHQtYW5jaG9yIiwgImVuZCIpCiAgLmF0dHIoIngiLCB3aWR0aCkKICAuYXR0cigieSIsIGhlaWdodCArIG1hcmdpbi50b3AgKyAyMCkKICAudGV4dCgiRXRpcXVldGEgZGVsIEVqZSBYIik7CgovLyBBw7FhZGlyIGV0aXF1ZXRhIGRlbCBlamUgWQpzdmcuYXBwZW5kKCJ0ZXh0IikKICAuYXR0cigidGV4dC1hbmNob3IiLCAiZW5kIikKICAuYXR0cigidHJhbnNmb3JtIiwgInJvdGF0ZSgtOTApIikKICAuYXR0cigieSIsIC1tYXJnaW4ubGVmdCArIDIwKQogIC5hdHRyKCJ4IiwgLW1hcmdpbi50b3ApCiAgLnRleHQoIkV0aXF1ZXRhIGRlbCBFamUgWSIpOwoKLy8gQcOxYWRpciB0w610dWxvCnN2Zy5hcHBlbmQoInRleHQiKQogIC5hdHRyKCJ4Iiwgd2lkdGggLyAyKQogIC5hdHRyKCJ5IiwgLW1hcmdpbi50b3AgLyAyKQogIC5hdHRyKCJ0ZXh0LWFuY2hvciIsICJtaWRkbGUiKQogIC5zdHlsZSgiZm9udC1zaXplIiwgIjE2cHgiKQogIC5zdHlsZSgidGV4dC1kZWNvcmF0aW9uIiwgInVuZGVybGluZSIpCiAgLnRleHQoIlTDrXR1bG8gZGVsIEdyw6FmaWNvIGRlIERpc3BlcnNpw7NuIik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// A&ntilde;adir etiqueta del eje X
+svg.append(&quot;text&quot;)
+  .attr(&quot;text-anchor&quot;, &quot;end&quot;)
+  .attr(&quot;x&quot;, width)
+  .attr(&quot;y&quot;, height + margin.top + 20)
+  .text(&quot;Etiqueta del Eje X&quot;);
+
+// A&ntilde;adir etiqueta del eje Y
+svg.append(&quot;text&quot;)
+  .attr(&quot;text-anchor&quot;, &quot;end&quot;)
+  .attr(&quot;transform&quot;, &quot;rotate(-90)&quot;)
+  .attr(&quot;y&quot;, -margin.left + 20)
+  .attr(&quot;x&quot;, -margin.top)
+  .text(&quot;Etiqueta del Eje Y&quot;);
+
+// A&ntilde;adir t&iacute;tulo
+svg.append(&quot;text&quot;)
+  .attr(&quot;x&quot;, width / 2)
+  .attr(&quot;y&quot;, -margin.top / 2)
+  .attr(&quot;text-anchor&quot;, &quot;middle&quot;)
+  .style(&quot;font-size&quot;, &quot;16px&quot;)
+  .style(&quot;text-decoration&quot;, &quot;underline&quot;)
+  .text(&quot;T&iacute;tulo del Gr&aacute;fico de Dispersi&oacute;n&quot;);</pre></div><div class='content'></div><h2>Añadir Tooltips</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ3JlYXIgdW4gZGl2IGRlIHRvb2x0aXAgcXVlIGVzdMOhIG9jdWx0byBwb3IgZGVmZWN0bwpjb25zdCB0b29sdGlwID0gZDMuc2VsZWN0KCJib2R5IikuYXBwZW5kKCJkaXYiKQogIC5zdHlsZSgib3BhY2l0eSIsIDApCiAgLmF0dHIoImNsYXNzIiwgInRvb2x0aXAiKQogIC5zdHlsZSgiYmFja2dyb3VuZC1jb2xvciIsICJ3aGl0ZSIpCiAgLnN0eWxlKCJib3JkZXIiLCAic29saWQiKQogIC5zdHlsZSgiYm9yZGVyLXdpZHRoIiwgIjFweCIpCiAgLnN0eWxlKCJib3JkZXItcmFkaXVzIiwgIjVweCIpCiAgLnN0eWxlKCJwYWRkaW5nIiwgIjEwcHgiKTsKCi8vIEHDsWFkaXIgZXZlbnQgbGlzdGVuZXJzIHBhcmEgdG9vbHRpcHMKc3ZnLnNlbGVjdEFsbCgiY2lyY2xlIikKICAub24oIm1vdXNlb3ZlciIsIChldmVudCwgZCkgPT4gewogICAgdG9vbHRpcC50cmFuc2l0aW9uKCkKICAgICAgLmR1cmF0aW9uKDIwMCkKICAgICAgLnN0eWxlKCJvcGFjaXR5IiwgLjkpOwogICAgdG9vbHRpcC5odG1sKGBYOiAke2QueH08YnI+WTogJHtkLnl9YCkKICAgICAgLnN0eWxlKCJsZWZ0IiwgKGV2ZW50LnBhZ2VYICsgNSkgKyAicHgiKQogICAgICAuc3R5bGUoInRvcCIsIChldmVudC5wYWdlWSAtIDI4KSArICJweCIpOwogIH0pCiAgLm9uKCJtb3VzZW91dCIsICgpID0+IHsKICAgIHRvb2x0aXAudHJhbnNpdGlvbigpCiAgICAgIC5kdXJhdGlvbig1MDApCiAgICAgIC5zdHlsZSgib3BhY2l0eSIsIDApOwogIH0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Crear un div de tooltip que est&aacute; oculto por defecto
+const tooltip = d3.select(&quot;body&quot;).append(&quot;div&quot;)
+  .style(&quot;opacity&quot;, 0)
+  .attr(&quot;class&quot;, &quot;tooltip&quot;)
+  .style(&quot;background-color&quot;, &quot;white&quot;)
+  .style(&quot;border&quot;, &quot;solid&quot;)
+  .style(&quot;border-width&quot;, &quot;1px&quot;)
+  .style(&quot;border-radius&quot;, &quot;5px&quot;)
+  .style(&quot;padding&quot;, &quot;10px&quot;);
+
+// A&ntilde;adir event listeners para tooltips
+svg.selectAll(&quot;circle&quot;)
+  .on(&quot;mouseover&quot;, (event, d) =&gt; {
+    tooltip.transition()
+      .duration(200)
+      .style(&quot;opacity&quot;, .9);
+    tooltip.html(`X: ${d.x}&lt;br&gt;Y: ${d.y}`)
+      .style(&quot;left&quot;, (event.pageX + 5) + &quot;px&quot;)
+      .style(&quot;top&quot;, (event.pageY - 28) + &quot;px&quot;);
+  })
+  .on(&quot;mouseout&quot;, () =&gt; {
+    tooltip.transition()
+      .duration(500)
+      .style(&quot;opacity&quot;, 0);
+  });</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Etiquetas y Títulos</strong>: Añade elementos de texto para etiquetar los ejes y proporcionar un título para el gráfico de dispersión.</li>
+<li><strong>Tooltips</strong>: Crea un div de tooltip y añade event listeners para mostrar el tooltip al pasar el ratón sobre los puntos de datos.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, cubrimos los conceptos básicos de la creación de gráficos de dispersión usando D3.js. Comenzamos con un gráfico de dispersión simple y lo mejoramos añadiendo etiquetas, títulos y tooltips. Los gráficos de dispersión son una herramienta versátil para visualizar datos, y D3.js proporciona capacidades poderosas para crear visualizaciones interactivas y dinámicas.</p>
+<p>Al dominar estas técnicas, puedes crear gráficos de dispersión más complejos e informativos para comprender y presentar mejor tus datos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-pie-charts'>&#x25C4;Creación de Gráficos de Pastel</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creación de Gráficos de Dispersión</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='hierarchical-data-and-tree-layouts'>Datos Jerárquicos y Diseños de Árbol &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

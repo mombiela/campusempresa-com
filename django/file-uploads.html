@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargas de Archivos en Django</title>
+
+    <link rel="alternate" href="https://campusempresa.com/django/file-uploads" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/django/file-uploads" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/django/file-uploads" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/django/file-uploads" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/django/file-uploads" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='signals'>&#x25C4;Señales</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Cargas de Archivos en Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='caching'>Caché &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las cargas de archivos son una característica común en las aplicaciones web, permitiendo a los usuarios subir archivos como imágenes, documentos y videos. En Django, manejar cargas de archivos es sencillo gracias a su soporte incorporado. Esta sección te guiará a través del proceso de implementar cargas de archivos en una aplicación Django, desde la configuración básica hasta configuraciones avanzadas.</p>
+</div><h1>Configurando Tu Proyecto Django</h1>
+<div class='content'><p>Antes de sumergirte en las cargas de archivos, asegúrate de tener un proyecto Django configurado. Si no, crea uno usando los siguientes comandos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGphbmdvLWFkbWluIHN0YXJ0cHJvamVjdCBteXByb2plY3QKY2QgbXlwcm9qZWN0CnB5dGhvbiBtYW5hZ2UucHkgc3RhcnRhcHAgbXlhcHA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>django-admin startproject myproject
+cd myproject
+python manage.py startapp myapp</pre></div><div class='content'><p>Añade <code>myapp</code> a la lista <code>INSTALLED_APPS</code> en <code>myproject/settings.py</code>.</p>
+</div><h1>Configurando Archivos de Medios</h1>
+<div class='content'><p>Django requiere alguna configuración para manejar archivos de medios (archivos subidos). Añade las siguientes configuraciones a <code>myproject/settings.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBzZXR0aW5ncy5weQoKTUVESUFfVVJMID0gJy9tZWRpYS8nCk1FRElBX1JPT1QgPSBCQVNFX0RJUiAvICdtZWRpYSc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># settings.py
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'</pre></div><div class='content'><ul>
+<li><code>MEDIA_URL</code>: La URL que sirve los archivos de medios.</li>
+<li><code>MEDIA_ROOT</code>: La ruta del sistema de archivos donde se almacenan los archivos subidos.</li>
+</ul>
+</div><h1>Creando un Modelo para Cargas de Archivos</h1>
+<div class='content'><p>Crea un modelo para manejar cargas de archivos en <code>myapp/models.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBtb2RlbHMucHkKCmZyb20gZGphbmdvLmRiIGltcG9ydCBtb2RlbHMKCmNsYXNzIERvY3VtZW50KG1vZGVscy5Nb2RlbCk6CiAgICB0aXRsZSA9IG1vZGVscy5DaGFyRmllbGQobWF4X2xlbmd0aD0xMDApCiAgICB1cGxvYWRlZF9maWxlID0gbW9kZWxzLkZpbGVGaWVsZCh1cGxvYWRfdG89J2RvY3VtZW50cy8nKQogICAgdXBsb2FkZWRfYXQgPSBtb2RlbHMuRGF0ZVRpbWVGaWVsZChhdXRvX25vd19hZGQ9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># models.py
+
+from django.db import models
+
+class Document(models.Model):
+    title = models.CharField(max_length=100)
+    uploaded_file = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)</pre></div><div class='content'><ul>
+<li><code>title</code>: Un título simple para el archivo subido.</li>
+<li><code>uploaded_file</code>: El campo de archivo donde se almacena el archivo subido.</li>
+<li><code>uploaded_at</code>: La marca de tiempo cuando el archivo fue subido.</li>
+</ul>
+<p>Ejecuta los siguientes comandos para crear y aplicar las migraciones:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uIG1hbmFnZS5weSBtYWtlbWlncmF0aW9ucwpweXRob24gbWFuYWdlLnB5IG1pZ3JhdGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python manage.py makemigrations
+python manage.py migrate</pre></div><div class='content'></div><h1>Creando un Formulario para Cargas de Archivos</h1>
+<div class='content'><p>Crea un formulario para manejar cargas de archivos en <code>myapp/forms.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBmb3Jtcy5weQoKZnJvbSBkamFuZ28gaW1wb3J0IGZvcm1zCmZyb20gLm1vZGVscyBpbXBvcnQgRG9jdW1lbnQKCmNsYXNzIERvY3VtZW50Rm9ybShmb3Jtcy5Nb2RlbEZvcm0pOgogICAgY2xhc3MgTWV0YToKICAgICAgICBtb2RlbCA9IERvY3VtZW50CiAgICAgICAgZmllbGRzID0gWyd0aXRsZScsICd1cGxvYWRlZF9maWxlJ10="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># forms.py
+
+from django import forms
+from .models import Document
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['title', 'uploaded_file']</pre></div><div class='content'></div><h1>Manejando Cargas de Archivos en Vistas</h1>
+<div class='content'><p>Crea una vista para manejar el proceso de carga de archivos en <code>myapp/views.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB2aWV3cy5weQoKZnJvbSBkamFuZ28uc2hvcnRjdXRzIGltcG9ydCByZW5kZXIsIHJlZGlyZWN0CmZyb20gLmZvcm1zIGltcG9ydCBEb2N1bWVudEZvcm0KZnJvbSAubW9kZWxzIGltcG9ydCBEb2N1bWVudAoKZGVmIHVwbG9hZF9maWxlKHJlcXVlc3QpOgogICAgaWYgcmVxdWVzdC5tZXRob2QgPT0gJ1BPU1QnOgogICAgICAgIGZvcm0gPSBEb2N1bWVudEZvcm0ocmVxdWVzdC5QT1NULCByZXF1ZXN0LkZJTEVTKQogICAgICAgIGlmIGZvcm0uaXNfdmFsaWQoKToKICAgICAgICAgICAgZm9ybS5zYXZlKCkKICAgICAgICAgICAgcmV0dXJuIHJlZGlyZWN0KCdmaWxlX3VwbG9hZF9zdWNjZXNzJykKICAgIGVsc2U6CiAgICAgICAgZm9ybSA9IERvY3VtZW50Rm9ybSgpCiAgICByZXR1cm4gcmVuZGVyKHJlcXVlc3QsICd1cGxvYWQuaHRtbCcsIHsnZm9ybSc6IGZvcm19KQoKZGVmIGZpbGVfdXBsb2FkX3N1Y2Nlc3MocmVxdWVzdCk6CiAgICByZXR1cm4gcmVuZGVyKHJlcXVlc3QsICd1cGxvYWRfc3VjY2Vzcy5odG1sJyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># views.py
+
+from django.shortcuts import render, redirect
+from .forms import DocumentForm
+from .models import Document
+
+def upload_file(request):
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('file_upload_success')
+    else:
+        form = DocumentForm()
+    return render(request, 'upload.html', {'form': form})
+
+def file_upload_success(request):
+    return render(request, 'upload_success.html')</pre></div><div class='content'><ul>
+<li><code>upload_file</code>: Maneja solicitudes GET y POST para cargas de archivos.</li>
+<li><code>file_upload_success</code>: Una vista simple para mostrar un mensaje de éxito después de que un archivo es subido.</li>
+</ul>
+</div><h1>Creando Plantillas</h1>
+<div class='content'><p>Crea plantillas para renderizar el formulario de carga de archivos y el mensaje de éxito.</p>
+</div><h2>`upload.html`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB1cGxvYWQuaHRtbCAtLT4KCjwhRE9DVFlQRSBodG1sPgo8aHRtbD4KPGhlYWQ+CiAgICA8dGl0bGU+U3ViaXIgQXJjaGl2bzwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDE+U3ViaXIgQXJjaGl2bzwvaDE+CiAgICA8Zm9ybSBtZXRob2Q9InBvc3QiIGVuY3R5cGU9Im11bHRpcGFydC9mb3JtLWRhdGEiPgogICAgICAgIHslIGNzcmZfdG9rZW4gJX0KICAgICAgICB7eyBmb3JtLmFzX3AgfX0KICAgICAgICA8YnV0dG9uIHR5cGU9InN1Ym1pdCI+U3ViaXI8L2J1dHRvbj4KICAgIDwvZm9ybT4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- upload.html --&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;Subir Archivo&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Subir Archivo&lt;/h1&gt;
+    &lt;form method=&quot;post&quot; enctype=&quot;multipart/form-data&quot;&gt;
+        {% csrf_token %}
+        {{ form.as_p }}
+        &lt;button type=&quot;submit&quot;&gt;Subir&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>`upload_success.html`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB1cGxvYWRfc3VjY2Vzcy5odG1sIC0tPgoKPCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDx0aXRsZT7DiXhpdG8gZW4gbGEgU3ViaWRhPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT7CoUFyY2hpdm8gU3ViaWRvIEV4aXRvc2FtZW50ZSE8L2gxPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- upload_success.html --&gt;
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;&Eacute;xito en la Subida&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;&iexcl;Archivo Subido Exitosamente!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h1>Configurando URLs</h1>
+<div class='content'><p>Añade patrones de URL para manejar las vistas de carga de archivos en <code>myapp/urls.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyB1cmxzLnB5Cgpmcm9tIGRqYW5nby51cmxzIGltcG9ydCBwYXRoCmZyb20gLiBpbXBvcnQgdmlld3MKCnVybHBhdHRlcm5zID0gWwogICAgcGF0aCgndXBsb2FkLycsIHZpZXdzLnVwbG9hZF9maWxlLCBuYW1lPSd1cGxvYWRfZmlsZScpLAogICAgcGF0aCgndXBsb2FkL3N1Y2Nlc3MvJywgdmlld3MuZmlsZV91cGxvYWRfc3VjY2VzcywgbmFtZT0nZmlsZV91cGxvYWRfc3VjY2VzcycpLApd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># urls.py
+
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('upload/', views.upload_file, name='upload_file'),
+    path('upload/success/', views.file_upload_success, name='file_upload_success'),
+]</pre></div><div class='content'><p>Incluye estas URLs en el <code>urls.py</code> del proyecto principal y configura la servidumbre de archivos de medios durante el desarrollo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteXByb2plY3QvdXJscy5weQoKZnJvbSBkamFuZ28uY29uZiBpbXBvcnQgc2V0dGluZ3MKZnJvbSBkamFuZ28uY29uZi51cmxzLnN0YXRpYyBpbXBvcnQgc3RhdGljCmZyb20gZGphbmdvLmNvbnRyaWIgaW1wb3J0IGFkbWluCmZyb20gZGphbmdvLnVybHMgaW1wb3J0IHBhdGgsIGluY2x1ZGUKCnVybHBhdHRlcm5zID0gWwogICAgcGF0aCgnYWRtaW4vJywgYWRtaW4uc2l0ZS51cmxzKSwKICAgIHBhdGgoJ215YXBwLycsIGluY2x1ZGUoJ215YXBwLnVybHMnKSksCl0KCmlmIHNldHRpbmdzLkRFQlVHOgogICAgdXJscGF0dGVybnMgKz0gc3RhdGljKHNldHRpbmdzLk1FRElBX1VSTCwgZG9jdW1lbnRfcm9vdD1zZXR0aW5ncy5NRURJQV9ST09UKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myproject/urls.py
+
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('myapp/', include('myapp.urls')),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, aprendiste cómo implementar cargas de archivos en una aplicación Django. Cubrimos:</p>
+<ul>
+<li>Configuración de archivos de medios en las configuraciones de Django.</li>
+<li>Creación de un modelo para almacenar archivos subidos.</li>
+<li>Construcción de un formulario para manejar cargas de archivos.</li>
+<li>Escritura de vistas para procesar cargas de archivos.</li>
+<li>Creación de plantillas para renderizar el formulario de carga y el mensaje de éxito.</li>
+<li>Configuración de URLs para manejar solicitudes de carga de archivos.</li>
+</ul>
+<p>Con estos pasos, ahora puedes manejar cargas de archivos en tus aplicaciones Django, proporcionando una característica robusta y amigable para tus usuarios.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='signals'>&#x25C4;Señales</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Cargas de Archivos en Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='caching'>Caché &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

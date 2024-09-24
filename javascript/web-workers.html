@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Workers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/javascript/web-workers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/javascript/web-workers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/javascript/web-workers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/javascript/web-workers" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/javascript/web-workers" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='concurrency-model'>&#x25C4;Modelo de Concurrencia</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Web Workers</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='building-a-to-do-list-application'>Construyendo una Aplicación de Lista de Tareas &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Los Web Workers proporcionan una forma de ejecutar scripts en hilos de fondo. Pueden ejecutar código sin interferir con la interfaz de usuario, permitiéndote realizar tareas como cálculos o procesamiento de datos sin causar que la página web se vuelva no respondiente.</p>
+</div><h1>Introducción a los Web Workers</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Los Web Workers son scripts de JavaScript que se ejecutan en segundo plano, separados del hilo principal de ejecución de una aplicación web.</li>
+<li><strong>Propósito</strong>: Se utilizan para realizar tareas que son computacionalmente intensivas o que requieren esperar recursos externos, sin bloquear el hilo principal.</li>
+<li><strong>Tipos de Web Workers</strong>:
+<ul>
+<li><strong>Dedicated Workers</strong>: Utilizados por un solo script.</li>
+<li><strong>Shared Workers</strong>: Pueden ser accedidos por múltiples scripts, incluso desde diferentes ventanas o iframes.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Creación y Uso de un Web Worker</h1>
+<div class='content'></div><h2>Creación de un Worker</h2>
+<div class='content'><p>Para crear un Web Worker, necesitas escribir un archivo JavaScript separado para el worker y luego instanciarlo en tu script principal.</p>
+<p><strong>Ejemplo:</strong></p>
+<ol>
+<li>
+<p><strong>worker.js</strong> (Script del Worker)</p>
+<pre><code class="language-javascript">// worker.js
+self.onmessage = function(event) {
+    const data = event.data;
+    // Realizar algún cálculo
+    const result = data * 2;
+    // Enviar el resultado de vuelta al hilo principal
+    self.postMessage(result);
+};
+</code></pre>
+</li>
+<li>
+<p><strong>main.js</strong> (Script Principal)</p>
+<pre><code class="language-javascript">// main.js
+if (window.Worker) {
+    const myWorker = new Worker('worker.js');
+
+    myWorker.onmessage = function(event) {
+        console.log('Recibido del worker:', event.data);
+    };
+
+    myWorker.postMessage(10); // Enviar datos al worker
+} else {
+    console.log('Los Web Workers no son soportados en tu navegador.');
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Comunicación con un Worker</h2>
+<div class='content'><ul>
+<li><strong>Enviar Datos al Worker</strong>: Usa el método <code>postMessage</code>.</li>
+<li><strong>Recibir Datos del Worker</strong>: Escucha el evento <code>message</code>.</li>
+</ul>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRW52aWFyIGRhdG9zIGFsIHdvcmtlcgpteVdvcmtlci5wb3N0TWVzc2FnZSgnwqFIb2xhLCBXb3JrZXIhJyk7CgovLyBSZWNpYmlyIGRhdG9zIGRlbCB3b3JrZXIKbXlXb3JrZXIub25tZXNzYWdlID0gZnVuY3Rpb24oZXZlbnQpIHsKICAgIGNvbnNvbGUubG9nKCdNZW5zYWplIGRlbCB3b3JrZXI6JywgZXZlbnQuZGF0YSk7Cn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Enviar datos al worker
+myWorker.postMessage('&iexcl;Hola, Worker!');
+
+// Recibir datos del worker
+myWorker.onmessage = function(event) {
+    console.log('Mensaje del worker:', event.data);
+};</pre></div><div class='content'></div><h1>Terminación de un Worker</h1>
+<div class='content'><p>Los Workers pueden ser terminados desde el script principal usando el método <code>terminate</code>.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlXb3JrZXIudGVybWluYXRlKCk7CmNvbnNvbGUubG9nKCdXb3JrZXIgdGVybWluYWRvLicpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>myWorker.terminate();
+console.log('Worker terminado.');</pre></div><div class='content'></div><h1>Manejo de Errores en Workers</h1>
+<div class='content'><p>Los errores en los workers pueden ser capturados usando el manejador de eventos <code>onerror</code>.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlXb3JrZXIub25lcnJvciA9IGZ1bmN0aW9uKGV2ZW50KSB7CiAgICBjb25zb2xlLmVycm9yKCdFcnJvciBlbiBlbCB3b3JrZXI6JywgZXZlbnQubWVzc2FnZSwgJ2VuJywgZXZlbnQuZmlsZW5hbWUsICdsw61uZWEnLCBldmVudC5saW5lbm8pOwp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>myWorker.onerror = function(event) {
+    console.error('Error en el worker:', event.message, 'en', event.filename, 'l&iacute;nea', event.lineno);
+};</pre></div><div class='content'></div><h1>Uso Avanzado</h1>
+<div class='content'></div><h2>Shared Workers</h2>
+<div class='content'><p>Los Shared Workers pueden ser utilizados por múltiples scripts, incluso desde diferentes ventanas o iframes.</p>
+<p><strong>Ejemplo:</strong></p>
+<ol>
+<li>
+<p><strong>sharedWorker.js</strong> (Script del Shared Worker)</p>
+<pre><code class="language-javascript">// sharedWorker.js
+self.onconnect = function(event) {
+    const port = event.ports[0];
+
+    port.onmessage = function(event) {
+        const data = event.data;
+        // Realizar algún cálculo
+        const result = data * 2;
+        // Enviar el resultado de vuelta al hilo principal
+        port.postMessage(result);
+    };
+};
+</code></pre>
+</li>
+<li>
+<p><strong>main.js</strong> (Script Principal)</p>
+<pre><code class="language-javascript">// main.js
+if (window.SharedWorker) {
+    const mySharedWorker = new SharedWorker('sharedWorker.js');
+
+    mySharedWorker.port.onmessage = function(event) {
+        console.log('Recibido del shared worker:', event.data);
+    };
+
+    mySharedWorker.port.postMessage(10); // Enviar datos al shared worker
+} else {
+    console.log('Los Shared Workers no son soportados en tu navegador.');
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><p>Los Web Workers son una característica poderosa en JavaScript que te permite ejecutar scripts en segundo plano, mejorando el rendimiento y la capacidad de respuesta de tus aplicaciones web. Al descargar cálculos pesados o tareas de larga duración a los Web Workers, puedes asegurarte de que el hilo principal permanezca libre para manejar las interacciones del usuario sin problemas. Ya sea que uses Dedicated Workers para tareas de un solo hilo o Shared Workers para tareas de múltiples hilos, entender cómo crear, comunicarte con y gestionar Web Workers es esencial para construir aplicaciones web eficientes y responsivas.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='concurrency-model'>&#x25C4;Modelo de Concurrencia</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Web Workers</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='building-a-to-do-list-application'>Construyendo una Aplicación de Lista de Tareas &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

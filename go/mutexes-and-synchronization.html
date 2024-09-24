@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mutexes y Sincronización en Go</title>
+
+    <link rel="alternate" href="https://campusempresa.com/go/mutexes-and-synchronization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/go/mutexes-and-synchronization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/go/mutexes-and-synchronization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/go/mutexes-and-synchronization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/go/mutexes-and-synchronization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='select-statement'>&#x25C4;Sentencia Select</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Mutexes y Sincronización en Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='interfaces'>Interfaces &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En la programación concurrente, gestionar el acceso a recursos compartidos es crucial para evitar condiciones de carrera y asegurar la consistencia de los datos. Go proporciona varios primitivos de sincronización, siendo los mutexes uno de los más fundamentales. Esta sección cubrirá los conceptos básicos de los mutexes, cómo usarlos en Go y las mejores prácticas para la sincronización.</p>
+</div><h1>¿Qué es un Mutex?</h1>
+<div class='content'><p>Un mutex, o bloqueo de exclusión mutua, es un primitivo de sincronización utilizado para proteger recursos compartidos del acceso concurrente. Cuando una goroutine bloquea un mutex, otras goroutines que intentan bloquearlo quedan bloqueadas hasta que el mutex se desbloquea.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Bloqueo</strong>: Adquirir el mutex para obtener acceso exclusivo a un recurso.</li>
+<li><strong>Desbloqueo</strong>: Liberar el mutex para permitir que otras goroutines accedan al recurso.</li>
+<li><strong>Condición de Carrera</strong>: Una situación donde el comportamiento del software depende del tiempo relativo de los eventos, como el orden de ejecución de las goroutines.</li>
+</ul>
+</div><h1>Usando Mutexes en Go</h1>
+<div class='content'><p>El paquete <code>sync</code> de Go proporciona el tipo <code>Mutex</code> para la exclusión mutua. A continuación se presentan los pasos para usar un mutex en Go.</p>
+</div><h2>Importando el Paquete sync</h2>
+<div class='content'><p>Primero, necesitas importar el paquete <code>sync</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICJzeW5jIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import &quot;sync&quot;</pre></div><div class='content'></div><h2>Declarando un Mutex</h2>
+<div class='content'><p>Puedes declarar un mutex como parte de una estructura o como una variable independiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyIG11IHN5bmMuTXV0ZXg="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>var mu sync.Mutex</pre></div><div class='content'></div><h2>Bloqueando y Desbloqueando un Mutex</h2>
+<div class='content'><p>Para proteger una sección crítica, bloqueas el mutex antes de acceder al recurso compartido y lo desbloqueas después:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXUuTG9jaygpCi8vIFNlY2Npw7NuIGNyw610aWNhOiBhY2Nlc28gYWwgcmVjdXJzbyBjb21wYXJ0aWRvCm11LlVubG9jaygp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mu.Lock()
+// Secci&oacute;n cr&iacute;tica: acceso al recurso compartido
+mu.Unlock()</pre></div><div class='content'></div><h2>Ejemplo: Protegiendo un Contador</h2>
+<div class='content'><p>Veamos un ejemplo simple donde múltiples goroutines incrementan un contador compartido.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJzeW5jIgopCgp2YXIgKAogICAgY291bnRlciBpbnQKICAgIG11ICAgICAgc3luYy5NdXRleAopCgpmdW5jIGluY3JlbWVudCh3ZyAqc3luYy5XYWl0R3JvdXApIHsKICAgIGRlZmVyIHdnLkRvbmUoKQogICAgbXUuTG9jaygpCiAgICBjb3VudGVyKysKICAgIG11LlVubG9jaygpCn0KCmZ1bmMgbWFpbigpIHsKICAgIHZhciB3ZyBzeW5jLldhaXRHcm91cAoKICAgIGZvciBpIDo9IDA7IGkgPCAxMDAwOyBpKysgewogICAgICAgIHdnLkFkZCgxKQogICAgICAgIGdvIGluY3JlbWVudCgmd2cpCiAgICB9CgogICAgd2cuV2FpdCgpCiAgICBmbXQuUHJpbnRsbigiQ29udGFkb3IgRmluYWw6IiwgY291bnRlcikKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;sync&quot;
+)
+
+var (
+    counter int
+    mu      sync.Mutex
+)
+
+func increment(wg *sync.WaitGroup) {
+    defer wg.Done()
+    mu.Lock()
+    counter++
+    mu.Unlock()
+}
+
+func main() {
+    var wg sync.WaitGroup
+
+    for i := 0; i &lt; 1000; i++ {
+        wg.Add(1)
+        go increment(&amp;wg)
+    }
+
+    wg.Wait()
+    fmt.Println(&quot;Contador Final:&quot;, counter)
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>sync.WaitGroup</strong>: Se utiliza para esperar a que todas las goroutines terminen.</li>
+<li><strong>mu.Lock() y mu.Unlock()</strong>: Aseguran que solo una goroutine pueda incrementar el contador a la vez.</li>
+<li><strong>wg.Add(1) y wg.Done()</strong>: Gestionan el número de goroutines por las que esperar.</li>
+</ul>
+</div><h1>Mejores Prácticas para Usar Mutexes</h1>
+<div class='content'><ul>
+<li><strong>Minimizar Secciones Críticas</strong>: Mantén el código dentro de <code>mu.Lock()</code> y <code>mu.Unlock()</code> lo más corto posible para reducir la contención.</li>
+<li><strong>Evitar Bloqueos Mutuos</strong>: Asegúrate de que todos los caminos de código desbloqueen el mutex, incluso en caso de errores o pánicos.</li>
+<li><strong>Usar defer para Desbloquear</strong>: Esto asegura que el mutex siempre se desbloquee, incluso si la función retorna temprano.
+<pre><code class="language-go">mu.Lock()
+defer mu.Unlock()
+</code></pre>
+</li>
+</ul>
+</div><h1>Técnicas Avanzadas de Sincronización</h1>
+<div class='content'><p>Aunque los mutexes son poderosos, Go proporciona otros primitivos de sincronización que podrían ser más adecuados para ciertos escenarios.</p>
+</div><h2>sync.RWMutex</h2>
+<div class='content'><p>Un <code>RWMutex</code> permite múltiples lectores o un solo escritor, proporcionando un mejor rendimiento para cargas de trabajo con muchas lecturas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyIHJ3TXUgc3luYy5SV011dGV4CgovLyBMZWN0dXJhCnJ3TXUuUkxvY2soKQovLyBMZWVyIHJlY3Vyc28gY29tcGFydGlkbwpyd011LlJVbmxvY2soKQoKLy8gRXNjcml0dXJhCnJ3TXUuTG9jaygpCi8vIEVzY3JpYmlyIHJlY3Vyc28gY29tcGFydGlkbwpyd011LlVubG9jaygp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>var rwMu sync.RWMutex
+
+// Lectura
+rwMu.RLock()
+// Leer recurso compartido
+rwMu.RUnlock()
+
+// Escritura
+rwMu.Lock()
+// Escribir recurso compartido
+rwMu.Unlock()</pre></div><div class='content'></div><h2>sync.Cond</h2>
+<div class='content'><p>Un <code>Cond</code> (variable de condición) permite a las goroutines esperar o señalar eventos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyIGNvbmQgPSBzeW5jLk5ld0NvbmQoJnN5bmMuTXV0ZXh7fSkKCmZ1bmMgd2FpdEZvckNvbmRpdGlvbigpIHsKICAgIGNvbmQuTC5Mb2NrKCkKICAgIGNvbmQuV2FpdCgpCiAgICAvLyBDb25kaWNpw7NuIGN1bXBsaWRhLCBwcm9jZWRlcgogICAgY29uZC5MLlVubG9jaygpCn0KCmZ1bmMgc2lnbmFsQ29uZGl0aW9uKCkgewogICAgY29uZC5MLkxvY2soKQogICAgY29uZC5TaWduYWwoKQogICAgY29uZC5MLlVubG9jaygpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>var cond = sync.NewCond(&amp;sync.Mutex{})
+
+func waitForCondition() {
+    cond.L.Lock()
+    cond.Wait()
+    // Condici&oacute;n cumplida, proceder
+    cond.L.Unlock()
+}
+
+func signalCondition() {
+    cond.L.Lock()
+    cond.Signal()
+    cond.L.Unlock()
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Los mutexes son herramientas esenciales para gestionar el acceso concurrente a recursos compartidos en Go. Al entender cómo usar <code>sync.Mutex</code> y <code>sync.RWMutex</code>, puedes escribir programas concurrentes seguros y eficientes. Recuerda seguir las mejores prácticas para evitar problemas comunes como bloqueos mutuos y condiciones de carrera. A medida que avances, explora otros primitivos de sincronización como <code>sync.Cond</code> para manejar escenarios de sincronización más complejos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='select-statement'>&#x25C4;Sentencia Select</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Mutexes y Sincronización en Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='interfaces'>Interfaces &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

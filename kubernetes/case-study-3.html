@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio de Caso 3: Implementación de CI/CD</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/case-study-3" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/case-study-3" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/case-study-3" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/kubernetes/case-study-3" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/case-study-3" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-study-2'>&#x25C4;Estudio de Caso 2: Escalado de Aplicaciones</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Estudio de Caso 3: Implementación de CI/CD</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-4'>Estudio de Caso 4: Monitoreo y Registro &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este estudio de caso, exploraremos cómo implementar Integración Continua y Despliegue Continuo (CI/CD) utilizando Kubernetes. Esto incluirá la configuración de una canalización CI/CD, la integración con sistemas de control de versiones y el despliegue de aplicaciones en un clúster de Kubernetes.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Integración Continua (CI)</strong>: La práctica de construir y probar automáticamente los cambios en el código, asegurando que la base de código permanezca en un estado desplegable.</li>
+<li><strong>Despliegue Continuo (CD)</strong>: La práctica de desplegar automáticamente los cambios en el código a un entorno de producción después de pasar la canalización de CI.</li>
+<li><strong>Kubernetes</strong>: Una plataforma de código abierto diseñada para automatizar el despliegue, escalado y operación de contenedores de aplicaciones.</li>
+</ul>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'><p>Para implementar CI/CD con Kubernetes, necesitarás las siguientes herramientas:</p>
+<ul>
+<li><strong>Git</strong>: Sistema de control de versiones.</li>
+<li><strong>Jenkins</strong>: Servidor de automatización de código abierto para construir canalizaciones CI/CD.</li>
+<li><strong>Docker</strong>: Plataforma de contenedorización.</li>
+<li><strong>Clúster de Kubernetes</strong>: El entorno donde se desplegarán tus aplicaciones.</li>
+</ul>
+</div><h1>Implementación Paso a Paso</h1>
+<div class='content'></div><h2>1. Configuración de Jenkins</h2>
+<div class='content'><p>Primero, instala Jenkins y configúralo para trabajar con tu clúster de Kubernetes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbnN0YWxhciBKZW5raW5zIHVzYW5kbyBEb2NrZXIKZG9ja2VyIHJ1biAtZCAtcCA4MDgwOjgwODAgLXAgNTAwMDA6NTAwMDAgamVua2lucy9qZW5raW5zOmx0cw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Instalar Jenkins usando Docker
+docker run -d -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts</pre></div><div class='content'></div><h2>2. Configuración de Jenkins para Kubernetes</h2>
+<div class='content'><p>Instala el plugin de Kubernetes en Jenkins y configúralo para conectarse a tu clúster de Kubernetes.</p>
+<ul>
+<li>Ve al Tablero de Jenkins &gt; Administrar Jenkins &gt; Administrar Plugins.</li>
+<li>Instala el plugin &quot;Kubernetes&quot;.</li>
+<li>Configura el plugin de Kubernetes con los detalles de tu clúster.</li>
+</ul>
+</div><h2>3. Creación de una Canalización de Jenkins</h2>
+<div class='content'><p>Crea un script de canalización de Jenkins para automatizar el proceso de construcción, prueba y despliegue.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgc2NyaXB0IHsKICAgICAgICAgICAgICAgICAgICBkb2NrZXIuYnVpbGQoJ215LWFwcCcpCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ1Rlc3QnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIHNjcmlwdCB7CiAgICAgICAgICAgICAgICAgICAgZG9ja2VyLmltYWdlKCdteS1hcHAnKS5pbnNpZGUgewogICAgICAgICAgICAgICAgICAgICAgICBzaCAnbWFrZSB0ZXN0JwogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnRGVwbG95JykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBzY3JpcHQgewogICAgICAgICAgICAgICAgICAgIGt1YmVybmV0ZXNEZXBsb3koCiAgICAgICAgICAgICAgICAgICAgICAgIGNvbmZpZ3M6ICdrOHMvZGVwbG95bWVudC55YW1sJywKICAgICAgICAgICAgICAgICAgICAgICAga3ViZWNvbmZpZ0lkOiAna3ViZS1jb25maWcnCiAgICAgICAgICAgICAgICAgICAgKQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    docker.build('my-app')
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                script {
+                    docker.image('my-app').inside {
+                        sh 'make test'
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                script {
+                    kubernetesDeploy(
+                        configs: 'k8s/deployment.yaml',
+                        kubeconfigId: 'kube-config'
+                    )
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>4. Escritura de la Configuración de Despliegue de Kubernetes</h2>
+<div class='content'><p>Crea un archivo de configuración de despliegue de Kubernetes (<code>k8s/deployment.yaml</code>).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LWFwcApzcGVjOgogIHJlcGxpY2FzOiAzCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBteS1hcHAKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteS1hcHAKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbXktYXBwCiAgICAgICAgaW1hZ2U6IG15LWFwcDpsYXRlc3QKICAgICAgICBwb3J0czoKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDgw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: my-app:latest
+        ports:
+        - containerPort: 80</pre></div><div class='content'></div><h2>5. Integración con Git</h2>
+<div class='content'><p>Configura Jenkins para desencadenar construcciones en cambios de código.</p>
+<ul>
+<li>Ve al Tablero de Jenkins &gt; Nuevo Ítem &gt; Canalización.</li>
+<li>Configura la canalización para usar tu repositorio de Git.</li>
+<li>Configura un webhook en tu repositorio de Git para desencadenar construcciones de Jenkins en eventos de push.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este estudio de caso, hemos recorrido el proceso de configuración de una canalización CI/CD utilizando Jenkins y Kubernetes. Siguiendo estos pasos, puedes automatizar la construcción, prueba y despliegue de tus aplicaciones, asegurando un flujo de trabajo de desarrollo suave y eficiente.</p>
+<p>Al implementar CI/CD, puedes:</p>
+<ul>
+<li>Reducir errores manuales.</li>
+<li>Aumentar la velocidad de despliegue.</li>
+<li>Mejorar la calidad del código a través de pruebas automatizadas.</li>
+</ul>
+<p>Este estudio de caso proporciona una comprensión fundamental de CI/CD con Kubernetes, que puedes expandir para adaptarse a las necesidades específicas de tu proyecto.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-study-2'>&#x25C4;Estudio de Caso 2: Escalado de Aplicaciones</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Estudio de Caso 3: Implementación de CI/CD</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-4'>Estudio de Caso 4: Monitoreo y Registro &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

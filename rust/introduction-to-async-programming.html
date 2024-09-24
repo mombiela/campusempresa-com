@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a la Programación Asíncrona en Rust</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rust/introduction-to-async-programming" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rust/introduction-to-async-programming" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rust/introduction-to-async-programming" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/rust/introduction-to-async-programming" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/rust/introduction-to-async-programming" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='shared-state'>&#x25C4;Estado Compartido</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introducción a la Programación Asíncrona en Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='futures-and-async-await'>Futuros y Async/Await &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>La programación asíncrona permite que un programa realice tareas de manera concurrente, mejorando la eficiencia y la capacidad de respuesta. El modelo de programación asíncrona de Rust se basa en las palabras clave <code>async</code> y <code>await</code>, proporcionando una forma de escribir código asíncrono que es tanto eficiente como fácil de entender.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Concurrencia vs. Paralelismo</strong>: La concurrencia implica múltiples tareas progresando, mientras que el paralelismo implica múltiples tareas ejecutándose al mismo tiempo.</li>
+<li><strong>Futuros</strong>: Un futuro es un valor que representa una computación que puede no haberse completado aún.</li>
+<li><strong>Async/Await</strong>: Palabras clave utilizadas para definir y trabajar con funciones asíncronas.</li>
+<li><strong>Ejecutores</strong>: Componentes que ejecutan tareas asíncronas hasta su finalización.</li>
+</ul>
+</div><h1>Futuros</h1>
+<div class='content'><p>En Rust, un futuro es una abstracción para un valor que puede no estar disponible aún. Los futuros son centrales en el modelo de programación asíncrona de Rust.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6ZnV0dXJlOjpGdXR1cmU7CgpmbiBteV9mdXR1cmUoKSAtPiBpbXBsIEZ1dHVyZTxPdXRwdXQgPSB1MzI+IHsKICAgIGFzeW5jIHsKICAgICAgICA0MgogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::future::Future;
+
+fn my_future() -&gt; impl Future&lt;Output = u32&gt; {
+    async {
+        42
+    }
+}</pre></div><div class='content'><p>En este ejemplo, <code>my_future</code> es una función asíncrona que devuelve un futuro. El futuro eventualmente se resolverá con el valor <code>42</code>.</p>
+</div><h1>Async y Await</h1>
+<div class='content'><p>La palabra clave <code>async</code> se utiliza para definir una función asíncrona, y la palabra clave <code>await</code> se utiliza para esperar a que un futuro se complete.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXN5bmMgZm4gZmV0Y2hfZGF0YSgpIC0+IHUzMiB7CiAgICA0Mgp9Cgphc3luYyBmbiBwcm9jZXNzX2RhdGEoKSB7CiAgICBsZXQgZGF0YSA9IGZldGNoX2RhdGEoKS5hd2FpdDsKICAgIHByaW50bG4hKCJEYXRhOiB7fSIsIGRhdGEpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>async fn fetch_data() -&gt; u32 {
+    42
+}
+
+async fn process_data() {
+    let data = fetch_data().await;
+    println!(&quot;Data: {}&quot;, data);
+}</pre></div><div class='content'><p>Aquí, <code>fetch_data</code> es una función asíncrona que devuelve un futuro. En <code>process_data</code>, se utiliza la palabra clave <code>await</code> para esperar a que <code>fetch_data</code> se complete antes de imprimir el resultado.</p>
+</div><h1>Ejecutores</h1>
+<div class='content'><p>Los ejecutores son responsables de ejecutar tareas asíncronas. El ejecutor más comúnmente utilizado en Rust es <code>tokio</code>.</p>
+</div><h2>Ejemplo con Tokio</h2>
+<div class='content'><p>Primero, agrega <code>tokio</code> a tu <code>Cargo.toml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("W2RlcGVuZGVuY2llc10KdG9raW8gPSB7IHZlcnNpb24gPSAiMSIsIGZlYXR1cmVzID0gWyJmdWxsIl0gfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[dependencies]
+tokio = { version = &quot;1&quot;, features = [&quot;full&quot;] }</pre></div><div class='content'><p>Luego, usa <code>tokio</code> para ejecutar tus funciones asíncronas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHRva2lvOjpydW50aW1lOjpSdW50aW1lOwoKYXN5bmMgZm4gZmV0Y2hfZGF0YSgpIC0+IHUzMiB7CiAgICA0Mgp9CgpmbiBtYWluKCkgewogICAgbGV0IHJ0ID0gUnVudGltZTo6bmV3KCkudW53cmFwKCk7CiAgICBydC5ibG9ja19vbihhc3luYyB7CiAgICAgICAgbGV0IGRhdGEgPSBmZXRjaF9kYXRhKCkuYXdhaXQ7CiAgICAgICAgcHJpbnRsbiEoIkRhdGE6IHt9IiwgZGF0YSk7CiAgICB9KTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use tokio::runtime::Runtime;
+
+async fn fetch_data() -&gt; u32 {
+    42
+}
+
+fn main() {
+    let rt = Runtime::new().unwrap();
+    rt.block_on(async {
+        let data = fetch_data().await;
+        println!(&quot;Data: {}&quot;, data);
+    });
+}</pre></div><div class='content'><p>En este ejemplo, se crea un runtime de Tokio, y se utiliza el método <code>block_on</code> para ejecutar el código asíncrono.</p>
+</div><h1>Comparación de Código Síncrono y Asíncrono</h1>
+<div class='content'><p>| Código Síncrono | Código Asíncrono |
+|-----------------|------------------|
+| Bloquea el hilo hasta que la operación se complete. | Permite que otras tareas se ejecuten mientras se espera que la operación se complete. |
+| Más fácil de escribir y entender para tareas simples. | Más eficiente para operaciones de E/S y de alta latencia. |</p>
+</div><h2>Ejemplo Síncrono</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZmV0Y2hfZGF0YSgpIC0+IHUzMiB7CiAgICA0Mgp9CgpmbiBtYWluKCkgewogICAgbGV0IGRhdGEgPSBmZXRjaF9kYXRhKCk7CiAgICBwcmludGxuISgiRGF0YToge30iLCBkYXRhKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn fetch_data() -&gt; u32 {
+    42
+}
+
+fn main() {
+    let data = fetch_data();
+    println!(&quot;Data: {}&quot;, data);
+}</pre></div><div class='content'></div><h2>Ejemplo Asíncrono</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXN5bmMgZm4gZmV0Y2hfZGF0YSgpIC0+IHUzMiB7CiAgICA0Mgp9CgojW3Rva2lvOjptYWluXQphc3luYyBmbiBtYWluKCkgewogICAgbGV0IGRhdGEgPSBmZXRjaF9kYXRhKCkuYXdhaXQ7CiAgICBwcmludGxuISgiRGF0YToge30iLCBkYXRhKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>async fn fetch_data() -&gt; u32 {
+    42
+}
+
+#[tokio::main]
+async fn main() {
+    let data = fetch_data().await;
+    println!(&quot;Data: {}&quot;, data);
+}</pre></div><div class='content'></div><h1>Ejercicios</h1>
+<div class='content'><ol>
+<li><strong>Función Asíncrona Básica</strong>: Escribe una función asíncrona que devuelva una cadena después de un retraso usando <code>tokio::time::sleep</code>.</li>
+<li><strong>Encadenamiento de Futuros</strong>: Crea dos funciones asíncronas y encadénalas usando <code>.await</code>.</li>
+<li><strong>Manejo de Errores</strong>: Modifica una función asíncrona para que devuelva un <code>Result</code> y maneja el error en la función que la llama.</li>
+</ol>
+</div><h2>Ejercicio 1: Función Asíncrona Básica</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHRva2lvOjp0aW1lOjp7c2xlZXAsIER1cmF0aW9ufTsKCmFzeW5jIGZuIGRlbGF5ZWRfbWVzc2FnZSgpIC0+IFN0cmluZyB7CiAgICBzbGVlcChEdXJhdGlvbjo6ZnJvbV9zZWNzKDIpKS5hd2FpdDsKICAgICJIZWxsbywgd29ybGQhIi50b19zdHJpbmcoKQp9CgojW3Rva2lvOjptYWluXQphc3luYyBmbiBtYWluKCkgewogICAgbGV0IG1lc3NhZ2UgPSBkZWxheWVkX21lc3NhZ2UoKS5hd2FpdDsKICAgIHByaW50bG4hKCJ7fSIsIG1lc3NhZ2UpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use tokio::time::{sleep, Duration};
+
+async fn delayed_message() -&gt; String {
+    sleep(Duration::from_secs(2)).await;
+    &quot;Hello, world!&quot;.to_string()
+}
+
+#[tokio::main]
+async fn main() {
+    let message = delayed_message().await;
+    println!(&quot;{}&quot;, message);
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Encadenamiento de Futuros</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXN5bmMgZm4gZmlyc3RfdGFzaygpIC0+IHUzMiB7CiAgICAxMAp9Cgphc3luYyBmbiBzZWNvbmRfdGFzayhpbnB1dDogdTMyKSAtPiB1MzIgewogICAgaW5wdXQgKiAyCn0KCiNbdG9raW86Om1haW5dCmFzeW5jIGZuIG1haW4oKSB7CiAgICBsZXQgcmVzdWx0ID0gZmlyc3RfdGFzaygpLmF3YWl0OwogICAgbGV0IGZpbmFsX3Jlc3VsdCA9IHNlY29uZF90YXNrKHJlc3VsdCkuYXdhaXQ7CiAgICBwcmludGxuISgiRmluYWwgcmVzdWx0OiB7fSIsIGZpbmFsX3Jlc3VsdCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>async fn first_task() -&gt; u32 {
+    10
+}
+
+async fn second_task(input: u32) -&gt; u32 {
+    input * 2
+}
+
+#[tokio::main]
+async fn main() {
+    let result = first_task().await;
+    let final_result = second_task(result).await;
+    println!(&quot;Final result: {}&quot;, final_result);
+}</pre></div><div class='content'></div><h2>Ejercicio 3: Manejo de Errores</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6ZXJyb3I6OkVycm9yOwoKYXN5bmMgZm4gbWlnaHRfZmFpbChzdWNjZXNzOiBib29sKSAtPiBSZXN1bHQ8dTMyLCBCb3g8ZHluIEVycm9yPj4gewogICAgaWYgc3VjY2VzcyB7CiAgICAgICAgT2soNDIpCiAgICB9IGVsc2UgewogICAgICAgIEVycigiU29tZXRoaW5nIHdlbnQgd3JvbmciLmludG8oKSkKICAgIH0KfQoKI1t0b2tpbzo6bWFpbl0KYXN5bmMgZm4gbWFpbigpIHsKICAgIG1hdGNoIG1pZ2h0X2ZhaWwodHJ1ZSkuYXdhaXQgewogICAgICAgIE9rKHZhbHVlKSA9PiBwcmludGxuISgiU3VjY2Vzczoge30iLCB2YWx1ZSksCiAgICAgICAgRXJyKGUpID0+IHByaW50bG4hKCJFcnJvcjoge30iLCBlKSwKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::error::Error;
+
+async fn might_fail(success: bool) -&gt; Result&lt;u32, Box&lt;dyn Error&gt;&gt; {
+    if success {
+        Ok(42)
+    } else {
+        Err(&quot;Something went wrong&quot;.into())
+    }
+}
+
+#[tokio::main]
+async fn main() {
+    match might_fail(true).await {
+        Ok(value) =&gt; println!(&quot;Success: {}&quot;, value),
+        Err(e) =&gt; println!(&quot;Error: {}&quot;, e),
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La programación asíncrona en Rust permite aplicaciones eficientes y receptivas, especialmente cuando se trata de tareas de E/S. Al comprender y utilizar futuros, async/await y ejecutores, puedes escribir código Rust poderoso y eficiente. Practica con los ejercicios proporcionados para solidificar tu comprensión y volverte competente en el modelo de programación asíncrona de Rust.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='shared-state'>&#x25C4;Estado Compartido</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introducción a la Programación Asíncrona en Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='futures-and-async-await'>Futuros y Async/Await &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

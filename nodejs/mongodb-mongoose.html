@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de MongoDB con Mongoose</title>
+
+    <link rel="alternate" href="https://campusempresa.com/nodejs/mongodb-mongoose" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/nodejs/mongodb-mongoose" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/nodejs/mongodb-mongoose" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/nodejs/mongodb-mongoose" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/nodejs/mongodb-mongoose" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='intro-to-databases'>&#x25C4;Introducción a las Bases de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Uso de MongoDB con Mongoose</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mysql-sequelize'>Usando MySQL con Sequelize &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a MongoDB y Mongoose</h1>
+<div class='content'><ul>
+<li><strong>MongoDB</strong>: Una base de datos NoSQL que almacena datos en documentos similares a JSON.</li>
+<li><strong>Mongoose</strong>: Una biblioteca de Modelado de Datos de Objetos (ODM) para MongoDB y Node.js, que proporciona una solución basada en esquemas para modelar los datos de tu aplicación.</li>
+</ul>
+</div><h2>¿Por qué usar Mongoose?</h2>
+<div class='content'><ul>
+<li>Simplifica la validación de datos.</li>
+<li>Proporciona un esquema para estructurar tus datos.</li>
+<li>Ofrece conversión de tipos incorporada, construcción de consultas y ganchos de lógica de negocio.</li>
+</ul>
+</div><h1>Configuración de MongoDB y Mongoose</h1>
+<h2>Instalación de MongoDB</h2>
+<div class='content'><ol>
+<li>Descarga e instala MongoDB desde el <a href="https://www.mongodb.com/try/download/community">sitio web oficial</a>.</li>
+<li>Inicia el servidor de MongoDB:
+<pre><code class="language-sh">mongod
+</code></pre>
+</li>
+</ol>
+</div><h2>Instalación de Mongoose</h2>
+<div class='content'><ol>
+<li>Inicializa un proyecto de Node.js si no lo has hecho ya:
+<pre><code class="language-sh">npm init -y
+</code></pre>
+</li>
+<li>Instala Mongoose:
+<pre><code class="language-sh">npm install mongoose
+</code></pre>
+</li>
+</ol>
+</div><h1>Conexión a MongoDB con Mongoose</h1>
+<h2>Conexión básica</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwoKbW9uZ29vc2UuY29ubmVjdCgnbW9uZ29kYjovL2xvY2FsaG9zdDoyNzAxNy9teWRhdGFiYXNlJywgewogIHVzZU5ld1VybFBhcnNlcjogdHJ1ZSwKICB1c2VVbmlmaWVkVG9wb2xvZ3k6IHRydWUKfSkudGhlbigoKSA9PiB7CiAgY29uc29sZS5sb2coJ0NvbmVjdGFkbyBhIE1vbmdvREInKTsKfSkuY2F0Y2goZXJyID0+IHsKICBjb25zb2xlLmVycm9yKCdFcnJvciBkZSBjb25leGnDs24nLCBlcnIpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/mydatabase', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() =&gt; {
+  console.log('Conectado a MongoDB');
+}).catch(err =&gt; {
+  console.error('Error de conexi&oacute;n', err);
+});</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>mongoose.connect</code>: Conecta al servidor de MongoDB.</li>
+<li><code>useNewUrlParser</code> y <code>useUnifiedTopology</code>: Opciones para evitar advertencias de deprecación.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Definición de esquemas y modelos</h1>
+<h2>Creación de un esquema</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBTY2hlbWEgfSA9IG1vbmdvb3NlOwoKY29uc3QgdXNlclNjaGVtYSA9IG5ldyBTY2hlbWEoewogIG5hbWU6IFN0cmluZywKICBhZ2U6IE51bWJlciwKICBlbWFpbDogU3RyaW5nCn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { Schema } = mongoose;
+
+const userSchema = new Schema({
+  name: String,
+  age: Number,
+  email: String
+});</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>Schema</code>: Define la estructura del documento.</li>
+<li><code>name</code>, <code>age</code>, <code>email</code>: Campos del documento con sus respectivos tipos de datos.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Creación de un modelo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXNlciA9IG1vbmdvb3NlLm1vZGVsKCdVc2VyJywgdXNlclNjaGVtYSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const User = mongoose.model('User', userSchema);</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>model</code>: Compila el esquema en un modelo, una clase con la que construimos documentos.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Operaciones CRUD</h1>
+<h2>Crear</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbmV3VXNlciA9IG5ldyBVc2VyKHsKICBuYW1lOiAnSm9obiBEb2UnLAogIGFnZTogMzAsCiAgZW1haWw6ICdqb2huLmRvZUBleGFtcGxlLmNvbScKfSk7CgpuZXdVc2VyLnNhdmUoKS50aGVuKCgpID0+IGNvbnNvbGUubG9nKCdVc3VhcmlvIGd1YXJkYWRvJykpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const newUser = new User({
+  name: 'John Doe',
+  age: 30,
+  email: 'john.doe@example.com'
+});
+
+newUser.save().then(() =&gt; console.log('Usuario guardado'));</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>new User</code>: Crea una nueva instancia del modelo User.</li>
+<li><code>save</code>: Guarda el documento en la base de datos.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Leer</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VXNlci5maW5kKHsgYWdlOiB7ICRndGU6IDE4IH0gfSkudGhlbih1c2VycyA9PiB7CiAgY29uc29sZS5sb2codXNlcnMpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>User.find({ age: { $gte: 18 } }).then(users =&gt; {
+  console.log(users);
+});</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>find</code>: Recupera documentos que coinciden con la consulta.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Actualizar</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VXNlci51cGRhdGVPbmUoeyBuYW1lOiAnSm9obiBEb2UnIH0sIHsgYWdlOiAzMSB9KS50aGVuKCgpID0+IHsKICBjb25zb2xlLmxvZygnVXN1YXJpbyBhY3R1YWxpemFkbycpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>User.updateOne({ name: 'John Doe' }, { age: 31 }).then(() =&gt; {
+  console.log('Usuario actualizado');
+});</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>updateOne</code>: Actualiza un único documento que coincida con la consulta.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Eliminar</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VXNlci5kZWxldGVPbmUoeyBuYW1lOiAnSm9obiBEb2UnIH0pLnRoZW4oKCkgPT4gewogIGNvbnNvbGUubG9nKCdVc3VhcmlvIGVsaW1pbmFkbycpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>User.deleteOne({ name: 'John Doe' }).then(() =&gt; {
+  console.log('Usuario eliminado');
+});</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>deleteOne</code>: Elimina un único documento que coincida con la consulta.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Temas avanzados</h1>
+<h2>Middleware</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Pre Middleware</strong>: Se ejecuta antes de un cierto evento.</p>
+<pre><code class="language-javascript">userSchema.pre('save', function(next) {
+  console.log('Antes de guardar');
+  next();
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Post Middleware</strong>: Se ejecuta después de un cierto evento.</p>
+<pre><code class="language-javascript">userSchema.post('save', function(doc) {
+  console.log('Después de guardar', doc);
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>Virtuales</h2>
+<div class='content'><ul>
+<li><strong>Propiedades virtuales</strong>: Campos que no se almacenan en MongoDB pero que pueden usarse como cualquier otro campo.
+<pre><code class="language-javascript">userSchema.virtual('fullName').get(function() {
+  return `${this.firstName} ${this.lastName}`;
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>Población</h2>
+<div class='content'><ul>
+<li><strong>Poblar referencias</strong>: Reemplaza las rutas especificadas en el documento con documento(s) de otra(s) colección(es).
+<pre><code class="language-javascript">const postSchema = new Schema({
+  title: String,
+  author: { type: Schema.Types.ObjectId, ref: 'User' }
+});
+
+const Post = mongoose.model('Post', postSchema);
+
+Post.find().populate('author').then(posts =&gt; {
+  console.log(posts);
+});
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><ul>
+<li><strong>Resumen</strong>:
+<ul>
+<li>Mongoose simplifica las interacciones con MongoDB proporcionando una solución basada en esquemas.</li>
+<li>Las operaciones CRUD básicas son sencillas con Mongoose.</li>
+<li>Funcionalidades avanzadas como middleware, virtuales y población mejoran la funcionalidad y flexibilidad de tu aplicación.</li>
+</ul>
+</li>
+</ul>
+<p>Al dominar Mongoose, puedes gestionar eficientemente tus datos en MongoDB y construir aplicaciones robustas con Node.js.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='intro-to-databases'>&#x25C4;Introducción a las Bases de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Uso de MongoDB con Mongoose</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mysql-sequelize'>Usando MySQL con Sequelize &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

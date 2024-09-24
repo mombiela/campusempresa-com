@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Proyectos con Docker Compose</title>
+
+    <link rel="alternate" href="https://campusempresa.com/docker/managing-docker-compose-projects" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/docker/managing-docker-compose-projects" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/docker/managing-docker-compose-projects" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/docker/managing-docker-compose-projects" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/docker/managing-docker-compose-projects" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='networking-docker-compose'>&#x25C4;Redes con Docker Compose</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Gestión de Proyectos con Docker Compose</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='docker-swarm-orchestration'>Docker Swarm y Orquestación &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a Docker Compose</h1>
+<div class='content'><p>Docker Compose es una herramienta para definir y ejecutar aplicaciones Docker de múltiples contenedores. Con Compose, utilizas un archivo YAML para configurar los servicios de tu aplicación. Luego, con un solo comando, creas y arrancas todos los servicios desde tu configuración.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Servicio</strong>: Un servicio es un contenedor en tu aplicación. Cada servicio ejecuta una imagen y puede escalarse especificando el número de contenedores a ejecutar.</li>
+<li><strong>Volumen</strong>: Los volúmenes se utilizan para persistir datos generados y utilizados por los contenedores Docker.</li>
+<li><strong>Red</strong>: Las redes permiten que los contenedores se comuniquen entre sí, ya sea en el mismo host o a través de múltiples hosts.</li>
+</ul>
+</div><h1>Configuración de Docker Compose</h1>
+<div class='content'><p>Para comenzar con Docker Compose, necesitas instalar Docker y Docker Compose en tu máquina.</p>
+</div><h2>Instalación</h2>
+<div class='content'><ul>
+<li><strong>Docker</strong>: Sigue la guía oficial de instalación de Docker para tu sistema operativo.</li>
+<li><strong>Docker Compose</strong>: Docker Compose está incluido en Docker Desktop para Windows y Mac. Para Linux, puedes instalarlo usando el siguiente comando:
+<pre><code class="language-sh">sudo curl -L &quot;https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)&quot; -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+</code></pre>
+</li>
+</ul>
+</div><h1>Creación de un Archivo Docker Compose</h1>
+<div class='content'><p>Un archivo Docker Compose es un archivo YAML que define servicios, redes y volúmenes para una aplicación Docker.</p>
+</div><h2>Estructura Básica</h2>
+<div class='content'><p>Aquí tienes un ejemplo básico de un archivo <code>docker-compose.yml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIHdlYjoKICAgIGltYWdlOiBuZ2lueDpsYXRlc3QKICAgIHBvcnRzOgogICAgICAtICI4MDo4MCIKICBkYjoKICAgIGltYWdlOiBwb3N0Z3JlczpsYXRlc3QKICAgIGVudmlyb25tZW50OgogICAgICBQT1NUR1JFU19QQVNTV09SRDogZXhhbXBsZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - &quot;80:80&quot;
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: example</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>version</strong>: Especifica la versión del formato del archivo Compose.</li>
+<li><strong>services</strong>: Define los servicios a ejecutar.
+<ul>
+<li><strong>web</strong>: Un servicio llamado <code>web</code> que utiliza la imagen <code>nginx:latest</code>.
+<ul>
+<li><strong>ports</strong>: Mapea el puerto 80 en el host al puerto 80 en el contenedor.</li>
+</ul>
+</li>
+<li><strong>db</strong>: Un servicio llamado <code>db</code> que utiliza la imagen <code>postgres:latest</code>.
+<ul>
+<li><strong>environment</strong>: Establece variables de entorno para el contenedor.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejecutando Docker Compose</h1>
+<div class='content'><p>Para iniciar los servicios definidos en tu archivo <code>docker-compose.yml</code>, navega al directorio que contiene el archivo y ejecuta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up</pre></div><div class='content'><p>Este comando iniciará todos los servicios en primer plano. Para ejecutarlos en segundo plano, usa:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXAgLWQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up -d</pre></div><div class='content'></div><h1>Gestión de Servicios</h1>
+<div class='content'><p>Docker Compose proporciona varios comandos para gestionar tus servicios.</p>
+</div><h2>Comandos Comunes</h2>
+<div class='content'><ul>
+<li><strong>Iniciar Servicios</strong>: <code>docker-compose start</code></li>
+<li><strong>Detener Servicios</strong>: <code>docker-compose stop</code></li>
+<li><strong>Reiniciar Servicios</strong>: <code>docker-compose restart</code></li>
+<li><strong>Ver Logs</strong>: <code>docker-compose logs</code></li>
+<li><strong>Escalar Servicios</strong>: <code>docker-compose up --scale web=3 -d</code></li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div class='content'><p>Para escalar el servicio <code>web</code> a 3 instancias, usarías:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXAgLS1zY2FsZSB3ZWI9MyAtZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up --scale web=3 -d</pre></div><div class='content'></div><h1>Uso de Volúmenes y Redes</h1>
+<div class='content'><p>Los volúmenes y redes son esenciales para la persistencia de datos y la comunicación entre servicios.</p>
+</div><h2>Volúmenes</h2>
+<div class='content'><p>Define volúmenes en tu archivo <code>docker-compose.yml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmljZXM6CiAgZGI6CiAgICBpbWFnZTogcG9zdGdyZXM6bGF0ZXN0CiAgICB2b2x1bWVzOgogICAgICAtIGRiLWRhdGE6L3Zhci9saWIvcG9zdGdyZXNxbC9kYXRhCnZvbHVtZXM6CiAgZGItZGF0YTo="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>services:
+  db:
+    image: postgres:latest
+    volumes:
+      - db-data:/var/lib/postgresql/data
+volumes:
+  db-data:</pre></div><div class='content'></div><h2>Redes</h2>
+<div class='content'><p>Define redes personalizadas para tus servicios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmljZXM6CiAgd2ViOgogICAgaW1hZ2U6IG5naW54OmxhdGVzdAogICAgbmV0d29ya3M6CiAgICAgIC0gd2VibmV0CiAgZGI6CiAgICBpbWFnZTogcG9zdGdyZXM6bGF0ZXN0CiAgICBuZXR3b3JrczoKICAgICAgLSB3ZWJuZXQKbmV0d29ya3M6CiAgd2VibmV0Og=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>services:
+  web:
+    image: nginx:latest
+    networks:
+      - webnet
+  db:
+    image: postgres:latest
+    networks:
+      - webnet
+networks:
+  webnet:</pre></div><div class='content'></div><h1>Configuración Avanzada</h1>
+<div class='content'><p>Docker Compose permite configuraciones más avanzadas como el uso de archivos de entorno, la extensión de servicios y el uso de múltiples archivos Compose.</p>
+</div><h2>Archivos de Entorno</h2>
+<div class='content'><p>Puedes usar un archivo de entorno para establecer variables de entorno:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmljZXM6CiAgd2ViOgogICAgaW1hZ2U6IG5naW54OmxhdGVzdAogICAgZW52X2ZpbGU6CiAgICAgIC0gLmVudg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>services:
+  web:
+    image: nginx:latest
+    env_file:
+      - .env</pre></div><div class='content'></div><h2>Extensión de Servicios</h2>
+<div class='content'><p>Puedes extender servicios existentes para reutilizar configuraciones:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmljZXM6CiAgYmFzZToKICAgIGltYWdlOiBuZ2lueDpsYXRlc3QKICB3ZWI6CiAgICBleHRlbmRzOgogICAgICBzZXJ2aWNlOiBiYXNlCiAgICAgIGZpbGU6IGNvbW1vbi1zZXJ2aWNlcy55bWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>services:
+  base:
+    image: nginx:latest
+  web:
+    extends:
+      service: base
+      file: common-services.yml</pre></div><div class='content'></div><h2>Múltiples Archivos Compose</h2>
+<div class='content'><p>Puedes usar múltiples archivos Compose para sobrescribir configuraciones:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgLWYgZG9ja2VyLWNvbXBvc2UueW1sIC1mIGRvY2tlci1jb21wb3NlLm92ZXJyaWRlLnltbCB1cCAtZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Gestionar proyectos con Docker Compose implica entender la estructura del archivo <code>docker-compose.yml</code>, ejecutar y gestionar servicios, y usar volúmenes y redes para la persistencia de datos y la comunicación. Con estas herramientas, puedes gestionar eficientemente aplicaciones Docker de múltiples contenedores, haciendo que tus procesos de desarrollo y despliegue sean más eficientes y efectivos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='networking-docker-compose'>&#x25C4;Redes con Docker Compose</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Gestión de Proyectos con Docker Compose</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='docker-swarm-orchestration'>Docker Swarm y Orquestación &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

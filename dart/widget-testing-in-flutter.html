@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas de Widgets en Flutter</title>
+
+    <link rel="alternate" href="https://campusempresa.com/dart/widget-testing-in-flutter" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/dart/widget-testing-in-flutter" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/dart/widget-testing-in-flutter" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/dart/widget-testing-in-flutter" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/dart/widget-testing-in-flutter" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='unit-testing'>&#x25C4;Pruebas Unitarias</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pruebas de Widgets en Flutter</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='integration-testing'>Pruebas de Integración &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a las Pruebas de Widgets</h1>
+<div class='content'><p>Las pruebas de widgets son una parte crucial para asegurar que tus aplicaciones Flutter funcionen como se espera. Te permiten verificar el comportamiento de los widgets individuales y sus interacciones dentro de la aplicación. Esta sección cubrirá los conceptos básicos de las pruebas de widgets, incluyendo por qué son importantes y cómo empezar.</p>
+<ul>
+<li><strong>¿Por qué Pruebas de Widgets?</strong>
+<ul>
+<li>Asegura que los componentes de la UI se comporten como se espera.</li>
+<li>Ayuda a detectar errores temprano en el ciclo de desarrollo.</li>
+<li>Facilita la refactorización proporcionando una red de seguridad.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Configuración de Tu Entorno</h1>
+<div class='content'><p>Antes de que puedas empezar a escribir pruebas de widgets, necesitas configurar tu entorno de desarrollo.</p>
+<ul>
+<li><strong>Dependencias</strong>
+<ul>
+<li>Añade el paquete <code>flutter_test</code> a tu archivo <code>pubspec.yaml</code>:
+<pre><code class="language-yaml">dev_dependencies:
+  flutter_test:
+    sdk: flutter
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Escribiendo Tu Primera Prueba de Widget</h1>
+<div class='content'><p>Vamos a escribir una prueba de widget simple para entender los conceptos básicos.</p>
+<ul>
+<li><strong>Ejemplo: Probando una Aplicación de Contador Simple</strong>
+<ul>
+<li>Crea un nuevo archivo en el directorio <code>test</code>, por ejemplo, <code>counter_test.dart</code>.</li>
+<li>Escribe el siguiente código de prueba:
+<pre><code class="language-dart">import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:your_app/main.dart'; // Ajusta la importación a tu archivo principal de la app
+
+void main() {
+  testWidgets('Prueba de incremento del contador', (WidgetTester tester) async {
+    // Construye nuestra app y dispara un frame.
+    await tester.pumpWidget(MyApp());
+
+    // Verifica que nuestro contador empieza en 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Toca el icono '+' y dispara un frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+
+    // Verifica que nuestro contador ha incrementado.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
+  });
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong><code>testWidgets</code></strong>: Esta función se usa para definir una prueba de widget.</li>
+<li><strong><code>WidgetTester</code></strong>: Proporciona métodos para interactuar con los widgets en el entorno de prueba.</li>
+<li><strong><code>pumpWidget</code></strong>: Construye el árbol de widgets.</li>
+<li><strong><code>expect</code></strong>: Afirma que una condición es verdadera.</li>
+<li><strong><code>find</code></strong>: Localiza widgets en el árbol de widgets.</li>
+</ul>
+</div><h1>Técnicas Avanzadas de Pruebas de Widgets</h1>
+<div class='content'><p>Una vez que te sientas cómodo con las pruebas de widgets básicas, puedes explorar técnicas más avanzadas.</p>
+<ul>
+<li>
+<p><strong>Pruebas de Operaciones Asíncronas</strong></p>
+<ul>
+<li>Ejemplo: Probando un widget que obtiene datos de una API.
+<pre><code class="language-dart">testWidgets('Obtener datos y mostrar', (WidgetTester tester) async {
+  await tester.pumpWidget(MyApp());
+
+  // Inicialmente, un indicador de carga debería mostrarse.
+  expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+  // Simula un retraso para obtener datos.
+  await tester.pumpAndSettle(Duration(seconds: 2));
+
+  // Verifica que los datos se muestran después de obtenerlos.
+  expect(find.text('Datos Obtenidos'), findsOneWidget);
+});
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Simulación de Dependencias</strong></p>
+<ul>
+<li>Usa paquetes como <code>mockito</code> para simular dependencias y controlar su comportamiento durante las pruebas.
+<pre><code class="language-dart">import 'package:mockito/mockito.dart';
+import 'package:your_app/services/api_service.dart';
+
+class MockApiService extends Mock implements ApiService {}
+
+void main() {
+  testWidgets('Prueba de servicio API simulado', (WidgetTester tester) async {
+    final mockApiService = MockApiService();
+    when(mockApiService.fetchData()).thenAnswer((_) async =&gt; 'Datos Simulados');
+
+    await tester.pumpWidget(MyApp(apiService: mockApiService));
+
+    // Verifica que los datos simulados se muestran.
+    expect(find.text('Datos Simulados'), findsOneWidget);
+  });
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Mejores Prácticas para Pruebas de Widgets</h1>
+<div class='content'><ul>
+<li><strong>Mantén las Pruebas Pequeñas y Enfocadas</strong>
+<ul>
+<li>Prueba una cosa a la vez para que sea más fácil identificar problemas.</li>
+</ul>
+</li>
+<li><strong>Usa Nombres de Pruebas Significativos</strong>
+<ul>
+<li>Describe claramente lo que la prueba está verificando.</li>
+</ul>
+</li>
+<li><strong>Ejecuta Pruebas Frecuentemente</strong>
+<ul>
+<li>Integra las pruebas en tu flujo de trabajo de desarrollo para detectar problemas temprano.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las pruebas de widgets en Flutter son una herramienta poderosa para asegurar que la UI de tu aplicación se comporte como se espera. Al comenzar con pruebas simples y gradualmente incorporar técnicas más avanzadas, puedes construir una suite de pruebas robusta que proporcione confianza en la calidad de tu aplicación. Recuerda seguir las mejores prácticas para mantener un código de pruebas limpio y efectivo.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='unit-testing'>&#x25C4;Pruebas Unitarias</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pruebas de Widgets en Flutter</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='integration-testing'>Pruebas de Integración &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

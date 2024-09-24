@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entendiendo la Propiedad</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rust/understanding-ownership" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rust/understanding-ownership" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rust/understanding-ownership" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/rust/understanding-ownership" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/rust/understanding-ownership" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='control-flow'>&#x25C4;Flujo de Control</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Entendiendo la Propiedad</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='references-and-borrowing'>Referencias y Préstamo &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La propiedad es una de las características más únicas y poderosas de Rust. Permite a Rust gestionar la memoria de manera segura y eficiente sin un recolector de basura. Este tema te guiará a través de los conceptos básicos de propiedad, préstamo y tiempos de vida, proporcionándote una base sólida para escribir código seguro y eficiente en Rust.</p>
+</div><h1>Conceptos Clave de la Propiedad</h1>
+<div class='content'><ul>
+<li><strong>Propiedad</strong>: Cada valor en Rust tiene una variable que se llama su propietario.</li>
+<li><strong>Préstamo</strong>: Referencias a un valor sin tomar posesión.</li>
+<li><strong>Tiempos de Vida</strong>: Asegurando que las referencias sean válidas mientras se usen.</li>
+</ul>
+</div><h1>Reglas de la Propiedad</h1>
+<div class='content'><ol>
+<li>Cada valor en Rust tiene un solo propietario.</li>
+<li>Cuando el propietario sale del ámbito, el valor se elimina.</li>
+<li>La propiedad puede ser transferida (movida) a otra variable.</li>
+</ol>
+</div><h2>Ejemplo: Propiedad Básica</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBzMSA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsgLy8gczEgcG9zZWUgZWwgU3RyaW5nCiAgICBsZXQgczIgPSBzMTsgLy8gTGEgcHJvcGllZGFkIGRlbCBTdHJpbmcgc2UgbXVldmUgYSBzMgogICAgLy8gcHJpbnRsbiEoInt9IiwgczEpOyAvLyBFc3RvIGNhdXNhcsOtYSB1biBlcnJvciBlbiB0aWVtcG8gZGUgY29tcGlsYWNpw7NuIHBvcnF1ZSBzMSB5YSBubyBwb3NlZSBlbCBTdHJpbmcKICAgIHByaW50bG4hKCJ7fSIsIHMyKTsgLy8gRXN0byBlcyB2w6FsaWRvCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let s1 = String::from(&quot;hello&quot;); // s1 posee el String
+    let s2 = s1; // La propiedad del String se mueve a s2
+    // println!(&quot;{}&quot;, s1); // Esto causar&iacute;a un error en tiempo de compilaci&oacute;n porque s1 ya no posee el String
+    println!(&quot;{}&quot;, s2); // Esto es v&aacute;lido
+}</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>s1</code> inicialmente posee el <code>String</code>.</li>
+<li>La propiedad se transfiere a <code>s2</code> cuando <code>s1</code> se asigna a <code>s2</code>.</li>
+<li>Intentar usar <code>s1</code> después de la transferencia resulta en un error en tiempo de compilación.</li>
+</ul>
+</div><h1>Préstamo</h1>
+<div class='content'><p>El préstamo te permite referenciar un valor sin tomar posesión. Esto se hace usando referencias (<code>&amp;</code>).</p>
+</div><h2>Ejemplo: Préstamo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBzMSA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsKICAgIGxldCBsZW4gPSBjYWxjdWxhdGVfbGVuZ3RoKCZzMSk7IC8vIFByZXN0YW5kbyBzMQogICAgcHJpbnRsbiEoIkxhIGxvbmdpdHVkIGRlICd7fScgZXMge30uIiwgczEsIGxlbik7IC8vIHMxIGHDum4gcHVlZGUgc2VyIHVzYWRvIGFxdcOtCn0KCmZuIGNhbGN1bGF0ZV9sZW5ndGgoczogJlN0cmluZykgLT4gdXNpemUgewogICAgcy5sZW4oKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let s1 = String::from(&quot;hello&quot;);
+    let len = calculate_length(&amp;s1); // Prestando s1
+    println!(&quot;La longitud de '{}' es {}.&quot;, s1, len); // s1 a&uacute;n puede ser usado aqu&iacute;
+}
+
+fn calculate_length(s: &amp;String) -&gt; usize {
+    s.len()
+}</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>s1</code> es prestado por la función <code>calculate_length</code>.</li>
+<li><code>s1</code> aún puede ser usado después de la llamada a la función porque la propiedad no se transfiere.</li>
+</ul>
+</div><h1>Préstamo Mutable</h1>
+<div class='content'><p>Rust impone que puedes tener una referencia mutable o cualquier número de referencias inmutables, pero no ambas simultáneamente.</p>
+</div><h2>Ejemplo: Préstamo Mutable</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgcyA9IFN0cmluZzo6ZnJvbSgiaGVsbG8iKTsKICAgIGNoYW5nZSgmbXV0IHMpOyAvLyBQcsOpc3RhbW8gbXV0YWJsZQogICAgcHJpbnRsbiEoInt9Iiwgcyk7IC8vIHMgYcO6biBwdWVkZSBzZXIgdXNhZG8gYXF1w60KfQoKZm4gY2hhbmdlKHNvbWVfc3RyaW5nOiAmbXV0IFN0cmluZykgewogICAgc29tZV9zdHJpbmcucHVzaF9zdHIoIiwgd29ybGQiKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut s = String::from(&quot;hello&quot;);
+    change(&amp;mut s); // Pr&eacute;stamo mutable
+    println!(&quot;{}&quot;, s); // s a&uacute;n puede ser usado aqu&iacute;
+}
+
+fn change(some_string: &amp;mut String) {
+    some_string.push_str(&quot;, world&quot;);
+}</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>s</code> es mutable y prestado de manera mutable por <code>change</code>.</li>
+<li><code>change</code> modifica el <code>String</code> añadiendo <code>&quot;, world&quot;</code>.</li>
+</ul>
+</div><h1>Tiempos de Vida</h1>
+<div class='content'><p>Los tiempos de vida aseguran que las referencias sean válidas mientras se usen. Rust usa tiempos de vida para prevenir referencias colgantes.</p>
+</div><h2>Ejemplo: Tiempos de Vida</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCByOwogICAgewogICAgICAgIGxldCB4ID0gNTsKICAgICAgICByID0gJng7CiAgICB9CiAgICAvLyBwcmludGxuISgicjoge30iLCByKTsgLy8gRXN0byBjYXVzYXLDrWEgdW4gZXJyb3IgZW4gdGllbXBvIGRlIGNvbXBpbGFjacOzbgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let r;
+    {
+        let x = 5;
+        r = &amp;x;
+    }
+    // println!(&quot;r: {}&quot;, r); // Esto causar&iacute;a un error en tiempo de compilaci&oacute;n
+}</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>x</code> sale del ámbito antes de que <code>r</code> sea usado, llevando a una referencia colgante.</li>
+<li>Rust previene esto imponiendo tiempos de vida.</li>
+</ul>
+</div><h1>Resumen</h1>
+<div class='content'><ul>
+<li><strong>Propiedad</strong>: Asegura que cada valor tenga un solo propietario, y los valores se eliminan cuando el propietario sale del ámbito.</li>
+<li><strong>Préstamo</strong>: Permite referencias a un valor sin tomar posesión, habilitando acceso seguro.</li>
+<li><strong>Tiempos de Vida</strong>: Aseguran que las referencias sean válidas mientras se usen, previniendo referencias colgantes.</li>
+</ul>
+<p>Entender estos conceptos es crucial para escribir código seguro y eficiente en Rust. Practica estos conceptos con varios ejemplos para solidificar tu comprensión.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='control-flow'>&#x25C4;Flujo de Control</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Entendiendo la Propiedad</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='references-and-borrowing'>Referencias y Préstamo &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replicación y Alta Disponibilidad</title>
+
+    <link rel="alternate" href="https://campusempresa.com/postgresql/replication-and-high-availability" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/postgresql/replication-and-high-availability" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/postgresql/replication-and-high-availability" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/postgresql/replication-and-high-availability" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/postgresql/replication-and-high-availability" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='partitioning-tables'>&#x25C4;Particionamiento de Tablas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Replicación y Alta Disponibilidad</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-management-and-roles'>Gestión de Usuarios y Roles &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La replicación y la alta disponibilidad son conceptos críticos en la gestión de bases de datos, asegurando que tu base de datos PostgreSQL permanezca accesible y resiliente frente a fallos de hardware, errores de software u otras interrupciones. Esta sección te guiará a través de los conceptos básicos de la replicación, los diferentes métodos de replicación y las estrategias para lograr alta disponibilidad en PostgreSQL.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Replicación</strong>: El proceso de copiar datos de un servidor de base de datos (primario) a otro (réplica).</li>
+<li><strong>Alta Disponibilidad (HA)</strong>: Asegurar que el sistema de base de datos esté continuamente operativo con un tiempo de inactividad mínimo.</li>
+<li><strong>Servidor Primario</strong>: El servidor principal donde ocurren todas las operaciones de escritura.</li>
+<li><strong>Servidor Réplica</strong>: Un servidor que mantiene una copia de los datos del servidor primario, generalmente para operaciones de lectura o propósitos de conmutación por error.</li>
+<li><strong>Conmutación por Error</strong>: El proceso de cambiar a un servidor réplica cuando el servidor primario falla.</li>
+</ul>
+</div><h1>Tipos de Replicación</h1>
+<div class='content'><p>PostgreSQL soporta varios métodos de replicación, cada uno con sus propios casos de uso y configuraciones.</p>
+</div><h2>Replicación en Streaming</h2>
+<div class='content'><p>La replicación en streaming es un método donde el servidor primario envía continuamente cambios al servidor réplica en tiempo real.</p>
+<ul>
+<li>
+<p><strong>Ventajas</strong>:</p>
+<ul>
+<li>Replicación de datos en tiempo real.</li>
+<li>Baja latencia.</li>
+<li>Adecuado para configuraciones de alta disponibilidad.</li>
+</ul>
+</li>
+<li>
+<p><strong>Desventajas</strong>:</p>
+<ul>
+<li>Requiere una conexión de red estable.</li>
+<li>La réplica puede estar ligeramente desfasada respecto al servidor primario.</li>
+</ul>
+</li>
+</ul>
+<h4>Ejemplo de Configuración</h4>
+<ol>
+<li>
+<p><strong>Configuración del Servidor Primario</strong>:</p>
+<pre><code class="language-sql"># postgresql.conf
+wal_level = replica
+max_wal_senders = 3
+wal_keep_segments = 64
+hot_standby = on
+
+# pg_hba.conf
+host replication replicator 192.168.1.0/24 md5
+</code></pre>
+</li>
+<li>
+<p><strong>Configuración del Servidor Réplica</strong>:</p>
+<pre><code class="language-bash">pg_basebackup -h primary_ip -D /var/lib/postgresql/12/main -U replicator -P -v --wal-method=stream
+</code></pre>
+<pre><code class="language-sql"># recovery.conf
+standby_mode = 'on'
+primary_conninfo = 'host=primary_ip port=5432 user=replicator password=yourpassword'
+trigger_file = '/tmp/trigger'
+</code></pre>
+</li>
+</ol>
+</div><h2>Replicación Lógica</h2>
+<div class='content'><p>La replicación lógica permite más flexibilidad al replicar cambios de datos basados en cambios lógicos en lugar de cambios físicos.</p>
+<ul>
+<li>
+<p><strong>Ventajas</strong>:</p>
+<ul>
+<li>Permite la replicación selectiva de tablas.</li>
+<li>Puede replicar entre diferentes versiones de PostgreSQL.</li>
+<li>Adecuado para procesos de almacenamiento de datos y ETL.</li>
+</ul>
+</li>
+<li>
+<p><strong>Desventajas</strong>:</p>
+<ul>
+<li>Configuración más compleja.</li>
+<li>Potencialmente mayor latencia en comparación con la replicación en streaming.</li>
+</ul>
+</li>
+</ul>
+<h4>Ejemplo de Configuración</h4>
+<ol>
+<li>
+<p><strong>Configuración del Servidor Primario</strong>:</p>
+<pre><code class="language-sql"># postgresql.conf
+wal_level = logical
+max_replication_slots = 4
+max_wal_senders = 4
+
+# pg_hba.conf
+host replication replicator 192.168.1.0/24 md5
+</code></pre>
+</li>
+<li>
+<p><strong>Creación de una Publicación</strong>:</p>
+<pre><code class="language-sql">CREATE PUBLICATION my_publication FOR TABLE my_table;
+</code></pre>
+</li>
+<li>
+<p><strong>Configuración del Servidor Réplica</strong>:</p>
+<pre><code class="language-sql">CREATE SUBSCRIPTION my_subscription CONNECTION 'host=primary_ip dbname=mydb user=replicator password=yourpassword' PUBLICATION my_publication;
+</code></pre>
+</li>
+</ol>
+</div><h1>Estrategias de Alta Disponibilidad</h1>
+<div class='content'><p>La alta disponibilidad en PostgreSQL implica más que solo replicación. Incluye monitoreo, conmutación por error automática y balanceo de carga.</p>
+</div><h2>Monitoreo</h2>
+<div class='content'><p>Las herramientas de monitoreo ayudan a detectar fallos y problemas de rendimiento. Las herramientas comunes incluyen:</p>
+<ul>
+<li><strong>pg_stat_replication</strong>: Proporciona información sobre el estado de la replicación.</li>
+<li><strong>pg_stat_activity</strong>: Muestra la actividad actual de la base de datos.</li>
+<li><strong>Herramientas de terceros</strong>: Herramientas como Nagios, Zabbix y Prometheus pueden ser utilizadas para un monitoreo integral.</li>
+</ul>
+</div><h2>Conmutación por Error Automática</h2>
+<div class='content'><p>La conmutación por error automática asegura que un servidor réplica tome el control cuando el servidor primario falla.</p>
+<ul>
+<li><strong>Herramientas</strong>:
+<ul>
+<li><strong>Patroni</strong>: Una solución de alta disponibilidad para PostgreSQL.</li>
+<li><strong>repmgr</strong>: Un conjunto de herramientas de código abierto para gestionar la replicación y la conmutación por error.</li>
+</ul>
+</li>
+</ul>
+<h4>Ejemplo con Patroni</h4>
+<ol>
+<li>
+<p><strong>Instalar Patroni</strong>:</p>
+<pre><code class="language-bash">pip install patroni[etcd]
+</code></pre>
+</li>
+<li>
+<p><strong>Archivo de Configuración (patroni.yml)</strong>:</p>
+<pre><code class="language-yaml">scope: my_cluster
+namespace: /db/
+name: postgresql0
+
+etcd:
+  host: 127.0.0.1:2379
+
+postgresql:
+  listen: 127.0.0.1:5432
+  connect_address: 127.0.0.1:5432
+  data_dir: /var/lib/postgresql/12/main
+  config_dir: /etc/postgresql/12/main
+  bin_dir: /usr/lib/postgresql/12/bin
+  authentication:
+    replication:
+      username: replicator
+      password: yourpassword
+    superuser:
+      username: postgres
+      password: yourpassword
+</code></pre>
+</li>
+</ol>
+</div><h2>Balanceo de Carga</h2>
+<div class='content'><p>El balanceo de carga distribuye las consultas de lectura entre múltiples servidores réplica para mejorar el rendimiento.</p>
+<ul>
+<li><strong>pgpool-II</strong>: Un middleware que proporciona agrupación de conexiones, balanceo de carga y gestión de replicación.</li>
+</ul>
+<h4>Ejemplo con pgpool-II</h4>
+<ol>
+<li>
+<p><strong>Instalar pgpool-II</strong>:</p>
+<pre><code class="language-bash">sudo apt-get install pgpool2
+</code></pre>
+</li>
+<li>
+<p><strong>Archivo de Configuración (pgpool.conf)</strong>:</p>
+<pre><code class="language-ini">listen_addresses = '*'
+port = 9999
+backend_hostname0 = 'primary_ip'
+backend_port0 = 5432
+backend_weight0 = 1
+backend_data_directory0 = '/var/lib/postgresql/12/main'
+backend_flag0 = 'ALLOW_TO_FAILOVER'
+
+backend_hostname1 = 'replica_ip'
+backend_port1 = 5432
+backend_weight1 = 1
+backend_data_directory1 = '/var/lib/postgresql/12/main'
+backend_flag1 = 'ALLOW_TO_FAILOVER'
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La replicación y la alta disponibilidad son esenciales para mantener un sistema de base de datos PostgreSQL resiliente y de alto rendimiento. Al comprender e implementar los diferentes métodos de replicación y estrategias de alta disponibilidad, puedes asegurar que tu base de datos permanezca operativa y pueda manejar fallos de manera elegante. Ya sea que elijas la replicación en streaming para la consistencia de datos en tiempo real o la replicación lógica para mayor flexibilidad, combinarlas con mecanismos robustos de monitoreo y conmutación por error te ayudará a lograr un entorno PostgreSQL altamente disponible.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='partitioning-tables'>&#x25C4;Particionamiento de Tablas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Replicación y Alta Disponibilidad</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-management-and-roles'>Gestión de Usuarios y Roles &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

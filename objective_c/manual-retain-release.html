@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual Retain-Release</title>
+
+    <link rel="alternate" href="https://campusempresa.com/objective_c/manual-retain-release" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/objective_c/manual-retain-release" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/objective_c/manual-retain-release" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/objective_c/manual-retain-release" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/objective_c/manual-retain-release" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='automatic-reference-counting-arc'>&#x25C4;Conteo Automático de Referencias (ARC)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Manual Retain-Release</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='strong-and-weak-references'>Referencias Fuertes y Débiles &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Manual Retain-Release es una técnica de gestión de memoria utilizada en Objective-C antes de la introducción de Automatic Reference Counting (ARC). Comprender esta técnica es crucial para mantener el código heredado y para una comprensión más profunda de cómo funciona la gestión de memoria en Objective-C.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Conteo de Referencias</strong>: Objective-C utiliza un sistema de conteo de referencias para gestionar el ciclo de vida de los objetos.</li>
+<li><strong>Retain</strong>: Incrementa el conteo de referencias de un objeto.</li>
+<li><strong>Release</strong>: Decrementa el conteo de referencias de un objeto.</li>
+<li><strong>Autorelease</strong>: Añade el objeto a la piscina de autorelease, que enviará un mensaje de release al objeto en un momento posterior.</li>
+</ul>
+</div><h1>Conteo de Referencias</h1>
+<div class='content'><p>Cada objeto en Objective-C tiene un conteo de referencias, que lleva un registro de cuántas referencias apuntan a él. Cuando el conteo de referencias llega a cero, el objeto es desalojado.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlNPYmplY3QgKm9iaiA9IFtbTlNPYmplY3QgYWxsb2NdIGluaXRdOyAvLyBFbCBjb250ZW8gZGUgcmVmZXJlbmNpYXMgZXMgMQpbb2JqIHJldGFpbl07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAyCltvYmogcmVsZWFzZV07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAxCltvYmogcmVsZWFzZV07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAwLCBlbCBvYmpldG8gZXMgZGVzYWxvamFkbw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NSObject *obj = [[NSObject alloc] init]; // El conteo de referencias es 1
+[obj retain]; // El conteo de referencias es 2
+[obj release]; // El conteo de referencias es 1
+[obj release]; // El conteo de referencias es 0, el objeto es desalojado</pre></div><div class='content'></div><h1>Retain</h1>
+<div class='content'><p>El método <code>retain</code> incrementa el conteo de referencias de un objeto. Esto se utiliza cuando deseas tomar posesión de un objeto para asegurarte de que permanezca en memoria mientras lo estás usando.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlNPYmplY3QgKm9iaiA9IFtbTlNPYmplY3QgYWxsb2NdIGluaXRdOyAvLyBFbCBjb250ZW8gZGUgcmVmZXJlbmNpYXMgZXMgMQpbb2JqIHJldGFpbl07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NSObject *obj = [[NSObject alloc] init]; // El conteo de referencias es 1
+[obj retain]; // El conteo de referencias es 2</pre></div><div class='content'></div><h1>Release</h1>
+<div class='content'><p>El método <code>release</code> decrementa el conteo de referencias de un objeto. Cuando el conteo de referencias llega a cero, el objeto es desalojado.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlNPYmplY3QgKm9iaiA9IFtbTlNPYmplY3QgYWxsb2NdIGluaXRdOyAvLyBFbCBjb250ZW8gZGUgcmVmZXJlbmNpYXMgZXMgMQpbb2JqIHJldGFpbl07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAyCltvYmogcmVsZWFzZV07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAxCltvYmogcmVsZWFzZV07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAwLCBlbCBvYmpldG8gZXMgZGVzYWxvamFkbw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NSObject *obj = [[NSObject alloc] init]; // El conteo de referencias es 1
+[obj retain]; // El conteo de referencias es 2
+[obj release]; // El conteo de referencias es 1
+[obj release]; // El conteo de referencias es 0, el objeto es desalojado</pre></div><div class='content'></div><h1>Autorelease</h1>
+<div class='content'><p>El método <code>autorelease</code> añade el objeto a la piscina de autorelease. La piscina enviará un mensaje <code>release</code> al objeto en un momento posterior, típicamente al final del ciclo de ejecución actual.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlNPYmplY3QgKm9iaiA9IFtbW05TT2JqZWN0IGFsbG9jXSBpbml0XSBhdXRvcmVsZWFzZV07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAxLCBzZXLDoSBsaWJlcmFkbyBtw6FzIHRhcmRl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NSObject *obj = [[[NSObject alloc] init] autorelease]; // El conteo de referencias es 1, ser&aacute; liberado m&aacute;s tarde</pre></div><div class='content'></div><h1>Gestión de Memoria con Retain y Release</h1>
+<div class='content'><p>Cuando gestionas la memoria manualmente, es importante equilibrar cada <code>retain</code> con un <code>release</code> correspondiente para evitar fugas de memoria o desalojos prematuros.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LSAodm9pZClleGFtcGxlTWV0aG9kIHsKICAgIE5TT2JqZWN0ICpvYmogPSBbW05TT2JqZWN0IGFsbG9jXSBpbml0XTsgLy8gRWwgY29udGVvIGRlIHJlZmVyZW5jaWFzIGVzIDEKICAgIFtvYmogcmV0YWluXTsgLy8gRWwgY29udGVvIGRlIHJlZmVyZW5jaWFzIGVzIDIKICAgIC8vIFVzYXIgb2JqCiAgICBbb2JqIHJlbGVhc2VdOyAvLyBFbCBjb250ZW8gZGUgcmVmZXJlbmNpYXMgZXMgMQogICAgW29iaiByZWxlYXNlXTsgLy8gRWwgY29udGVvIGRlIHJlZmVyZW5jaWFzIGVzIDAsIGVsIG9iamV0byBlcyBkZXNhbG9qYWRvCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>- (void)exampleMethod {
+    NSObject *obj = [[NSObject alloc] init]; // El conteo de referencias es 1
+    [obj retain]; // El conteo de referencias es 2
+    // Usar obj
+    [obj release]; // El conteo de referencias es 1
+    [obj release]; // El conteo de referencias es 0, el objeto es desalojado
+}</pre></div><div class='content'></div><h1>Errores Comunes</h1>
+<div class='content'><ul>
+<li><strong>Sobre-liberación</strong>: Llamar a <code>release</code> más veces que a <code>retain</code> puede llevar a fallos debido al acceso a memoria desalojada.</li>
+<li><strong>Fugas de Memoria</strong>: No llamar a <code>release</code> después de <code>retain</code> puede llevar a fugas de memoria, donde la memoria no se libera aunque el objeto ya no sea necesario.</li>
+</ul>
+</div><h2>Ejemplo de Sobre-liberación</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlNPYmplY3QgKm9iaiA9IFtbTlNPYmplY3QgYWxsb2NdIGluaXRdOyAvLyBFbCBjb250ZW8gZGUgcmVmZXJlbmNpYXMgZXMgMQpbb2JqIHJlbGVhc2VdOyAvLyBFbCBjb250ZW8gZGUgcmVmZXJlbmNpYXMgZXMgMCwgZWwgb2JqZXRvIGVzIGRlc2Fsb2phZG8KW29iaiByZWxlYXNlXTsgLy8gRmFsbGE6IGFjY2VzbyBhIG1lbW9yaWEgZGVzYWxvamFkYQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NSObject *obj = [[NSObject alloc] init]; // El conteo de referencias es 1
+[obj release]; // El conteo de referencias es 0, el objeto es desalojado
+[obj release]; // Falla: acceso a memoria desalojada</pre></div><div class='content'></div><h2>Ejemplo de Fuga de Memoria</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlNPYmplY3QgKm9iaiA9IFtbTlNPYmplY3QgYWxsb2NdIGluaXRdOyAvLyBFbCBjb250ZW8gZGUgcmVmZXJlbmNpYXMgZXMgMQpbb2JqIHJldGFpbl07IC8vIEVsIGNvbnRlbyBkZSByZWZlcmVuY2lhcyBlcyAyCi8vIE9sdmlkw7MgbGliZXJhciBvYmo="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NSObject *obj = [[NSObject alloc] init]; // El conteo de referencias es 1
+[obj retain]; // El conteo de referencias es 2
+// Olvid&oacute; liberar obj</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Manual Retain-Release es un concepto fundamental en la gestión de memoria de Objective-C. Al comprender y usar correctamente <code>retain</code>, <code>release</code> y <code>autorelease</code>, puedes gestionar efectivamente el ciclo de vida de los objetos y evitar errores comunes como fugas de memoria y fallos. Aunque ARC ha simplificado la gestión de memoria en el Objective-C moderno, conocer cómo funciona el retain-release manual proporciona valiosas ideas sobre el funcionamiento interno del lenguaje.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='automatic-reference-counting-arc'>&#x25C4;Conteo Automático de Referencias (ARC)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Manual Retain-Release</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='strong-and-weak-references'>Referencias Fuertes y Débiles &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

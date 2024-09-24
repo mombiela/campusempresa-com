@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización del Rendimiento en D3.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/d3_js/performance-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/d3_js/performance-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/d3_js/performance-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/d3_js/performance-optimization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/d3_js/performance-optimization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-driven-storytelling'>&#x25C4;Narración de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización del Rendimiento en D3.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='code-organization-and-modularity'>Organización y Modularidad del Código &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La optimización del rendimiento es crucial cuando se trabaja con D3.js, especialmente al tratar con grandes conjuntos de datos o visualizaciones complejas. Esta sección te guiará a través de varias técnicas y mejores prácticas para asegurar que tus visualizaciones en D3.js sean eficientes y de alto rendimiento.</p>
+</div><h1>Entendiendo los Cuellos de Botella en el Rendimiento</h1>
+<div class='content'><p>Antes de sumergirse en las técnicas de optimización, es importante entender dónde pueden ocurrir los cuellos de botella en el rendimiento en las aplicaciones de D3.js.</p>
+<ul>
+<li><strong>Manipulación del DOM</strong>: Las actualizaciones frecuentes al DOM pueden ser lentas.</li>
+<li><strong>Vinculación de Datos</strong>: La vinculación de datos ineficiente puede llevar a problemas de rendimiento.</li>
+<li><strong>Renderizado</strong>: Las visualizaciones complejas pueden ser lentas de renderizar.</li>
+<li><strong>Manejo de Eventos</strong>: Los manejadores de eventos mal gestionados pueden degradar el rendimiento.</li>
+</ul>
+</div><h1>Técnicas para la Optimización del Rendimiento</h1>
+<div class='content'></div><h2>Minimizar la Manipulación del DOM</h2>
+<div class='content'><p>Minimizar el número de elementos del DOM y las actualizaciones puede mejorar significativamente el rendimiento.</p>
+<ul>
+<li><strong>Actualizaciones en Lote</strong>: Agrupa múltiples actualizaciones del DOM en una sola operación.</li>
+<li><strong>Usa <code>documentFragment</code></strong>: Mantén temporalmente las actualizaciones del DOM en memoria antes de agregarlas al documento.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnJhZ21lbnRvID0gZG9jdW1lbnQuY3JlYXRlRG9jdW1lbnRGcmFnbWVudCgpOwpkYXRhLmZvckVhY2goZCA9PiB7CiAgICBjb25zdCBlbGVtZW50byA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpOwogICAgZWxlbWVudG8udGV4dENvbnRlbnQgPSBkOwogICAgZnJhZ21lbnRvLmFwcGVuZENoaWxkKGVsZW1lbnRvKTsKfSk7CmRvY3VtZW50LmJvZHkuYXBwZW5kQ2hpbGQoZnJhZ21lbnRvKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fragmento = document.createDocumentFragment();
+data.forEach(d =&gt; {
+    const elemento = document.createElement('div');
+    elemento.textContent = d;
+    fragmento.appendChild(elemento);
+});
+document.body.appendChild(fragmento);</pre></div><div class='content'></div><h2>Vinculación de Datos Eficiente</h2>
+<div class='content'><p>La vinculación de datos eficiente asegura que solo los elementos necesarios sean actualizados.</p>
+<ul>
+<li><strong>Funciones Clave</strong>: Usa funciones clave para identificar de manera única los puntos de datos, lo que ayuda a D3.js a actualizar solo los elementos necesarios.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZGF0YSA9IFsvKiB0dXMgZGF0b3MgKi9dOwpjb25zdCB1cGRhdGUgPSBkMy5zZWxlY3QoJ3N2ZycpLnNlbGVjdEFsbCgnY2lyY2xlJykuZGF0YShkYXRhLCBkID0+IGQuaWQpOwp1cGRhdGUuZW50ZXIoKS5hcHBlbmQoJ2NpcmNsZScpCiAgICAuYXR0cignY3gnLCBkID0+IGQueCkKICAgIC5hdHRyKCdjeScsIGQgPT4gZC55KQogICAgLmF0dHIoJ3InLCBkID0+IGQucik7CnVwZGF0ZS5leGl0KCkucmVtb3ZlKCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const data = [/* tus datos */];
+const update = d3.select('svg').selectAll('circle').data(data, d =&gt; d.id);
+update.enter().append('circle')
+    .attr('cx', d =&gt; d.x)
+    .attr('cy', d =&gt; d.y)
+    .attr('r', d =&gt; d.r);
+update.exit().remove();</pre></div><div class='content'></div><h2>Optimizar el Renderizado</h2>
+<div class='content'><p>Las optimizaciones de renderizado pueden hacer que tus visualizaciones sean más receptivas.</p>
+<ul>
+<li><strong>Simplificar Formas</strong>: Usa formas más simples o reduce el número de puntos en formas complejas.</li>
+<li><strong>Canvas vs. SVG</strong>: Para conjuntos de datos muy grandes, considera usar Canvas en lugar de SVG para el renderizado.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgY2FudmFzID0gZG9jdW1lbnQucXVlcnlTZWxlY3RvcignY2FudmFzJyk7CmNvbnN0IGNvbnRleHQgPSBjYW52YXMuZ2V0Q29udGV4dCgnMmQnKTsKZGF0YS5mb3JFYWNoKGQgPT4gewogICAgY29udGV4dC5iZWdpblBhdGgoKTsKICAgIGNvbnRleHQuYXJjKGQueCwgZC55LCBkLnIsIDAsIDIgKiBNYXRoLlBJKTsKICAgIGNvbnRleHQuZmlsbCgpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const canvas = document.querySelector('canvas');
+const context = canvas.getContext('2d');
+data.forEach(d =&gt; {
+    context.beginPath();
+    context.arc(d.x, d.y, d.r, 0, 2 * Math.PI);
+    context.fill();
+});</pre></div><div class='content'></div><h2>Gestionar el Manejo de Eventos</h2>
+<div class='content'><p>El manejo eficiente de eventos puede prevenir la degradación del rendimiento.</p>
+<ul>
+<li><strong>Debouncing y Throttling</strong>: Usa debouncing o throttling para limitar la frecuencia del manejo de eventos.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gZGVib3VuY2UoZnVuYywgd2FpdCkgewogICAgbGV0IHRpbWVvdXQ7CiAgICByZXR1cm4gZnVuY3Rpb24oLi4uYXJncykgewogICAgICAgIGNsZWFyVGltZW91dCh0aW1lb3V0KTsKICAgICAgICB0aW1lb3V0ID0gc2V0VGltZW91dCgoKSA9PiBmdW5jLmFwcGx5KHRoaXMsIGFyZ3MpLCB3YWl0KTsKICAgIH07Cn0KCndpbmRvdy5hZGRFdmVudExpc3RlbmVyKCdyZXNpemUnLCBkZWJvdW5jZSgoKSA9PiB7CiAgICAvLyBNYW5lamFyIGV2ZW50byBkZSByZWRpbWVuc2lvbmFtaWVudG8KfSwgMjAwKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() =&gt; func.apply(this, args), wait);
+    };
+}
+
+window.addEventListener('resize', debounce(() =&gt; {
+    // Manejar evento de redimensionamiento
+}, 200));</pre></div><div class='content'></div><h1>Técnicas Avanzadas</h1>
+<div class='content'></div><h2>DOM Virtual</h2>
+<div class='content'><p>Usar un DOM virtual puede ayudar a gestionar las actualizaciones de manera más eficiente al minimizar las manipulaciones directas del DOM.</p>
+<ul>
+<li><strong>Bibliotecas</strong>: Considera usar bibliotecas como React con D3.js para aprovechar los beneficios del DOM virtual.</li>
+</ul>
+</div><h2>Web Workers</h2>
+<div class='content'><p>Desplaza las computaciones pesadas a web workers para mantener el hilo principal receptivo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgd29ya2VyID0gbmV3IFdvcmtlcignd29ya2VyLmpzJyk7Cndvcmtlci5wb3N0TWVzc2FnZShkYXRhKTsKd29ya2VyLm9ubWVzc2FnZSA9IGZ1bmN0aW9uKGV2ZW50KSB7CiAgICBjb25zdCBwcm9jZXNzZWREYXRhID0gZXZlbnQuZGF0YTsKICAgIC8vIEFjdHVhbGl6YXIgdmlzdWFsaXphY2nDs24gY29uIHByb2Nlc3NlZERhdGEKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const worker = new Worker('worker.js');
+worker.postMessage(data);
+worker.onmessage = function(event) {
+    const processedData = event.data;
+    // Actualizar visualizaci&oacute;n con processedData
+};</pre></div><div class='content'></div><h2>Perfilado y Depuración</h2>
+<div class='content'><p>Usa las herramientas de desarrollo del navegador para perfilar y depurar problemas de rendimiento.</p>
+<ul>
+<li><strong>Pestaña de Rendimiento</strong>: Usa la pestaña de Rendimiento en Chrome DevTools para analizar los tiempos de renderizado y scripting.</li>
+<li><strong>Pestaña de Memoria</strong>: Monitorea el uso de memoria para detectar fugas o consumo excesivo de memoria.</li>
+</ul>
+</div><h1>Resumen</h1>
+<div class='content'><p>La optimización del rendimiento en D3.js implica una combinación de minimizar las manipulaciones del DOM, vinculación de datos eficiente, optimización del renderizado y gestión del manejo de eventos. Técnicas avanzadas como el uso de DOM virtual, web workers y herramientas de perfilado pueden mejorar aún más el rendimiento. Al aplicar estas mejores prácticas, puedes crear visualizaciones en D3.js eficientes y receptivas que manejen grandes conjuntos de datos e interacciones complejas de manera fluida.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-driven-storytelling'>&#x25C4;Narración de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización del Rendimiento en D3.js</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='code-organization-and-modularity'>Organización y Modularidad del Código &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

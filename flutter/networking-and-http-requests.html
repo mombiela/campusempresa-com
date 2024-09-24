@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes y Solicitudes HTTP</title>
+
+    <link rel="alternate" href="https://campusempresa.com/flutter/networking-and-http-requests" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/flutter/networking-and-http-requests" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/flutter/networking-and-http-requests" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/flutter/networking-and-http-requests" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/flutter/networking-and-http-requests" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='working-with-lists-and-grids'>&#x25C4;Trabajando con Listas y Cuadrículas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Redes y Solicitudes HTTP</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='local-data-storage'>Almacenamiento de Datos Locales &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En esta sección, exploraremos cómo manejar redes y solicitudes HTTP en Flutter. Esto es crucial para construir aplicaciones que necesiten comunicarse con servicios web o APIs. Cubriremos los conceptos básicos de hacer solicitudes HTTP, manejar respuestas y analizar datos JSON. Al final de esta sección, serás capaz de integrar llamadas de red en tus aplicaciones Flutter.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Métodos HTTP</strong>: GET, POST, PUT, DELETE</li>
+<li><strong>Programación Asíncrona</strong>: Futures, async, await</li>
+<li><strong>Análisis de JSON</strong>: Convertir datos JSON a objetos Dart y viceversa</li>
+<li><strong>Manejo de Errores</strong>: Gestionar errores de red y excepciones</li>
+</ul>
+</div><h1>Haciendo Solicitudes HTTP</h1>
+<div class='content'></div><h2>Usando el paquete `http`</h2>
+<div class='content'><p>Flutter proporciona el paquete <code>http</code> para manejar solicitudes HTTP. Primero, agrega el paquete <code>http</code> a tu archivo <code>pubspec.yaml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzOgogIGh0dHA6IF4wLjEzLjM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies:
+  http: ^0.13.3</pre></div><div class='content'><p>Luego, importa el paquete en tu archivo Dart:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmh0dHAvaHR0cC5kYXJ0JyBhcyBodHRwOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:http/http.dart' as http;</pre></div><div class='content'></div><h2>Solicitud GET</h2>
+<div class='content'><p>Una solicitud GET se usa para recuperar datos de un servidor. Aquí hay un ejemplo de cómo hacer una solicitud GET:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwppbXBvcnQgJ3BhY2thZ2U6aHR0cC9odHRwLmRhcnQnIGFzIGh0dHA7CgpGdXR1cmU8dm9pZD4gZmV0Y2hEYXRhKCkgYXN5bmMgewogIGZpbmFsIHJlc3BvbnNlID0gYXdhaXQgaHR0cC5nZXQoVXJpLnBhcnNlKCdodHRwczovL2pzb25wbGFjZWhvbGRlci50eXBpY29kZS5jb20vcG9zdHMnKSk7CgogIGlmIChyZXNwb25zZS5zdGF0dXNDb2RlID09IDIwMCkgewogICAgTGlzdDxkeW5hbWljPiBkYXRhID0ganNvbkRlY29kZShyZXNwb25zZS5ib2R5KTsKICAgIHByaW50KGRhdGEpOwogIH0gZWxzZSB7CiAgICB0aHJvdyBFeGNlcHRpb24oJ0ZhaWxlZCB0byBsb2FkIGRhdGEnKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future&lt;void&gt; fetchData() async {
+  final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+
+  if (response.statusCode == 200) {
+    List&lt;dynamic&gt; data = jsonDecode(response.body);
+    print(data);
+  } else {
+    throw Exception('Failed to load data');
+  }
+}</pre></div><div class='content'></div><h2>Solicitud POST</h2>
+<div class='content'><p>Una solicitud POST se usa para enviar datos a un servidor. Aquí hay un ejemplo de cómo hacer una solicitud POST:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwppbXBvcnQgJ3BhY2thZ2U6aHR0cC9odHRwLmRhcnQnIGFzIGh0dHA7CgpGdXR1cmU8dm9pZD4gc2VuZERhdGEoKSBhc3luYyB7CiAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBodHRwLnBvc3QoCiAgICBVcmkucGFyc2UoJ2h0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cycpLAogICAgaGVhZGVyczogPFN0cmluZywgU3RyaW5nPnsKICAgICAgJ0NvbnRlbnQtVHlwZSc6ICdhcHBsaWNhdGlvbi9qc29uOyBjaGFyc2V0PVVURi04JywKICAgIH0sCiAgICBib2R5OiBqc29uRW5jb2RlKDxTdHJpbmcsIFN0cmluZz57CiAgICAgICd0aXRsZSc6ICdmb28nLAogICAgICAnYm9keSc6ICdiYXInLAogICAgICAndXNlcklkJzogJzEnLAogICAgfSksCiAgKTsKCiAgaWYgKHJlc3BvbnNlLnN0YXR1c0NvZGUgPT0gMjAxKSB7CiAgICBwcmludCgnRGF0YSBzZW50IHN1Y2Nlc3NmdWxseScpOwogIH0gZWxzZSB7CiAgICB0aHJvdyBFeGNlcHRpb24oJ0ZhaWxlZCB0byBzZW5kIGRhdGEnKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future&lt;void&gt; sendData() async {
+  final response = await http.post(
+    Uri.parse('https://jsonplaceholder.typicode.com/posts'),
+    headers: &lt;String, String&gt;{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(&lt;String, String&gt;{
+      'title': 'foo',
+      'body': 'bar',
+      'userId': '1',
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    print('Data sent successfully');
+  } else {
+    throw Exception('Failed to send data');
+  }
+}</pre></div><div class='content'></div><h1>Análisis de Datos JSON</h1>
+<div class='content'><p>Cuando recibes datos de un servidor, a menudo están en formato JSON. Necesitas analizar estos datos JSON en objetos Dart.</p>
+</div><h2>Ejemplo de Datos JSON</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WwogIHsKICAgICJ1c2VySWQiOiAxLAogICAgImlkIjogMSwKICAgICJ0aXRsZSI6ICJTYW1wbGUgVGl0bGUiLAogICAgImJvZHkiOiAiU2FtcGxlIEJvZHkiCiAgfQpd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[
+  {
+    &quot;userId&quot;: 1,
+    &quot;id&quot;: 1,
+    &quot;title&quot;: &quot;Sample Title&quot;,
+    &quot;body&quot;: &quot;Sample Body&quot;
+  }
+]</pre></div><div class='content'></div><h2>Analizando JSON en Dart</h2>
+<div class='content'><p>Primero, crea una clase Dart para representar los datos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUG9zdCB7CiAgZmluYWwgaW50IHVzZXJJZDsKICBmaW5hbCBpbnQgaWQ7CiAgZmluYWwgU3RyaW5nIHRpdGxlOwogIGZpbmFsIFN0cmluZyBib2R5OwoKICBQb3N0KHtyZXF1aXJlZCB0aGlzLnVzZXJJZCwgcmVxdWlyZWQgdGhpcy5pZCwgcmVxdWlyZWQgdGhpcy50aXRsZSwgcmVxdWlyZWQgdGhpcy5ib2R5fSk7CgogIGZhY3RvcnkgUG9zdC5mcm9tSnNvbihNYXA8U3RyaW5nLCBkeW5hbWljPiBqc29uKSB7CiAgICByZXR1cm4gUG9zdCgKICAgICAgdXNlcklkOiBqc29uWyd1c2VySWQnXSwKICAgICAgaWQ6IGpzb25bJ2lkJ10sCiAgICAgIHRpdGxlOiBqc29uWyd0aXRsZSddLAogICAgICBib2R5OiBqc29uWydib2R5J10sCiAgICApOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Post {
+  final int userId;
+  final int id;
+  final String title;
+  final String body;
+
+  Post({required this.userId, required this.id, required this.title, required this.body});
+
+  factory Post.fromJson(Map&lt;String, dynamic&gt; json) {
+    return Post(
+      userId: json['userId'],
+      id: json['id'],
+      title: json['title'],
+      body: json['body'],
+    );
+  }
+}</pre></div><div class='content'><p>Luego, analiza los datos JSON:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPExpc3Q8UG9zdD4+IGZldGNoUG9zdHMoKSBhc3luYyB7CiAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBodHRwLmdldChVcmkucGFyc2UoJ2h0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cycpKTsKCiAgaWYgKHJlc3BvbnNlLnN0YXR1c0NvZGUgPT0gMjAwKSB7CiAgICBMaXN0PGR5bmFtaWM+IGpzb25EYXRhID0ganNvbkRlY29kZShyZXNwb25zZS5ib2R5KTsKICAgIHJldHVybiBqc29uRGF0YS5tYXAoKGpzb24pID0+IFBvc3QuZnJvbUpzb24oanNvbikpLnRvTGlzdCgpOwogIH0gZWxzZSB7CiAgICB0aHJvdyBFeGNlcHRpb24oJ0ZhaWxlZCB0byBsb2FkIHBvc3RzJyk7CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;List&lt;Post&gt;&gt; fetchPosts() async {
+  final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+
+  if (response.statusCode == 200) {
+    List&lt;dynamic&gt; jsonData = jsonDecode(response.body);
+    return jsonData.map((json) =&gt; Post.fromJson(json)).toList();
+  } else {
+    throw Exception('Failed to load posts');
+  }
+}</pre></div><div class='content'></div><h1>Manejo de Errores</h1>
+<div class='content'><p>Manejar errores es crucial para una experiencia de usuario fluida. Aquí hay un ejemplo de cómo manejar errores en tus solicitudes de red:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPHZvaWQ+IGZldGNoRGF0YVdpdGhFcnJvckhhbmRsaW5nKCkgYXN5bmMgewogIHRyeSB7CiAgICBmaW5hbCByZXNwb25zZSA9IGF3YWl0IGh0dHAuZ2V0KFVyaS5wYXJzZSgnaHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3RzJykpOwoKICAgIGlmIChyZXNwb25zZS5zdGF0dXNDb2RlID09IDIwMCkgewogICAgICBMaXN0PGR5bmFtaWM+IGRhdGEgPSBqc29uRGVjb2RlKHJlc3BvbnNlLmJvZHkpOwogICAgICBwcmludChkYXRhKTsKICAgIH0gZWxzZSB7CiAgICAgIHByaW50KCdTZXJ2ZXIgZXJyb3I6ICR7cmVzcG9uc2Uuc3RhdHVzQ29kZX0nKTsKICAgIH0KICB9IGNhdGNoIChlKSB7CiAgICBwcmludCgnTmV0d29yayBlcnJvcjogJGUnKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;void&gt; fetchDataWithErrorHandling() async {
+  try {
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+
+    if (response.statusCode == 200) {
+      List&lt;dynamic&gt; data = jsonDecode(response.body);
+      print(data);
+    } else {
+      print('Server error: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Network error: $e');
+  }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, cubrimos los conceptos básicos de redes y solicitudes HTTP en Flutter. Aprendiste cómo hacer solicitudes GET y POST, analizar datos JSON y manejar errores. Estas habilidades son esenciales para construir aplicaciones Flutter robustas que interactúan con servicios web. Practica estos conceptos integrándolos en tus proyectos para solidificar tu comprensión.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='working-with-lists-and-grids'>&#x25C4;Trabajando con Listas y Cuadrículas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Redes y Solicitudes HTTP</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='local-data-storage'>Almacenamiento de Datos Locales &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

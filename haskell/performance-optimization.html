@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización del Rendimiento en Haskell</title>
+
+    <link rel="alternate" href="https://campusempresa.com/haskell/performance-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/haskell/performance-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/haskell/performance-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/haskell/performance-optimization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/haskell/performance-optimization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-style-formatting'>&#x25C4;Estilo de Código y Formateo</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización del Rendimiento en Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='refactoring-haskell-code'>Refactorización de Código Haskell &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a la Optimización del Rendimiento</h1>
+<div class='content'><p>La optimización del rendimiento en Haskell implica mejorar la eficiencia de tu código en términos de velocidad y uso de memoria. Esta sección te guiará a través de varias técnicas y mejores prácticas para escribir código Haskell eficiente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Evaluación Perezosa</strong>: Entender cómo funciona la evaluación perezosa de Haskell es crucial para la optimización del rendimiento.</li>
+<li><strong>Estricticidad</strong>: Saber cuándo y cómo usar la evaluación estricta para evitar el uso innecesario de memoria.</li>
+<li><strong>Perfilado</strong>: Herramientas y técnicas para perfilar programas en Haskell.</li>
+<li><strong>Estructuras de Datos</strong>: Elegir las estructuras de datos adecuadas para el rendimiento.</li>
+<li><strong>Concurrencia y Paralelismo</strong>: Aprovechar las capacidades de Haskell para la programación concurrente y paralela.</li>
+</ul>
+</div><h1>Evaluación Perezosa</h1>
+<div class='content'><p>Haskell usa la evaluación perezosa por defecto, lo que significa que las expresiones no se evalúan hasta que se necesitan sus valores. Esto puede llevar a mejoras en el rendimiento, pero también a un uso inesperado de memoria.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRWplbXBsbyBkZSBldmFsdWFjacOzbiBwZXJlem9zYQpsZXQgaW5maW5pdGVMaXN0ID0gWzEuLl0gIC0tIEVzdGEgbGlzdGEgbm8gc2UgZXZhbMO6YSBoYXN0YSBxdWUgc2UgbmVjZXNpdGEKdGFrZSAxMCBpbmZpbml0ZUxpc3QgICAgICAgLS0gU29sbyBzZSBldmFsw7phbiBsb3MgcHJpbWVyb3MgMTAgZWxlbWVudG9z"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Ejemplo de evaluaci&oacute;n perezosa
+let infiniteList = [1..]  -- Esta lista no se eval&uacute;a hasta que se necesita
+take 10 infiniteList       -- Solo se eval&uacute;an los primeros 10 elementos</pre></div><div class='content'></div><h2>Puntos Clave</h2>
+<div class='content'><ul>
+<li>La evaluación perezosa puede ahorrar tiempo de computación al evitar cálculos innecesarios.</li>
+<li>También puede llevar a fugas de memoria si no se gestiona adecuadamente.</li>
+</ul>
+</div><h1>Estricticidad</h1>
+<div class='content'><p>A veces, forzar la evaluación (estricticidad) puede mejorar el rendimiento al reducir el uso de memoria.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gVXNhbmRvIGV2YWx1YWNpw7NuIGVzdHJpY3RhCmltcG9ydCBDb250cm9sLkRlZXBTZXEgKGRlZXBzZXEpCgpsZXQgbGlzdCA9IFsxLi4xMDAwMDAwXQpsaXN0IGBkZWVwc2VxYCBwdXRTdHJMbiAiTGlzdGEgZXZhbHVhZGEi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Usando evaluaci&oacute;n estricta
+import Control.DeepSeq (deepseq)
+
+let list = [1..1000000]
+list `deepseq` putStrLn &quot;Lista evaluada&quot;</pre></div><div class='content'></div><h2>Puntos Clave</h2>
+<div class='content'><ul>
+<li>Usa la evaluación estricta para evitar la acumulación de grandes thunks (cálculos diferidos).</li>
+<li>Las funciones <code>seq</code> y <code>deepseq</code> pueden ayudar a imponer la evaluación estricta.</li>
+</ul>
+</div><h1>Perfilado</h1>
+<div class='content'><p>El perfilado ayuda a identificar cuellos de botella en el rendimiento de tu código.</p>
+</div><h2>Herramientas</h2>
+<div class='content'><ul>
+<li><strong>GHC Profiler</strong>: El compilador de Haskell de Glasgow (GHC) incluye herramientas de perfilado integradas.</li>
+<li><strong>Criterion</strong>: Una biblioteca para la evaluación comparativa del código Haskell.</li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ29tcGlsYXIgY29uIHBlcmZpbGFkbyBoYWJpbGl0YWRvCmdoYyAtcHJvZiAtZnByb2YtYXV0byAtcnRzb3B0cyBNeVByb2dyYW0uaHMKCi0tIEVqZWN1dGFyIGVsIHByb2dyYW1hIGNvbiBwZXJmaWxhZG8KLi9NeVByb2dyYW0gK1JUUyAtcA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Compilar con perfilado habilitado
+ghc -prof -fprof-auto -rtsopts MyProgram.hs
+
+-- Ejecutar el programa con perfilado
+./MyProgram +RTS -p</pre></div><div class='content'></div><h2>Puntos Clave</h2>
+<div class='content'><ul>
+<li>El perfilado proporciona información sobre qué partes de tu código están consumiendo más recursos.</li>
+<li>Usa los datos de perfilado para guiar tus esfuerzos de optimización.</li>
+</ul>
+</div><h1>Estructuras de Datos</h1>
+<div class='content'><p>Elegir las estructuras de datos adecuadas puede tener un impacto significativo en el rendimiento.</p>
+</div><h2>Tabla Comparativa</h2>
+<div class='content'><p>| Estructura de Datos | Caso de Uso | Características de Rendimiento |
+|---------------------|-------------|--------------------------------|
+| Lista               | Acceso secuencial, datos pequeños | Tiempo de acceso O(n) |
+| Vector              | Acceso aleatorio, datos grandes | Tiempo de acceso O(1) |
+| Mapa                | Pares clave-valor | Tiempo de acceso O(log n) |</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHF1YWxpZmllZCBEYXRhLlZlY3RvciBhcyBWCgpsZXQgdmVjID0gVi5mcm9tTGlzdCBbMS4uMTAwMDAwMF0KcHJpbnQgKHZlYyBWLiEgOTk5OTk5KSAgLS0gQWNjZXNvIGFsZWF0b3JpbyByw6FwaWRv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import qualified Data.Vector as V
+
+let vec = V.fromList [1..1000000]
+print (vec V.! 999999)  -- Acceso aleatorio r&aacute;pido</pre></div><div class='content'></div><h2>Puntos Clave</h2>
+<div class='content'><ul>
+<li>Las listas son simples pero pueden ser ineficientes para grandes conjuntos de datos.</li>
+<li>Los vectores proporcionan acceso aleatorio rápido y son más eficientes en memoria para grandes conjuntos de datos.</li>
+<li>Los mapas son útiles para pares clave-valor con búsquedas eficientes.</li>
+</ul>
+</div><h1>Concurrencia y Paralelismo</h1>
+<div class='content'><p>Haskell proporciona un soporte robusto para la programación concurrente y paralela, lo que puede mejorar significativamente el rendimiento para ciertas tareas.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IENvbnRyb2wuUGFyYWxsZWwgKHBhciwgcHNlcSkKCmxldCBhID0gZXhwZW5zaXZlQ29tcHV0YXRpb24xCmxldCBiID0gZXhwZW5zaXZlQ29tcHV0YXRpb24yCmEgYHBhcmAgKGIgYHBzZXFgIChhICsgYikp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Control.Parallel (par, pseq)
+
+let a = expensiveComputation1
+let b = expensiveComputation2
+a `par` (b `pseq` (a + b))</pre></div><div class='content'></div><h2>Puntos Clave</h2>
+<div class='content'><ul>
+<li>Usa <code>par</code> y <code>pseq</code> para paralelizar cálculos.</li>
+<li>La concurrencia se puede lograr usando hilos y programación asíncrona.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La optimización del rendimiento en Haskell implica una comprensión profunda de la evaluación perezosa, la estricticidad, el perfilado, las estructuras de datos y la concurrencia. Al aplicar estas técnicas, puedes escribir código Haskell eficiente y de alto rendimiento. Recuerda siempre perfilar tu código para identificar cuellos de botella y guiar tus esfuerzos de optimización.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='code-style-formatting'>&#x25C4;Estilo de Código y Formateo</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización del Rendimiento en Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='refactoring-haskell-code'>Refactorización de Código Haskell &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

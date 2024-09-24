@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entendiendo los Tipos de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/postgresql/understanding-data-types" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/postgresql/understanding-data-types" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/postgresql/understanding-data-types" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/postgresql/understanding-data-types" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/postgresql/understanding-data-types" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='full-text-search'>&#x25C4;Búsqueda de Texto Completo</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Entendiendo los Tipos de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-arrays-and-json'>Uso de Arrays y JSON &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los tipos de datos son fundamentales para cualquier sistema de bases de datos, incluyendo PostgreSQL. Definen el tipo de datos que se pueden almacenar en una columna de una tabla. Entender los tipos de datos es crucial para diseñar bases de datos eficientes y escribir consultas efectivas.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Tipo de Datos</strong>: Una clasificación que especifica qué tipo de valor puede contener una columna.</li>
+<li><strong>Categorías de Tipos</strong>: PostgreSQL soporta varias categorías de tipos de datos, incluyendo numéricos, de caracteres, de fecha/hora, y más.</li>
+<li><strong>Restricciones de Tipo</strong>: Reglas que limitan el tipo de datos que se pueden almacenar en una columna.</li>
+</ul>
+</div><h1>Tipos Numéricos</h1>
+<div class='content'><p>Los tipos de datos numéricos se utilizan para almacenar números. PostgreSQL soporta varios tipos numéricos:</p>
+<p>| Tipo de Datos | Descripción | Tamaño de Almacenamiento |
+|---------------|-------------|--------------------------|
+| <code>smallint</code> | Entero de pequeño rango | 2 bytes |
+| <code>integer</code> o <code>int</code> | Opción típica para enteros | 4 bytes |
+| <code>bigint</code> | Entero de gran rango | 8 bytes |
+| <code>decimal</code> o <code>numeric</code> | Precisión especificada por el usuario | Variable |
+| <code>real</code> | Punto flotante de precisión simple | 4 bytes |
+| <code>double precision</code> | Punto flotante de doble precisión | 8 bytes |
+| <code>serial</code> | Entero auto-incremental | 4 bytes |
+| <code>bigserial</code> | Entero auto-incremental grande | 8 bytes |</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIG51bWJlcnNfZXhhbXBsZSAoCiAgICBzbWFsbF9udW0gc21hbGxpbnQsCiAgICBtZWRpdW1fbnVtIGludGVnZXIsCiAgICBsYXJnZV9udW0gYmlnaW50LAogICAgcHJlY2lzZV9udW0gbnVtZXJpYygxMCwgMiksCiAgICBmbG9hdF9udW0gcmVhbCwKICAgIGRvdWJsZV9udW0gZG91YmxlIHByZWNpc2lvbgopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE numbers_example (
+    small_num smallint,
+    medium_num integer,
+    large_num bigint,
+    precise_num numeric(10, 2),
+    float_num real,
+    double_num double precision
+);</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li><code>small_num</code> puede almacenar enteros pequeños.</li>
+<li><code>medium_num</code> es adecuado para valores enteros típicos.</li>
+<li><code>large_num</code> puede almacenar enteros muy grandes.</li>
+<li><code>precise_num</code> almacena números con hasta 10 dígitos, 2 de los cuales son después del punto decimal.</li>
+<li><code>float_num</code> y <code>double_num</code> almacenan números de punto flotante con precisión simple y doble, respectivamente.</li>
+</ul>
+</div><h1>Tipos de Caracteres</h1>
+<div class='content'><p>Los tipos de datos de caracteres se utilizan para almacenar texto. PostgreSQL proporciona varias opciones:</p>
+<p>| Tipo de Datos | Descripción | Tamaño de Almacenamiento |
+|---------------|-------------|--------------------------|
+| <code>char(n)</code> | Tipo de carácter de longitud fija | n bytes |
+| <code>varchar(n)</code> | Tipo de carácter de longitud variable | Hasta n bytes |
+| <code>text</code> | Tipo de carácter de longitud variable sin límite | Variable |</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHRleHRfZXhhbXBsZSAoCiAgICBmaXhlZF9jaGFyIGNoYXIoMTApLAogICAgdmFyaWFibGVfY2hhciB2YXJjaGFyKDUwKSwKICAgIHVubGltaXRlZF90ZXh0IHRleHQKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE text_example (
+    fixed_char char(10),
+    variable_char varchar(50),
+    unlimited_text text
+);</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li><code>fixed_char</code> almacena una cadena de longitud fija de 10 caracteres.</li>
+<li><code>variable_char</code> puede almacenar una cadena de hasta 50 caracteres.</li>
+<li><code>unlimited_text</code> puede almacenar una cadena de cualquier longitud.</li>
+</ul>
+</div><h1>Tipos de Fecha/Hora</h1>
+<div class='content'><p>Los tipos de datos de fecha y hora se utilizan para almacenar fechas, horas y marcas de tiempo.</p>
+<p>| Tipo de Datos | Descripción | Tamaño de Almacenamiento |
+|---------------|-------------|--------------------------|
+| <code>date</code> | Fecha del calendario (año, mes, día) | 4 bytes |
+| <code>time</code> | Hora del día (sin zona horaria) | 8 bytes |
+| <code>timestamp</code> | Fecha y hora (sin zona horaria) | 8 bytes |
+| <code>timestamptz</code> | Fecha y hora con zona horaria | 8 bytes |
+| <code>interval</code> | Intervalo de tiempo | 16 bytes |</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGRhdGV0aW1lX2V4YW1wbGUgKAogICAgZXZlbnRfZGF0ZSBkYXRlLAogICAgZXZlbnRfdGltZSB0aW1lLAogICAgZXZlbnRfdGltZXN0YW1wIHRpbWVzdGFtcCwKICAgIGV2ZW50X3RpbWVzdGFtcHR6IHRpbWVzdGFtcHR6LAogICAgZHVyYXRpb24gaW50ZXJ2YWwKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE datetime_example (
+    event_date date,
+    event_time time,
+    event_timestamp timestamp,
+    event_timestamptz timestamptz,
+    duration interval
+);</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li><code>event_date</code> almacena una fecha.</li>
+<li><code>event_time</code> almacena una hora del día.</li>
+<li><code>event_timestamp</code> almacena una fecha y hora.</li>
+<li><code>event_timestamptz</code> almacena una fecha y hora con información de zona horaria.</li>
+<li><code>duration</code> almacena un intervalo de tiempo.</li>
+</ul>
+</div><h1>Tipo Booleano</h1>
+<div class='content'><p>El tipo de datos booleano se utiliza para almacenar valores verdadero/falso.</p>
+<p>| Tipo de Datos | Descripción | Tamaño de Almacenamiento |
+|---------------|-------------|--------------------------|
+| <code>boolean</code> | Booleano lógico (verdadero/falso) | 1 byte |</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGJvb2xlYW5fZXhhbXBsZSAoCiAgICBpc19hY3RpdmUgYm9vbGVhbgopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE boolean_example (
+    is_active boolean
+);</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li><code>is_active</code> puede almacenar un valor verdadero o falso.</li>
+</ul>
+</div><h1>Tipos de Arreglo</h1>
+<div class='content'><p>PostgreSQL permite definir columnas como arreglos de longitud variable.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGFycmF5X2V4YW1wbGUgKAogICAgaW50ZWdlcl9hcnJheSBpbnRlZ2VyW10sCiAgICB0ZXh0X2FycmF5IHRleHRbXQopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE array_example (
+    integer_array integer[],
+    text_array text[]
+);</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li><code>integer_array</code> puede almacenar un arreglo de enteros.</li>
+<li><code>text_array</code> puede almacenar un arreglo de cadenas de texto.</li>
+</ul>
+</div><h1>Tipos JSON</h1>
+<div class='content'><p>PostgreSQL soporta tipos de datos JSON para almacenar datos JSON.</p>
+<p>| Tipo de Datos | Descripción | Tamaño de Almacenamiento |
+|---------------|-------------|--------------------------|
+| <code>json</code> | Datos JSON textuales | Variable |
+| <code>jsonb</code> | Datos JSON binarios, más eficientes para indexación | Variable |</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGpzb25fZXhhbXBsZSAoCiAgICBqc29uX2RhdGEganNvbiwKICAgIGpzb25iX2RhdGEganNvbmIKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE json_example (
+    json_data json,
+    jsonb_data jsonb
+);</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li><code>json_data</code> almacena datos JSON en formato de texto.</li>
+<li><code>jsonb_data</code> almacena datos JSON en un formato binario, que es más eficiente para la indexación y consulta.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Entender los tipos de datos en PostgreSQL es esencial para diseñar bases de datos eficientes y efectivas. Al elegir el tipo de datos adecuado para cada columna, puedes asegurar la integridad de los datos, optimizar el almacenamiento y mejorar el rendimiento de las consultas. Este tema cubrió los tipos de datos más comúnmente utilizados, incluyendo numéricos, de caracteres, de fecha/hora, booleanos, de arreglo y tipos JSON. A medida que avances en tu viaje con PostgreSQL, encontrarás tipos de datos más especializados y aprenderás a usarlos efectivamente.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='full-text-search'>&#x25C4;Búsqueda de Texto Completo</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Entendiendo los Tipos de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-arrays-and-json'>Uso de Arrays y JSON &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

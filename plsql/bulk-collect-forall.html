@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Collect y FORALL en PL/SQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/plsql/bulk-collect-forall" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/plsql/bulk-collect-forall" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/plsql/bulk-collect-forall" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/plsql/bulk-collect-forall" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/plsql/bulk-collect-forall" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='plsql-optimization-techniques'>&#x25C4;Técnicas de Optimización de PL/SQL</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Bulk Collect y FORALL en PL/SQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-collections'>Uso de Colecciones &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En PL/SQL, <code>BULK COLLECT</code> y <code>FORALL</code> son características poderosas que te permiten realizar operaciones en bloque de manera eficiente. Estas características son particularmente útiles cuando se trata de grandes volúmenes de datos, ya que pueden mejorar significativamente el rendimiento al reducir los cambios de contexto entre el motor PL/SQL y el motor SQL.</p>
+</div><h1>BULK COLLECT</h1>
+<div class='content'><p><code>BULK COLLECT</code> se utiliza para recuperar múltiples filas de una consulta en una colección en una sola operación, en lugar de recuperar una fila a la vez.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Colecciones</strong>: Estructuras de datos PL/SQL que pueden contener múltiples valores, como VARRAYs, Tablas Anidadas y Arrays Asociativos.</li>
+<li><strong>Eficiencia</strong>: Reduce el número de cambios de contexto entre los motores SQL y PL/SQL, mejorando el rendimiento.</li>
+</ul>
+</div><h2>Sintaxis</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbjEsIGNvbHVtbjIsIC4uLgpCVUxLIENPTExFQ1QgSU5UTyBjb2xsZWN0aW9uMSwgY29sbGVjdGlvbjIsIC4uLgpGUk9NIHRhYmxlX25hbWUKV0hFUkUgY29uZGl0aW9uOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT column1, column2, ...
+BULK COLLECT INTO collection1, collection2, ...
+FROM table_name
+WHERE condition;</pre></div><div class='content'></div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgVFlQRSBOdW1MaXN0IElTIFRBQkxFIE9GIE5VTUJFUjsKICAgIFRZUEUgTmFtZUxpc3QgSVMgVEFCTEUgT0YgVkFSQ0hBUjIoNTApOwogICAgbnVtYmVycyBOdW1MaXN0OwogICAgbmFtZXMgTmFtZUxpc3Q7CkJFR0lOCiAgICBTRUxFQ1QgZW1wbG95ZWVfaWQsIGZpcnN0X25hbWUKICAgIEJVTEsgQ09MTEVDVCBJTlRPIG51bWJlcnMsIG5hbWVzCiAgICBGUk9NIGVtcGxveWVlcwogICAgV0hFUkUgZGVwYXJ0bWVudF9pZCA9IDEwOwogICAgCiAgICBGT1IgaSBJTiAxLi5udW1iZXJzLkNPVU5UIExPT1AKICAgICAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnSUQ6ICcgfHwgbnVtYmVycyhpKSB8fCAnLCBOb21icmU6ICcgfHwgbmFtZXMoaSkpOwogICAgRU5EIExPT1A7CkVORDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    TYPE NumList IS TABLE OF NUMBER;
+    TYPE NameList IS TABLE OF VARCHAR2(50);
+    numbers NumList;
+    names NameList;
+BEGIN
+    SELECT employee_id, first_name
+    BULK COLLECT INTO numbers, names
+    FROM employees
+    WHERE department_id = 10;
+    
+    FOR i IN 1..numbers.COUNT LOOP
+        DBMS_OUTPUT.PUT_LINE('ID: ' || numbers(i) || ', Nombre: ' || names(i));
+    END LOOP;
+END;</pre></div><div class='content'><p>En este ejemplo, <code>BULK COLLECT</code> se utiliza para recuperar <code>employee_id</code> y <code>first_name</code> de la tabla <code>employees</code> en dos colecciones, <code>numbers</code> y <code>names</code>.</p>
+</div><h1>FORALL</h1>
+<div class='content'><p><code>FORALL</code> se utiliza para realizar operaciones DML en bloque (INSERT, UPDATE, DELETE) de manera eficiente al reducir los cambios de contexto.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Operaciones DML</strong>: Operaciones del Lenguaje de Manipulación de Datos como INSERT, UPDATE y DELETE.</li>
+<li><strong>Eficiencia</strong>: Ejecuta múltiples sentencias DML en un solo cambio de contexto.</li>
+</ul>
+</div><h2>Sintaxis</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Rk9SQUxMIGluZGV4IElOIGxvd2VyX2JvdW5kLi51cHBlcl9ib3VuZAogICAgRE1MX3N0YXRlbWVudDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>FORALL index IN lower_bound..upper_bound
+    DML_statement;</pre></div><div class='content'></div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgVFlQRSBOdW1MaXN0IElTIFRBQkxFIE9GIE5VTUJFUjsKICAgIGVtcGxveWVlX2lkcyBOdW1MaXN0IDo9IE51bUxpc3QoMTAwMSwgMTAwMiwgMTAwMyk7CkJFR0lOCiAgICBGT1JBTEwgaSBJTiBlbXBsb3llZV9pZHMuRklSU1QuLmVtcGxveWVlX2lkcy5MQVNUCiAgICAgICAgVVBEQVRFIGVtcGxveWVlcwogICAgICAgIFNFVCBzYWxhcnkgPSBzYWxhcnkgKiAxLjEwCiAgICAgICAgV0hFUkUgZW1wbG95ZWVfaWQgPSBlbXBsb3llZV9pZHMoaSk7CkVORDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    TYPE NumList IS TABLE OF NUMBER;
+    employee_ids NumList := NumList(1001, 1002, 1003);
+BEGIN
+    FORALL i IN employee_ids.FIRST..employee_ids.LAST
+        UPDATE employees
+        SET salary = salary * 1.10
+        WHERE employee_id = employee_ids(i);
+END;</pre></div><div class='content'><p>En este ejemplo, <code>FORALL</code> se utiliza para actualizar los salarios de los empleados con IDs 1001, 1002 y 1003 en una sola operación.</p>
+</div><h1>Combinando BULK COLLECT y FORALL</h1>
+<div class='content'><p>Puedes combinar <code>BULK COLLECT</code> y <code>FORALL</code> para recuperar datos en colecciones y luego realizar operaciones DML en bloque sobre esos datos.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgVFlQRSBOdW1MaXN0IElTIFRBQkxFIE9GIE5VTUJFUjsKICAgIFRZUEUgTmFtZUxpc3QgSVMgVEFCTEUgT0YgVkFSQ0hBUjIoNTApOwogICAgZW1wbG95ZWVfaWRzIE51bUxpc3Q7CiAgICBlbXBsb3llZV9uYW1lcyBOYW1lTGlzdDsKQkVHSU4KICAgIC0tIFJlY29waWxhciBkYXRvcyBlbiBjb2xlY2Npb25lcyBlbiBibG9xdWUKICAgIFNFTEVDVCBlbXBsb3llZV9pZCwgZmlyc3RfbmFtZQogICAgQlVMSyBDT0xMRUNUIElOVE8gZW1wbG95ZWVfaWRzLCBlbXBsb3llZV9uYW1lcwogICAgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIGRlcGFydG1lbnRfaWQgPSAxMDsKICAgIAogICAgLS0gUmVhbGl6YXIgYWN0dWFsaXphY2nDs24gZW4gYmxvcXVlIHVzYW5kbyBGT1JBTEwKICAgIEZPUkFMTCBpIElOIGVtcGxveWVlX2lkcy5GSVJTVC4uZW1wbG95ZWVfaWRzLkxBU1QKICAgICAgICBVUERBVEUgZW1wbG95ZWVzCiAgICAgICAgU0VUIHNhbGFyeSA9IHNhbGFyeSAqIDEuMTAKICAgICAgICBXSEVSRSBlbXBsb3llZV9pZCA9IGVtcGxveWVlX2lkcyhpKTsKICAgIAogICAgLS0gTW9zdHJhciBsb3Mgbm9tYnJlcyBhY3R1YWxpemFkb3MKICAgIEZPUiBpIElOIGVtcGxveWVlX2lkcy5GSVJTVC4uZW1wbG95ZWVfaWRzLkxBU1QgTE9PUAogICAgICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdFbXBsZWFkbyBBY3R1YWxpemFkbzogJyB8fCBlbXBsb3llZV9uYW1lcyhpKSk7CiAgICBFTkQgTE9PUDsKRU5EOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    TYPE NumList IS TABLE OF NUMBER;
+    TYPE NameList IS TABLE OF VARCHAR2(50);
+    employee_ids NumList;
+    employee_names NameList;
+BEGIN
+    -- Recopilar datos en colecciones en bloque
+    SELECT employee_id, first_name
+    BULK COLLECT INTO employee_ids, employee_names
+    FROM employees
+    WHERE department_id = 10;
+    
+    -- Realizar actualizaci&oacute;n en bloque usando FORALL
+    FORALL i IN employee_ids.FIRST..employee_ids.LAST
+        UPDATE employees
+        SET salary = salary * 1.10
+        WHERE employee_id = employee_ids(i);
+    
+    -- Mostrar los nombres actualizados
+    FOR i IN employee_ids.FIRST..employee_ids.LAST LOOP
+        DBMS_OUTPUT.PUT_LINE('Empleado Actualizado: ' || employee_names(i));
+    END LOOP;
+END;</pre></div><div class='content'><p>En este ejemplo, <code>BULK COLLECT</code> se utiliza para recuperar IDs y nombres de empleados en colecciones, y <code>FORALL</code> se utiliza para actualizar los salarios de esos empleados en una sola operación.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p><code>BULK COLLECT</code> y <code>FORALL</code> son herramientas esenciales en PL/SQL para manejar grandes volúmenes de datos de manera eficiente. Al reducir los cambios de contexto entre los motores PL/SQL y SQL, estas características pueden mejorar significativamente el rendimiento de tus programas PL/SQL. Entender y utilizar estas características te ayudará a escribir código PL/SQL más eficiente y escalable.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='plsql-optimization-techniques'>&#x25C4;Técnicas de Optimización de PL/SQL</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Bulk Collect y FORALL en PL/SQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-collections'>Uso de Colecciones &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

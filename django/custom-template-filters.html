@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filtros de Plantilla Personalizados</title>
+
+    <link rel="alternate" href="https://campusempresa.com/django/custom-template-filters" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/django/custom-template-filters" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/django/custom-template-filters" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/django/custom-template-filters" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/django/custom-template-filters" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='context-and-template-tags'>&#x25C4;Contexto y Etiquetas de Plantillas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Filtros de Plantilla Personalizados</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-authentication-basics'>Conceptos Básicos de Autenticación de Usuarios &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, exploraremos cómo crear filtros de plantilla personalizados en Django. Los filtros de plantilla son una característica poderosa que te permite modificar la visualización de variables en tus plantillas. Al final de esta sección, serás capaz de crear y usar tus propios filtros personalizados para mejorar tus aplicaciones Django.</p>
+</div><h1>¿Qué son los Filtros de Plantilla?</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Los filtros de plantilla se utilizan para transformar el valor de una variable antes de que se renderice en una plantilla.</li>
+<li><strong>Uso</strong>: Se aplican usando el carácter de tubería (<code>|</code>) en las plantillas de Django.</li>
+</ul>
+</div><h2>Filtros Incorporados</h2>
+<div class='content'><p>Django viene con una variedad de filtros incorporados como <code>date</code>, <code>length</code>, <code>lower</code> y <code>upper</code>. Aquí hay un ejemplo de cómo usar un filtro incorporado:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("e3sgbXlfZGF0ZXxkYXRlOiJZLW0tZCIgfX0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{{ my_date|date:&quot;Y-m-d&quot; }}</pre></div><div class='content'><p>En este ejemplo, el filtro <code>date</code> formatea la variable <code>my_date</code> al formato &quot;Año-Mes-Día&quot;.</p>
+</div><h1>Creando Filtros de Plantilla Personalizados</h1>
+<div class='content'><p>Para crear un filtro de plantilla personalizado, sigue estos pasos:</p>
+<ol>
+<li><strong>Crea un Directorio <code>templatetags</code></strong>: Dentro de tu aplicación Django, crea un directorio llamado <code>templatetags</code>.</li>
+<li><strong>Crea un Módulo de Python</strong>: Dentro del directorio <code>templatetags</code>, crea un archivo Python (por ejemplo, <code>custom_filters.py</code>).</li>
+<li><strong>Registra el Filtro</strong>: Usa el decorador <code>@register.filter</code> de Django para registrar tu filtro personalizado.</li>
+</ol>
+</div><h2>Ejemplo: Creando un Filtro Personalizado</h2>
+<div class='content'><p>Vamos a crear un filtro personalizado que capitaliza la primera letra de cada palabra en una cadena.</p>
+<ol>
+<li>
+<p><strong>Crea el Directorio y el Módulo <code>templatetags</code></strong>:</p>
+<pre><code>myapp/
+    templatetags/
+        __init__.py
+        custom_filters.py
+</code></pre>
+</li>
+<li>
+<p><strong>Define el Filtro Personalizado</strong>:</p>
+<pre><code class="language-python"># myapp/templatetags/custom_filters.py
+from django import template
+
+register = template.Library()
+
+@register.filter(name='capitalize_words')
+def capitalize_words(value):
+    &quot;&quot;&quot;Capitaliza la primera letra de cada palabra en la cadena.&quot;&quot;&quot;
+    return ' '.join(word.capitalize() for word in value.split())
+</code></pre>
+</li>
+<li>
+<p><strong>Carga y Usa el Filtro Personalizado en una Plantilla</strong>:</p>
+<pre><code class="language-html">{% load custom_filters %}
+
+&lt;p&gt;{{ &quot;hello world&quot;|capitalize_words }}&lt;/p&gt;
+</code></pre>
+<p>Esto se renderizará como:</p>
+<pre><code class="language-html">&lt;p&gt;Hello World&lt;/p&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Filtros Personalizados Avanzados</h1>
+<div class='content'><p>Los filtros personalizados también pueden aceptar argumentos. Vamos a crear un filtro que trunca una cadena a un número específico de caracteres.</p>
+</div><h2>Ejemplo: Filtro de Truncamiento con Argumentos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Define el Filtro de Truncamiento</strong>:</p>
+<pre><code class="language-python"># myapp/templatetags/custom_filters.py
+from django import template
+
+register = template.Library()
+
+@register.filter(name='truncate_chars')
+def truncate_chars(value, num_chars):
+    &quot;&quot;&quot;Trunca la cadena al número especificado de caracteres.&quot;&quot;&quot;
+    if len(value) &gt; num_chars:
+        return value[:num_chars] + '...'
+    return value
+</code></pre>
+</li>
+<li>
+<p><strong>Usa el Filtro de Truncamiento en una Plantilla</strong>:</p>
+<pre><code class="language-html">{% load custom_filters %}
+
+&lt;p&gt;{{ &quot;This is a long sentence that needs to be truncated.&quot;|truncate_chars:20 }}&lt;/p&gt;
+</code></pre>
+<p>Esto se renderizará como:</p>
+<pre><code class="language-html">&lt;p&gt;This is a long sent...&lt;/p&gt;
+</code></pre>
+</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><ul>
+<li><strong>Filtros de Plantilla</strong>: Modifican la visualización de variables en las plantillas de Django.</li>
+<li><strong>Filtros Incorporados</strong>: Django proporciona muchos filtros incorporados para tareas comunes.</li>
+<li><strong>Filtros Personalizados</strong>: Puedes crear filtros personalizados definiendo una función y registrándola con el sistema de plantillas de Django.</li>
+<li><strong>Filtros Avanzados</strong>: Los filtros personalizados también pueden aceptar argumentos para proporcionar más funcionalidad.</li>
+</ul>
+<p>Al crear filtros de plantilla personalizados, puedes adaptar la presentación de tus datos para satisfacer las necesidades específicas de tu aplicación, haciendo tus plantillas más poderosas y flexibles.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='context-and-template-tags'>&#x25C4;Contexto y Etiquetas de Plantillas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Filtros de Plantilla Personalizados</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-authentication-basics'>Conceptos Básicos de Autenticación de Usuarios &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

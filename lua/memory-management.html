@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Memoria en Lua</title>
+
+    <link rel="alternate" href="https://campusempresa.com/lua/memory-management" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/lua/memory-management" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/lua/memory-management" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/lua/memory-management" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/lua/memory-management" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='profiling-lua-code'>&#x25C4;Perfilado de Código Lua</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Gestión de Memoria en Lua</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-code'>Optimización de Código &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La gestión de memoria es un aspecto crucial de la programación, asegurando que tu aplicación use la memoria de manera eficiente y evite fugas. En Lua, la gestión de memoria se maneja automáticamente mediante el recolector de basura, pero entender cómo funciona puede ayudarte a escribir código más eficiente y efectivo.</p>
+</div><h1>Introducción a la Gestión de Memoria</h1>
+<div class='content'><ul>
+<li><strong>Gestión Automática de Memoria</strong>: Lua utiliza gestión automática de memoria, lo que significa que maneja la asignación y liberación de memoria por ti.</li>
+<li><strong>Recolección de Basura</strong>: Lua emplea un recolector de basura para recuperar la memoria que ya no está en uso.</li>
+</ul>
+</div><h1>Entendiendo la Recolección de Basura</h1>
+<div class='content'><p>La recolección de basura en Lua está diseñada para ser eficiente y no intrusiva. Ayuda a prevenir fugas de memoria liberando automáticamente la memoria que ya no es accesible.</p>
+<ul>
+<li><strong>Algoritmo de Marcado y Barrido</strong>: Lua utiliza un algoritmo de recolección de basura de marcado y barrido.
+<ul>
+<li><strong>Fase de Marcado</strong>: El recolector de basura recorre todos los objetos accesibles y los marca.</li>
+<li><strong>Fase de Barrido</strong>: Luego recorre la memoria, recolectando todos los objetos no marcados.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: Recolección de Basura Básica</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXIgdW5hIHRhYmxhIHkgYXNpZ25hcmxhIGEgdW5hIHZhcmlhYmxlCmxvY2FsIG15VGFibGUgPSB7MSwgMiwgM30KCi0tIExhIHRhYmxhIGVzdMOhIGVuIHVzbyB5IG5vIHNlcsOhIHJlY29sZWN0YWRhCnByaW50KG15VGFibGVbMV0pICAtLSBTYWxpZGE6IDEKCi0tIEVsaW1pbmFyIGxhIHJlZmVyZW5jaWEgYSBsYSB0YWJsYQpteVRhYmxlID0gbmlsCgotLSBMYSB0YWJsYSBhaG9yYSBlcyBlbGVnaWJsZSBwYXJhIGxhIHJlY29sZWNjacOzbiBkZSBiYXN1cmEKY29sbGVjdGdhcmJhZ2UoKSAgLS0gQWN0aXZhciBtYW51YWxtZW50ZSBsYSByZWNvbGVjY2nDs24gZGUgYmFzdXJhIChubyBzdWVsZSBzZXIgbmVjZXNhcmlvKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Crear una tabla y asignarla a una variable
+local myTable = {1, 2, 3}
+
+-- La tabla est&aacute; en uso y no ser&aacute; recolectada
+print(myTable[1])  -- Salida: 1
+
+-- Eliminar la referencia a la tabla
+myTable = nil
+
+-- La tabla ahora es elegible para la recolecci&oacute;n de basura
+collectgarbage()  -- Activar manualmente la recolecci&oacute;n de basura (no suele ser necesario)</pre></div><div class='content'></div><h1>Gestionando la Memoria Eficientemente</h1>
+<div class='content'><p>Aunque Lua maneja la mayoría de las tareas de gestión de memoria, hay mejores prácticas que puedes seguir para asegurar un uso eficiente de la memoria.</p>
+<ul>
+<li><strong>Evitar Asignaciones Innecesarias</strong>: Reutiliza tablas y otros objetos cuando sea posible.</li>
+<li><strong>Limpiar Referencias</strong>: Asigna variables a <code>nil</code> cuando ya no sean necesarias para hacerlas elegibles para la recolección de basura.</li>
+<li><strong>Usar Variables Locales</strong>: Las variables locales se recolectan más eficientemente que las variables globales.</li>
+</ul>
+</div><h2>Ejemplo: Reutilización de Tablas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSW5lZmljaWVudGU6IENyZWFyIHVuYSBudWV2YSB0YWJsYSBjYWRhIHZlegpmb3IgaSA9IDEsIDEwMDAgZG8KICAgIGxvY2FsIHRlbXBUYWJsZSA9IHtpLCBpKzEsIGkrMn0KICAgIC0tIEhhY2VyIGFsZ28gY29uIHRlbXBUYWJsZQplbmQKCi0tIEVmaWNpZW50ZTogUmV1dGlsaXphciB1bmEgc29sYSB0YWJsYQpsb2NhbCB0ZW1wVGFibGUgPSB7fQpmb3IgaSA9IDEsIDEwMDAgZG8KICAgIHRlbXBUYWJsZVsxXSwgdGVtcFRhYmxlWzJdLCB0ZW1wVGFibGVbM10gPSBpLCBpKzEsIGkrMgogICAgLS0gSGFjZXIgYWxnbyBjb24gdGVtcFRhYmxlCmVuZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Ineficiente: Crear una nueva tabla cada vez
+for i = 1, 1000 do
+    local tempTable = {i, i+1, i+2}
+    -- Hacer algo con tempTable
+end
+
+-- Eficiente: Reutilizar una sola tabla
+local tempTable = {}
+for i = 1, 1000 do
+    tempTable[1], tempTable[2], tempTable[3] = i, i+1, i+2
+    -- Hacer algo con tempTable
+end</pre></div><div class='content'></div><h1>Técnicas Avanzadas de Gestión de Memoria</h1>
+<div class='content'><p>Para usuarios avanzados, Lua proporciona más control sobre el recolector de basura y la gestión de memoria.</p>
+<ul>
+<li><strong>Funciones del Recolector de Basura</strong>: Lua proporciona varias funciones para controlar el recolector de basura.
+<ul>
+<li><code>collectgarbage(&quot;collect&quot;)</code>: Realizar un ciclo completo de recolección de basura.</li>
+<li><code>collectgarbage(&quot;stop&quot;)</code>: Detener el recolector de basura.</li>
+<li><code>collectgarbage(&quot;restart&quot;)</code>: Reiniciar el recolector de basura.</li>
+<li><code>collectgarbage(&quot;count&quot;)</code>: Obtener el uso actual de memoria en kilobytes.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: Controlando el Recolector de Basura</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGV0ZW5lciBlbCByZWNvbGVjdG9yIGRlIGJhc3VyYQpjb2xsZWN0Z2FyYmFnZSgic3RvcCIpCgotLSBSZWFsaXphciBhbGd1bmFzIG9wZXJhY2lvbmVzIGludGVuc2l2YXMgZW4gbWVtb3JpYQpsb2NhbCBsYXJnZVRhYmxlID0ge30KZm9yIGkgPSAxLCAxMDAwMDAwIGRvCiAgICBsYXJnZVRhYmxlW2ldID0gaQplbmQKCi0tIEFjdGl2YXIgbWFudWFsbWVudGUgbGEgcmVjb2xlY2Npw7NuIGRlIGJhc3VyYQpjb2xsZWN0Z2FyYmFnZSgiY29sbGVjdCIpCgotLSBSZWluaWNpYXIgZWwgcmVjb2xlY3RvciBkZSBiYXN1cmEKY29sbGVjdGdhcmJhZ2UoInJlc3RhcnQiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Detener el recolector de basura
+collectgarbage(&quot;stop&quot;)
+
+-- Realizar algunas operaciones intensivas en memoria
+local largeTable = {}
+for i = 1, 1000000 do
+    largeTable[i] = i
+end
+
+-- Activar manualmente la recolecci&oacute;n de basura
+collectgarbage(&quot;collect&quot;)
+
+-- Reiniciar el recolector de basura
+collectgarbage(&quot;restart&quot;)</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>La gestión de memoria en Lua es en gran medida automática, gracias a su eficiente recolector de basura. Al entender cómo funciona la recolección de basura y seguir las mejores prácticas, puedes escribir código Lua más eficiente. Para usuarios avanzados, Lua proporciona funciones para controlar el recolector de basura, ofreciendo un control más detallado sobre la gestión de memoria.</p>
+<ul>
+<li><strong>Puntos Clave</strong>:
+<ul>
+<li>Lua utiliza gestión automática de memoria con un recolector de basura de marcado y barrido.</li>
+<li>Limpia referencias y reutiliza objetos para gestionar la memoria eficientemente.</li>
+<li>Las funciones avanzadas permiten el control manual del recolector de basura.</li>
+</ul>
+</li>
+</ul>
+<p>Entender estos conceptos te ayudará a escribir programas en Lua que sean tanto eficientes como efectivos, asegurando un uso óptimo de los recursos de memoria.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='profiling-lua-code'>&#x25C4;Perfilado de Código Lua</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Gestión de Memoria en Lua</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='optimizing-code'>Optimización de Código &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

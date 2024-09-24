@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operaciones CRUD en la Base de Datos en Tiempo Real</title>
+
+    <link rel="alternate" href="https://campusempresa.com/firebase/crud-operations-realtime-database" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/firebase/crud-operations-realtime-database" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/firebase/crud-operations-realtime-database" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/firebase/crud-operations-realtime-database" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/firebase/crud-operations-realtime-database" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='setting-up-realtime-database'>&#x25C4;Configuración de Realtime Database</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Operaciones CRUD en la Base de Datos en Tiempo Real</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='realtime-database-security-rules'>Reglas de Seguridad de Realtime Database &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Firebase Realtime Database es una base de datos NoSQL alojada en la nube que te permite almacenar y sincronizar datos entre tus usuarios en tiempo real. En esta sección, cubriremos las operaciones CRUD (Crear, Leer, Actualizar, Eliminar) fundamentales en Firebase Realtime Database, adecuadas tanto para principiantes como para usuarios avanzados.</p>
+</div><h1>Configuración de Firebase Realtime Database</h1>
+<div class='content'><p>Antes de sumergirnos en las operaciones CRUD, asegúrate de haber configurado tu proyecto de Firebase e inicializado Firebase en tu aplicación.</p>
+</div><h2>Inicializando Firebase</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW1wb3J0YXIgeSBjb25maWd1cmFyIEZpcmViYXNlCmltcG9ydCBmaXJlYmFzZSBmcm9tICdmaXJlYmFzZS9hcHAnOwppbXBvcnQgJ2ZpcmViYXNlL2RhdGFiYXNlJzsKCmNvbnN0IGZpcmViYXNlQ29uZmlnID0gewogIGFwaUtleTogIlRVX0FQSV9LRVkiLAogIGF1dGhEb21haW46ICJUVV9QUk9ZRUNUT19JRC5maXJlYmFzZWFwcC5jb20iLAogIGRhdGFiYXNlVVJMOiAiaHR0cHM6Ly9UVV9QUk9ZRUNUT19JRC5maXJlYmFzZWlvLmNvbSIsCiAgcHJvamVjdElkOiAiVFVfUFJPWUVDVE9fSUQiLAogIHN0b3JhZ2VCdWNrZXQ6ICJUVV9QUk9ZRUNUT19JRC5hcHBzcG90LmNvbSIsCiAgbWVzc2FnaW5nU2VuZGVySWQ6ICJUVV9NRVNTQUdJTkdfU0VOREVSX0lEIiwKICBhcHBJZDogIlRVX0FQUF9JRCIKfTsKCmZpcmViYXNlLmluaXRpYWxpemVBcHAoZmlyZWJhc2VDb25maWcpOwpjb25zdCBkYXRhYmFzZSA9IGZpcmViYXNlLmRhdGFiYXNlKCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Importar y configurar Firebase
+import firebase from 'firebase/app';
+import 'firebase/database';
+
+const firebaseConfig = {
+  apiKey: &quot;TU_API_KEY&quot;,
+  authDomain: &quot;TU_PROYECTO_ID.firebaseapp.com&quot;,
+  databaseURL: &quot;https://TU_PROYECTO_ID.firebaseio.com&quot;,
+  projectId: &quot;TU_PROYECTO_ID&quot;,
+  storageBucket: &quot;TU_PROYECTO_ID.appspot.com&quot;,
+  messagingSenderId: &quot;TU_MESSAGING_SENDER_ID&quot;,
+  appId: &quot;TU_APP_ID&quot;
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();</pre></div><div class='content'></div><h1>Operación de Crear</h1>
+<div class='content'><p>Crear datos en Firebase Realtime Database implica escribir datos en una referencia especificada.</p>
+</div><h2>Ejemplo: Añadiendo un Nuevo Usuario</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgYWRkVXNlciA9ICh1c2VySWQsIG5hbWUsIGVtYWlsKSA9PiB7CiAgZmlyZWJhc2UuZGF0YWJhc2UoKS5yZWYoJ3VzZXJzLycgKyB1c2VySWQpLnNldCh7CiAgICB1c2VybmFtZTogbmFtZSwKICAgIGVtYWlsOiBlbWFpbAogIH0pOwp9OwoKLy8gVXNvCmFkZFVzZXIoJzEnLCAnSm9obiBEb2UnLCAnam9obi5kb2VAZXhhbXBsZS5jb20nKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const addUser = (userId, name, email) =&gt; {
+  firebase.database().ref('users/' + userId).set({
+    username: name,
+    email: email
+  });
+};
+
+// Uso
+addUser('1', 'John Doe', 'john.doe@example.com');</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: El método <code>set</code> escribe datos en la referencia especificada (<code>users/userId</code>). Si la referencia no existe, será creada.</li>
+</ul>
+</div><h1>Operación de Leer</h1>
+<div class='content'><p>Leer datos de Firebase Realtime Database se puede hacer usando los métodos <code>once</code> o <code>on</code>.</p>
+</div><h2>Ejemplo: Recuperando Datos de Usuario</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZ2V0VXNlciA9ICh1c2VySWQpID0+IHsKICBmaXJlYmFzZS5kYXRhYmFzZSgpLnJlZigndXNlcnMvJyArIHVzZXJJZCkub25jZSgndmFsdWUnKS50aGVuKChzbmFwc2hvdCkgPT4gewogICAgY29uc3QgdXNlckRhdGEgPSBzbmFwc2hvdC52YWwoKTsKICAgIGNvbnNvbGUubG9nKHVzZXJEYXRhKTsKICB9KTsKfTsKCi8vIFVzbwpnZXRVc2VyKCcxJyk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const getUser = (userId) =&gt; {
+  firebase.database().ref('users/' + userId).once('value').then((snapshot) =&gt; {
+    const userData = snapshot.val();
+    console.log(userData);
+  });
+};
+
+// Uso
+getUser('1');</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: El método <code>once</code> lee los datos en la referencia especificada una vez. El método <code>snapshot.val()</code> recupera los datos.</li>
+</ul>
+</div><h1>Operación de Actualizar</h1>
+<div class='content'><p>Actualizar datos en Firebase Realtime Database se puede hacer usando el método <code>update</code>.</p>
+</div><h2>Ejemplo: Actualizando el Correo Electrónico del Usuario</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgdXBkYXRlVXNlckVtYWlsID0gKHVzZXJJZCwgbmV3RW1haWwpID0+IHsKICBmaXJlYmFzZS5kYXRhYmFzZSgpLnJlZigndXNlcnMvJyArIHVzZXJJZCkudXBkYXRlKHsKICAgIGVtYWlsOiBuZXdFbWFpbAogIH0pOwp9OwoKLy8gVXNvCnVwZGF0ZVVzZXJFbWFpbCgnMScsICduZXcuZW1haWxAZXhhbXBsZS5jb20nKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const updateUserEmail = (userId, newEmail) =&gt; {
+  firebase.database().ref('users/' + userId).update({
+    email: newEmail
+  });
+};
+
+// Uso
+updateUserEmail('1', 'new.email@example.com');</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: El método <code>update</code> actualiza los campos especificados en la referencia sin sobrescribir todos los datos.</li>
+</ul>
+</div><h1>Operación de Eliminar</h1>
+<div class='content'><p>Eliminar datos en Firebase Realtime Database se puede hacer usando el método <code>remove</code>.</p>
+</div><h2>Ejemplo: Eliminando un Usuario</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZGVsZXRlVXNlciA9ICh1c2VySWQpID0+IHsKICBmaXJlYmFzZS5kYXRhYmFzZSgpLnJlZigndXNlcnMvJyArIHVzZXJJZCkucmVtb3ZlKCk7Cn07CgovLyBVc28KZGVsZXRlVXNlcignMScpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const deleteUser = (userId) =&gt; {
+  firebase.database().ref('users/' + userId).remove();
+};
+
+// Uso
+deleteUser('1');</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: El método <code>remove</code> elimina los datos en la referencia especificada.</li>
+</ul>
+</div><h1>Conceptos Avanzados</h1>
+<div class='content'><p>Para usuarios avanzados, Firebase Realtime Database ofrece operaciones más complejas como transacciones y capacidades offline.</p>
+</div><h2>Transacciones</h2>
+<div class='content'><p>Las transacciones aseguran que los datos sean consistentes y manejan actualizaciones concurrentes.</p>
+<h4>Ejemplo: Incrementando un Contador</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgaW5jcmVtZW50Q291bnRlciA9IChjb3VudGVySWQpID0+IHsKICBjb25zdCBjb3VudGVyUmVmID0gZmlyZWJhc2UuZGF0YWJhc2UoKS5yZWYoJ2NvdW50ZXJzLycgKyBjb3VudGVySWQpOwogIGNvdW50ZXJSZWYudHJhbnNhY3Rpb24oKGN1cnJlbnRWYWx1ZSkgPT4gewogICAgcmV0dXJuIChjdXJyZW50VmFsdWUgfHwgMCkgKyAxOwogIH0pOwp9OwoKLy8gVXNvCmluY3JlbWVudENvdW50ZXIoJ3BhZ2VWaWV3cycpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const incrementCounter = (counterId) =&gt; {
+  const counterRef = firebase.database().ref('counters/' + counterId);
+  counterRef.transaction((currentValue) =&gt; {
+    return (currentValue || 0) + 1;
+  });
+};
+
+// Uso
+incrementCounter('pageViews');</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: El método <code>transaction</code> asegura que el contador se incremente de manera atómica, incluso si múltiples clientes lo están actualizando simultáneamente.</li>
+</ul>
+</div><h2>Capacidades Offline</h2>
+<div class='content'><p>Firebase Realtime Database soporta la persistencia de datos offline, permitiendo que tu aplicación permanezca receptiva incluso cuando el usuario está offline.</p>
+<h4>Habilitando la Persistencia Offline</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZmlyZWJhc2UuZGF0YWJhc2UoKS5yZWYoKS5rZWVwU3luY2VkKHRydWUpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>firebase.database().ref().keepSynced(true);</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: El método <code>keepSynced</code> asegura que la referencia especificada se mantenga sincronizada incluso cuando la aplicación está offline.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, cubrimos las operaciones CRUD esenciales en Firebase Realtime Database, desde la creación básica de datos hasta el manejo avanzado de transacciones. Al dominar estas operaciones, puedes construir aplicaciones robustas y en tiempo real que proporcionen una experiencia de usuario fluida.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='setting-up-realtime-database'>&#x25C4;Configuración de Realtime Database</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Operaciones CRUD en la Base de Datos en Tiempo Real</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='realtime-database-security-rules'>Reglas de Seguridad de Realtime Database &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

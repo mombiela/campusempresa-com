@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Futuros y Promesas en Scala</title>
+
+    <link rel="alternate" href="https://campusempresa.com/scala/futures-and-promises" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/scala/futures-and-promises" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/scala/futures-and-promises" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/scala/futures-and-promises" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/scala/futures-and-promises" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-concurrency'>&#x25C4;Introducción a la Concurrencia</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Futuros y Promesas en Scala</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='actors-and-akka'>Actores y Akka &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los Futuros y las Promesas son constructos poderosos en Scala que te permiten trabajar con cálculos concurrentes y asíncronos. Son esenciales para escribir código no bloqueante y manejar tareas que pueden completarse en algún momento en el futuro.</p>
+</div><h1>Futuros</h1>
+<div class='content'><p>Un <code>Futuro</code> representa un valor que puede no estar disponible aún. Es un marcador de posición para un resultado que eventualmente será calculado.</p>
+</div><h2>Creando Futuros</h2>
+<div class='content'><p>Puedes crear un <code>Futuro</code> usando el objeto compañero <code>Future</code> y un <code>ExecutionContext</code> implícito.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLmNvbmN1cnJlbnQuXwppbXBvcnQgRXhlY3V0aW9uQ29udGV4dC5JbXBsaWNpdHMuZ2xvYmFsCgp2YWwgZnV0dXJlOiBGdXR1cmVbSW50XSA9IEZ1dHVyZSB7CiAgLy8gU2ltdWxhciB1biBjw6FsY3VsbyBkZSBsYXJnYSBkdXJhY2nDs24KICBUaHJlYWQuc2xlZXAoMTAwMCkKICA0Mgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.concurrent._
+import ExecutionContext.Implicits.global
+
+val future: Future[Int] = Future {
+  // Simular un c&aacute;lculo de larga duraci&oacute;n
+  Thread.sleep(1000)
+  42
+}</pre></div><div class='content'></div><h2>Trabajando con Futuros</h2>
+<div class='content'><p>Los Futuros proporcionan varios métodos para trabajar con sus resultados una vez que están disponibles.</p>
+<h4>onComplete</h4>
+<p>El método <code>onComplete</code> te permite especificar una función de retorno que se ejecutará cuando el futuro se complete.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnV0dXJlLm9uQ29tcGxldGUgewogIGNhc2UgU3VjY2Vzcyh2YWx1ZSkgPT4gcHJpbnRsbihzIkVsIHJlc3VsdGFkbyBlcyAkdmFsdWUiKQogIGNhc2UgRmFpbHVyZShleGNlcHRpb24pID0+IHByaW50bG4ocyJPY3VycmnDsyB1biBlcnJvcjogJHtleGNlcHRpb24uZ2V0TWVzc2FnZX0iKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>future.onComplete {
+  case Success(value) =&gt; println(s&quot;El resultado es $value&quot;)
+  case Failure(exception) =&gt; println(s&quot;Ocurri&oacute; un error: ${exception.getMessage}&quot;)
+}</pre></div><div class='content'><h4>map y flatMap</h4>
+<p>Puedes transformar el resultado de un futuro usando <code>map</code> y <code>flatMap</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHRyYW5zZm9ybWVkRnV0dXJlOiBGdXR1cmVbU3RyaW5nXSA9IGZ1dHVyZS5tYXAodmFsdWUgPT4gcyJMYSByZXNwdWVzdGEgZXMgJHZhbHVlIik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val transformedFuture: Future[String] = future.map(value =&gt; s&quot;La respuesta es $value&quot;)</pre></div><div class='content'><h4>for-comprehensions</h4>
+<p>Las for-comprehensions proporcionan una forma más legible de encadenar múltiples futuros.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGZ1dHVyZTEgPSBGdXR1cmUgeyAxMCB9CnZhbCBmdXR1cmUyID0gRnV0dXJlIHsgMjAgfQoKdmFsIGNvbWJpbmVkRnV0dXJlOiBGdXR1cmVbSW50XSA9IGZvciB7CiAgdmFsdWUxIDwtIGZ1dHVyZTEKICB2YWx1ZTIgPC0gZnV0dXJlMgp9IHlpZWxkIHZhbHVlMSArIHZhbHVlMg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val future1 = Future { 10 }
+val future2 = Future { 20 }
+
+val combinedFuture: Future[Int] = for {
+  value1 &lt;- future1
+  value2 &lt;- future2
+} yield value1 + value2</pre></div><div class='content'></div><h1>Promesas</h1>
+<div class='content'><p>Una <code>Promesa</code> es un contenedor de asignación única y escribible que completa un <code>Futuro</code>. Puedes pensar en una <code>Promesa</code> como una forma de controlar manualmente la finalización de un <code>Futuro</code>.</p>
+</div><h2>Creando Promesas</h2>
+<div class='content'><p>Puedes crear una <code>Promesa</code> usando el objeto compañero <code>Promise</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHByb21pc2U6IFByb21pc2VbSW50XSA9IFByb21pc2VbSW50XSgpCnZhbCBmdXR1cmVGcm9tUHJvbWlzZTogRnV0dXJlW0ludF0gPSBwcm9taXNlLmZ1dHVyZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val promise: Promise[Int] = Promise[Int]()
+val futureFromPromise: Future[Int] = promise.future</pre></div><div class='content'></div><h2>Completando Promesas</h2>
+<div class='content'><p>Puedes completar una <code>Promesa</code> llamando a <code>success</code> o <code>failure</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvbWlzZS5zdWNjZXNzKDQyKQovLyBvCnByb21pc2UuZmFpbHVyZShuZXcgRXhjZXB0aW9uKCJBbGdvIHNhbGnDsyBtYWwiKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>promise.success(42)
+// o
+promise.failure(new Exception(&quot;Algo sali&oacute; mal&quot;))</pre></div><div class='content'></div><h2>Ejemplo: Usando Promesas para Completar Futuros</h2>
+<div class='content'><p>Aquí hay un ejemplo que demuestra cómo usar una <code>Promesa</code> para completar un <code>Futuro</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLmNvbmN1cnJlbnQuXwppbXBvcnQgRXhlY3V0aW9uQ29udGV4dC5JbXBsaWNpdHMuZ2xvYmFsCgp2YWwgcHJvbWlzZSA9IFByb21pc2VbSW50XSgpCnZhbCBmdXR1cmUgPSBwcm9taXNlLmZ1dHVyZQoKZnV0dXJlLm9uQ29tcGxldGUgewogIGNhc2UgU3VjY2Vzcyh2YWx1ZSkgPT4gcHJpbnRsbihzIkVsIHJlc3VsdGFkbyBlcyAkdmFsdWUiKQogIGNhc2UgRmFpbHVyZShleGNlcHRpb24pID0+IHByaW50bG4ocyJPY3VycmnDsyB1biBlcnJvcjogJHtleGNlcHRpb24uZ2V0TWVzc2FnZX0iKQp9CgovLyBTaW11bGFyIGFsZ8O6biBjw6FsY3VsbyBhc8OtbmNyb25vCkZ1dHVyZSB7CiAgVGhyZWFkLnNsZWVwKDEwMDApCiAgcHJvbWlzZS5zdWNjZXNzKDQyKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.concurrent._
+import ExecutionContext.Implicits.global
+
+val promise = Promise[Int]()
+val future = promise.future
+
+future.onComplete {
+  case Success(value) =&gt; println(s&quot;El resultado es $value&quot;)
+  case Failure(exception) =&gt; println(s&quot;Ocurri&oacute; un error: ${exception.getMessage}&quot;)
+}
+
+// Simular alg&uacute;n c&aacute;lculo as&iacute;ncrono
+Future {
+  Thread.sleep(1000)
+  promise.success(42)
+}</pre></div><div class='content'></div><h1>Comparación: Futuros vs Promesas</h1>
+<div class='content'><p>| Característica   | Futuro                          | Promesa                         |
+|------------------|---------------------------------|---------------------------------|
+| Creación         | Creado con objeto <code>Future</code>      | Creado con objeto <code>Promise</code>     |
+| Finalización     | Completado por el cálculo       | Completado manualmente por el usuario |
+| Legibilidad      | Solo lectura                    | Lectura-escritura               |
+| Caso de Uso      | Resultado de cálculo asíncrono  | Control manual sobre la finalización |</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los Futuros y las Promesas son herramientas esenciales para manejar la programación asíncrona y concurrente en Scala. Los Futuros te permiten trabajar con valores que estarán disponibles en el futuro, mientras que las Promesas te dan control sobre cuándo y cómo se proporcionan esos valores. Al entender y usar estos constructos, puedes escribir código más eficiente y no bloqueante.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-concurrency'>&#x25C4;Introducción a la Concurrencia</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Futuros y Promesas en Scala</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='actors-and-akka'>Actores y Akka &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

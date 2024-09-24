@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operaciones de E/S de Archivos en OpenVMS</title>
+
+    <link rel="alternate" href="https://campusempresa.com/vms/file-io-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/vms/file-io-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/vms/file-io-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/vms/file-io-operations" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/vms/file-io-operations" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='interprocess-communication'>&#x25C4;Comunicación entre Procesos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Operaciones de E/S de Archivos en OpenVMS</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='memory-management'>Gestión de Memoria &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las operaciones de E/S (Entrada/Salida) de archivos son fundamentales para cualquier sistema operativo, y OpenVMS no es una excepción. Este tema te guiará a través de los conceptos básicos de las operaciones de E/S de archivos en OpenVMS, progresando hacia conceptos y técnicas más avanzadas.</p>
+</div><h1>Conceptos Básicos</h1>
+<div class='content'><p>Antes de sumergirnos en ejemplos de código, es esencial entender algunos conceptos básicos relacionados con la E/S de archivos en OpenVMS.</p>
+<ul>
+<li><strong>Archivo</strong>: Una colección de datos almacenados en disco.</li>
+<li><strong>Registro</strong>: Una unidad de datos dentro de un archivo.</li>
+<li><strong>Flujo</strong>: Una secuencia de elementos de datos disponibles a lo largo del tiempo.</li>
+<li><strong>Canal</strong>: Una vía a través de la cual los datos fluyen entre el programa y el archivo.</li>
+</ul>
+</div><h1>Abrir y Cerrar Archivos</h1>
+<div class='content'><p>Para realizar cualquier operación de E/S, primero necesitas abrir un archivo. Una vez que hayas terminado con el archivo, debe cerrarse para liberar los recursos del sistema.</p>
+</div><h2>Abrir un Archivo</h2>
+<div class='content'><p>En OpenVMS, los archivos se abren usando el servicio del sistema <code>SYS$OPEN</code>. Aquí tienes un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGRlc2NyaXAuaD4KI2luY2x1ZGUgPHJtcy5oPgojaW5jbHVkZSA8c3RzZGVmLmg+CiNpbmNsdWRlIDxzc2RlZi5oPgoKaW50IG1haW4oKSB7CiAgICBzdHJ1Y3QgRkFCIGZhYjsKICAgIHN0cnVjdCBSQUIgcmFiOwogICAgaW50IHN0YXR1czsKCiAgICAvLyBJbmljaWFsaXphciBlbCBGQUIgeSBlbCBSQUIKICAgIGZhYiA9IGNjJHJtc19mYWI7CiAgICByYWIgPSBjYyRybXNfcmFiOwoKICAgIC8vIEVzcGVjaWZpY2FyIGVsIG5vbWJyZSBkZWwgYXJjaGl2bwogICAgZmFiLmZhYiRsX2ZuYSA9ICJ0ZXN0ZmlsZS5kYXQiOwogICAgZmFiLmZhYiRiX2ZucyA9IHN0cmxlbihmYWIuZmFiJGxfZm5hKTsKCiAgICAvLyBBYnJpciBlbCBhcmNoaXZvCiAgICBzdGF0dXMgPSBzeXMkb3BlbigmZmFiKTsKICAgIGlmICghKHN0YXR1cyAmIDEpKSB7CiAgICAgICAgcHJpbnRmKCJFcnJvciBhbCBhYnJpciBlbCBhcmNoaXZvXG4iKTsKICAgICAgICByZXR1cm4gc3RhdHVzOwogICAgfQoKICAgIC8vIENlcnJhciBlbCBhcmNoaXZvCiAgICBzdGF0dXMgPSBzeXMkY2xvc2UoJmZhYik7CiAgICBpZiAoIShzdGF0dXMgJiAxKSkgewogICAgICAgIHByaW50ZigiRXJyb3IgYWwgY2VycmFyIGVsIGFyY2hpdm9cbiIpOwogICAgICAgIHJldHVybiBzdGF0dXM7CiAgICB9CgogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;descrip.h&gt;
+#include &lt;rms.h&gt;
+#include &lt;stsdef.h&gt;
+#include &lt;ssdef.h&gt;
+
+int main() {
+    struct FAB fab;
+    struct RAB rab;
+    int status;
+
+    // Inicializar el FAB y el RAB
+    fab = cc$rms_fab;
+    rab = cc$rms_rab;
+
+    // Especificar el nombre del archivo
+    fab.fab$l_fna = &quot;testfile.dat&quot;;
+    fab.fab$b_fns = strlen(fab.fab$l_fna);
+
+    // Abrir el archivo
+    status = sys$open(&amp;fab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al abrir el archivo\n&quot;);
+        return status;
+    }
+
+    // Cerrar el archivo
+    status = sys$close(&amp;fab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al cerrar el archivo\n&quot;);
+        return status;
+    }
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Cerrar un Archivo</h2>
+<div class='content'><p>Cerrar un archivo es sencillo y se hace usando el servicio del sistema <code>SYS$CLOSE</code>, como se muestra en el ejemplo anterior.</p>
+</div><h1>Leer de un Archivo</h1>
+<div class='content'><p>Leer datos de un archivo implica abrir el archivo, leer los datos y luego cerrar el archivo.</p>
+</div><h2>Ejemplo: Leer un Archivo</h2>
+<div class='content'><p>Aquí tienes un ejemplo de cómo leer datos de un archivo en OpenVMS:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGRlc2NyaXAuaD4KI2luY2x1ZGUgPHJtcy5oPgojaW5jbHVkZSA8c3RzZGVmLmg+CiNpbmNsdWRlIDxzc2RlZi5oPgoKaW50IG1haW4oKSB7CiAgICBzdHJ1Y3QgRkFCIGZhYjsKICAgIHN0cnVjdCBSQUIgcmFiOwogICAgaW50IHN0YXR1czsKICAgIGNoYXIgYnVmZmVyWzI1Nl07CgogICAgLy8gSW5pY2lhbGl6YXIgZWwgRkFCIHkgZWwgUkFCCiAgICBmYWIgPSBjYyRybXNfZmFiOwogICAgcmFiID0gY2Mkcm1zX3JhYjsKCiAgICAvLyBFc3BlY2lmaWNhciBlbCBub21icmUgZGVsIGFyY2hpdm8KICAgIGZhYi5mYWIkbF9mbmEgPSAidGVzdGZpbGUuZGF0IjsKICAgIGZhYi5mYWIkYl9mbnMgPSBzdHJsZW4oZmFiLmZhYiRsX2ZuYSk7CgogICAgLy8gQWJyaXIgZWwgYXJjaGl2bwogICAgc3RhdHVzID0gc3lzJG9wZW4oJmZhYik7CiAgICBpZiAoIShzdGF0dXMgJiAxKSkgewogICAgICAgIHByaW50ZigiRXJyb3IgYWwgYWJyaXIgZWwgYXJjaGl2b1xuIik7CiAgICAgICAgcmV0dXJuIHN0YXR1czsKICAgIH0KCiAgICAvLyBBc29jaWFyIGVsIFJBQiBjb24gZWwgRkFCCiAgICByYWIucmFiJGxfZmFiID0gJmZhYjsKCiAgICAvLyBMZWVyIGVsIGFyY2hpdm8KICAgIHJhYi5yYWIkbF91YmYgPSBidWZmZXI7CiAgICByYWIucmFiJHdfdXN6ID0gc2l6ZW9mKGJ1ZmZlcik7CiAgICBzdGF0dXMgPSBzeXMkZ2V0KCZyYWIpOwogICAgaWYgKCEoc3RhdHVzICYgMSkpIHsKICAgICAgICBwcmludGYoIkVycm9yIGFsIGxlZXIgZWwgYXJjaGl2b1xuIik7CiAgICAgICAgcmV0dXJuIHN0YXR1czsKICAgIH0KCiAgICBwcmludGYoIkRhdG9zIGxlw61kb3M6ICVzXG4iLCBidWZmZXIpOwoKICAgIC8vIENlcnJhciBlbCBhcmNoaXZvCiAgICBzdGF0dXMgPSBzeXMkY2xvc2UoJmZhYik7CiAgICBpZiAoIShzdGF0dXMgJiAxKSkgewogICAgICAgIHByaW50ZigiRXJyb3IgYWwgY2VycmFyIGVsIGFyY2hpdm9cbiIpOwogICAgICAgIHJldHVybiBzdGF0dXM7CiAgICB9CgogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;descrip.h&gt;
+#include &lt;rms.h&gt;
+#include &lt;stsdef.h&gt;
+#include &lt;ssdef.h&gt;
+
+int main() {
+    struct FAB fab;
+    struct RAB rab;
+    int status;
+    char buffer[256];
+
+    // Inicializar el FAB y el RAB
+    fab = cc$rms_fab;
+    rab = cc$rms_rab;
+
+    // Especificar el nombre del archivo
+    fab.fab$l_fna = &quot;testfile.dat&quot;;
+    fab.fab$b_fns = strlen(fab.fab$l_fna);
+
+    // Abrir el archivo
+    status = sys$open(&amp;fab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al abrir el archivo\n&quot;);
+        return status;
+    }
+
+    // Asociar el RAB con el FAB
+    rab.rab$l_fab = &amp;fab;
+
+    // Leer el archivo
+    rab.rab$l_ubf = buffer;
+    rab.rab$w_usz = sizeof(buffer);
+    status = sys$get(&amp;rab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al leer el archivo\n&quot;);
+        return status;
+    }
+
+    printf(&quot;Datos le&iacute;dos: %s\n&quot;, buffer);
+
+    // Cerrar el archivo
+    status = sys$close(&amp;fab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al cerrar el archivo\n&quot;);
+        return status;
+    }
+
+    return 0;
+}</pre></div><div class='content'></div><h1>Escribir en un Archivo</h1>
+<div class='content'><p>Escribir datos en un archivo implica abrir el archivo, escribir los datos y luego cerrar el archivo.</p>
+</div><h2>Ejemplo: Escribir en un Archivo</h2>
+<div class='content'><p>Aquí tienes un ejemplo de cómo escribir datos en un archivo en OpenVMS:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPGRlc2NyaXAuaD4KI2luY2x1ZGUgPHJtcy5oPgojaW5jbHVkZSA8c3RzZGVmLmg+CiNpbmNsdWRlIDxzc2RlZi5oPgoKaW50IG1haW4oKSB7CiAgICBzdHJ1Y3QgRkFCIGZhYjsKICAgIHN0cnVjdCBSQUIgcmFiOwogICAgaW50IHN0YXR1czsKICAgIGNoYXIgYnVmZmVyW10gPSAiSGVsbG8sIE9wZW5WTVMhIjsKCiAgICAvLyBJbmljaWFsaXphciBlbCBGQUIgeSBlbCBSQUIKICAgIGZhYiA9IGNjJHJtc19mYWI7CiAgICByYWIgPSBjYyRybXNfcmFiOwoKICAgIC8vIEVzcGVjaWZpY2FyIGVsIG5vbWJyZSBkZWwgYXJjaGl2bwogICAgZmFiLmZhYiRsX2ZuYSA9ICJ0ZXN0ZmlsZS5kYXQiOwogICAgZmFiLmZhYiRiX2ZucyA9IHN0cmxlbihmYWIuZmFiJGxfZm5hKTsKCiAgICAvLyBBYnJpciBlbCBhcmNoaXZvCiAgICBzdGF0dXMgPSBzeXMkb3BlbigmZmFiKTsKICAgIGlmICghKHN0YXR1cyAmIDEpKSB7CiAgICAgICAgcHJpbnRmKCJFcnJvciBhbCBhYnJpciBlbCBhcmNoaXZvXG4iKTsKICAgICAgICByZXR1cm4gc3RhdHVzOwogICAgfQoKICAgIC8vIEFzb2NpYXIgZWwgUkFCIGNvbiBlbCBGQUIKICAgIHJhYi5yYWIkbF9mYWIgPSAmZmFiOwoKICAgIC8vIEVzY3JpYmlyIGVuIGVsIGFyY2hpdm8KICAgIHJhYi5yYWIkbF9yYmYgPSBidWZmZXI7CiAgICByYWIucmFiJHdfcnN6ID0gc3RybGVuKGJ1ZmZlcik7CiAgICBzdGF0dXMgPSBzeXMkcHV0KCZyYWIpOwogICAgaWYgKCEoc3RhdHVzICYgMSkpIHsKICAgICAgICBwcmludGYoIkVycm9yIGFsIGVzY3JpYmlyIGVuIGVsIGFyY2hpdm9cbiIpOwogICAgICAgIHJldHVybiBzdGF0dXM7CiAgICB9CgogICAgLy8gQ2VycmFyIGVsIGFyY2hpdm8KICAgIHN0YXR1cyA9IHN5cyRjbG9zZSgmZmFiKTsKICAgIGlmICghKHN0YXR1cyAmIDEpKSB7CiAgICAgICAgcHJpbnRmKCJFcnJvciBhbCBjZXJyYXIgZWwgYXJjaGl2b1xuIik7CiAgICAgICAgcmV0dXJuIHN0YXR1czsKICAgIH0KCiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;descrip.h&gt;
+#include &lt;rms.h&gt;
+#include &lt;stsdef.h&gt;
+#include &lt;ssdef.h&gt;
+
+int main() {
+    struct FAB fab;
+    struct RAB rab;
+    int status;
+    char buffer[] = &quot;Hello, OpenVMS!&quot;;
+
+    // Inicializar el FAB y el RAB
+    fab = cc$rms_fab;
+    rab = cc$rms_rab;
+
+    // Especificar el nombre del archivo
+    fab.fab$l_fna = &quot;testfile.dat&quot;;
+    fab.fab$b_fns = strlen(fab.fab$l_fna);
+
+    // Abrir el archivo
+    status = sys$open(&amp;fab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al abrir el archivo\n&quot;);
+        return status;
+    }
+
+    // Asociar el RAB con el FAB
+    rab.rab$l_fab = &amp;fab;
+
+    // Escribir en el archivo
+    rab.rab$l_rbf = buffer;
+    rab.rab$w_rsz = strlen(buffer);
+    status = sys$put(&amp;rab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al escribir en el archivo\n&quot;);
+        return status;
+    }
+
+    // Cerrar el archivo
+    status = sys$close(&amp;fab);
+    if (!(status &amp; 1)) {
+        printf(&quot;Error al cerrar el archivo\n&quot;);
+        return status;
+    }
+
+    return 0;
+}</pre></div><div class='content'></div><h1>Operaciones Avanzadas de E/S de Archivos</h1>
+<div class='content'><p>Para operaciones avanzadas de E/S de archivos, es posible que necesites manejar diferentes formatos de archivo, gestionar atributos de archivos y realizar E/S asincrónica.</p>
+</div><h2>Manejo de Diferentes Formatos de Archivo</h2>
+<div class='content'><p>OpenVMS soporta varios formatos de archivo, como archivos secuenciales, relativos e indexados. Cada formato tiene su propio conjunto de operaciones y atributos.</p>
+</div><h2>Gestión de Atributos de Archivos</h2>
+<div class='content'><p>Los atributos de archivos en OpenVMS pueden gestionarse usando el servicio del sistema <code>SYS$QIO</code>. Esto te permite establecer y obtener atributos de archivos dinámicamente.</p>
+</div><h2>E/S Asincrónica</h2>
+<div class='content'><p>Las operaciones de E/S asincrónica permiten que tu programa continúe ejecutándose mientras espera que las operaciones de E/S se completen. Esto puede lograrse usando el servicio del sistema <code>SYS$QIOW</code>.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las operaciones de E/S de archivos en OpenVMS son esenciales para interactuar con el sistema de archivos. Este tema cubrió los conceptos básicos de abrir, leer, escribir y cerrar archivos, así como introdujo algunos conceptos avanzados. Al entender estas operaciones, puedes gestionar eficazmente archivos y datos en un entorno OpenVMS.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='interprocess-communication'>&#x25C4;Comunicación entre Procesos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Operaciones de E/S de Archivos en OpenVMS</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='memory-management'>Gestión de Memoria &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

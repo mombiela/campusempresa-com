@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Errores personalizados en Go</title>
+
+    <link rel="alternate" href="https://campusempresa.com/go/custom-errors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/go/custom-errors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/go/custom-errors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/go/custom-errors" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/go/custom-errors" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-basics'>&#x25C4;Conceptos Básicos de Manejo de Errores</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Errores personalizados en Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='panic-and-recover'>Panic y Recover &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a los errores personalizados</h1>
+<div class='content'><p>En Go, el manejo de errores es una parte crucial para escribir código robusto y mantenible. Aunque el tipo <code>error</code> incorporado en Go suele ser suficiente, hay escenarios donde los errores personalizados pueden proporcionar más contexto y mejorar la depuración. Esta sección cubrirá cómo crear y usar errores personalizados en Go.</p>
+</div><h1>Creación de errores personalizados</h1>
+<div class='content'><p>Para crear un error personalizado en Go, normalmente defines un nuevo tipo que implementa la interfaz <code>error</code>. La interfaz <code>error</code> en Go es simple y consta de un solo método:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBlcnJvciBpbnRlcmZhY2UgewogICAgRXJyb3IoKSBzdHJpbmcKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type error interface {
+    Error() string
+}</pre></div><div class='content'></div><h2>Definición de un tipo de error personalizado</h2>
+<div class='content'><p>Aquí tienes cómo puedes definir un tipo de error personalizado:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIHVuIHRpcG8gZGUgZXJyb3IgcGVyc29uYWxpemFkbwp0eXBlIE15Q3VzdG9tRXJyb3Igc3RydWN0IHsKICAgIENvZGUgICAgaW50CiAgICBNZXNzYWdlIHN0cmluZwp9CgovLyBJbXBsZW1lbnRhIGVsIG3DqXRvZG8gRXJyb3IoKSBwYXJhIGVsIHRpcG8gZGUgZXJyb3IgcGVyc29uYWxpemFkbwpmdW5jIChlICpNeUN1c3RvbUVycm9yKSBFcnJvcigpIHN0cmluZyB7CiAgICByZXR1cm4gZm10LlNwcmludGYoIkVycm9yICVkOiAlcyIsIGUuQ29kZSwgZS5NZXNzYWdlKQp9CgpmdW5jIG1haW4oKSB7CiAgICAvLyBDcmVhIHVuYSBpbnN0YW5jaWEgZGVsIGVycm9yIHBlcnNvbmFsaXphZG8KICAgIGVyciA6PSAmTXlDdXN0b21FcnJvcnsKICAgICAgICBDb2RlOiAgICA0MDQsCiAgICAgICAgTWVzc2FnZTogIlJlc291cmNlIG5vdCBmb3VuZCIsCiAgICB9CgogICAgLy8gSW1wcmltZSBlbCBlcnJvcgogICAgZm10LlByaW50bG4oZXJyKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define un tipo de error personalizado
+type MyCustomError struct {
+    Code    int
+    Message string
+}
+
+// Implementa el m&eacute;todo Error() para el tipo de error personalizado
+func (e *MyCustomError) Error() string {
+    return fmt.Sprintf(&quot;Error %d: %s&quot;, e.Code, e.Message)
+}
+
+func main() {
+    // Crea una instancia del error personalizado
+    err := &amp;MyCustomError{
+        Code:    404,
+        Message: &quot;Resource not found&quot;,
+    }
+
+    // Imprime el error
+    fmt.Println(err)
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Definición de la estructura</strong>: <code>MyCustomError</code> es una estructura con campos <code>Code</code> y <code>Message</code>.</li>
+<li><strong>Método Error</strong>: El método <code>Error()</code> formatea el mensaje de error, haciendo que <code>MyCustomError</code> satisfaga la interfaz <code>error</code>.</li>
+<li><strong>Uso</strong>: Se crea e imprime una instancia de <code>MyCustomError</code>, demostrando cómo se puede usar el error personalizado.</li>
+</ul>
+</div><h1>Uso de errores personalizados</h1>
+<div class='content'><p>Los errores personalizados se pueden usar como cualquier otro error en Go. Pueden ser devueltos desde funciones y comprobados usando afirmaciones de tipo o conmutadores de tipo.</p>
+</div><h2>Devolución de errores personalizados desde funciones</h2>
+<div class='content'><p>Aquí tienes un ejemplo de una función que devuelve un error personalizado:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIHVuIHRpcG8gZGUgZXJyb3IgcGVyc29uYWxpemFkbwp0eXBlIE15Q3VzdG9tRXJyb3Igc3RydWN0IHsKICAgIENvZGUgICAgaW50CiAgICBNZXNzYWdlIHN0cmluZwp9CgpmdW5jIChlICpNeUN1c3RvbUVycm9yKSBFcnJvcigpIHN0cmluZyB7CiAgICByZXR1cm4gZm10LlNwcmludGYoIkVycm9yICVkOiAlcyIsIGUuQ29kZSwgZS5NZXNzYWdlKQp9CgovLyBGdW5jacOzbiBxdWUgZGV2dWVsdmUgdW4gZXJyb3IgcGVyc29uYWxpemFkbwpmdW5jIGRvU29tZXRoaW5nKCkgZXJyb3IgewogICAgcmV0dXJuICZNeUN1c3RvbUVycm9yewogICAgICAgIENvZGU6ICAgIDUwMCwKICAgICAgICBNZXNzYWdlOiAiSW50ZXJuYWwgU2VydmVyIEVycm9yIiwKICAgIH0KfQoKZnVuYyBtYWluKCkgewogICAgZXJyIDo9IGRvU29tZXRoaW5nKCkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGZtdC5QcmludGxuKGVycikKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define un tipo de error personalizado
+type MyCustomError struct {
+    Code    int
+    Message string
+}
+
+func (e *MyCustomError) Error() string {
+    return fmt.Sprintf(&quot;Error %d: %s&quot;, e.Code, e.Message)
+}
+
+// Funci&oacute;n que devuelve un error personalizado
+func doSomething() error {
+    return &amp;MyCustomError{
+        Code:    500,
+        Message: &quot;Internal Server Error&quot;,
+    }
+}
+
+func main() {
+    err := doSomething()
+    if err != nil {
+        fmt.Println(err)
+    }
+}</pre></div><div class='content'></div><h2>Comprobación de errores personalizados específicos</h2>
+<div class='content'><p>Puedes usar afirmaciones de tipo o conmutadores de tipo para comprobar errores personalizados específicos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKLy8gRGVmaW5lIHVuIHRpcG8gZGUgZXJyb3IgcGVyc29uYWxpemFkbwp0eXBlIE15Q3VzdG9tRXJyb3Igc3RydWN0IHsKICAgIENvZGUgICAgaW50CiAgICBNZXNzYWdlIHN0cmluZwp9CgpmdW5jIChlICpNeUN1c3RvbUVycm9yKSBFcnJvcigpIHN0cmluZyB7CiAgICByZXR1cm4gZm10LlNwcmludGYoIkVycm9yICVkOiAlcyIsIGUuQ29kZSwgZS5NZXNzYWdlKQp9CgpmdW5jIGRvU29tZXRoaW5nKCkgZXJyb3IgewogICAgcmV0dXJuICZNeUN1c3RvbUVycm9yewogICAgICAgIENvZGU6ICAgIDUwMCwKICAgICAgICBNZXNzYWdlOiAiSW50ZXJuYWwgU2VydmVyIEVycm9yIiwKICAgIH0KfQoKZnVuYyBtYWluKCkgewogICAgZXJyIDo9IGRvU29tZXRoaW5nKCkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIC8vIEFmaXJtYWNpw7NuIGRlIHRpcG8KICAgICAgICBpZiBjdXN0b21FcnIsIG9rIDo9IGVyci4oKk15Q3VzdG9tRXJyb3IpOyBvayB7CiAgICAgICAgICAgIGZtdC5QcmludGYoIk9jdXJyacOzIHVuIGVycm9yIHBlcnNvbmFsaXphZG86IENvZGU9JWQsIE1lc3NhZ2U9JXNcbiIsIGN1c3RvbUVyci5Db2RlLCBjdXN0b21FcnIuTWVzc2FnZSkKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBmbXQuUHJpbnRsbigiT2N1cnJpw7MgdW4gZXJyb3I6IiwgZXJyKQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+// Define un tipo de error personalizado
+type MyCustomError struct {
+    Code    int
+    Message string
+}
+
+func (e *MyCustomError) Error() string {
+    return fmt.Sprintf(&quot;Error %d: %s&quot;, e.Code, e.Message)
+}
+
+func doSomething() error {
+    return &amp;MyCustomError{
+        Code:    500,
+        Message: &quot;Internal Server Error&quot;,
+    }
+}
+
+func main() {
+    err := doSomething()
+    if err != nil {
+        // Afirmaci&oacute;n de tipo
+        if customErr, ok := err.(*MyCustomError); ok {
+            fmt.Printf(&quot;Ocurri&oacute; un error personalizado: Code=%d, Message=%s\n&quot;, customErr.Code, customErr.Message)
+        } else {
+            fmt.Println(&quot;Ocurri&oacute; un error:&quot;, err)
+        }
+    }
+}</pre></div><div class='content'></div><h1>Mejores prácticas para errores personalizados</h1>
+<div class='content'><ul>
+<li><strong>Usa errores personalizados con moderación</strong>: Solo usa errores personalizados cuando sea necesario un contexto adicional.</li>
+<li><strong>Mensajes de error consistentes</strong>: Asegúrate de que los mensajes de error sean consistentes e informativos.</li>
+<li><strong>Envolvimiento de errores</strong>: Considera usar las características de envolvimiento de errores de Go 1.13+ (<code>fmt.Errorf</code> con <code>%w</code>) para escenarios de manejo de errores más complejos.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los errores personalizados en Go proporcionan una forma poderosa de agregar contexto al manejo de errores. Al definir tipos de errores personalizados e implementar la interfaz <code>error</code>, puedes crear mensajes de error más informativos y mantenibles. Recuerda usar los errores personalizados con juicio y seguir las mejores prácticas para asegurar que tu código permanezca limpio y comprensible.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling-basics'>&#x25C4;Conceptos Básicos de Manejo de Errores</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Errores personalizados en Go</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='panic-and-recover'>Panic y Recover &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

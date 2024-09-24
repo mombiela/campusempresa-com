@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapeo y Tipos de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/elasticsearch/mapping-and-data-types" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/elasticsearch/mapping-and-data-types" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/elasticsearch/mapping-and-data-types" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/elasticsearch/mapping-and-data-types" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/elasticsearch/mapping-and-data-types" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='analyzing-data'>&#x25C4;Analizando Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Mapeo y Tipos de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='query-dsl'>Elasticsearch Query DSL &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción al Mapeo en Elasticsearch</h1>
+<div class='content'><p>El mapeo en Elasticsearch es el proceso de definir cómo se almacenan e indexan un documento y los campos que contiene. Es similar a definir un esquema en una base de datos relacional. Entender el mapeo es crucial para una indexación y consulta de datos eficiente.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Documento</strong>: Un objeto JSON que se almacena en Elasticsearch.</li>
+<li><strong>Índice</strong>: Una colección de documentos.</li>
+<li><strong>Campo</strong>: Un par clave-valor en un documento.</li>
+<li><strong>Mapeo</strong>: El proceso de definir cómo se almacenan e indexan los documentos y sus campos.</li>
+</ul>
+</div><h1>Mapeo Básico</h1>
+<div class='content'><p>Cuando indexas un documento en Elasticsearch sin definir explícitamente un mapeo, Elasticsearch creará automáticamente un mapeo dinámico para ti. Sin embargo, para un mejor control y rendimiento, a menudo es beneficioso definir tus propios mapeos.</p>
+</div><h2>Ejemplo de Mapeo Dinámico</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9teV9pbmRleC9fZG9jLzEKewogICJuYW1lIjogIkpvaG4gRG9lIiwKICAiYWdlIjogMzAsCiAgImVtYWlsIjogImpvaG4uZG9lQGV4YW1wbGUuY29tIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /my_index/_doc/1
+{
+  &quot;name&quot;: &quot;John Doe&quot;,
+  &quot;age&quot;: 30,
+  &quot;email&quot;: &quot;john.doe@example.com&quot;
+}</pre></div><div class='content'><p>En este ejemplo, Elasticsearch inferirá automáticamente los tipos de datos de los campos.</p>
+</div><h2>Definiendo Mapeos Explícitos</h2>
+<div class='content'><p>Puedes definir mapeos explícitos al crear un índice para asegurar que los campos se indexen correctamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9teV9pbmRleAp7CiAgIm1hcHBpbmdzIjogewogICAgInByb3BlcnRpZXMiOiB7CiAgICAgICJuYW1lIjogewogICAgICAgICJ0eXBlIjogInRleHQiCiAgICAgIH0sCiAgICAgICJhZ2UiOiB7CiAgICAgICAgInR5cGUiOiAiaW50ZWdlciIKICAgICAgfSwKICAgICAgImVtYWlsIjogewogICAgICAgICJ0eXBlIjogImtleXdvcmQiCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /my_index
+{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;name&quot;: {
+        &quot;type&quot;: &quot;text&quot;
+      },
+      &quot;age&quot;: {
+        &quot;type&quot;: &quot;integer&quot;
+      },
+      &quot;email&quot;: {
+        &quot;type&quot;: &quot;keyword&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>name</code> se define como <code>text</code>, adecuado para búsqueda de texto completo.</li>
+<li><code>age</code> se define como <code>integer</code>, adecuado para operaciones numéricas.</li>
+<li><code>email</code> se define como <code>keyword</code>, adecuado para coincidencias exactas.</li>
+</ul>
+</div><h1>Tipos de Datos en Elasticsearch</h1>
+<div class='content'><p>Elasticsearch soporta una variedad de tipos de datos, cada uno optimizado para diferentes tipos de datos y consultas.</p>
+</div><h2>Tipos de Datos Básicos</h2>
+<div class='content'><ul>
+<li><strong>Tipos de Cadena</strong>:
+<ul>
+<li><code>text</code>: Usado para búsqueda de texto completo.</li>
+<li><code>keyword</code>: Usado para coincidencias exactas.</li>
+</ul>
+</li>
+<li><strong>Tipos Numéricos</strong>:
+<ul>
+<li><code>integer</code>: Entero de 32 bits.</li>
+<li><code>long</code>: Entero de 64 bits.</li>
+<li><code>float</code>: Punto flotante de precisión simple.</li>
+<li><code>double</code>: Punto flotante de doble precisión.</li>
+</ul>
+</li>
+<li><strong>Fecha</strong>: Almacena fechas en varios formatos.</li>
+<li><strong>Booleano</strong>: Almacena <code>true</code> o <code>false</code>.</li>
+</ul>
+</div><h2>Ejemplo de Diferentes Tipos de Datos</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9teV9pbmRleAp7CiAgIm1hcHBpbmdzIjogewogICAgInByb3BlcnRpZXMiOiB7CiAgICAgICJ0aXRsZSI6IHsKICAgICAgICAidHlwZSI6ICJ0ZXh0IgogICAgICB9LAogICAgICAicHJpY2UiOiB7CiAgICAgICAgInR5cGUiOiAiZmxvYXQiCiAgICAgIH0sCiAgICAgICJyZWxlYXNlX2RhdGUiOiB7CiAgICAgICAgInR5cGUiOiAiZGF0ZSIKICAgICAgfSwKICAgICAgImluX3N0b2NrIjogewogICAgICAgICJ0eXBlIjogImJvb2xlYW4iCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /my_index
+{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;title&quot;: {
+        &quot;type&quot;: &quot;text&quot;
+      },
+      &quot;price&quot;: {
+        &quot;type&quot;: &quot;float&quot;
+      },
+      &quot;release_date&quot;: {
+        &quot;type&quot;: &quot;date&quot;
+      },
+      &quot;in_stock&quot;: {
+        &quot;type&quot;: &quot;boolean&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>title</code> es un campo <code>text</code> para búsqueda de texto completo.</li>
+<li><code>price</code> es un campo <code>float</code> para operaciones numéricas.</li>
+<li><code>release_date</code> es un campo <code>date</code> para operaciones de fecha.</li>
+<li><code>in_stock</code> es un campo <code>boolean</code> para valores verdadero/falso.</li>
+</ul>
+</div><h1>Técnicas Avanzadas de Mapeo</h1>
+<h2>Objetos Anidados</h2>
+<div class='content'><p>Los objetos anidados te permiten indexar arrays de objetos y consultarlos como si fueran documentos separados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9teV9pbmRleAp7CiAgIm1hcHBpbmdzIjogewogICAgInByb3BlcnRpZXMiOiB7CiAgICAgICJ1c2VyIjogewogICAgICAgICJ0eXBlIjogIm5lc3RlZCIsCiAgICAgICAgInByb3BlcnRpZXMiOiB7CiAgICAgICAgICAiZmlyc3RfbmFtZSI6IHsKICAgICAgICAgICAgInR5cGUiOiAidGV4dCIKICAgICAgICAgIH0sCiAgICAgICAgICAibGFzdF9uYW1lIjogewogICAgICAgICAgICAidHlwZSI6ICJ0ZXh0IgogICAgICAgICAgfQogICAgICAgIH0KICAgICAgfQogICAgfQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /my_index
+{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;user&quot;: {
+        &quot;type&quot;: &quot;nested&quot;,
+        &quot;properties&quot;: {
+          &quot;first_name&quot;: {
+            &quot;type&quot;: &quot;text&quot;
+          },
+          &quot;last_name&quot;: {
+            &quot;type&quot;: &quot;text&quot;
+          }
+        }
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h2>Campos Múltiples</h2>
+<div class='content'><p>Los campos múltiples permiten que un solo campo se indexe de múltiples maneras para diferentes tipos de consultas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9teV9pbmRleAp7CiAgIm1hcHBpbmdzIjogewogICAgInByb3BlcnRpZXMiOiB7CiAgICAgICJuYW1lIjogewogICAgICAgICJ0eXBlIjogInRleHQiLAogICAgICAgICJmaWVsZHMiOiB7CiAgICAgICAgICAia2V5d29yZCI6IHsKICAgICAgICAgICAgInR5cGUiOiAia2V5d29yZCIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /my_index
+{
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;name&quot;: {
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;fields&quot;: {
+          &quot;keyword&quot;: {
+            &quot;type&quot;: &quot;keyword&quot;
+          }
+        }
+      }
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo, el campo <code>name</code> se indexa tanto como <code>text</code> para búsqueda de texto completo como <code>keyword</code> para coincidencias exactas.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Entender y definir mapeos en Elasticsearch es esencial para una indexación y consulta de datos eficiente. Al definir mapeos explícitos, puedes optimizar tus índices de Elasticsearch para un mejor rendimiento y resultados de búsqueda más precisos. Recuerda elegir los tipos de datos apropiados para tus campos y considera técnicas avanzadas como objetos anidados y campos múltiples para manejar estructuras de datos complejas.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='analyzing-data'>&#x25C4;Analizando Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Mapeo y Tipos de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='query-dsl'>Elasticsearch Query DSL &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

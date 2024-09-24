@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pintura de Pesos en Blender</title>
+
+    <link rel="alternate" href="https://campusempresa.com/blender/weight-painting" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/blender/weight-painting" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/blender/weight-painting" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/blender/weight-painting" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/blender/weight-painting" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-and-using-armatures'>&#x25C4;Creación y Uso de Armaduras</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pintura de Pesos en Blender</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='animating-with-constraints'>Animación con Restricciones &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La Pintura de Pesos es una técnica crucial en Blender para el rigging y la animación de modelos 3D. Te permite controlar cuánto influye cada hueso de una armadura en la malla que deforma. Este tema te guiará desde los conceptos básicos hasta técnicas avanzadas en Pintura de Pesos.</p>
+</div><h1>Introducción a la Pintura de Pesos</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: La Pintura de Pesos es un método para asignar pesos a los vértices, determinando cuánto influye un hueso en ellos.</li>
+<li><strong>Propósito</strong>: Asegura deformaciones suaves y realistas al animar un personaje u objeto.</li>
+</ul>
+</div><h1>Empezando con la Pintura de Pesos</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Accediendo al Modo de Pintura de Pesos</strong>:</p>
+<ol>
+<li>Selecciona tu objeto de malla.</li>
+<li>Cambia al modo <code>Weight Paint</code> desde el menú de selección de modos (usualmente encontrado en la parte superior izquierda del Viewport 3D).</li>
+</ol>
+</li>
+<li>
+<p><strong>Herramientas Básicas</strong>:</p>
+<ul>
+<li><strong>Herramienta de Pincel</strong>: La herramienta principal para pintar pesos.</li>
+<li><strong>Deslizador de Peso</strong>: Ajusta el valor del peso (0.0 a 1.0) aplicado por el pincel.</li>
+<li><strong>Radio y Fuerza</strong>: Controla el tamaño e intensidad del pincel.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: Pintura de Pesos Básica</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configuración</strong>: Crea una armadura y una malla simples.</p>
+<pre><code class="language-python">import bpy
+
+# Crear una malla simple
+bpy.ops.mesh.primitive_cube_add(size=2)
+cube = bpy.context.object
+
+# Crear una armadura
+bpy.ops.object.armature_add()
+armature = bpy.context.object
+
+# Parentar la malla a la armadura con pesos automáticos
+bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+</code></pre>
+</li>
+<li>
+<p><strong>Pintando Pesos</strong>:</p>
+<ul>
+<li>Selecciona la malla y cambia al modo <code>Weight Paint</code>.</li>
+<li>Usa el pincel para pintar pesos en los vértices. El rojo indica influencia total (peso = 1.0), y el azul indica ninguna influencia (peso = 0.0).</li>
+</ul>
+</li>
+</ol>
+</div><h1>Técnicas Intermedias de Pintura de Pesos</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Grupos de Vértices</strong>: Cada hueso tiene un grupo de vértices asociado que almacena los pesos para ese hueso.</p>
+<ul>
+<li><strong>Editando Grupos de Vértices</strong>: Puedes ajustar manualmente los pesos en el panel <code>Vertex Groups</code> en la pestaña <code>Object Data Properties</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Herramienta de Gradiente de Peso</strong>: Te permite crear un gradiente suave de pesos a lo largo de una superficie.</p>
+<ul>
+<li><strong>Uso</strong>: Selecciona los vértices, luego usa la herramienta <code>Weight Gradient</code> para aplicar un gradiente.</li>
+</ul>
+</li>
+<li>
+<p><strong>Transferencia de Pesos</strong>: Transfiere pesos de una malla a otra.</p>
+<ul>
+<li><strong>Uso</strong>: Selecciona las mallas fuente y destino, luego usa la opción <code>Transfer Weights</code> en el menú <code>Weight Tools</code>.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: Usando la Herramienta de Gradiente de Peso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configuración</strong>: Crea un plano y una armadura.</p>
+<pre><code class="language-python">import bpy
+
+# Crear un plano
+bpy.ops.mesh.primitive_plane_add(size=2)
+plane = bpy.context.object
+
+# Crear una armadura
+bpy.ops.object.armature_add()
+armature = bpy.context.object
+
+# Parentar el plano a la armadura con pesos automáticos
+bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+</code></pre>
+</li>
+<li>
+<p><strong>Aplicando Gradiente</strong>:</p>
+<ul>
+<li>Selecciona el plano y cambia al modo <code>Weight Paint</code>.</li>
+<li>Selecciona los vértices donde quieres aplicar el gradiente.</li>
+<li>Usa la herramienta <code>Weight Gradient</code> para crear una transición suave de pesos.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Técnicas Avanzadas de Pintura de Pesos</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Normalización de Pesos</strong>: Asegura que el peso total para cada vértice a través de todos los huesos sume 1.0.</p>
+<ul>
+<li><strong>Uso</strong>: Usa la opción <code>Normalize All</code> en el menú <code>Weight Tools</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pinceles Personalizados para Pintura de Pesos</strong>: Crea y personaliza pinceles para necesidades específicas de pintura de pesos.</p>
+<ul>
+<li><strong>Configuración de Pinceles</strong>: Ajusta configuraciones como <code>Falloff</code>, <code>Jitter</code> y <code>Texture</code> para crear pinceles personalizados.</li>
+</ul>
+</li>
+<li>
+<p><strong>Pintura de Pesos para Rigs Complejos</strong>: Técnicas para manejar rigs complejos con múltiples huesos y restricciones.</p>
+<ul>
+<li><strong>Asignación de Pesos por Calor de Hueso</strong>: Asigna automáticamente pesos basados en el calor del hueso.</li>
+<li><strong>Ajustes Manuales de Pesos</strong>: Ajusta los pesos manualmente para un control preciso.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: Pincel Personalizado para Pintura de Pesos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configuración</strong>: Crea una malla y una armadura.</p>
+<pre><code class="language-python">import bpy
+
+# Crear una Esfera UV
+bpy.ops.mesh.primitive_uv_sphere_add(radius=1)
+sphere = bpy.context.object
+
+# Crear una armadura
+bpy.ops.object.armature_add()
+armature = bpy.context.object
+
+# Parentar la esfera a la armadura con pesos automáticos
+bpy.ops.object.parent_set(type='ARMATURE_AUTO')
+</code></pre>
+</li>
+<li>
+<p><strong>Creando un Pincel Personalizado</strong>:</p>
+<ul>
+<li>Selecciona la esfera y cambia al modo <code>Weight Paint</code>.</li>
+<li>En el panel <code>Tool</code>, crea un nuevo pincel y ajusta configuraciones como <code>Falloff</code> y <code>Texture</code>.</li>
+<li>Usa el pincel personalizado para pintar pesos en la esfera.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La Pintura de Pesos es una herramienta poderosa en Blender que permite un control preciso sobre cómo una malla se deforma con una armadura. Al dominar las herramientas básicas, técnicas intermedias y métodos avanzados, puedes crear animaciones suaves y realistas para tus modelos 3D. Practica regularmente y experimenta con diferentes configuraciones para volverte competente en Pintura de Pesos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='creating-and-using-armatures'>&#x25C4;Creación y Uso de Armaduras</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pintura de Pesos en Blender</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='animating-with-constraints'>Animación con Restricciones &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

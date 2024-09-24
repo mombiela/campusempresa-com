@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StatefulSets en Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/statefulsets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/statefulsets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/statefulsets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/kubernetes/statefulsets" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/statefulsets" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dynamic-provisioning'>&#x25C4;Provisionamiento Dinámico</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">StatefulSets en Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='authentication-and-authorization'>Autenticación y Autorización &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>StatefulSets son un recurso de Kubernetes diseñado para gestionar aplicaciones con estado. A diferencia de los Deployments, que se utilizan para aplicaciones sin estado, los StatefulSets se utilizan para aplicaciones que requieren almacenamiento persistente e identidades de red estables.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Aplicaciones con Estado</strong>: Aplicaciones que requieren almacenamiento persistente e identidades de red estables.</li>
+<li><strong>Pods</strong>: Los StatefulSets gestionan el despliegue y escalado de un conjunto de Pods, y proporcionan garantías sobre el orden y la unicidad de estos Pods.</li>
+<li><strong>Persistent Volume Claims (PVCs)</strong>: Los StatefulSets trabajan con PVCs para proporcionar almacenamiento persistente para cada Pod.</li>
+<li><strong>Identidades de Red Estables</strong>: Cada Pod en un StatefulSet tiene una identidad de red única y estable.</li>
+<li><strong>Despliegue y Escalado Ordenado</strong>: Los Pods se crean, eliminan y escalan en un orden específico.</li>
+</ul>
+</div><h1>Fundamentos de StatefulSet</h1>
+<div class='content'></div><h2>Creando un StatefulSet</h2>
+<div class='content'><p>Para crear un StatefulSet, necesitas definirlo en un archivo YAML. A continuación, se muestra un ejemplo de una definición simple de StatefulSet:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBTdGF0ZWZ1bFNldAptZXRhZGF0YToKICBuYW1lOiB3ZWIKc3BlYzoKICBzZXJ2aWNlTmFtZTogIm5naW54IgogIHJlcGxpY2FzOiAzCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBuZ2lueAogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IG5naW54CiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG5naW54CiAgICAgICAgaW1hZ2U6IGs4cy5nY3IuaW8vbmdpbngtc2xpbTowLjgKICAgICAgICBwb3J0czoKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDgwCiAgICAgICAgICBuYW1lOiB3ZWIKICB2b2x1bWVDbGFpbVRlbXBsYXRlczoKICAtIG1ldGFkYXRhOgogICAgICBuYW1lOiB3d3cKICAgIHNwZWM6CiAgICAgIGFjY2Vzc01vZGVzOiBbICJSZWFkV3JpdGVPbmNlIiBdCiAgICAgIHJlc291cmNlczoKICAgICAgICByZXF1ZXN0czoKICAgICAgICAgIHN0b3JhZ2U6IDFHaQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: web
+spec:
+  serviceName: &quot;nginx&quot;
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: k8s.gcr.io/nginx-slim:0.8
+        ports:
+        - containerPort: 80
+          name: web
+  volumeClaimTemplates:
+  - metadata:
+      name: www
+    spec:
+      accessModes: [ &quot;ReadWriteOnce&quot; ]
+      resources:
+        requests:
+          storage: 1Gi</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: Especifica la versión de la API.</li>
+<li><strong>kind</strong>: Especifica que esto es un StatefulSet.</li>
+<li><strong>metadata</strong>: Contiene el nombre del StatefulSet.</li>
+<li><strong>spec</strong>: Define el estado deseado del StatefulSet.
+<ul>
+<li><strong>serviceName</strong>: El nombre del servicio que gobierna este StatefulSet.</li>
+<li><strong>replicas</strong>: El número de Pods deseados.</li>
+<li><strong>selector</strong>: Una consulta de etiquetas sobre los Pods que deben coincidir con el recuento de réplicas.</li>
+<li><strong>template</strong>: La plantilla del Pod.
+<ul>
+<li><strong>metadata</strong>: Etiquetas para los Pods.</li>
+<li><strong>spec</strong>: La especificación para los Pods.
+<ul>
+<li><strong>containers</strong>: Las especificaciones del contenedor.
+<ul>
+<li><strong>name</strong>: El nombre del contenedor.</li>
+<li><strong>image</strong>: La imagen del contenedor.</li>
+<li><strong>ports</strong>: Los puertos expuestos por el contenedor.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>volumeClaimTemplates</strong>: Define los PVCs para los Pods.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Desplegando el StatefulSet</h2>
+<div class='content'><p>Para desplegar el StatefulSet, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBzdGF0ZWZ1bHNldC55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f statefulset.yaml</pre></div><div class='content'></div><h2>Verificando el StatefulSet</h2>
+<div class='content'><p>Para verificar que el StatefulSet está en ejecución, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgc3RhdGVmdWxzZXRz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get statefulsets</pre></div><div class='content'><p>Deberías ver una salida similar a:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TkFNRSAgIFJFQURZICAgQUdFCndlYiAgICAzLzMgICAgIDFt"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NAME   READY   AGE
+web    3/3     1m</pre></div><div class='content'></div><h1>Conceptos Avanzados</h1>
+<div class='content'></div><h2>Actualizaciones Graduales</h2>
+<div class='content'><p>Los StatefulSets soportan actualizaciones graduales, permitiéndote actualizar los Pods de manera controlada. Para realizar una actualización gradual, simplemente actualiza la imagen del contenedor en la definición del StatefulSet y aplica los cambios.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3BlYzoKICB0ZW1wbGF0ZToKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbmdpbngKICAgICAgICBpbWFnZTogazhzLmdjci5pby9uZ2lueC1zbGltOjAuOQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spec:
+  template:
+    spec:
+      containers:
+      - name: nginx
+        image: k8s.gcr.io/nginx-slim:0.9</pre></div><div class='content'><p>Aplica los cambios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBzdGF0ZWZ1bHNldC55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f statefulset.yaml</pre></div><div class='content'></div><h2>Escalando un StatefulSet</h2>
+<div class='content'><p>Para escalar un StatefulSet, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBzY2FsZSBzdGF0ZWZ1bHNldCB3ZWIgLS1yZXBsaWNhcz01"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl scale statefulset web --replicas=5</pre></div><div class='content'></div><h2>Eliminando un StatefulSet</h2>
+<div class='content'><p>Para eliminar un StatefulSet sin eliminar los PVCs asociados, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBkZWxldGUgc3RhdGVmdWxzZXQgd2ViIC0tY2FzY2FkZT1vcnBoYW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl delete statefulset web --cascade=orphan</pre></div><div class='content'><p>Este comando elimina el StatefulSet pero deja los PVCs intactos.</p>
+</div><h1>Resumen</h1>
+<div class='content'><p>StatefulSets son un recurso poderoso de Kubernetes para gestionar aplicaciones con estado. Proporcionan identidades de red estables, almacenamiento persistente y despliegue y escalado ordenado. Al comprender y utilizar StatefulSets, puedes gestionar eficazmente aplicaciones complejas con estado en tu clúster de Kubernetes.</p>
+<ul>
+<li><strong>StatefulSets</strong> gestionan aplicaciones con estado.</li>
+<li><strong>Persistent Volume Claims (PVCs)</strong> proporcionan almacenamiento persistente.</li>
+<li><strong>Identidades de Red Estables</strong> aseguran que cada Pod tenga una identidad única.</li>
+<li><strong>Despliegue y Escalado Ordenado</strong> aseguran que los Pods se creen y eliminen en un orden específico.</li>
+</ul>
+<p>Al dominar estos conceptos, puedes aprovechar los StatefulSets para gestionar aplicaciones con estado de manera eficiente en Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dynamic-provisioning'>&#x25C4;Provisionamiento Dinámico</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">StatefulSets en Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='authentication-and-authorization'>Autenticación y Autorización &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Referencias Fuertes y Débiles</title>
+
+    <link rel="alternate" href="https://campusempresa.com/objective_c/strong-and-weak-references" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/objective_c/strong-and-weak-references" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/objective_c/strong-and-weak-references" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/objective_c/strong-and-weak-references" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/objective_c/strong-and-weak-references" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='manual-retain-release'>&#x25C4;Retención y Liberación Manual</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Referencias Fuertes y Débiles</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='strings-and-text'>Cadenas de Texto &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En Objective-C, la gestión de memoria es crucial para crear aplicaciones eficientes y libres de errores. Entender las referencias fuertes y débiles es esencial para gestionar los ciclos de vida de los objetos y evitar fugas de memoria o ciclos de retención. Esta sección cubrirá los conceptos de referencias fuertes y débiles, sus diferencias y cómo usarlas efectivamente en tu código.</p>
+</div><h1>Referencias Fuertes</h1>
+<div class='content'><p>Una referencia fuerte es el tipo de referencia predeterminado en Objective-C. Cuando creas una referencia fuerte a un objeto, aumenta el conteo de retención del objeto, asegurando que el objeto permanezca en memoria mientras exista la referencia.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Conteo de Retención</strong>: El número de referencias fuertes a un objeto.</li>
+<li><strong>Propiedad</strong>: Una referencia fuerte implica propiedad del objeto, lo que significa que el objeto no será desalojado mientras exista al menos una referencia fuerte a él.</li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGludGVyZmFjZSBNeUNsYXNzIDogTlNPYmplY3QKQHByb3BlcnR5IChzdHJvbmcsIG5vbmF0b21pYykgTlNTdHJpbmcgKm5hbWU7CkBlbmQKCkBpbXBsZW1lbnRhdGlvbiBNeUNsYXNzCkBlbmQKCmludCBtYWluKGludCBhcmdjLCBjb25zdCBjaGFyICogYXJndltdKSB7CiAgICBAYXV0b3JlbGVhc2Vwb29sIHsKICAgICAgICBNeUNsYXNzICpteU9iamVjdCA9IFtbTXlDbGFzcyBhbGxvY10gaW5pdF07CiAgICAgICAgbXlPYmplY3QubmFtZSA9IEAiT2JqZWN0aXZlLUMiOwogICAgICAgIC8vIG15T2JqZWN0IHRpZW5lIHVuYSByZWZlcmVuY2lhIGZ1ZXJ0ZSBhbCBvYmpldG8gTlNTdHJpbmcgIk9iamVjdGl2ZS1DIgogICAgfQogICAgLy8gRWwgb2JqZXRvIE5TU3RyaW5nICJPYmplY3RpdmUtQyIgc2Vyw6EgZGVzYWxvamFkbyBhcXXDrSBzaSBubyBleGlzdGVuIG90cmFzIHJlZmVyZW5jaWFzIGZ1ZXJ0ZXMKICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@interface MyClass : NSObject
+@property (strong, nonatomic) NSString *name;
+@end
+
+@implementation MyClass
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        MyClass *myObject = [[MyClass alloc] init];
+        myObject.name = @&quot;Objective-C&quot;;
+        // myObject tiene una referencia fuerte al objeto NSString &quot;Objective-C&quot;
+    }
+    // El objeto NSString &quot;Objective-C&quot; ser&aacute; desalojado aqu&iacute; si no existen otras referencias fuertes
+    return 0;
+}</pre></div><div class='content'><p>En este ejemplo, <code>myObject</code> tiene una referencia fuerte al objeto <code>NSString</code> &quot;Objective-C&quot;. Mientras <code>myObject</code> exista, el objeto <code>NSString</code> no será desalojado.</p>
+</div><h1>Referencias Débiles</h1>
+<div class='content'><p>Una referencia débil no aumenta el conteo de retención de un objeto. Te permite referenciar un objeto sin tomar posesión de él. Las referencias débiles se utilizan típicamente para evitar ciclos de retención, especialmente en patrones de delegado y relaciones padre-hijo.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>No propiedad</strong>: Una referencia débil no implica propiedad, lo que significa que el objeto puede ser desalojado incluso si existen referencias débiles a él.</li>
+<li><strong>Asignación Automática a Nil</strong>: Cuando el objeto al que apunta una referencia débil es desalojado, la referencia débil se establece automáticamente en <code>nil</code>.</li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGludGVyZmFjZSBNeUNsYXNzIDogTlNPYmplY3QKQHByb3BlcnR5ICh3ZWFrLCBub25hdG9taWMpIGlkIGRlbGVnYXRlOwpAZW5kCgpAaW1wbGVtZW50YXRpb24gTXlDbGFzcwpAZW5kCgpAaW50ZXJmYWNlIE15RGVsZWdhdGUgOiBOU09iamVjdApAZW5kCgpAaW1wbGVtZW50YXRpb24gTXlEZWxlZ2F0ZQpAZW5kCgppbnQgbWFpbihpbnQgYXJnYywgY29uc3QgY2hhciAqIGFyZ3ZbXSkgewogICAgQGF1dG9yZWxlYXNlcG9vbCB7CiAgICAgICAgTXlDbGFzcyAqbXlPYmplY3QgPSBbW015Q2xhc3MgYWxsb2NdIGluaXRdOwogICAgICAgIE15RGVsZWdhdGUgKm15RGVsZWdhdGUgPSBbW015RGVsZWdhdGUgYWxsb2NdIGluaXRdOwogICAgICAgIG15T2JqZWN0LmRlbGVnYXRlID0gbXlEZWxlZ2F0ZTsKICAgICAgICAvLyBteU9iamVjdCB0aWVuZSB1bmEgcmVmZXJlbmNpYSBkw6liaWwgYSBteURlbGVnYXRlCiAgICB9CiAgICAvLyBteURlbGVnYXRlIHNlcsOhIGRlc2Fsb2phZG8gYXF1w60sIHkgbXlPYmplY3QuZGVsZWdhdGUgc2UgZXN0YWJsZWNlcsOhIGVuIG5pbAogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@interface MyClass : NSObject
+@property (weak, nonatomic) id delegate;
+@end
+
+@implementation MyClass
+@end
+
+@interface MyDelegate : NSObject
+@end
+
+@implementation MyDelegate
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        MyClass *myObject = [[MyClass alloc] init];
+        MyDelegate *myDelegate = [[MyDelegate alloc] init];
+        myObject.delegate = myDelegate;
+        // myObject tiene una referencia d&eacute;bil a myDelegate
+    }
+    // myDelegate ser&aacute; desalojado aqu&iacute;, y myObject.delegate se establecer&aacute; en nil
+    return 0;
+}</pre></div><div class='content'><p>En este ejemplo, <code>myObject</code> tiene una referencia débil a <code>myDelegate</code>. Cuando <code>myDelegate</code> es desalojado, <code>myObject.delegate</code> se establece automáticamente en <code>nil</code>.</p>
+</div><h1>Comparación de Referencias Fuertes y Débiles</h1>
+<div class='content'><p>| Característica           | Referencia Fuerte | Referencia Débil |
+|--------------------------|-------------------|------------------|
+| Aumenta el Conteo de Retención | Sí               | No               |
+| Implica Propiedad        | Sí               | No               |
+| Previene Desalojo        | Sí               | No               |
+| Asignación Automática a Nil | No                | Sí               |</p>
+</div><h1>Casos de Uso Prácticos</h1>
+<div class='content'><ul>
+<li><strong>Referencias Fuertes</strong>: Usa referencias fuertes para propiedades y variables donde necesitas asegurar que el objeto permanezca en memoria mientras exista la referencia.</li>
+<li><strong>Referencias Débiles</strong>: Usa referencias débiles para evitar ciclos de retención, particularmente en patrones de delegado, relaciones padre-hijo y cuando referencies objetos que no deben ser retenidos.</li>
+</ul>
+</div><h2>Ejemplo de Ciclo de Retención</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGludGVyZmFjZSBQYXJlbnQgOiBOU09iamVjdApAcHJvcGVydHkgKHN0cm9uZywgbm9uYXRvbWljKSBDaGlsZCAqY2hpbGQ7CkBlbmQKCkBpbnRlcmZhY2UgQ2hpbGQgOiBOU09iamVjdApAcHJvcGVydHkgKHN0cm9uZywgbm9uYXRvbWljKSBQYXJlbnQgKnBhcmVudDsKQGVuZAoKQGltcGxlbWVudGF0aW9uIFBhcmVudApAZW5kCgpAaW1wbGVtZW50YXRpb24gQ2hpbGQKQGVuZAoKaW50IG1haW4oaW50IGFyZ2MsIGNvbnN0IGNoYXIgKiBhcmd2W10pIHsKICAgIEBhdXRvcmVsZWFzZXBvb2wgewogICAgICAgIFBhcmVudCAqcGFyZW50ID0gW1tQYXJlbnQgYWxsb2NdIGluaXRdOwogICAgICAgIENoaWxkICpjaGlsZCA9IFtbQ2hpbGQgYWxsb2NdIGluaXRdOwogICAgICAgIHBhcmVudC5jaGlsZCA9IGNoaWxkOwogICAgICAgIGNoaWxkLnBhcmVudCA9IHBhcmVudDsKICAgICAgICAvLyBFc3RvIGNyZWEgdW4gY2ljbG8gZGUgcmV0ZW5jacOzbiwgeWEgcXVlIGFtYm9zIG9iamV0b3Mgc2UgcmVmZXJlbmNpYW4gZnVlcnRlbWVudGUgZW50cmUgc8OtCiAgICB9CiAgICAvLyBOaSBwYXJlbnQgbmkgY2hpbGQgc2Vyw6FuIGRlc2Fsb2phZG9zIGRlYmlkbyBhbCBjaWNsbyBkZSByZXRlbmNpw7NuCiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@interface Parent : NSObject
+@property (strong, nonatomic) Child *child;
+@end
+
+@interface Child : NSObject
+@property (strong, nonatomic) Parent *parent;
+@end
+
+@implementation Parent
+@end
+
+@implementation Child
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Parent *parent = [[Parent alloc] init];
+        Child *child = [[Child alloc] init];
+        parent.child = child;
+        child.parent = parent;
+        // Esto crea un ciclo de retenci&oacute;n, ya que ambos objetos se referencian fuertemente entre s&iacute;
+    }
+    // Ni parent ni child ser&aacute;n desalojados debido al ciclo de retenci&oacute;n
+    return 0;
+}</pre></div><div class='content'></div><h2>Resolviendo el Ciclo de Retención con Referencia Débil</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGludGVyZmFjZSBQYXJlbnQgOiBOU09iamVjdApAcHJvcGVydHkgKHN0cm9uZywgbm9uYXRvbWljKSBDaGlsZCAqY2hpbGQ7CkBlbmQKCkBpbnRlcmZhY2UgQ2hpbGQgOiBOU09iamVjdApAcHJvcGVydHkgKHdlYWssIG5vbmF0b21pYykgUGFyZW50ICpwYXJlbnQ7CkBlbmQKCkBpbXBsZW1lbnRhdGlvbiBQYXJlbnQKQGVuZAoKQGltcGxlbWVudGF0aW9uIENoaWxkCkBlbmQKCmludCBtYWluKGludCBhcmdjLCBjb25zdCBjaGFyICogYXJndltdKSB7CiAgICBAYXV0b3JlbGVhc2Vwb29sIHsKICAgICAgICBQYXJlbnQgKnBhcmVudCA9IFtbUGFyZW50IGFsbG9jXSBpbml0XTsKICAgICAgICBDaGlsZCAqY2hpbGQgPSBbW0NoaWxkIGFsbG9jXSBpbml0XTsKICAgICAgICBwYXJlbnQuY2hpbGQgPSBjaGlsZDsKICAgICAgICBjaGlsZC5wYXJlbnQgPSBwYXJlbnQ7CiAgICAgICAgLy8gTm8gaGF5IGNpY2xvIGRlIHJldGVuY2nDs24sIHlhIHF1ZSBjaGlsZC5wYXJlbnQgZXMgdW5hIHJlZmVyZW5jaWEgZMOpYmlsCiAgICB9CiAgICAvLyBUYW50byBwYXJlbnQgY29tbyBjaGlsZCBzZXLDoW4gZGVzYWxvamFkb3MgYXF1w60KICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@interface Parent : NSObject
+@property (strong, nonatomic) Child *child;
+@end
+
+@interface Child : NSObject
+@property (weak, nonatomic) Parent *parent;
+@end
+
+@implementation Parent
+@end
+
+@implementation Child
+@end
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        Parent *parent = [[Parent alloc] init];
+        Child *child = [[Child alloc] init];
+        parent.child = child;
+        child.parent = parent;
+        // No hay ciclo de retenci&oacute;n, ya que child.parent es una referencia d&eacute;bil
+    }
+    // Tanto parent como child ser&aacute;n desalojados aqu&iacute;
+    return 0;
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Entender y usar correctamente las referencias fuertes y débiles es fundamental para una gestión efectiva de la memoria en Objective-C. Las referencias fuertes aseguran que los objetos permanezcan en memoria, mientras que las referencias débiles ayudan a evitar ciclos de retención y el uso innecesario de memoria. Aplicando estos conceptos, puedes crear aplicaciones más eficientes y confiables.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='manual-retain-release'>&#x25C4;Retención y Liberación Manual</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Referencias Fuertes y Débiles</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='strings-and-text'>Cadenas de Texto &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

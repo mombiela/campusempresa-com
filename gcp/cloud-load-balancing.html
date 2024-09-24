@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balanceo de Carga en la Nube en GCP</title>
+
+    <link rel="alternate" href="https://campusempresa.com/gcp/cloud-load-balancing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/gcp/cloud-load-balancing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/gcp/cloud-load-balancing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/gcp/cloud-load-balancing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/gcp/cloud-load-balancing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='vpc-networks'>&#x25C4;Redes VPC</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Balanceo de Carga en la Nube en GCP</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='cloud-cdn'>Cloud CDN &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción al Balanceo de Carga en la Nube</h1>
+<div class='content'><p>El Balanceo de Carga en la Nube es un servicio gestionado, totalmente distribuido y definido por software para todo tu tráfico. Te permite distribuir tus cargas de trabajo entre múltiples recursos de computación, como máquinas virtuales (VMs), para asegurar alta disponibilidad y fiabilidad.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Balanceador de Carga</strong>: Un dispositivo que actúa como un proxy inverso y distribuye el tráfico de red o de aplicaciones entre varios servidores.</li>
+<li><strong>Servicios de Backend</strong>: Los servicios a los que el balanceador de carga distribuye el tráfico.</li>
+<li><strong>Configuración de Frontend</strong>: La dirección IP y el puerto en los que el balanceador de carga escucha.</li>
+<li><strong>Comprobaciones de Salud</strong>: Mecanismos para asegurar que los servicios de backend están saludables y pueden manejar solicitudes.</li>
+</ul>
+</div><h1>Tipos de Balanceadores de Carga en GCP</h1>
+<div class='content'><p>GCP ofrece varios tipos de balanceadores de carga, cada uno adecuado para diferentes casos de uso.</p>
+</div><h2>Balanceo de Carga HTTP(S)</h2>
+<div class='content'><ul>
+<li><strong>Balanceo de Carga Global</strong>: Distribuye el tráfico entre múltiples regiones.</li>
+<li><strong>Balanceo de Carga Basado en Contenido</strong>: Enruta el tráfico basado en rutas URL.</li>
+<li><strong>Descarga de SSL</strong>: Termina las conexiones SSL en el balanceador de carga.</li>
+</ul>
+</div><h2>Balanceo de Carga TCP/SSL Proxy</h2>
+<div class='content'><ul>
+<li><strong>Balanceo de Carga Global</strong>: Distribuye el tráfico TCP y SSL entre múltiples regiones.</li>
+<li><strong>Terminación de SSL</strong>: Termina las conexiones SSL en el balanceador de carga.</li>
+</ul>
+</div><h2>Balanceo de Carga Interno</h2>
+<div class='content'><ul>
+<li><strong>Balanceo de Carga Regional</strong>: Distribuye el tráfico dentro de una sola región.</li>
+<li><strong>IPs Privadas</strong>: Usa direcciones IP internas para el balanceo de carga.</li>
+</ul>
+</div><h2>Balanceo de Carga de Red</h2>
+<div class='content'><ul>
+<li><strong>Balanceo de Carga Regional</strong>: Distribuye el tráfico dentro de una sola región.</li>
+<li><strong>Alto Rendimiento</strong>: Adecuado para aplicaciones de alto rendimiento y baja latencia.</li>
+</ul>
+</div><h1>Configuración de un Balanceador de Carga</h1>
+<h2>Guía Paso a Paso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear Servicios de Backend</strong>:</p>
+<ul>
+<li>Define los servicios de backend que manejarán el tráfico.</li>
+<li>Configura comprobaciones de salud para monitorear la salud de estos servicios.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el Frontend</strong>:</p>
+<ul>
+<li>Configura la dirección IP y el puerto en los que el balanceador de carga escuchará.</li>
+<li>Configura certificados SSL si usas balanceo de carga HTTPS o SSL.</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear Mapas de URL (para Balanceo de Carga HTTP(S))</strong>:</p>
+<ul>
+<li>Define reglas para enrutar el tráfico basado en rutas URL.</li>
+</ul>
+</li>
+<li>
+<p><strong>Desplegar el Balanceador de Carga</strong>:</p>
+<ul>
+<li>Aplica la configuración y despliega el balanceador de carga.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo: Balanceador de Carga HTTP(S)</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZWZpbmUgZWwgc2VydmljaW8gZGUgYmFja2VuZApnY2xvdWQgY29tcHV0ZSBiYWNrZW5kLXNlcnZpY2VzIGNyZWF0ZSBteS1iYWNrZW5kLXNlcnZpY2UgXAogICAgLS1wcm90b2NvbCBIVFRQIFwKICAgIC0tcG9ydC1uYW1lIGh0dHAgXAogICAgLS1oZWFsdGgtY2hlY2tzIG15LWhlYWx0aC1jaGVjayBcCiAgICAtLWdsb2JhbAoKIyBBw7FhZGUgZ3J1cG9zIGRlIGluc3RhbmNpYXMgYWwgc2VydmljaW8gZGUgYmFja2VuZApnY2xvdWQgY29tcHV0ZSBiYWNrZW5kLXNlcnZpY2VzIGFkZC1iYWNrZW5kIG15LWJhY2tlbmQtc2VydmljZSBcCiAgICAtLWluc3RhbmNlLWdyb3VwIG15LWluc3RhbmNlLWdyb3VwIFwKICAgIC0taW5zdGFuY2UtZ3JvdXAtem9uZSB1cy1jZW50cmFsMS1hIFwKICAgIC0tZ2xvYmFsCgojIENyZWEgdW4gbWFwYSBkZSBVUkwKZ2Nsb3VkIGNvbXB1dGUgdXJsLW1hcHMgY3JlYXRlIG15LXVybC1tYXAgXAogICAgLS1kZWZhdWx0LXNlcnZpY2UgbXktYmFja2VuZC1zZXJ2aWNlCgojIENyZWEgdW4gcHJveHkgSFRUUCBkZSBkZXN0aW5vCmdjbG91ZCBjb21wdXRlIHRhcmdldC1odHRwLXByb3hpZXMgY3JlYXRlIG15LWh0dHAtcHJveHkgXAogICAgLS11cmwtbWFwIG15LXVybC1tYXAKCiMgQ3JlYSB1bmEgcmVnbGEgZGUgcmVlbnbDrW8gZ2xvYmFsCmdjbG91ZCBjb21wdXRlIGZvcndhcmRpbmctcnVsZXMgY3JlYXRlIG15LWh0dHAtcnVsZSBcCiAgICAtLWdsb2JhbCBcCiAgICAtLXRhcmdldC1odHRwLXByb3h5IG15LWh0dHAtcHJveHkgXAogICAgLS1wb3J0cyA4MA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Define el servicio de backend
+gcloud compute backend-services create my-backend-service \
+    --protocol HTTP \
+    --port-name http \
+    --health-checks my-health-check \
+    --global
+
+# A&ntilde;ade grupos de instancias al servicio de backend
+gcloud compute backend-services add-backend my-backend-service \
+    --instance-group my-instance-group \
+    --instance-group-zone us-central1-a \
+    --global
+
+# Crea un mapa de URL
+gcloud compute url-maps create my-url-map \
+    --default-service my-backend-service
+
+# Crea un proxy HTTP de destino
+gcloud compute target-http-proxies create my-http-proxy \
+    --url-map my-url-map
+
+# Crea una regla de reenv&iacute;o global
+gcloud compute forwarding-rules create my-http-rule \
+    --global \
+    --target-http-proxy my-http-proxy \
+    --ports 80</pre></div><div class='content'></div><h1>Configuración Avanzada</h1>
+<h2>División de Tráfico</h2>
+<div class='content'><ul>
+<li><strong>Lanzamientos Canary</strong>: Despliega nuevas características gradualmente dividiendo el tráfico entre diferentes versiones de tu aplicación.</li>
+<li><strong>Pruebas A/B</strong>: Enruta un porcentaje del tráfico a diferentes servicios de backend para propósitos de prueba.</li>
+</ul>
+</div><h2>Autoescalado</h2>
+<div class='content'><ul>
+<li><strong>Escalado Automático</strong>: Ajusta automáticamente el número de instancias en tu servicio de backend basado en la carga.</li>
+<li><strong>Escalado Manual</strong>: Ajusta manualmente el número de instancias.</li>
+</ul>
+</div><h2>Seguridad</h2>
+<div class='content'><ul>
+<li><strong>Certificados SSL</strong>: Usa certificados SSL gestionados o autogestionados para el balanceo de carga HTTPS.</li>
+<li><strong>Reglas de Firewall</strong>: Configura reglas de firewall para controlar el acceso a tus servicios de backend.</li>
+</ul>
+</div><h1>Monitoreo y Registro</h1>
+<div class='content'><ul>
+<li><strong>Stackdriver Logging</strong>: Recoge y analiza registros de tu balanceador de carga.</li>
+<li><strong>Stackdriver Monitoring</strong>: Monitorea el rendimiento y la salud de tu balanceador de carga y servicios de backend.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El Balanceo de Carga en la Nube en GCP es una herramienta poderosa que te ayuda a distribuir el tráfico entre múltiples recursos, asegurando alta disponibilidad y fiabilidad. Al entender los diferentes tipos de balanceadores de carga y sus configuraciones, puedes optimizar el rendimiento y la resiliencia de tu aplicación. Ya sea que estés comenzando o buscando implementar características avanzadas como la división de tráfico y el autoescalado, los servicios de balanceo de carga de GCP proporcionan la flexibilidad y escalabilidad que necesitas.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='vpc-networks'>&#x25C4;Redes VPC</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Balanceo de Carga en la Nube en GCP</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='cloud-cdn'>Cloud CDN &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

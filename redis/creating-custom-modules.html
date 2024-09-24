@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de Módulos Personalizados</title>
+
+    <link rel="alternate" href="https://campusempresa.com/redis/creating-custom-modules" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/redis/creating-custom-modules" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/redis/creating-custom-modules" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/redis/creating-custom-modules" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/redis/creating-custom-modules" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='popular-redis-modules'>&#x25C4;Módulos Populares de Redis</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creación de Módulos Personalizados</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='caching'>Caching &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a los Módulos de Redis</h1>
+<div class='content'><p>Los módulos de Redis extienden la funcionalidad de Redis al permitir a los desarrolladores agregar nuevos comandos y tipos de datos. Esta sección cubrirá los conceptos básicos de los módulos de Redis, su propósito y cómo pueden ser utilizados para mejorar las capacidades de Redis.</p>
+<ul>
+<li><strong>Propósito de los Módulos de Redis</strong>: Extender Redis con comandos y estructuras de datos personalizados.</li>
+<li><strong>Casos de Uso</strong>: Análisis personalizados, procesamiento de datos especializado y funcionalidades específicas de dominio.</li>
+</ul>
+</div><h1>Configuración del Entorno de Desarrollo</h1>
+<div class='content'><p>Antes de crear módulos personalizados, necesitas configurar tu entorno de desarrollo.</p>
+<ul>
+<li><strong>Requisitos Previos</strong>:
+<ul>
+<li>Servidor Redis instalado.</li>
+<li>Herramientas de desarrollo: Compilador C (por ejemplo, GCC), make y el código fuente de Redis.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: Instalación de Requisitos Previos en Ubuntu</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCBidWlsZC1lc3NlbnRpYWwgdGNsCnN1ZG8gYXB0LWdldCBpbnN0YWxsIHJlZGlzLXNlcnZlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
+sudo apt-get install build-essential tcl
+sudo apt-get install redis-server</pre></div><div class='content'></div><h1>Creación de un Módulo Simple de Redis</h1>
+<div class='content'><p>Esta sección te guiará a través de la creación de un módulo simple de Redis que agrega un comando personalizado.</p>
+</div><h2>Paso 1: Crear el Archivo del Módulo</h2>
+<div class='content'><p>Crea un nuevo archivo llamado <code>mymodule.c</code>.</p>
+</div><h2>Paso 2: Incluir los Encabezados Necesarios</h2>
+<div class='content'><p>Incluye el encabezado de la API del módulo de Redis.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgInJlZGlzbW9kdWxlLmgi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &quot;redismodule.h&quot;</pre></div><div class='content'></div><h2>Paso 3: Definir la Función del Comando</h2>
+<div class='content'><p>Define una función que se ejecutará cuando se llame al comando personalizado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW50IE15Q29tbWFuZF9SZWRpc0NvbW1hbmQoUmVkaXNNb2R1bGVDdHggKmN0eCwgUmVkaXNNb2R1bGVTdHJpbmcgKiphcmd2LCBpbnQgYXJnYykgewogICAgaWYgKGFyZ2MgIT0gMikgewogICAgICAgIHJldHVybiBSZWRpc01vZHVsZV9Xcm9uZ0FyaXR5KGN0eCk7CiAgICB9CiAgICBSZWRpc01vZHVsZV9SZXBseVdpdGhTdHJpbmcoY3R4LCBhcmd2WzFdKTsKICAgIHJldHVybiBSRURJU01PRFVMRV9PSzsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>int MyCommand_RedisCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (argc != 2) {
+        return RedisModule_WrongArity(ctx);
+    }
+    RedisModule_ReplyWithString(ctx, argv[1]);
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h2>Paso 4: Registrar el Comando</h2>
+<div class='content'><p>Registra el comando en la función de inicialización del módulo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW50IFJlZGlzTW9kdWxlX09uTG9hZChSZWRpc01vZHVsZUN0eCAqY3R4LCBSZWRpc01vZHVsZVN0cmluZyAqKmFyZ3YsIGludCBhcmdjKSB7CiAgICBpZiAoUmVkaXNNb2R1bGVfSW5pdChjdHgsICJteW1vZHVsZSIsIDEsIFJFRElTTU9EVUxFX0FQSVZFUl8xKSA9PSBSRURJU01PRFVMRV9FUlIpIHsKICAgICAgICByZXR1cm4gUkVESVNNT0RVTEVfRVJSOwogICAgfQogICAgaWYgKFJlZGlzTW9kdWxlX0NyZWF0ZUNvbW1hbmQoY3R4LCAibXltb2R1bGUubXljb21tYW5kIiwgTXlDb21tYW5kX1JlZGlzQ29tbWFuZCwgInJlYWRvbmx5IiwgMSwgMSwgMSkgPT0gUkVESVNNT0RVTEVfRVJSKSB7CiAgICAgICAgcmV0dXJuIFJFRElTTU9EVUxFX0VSUjsKICAgIH0KICAgIHJldHVybiBSRURJU01PRFVMRV9PSzsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (RedisModule_Init(ctx, &quot;mymodule&quot;, 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    if (RedisModule_CreateCommand(ctx, &quot;mymodule.mycommand&quot;, MyCommand_RedisCommand, &quot;readonly&quot;, 1, 1, 1) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h2>Paso 5: Compilar el Módulo</h2>
+<div class='content'><p>Compila el módulo usando el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2NjIC1vIG15bW9kdWxlLnNvIC1zaGFyZWQgLWZQSUMgLUkvcGF0aC90by9yZWRpcy9zcmMgbXltb2R1bGUuYw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcc -o mymodule.so -shared -fPIC -I/path/to/redis/src mymodule.c</pre></div><div class='content'></div><h2>Paso 6: Cargar el Módulo en Redis</h2>
+<div class='content'><p>Carga el módulo en Redis añadiendo la siguiente línea a tu archivo <code>redis.conf</code> o usando el comando <code>MODULE LOAD</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtc2VydmVyIC0tbG9hZG1vZHVsZSAuL215bW9kdWxlLnNv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-server --loadmodule ./mymodule.so</pre></div><div class='content'></div><h1>Características Avanzadas del Módulo</h1>
+<div class='content'><p>Una vez que domines lo básico, puedes explorar características más avanzadas como tipos de datos personalizados, procesamiento en segundo plano e interacción con los internos de Redis.</p>
+<ul>
+<li><strong>Tipos de Datos Personalizados</strong>: Crear nuevas estructuras de datos que pueden ser manipuladas con comandos personalizados.</li>
+<li><strong>Procesamiento en Segundo Plano</strong>: Realizar tareas de larga duración sin bloquear el servidor Redis.</li>
+<li><strong>Interacción con los Internos de Redis</strong>: Acceder y manipular directamente las estructuras de datos de Redis.</li>
+</ul>
+</div><h2>Ejemplo: Tipo de Datos Personalizado</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGVmaW5pciBlbCB0aXBvIGRlIGRhdG9zClJlZGlzTW9kdWxlVHlwZSAqTXlUeXBlOwoKLy8gQ3JlYXIgdW5hIG51ZXZhIGluc3RhbmNpYSBkZWwgdGlwbyBkZSBkYXRvcwp2b2lkICpNeVR5cGVfUmRiTG9hZChSZWRpc01vZHVsZUlPICpyZGIsIGludCBlbmN2ZXIpIHsKICAgIC8vIEltcGxlbWVudGFjacOzbgp9CgovLyBSZWdpc3RyYXIgZWwgdGlwbyBkZSBkYXRvcwppbnQgUmVkaXNNb2R1bGVfT25Mb2FkKFJlZGlzTW9kdWxlQ3R4ICpjdHgsIFJlZGlzTW9kdWxlU3RyaW5nICoqYXJndiwgaW50IGFyZ2MpIHsKICAgIE15VHlwZSA9IFJlZGlzTW9kdWxlX0NyZWF0ZURhdGFUeXBlKGN0eCwgIm15dHlwZSIsIDAsIE15VHlwZV9SZGJMb2FkLCBOVUxMLCBOVUxMLCBOVUxMLCBOVUxMKTsKICAgIGlmIChNeVR5cGUgPT0gTlVMTCkgcmV0dXJuIFJFRElTTU9EVUxFX0VSUjsKICAgIHJldHVybiBSRURJU01PRFVMRV9PSzsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Definir el tipo de datos
+RedisModuleType *MyType;
+
+// Crear una nueva instancia del tipo de datos
+void *MyType_RdbLoad(RedisModuleIO *rdb, int encver) {
+    // Implementaci&oacute;n
+}
+
+// Registrar el tipo de datos
+int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    MyType = RedisModule_CreateDataType(ctx, &quot;mytype&quot;, 0, MyType_RdbLoad, NULL, NULL, NULL, NULL);
+    if (MyType == NULL) return REDISMODULE_ERR;
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h1>Pruebas y Depuración de Módulos</h1>
+<div class='content'><p>Las pruebas y la depuración son partes cruciales del desarrollo de módulos. Usa los registros de Redis y las herramientas de depuración para asegurarte de que tu módulo funcione correctamente.</p>
+<ul>
+<li><strong>Registros de Redis</strong>: Usa <code>RedisModule_Log</code> para registrar mensajes.</li>
+<li><strong>Herramientas de Depuración</strong>: Usa GDB u otras herramientas de depuración para recorrer tu código.</li>
+</ul>
+</div><h2>Ejemplo: Registro</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UmVkaXNNb2R1bGVfTG9nKGN0eCwgIm5vdGljZSIsICJNeUNvbW1hbmQgd2FzIGNhbGxlZCIpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>RedisModule_Log(ctx, &quot;notice&quot;, &quot;MyCommand was called&quot;);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Crear módulos personalizados de Redis te permite extender Redis con nuevos comandos y tipos de datos adaptados a tus necesidades específicas. Siguiendo los pasos descritos en este tema, puedes configurar tu entorno de desarrollo, crear un módulo simple y explorar características avanzadas. Las pruebas y la depuración son esenciales para asegurar que tu módulo funcione correctamente.</p>
+<p>Los módulos de Redis proporcionan capacidades poderosas para mejorar tu servidor Redis, convirtiéndolo en una herramienta versátil para diversas aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='popular-redis-modules'>&#x25C4;Módulos Populares de Redis</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creación de Módulos Personalizados</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='caching'>Caching &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

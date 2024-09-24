@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construyendo una API Serverless en Azure</title>
+
+    <link rel="alternate" href="https://campusempresa.com/azure/building-a-serverless-api" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/azure/building-a-serverless-api" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/azure/building-a-serverless-api" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/azure/building-a-serverless-api" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/azure/building-a-serverless-api" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='deploying-a-multi-tier-application'>&#x25C4;Despliegue de una Aplicación Multi-Capa</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Construyendo una API Serverless en Azure</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='implementing-a-cicd-pipeline'>Implementación de una Pipeline CI/CD &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este módulo, exploraremos cómo construir una API serverless usando Azure Functions. Comenzaremos con los conceptos básicos y gradualmente avanzaremos a temas más avanzados. Al final de este módulo, tendrás una comprensión sólida de cómo crear, desplegar y gestionar APIs serverless en Azure.</p>
+</div><h1>¿Qué es la Computación Serverless?</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: La computación serverless te permite construir y ejecutar aplicaciones y servicios sin pensar en servidores. El proveedor de la nube provisiona, escala y gestiona automáticamente la infraestructura necesaria para ejecutar el código.</li>
+<li><strong>Beneficios</strong>:
+<ul>
+<li>Sin gestión de servidores</li>
+<li>Escalado automático</li>
+<li>Precios por uso</li>
+<li>Mayor productividad del desarrollador</li>
+</ul>
+</li>
+</ul>
+</div><h1>Comenzando con Azure Functions</h1>
+<h2>Prerrequisitos</h2>
+<div class='content'><ul>
+<li>Una cuenta activa de Azure</li>
+<li>Comprensión básica de programación (preferiblemente en C#, JavaScript o Python)</li>
+<li>Azure CLI instalado</li>
+</ul>
+</div><h2>Configurando Tu Entorno</h2>
+<div class='content'><ol>
+<li><strong>Instalar Azure Functions Core Tools</strong>:
+<pre><code class="language-bash">npm install -g azure-functions-core-tools@3
+</code></pre>
+</li>
+<li><strong>Crear una nueva Azure Function App</strong>:
+<pre><code class="language-bash">func init MyFunctionApp --worker-runtime node
+</code></pre>
+</li>
+<li><strong>Crear una nueva Función</strong>:
+<pre><code class="language-bash">cd MyFunctionApp
+func new
+</code></pre>
+Sigue las indicaciones para crear una función de disparador HTTP.</li>
+</ol>
+</div><h2>Ejemplo: Creando una Simple Función de Disparador HTTP</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlLmV4cG9ydHMgPSBhc3luYyBmdW5jdGlvbiAoY29udGV4dCwgcmVxKSB7CiAgICBjb250ZXh0LmxvZygnSFRUUCB0cmlnZ2VyIGZ1bmN0aW9uIHByb2Nlc3NlZCBhIHJlcXVlc3QuJyk7CgogICAgY29uc3QgbmFtZSA9IChyZXEucXVlcnkubmFtZSB8fCAocmVxLmJvZHkgJiYgcmVxLmJvZHkubmFtZSkpOwogICAgY29uc3QgcmVzcG9uc2VNZXNzYWdlID0gbmFtZQogICAgICAgID8gIkhlbGxvLCAiICsgbmFtZSArICIuIFRoaXMgSFRUUCB0cmlnZ2VyZWQgZnVuY3Rpb24gZXhlY3V0ZWQgc3VjY2Vzc2Z1bGx5LiIKICAgICAgICA6ICJUaGlzIEhUVFAgdHJpZ2dlcmVkIGZ1bmN0aW9uIGV4ZWN1dGVkIHN1Y2Nlc3NmdWxseS4gUGFzcyBhIG5hbWUgaW4gdGhlIHF1ZXJ5IHN0cmluZyBvciBpbiB0aGUgcmVxdWVzdCBib2R5IGZvciBhIHBlcnNvbmFsaXplZCByZXNwb25zZS4iOwoKICAgIGNvbnRleHQucmVzID0gewogICAgICAgIC8vIHN0YXR1czogMjAwLCAvKiBEZWZhdWx0cyB0byAyMDAgKi8KICAgICAgICBib2R5OiByZXNwb25zZU1lc3NhZ2UKICAgIH07Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module.exports = async function (context, req) {
+    context.log('HTTP trigger function processed a request.');
+
+    const name = (req.query.name || (req.body &amp;&amp; req.body.name));
+    const responseMessage = name
+        ? &quot;Hello, &quot; + name + &quot;. This HTTP triggered function executed successfully.&quot;
+        : &quot;This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response.&quot;;
+
+    context.res = {
+        // status: 200, /* Defaults to 200 */
+        body: responseMessage
+    };
+}</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>context</code>: Proporciona métodos y propiedades para interactuar con el runtime.</li>
+<li><code>req</code>: Representa la solicitud HTTP.</li>
+<li><code>context.res</code>: Representa la respuesta HTTP.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Desplegando Tu Función en Azure</h1>
+<h2>Pasos para Desplegar</h2>
+<div class='content'><ol>
+<li><strong>Iniciar sesión en Azure</strong>:
+<pre><code class="language-bash">az login
+</code></pre>
+</li>
+<li><strong>Crear un Grupo de Recursos</strong>:
+<pre><code class="language-bash">az group create --name myResourceGroup --location eastus
+</code></pre>
+</li>
+<li><strong>Crear una Function App en Azure</strong>:
+<pre><code class="language-bash">az functionapp create --resource-group myResourceGroup --consumption-plan-location eastus --runtime node --functions-version 3 --name myFunctionApp --storage-account &lt;NOMBRE_CUENTA_ALMACENAMIENTO&gt;
+</code></pre>
+</li>
+<li><strong>Desplegar Tu Función</strong>:
+<pre><code class="language-bash">func azure functionapp publish myFunctionApp
+</code></pre>
+</li>
+</ol>
+</div><h1>Temas Avanzados</h1>
+<h2>Autenticación y Autorización</h2>
+<div class='content'><ul>
+<li><strong>Azure Active Directory (AAD)</strong>: Usa AAD para asegurar tu API.</li>
+<li><strong>Claves API</strong>: Método simple para asegurar tu API.</li>
+<li><strong>Identidades Administradas</strong>: Accede de manera segura a otros recursos de Azure.</li>
+</ul>
+</div><h2>Integración con Otros Servicios de Azure</h2>
+<div class='content'><ul>
+<li><strong>Azure Cosmos DB</strong>: Almacena y recupera datos.</li>
+<li><strong>Azure Storage</strong>: Almacena archivos y blobs.</li>
+<li><strong>Azure Event Grid</strong>: Arquitectura impulsada por eventos.</li>
+</ul>
+</div><h2>Monitoreo y Registro</h2>
+<div class='content'><ul>
+<li><strong>Application Insights</strong>: Monitorea el rendimiento y uso.</li>
+<li><strong>Azure Monitor</strong>: Solución de monitoreo integral.</li>
+<li><strong>Registro</strong>: Usa <code>context.log</code> para registrar información.</li>
+</ul>
+</div><h2>Escalado y Optimización del Rendimiento</h2>
+<div class='content'><ul>
+<li><strong>Escalado</strong>: Azure Functions escala automáticamente según la demanda.</li>
+<li><strong>Inicios en Frío</strong>: Mitiga los problemas de inicio en frío usando planes premium o instancias pre-calentadas.</li>
+<li><strong>Optimización del Rendimiento</strong>: Optimiza el código y la configuración de la función para un mejor rendimiento.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Construir una API serverless en Azure es una forma poderosa de crear aplicaciones escalables y rentables. Desde configurar tu entorno hasta desplegar y gestionar tus funciones, Azure proporciona una suite completa de herramientas y servicios para apoyar tu proceso de desarrollo. A medida que avances, integrar con otros servicios de Azure y optimizar el rendimiento te ayudará a construir aplicaciones serverless robustas y eficientes.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='deploying-a-multi-tier-application'>&#x25C4;Despliegue de una Aplicación Multi-Capa</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Construyendo una API Serverless en Azure</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='implementing-a-cicd-pipeline'>Implementación de una Pipeline CI/CD &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

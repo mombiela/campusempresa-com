@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiempos de vida</title>
+
+    <link rel="alternate" href="https://campusempresa.com/rust/lifetimes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/rust/lifetimes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/rust/lifetimes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/rust/lifetimes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/rust/lifetimes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-external-crates'>&#x25C4;Usando Crates Externos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Tiempos de vida</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='traits'>Traits &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Los tiempos de vida en Rust son una forma de asegurar que las referencias sean válidas mientras se necesiten, previniendo referencias colgantes y garantizando la seguridad de la memoria sin necesidad de un recolector de basura. Este tema te guiará desde los conceptos básicos hasta el uso avanzado de los tiempos de vida en Rust.</p>
+</div><h1>Introducción a los Tiempos de Vida</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Los tiempos de vida son anotaciones que le dicen al compilador de Rust cuánto tiempo deben ser válidas las referencias.</li>
+<li><strong>Propósito</strong>: Ayudan a prevenir referencias colgantes y a garantizar la seguridad de la memoria.</li>
+<li><strong>Sintaxis</strong>: Los tiempos de vida se denotan usando un apóstrofo seguido de un nombre, por ejemplo, <code>'a</code>.</li>
+</ul>
+</div><h2>Anotaciones Básicas de Tiempos de Vida</h2>
+<div class='content'><p>Cuando tienes una función que toma referencias como parámetros, necesitas especificar tiempos de vida para decirle al compilador cómo se relacionan los tiempos de vida de estas referencias entre sí.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbG9uZ2VzdDwnYT4oeDogJidhIHN0ciwgeTogJidhIHN0cikgLT4gJidhIHN0ciB7CiAgICBpZiB4LmxlbigpID4geS5sZW4oKSB7CiAgICAgICAgeAogICAgfSBlbHNlIHsKICAgICAgICB5CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn longest&lt;'a&gt;(x: &amp;'a str, y: &amp;'a str) -&gt; &amp;'a str {
+    if x.len() &gt; y.len() {
+        x
+    } else {
+        y
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>'a</code> es un parámetro de tiempo de vida.</li>
+<li><code>&amp;'a str</code> significa una referencia a una porción de cadena que vive al menos tanto como <code>'a</code>.</li>
+<li>La función <code>longest</code> toma dos porciones de cadena con el mismo tiempo de vida <code>'a</code> y devuelve una porción de cadena con el mismo tiempo de vida <code>'a</code>.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Elisión de Tiempos de Vida</h2>
+<div class='content'><p>Rust tiene una característica llamada elisión de tiempos de vida, que permite al compilador inferir tiempos de vida en ciertas situaciones, reduciendo la necesidad de anotaciones explícitas.</p>
+<ul>
+<li><strong>Tres reglas de elisión de tiempos de vida</strong>:
+<ol>
+<li>Cada parámetro que es una referencia obtiene su propio parámetro de tiempo de vida.</li>
+<li>Si hay exactamente un parámetro de tiempo de vida de entrada, ese tiempo de vida se asigna a todos los parámetros de tiempo de vida de salida.</li>
+<li>Si hay múltiples parámetros de tiempo de vida de entrada, pero uno de ellos es <code>&amp;self</code> o <code>&amp;mut self</code>, el tiempo de vida de <code>self</code> se asigna a todos los parámetros de tiempo de vida de salida.</li>
+</ol>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZmlyc3Rfd29yZChzOiAmc3RyKSAtPiAmc3RyIHsKICAgIGxldCBieXRlcyA9IHMuYXNfYnl0ZXMoKTsKICAgIGZvciAoaSwgJml0ZW0pIGluIGJ5dGVzLml0ZXIoKS5lbnVtZXJhdGUoKSB7CiAgICAgICAgaWYgaXRlbSA9PSBiJyAnIHsKICAgICAgICAgICAgcmV0dXJuICZzWzAuLmldOwogICAgICAgIH0KICAgIH0KICAgICZzWy4uXQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn first_word(s: &amp;str) -&gt; &amp;str {
+    let bytes = s.as_bytes();
+    for (i, &amp;item) in bytes.iter().enumerate() {
+        if item == b' ' {
+            return &amp;s[0..i];
+        }
+    }
+    &amp;s[..]
+}</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li>La función <code>first_word</code> toma una porción de cadena y devuelve una porción de cadena.</li>
+<li>El compilador infiere los tiempos de vida basándose en las reglas de elisión.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Tiempos de Vida Avanzados</h1>
+<div class='content'></div><h2>Estructuras con Tiempos de Vida</h2>
+<div class='content'><p>Cuando defines una estructura que contiene referencias, necesitas especificar tiempos de vida para esas referencias.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IEltcG9ydGFudEV4Y2VycHQ8J2E+IHsKICAgIHBhcnQ6ICYnYSBzdHIsCn0KCmltcGw8J2E+IEltcG9ydGFudEV4Y2VycHQ8J2E+IHsKICAgIGZuIGxldmVsKCZzZWxmKSAtPiBpMzIgewogICAgICAgIDMKICAgIH0KCiAgICBmbiBhbm5vdW5jZV9hbmRfcmV0dXJuX3BhcnQoJnNlbGYsIGFubm91bmNlbWVudDogJnN0cikgLT4gJnN0ciB7CiAgICAgICAgcHJpbnRsbiEoIkF0dGVudGlvbiBwbGVhc2U6IHt9IiwgYW5ub3VuY2VtZW50KTsKICAgICAgICBzZWxmLnBhcnQKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct ImportantExcerpt&lt;'a&gt; {
+    part: &amp;'a str,
+}
+
+impl&lt;'a&gt; ImportantExcerpt&lt;'a&gt; {
+    fn level(&amp;self) -&gt; i32 {
+        3
+    }
+
+    fn announce_and_return_part(&amp;self, announcement: &amp;str) -&gt; &amp;str {
+        println!(&quot;Attention please: {}&quot;, announcement);
+        self.part
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li>La estructura <code>ImportantExcerpt</code> tiene un parámetro de tiempo de vida <code>'a</code>.</li>
+<li>El campo <code>part</code> es una referencia que debe vivir al menos tanto como <code>'a</code>.</li>
+<li>Los métodos dentro del bloque <code>impl</code> pueden usar el tiempo de vida <code>'a</code> para asegurar que las referencias sean válidas.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Límites de Tiempos de Vida</h2>
+<div class='content'><p>Puedes especificar que un parámetro de tipo debe vivir al menos tanto como un cierto tiempo de vida.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbG9uZ2VzdF93aXRoX2FuX2Fubm91bmNlbWVudDwnYSwgVD4oeDogJidhIHN0ciwgeTogJidhIHN0ciwgYW5uOiBUKSAtPiAmJ2Egc3RyCndoZXJlCiAgICBUOiBzdGQ6OmZtdDo6RGlzcGxheSwKewogICAgcHJpbnRsbiEoIkFubm91bmNlbWVudCEge30iLCBhbm4pOwogICAgaWYgeC5sZW4oKSA+IHkubGVuKCkgewogICAgICAgIHgKICAgIH0gZWxzZSB7CiAgICAgICAgeQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn longest_with_an_announcement&lt;'a, T&gt;(x: &amp;'a str, y: &amp;'a str, ann: T) -&gt; &amp;'a str
+where
+    T: std::fmt::Display,
+{
+    println!(&quot;Announcement! {}&quot;, ann);
+    if x.len() &gt; y.len() {
+        x
+    } else {
+        y
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li>La función <code>longest_with_an_announcement</code> tiene un parámetro de tiempo de vida <code>'a</code> y un tipo genérico <code>T</code>.</li>
+<li>La cláusula <code>where</code> especifica que <code>T</code> debe implementar el rasgo <code>Display</code>.</li>
+<li>La función imprime un anuncio y devuelve la más larga de dos porciones de cadena.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los tiempos de vida son una característica poderosa en Rust que ayuda a garantizar la seguridad de la memoria previniendo referencias colgantes. Al entender y usar los tiempos de vida, puedes escribir código Rust más robusto y seguro. Recuerda:</p>
+<ul>
+<li>Usa anotaciones de tiempos de vida para especificar cuánto tiempo deben ser válidas las referencias.</li>
+<li>Aprovecha la elisión de tiempos de vida para reducir el código repetitivo.</li>
+<li>Usa tiempos de vida en estructuras y funciones genéricas para asegurar que las referencias sean válidas a través de diferentes ámbitos.</li>
+</ul>
+<p>Al dominar los tiempos de vida, puedes aprovechar el poderoso sistema de tipos de Rust para escribir programas eficientes y seguros.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='using-external-crates'>&#x25C4;Usando Crates Externos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Tiempos de vida</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='traits'>Traits &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de NULLs en BigQuery</title>
+
+    <link rel="alternate" href="https://campusempresa.com/bigquery/handling-nulls" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/bigquery/handling-nulls" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/bigquery/handling-nulls" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/bigquery/handling-nulls" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/bigquery/handling-nulls" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='window-functions'>&#x25C4;Funciones de ventana</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Manejo de NULLs en BigQuery</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='loading-data-into-bigquery'>Cargando datos en BigQuery &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a los NULLs</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: En SQL, <code>NULL</code> representa un valor faltante o indefinido.</li>
+<li><strong>Importancia</strong>: Entender cómo manejar los valores <code>NULL</code> es crucial para un análisis y manipulación de datos precisos.</li>
+</ul>
+</div><h1>Identificación de NULLs</h1>
+<div class='content'><ul>
+<li><strong>IS NULL</strong>: Se utiliza para verificar si un valor es <code>NULL</code>.</li>
+<li><strong>IS NOT NULL</strong>: Se utiliza para verificar si un valor no es <code>NULL</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICoKRlJPTSBteV90YWJsZQpXSEVSRSBjb2x1bW5fbmFtZSBJUyBOVUxMOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT *
+FROM my_table
+WHERE column_name IS NULL;</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICoKRlJPTSBteV90YWJsZQpXSEVSRSBjb2x1bW5fbmFtZSBJUyBOT1QgTlVMTDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT *
+FROM my_table
+WHERE column_name IS NOT NULL;</pre></div><div class='content'></div><h1>Manejo de NULLs en Consultas</h1>
+<h2>Usando COALESCE</h2>
+<div class='content'><ul>
+<li><strong>Propósito</strong>: Reemplaza <code>NULL</code> con un valor especificado.</li>
+<li><strong>Sintaxis</strong>: <code>COALESCE(expression, replacement_value)</code></li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIENPQUxFU0NFKGNvbHVtbl9uYW1lLCAnZGVmYXVsdF92YWx1ZScpIEFTIGNvbHVtbl9uYW1lCkZST00gbXlfdGFibGU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT COALESCE(column_name, 'default_value') AS column_name
+FROM my_table;</pre></div><div class='content'></div><h2>Usando IFNULL</h2>
+<div class='content'><ul>
+<li><strong>Propósito</strong>: Similar a <code>COALESCE</code>, pero solo toma dos argumentos.</li>
+<li><strong>Sintaxis</strong>: <code>IFNULL(expression, replacement_value)</code></li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIElGTlVMTChjb2x1bW5fbmFtZSwgJ2RlZmF1bHRfdmFsdWUnKSBBUyBjb2x1bW5fbmFtZQpGUk9NIG15X3RhYmxlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT IFNULL(column_name, 'default_value') AS column_name
+FROM my_table;</pre></div><div class='content'></div><h2>Usando NULLIF</h2>
+<div class='content'><ul>
+<li><strong>Propósito</strong>: Devuelve <code>NULL</code> si dos expresiones son iguales.</li>
+<li><strong>Sintaxis</strong>: <code>NULLIF(expression1, expression2)</code></li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIE5VTExJRihjb2x1bW5fbmFtZSwgJ3ZhbHVlX3RvX2NvbXBhcmUnKSBBUyBjb2x1bW5fbmFtZQpGUk9NIG15X3RhYmxlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT NULLIF(column_name, 'value_to_compare') AS column_name
+FROM my_table;</pre></div><div class='content'></div><h1>Agregación con NULLs</h1>
+<div class='content'><ul>
+<li><strong>COUNT</strong>: <code>COUNT(column_name)</code> ignora los valores <code>NULL</code>, mientras que <code>COUNT(*)</code> los incluye.</li>
+<li><strong>SUM, AVG, MIN, MAX</strong>: Estas funciones ignoran los valores <code>NULL</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIENPVU5UKGNvbHVtbl9uYW1lKSBBUyBub25fbnVsbF9jb3VudCwKICAgICAgIENPVU5UKCopIEFTIHRvdGFsX2NvdW50CkZST00gbXlfdGFibGU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT COUNT(column_name) AS non_null_count,
+       COUNT(*) AS total_count
+FROM my_table;</pre></div><div class='content'></div><h1>Manejo Avanzado de NULLs</h1>
+<h2>Usando Sentencias CASE</h2>
+<div class='content'><ul>
+<li><strong>Propósito</strong>: Proporciona un manejo condicional más complejo de los valores <code>NULL</code>.</li>
+<li><strong>Sintaxis</strong>: <code>CASE WHEN condition THEN result ELSE result END</code></li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIENBU0UgCiAgICAgICAgICAgV0hFTiBjb2x1bW5fbmFtZSBJUyBOVUxMIFRIRU4gJ05vIFZhbHVlJwogICAgICAgICAgIEVMU0UgY29sdW1uX25hbWUKICAgICAgIEVORCBBUyBjb2x1bW5fbmFtZQpGUk9NIG15X3RhYmxlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT CASE 
+           WHEN column_name IS NULL THEN 'No Value'
+           ELSE column_name
+       END AS column_name
+FROM my_table;</pre></div><div class='content'></div><h2>NULLs en Joins</h2>
+<div class='content'><ul>
+<li><strong>LEFT JOIN</strong>: Incluye todos los registros de la tabla izquierda y los registros coincidentes de la tabla derecha. Si no hay coincidencia, se devuelven valores <code>NULL</code> para las columnas de la tabla derecha.</li>
+<li><strong>INNER JOIN</strong>: Excluye los registros con valores <code>NULL</code> en la condición de unión.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGEuKiwgYi4qCkZST00gdGFibGVfYSBhCkxFRlQgSk9JTiB0YWJsZV9iIGIKT04gYS5pZCA9IGIuaWQ7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT a.*, b.*
+FROM table_a a
+LEFT JOIN table_b b
+ON a.id = b.id;</pre></div><div class='content'></div><h1>NULLs en Tipos de Datos</h1>
+<div class='content'><ul>
+<li><strong>Cadena</strong>: <code>NULL</code> es diferente de una cadena vacía <code>''</code>.</li>
+<li><strong>Numérico</strong>: <code>NULL</code> es diferente de cero <code>0</code>.</li>
+</ul>
+<p>| Tipo de Dato | Ejemplo NULL | Ejemplo No-NULL |
+|--------------|--------------|-----------------|
+| Cadena       | <code>NULL</code>       | <code>''</code>            |
+| Numérico     | <code>NULL</code>       | <code>0</code>             |</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Manejar los valores <code>NULL</code> de manera efectiva es esencial para un análisis de datos preciso en BigQuery. Al usar funciones como <code>COALESCE</code>, <code>IFNULL</code> y <code>NULLIF</code>, así como al entender cómo los valores <code>NULL</code> interactúan con las uniones y agregaciones, puedes asegurarte de que tus consultas devuelvan los resultados correctos. Siempre ten en cuenta cómo se tratan los valores <code>NULL</code> en diferentes contextos para evitar resultados inesperados en tu análisis de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='window-functions'>&#x25C4;Funciones de ventana</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Manejo de NULLs en BigQuery</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='loading-data-into-bigquery'>Cargando datos en BigQuery &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio de Caso 1: Migración a Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/case-study-1" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/case-study-1" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/case-study-1" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/kubernetes/case-study-1" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/case-study-1" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='minikube'>&#x25C4;Minikube</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Estudio de Caso 1: Migración a Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-2'>Estudio de Caso 2: Escalado de Aplicaciones &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Migrar una aplicación a Kubernetes puede ser un proceso complejo pero gratificante. Este estudio de caso te guiará a través de los pasos para migrar una aplicación web simple a Kubernetes, destacando conceptos clave, mejores prácticas y errores comunes.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Contenedores</strong>: Paquetes ejecutables ligeros, autónomos, que incluyen todo lo necesario para ejecutar un software.</li>
+<li><strong>Kubernetes</strong>: Una plataforma de código abierto diseñada para automatizar el despliegue, escalado y operación de contenedores de aplicaciones.</li>
+<li><strong>Pods</strong>: Las unidades de despliegue más pequeñas en Kubernetes, que pueden contener uno o más contenedores.</li>
+<li><strong>Servicios</strong>: Abstracciones que definen un conjunto lógico de Pods y una política para acceder a ellos.</li>
+<li><strong>Despliegues</strong>: Proporcionan actualizaciones declarativas a las aplicaciones, asegurando que se mantenga el estado deseado.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><p>Antes de comenzar la migración, asegúrate de tener:</p>
+<ul>
+<li>Un conocimiento básico de Docker y la contenedorización.</li>
+<li>Un clúster de Kubernetes en funcionamiento (por ejemplo, Minikube para desarrollo local o un proveedor en la nube como GKE, EKS o AKS).</li>
+<li>La herramienta de línea de comandos <code>kubectl</code> instalada y configurada para interactuar con tu clúster.</li>
+</ul>
+</div><h1>Migración Paso a Paso</h1>
+<div class='content'></div><h2>Paso 1: Contenerizar la Aplicación</h2>
+<div class='content'><p>Primero, necesitamos contenerizar nuestra aplicación web usando Docker.</p>
+<h4>Ejemplo de Dockerfile</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2FyIHVuYSBpbWFnZW4gb2ZpY2lhbCBkZSBOb2RlLmpzIGNvbW8gaW1hZ2VuIGJhc2UKRlJPTSBub2RlOjE0CgojIEVzdGFibGVjZXIgZWwgZGlyZWN0b3JpbyBkZSB0cmFiYWpvCldPUktESVIgL3Vzci9zcmMvYXBwCgojIENvcGlhciBwYWNrYWdlLmpzb24gZSBpbnN0YWxhciBkZXBlbmRlbmNpYXMKQ09QWSBwYWNrYWdlKi5qc29uIC4vClJVTiBucG0gaW5zdGFsbAoKIyBDb3BpYXIgZWwgcmVzdG8gZGVsIGPDs2RpZ28gZGUgbGEgYXBsaWNhY2nDs24KQ09QWSAuIC4KCiMgRXhwb25lciBlbCBwdWVydG8gZW4gZWwgcXVlIHNlIGVqZWN1dGEgbGEgYXBsaWNhY2nDs24KRVhQT1NFIDgwODAKCiMgRGVmaW5pciBlbCBjb21hbmRvIHBhcmEgZWplY3V0YXIgbGEgYXBsaWNhY2nDs24KQ01EIFsibm9kZSIsICJhcHAuanMiXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Usar una imagen oficial de Node.js como imagen base
+FROM node:14
+
+# Establecer el directorio de trabajo
+WORKDIR /usr/src/app
+
+# Copiar package.json e instalar dependencias
+COPY package*.json ./
+RUN npm install
+
+# Copiar el resto del c&oacute;digo de la aplicaci&oacute;n
+COPY . .
+
+# Exponer el puerto en el que se ejecuta la aplicaci&oacute;n
+EXPOSE 8080
+
+# Definir el comando para ejecutar la aplicaci&oacute;n
+CMD [&quot;node&quot;, &quot;app.js&quot;]</pre></div><div class='content'><ul>
+<li><strong>FROM</strong>: Especifica la imagen base.</li>
+<li><strong>WORKDIR</strong>: Establece el directorio de trabajo dentro del contenedor.</li>
+<li><strong>COPY</strong>: Copia archivos del host al contenedor.</li>
+<li><strong>RUN</strong>: Ejecuta comandos en el contenedor.</li>
+<li><strong>EXPOSE</strong>: Informa a Docker que el contenedor escucha en los puertos de red especificados.</li>
+<li><strong>CMD</strong>: Proporciona el comando predeterminado para ejecutar la aplicación.</li>
+</ul>
+</div><h2>Paso 2: Construir y Subir la Imagen Docker</h2>
+<div class='content'><p>Construir la imagen Docker y subirla a un registro de contenedores (por ejemplo, Docker Hub).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb25zdHJ1aXIgbGEgaW1hZ2VuIERvY2tlcgpkb2NrZXIgYnVpbGQgLXQgdHV1c3VhcmlvL3R1YXBwOmxhdGVzdCAuCgojIFN1YmlyIGxhIGltYWdlbiBhIERvY2tlciBIdWIKZG9ja2VyIHB1c2ggdHV1c3VhcmlvL3R1YXBwOmxhdGVzdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Construir la imagen Docker
+docker build -t tuusuario/tuapp:latest .
+
+# Subir la imagen a Docker Hub
+docker push tuusuario/tuapp:latest</pre></div><div class='content'></div><h2>Paso 3: Crear Manifiestos de Kubernetes</h2>
+<div class='content'><p>Crear manifiestos de Kubernetes para el Despliegue y el Servicio.</p>
+<h4>Manifiesto de Despliegue (deployment.yaml)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IHdlYmFwcC1kZXBsb3ltZW50CnNwZWM6CiAgcmVwbGljYXM6IDMKICBzZWxlY3RvcjoKICAgIG1hdGNoTGFiZWxzOgogICAgICBhcHA6IHdlYmFwcAogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IHdlYmFwcAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiB3ZWJhcHAKICAgICAgICBpbWFnZTogdHV1c3VhcmlvL3R1YXBwOmxhdGVzdAogICAgICAgIHBvcnRzOgogICAgICAgIC0gY29udGFpbmVyUG9ydDogODA4MA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: tuusuario/tuapp:latest
+        ports:
+        - containerPort: 8080</pre></div><div class='content'><ul>
+<li><strong>replicas</strong>: Número de réplicas de pods.</li>
+<li><strong>selector</strong>: Identifica los pods gestionados por el despliegue.</li>
+<li><strong>template</strong>: Define la plantilla del pod.</li>
+</ul>
+<h4>Manifiesto de Servicio (service.yaml)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiB3ZWJhcHAtc2VydmljZQpzcGVjOgogIHNlbGVjdG9yOgogICAgYXBwOiB3ZWJhcHAKICBwb3J0czoKICAgIC0gcHJvdG9jb2w6IFRDUAogICAgICBwb3J0OiA4MAogICAgICB0YXJnZXRQb3J0OiA4MDgwCiAgdHlwZTogTG9hZEJhbGFuY2Vy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+spec:
+  selector:
+    app: webapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer</pre></div><div class='content'><ul>
+<li><strong>selector</strong>: Coincide con los pods a exponer.</li>
+<li><strong>ports</strong>: Define las asignaciones de puertos.</li>
+<li><strong>type</strong>: Especifica el tipo de servicio (por ejemplo, LoadBalancer para acceso externo).</li>
+</ul>
+</div><h2>Paso 4: Desplegar en Kubernetes</h2>
+<div class='content'><p>Aplicar los manifiestos para desplegar la aplicación en el clúster de Kubernetes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBcGxpY2FyIGVsIGRlc3BsaWVndWUKa3ViZWN0bCBhcHBseSAtZiBkZXBsb3ltZW50LnlhbWwKCiMgQXBsaWNhciBlbCBzZXJ2aWNpbwprdWJlY3RsIGFwcGx5IC1mIHNlcnZpY2UueWFtbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Aplicar el despliegue
+kubectl apply -f deployment.yaml
+
+# Aplicar el servicio
+kubectl apply -f service.yaml</pre></div><div class='content'></div><h2>Paso 5: Verificar el Despliegue</h2>
+<div class='content'><p>Verificar el estado del despliegue y del servicio.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBPYnRlbmVyIGVsIGVzdGFkbyBkZWwgZGVzcGxpZWd1ZQprdWJlY3RsIGdldCBkZXBsb3ltZW50cwoKIyBPYnRlbmVyIGVsIGVzdGFkbyBkZSBsb3MgcG9kcwprdWJlY3RsIGdldCBwb2RzCgojIE9idGVuZXIgZWwgZXN0YWRvIGRlbCBzZXJ2aWNpbwprdWJlY3RsIGdldCBzZXJ2aWNlcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Obtener el estado del despliegue
+kubectl get deployments
+
+# Obtener el estado de los pods
+kubectl get pods
+
+# Obtener el estado del servicio
+kubectl get services</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Migrar a Kubernetes implica varios pasos, incluyendo contenerizar la aplicación, crear manifiestos de Kubernetes y desplegar en el clúster. Siguiendo este enfoque estructurado, puedes asegurar un proceso de migración fluido. Kubernetes proporciona herramientas poderosas para gestionar aplicaciones contenerizadas, facilitando el escalado y mantenimiento de tus servicios.</p>
+<p>En este estudio de caso, cubrimos:</p>
+<ul>
+<li>Contenerizar una aplicación web con Docker.</li>
+<li>Crear manifiestos de Kubernetes para despliegue y servicio.</li>
+<li>Desplegar y verificar la aplicación en un clúster de Kubernetes.</li>
+</ul>
+<p>Este conocimiento fundamental te ayudará a abordar escenarios más complejos de Kubernetes en el futuro.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='minikube'>&#x25C4;Minikube</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Estudio de Caso 1: Migración a Kubernetes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-2'>Estudio de Caso 2: Escalado de Aplicaciones &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Memoria y ARC</title>
+
+    <link rel="alternate" href="https://campusempresa.com/swift/memory-management-and-arc" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/swift/memory-management-and-arc" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/swift/memory-management-and-arc" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/swift/memory-management-and-arc" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/swift/memory-management-and-arc" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling'>&#x25C4;Manejo de Errores</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Gestión de Memoria y ARC</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-ios-development'>Introducción al Desarrollo de iOS &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La gestión de memoria es un aspecto crucial de la programación en Swift, asegurando que tu aplicación use la memoria de manera eficiente y evite fugas. Swift utiliza la Contabilidad Automática de Referencias (ARC) para gestionar la memoria automáticamente. Esta sección te guiará desde los conceptos básicos hasta los avanzados de la gestión de memoria y ARC en Swift.</p>
+</div><h1>Introducción a la Gestión de Memoria</h1>
+<div class='content'><p>La gestión de memoria implica rastrear y controlar la asignación y liberación de memoria en tu aplicación. Una gestión adecuada de la memoria asegura que tu aplicación funcione eficientemente y previene fugas de memoria, que pueden llevar a bloqueos o un rendimiento lento.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Asignación de Memoria</strong>: Reservar una porción de memoria para el uso de tu aplicación.</li>
+<li><strong>Liberación de Memoria</strong>: Liberar la memoria reservada cuando ya no se necesita.</li>
+<li><strong>Fuga de Memoria</strong>: Ocurre cuando la memoria que ya no se necesita no se libera, causando un aumento gradual en el uso de la memoria.</li>
+</ul>
+</div><h1>Contabilidad Automática de Referencias (ARC)</h1>
+<div class='content'><p>Swift utiliza ARC para gestionar el uso de memoria rastreando el número de referencias a cada instancia de clase. Cuando ya no hay más referencias a una instancia, ARC la desasigna automáticamente para liberar memoria.</p>
+</div><h2>Cómo Funciona ARC</h2>
+<div class='content'><ul>
+<li><strong>Referencias Fuertes</strong>: Por defecto, cada referencia a una instancia de clase es una referencia fuerte, lo que significa que mantiene la instancia en memoria mientras la referencia exista.</li>
+<li><strong>Referencias Débiles</strong>: Una referencia débil no mantiene un control fuerte sobre la instancia, permitiendo que se desasigne si no hay otras referencias fuertes.</li>
+<li><strong>Referencias No Propietarias</strong>: Similar a las referencias débiles, pero se usan cuando se espera que la referencia siempre tenga un valor durante su vida útil.</li>
+</ul>
+</div><h2>Ejemplo de Código: Referencias Fuertes</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUGVyc29uIHsKICAgIGxldCBuYW1lOiBTdHJpbmcKICAgIGluaXQobmFtZTogU3RyaW5nKSB7CiAgICAgICAgc2VsZi5uYW1lID0gbmFtZQogICAgICAgIHByaW50KCJcKG5hbWUpIHNlIGVzdMOhIGluaWNpYWxpemFuZG8iKQogICAgfQogICAgZGVpbml0IHsKICAgICAgICBwcmludCgiXChuYW1lKSBzZSBlc3TDoSBkZXNpbmljaWFsaXphbmRvIikKICAgIH0KfQoKdmFyIHJlZmVyZW5jZTE6IFBlcnNvbj8gPSBQZXJzb24obmFtZTogIkpvaG4iKQp2YXIgcmVmZXJlbmNlMiA9IHJlZmVyZW5jZTEKdmFyIHJlZmVyZW5jZTMgPSByZWZlcmVuY2UxCgpyZWZlcmVuY2UxID0gbmlsCnJlZmVyZW5jZTIgPSBuaWwKcmVmZXJlbmNlMyA9IG5pbAovLyBTYWxpZGE6IEpvaG4gc2UgZXN0w6EgZGVzaW5pY2lhbGl6YW5kbw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Person {
+    let name: String
+    init(name: String) {
+        self.name = name
+        print(&quot;\(name) se est&aacute; inicializando&quot;)
+    }
+    deinit {
+        print(&quot;\(name) se est&aacute; desinicializando&quot;)
+    }
+}
+
+var reference1: Person? = Person(name: &quot;John&quot;)
+var reference2 = reference1
+var reference3 = reference1
+
+reference1 = nil
+reference2 = nil
+reference3 = nil
+// Salida: John se est&aacute; desinicializando</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>reference1</code>, <code>reference2</code> y <code>reference3</code> son referencias fuertes a la instancia <code>Person</code>.</li>
+<li>La instancia se desasigna solo cuando todas las referencias se establecen en <code>nil</code>.</li>
+</ul>
+</div><h2>Ejemplo de Código: Referencias Débiles</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUGVyc29uIHsKICAgIGxldCBuYW1lOiBTdHJpbmcKICAgIGluaXQobmFtZTogU3RyaW5nKSB7CiAgICAgICAgc2VsZi5uYW1lID0gbmFtZQogICAgICAgIHByaW50KCJcKG5hbWUpIHNlIGVzdMOhIGluaWNpYWxpemFuZG8iKQogICAgfQogICAgZGVpbml0IHsKICAgICAgICBwcmludCgiXChuYW1lKSBzZSBlc3TDoSBkZXNpbmljaWFsaXphbmRvIikKICAgIH0KfQoKY2xhc3MgQXBhcnRtZW50IHsKICAgIGxldCB1bml0OiBTdHJpbmcKICAgIHdlYWsgdmFyIHRlbmFudDogUGVyc29uPwogICAgaW5pdCh1bml0OiBTdHJpbmcpIHsKICAgICAgICBzZWxmLnVuaXQgPSB1bml0CiAgICB9Cn0KCnZhciBqb2huOiBQZXJzb24/ID0gUGVyc29uKG5hbWU6ICJKb2huIikKdmFyIHVuaXQ0QTogQXBhcnRtZW50PyA9IEFwYXJ0bWVudCh1bml0OiAiNEEiKQoKdW5pdDRBPy50ZW5hbnQgPSBqb2huCmpvaG4gPSBuaWwKLy8gU2FsaWRhOiBKb2huIHNlIGVzdMOhIGRlc2luaWNpYWxpemFuZG8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Person {
+    let name: String
+    init(name: String) {
+        self.name = name
+        print(&quot;\(name) se est&aacute; inicializando&quot;)
+    }
+    deinit {
+        print(&quot;\(name) se est&aacute; desinicializando&quot;)
+    }
+}
+
+class Apartment {
+    let unit: String
+    weak var tenant: Person?
+    init(unit: String) {
+        self.unit = unit
+    }
+}
+
+var john: Person? = Person(name: &quot;John&quot;)
+var unit4A: Apartment? = Apartment(unit: &quot;4A&quot;)
+
+unit4A?.tenant = john
+john = nil
+// Salida: John se est&aacute; desinicializando</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>tenant</code> es una referencia débil a la instancia <code>Person</code>.</li>
+<li>La instancia <code>Person</code> se desasigna cuando <code>john</code> se establece en <code>nil</code>, aunque <code>tenant</code> aún mantenga una referencia.</li>
+</ul>
+</div><h2>Ejemplo de Código: Referencias No Propietarias</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQ3VzdG9tZXIgewogICAgbGV0IG5hbWU6IFN0cmluZwogICAgdmFyIGNhcmQ6IENyZWRpdENhcmQ/CiAgICBpbml0KG5hbWU6IFN0cmluZykgewogICAgICAgIHNlbGYubmFtZSA9IG5hbWUKICAgIH0KICAgIGRlaW5pdCB7CiAgICAgICAgcHJpbnQoIlwobmFtZSkgc2UgZXN0w6EgZGVzaW5pY2lhbGl6YW5kbyIpCiAgICB9Cn0KCmNsYXNzIENyZWRpdENhcmQgewogICAgbGV0IG51bWJlcjogVUludDY0CiAgICB1bm93bmVkIGxldCBjdXN0b21lcjogQ3VzdG9tZXIKICAgIGluaXQobnVtYmVyOiBVSW50NjQsIGN1c3RvbWVyOiBDdXN0b21lcikgewogICAgICAgIHNlbGYubnVtYmVyID0gbnVtYmVyCiAgICAgICAgc2VsZi5jdXN0b21lciA9IGN1c3RvbWVyCiAgICB9CiAgICBkZWluaXQgewogICAgICAgIHByaW50KCJMYSB0YXJqZXRhICNcKG51bWJlcikgc2UgZXN0w6EgZGVzaW5pY2lhbGl6YW5kbyIpCiAgICB9Cn0KCnZhciBqb2huOiBDdXN0b21lcj8gPSBDdXN0b21lcihuYW1lOiAiSm9obiIpCmpvaG4/LmNhcmQgPSBDcmVkaXRDYXJkKG51bWJlcjogMTIzNF81Njc4XzkwMTJfMzQ1NiwgY3VzdG9tZXI6IGpvaG4hKQoKam9obiA9IG5pbAovLyBTYWxpZGE6IEpvaG4gc2UgZXN0w6EgZGVzaW5pY2lhbGl6YW5kbwovLyBTYWxpZGE6IExhIHRhcmpldGEgIzEyMzQ1Njc4OTAxMjM0NTYgc2UgZXN0w6EgZGVzaW5pY2lhbGl6YW5kbw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Customer {
+    let name: String
+    var card: CreditCard?
+    init(name: String) {
+        self.name = name
+    }
+    deinit {
+        print(&quot;\(name) se est&aacute; desinicializando&quot;)
+    }
+}
+
+class CreditCard {
+    let number: UInt64
+    unowned let customer: Customer
+    init(number: UInt64, customer: Customer) {
+        self.number = number
+        self.customer = customer
+    }
+    deinit {
+        print(&quot;La tarjeta #\(number) se est&aacute; desinicializando&quot;)
+    }
+}
+
+var john: Customer? = Customer(name: &quot;John&quot;)
+john?.card = CreditCard(number: 1234_5678_9012_3456, customer: john!)
+
+john = nil
+// Salida: John se est&aacute; desinicializando
+// Salida: La tarjeta #1234567890123456 se est&aacute; desinicializando</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>customer</code> es una referencia no propietaria a la instancia <code>Customer</code>.</li>
+<li>Tanto las instancias <code>Customer</code> como <code>CreditCard</code> se desasignan cuando <code>john</code> se establece en <code>nil</code>.</li>
+</ul>
+</div><h1>Ciclos de Retención</h1>
+<div class='content'><p>Un ciclo de retención ocurre cuando dos o más instancias mantienen referencias fuertes entre sí, impidiendo que ARC las desasigne. Esto puede llevar a fugas de memoria.</p>
+</div><h2>Ejemplo de un Ciclo de Retención</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUGVyc29uIHsKICAgIGxldCBuYW1lOiBTdHJpbmcKICAgIHZhciBhcGFydG1lbnQ6IEFwYXJ0bWVudD8KICAgIGluaXQobmFtZTogU3RyaW5nKSB7CiAgICAgICAgc2VsZi5uYW1lID0gbmFtZQogICAgfQogICAgZGVpbml0IHsKICAgICAgICBwcmludCgiXChuYW1lKSBzZSBlc3TDoSBkZXNpbmljaWFsaXphbmRvIikKICAgIH0KfQoKY2xhc3MgQXBhcnRtZW50IHsKICAgIGxldCB1bml0OiBTdHJpbmcKICAgIHZhciB0ZW5hbnQ6IFBlcnNvbj8KICAgIGluaXQodW5pdDogU3RyaW5nKSB7CiAgICAgICAgc2VsZi51bml0ID0gdW5pdAogICAgfQogICAgZGVpbml0IHsKICAgICAgICBwcmludCgiRWwgYXBhcnRhbWVudG8gXCh1bml0KSBzZSBlc3TDoSBkZXNpbmljaWFsaXphbmRvIikKICAgIH0KfQoKdmFyIGpvaG46IFBlcnNvbj8gPSBQZXJzb24obmFtZTogIkpvaG4iKQp2YXIgdW5pdDRBOiBBcGFydG1lbnQ/ID0gQXBhcnRtZW50KHVuaXQ6ICI0QSIpCgpqb2huPy5hcGFydG1lbnQgPSB1bml0NEEKdW5pdDRBPy50ZW5hbnQgPSBqb2huCgpqb2huID0gbmlsCnVuaXQ0QSA9IG5pbAovLyBObyBzZSBpbXByaW1lbiBtZW5zYWplcyBkZSBkZXNpbmljaWFsaXphY2nDs24sIGluZGljYW5kbyB1biBjaWNsbyBkZSByZXRlbmNpw7Nu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Person {
+    let name: String
+    var apartment: Apartment?
+    init(name: String) {
+        self.name = name
+    }
+    deinit {
+        print(&quot;\(name) se est&aacute; desinicializando&quot;)
+    }
+}
+
+class Apartment {
+    let unit: String
+    var tenant: Person?
+    init(unit: String) {
+        self.unit = unit
+    }
+    deinit {
+        print(&quot;El apartamento \(unit) se est&aacute; desinicializando&quot;)
+    }
+}
+
+var john: Person? = Person(name: &quot;John&quot;)
+var unit4A: Apartment? = Apartment(unit: &quot;4A&quot;)
+
+john?.apartment = unit4A
+unit4A?.tenant = john
+
+john = nil
+unit4A = nil
+// No se imprimen mensajes de desinicializaci&oacute;n, indicando un ciclo de retenci&oacute;n</pre></div><div class='content'></div><h2>Rompiendo Ciclos de Retención</h2>
+<div class='content'><p>Para romper ciclos de retención, usa referencias débiles o no propietarias de manera adecuada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUGVyc29uIHsKICAgIGxldCBuYW1lOiBTdHJpbmcKICAgIHZhciBhcGFydG1lbnQ6IEFwYXJ0bWVudD8KICAgIGluaXQobmFtZTogU3RyaW5nKSB7CiAgICAgICAgc2VsZi5uYW1lID0gbmFtZQogICAgfQogICAgZGVpbml0IHsKICAgICAgICBwcmludCgiXChuYW1lKSBzZSBlc3TDoSBkZXNpbmljaWFsaXphbmRvIikKICAgIH0KfQoKY2xhc3MgQXBhcnRtZW50IHsKICAgIGxldCB1bml0OiBTdHJpbmcKICAgIHdlYWsgdmFyIHRlbmFudDogUGVyc29uPwogICAgaW5pdCh1bml0OiBTdHJpbmcpIHsKICAgICAgICBzZWxmLnVuaXQgPSB1bml0CiAgICB9CiAgICBkZWluaXQgewogICAgICAgIHByaW50KCJFbCBhcGFydGFtZW50byBcKHVuaXQpIHNlIGVzdMOhIGRlc2luaWNpYWxpemFuZG8iKQogICAgfQp9Cgp2YXIgam9objogUGVyc29uPyA9IFBlcnNvbihuYW1lOiAiSm9obiIpCnZhciB1bml0NEE6IEFwYXJ0bWVudD8gPSBBcGFydG1lbnQodW5pdDogIjRBIikKCmpvaG4/LmFwYXJ0bWVudCA9IHVuaXQ0QQp1bml0NEE/LnRlbmFudCA9IGpvaG4KCmpvaG4gPSBuaWwKdW5pdDRBID0gbmlsCi8vIFNhbGlkYTogSm9obiBzZSBlc3TDoSBkZXNpbmljaWFsaXphbmRvCi8vIFNhbGlkYTogRWwgYXBhcnRhbWVudG8gNEEgc2UgZXN0w6EgZGVzaW5pY2lhbGl6YW5kbw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Person {
+    let name: String
+    var apartment: Apartment?
+    init(name: String) {
+        self.name = name
+    }
+    deinit {
+        print(&quot;\(name) se est&aacute; desinicializando&quot;)
+    }
+}
+
+class Apartment {
+    let unit: String
+    weak var tenant: Person?
+    init(unit: String) {
+        self.unit = unit
+    }
+    deinit {
+        print(&quot;El apartamento \(unit) se est&aacute; desinicializando&quot;)
+    }
+}
+
+var john: Person? = Person(name: &quot;John&quot;)
+var unit4A: Apartment? = Apartment(unit: &quot;4A&quot;)
+
+john?.apartment = unit4A
+unit4A?.tenant = john
+
+john = nil
+unit4A = nil
+// Salida: John se est&aacute; desinicializando
+// Salida: El apartamento 4A se est&aacute; desinicializando</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La gestión de memoria y ARC son esenciales para escribir aplicaciones Swift eficientes y robustas. Al entender cómo funciona ARC y cómo usar referencias fuertes, débiles y no propietarias, puedes prevenir fugas de memoria y ciclos de retención. Practica estos conceptos con los ejemplos proporcionados para obtener una comprensión más profunda y asegurar que tus aplicaciones gestionen la memoria de manera efectiva.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='error-handling'>&#x25C4;Manejo de Errores</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Gestión de Memoria y ARC</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-ios-development'>Introducción al Desarrollo de iOS &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

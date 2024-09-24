@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración del Productor</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kafka/producer-configuration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kafka/producer-configuration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kafka/producer-configuration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/kafka/producer-configuration" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/kafka/producer-configuration" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='sending-messages'>&#x25C4;Envío de Mensajes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Configuración del Productor</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='error-handling-and-retries'>Manejo de Errores y Reintentos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, cubriremos la configuración de los productores de Kafka. Esto es esencial para asegurar que tus productores de Kafka estén optimizados para el rendimiento, la fiabilidad y la seguridad. Comenzaremos con lo básico y avanzaremos hacia configuraciones más avanzadas.</p>
+</div><h1>Configuración Básica del Productor</h1>
+<div class='content'><p>Para comenzar con los productores de Kafka, necesitas entender las propiedades básicas de configuración. Estas propiedades son esenciales para configurar un productor que pueda enviar mensajes a los temas de Kafka.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Bootstrap Servers</strong>: Una lista de pares host/puerto para usar al establecer la conexión inicial con el clúster de Kafka.</li>
+<li><strong>Key Serializer</strong>: Clase serializadora para la clave que implementa la interfaz <code>org.apache.kafka.common.serialization.Serializer</code>.</li>
+<li><strong>Value Serializer</strong>: Clase serializadora para el valor que implementa la interfaz <code>org.apache.kafka.common.serialization.Serializer</code>.</li>
+<li><strong>Acks</strong>: El número de reconocimientos que el productor requiere que el líder haya recibido antes de considerar una solicitud completa.</li>
+</ul>
+</div><h2>Ejemplo de Configuración</h2>
+<div class='content'><p>Aquí hay un ejemplo de una configuración básica del productor en Java:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUua2Fma2EuY2xpZW50cy5wcm9kdWNlci5LYWZrYVByb2R1Y2VyOwppbXBvcnQgb3JnLmFwYWNoZS5rYWZrYS5jbGllbnRzLnByb2R1Y2VyLlByb2R1Y2VyQ29uZmlnOwppbXBvcnQgb3JnLmFwYWNoZS5rYWZrYS5jb21tb24uc2VyaWFsaXphdGlvbi5TdHJpbmdTZXJpYWxpemVyOwoKaW1wb3J0IGphdmEudXRpbC5Qcm9wZXJ0aWVzOwoKcHVibGljIGNsYXNzIEJhc2ljUHJvZHVjZXJDb25maWcgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIFByb3BlcnRpZXMgcHJvcHMgPSBuZXcgUHJvcGVydGllcygpOwogICAgICAgIHByb3BzLnB1dChQcm9kdWNlckNvbmZpZy5CT09UU1RSQVBfU0VSVkVSU19DT05GSUcsICJsb2NhbGhvc3Q6OTA5MiIpOwogICAgICAgIHByb3BzLnB1dChQcm9kdWNlckNvbmZpZy5LRVlfU0VSSUFMSVpFUl9DTEFTU19DT05GSUcsIFN0cmluZ1NlcmlhbGl6ZXIuY2xhc3MuZ2V0TmFtZSgpKTsKICAgICAgICBwcm9wcy5wdXQoUHJvZHVjZXJDb25maWcuVkFMVUVfU0VSSUFMSVpFUl9DTEFTU19DT05GSUcsIFN0cmluZ1NlcmlhbGl6ZXIuY2xhc3MuZ2V0TmFtZSgpKTsKICAgICAgICBwcm9wcy5wdXQoUHJvZHVjZXJDb25maWcuQUNLU19DT05GSUcsICJhbGwiKTsKCiAgICAgICAgS2Fma2FQcm9kdWNlcjxTdHJpbmcsIFN0cmluZz4gcHJvZHVjZXIgPSBuZXcgS2Fma2FQcm9kdWNlcjw+KHByb3BzKTsKICAgICAgICAvLyBVc2FyIGVsIHByb2R1Y3RvciBwYXJhIGVudmlhciBtZW5zYWplcwogICAgICAgIHByb2R1Y2VyLmNsb3NlKCk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.util.Properties;
+
+public class BasicProducerConfig {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, &quot;localhost:9092&quot;);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.ACKS_CONFIG, &quot;all&quot;);
+
+        KafkaProducer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+        // Usar el productor para enviar mensajes
+        producer.close();
+    }
+}</pre></div><div class='content'></div><h1>Configuración Avanzada del Productor</h1>
+<div class='content'><p>Una vez que te sientas cómodo con la configuración básica, puedes explorar configuraciones más avanzadas para ajustar el rendimiento y la fiabilidad de tu productor.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Retries</strong>: El número de veces que se intentará enviar un mensaje si falla.</li>
+<li><strong>Batch Size</strong>: El tamaño del lote para enviar mensajes.</li>
+<li><strong>Linger.ms</strong>: El tiempo de espera antes de enviar un lote de mensajes.</li>
+<li><strong>Buffer Memory</strong>: La cantidad total de bytes de memoria que el productor puede usar para almacenar registros en espera de ser enviados al servidor.</li>
+<li><strong>Compression Type</strong>: El tipo de compresión para todos los datos generados por el productor.</li>
+</ul>
+</div><h2>Ejemplo de Configuración</h2>
+<div class='content'><p>Aquí hay un ejemplo de una configuración avanzada del productor en Java:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUua2Fma2EuY2xpZW50cy5wcm9kdWNlci5LYWZrYVByb2R1Y2VyOwppbXBvcnQgb3JnLmFwYWNoZS5rYWZrYS5jbGllbnRzLnByb2R1Y2VyLlByb2R1Y2VyQ29uZmlnOwppbXBvcnQgb3JnLmFwYWNoZS5rYWZrYS5jb21tb24uc2VyaWFsaXphdGlvbi5TdHJpbmdTZXJpYWxpemVyOwoKaW1wb3J0IGphdmEudXRpbC5Qcm9wZXJ0aWVzOwoKcHVibGljIGNsYXNzIEFkdmFuY2VkUHJvZHVjZXJDb25maWcgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIFByb3BlcnRpZXMgcHJvcHMgPSBuZXcgUHJvcGVydGllcygpOwogICAgICAgIHByb3BzLnB1dChQcm9kdWNlckNvbmZpZy5CT09UU1RSQVBfU0VSVkVSU19DT05GSUcsICJsb2NhbGhvc3Q6OTA5MiIpOwogICAgICAgIHByb3BzLnB1dChQcm9kdWNlckNvbmZpZy5LRVlfU0VSSUFMSVpFUl9DTEFTU19DT05GSUcsIFN0cmluZ1NlcmlhbGl6ZXIuY2xhc3MuZ2V0TmFtZSgpKTsKICAgICAgICBwcm9wcy5wdXQoUHJvZHVjZXJDb25maWcuVkFMVUVfU0VSSUFMSVpFUl9DTEFTU19DT05GSUcsIFN0cmluZ1NlcmlhbGl6ZXIuY2xhc3MuZ2V0TmFtZSgpKTsKICAgICAgICBwcm9wcy5wdXQoUHJvZHVjZXJDb25maWcuQUNLU19DT05GSUcsICJhbGwiKTsKICAgICAgICBwcm9wcy5wdXQoUHJvZHVjZXJDb25maWcuUkVUUklFU19DT05GSUcsIDMpOwogICAgICAgIHByb3BzLnB1dChQcm9kdWNlckNvbmZpZy5CQVRDSF9TSVpFX0NPTkZJRywgMTYzODQpOwogICAgICAgIHByb3BzLnB1dChQcm9kdWNlckNvbmZpZy5MSU5HRVJfTVNfQ09ORklHLCAxKTsKICAgICAgICBwcm9wcy5wdXQoUHJvZHVjZXJDb25maWcuQlVGRkVSX01FTU9SWV9DT05GSUcsIDMzNTU0NDMyKTsKICAgICAgICBwcm9wcy5wdXQoUHJvZHVjZXJDb25maWcuQ09NUFJFU1NJT05fVFlQRV9DT05GSUcsICJnemlwIik7CgogICAgICAgIEthZmthUHJvZHVjZXI8U3RyaW5nLCBTdHJpbmc+IHByb2R1Y2VyID0gbmV3IEthZmthUHJvZHVjZXI8Pihwcm9wcyk7CiAgICAgICAgLy8gVXNhciBlbCBwcm9kdWN0b3IgcGFyYSBlbnZpYXIgbWVuc2FqZXMKICAgICAgICBwcm9kdWNlci5jbG9zZSgpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
+
+import java.util.Properties;
+
+public class AdvancedProducerConfig {
+    public static void main(String[] args) {
+        Properties props = new Properties();
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, &quot;localhost:9092&quot;);
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        props.put(ProducerConfig.ACKS_CONFIG, &quot;all&quot;);
+        props.put(ProducerConfig.RETRIES_CONFIG, 3);
+        props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
+        props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
+        props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
+        props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, &quot;gzip&quot;);
+
+        KafkaProducer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+        // Usar el productor para enviar mensajes
+        producer.close();
+    }
+}</pre></div><div class='content'></div><h1>Comparación de Configuraciones Básicas y Avanzadas</h1>
+<div class='content'><p>| Propiedad         | Configuración Básica | Configuración Avanzada |
+|-------------------|----------------------|------------------------|
+| Bootstrap Servers | localhost:9092       | localhost:9092         |
+| Key Serializer    | StringSerializer     | StringSerializer       |
+| Value Serializer  | StringSerializer     | StringSerializer       |
+| Acks              | all                  | all                    |
+| Retries           | N/A                  | 3                      |
+| Batch Size        | N/A                  | 16384                  |
+| Linger.ms         | N/A                  | 1                      |
+| Buffer Memory     | N/A                  | 33554432               |
+| Compression Type  | N/A                  | gzip                   |</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Configurar correctamente los productores de Kafka es crucial para lograr un rendimiento y una fiabilidad óptimos. Comenzando con las propiedades de configuración básicas, puedes asegurar que tu productor pueda conectarse al clúster de Kafka y serializar los mensajes correctamente. A medida que adquieras más experiencia, puedes ajustar tu productor con configuraciones avanzadas para manejar reintentos, agrupación y compresión, entre otros ajustes. Entender y aplicar estas configuraciones te ayudará a construir productores de Kafka robustos y eficientes.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='sending-messages'>&#x25C4;Envío de Mensajes</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Configuración del Productor</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='error-handling-and-retries'>Manejo de Errores y Reintentos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

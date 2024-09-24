@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Excepciones en Haskell</title>
+
+    <link rel="alternate" href="https://campusempresa.com/haskell/exception-handling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/haskell/exception-handling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/haskell/exception-handling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/haskell/exception-handling" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/haskell/exception-handling" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='interacting-with-system'>&#x25C4;Interacción con el Sistema</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Manejo de Excepciones en Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='concurrency-parallelism'>Concurrencia y Paralelismo &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción al Manejo de Excepciones</h1>
+<div class='content'><p>El manejo de excepciones es un aspecto crucial de la programación que permite a los desarrolladores gestionar errores y condiciones excepcionales de manera elegante. En Haskell, el manejo de excepciones se aborda de manera diferente en comparación con los lenguajes imperativos debido a su naturaleza funcional.</p>
+</div><h1>Conceptos Básicos</h1>
+<div class='content'><ul>
+<li><strong>Excepción</strong>: Un evento inesperado que interrumpe el flujo normal de un programa.</li>
+<li><strong>Manejo de Excepciones</strong>: Mecanismos para capturar y gestionar excepciones para evitar que los programas se bloqueen.</li>
+</ul>
+</div><h1>Tipos de Excepciones</h1>
+<div class='content'><p>Haskell categoriza las excepciones en:</p>
+<ul>
+<li><strong>Excepciones Sincrónicas</strong>: Errores que ocurren durante la ejecución de un programa, como la división por cero o archivo no encontrado.</li>
+<li><strong>Excepciones Asincrónicas</strong>: Eventos externos que interrumpen el programa, como interrupciones del usuario o tiempos de espera.</li>
+</ul>
+</div><h1>Manejo de Excepciones con `Maybe` y `Either`</h1>
+<div class='content'><p>Haskell proporciona dos tipos principales para manejar errores de manera funcional:</p>
+<ul>
+<li><strong>Maybe</strong>: Representa un valor opcional que puede ser <code>Just</code> un valor o <code>Nothing</code>.</li>
+<li><strong>Either</strong>: Representa un valor que puede ser de dos tipos, típicamente usado para el manejo de errores donde <code>Left</code> representa un error y <code>Right</code> representa un éxito.</li>
+</ul>
+</div><h2>Ejemplo: Usando `Maybe`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2FmZURpdmlkZSA6OiBEb3VibGUgLT4gRG91YmxlIC0+IE1heWJlIERvdWJsZQpzYWZlRGl2aWRlIF8gMCA9IE5vdGhpbmcKc2FmZURpdmlkZSB4IHkgPSBKdXN0ICh4IC8geSkKCm1haW4gOjogSU8gKCkKbWFpbiA9IGRvCiAgICBsZXQgcmVzdWx0ID0gc2FmZURpdmlkZSAxMCAyCiAgICBjYXNlIHJlc3VsdCBvZgogICAgICAgIE5vdGhpbmcgLT4gcHV0U3RyTG4gIsKhRGl2aXNpw7NuIHBvciBjZXJvISIKICAgICAgICBKdXN0IHZhbHVlIC0+IHB1dFN0ckxuICQgIlJlc3VsdGFkbzogIiArKyBzaG93IHZhbHVl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>safeDivide :: Double -&gt; Double -&gt; Maybe Double
+safeDivide _ 0 = Nothing
+safeDivide x y = Just (x / y)
+
+main :: IO ()
+main = do
+    let result = safeDivide 10 2
+    case result of
+        Nothing -&gt; putStrLn &quot;&iexcl;Divisi&oacute;n por cero!&quot;
+        Just value -&gt; putStrLn $ &quot;Resultado: &quot; ++ show value</pre></div><div class='content'></div><h2>Ejemplo: Usando `Either`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2FmZURpdmlkZSA6OiBEb3VibGUgLT4gRG91YmxlIC0+IEVpdGhlciBTdHJpbmcgRG91YmxlCnNhZmVEaXZpZGUgXyAwID0gTGVmdCAiwqFEaXZpc2nDs24gcG9yIGNlcm8hIgpzYWZlRGl2aWRlIHggeSA9IFJpZ2h0ICh4IC8geSkKCm1haW4gOjogSU8gKCkKbWFpbiA9IGRvCiAgICBsZXQgcmVzdWx0ID0gc2FmZURpdmlkZSAxMCAwCiAgICBjYXNlIHJlc3VsdCBvZgogICAgICAgIExlZnQgZXJyIC0+IHB1dFN0ckxuIGVycgogICAgICAgIFJpZ2h0IHZhbHVlIC0+IHB1dFN0ckxuICQgIlJlc3VsdGFkbzogIiArKyBzaG93IHZhbHVl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>safeDivide :: Double -&gt; Double -&gt; Either String Double
+safeDivide _ 0 = Left &quot;&iexcl;Divisi&oacute;n por cero!&quot;
+safeDivide x y = Right (x / y)
+
+main :: IO ()
+main = do
+    let result = safeDivide 10 0
+    case result of
+        Left err -&gt; putStrLn err
+        Right value -&gt; putStrLn $ &quot;Resultado: &quot; ++ show value</pre></div><div class='content'></div><h1>Manejo Avanzado de Excepciones con `Control.Exception`</h1>
+<div class='content'><p>Para escenarios más complejos, Haskell proporciona el módulo <code>Control.Exception</code> que permite un control más detallado sobre las excepciones.</p>
+</div><h2>Funciones Clave</h2>
+<div class='content'><ul>
+<li><strong><code>throw</code></strong>: Lanza una excepción.</li>
+<li><strong><code>catch</code></strong>: Captura una excepción.</li>
+<li><strong><code>try</code></strong>: Intenta una acción y devuelve una excepción o un resultado.</li>
+</ul>
+</div><h2>Ejemplo: Usando `Control.Exception`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IENvbnRyb2wuRXhjZXB0aW9uCgptYWluIDo6IElPICgpCm1haW4gPSBkbwogICAgcmVzdWx0IDwtIHRyeSAoZXZhbHVhdGUgKDUgYGRpdmAgMCkpIDo6IElPIChFaXRoZXIgU29tZUV4Y2VwdGlvbiBJbnQpCiAgICBjYXNlIHJlc3VsdCBvZgogICAgICAgIExlZnQgZXggLT4gcHV0U3RyTG4gJCAiRXhjZXBjacOzbiBjYXB0dXJhZGE6ICIgKysgc2hvdyBleAogICAgICAgIFJpZ2h0IHZhbHVlIC0+IHB1dFN0ckxuICQgIlJlc3VsdGFkbzogIiArKyBzaG93IHZhbHVl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Control.Exception
+
+main :: IO ()
+main = do
+    result &lt;- try (evaluate (5 `div` 0)) :: IO (Either SomeException Int)
+    case result of
+        Left ex -&gt; putStrLn $ &quot;Excepci&oacute;n capturada: &quot; ++ show ex
+        Right value -&gt; putStrLn $ &quot;Resultado: &quot; ++ show value</pre></div><div class='content'></div><h1>Excepciones Personalizadas</h1>
+<div class='content'><p>Puedes definir tus propias excepciones creando un nuevo tipo de datos y haciéndolo una instancia de la clase <code>Exception</code>.</p>
+</div><h2>Ejemplo: Definiendo y Usando Excepciones Personalizadas</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IENvbnRyb2wuRXhjZXB0aW9uCgpkYXRhIE15RXhjZXB0aW9uID0gTXlFeGNlcHRpb24gU3RyaW5nIGRlcml2aW5nIChTaG93KQoKaW5zdGFuY2UgRXhjZXB0aW9uIE15RXhjZXB0aW9uCgptYWluIDo6IElPICgpCm1haW4gPSBkbwogICAgcmVzdWx0IDwtIHRyeSAodGhyb3dJTyAoTXlFeGNlcHRpb24gIkFsZ28gc2FsacOzIG1hbCIpKSA6OiBJTyAoRWl0aGVyIE15RXhjZXB0aW9uICgpKQogICAgY2FzZSByZXN1bHQgb2YKICAgICAgICBMZWZ0IGV4IC0+IHB1dFN0ckxuICQgIkV4Y2VwY2nDs24gcGVyc29uYWxpemFkYSBjYXB0dXJhZGE6ICIgKysgc2hvdyBleAogICAgICAgIFJpZ2h0IF8gLT4gcHV0U3RyTG4gIlNpbiBleGNlcGNpw7NuIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Control.Exception
+
+data MyException = MyException String deriving (Show)
+
+instance Exception MyException
+
+main :: IO ()
+main = do
+    result &lt;- try (throwIO (MyException &quot;Algo sali&oacute; mal&quot;)) :: IO (Either MyException ())
+    case result of
+        Left ex -&gt; putStrLn $ &quot;Excepci&oacute;n personalizada capturada: &quot; ++ show ex
+        Right _ -&gt; putStrLn &quot;Sin excepci&oacute;n&quot;</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>El manejo de excepciones en Haskell puede abordarse utilizando tipos simples como <code>Maybe</code> y <code>Either</code> para la gestión básica de errores, o técnicas más avanzadas utilizando el módulo <code>Control.Exception</code> para escenarios complejos. Comprender estos mecanismos te permite escribir programas en Haskell robustos y tolerantes a fallos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='interacting-with-system'>&#x25C4;Interacción con el Sistema</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Manejo de Excepciones en Haskell</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='concurrency-parallelism'>Concurrencia y Paralelismo &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

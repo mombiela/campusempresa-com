@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creando una App del Clima</title>
+
+    <link rel="alternate" href="https://campusempresa.com/reactnative/creating-weather-app" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/reactnative/creating-weather-app" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/reactnative/creating-weather-app" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/reactnative/creating-weather-app" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/reactnative/creating-weather-app" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='building-todo-app'>&#x25C4;Construcción de una Aplicación de Tareas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creando una App del Clima</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='developing-chat-application'>Desarrollo de una Aplicación de Chat &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este curso, te guiaremos a través del proceso de creación de una aplicación del clima usando React Native. Este proyecto te ayudará a entender los fundamentos de React Native, la integración de API, la gestión del estado y más. Al final de este curso, tendrás una aplicación del clima completamente funcional que puede obtener y mostrar datos del clima desde una API externa.</p>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><p>Antes de comenzar este curso, deberías tener:</p>
+<ul>
+<li>Conocimientos básicos de JavaScript y ES6.</li>
+<li>Familiaridad con conceptos de React como componentes, props y estado.</li>
+<li>Node.js y npm instalados en tu máquina.</li>
+</ul>
+</div><h1>Configuración del Entorno de Desarrollo</h1>
+<div class='content'><p>Para comenzar con React Native, necesitas configurar tu entorno de desarrollo.</p>
+<ol>
+<li><strong>Instalar Node.js y npm</strong>: Asegúrate de tener Node.js y npm instalados.</li>
+<li><strong>Instalar React Native CLI</strong>: Ejecuta el siguiente comando para instalar React Native CLI globalmente.
+<pre><code class="language-bash">npm install -g react-native-cli
+</code></pre>
+</li>
+<li><strong>Crear un Nuevo Proyecto de React Native</strong>: Usa el CLI para crear un nuevo proyecto.
+<pre><code class="language-bash">react-native init WeatherApp
+</code></pre>
+</li>
+<li><strong>Ejecutar el Proyecto</strong>: Navega al directorio del proyecto y comienza el servidor de desarrollo.
+<pre><code class="language-bash">cd WeatherApp
+react-native run-android # Para Android
+react-native run-ios # Para iOS
+</code></pre>
+</li>
+</ol>
+</div><h1>Construyendo la Interfaz de Usuario</h1>
+<div class='content'><p>En esta sección, construiremos la interfaz de usuario básica para nuestra aplicación del clima.</p>
+</div><h2>Creando la Pantalla Principal</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crea un nuevo archivo <code>MainScreen.js</code></strong> en el directorio <code>src</code>.</p>
+<pre><code class="language-javascript">import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+const MainScreen = () =&gt; {
+    return (
+        &lt;View style={styles.container}&gt;
+            &lt;Text style={styles.title}&gt;Weather App&lt;/Text&gt;
+        &lt;/View&gt;
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+});
+
+export default MainScreen;
+</code></pre>
+</li>
+<li>
+<p><strong>Actualiza <code>App.js</code></strong> para usar el componente <code>MainScreen</code>.</p>
+<pre><code class="language-javascript">import React from 'react';
+import MainScreen from './src/MainScreen';
+
+const App = () =&gt; {
+    return &lt;MainScreen /&gt;;
+};
+
+export default App;
+</code></pre>
+</li>
+</ol>
+</div><h1>Obteniendo Datos del Clima desde una API</h1>
+<div class='content'><p>Para obtener datos del clima, usaremos la API de OpenWeatherMap.</p>
+<ol>
+<li><strong>Regístrate para obtener una clave de API</strong> en <a href="https://openweathermap.org/api">OpenWeatherMap</a>.</li>
+<li><strong>Instala Axios</strong> para hacer solicitudes HTTP.
+<pre><code class="language-bash">npm install axios
+</code></pre>
+</li>
+</ol>
+</div><h2>Obteniendo Datos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crea un nuevo archivo <code>api.js</code></strong> en el directorio <code>src</code> para manejar las solicitudes de API.</p>
+<pre><code class="language-javascript">import axios from 'axios';
+
+const API_KEY = 'YOUR_API_KEY';
+const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
+
+export const fetchWeather = async (city) =&gt; {
+    try {
+        const response = await axios.get(`${BASE_URL}?q=${city}&amp;appid=${API_KEY}`);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Actualiza <code>MainScreen.js</code></strong> para obtener y mostrar datos del clima.</p>
+<pre><code class="language-javascript">import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import { fetchWeather } from './api';
+
+const MainScreen = () =&gt; {
+    const [city, setCity] = useState('');
+    const [weather, setWeather] = useState(null);
+
+    const getWeather = async () =&gt; {
+        const data = await fetchWeather(city);
+        setWeather(data);
+    };
+
+    return (
+        &lt;View style={styles.container}&gt;
+            &lt;Text style={styles.title}&gt;Weather App&lt;/Text&gt;
+            &lt;TextInput
+                style={styles.input}
+                placeholder=&quot;Enter city&quot;
+                value={city}
+                onChangeText={setCity}
+            /&gt;
+            &lt;Button title=&quot;Get Weather&quot; onPress={getWeather} /&gt;
+            {weather &amp;&amp; (
+                &lt;View style={styles.weatherContainer}&gt;
+                    &lt;Text style={styles.weatherText}&gt;Temperature: {weather.main.temp}°K&lt;/Text&gt;
+                    &lt;Text style={styles.weatherText}&gt;Condition: {weather.weather[0].description}&lt;/Text&gt;
+                &lt;/View&gt;
+            )}
+        &lt;/View&gt;
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    input: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        width: '80%',
+    },
+    weatherContainer: {
+        marginTop: 20,
+    },
+    weatherText: {
+        fontSize: 18,
+    },
+});
+
+export default MainScreen;
+</code></pre>
+</li>
+</ol>
+</div><h1>Funcionalidades Avanzadas</h1>
+<h2>Agregando Navegación</h2>
+<div class='content'><ol>
+<li><strong>Instala React Navigation</strong>:
+<pre><code class="language-bash">npm install @react-navigation/native @react-navigation/stack
+npm install react-native-screens react-native-safe-area-context
+</code></pre>
+</li>
+<li><strong>Configura la Navegación</strong> en <code>App.js</code>:
+<pre><code class="language-javascript">import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import MainScreen from './src/MainScreen';
+
+const Stack = createStackNavigator();
+
+const App = () =&gt; {
+    return (
+        &lt;NavigationContainer&gt;
+            &lt;Stack.Navigator&gt;
+                &lt;Stack.Screen name=&quot;Main&quot; component={MainScreen} /&gt;
+            &lt;/Stack.Navigator&gt;
+        &lt;/NavigationContainer&gt;
+    );
+};
+
+export default App;
+</code></pre>
+</li>
+</ol>
+</div><h2>Agregando Clima Basado en Ubicación</h2>
+<div class='content'><ol>
+<li><strong>Instala React Native Geolocation</strong>:
+<pre><code class="language-bash">npm install @react-native-community/geolocation
+</code></pre>
+</li>
+<li><strong>Actualiza <code>MainScreen.js</code></strong> para obtener el clima basado en la ubicación del usuario.
+<pre><code class="language-javascript">import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
+import Geolocation from '@react-native-community/geolocation';
+import { fetchWeather } from './api';
+
+const MainScreen = () =&gt; {
+    const [city, setCity] = useState('');
+    const [weather, setWeather] = useState(null);
+
+    useEffect(() =&gt; {
+        Geolocation.getCurrentPosition(
+            async position =&gt; {
+                const { latitude, longitude } = position.coords;
+                const data = await fetchWeatherByCoords(latitude, longitude);
+                setWeather(data);
+            },
+            error =&gt; console.error(error),
+            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+    }, []);
+
+    const getWeather = async () =&gt; {
+        const data = await fetchWeather(city);
+        setWeather(data);
+    };
+
+    return (
+        &lt;View style={styles.container}&gt;
+            &lt;Text style={styles.title}&gt;Weather App&lt;/Text&gt;
+            &lt;TextInput
+                style={styles.input}
+                placeholder=&quot;Enter city&quot;
+                value={city}
+                onChangeText={setCity}
+            /&gt;
+            &lt;Button title=&quot;Get Weather&quot; onPress={getWeather} /&gt;
+            {weather &amp;&amp; (
+                &lt;View style={styles.weatherContainer}&gt;
+                    &lt;Text style={styles.weatherText}&gt;Temperature: {weather.main.temp}°K&lt;/Text&gt;
+                    &lt;Text style={styles.weatherText}&gt;Condition: {weather.weather[0].description}&lt;/Text&gt;
+                &lt;/View&gt;
+            )}
+        &lt;/View&gt;
+    );
+};
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+    input: {
+        height: 40,
+        borderColor: 'gray',
+        borderWidth: 1,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+        width: '80%',
+    },
+    weatherContainer: {
+        marginTop: 20,
+    },
+    weatherText: {
+        fontSize: 18,
+    },
+});
+
+export default MainScreen;
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este curso, hemos construido una aplicación del clima usando React Native desde cero. Cubrimos la configuración del entorno de desarrollo, la construcción de la interfaz de usuario, la obtención de datos desde una API y la adición de funcionalidades avanzadas como la navegación y el clima basado en la ubicación. Este proyecto debería darte una base sólida en React Native y prepararte para proyectos más complejos. ¡Sigue experimentando y construyendo para mejorar tus habilidades aún más!</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='building-todo-app'>&#x25C4;Construcción de una Aplicación de Tareas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Creando una App del Clima</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='developing-chat-application'>Desarrollo de una Aplicación de Chat &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

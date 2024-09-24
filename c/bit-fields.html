@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campos de Bits en C</title>
+
+    <link rel="alternate" href="https://campusempresa.com/c/bit-fields" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/c/bit-fields" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/c/bit-fields" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/c/bit-fields" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/c/bit-fields" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='unions'>&#x25C4;Uniones</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Campos de Bits en C</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='malloc-calloc-realloc-free'>malloc, calloc, realloc y free &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a los Campos de Bits</h1>
+<div class='content'><p>Los campos de bits en C permiten al programador asignar un número específico de bits para una variable dentro de una estructura. Esto puede ser particularmente útil para aplicaciones con restricciones de memoria o para la interfaz con hardware donde se necesitan manipular bits específicos en un registro.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Campo de Bits</strong>: Un conjunto de bits adyacentes dentro de una única unidad de almacenamiento definida por la implementación.</li>
+<li><strong>Estructura</strong>: Los campos de bits se definen dentro de un <code>struct</code>.</li>
+<li><strong>Eficiencia de Memoria</strong>: Los campos de bits permiten un uso más eficiente de la memoria al especificar el número exacto de bits requeridos para cada campo.</li>
+</ul>
+</div><h1>Definiendo Campos de Bits</h1>
+<div class='content'><p>Para definir campos de bits en C, se usa la palabra clave <code>struct</code> seguida del nombre del campo, dos puntos y el número de bits.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CgpzdHJ1Y3QgewogICAgdW5zaWduZWQgaW50IGEgOiAxOyAvLyAxIGJpdAogICAgdW5zaWduZWQgaW50IGIgOiAzOyAvLyAzIGJpdHMKICAgIHVuc2lnbmVkIGludCBjIDogNDsgLy8gNCBiaXRzCn0gYml0RmllbGQ7CgppbnQgbWFpbigpIHsKICAgIGJpdEZpZWxkLmEgPSAxOwogICAgYml0RmllbGQuYiA9IDU7CiAgICBiaXRGaWVsZC5jID0gMTA7CgogICAgcHJpbnRmKCJhOiAldVxuIiwgYml0RmllbGQuYSk7CiAgICBwcmludGYoImI6ICV1XG4iLCBiaXRGaWVsZC5iKTsKICAgIHByaW50ZigiYzogJXVcbiIsIGJpdEZpZWxkLmMpOwoKICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+
+struct {
+    unsigned int a : 1; // 1 bit
+    unsigned int b : 3; // 3 bits
+    unsigned int c : 4; // 4 bits
+} bitField;
+
+int main() {
+    bitField.a = 1;
+    bitField.b = 5;
+    bitField.c = 10;
+
+    printf(&quot;a: %u\n&quot;, bitField.a);
+    printf(&quot;b: %u\n&quot;, bitField.b);
+    printf(&quot;c: %u\n&quot;, bitField.c);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>unsigned int a : 1;</code> declara un campo de bits <code>a</code> que tiene 1 bit de ancho.</li>
+<li><code>unsigned int b : 3;</code> declara un campo de bits <code>b</code> que tiene 3 bits de ancho.</li>
+<li><code>unsigned int c : 4;</code> declara un campo de bits <code>c</code> que tiene 4 bits de ancho.</li>
+<li>Las declaraciones <code>printf</code> imprimen los valores de los campos de bits.</li>
+</ul>
+</div><h1>Accediendo y Modificando Campos de Bits</h1>
+<div class='content'><p>Los campos de bits se acceden y modifican de la misma manera que otros miembros de la estructura.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CgpzdHJ1Y3QgewogICAgdW5zaWduZWQgaW50IGZsYWcxIDogMTsKICAgIHVuc2lnbmVkIGludCBmbGFnMiA6IDE7CiAgICB1bnNpZ25lZCBpbnQgdmFsdWUgOiA2Owp9IHN0YXR1czsKCmludCBtYWluKCkgewogICAgc3RhdHVzLmZsYWcxID0gMTsKICAgIHN0YXR1cy5mbGFnMiA9IDA7CiAgICBzdGF0dXMudmFsdWUgPSA0MjsKCiAgICBwcmludGYoImZsYWcxOiAldVxuIiwgc3RhdHVzLmZsYWcxKTsKICAgIHByaW50ZigiZmxhZzI6ICV1XG4iLCBzdGF0dXMuZmxhZzIpOwogICAgcHJpbnRmKCJ2YWx1ZTogJXVcbiIsIHN0YXR1cy52YWx1ZSk7CgogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+
+struct {
+    unsigned int flag1 : 1;
+    unsigned int flag2 : 1;
+    unsigned int value : 6;
+} status;
+
+int main() {
+    status.flag1 = 1;
+    status.flag2 = 0;
+    status.value = 42;
+
+    printf(&quot;flag1: %u\n&quot;, status.flag1);
+    printf(&quot;flag2: %u\n&quot;, status.flag2);
+    printf(&quot;value: %u\n&quot;, status.value);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>status.flag1 = 1;</code> establece el campo de bits <code>flag1</code> a 1.</li>
+<li><code>status.flag2 = 0;</code> establece el campo de bits <code>flag2</code> a 0.</li>
+<li><code>status.value = 42;</code> establece el campo de bits <code>value</code> a 42 (que cabe dentro de 6 bits).</li>
+</ul>
+</div><h1>Ventajas y Desventajas</h1>
+<h2>Ventajas</h2>
+<div class='content'><ul>
+<li><strong>Eficiencia de Memoria</strong>: Ahorra memoria al usar solo el número necesario de bits.</li>
+<li><strong>Interfaz de Hardware</strong>: Útil para manipular bits específicos en registros de hardware.</li>
+</ul>
+</div><h2>Desventajas</h2>
+<div class='content'><ul>
+<li><strong>Portabilidad</strong>: Los campos de bits dependen de la implementación y pueden no ser portables entre diferentes compiladores o plataformas.</li>
+<li><strong>Problemas de Alineación</strong>: Los campos de bits pueden causar problemas de alineación, llevando a un acceso ineficiente a la memoria.</li>
+</ul>
+</div><h1>Casos de Uso Prácticos</h1>
+<div class='content'><ul>
+<li><strong>Sistemas Embebidos</strong>: Gestión de registros de hardware donde bits específicos controlan diferentes funcionalidades.</li>
+<li><strong>Redes</strong>: Manejo de encabezados de protocolos donde los campos a menudo no están alineados en bytes.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los campos de bits en C proporcionan una forma poderosa de gestionar la memoria e interactuar con el hardware a nivel de bits. Si bien ofrecen ventajas significativas en términos de eficiencia de memoria e interfaz de hardware, también presentan algunos desafíos de portabilidad y alineación. Entender cómo definir, acceder y modificar campos de bits es esencial para aplicaciones donde el uso de memoria y el control preciso sobre bits individuales son críticos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='unions'>&#x25C4;Uniones</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Campos de Bits en C</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='malloc-calloc-realloc-free'>malloc, calloc, realloc y free &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

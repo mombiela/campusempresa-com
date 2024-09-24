@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volúmenes Persistentes y Claims de Volúmenes Persistentes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/kubernetes/persistent-volumes-and-persistent-volume-claims" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/kubernetes/persistent-volumes-and-persistent-volume-claims" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/kubernetes/persistent-volumes-and-persistent-volume-claims" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/kubernetes/persistent-volumes-and-persistent-volume-claims" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/kubernetes/persistent-volumes-and-persistent-volume-claims" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='network-policies'>&#x25C4;Políticas de Red</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Volúmenes Persistentes y Claims de Volúmenes Persistentes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='storage-classes'>Clases de Almacenamiento &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En Kubernetes, gestionar el almacenamiento es un aspecto crítico para ejecutar aplicaciones con estado. Los Volúmenes Persistentes (PVs) y los Claims de Volúmenes Persistentes (PVCs) son los recursos principales utilizados para gestionar el almacenamiento en un clúster de Kubernetes. Esta sección cubrirá los conceptos, uso y mejores prácticas para PVs y PVCs, desde niveles principiantes hasta avanzados.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Volúmenes Persistentes (PVs)</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Un Volumen Persistente (PV) es una pieza de almacenamiento en el clúster que ha sido provisionada por un administrador o provisionada dinámicamente usando Clases de Almacenamiento.</li>
+<li><strong>Ciclo de Vida</strong>: Los PVs tienen un ciclo de vida independiente de cualquier Pod individual que use el PV. Existen más allá de la vida útil de un Pod y pueden ser reutilizados por diferentes Pods.</li>
+<li><strong>Tipos</strong>: Los PVs pueden estar respaldados por varios sistemas de almacenamiento como NFS, iSCSI, almacenamiento de proveedores en la nube (por ejemplo, AWS EBS, GCE PD), etc.</li>
+</ul>
+</div><h2>Claims de Volúmenes Persistentes (PVCs)</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Un Claim de Volumen Persistente (PVC) es una solicitud de almacenamiento por parte de un usuario. Es similar a un Pod en que los Pods consumen recursos de nodo y los PVCs consumen recursos de PV.</li>
+<li><strong>Vinculación</strong>: Los PVCs están vinculados a los PVs. Cuando se crea un PVC, Kubernetes busca un PV que satisfaga los requisitos del claim y los vincula juntos.</li>
+<li><strong>Modos de Acceso</strong>: Los PVCs pueden solicitar diferentes modos de acceso como ReadWriteOnce, ReadOnlyMany y ReadWriteMany.</li>
+</ul>
+</div><h1>Creación de Volúmenes Persistentes y Claims de Volúmenes Persistentes</h1>
+<div class='content'></div><h2>Ejemplo: Creación de un Volumen Persistente</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZQptZXRhZGF0YToKICBuYW1lOiBleGFtcGxlLXB2CnNwZWM6CiAgY2FwYWNpdHk6CiAgICBzdG9yYWdlOiAxMEdpCiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICBwZXJzaXN0ZW50Vm9sdW1lUmVjbGFpbVBvbGljeTogUmV0YWluCiAgc3RvcmFnZUNsYXNzTmFtZTogbWFudWFsCiAgaG9zdFBhdGg6CiAgICBwYXRoOiAiL21udC9kYXRhIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: example-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: manual
+  hostPath:
+    path: &quot;/mnt/data&quot;</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>capacity</code>: Especifica el tamaño del almacenamiento.</li>
+<li><code>accessModes</code>: Define cómo se puede acceder al volumen.</li>
+<li><code>persistentVolumeReclaimPolicy</code>: Determina qué sucede con el PV después de que el PVC es eliminado (por ejemplo, Retain, Recycle, Delete).</li>
+<li><code>storageClassName</code>: Asocia el PV con una Clase de Almacenamiento.</li>
+<li><code>hostPath</code>: Especifica la ruta en el sistema de archivos del nodo host.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: Creación de un Claim de Volumen Persistente</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtcHZjCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICByZXNvdXJjZXM6CiAgICByZXF1ZXN0czoKICAgICAgc3RvcmFnZTogMTBHaQogIHN0b3JhZ2VDbGFzc05hbWU6IG1hbnVhbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: example-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: manual</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>accessModes</code>: Solicita el mismo modo de acceso que el PV.</li>
+<li><code>resources.requests.storage</code>: Especifica la cantidad de almacenamiento solicitada.</li>
+<li><code>storageClassName</code>: Debe coincidir con el <code>storageClassName</code> del PV.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Vinculación de PVs y PVCs</h1>
+<div class='content'><ul>
+<li>Cuando se crea un PVC, Kubernetes busca un PV que coincida con el tamaño de almacenamiento solicitado y los modos de acceso.</li>
+<li>Una vez que se encuentra un PV adecuado, se vincula al PVC, y el PVC puede ser utilizado por Pods.</li>
+</ul>
+</div><h2>Ejemplo: Uso de un PVC en un Pod</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtcG9kCnNwZWM6CiAgY29udGFpbmVyczoKICAgIC0gbmFtZTogZXhhbXBsZS1jb250YWluZXIKICAgICAgaW1hZ2U6IG5naW54CiAgICAgIHZvbHVtZU1vdW50czoKICAgICAgICAtIG1vdW50UGF0aDogIi91c3Ivc2hhcmUvbmdpbngvaHRtbCIKICAgICAgICAgIG5hbWU6IGV4YW1wbGUtdm9sdW1lCiAgdm9sdW1lczoKICAgIC0gbmFtZTogZXhhbXBsZS12b2x1bWUKICAgICAgcGVyc2lzdGVudFZvbHVtZUNsYWltOgogICAgICAgIGNsYWltTmFtZTogZXhhbXBsZS1wdmM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+    - name: example-container
+      image: nginx
+      volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html&quot;
+          name: example-volume
+  volumes:
+    - name: example-volume
+      persistentVolumeClaim:
+        claimName: example-pvc</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>volumeMounts</code>: Especifica dónde se montará el volumen dentro del contenedor.</li>
+<li><code>volumes</code>: Hace referencia al PVC por <code>claimName</code>.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Temas Avanzados</h1>
+<div class='content'></div><h2>Provisionamiento Dinámico</h2>
+<div class='content'><ul>
+<li><strong>Clases de Almacenamiento</strong>: Definen diferentes clases de almacenamiento que pueden ser provisionadas dinámicamente.</li>
+<li><strong>Provisionadores</strong>: Las clases de almacenamiento usan provisionadores para crear PVs dinámicamente.</li>
+</ul>
+</div><h2>Ejemplo: Creación de una Clase de Almacenamiento</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogc3RvcmFnZS5rOHMuaW8vdjEKa2luZDogU3RvcmFnZUNsYXNzCm1ldGFkYXRhOgogIG5hbWU6IGZhc3QKcHJvdmlzaW9uZXI6IGt1YmVybmV0ZXMuaW8vZ2NlLXBkCnBhcmFtZXRlcnM6CiAgdHlwZTogcGQtc3NkCiAgcmVwbGljYXRpb24tdHlwZTogbm9uZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: fast
+provisioner: kubernetes.io/gce-pd
+parameters:
+  type: pd-ssd
+  replication-type: none</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>provisioner</code>: Especifica el tipo de provisionador (por ejemplo, GCE PD, AWS EBS).</li>
+<li><code>parameters</code>: Parámetros adicionales para el provisionador.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Ejemplo: PVC con Provisionamiento Dinámico</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IGR5bmFtaWMtcHZjCnNwZWM6CiAgYWNjZXNzTW9kZXM6CiAgICAtIFJlYWRXcml0ZU9uY2UKICByZXNvdXJjZXM6CiAgICByZXF1ZXN0czoKICAgICAgc3RvcmFnZTogNUdpCiAgc3RvcmFnZUNsYXNzTmFtZTogZmFzdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dynamic-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: fast</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>storageClassName</code>: Coincide con el nombre de la Clase de Almacenamiento, activando el provisionamiento dinámico.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Mejores Prácticas</h1>
+<div class='content'><ul>
+<li><strong>Usar Clases de Almacenamiento</strong>: Aprovechar las Clases de Almacenamiento para el provisionamiento dinámico para simplificar la gestión del almacenamiento.</li>
+<li><strong>Establecer Políticas de Reclamación Apropiadas</strong>: Elegir la política de reclamación correcta (Retain, Recycle, Delete) según su caso de uso.</li>
+<li><strong>Monitorear el Uso del Almacenamiento</strong>: Monitorear regularmente el uso del almacenamiento y ajustar los tamaños de los PVCs según sea necesario.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Entender los Volúmenes Persistentes y los Claims de Volúmenes Persistentes es esencial para gestionar el almacenamiento en Kubernetes. Al dominar estos conceptos, puede asegurarse de que sus aplicaciones con estado tengan soluciones de almacenamiento confiables y escalables. Recuerde usar Clases de Almacenamiento para el provisionamiento dinámico y seguir las mejores prácticas para optimizar la gestión de su almacenamiento.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='network-policies'>&#x25C4;Políticas de Red</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Volúmenes Persistentes y Claims de Volúmenes Persistentes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='storage-classes'>Clases de Almacenamiento &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuentes y Destinos de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/apachespark/data-sources-and-sinks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/apachespark/data-sources-and-sinks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/apachespark/data-sources-and-sinks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/apachespark/data-sources-and-sinks" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/apachespark/data-sources-and-sinks" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='running-sql-queries-programmatically'>&#x25C4;Ejecución de Consultas SQL Programáticamente</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Fuentes y Destinos de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-defined-functions'>Funciones Definidas por el Usuario (UDFs) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, exploraremos cómo Apache Spark interactúa con varias fuentes y destinos de datos. Esto es crucial para entender cómo leer datos en Spark, procesarlos y luego escribirlos de nuevo en un sistema de almacenamiento.</p>
+</div><h1>Introducción a Fuentes y Destinos de Datos</h1>
+<div class='content'><ul>
+<li><strong>Fuentes de Datos</strong>: Estos son los orígenes de donde se leen los datos en Spark. Ejemplos incluyen HDFS, S3, JDBC y archivos locales.</li>
+<li><strong>Destinos de Datos</strong>: Estos son los destinos donde se escriben los datos procesados. Ejemplos incluyen HDFS, S3, JDBC y archivos locales.</li>
+</ul>
+</div><h1>Leyendo Datos de Varias Fuentes</h1>
+<div class='content'></div><h2>Leyendo desde HDFS</h2>
+<div class='content'><p>HDFS (Hadoop Distributed File System) es una fuente de datos común para Spark.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCgojIEluaWNpYWxpemFyIHNlc2nDs24gZGUgU3BhcmsKc3BhcmsgPSBTcGFya1Nlc3Npb24uYnVpbGRlci5hcHBOYW1lKCJIREZTIEV4YW1wbGUiKS5nZXRPckNyZWF0ZSgpCgojIExlZXIgZGF0b3MgZGVzZGUgSERGUwpkZiA9IHNwYXJrLnJlYWQuY3N2KCJoZGZzOi8vbmFtZW5vZGU6ODAyMC9wYXRoL3RvL2ZpbGUuY3N2IiwgaGVhZGVyPVRydWUsIGluZmVyU2NoZW1hPVRydWUpCgojIE1vc3RyYXIgbG9zIGRhdG9zCmRmLnNob3coKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+
+# Inicializar sesi&oacute;n de Spark
+spark = SparkSession.builder.appName(&quot;HDFS Example&quot;).getOrCreate()
+
+# Leer datos desde HDFS
+df = spark.read.csv(&quot;hdfs://namenode:8020/path/to/file.csv&quot;, header=True, inferSchema=True)
+
+# Mostrar los datos
+df.show()</pre></div><div class='content'></div><h2>Leyendo desde S3</h2>
+<div class='content'><p>Amazon S3 es otra fuente de datos popular.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMZWVyIGRhdG9zIGRlc2RlIFMzCmRmID0gc3BhcmsucmVhZC5jc3YoInMzYTovL2J1Y2tldC1uYW1lL3BhdGgvdG8vZmlsZS5jc3YiLCBoZWFkZXI9VHJ1ZSwgaW5mZXJTY2hlbWE9VHJ1ZSkKCiMgTW9zdHJhciBsb3MgZGF0b3MKZGYuc2hvdygp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Leer datos desde S3
+df = spark.read.csv(&quot;s3a://bucket-name/path/to/file.csv&quot;, header=True, inferSchema=True)
+
+# Mostrar los datos
+df.show()</pre></div><div class='content'></div><h2>Leyendo desde JDBC</h2>
+<div class='content'><p>JDBC permite a Spark leer datos desde bases de datos relacionales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMZWVyIGRhdG9zIGRlc2RlIHVuYSBmdWVudGUgSkRCQwpkZiA9IHNwYXJrLnJlYWQuZm9ybWF0KCJqZGJjIikub3B0aW9ucygKICAgIHVybD0iamRiYzpteXNxbDovL2hvc3RuYW1lOnBvcnQvZGJuYW1lIiwKICAgIGRyaXZlcj0iY29tLm15c3FsLmpkYmMuRHJpdmVyIiwKICAgIGRidGFibGU9InRhYmxlbmFtZSIsCiAgICB1c2VyPSJ1c2VybmFtZSIsCiAgICBwYXNzd29yZD0icGFzc3dvcmQiCikubG9hZCgpCgojIE1vc3RyYXIgbG9zIGRhdG9zCmRmLnNob3coKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Leer datos desde una fuente JDBC
+df = spark.read.format(&quot;jdbc&quot;).options(
+    url=&quot;jdbc:mysql://hostname:port/dbname&quot;,
+    driver=&quot;com.mysql.jdbc.Driver&quot;,
+    dbtable=&quot;tablename&quot;,
+    user=&quot;username&quot;,
+    password=&quot;password&quot;
+).load()
+
+# Mostrar los datos
+df.show()</pre></div><div class='content'></div><h2>Leyendo desde Archivos Locales</h2>
+<div class='content'><p>Leer datos desde archivos locales es sencillo y útil para desarrollo y pruebas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMZWVyIGRhdG9zIGRlc2RlIHVuIGFyY2hpdm8gbG9jYWwKZGYgPSBzcGFyay5yZWFkLmNzdigiZmlsZTovLy9wYXRoL3RvL2xvY2FsL2ZpbGUuY3N2IiwgaGVhZGVyPVRydWUsIGluZmVyU2NoZW1hPVRydWUpCgojIE1vc3RyYXIgbG9zIGRhdG9zCmRmLnNob3coKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Leer datos desde un archivo local
+df = spark.read.csv(&quot;file:///path/to/local/file.csv&quot;, header=True, inferSchema=True)
+
+# Mostrar los datos
+df.show()</pre></div><div class='content'></div><h1>Escribiendo Datos a Varios Destinos</h1>
+<div class='content'></div><h2>Escribiendo a HDFS</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBkYXRvcyBhIEhERlMKZGYud3JpdGUuY3N2KCJoZGZzOi8vbmFtZW5vZGU6ODAyMC9wYXRoL3RvL291dHB1dC5jc3YiLCBoZWFkZXI9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir datos a HDFS
+df.write.csv(&quot;hdfs://namenode:8020/path/to/output.csv&quot;, header=True)</pre></div><div class='content'></div><h2>Escribiendo a S3</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBkYXRvcyBhIFMzCmRmLndyaXRlLmNzdigiczNhOi8vYnVja2V0LW5hbWUvcGF0aC90by9vdXRwdXQuY3N2IiwgaGVhZGVyPVRydWUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir datos a S3
+df.write.csv(&quot;s3a://bucket-name/path/to/output.csv&quot;, header=True)</pre></div><div class='content'></div><h2>Escribiendo a JDBC</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBkYXRvcyBhIHVuIGRlc3Rpbm8gSkRCQwpkZi53cml0ZS5mb3JtYXQoImpkYmMiKS5vcHRpb25zKAogICAgdXJsPSJqZGJjOm15c3FsOi8vaG9zdG5hbWU6cG9ydC9kYm5hbWUiLAogICAgZHJpdmVyPSJjb20ubXlzcWwuamRiYy5Ecml2ZXIiLAogICAgZGJ0YWJsZT0ib3V0cHV0X3RhYmxlIiwKICAgIHVzZXI9InVzZXJuYW1lIiwKICAgIHBhc3N3b3JkPSJwYXNzd29yZCIKKS5zYXZlKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir datos a un destino JDBC
+df.write.format(&quot;jdbc&quot;).options(
+    url=&quot;jdbc:mysql://hostname:port/dbname&quot;,
+    driver=&quot;com.mysql.jdbc.Driver&quot;,
+    dbtable=&quot;output_table&quot;,
+    user=&quot;username&quot;,
+    password=&quot;password&quot;
+).save()</pre></div><div class='content'></div><h2>Escribiendo a Archivos Locales</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBkYXRvcyBhIHVuIGFyY2hpdm8gbG9jYWwKZGYud3JpdGUuY3N2KCJmaWxlOi8vL3BhdGgvdG8vbG9jYWwvb3V0cHV0LmNzdiIsIGhlYWRlcj1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir datos a un archivo local
+df.write.csv(&quot;file:///path/to/local/output.csv&quot;, header=True)</pre></div><div class='content'></div><h1>Temas Avanzados</h1>
+<div class='content'></div><h2>Particionamiento y Bucketing</h2>
+<div class='content'><p>El particionamiento y el bucketing pueden mejorar el rendimiento de las operaciones de lectura y escritura.</p>
+<ul>
+<li><strong>Particionamiento</strong>: Divide los datos en piezas más pequeñas y manejables basadas en una columna.</li>
+<li><strong>Bucketing</strong>: Divide los datos en un número fijo de buckets, lo cual puede ser útil para joins.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBkYXRvcyBjb24gcGFydGljaW9uYW1pZW50bwpkZi53cml0ZS5wYXJ0aXRpb25CeSgiY29sdW1uX25hbWUiKS5jc3YoImhkZnM6Ly9uYW1lbm9kZTo4MDIwL3BhdGgvdG8vb3V0cHV0LmNzdiIsIGhlYWRlcj1UcnVlKQoKIyBFc2NyaWJpciBkYXRvcyBjb24gYnVja2V0aW5nCmRmLndyaXRlLmJ1Y2tldEJ5KDEwLCAiY29sdW1uX25hbWUiKS5zYXZlQXNUYWJsZSgiYnVja2V0ZWRfdGFibGUiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir datos con particionamiento
+df.write.partitionBy(&quot;column_name&quot;).csv(&quot;hdfs://namenode:8020/path/to/output.csv&quot;, header=True)
+
+# Escribir datos con bucketing
+df.write.bucketBy(10, &quot;column_name&quot;).saveAsTable(&quot;bucketed_table&quot;)</pre></div><div class='content'></div><h2>Manejo de Diferentes Formatos de Archivo</h2>
+<div class='content'><p>Spark soporta varios formatos de archivo como Parquet, ORC, JSON y Avro.</p>
+<ul>
+<li><strong>Parquet</strong>: Formato de almacenamiento columnar que es altamente eficiente para operaciones de lectura intensiva.</li>
+<li><strong>ORC</strong>: Formato Optimizado de Columna de Fila, similar a Parquet pero a menudo usado en Hive.</li>
+<li><strong>JSON</strong>: Formato ligero de intercambio de datos.</li>
+<li><strong>Avro</strong>: Formato de almacenamiento basado en filas que es compacto y eficiente para operaciones de escritura intensiva.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBkYXRvcyBlbiBmb3JtYXRvIFBhcnF1ZXQKZGYud3JpdGUucGFycXVldCgiaGRmczovL25hbWVub2RlOjgwMjAvcGF0aC90by9vdXRwdXQucGFycXVldCIpCgojIEVzY3JpYmlyIGRhdG9zIGVuIGZvcm1hdG8gT1JDCmRmLndyaXRlLm9yYygiaGRmczovL25hbWVub2RlOjgwMjAvcGF0aC90by9vdXRwdXQub3JjIikKCiMgRXNjcmliaXIgZGF0b3MgZW4gZm9ybWF0byBKU09OCmRmLndyaXRlLmpzb24oImhkZnM6Ly9uYW1lbm9kZTo4MDIwL3BhdGgvdG8vb3V0cHV0Lmpzb24iKQoKIyBFc2NyaWJpciBkYXRvcyBlbiBmb3JtYXRvIEF2cm8KZGYud3JpdGUuZm9ybWF0KCJhdnJvIikuc2F2ZSgiaGRmczovL25hbWVub2RlOjgwMjAvcGF0aC90by9vdXRwdXQuYXZybyIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir datos en formato Parquet
+df.write.parquet(&quot;hdfs://namenode:8020/path/to/output.parquet&quot;)
+
+# Escribir datos en formato ORC
+df.write.orc(&quot;hdfs://namenode:8020/path/to/output.orc&quot;)
+
+# Escribir datos en formato JSON
+df.write.json(&quot;hdfs://namenode:8020/path/to/output.json&quot;)
+
+# Escribir datos en formato Avro
+df.write.format(&quot;avro&quot;).save(&quot;hdfs://namenode:8020/path/to/output.avro&quot;)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Entender cómo leer y escribir en varias fuentes y destinos de datos es fundamental para trabajar con Apache Spark. Este conocimiento te permite integrar Spark con diferentes sistemas de almacenamiento, convirtiéndolo en una herramienta versátil para el procesamiento de grandes volúmenes de datos. Al dominar estos conceptos, puedes gestionar eficientemente el flujo de datos en tus aplicaciones Spark, asegurando un rendimiento y escalabilidad óptimos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='running-sql-queries-programmatically'>&#x25C4;Ejecución de Consultas SQL Programáticamente</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Fuentes y Destinos de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='user-defined-functions'>Funciones Definidas por el Usuario (UDFs) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>

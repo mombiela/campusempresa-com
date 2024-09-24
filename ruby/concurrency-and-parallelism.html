@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrencia y Paralelismo en Ruby</title>
+
+    <link rel="alternate" href="https://campusempresa.com/ruby/concurrency-and-parallelism" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/ruby/concurrency-and-parallelism" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/ruby/concurrency-and-parallelism" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/ruby/concurrency-and-parallelism" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/ruby/concurrency-and-parallelism" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dsls'>&#x25C4;DSLs (Lenguajes Específicos de Dominio)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Concurrencia y Paralelismo en Ruby</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='garbage-collection'>Recolección de Basura &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La concurrencia y el paralelismo son conceptos cruciales en la programación moderna, especialmente para mejorar el rendimiento de las aplicaciones. En esta sección, exploraremos cómo Ruby maneja la concurrencia y el paralelismo, proporcionándote el conocimiento para escribir código eficiente y escalable.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Concurrencia</strong>: La capacidad de un programa para avanzar en múltiples tareas simultáneamente. Esto no significa necesariamente que las tareas se estén ejecutando al mismo tiempo, sino que están avanzando sin esperar a que las otras terminen.</li>
+<li><strong>Paralelismo</strong>: La capacidad de ejecutar múltiples tareas simultáneamente, típicamente en múltiples procesadores o núcleos.</li>
+</ul>
+</div><h1>Hilos en Ruby</h1>
+<div class='content'></div><h2>Creando Hilos</h2>
+<div class='content'><p>Ruby proporciona soporte incorporado para la concurrencia a través de hilos. Un hilo es la unidad más pequeña de ejecución dentro de un proceso.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGhyZWFkID0gVGhyZWFkLm5ldyBkbwogIHB1dHMgIsKhSG9sYSBkZXNkZSB1biBudWV2byBoaWxvISIKZW5kCgp0aHJlYWQuam9pbiAjIEVzcGVyYXIgYSBxdWUgZWwgaGlsbyB0ZXJtaW5l"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>thread = Thread.new do
+  puts &quot;&iexcl;Hola desde un nuevo hilo!&quot;
+end
+
+thread.join # Esperar a que el hilo termine</pre></div><div class='content'></div><h2>Seguridad de Hilos</h2>
+<div class='content'><p>Al usar hilos, es importante asegurarse de que los recursos compartidos se accedan de manera segura para evitar condiciones de carrera.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y291bnRlciA9IDAKbXV0ZXggPSBNdXRleC5uZXcKCnRocmVhZHMgPSAxMC50aW1lcy5tYXAgZG8KICBUaHJlYWQubmV3IGRvCiAgICAxMDAwLnRpbWVzIGRvCiAgICAgIG11dGV4LnN5bmNocm9uaXplIGRvCiAgICAgICAgY291bnRlciArPSAxCiAgICAgIGVuZAogICAgZW5kCiAgZW5kCmVuZAoKdGhyZWFkcy5lYWNoKCY6am9pbikKcHV0cyBjb3VudGVyICMgRGViZXLDrWEgaW1wcmltaXIgMTAwMDA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>counter = 0
+mutex = Mutex.new
+
+threads = 10.times.map do
+  Thread.new do
+    1000.times do
+      mutex.synchronize do
+        counter += 1
+      end
+    end
+  end
+end
+
+threads.each(&amp;:join)
+puts counter # Deber&iacute;a imprimir 10000</pre></div><div class='content'></div><h1>Fibras en Ruby</h1>
+<div class='content'><p>Las fibras son una alternativa más ligera a los hilos y proporcionan una forma de implementar concurrencia cooperativa.</p>
+</div><h2>Creando Fibras</h2>
+<div class='content'><p>Las fibras te permiten pausar y reanudar la ejecución en puntos específicos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZmliZXIgPSBGaWJlci5uZXcgZG8KICBwdXRzICJGaWJyYSBpbmljaWFkYSIKICBGaWJlci55aWVsZAogIHB1dHMgIkZpYnJhIHJlYW51ZGFkYSIKZW5kCgpmaWJlci5yZXN1bWUKcHV0cyAiRGUgdnVlbHRhIGFsIHByaW5jaXBhbCIKZmliZXIucmVzdW1l"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fiber = Fiber.new do
+  puts &quot;Fibra iniciada&quot;
+  Fiber.yield
+  puts &quot;Fibra reanudada&quot;
+end
+
+fiber.resume
+puts &quot;De vuelta al principal&quot;
+fiber.resume</pre></div><div class='content'></div><h1>Paralelismo con Procesos</h1>
+<div class='content'></div><h2>Creando Procesos</h2>
+<div class='content'><p>Ruby también puede lograr paralelismo bifurcando procesos. Cada proceso bifurcado se ejecuta de manera independiente y puede ejecutar código en paralelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm9yayBkbwogIHB1dHMgIkVzdGUgZXMgdW4gcHJvY2VzbyBoaWpvIgplbmQKCnB1dHMgIkVzdGUgZXMgZWwgcHJvY2VzbyBwYWRyZSIKUHJvY2Vzcy53YWl0ICMgRXNwZXJhciBhIHF1ZSBlbCBwcm9jZXNvIGhpam8gdGVybWluZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fork do
+  puts &quot;Este es un proceso hijo&quot;
+end
+
+puts &quot;Este es el proceso padre&quot;
+Process.wait # Esperar a que el proceso hijo termine</pre></div><div class='content'></div><h2>Usando la gema `Parallel`</h2>
+<div class='content'><p>Para un procesamiento paralelo más avanzado, puedes usar la gema <code>parallel</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVxdWlyZSAncGFyYWxsZWwnCgpyZXN1bHRzID0gUGFyYWxsZWwubWFwKFsxLCAyLCAzLCA0LCA1XSkgZG8gfG51bWJlcnwKICBudW1iZXIgKiAyCmVuZAoKcHV0cyByZXN1bHRzLmluc3BlY3QgIyBbMiwgNCwgNiwgOCwgMTBd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>require 'parallel'
+
+results = Parallel.map([1, 2, 3, 4, 5]) do |number|
+  number * 2
+end
+
+puts results.inspect # [2, 4, 6, 8, 10]</pre></div><div class='content'></div><h1>Comparando Concurrencia y Paralelismo</h1>
+<div class='content'><p>| Característica | Hilos                           | Fibras                          | Procesos                         |
+|----------------|---------------------------------|---------------------------------|----------------------------------|
+| Concurrencia   | Sí                              | Sí                              | No                               |
+| Paralelismo    | Limitado (debido al GIL)        | No                              | Sí                               |
+| Complejidad    | Media                           | Baja                            | Alta                             |
+| Caso de Uso    | Tareas dependientes de I/O      | Tareas ligeras                  | Tareas dependientes de CPU       |</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La concurrencia y el paralelismo son herramientas poderosas para mejorar el rendimiento de las aplicaciones Ruby. Al entender y utilizar hilos, fibras y procesos, puedes escribir código más eficiente y escalable. Recuerda siempre considerar la seguridad de los hilos y elegir la herramienta adecuada para el trabajo según tu caso de uso específico.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dsls'>&#x25C4;DSLs (Lenguajes Específicos de Dominio)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Concurrencia y Paralelismo en Ruby</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='garbage-collection'>Recolección de Basura &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Entès!</a>
+    <a href="/cookies">Més informació</a>
+</div>	
+
+	</div>    
+</body>
+</html>
