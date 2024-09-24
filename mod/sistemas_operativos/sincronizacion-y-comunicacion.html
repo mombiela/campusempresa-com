@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sincronización y comunicación entre procesos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sistemas_operativos/sincronizacion-y-comunicacion" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sistemas_operativos/sincronizacion-y-comunicacion" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sistemas_operativos/sincronizacion-y-comunicacion" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sistemas_operativos/sincronizacion-y-comunicacion" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sistemas_operativos/sincronizacion-y-comunicacion" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='hilos-y-procesos'>&#x25C4;Hilos y procesos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Sincronización y comunicación entre procesos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='problemas-de-concurrencia'>Problemas de concurrencia: condiciones de carrera y deadlocks &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La sincronización y comunicación entre procesos son aspectos fundamentales en los sistemas operativos. Estos conceptos permiten que múltiples procesos trabajen de manera coordinada, evitando conflictos y garantizando la integridad de los datos. En esta sección, exploraremos los mecanismos y técnicas utilizados para lograr una sincronización y comunicación efectiva entre procesos.</p>
+</div><h1>Sincronización de Procesos</h1>
+<div class='content'><p>La sincronización de procesos es crucial para evitar condiciones de carrera y asegurar que los procesos compartan recursos de manera segura.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Condición de carrera</strong>: Ocurre cuando dos o más procesos acceden y manipulan datos compartidos simultáneamente, lo que puede llevar a resultados inconsistentes.</li>
+<li><strong>Sección crítica</strong>: Parte del código donde el proceso accede a recursos compartidos.</li>
+<li><strong>Mutex (Mutual Exclusion)</strong>: Mecanismo que asegura que solo un proceso pueda acceder a la sección crítica a la vez.</li>
+<li><strong>Semáforos</strong>: Variables utilizadas para controlar el acceso a recursos compartidos.</li>
+</ul>
+</div><h2>Ejemplo de Mutex en C</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHB0aHJlYWQuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CgpwdGhyZWFkX211dGV4X3QgbG9jazsKCnZvaWQgKnRocmVhZF9mdW5jdGlvbih2b2lkICphcmcpIHsKICAgIHB0aHJlYWRfbXV0ZXhfbG9jaygmbG9jayk7CiAgICAvLyBTZWNjacOzbiBjcsOtdGljYQogICAgcHJpbnRmKCJUaHJlYWQgJWQgZXN0w6EgZW4gbGEgc2VjY2nDs24gY3LDrXRpY2FcbiIsICooaW50ICopYXJnKTsKICAgIHB0aHJlYWRfbXV0ZXhfdW5sb2NrKCZsb2NrKTsKICAgIHJldHVybiBOVUxMOwp9CgppbnQgbWFpbigpIHsKICAgIHB0aHJlYWRfdCB0aHJlYWRzWzJdOwogICAgaW50IHRocmVhZF9pZHNbMl0gPSB7MSwgMn07CgogICAgcHRocmVhZF9tdXRleF9pbml0KCZsb2NrLCBOVUxMKTsKCiAgICBmb3IgKGludCBpID0gMDsgaSA8IDI7IGkrKykgewogICAgICAgIHB0aHJlYWRfY3JlYXRlKCZ0aHJlYWRzW2ldLCBOVUxMLCB0aHJlYWRfZnVuY3Rpb24sICZ0aHJlYWRfaWRzW2ldKTsKICAgIH0KCiAgICBmb3IgKGludCBpID0gMDsgaSA8IDI7IGkrKykgewogICAgICAgIHB0aHJlYWRfam9pbih0aHJlYWRzW2ldLCBOVUxMKTsKICAgIH0KCiAgICBwdGhyZWFkX211dGV4X2Rlc3Ryb3koJmxvY2spOwogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+
+pthread_mutex_t lock;
+
+void *thread_function(void *arg) {
+    pthread_mutex_lock(&amp;lock);
+    // Secci&oacute;n cr&iacute;tica
+    printf(&quot;Thread %d est&aacute; en la secci&oacute;n cr&iacute;tica\n&quot;, *(int *)arg);
+    pthread_mutex_unlock(&amp;lock);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[2];
+    int thread_ids[2] = {1, 2};
+
+    pthread_mutex_init(&amp;lock, NULL);
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_create(&amp;threads[i], NULL, thread_function, &amp;thread_ids[i]);
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    pthread_mutex_destroy(&amp;lock);
+    return 0;
+}</pre></div><div class='content'></div><h2>Ejemplo de Semáforo en C</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHB0aHJlYWQuaD4KI2luY2x1ZGUgPHNlbWFwaG9yZS5oPgojaW5jbHVkZSA8c3RkaW8uaD4KCnNlbV90IHNlbTsKCnZvaWQgKnRocmVhZF9mdW5jdGlvbih2b2lkICphcmcpIHsKICAgIHNlbV93YWl0KCZzZW0pOwogICAgLy8gU2VjY2nDs24gY3LDrXRpY2EKICAgIHByaW50ZigiVGhyZWFkICVkIGVzdMOhIGVuIGxhIHNlY2Npw7NuIGNyw610aWNhXG4iLCAqKGludCAqKWFyZyk7CiAgICBzZW1fcG9zdCgmc2VtKTsKICAgIHJldHVybiBOVUxMOwp9CgppbnQgbWFpbigpIHsKICAgIHB0aHJlYWRfdCB0aHJlYWRzWzJdOwogICAgaW50IHRocmVhZF9pZHNbMl0gPSB7MSwgMn07CgogICAgc2VtX2luaXQoJnNlbSwgMCwgMSk7CgogICAgZm9yIChpbnQgaSA9IDA7IGkgPCAyOyBpKyspIHsKICAgICAgICBwdGhyZWFkX2NyZWF0ZSgmdGhyZWFkc1tpXSwgTlVMTCwgdGhyZWFkX2Z1bmN0aW9uLCAmdGhyZWFkX2lkc1tpXSk7CiAgICB9CgogICAgZm9yIChpbnQgaSA9IDA7IGkgPCAyOyBpKyspIHsKICAgICAgICBwdGhyZWFkX2pvaW4odGhyZWFkc1tpXSwgTlVMTCk7CiAgICB9CgogICAgc2VtX2Rlc3Ryb3koJnNlbSk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;stdio.h&gt;
+
+sem_t sem;
+
+void *thread_function(void *arg) {
+    sem_wait(&amp;sem);
+    // Secci&oacute;n cr&iacute;tica
+    printf(&quot;Thread %d est&aacute; en la secci&oacute;n cr&iacute;tica\n&quot;, *(int *)arg);
+    sem_post(&amp;sem);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[2];
+    int thread_ids[2] = {1, 2};
+
+    sem_init(&amp;sem, 0, 1);
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_create(&amp;threads[i], NULL, thread_function, &amp;thread_ids[i]);
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    sem_destroy(&amp;sem);
+    return 0;
+}</pre></div><div class='content'></div><h1>Comunicación entre Procesos (IPC)</h1>
+<div class='content'><p>La comunicación entre procesos (IPC) permite que los procesos intercambien datos y señales. Existen varios mecanismos de IPC, cada uno con sus propias ventajas y desventajas.</p>
+</div><h2>Mecanismos de IPC</h2>
+<div class='content'><ul>
+<li><strong>Pipes</strong>: Permiten la comunicación unidireccional entre procesos relacionados.</li>
+<li><strong>FIFOs (Named Pipes)</strong>: Similar a los pipes, pero permiten comunicación bidireccional y entre procesos no relacionados.</li>
+<li><strong>Sockets</strong>: Permiten la comunicación entre procesos en diferentes máquinas a través de una red.</li>
+<li><strong>Memoria compartida</strong>: Permite que múltiples procesos accedan a una región de memoria común.</li>
+<li><strong>Mensajes</strong>: Permiten el intercambio de mensajes entre procesos.</li>
+</ul>
+</div><h2>Ejemplo de Pipe en C</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDx1bmlzdGQuaD4KCmludCBtYWluKCkgewogICAgaW50IGZkWzJdOwogICAgcGlwZShmZCk7CiAgICBwaWRfdCBwaWQgPSBmb3JrKCk7CgogICAgaWYgKHBpZCA9PSAwKSB7CiAgICAgICAgLy8gUHJvY2VzbyBoaWpvCiAgICAgICAgY2xvc2UoZmRbMF0pOwogICAgICAgIGNoYXIgbWVzc2FnZVtdID0gIkhvbGEgZGVzZGUgZWwgcHJvY2VzbyBoaWpvIjsKICAgICAgICB3cml0ZShmZFsxXSwgbWVzc2FnZSwgc2l6ZW9mKG1lc3NhZ2UpKTsKICAgICAgICBjbG9zZShmZFsxXSk7CiAgICB9IGVsc2UgewogICAgICAgIC8vIFByb2Nlc28gcGFkcmUKICAgICAgICBjbG9zZShmZFsxXSk7CiAgICAgICAgY2hhciBidWZmZXJbMTAwXTsKICAgICAgICByZWFkKGZkWzBdLCBidWZmZXIsIHNpemVvZihidWZmZXIpKTsKICAgICAgICBwcmludGYoIk1lbnNhamUgcmVjaWJpZG86ICVzXG4iLCBidWZmZXIpOwogICAgICAgIGNsb3NlKGZkWzBdKTsKICAgIH0KCiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+int main() {
+    int fd[2];
+    pipe(fd);
+    pid_t pid = fork();
+
+    if (pid == 0) {
+        // Proceso hijo
+        close(fd[0]);
+        char message[] = &quot;Hola desde el proceso hijo&quot;;
+        write(fd[1], message, sizeof(message));
+        close(fd[1]);
+    } else {
+        // Proceso padre
+        close(fd[1]);
+        char buffer[100];
+        read(fd[0], buffer, sizeof(buffer));
+        printf(&quot;Mensaje recibido: %s\n&quot;, buffer);
+        close(fd[0]);
+    }
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Ejemplo de Memoria Compartida en C</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KI2luY2x1ZGUgPHN5cy9pcGMuaD4KI2luY2x1ZGUgPHN5cy9zaG0uaD4KI2luY2x1ZGUgPHN5cy90eXBlcy5oPgoKaW50IG1haW4oKSB7CiAgICBrZXlfdCBrZXkgPSBmdG9rKCJzaG1maWxlIiwgNjUpOwogICAgaW50IHNobWlkID0gc2htZ2V0KGtleSwgMTAyNCwgMDY2NiB8IElQQ19DUkVBVCk7CiAgICBjaGFyICpzdHIgPSAoY2hhciAqKXNobWF0KHNobWlkLCAodm9pZCAqKTAsIDApOwoKICAgIGlmIChmb3JrKCkgPT0gMCkgewogICAgICAgIC8vIFByb2Nlc28gaGlqbwogICAgICAgIHByaW50ZigiRXNjcmliaWVuZG8gZW4gbWVtb3JpYSBjb21wYXJ0aWRhXG4iKTsKICAgICAgICBzcHJpbnRmKHN0ciwgIkhvbGEgZGVzZGUgZWwgcHJvY2VzbyBoaWpvIik7CiAgICAgICAgc2htZHQoc3RyKTsKICAgIH0gZWxzZSB7CiAgICAgICAgLy8gUHJvY2VzbyBwYWRyZQogICAgICAgIHdhaXQoTlVMTCk7CiAgICAgICAgcHJpbnRmKCJMZXllbmRvIGRlIG1lbW9yaWEgY29tcGFydGlkYTogJXNcbiIsIHN0cik7CiAgICAgICAgc2htZHQoc3RyKTsKICAgICAgICBzaG1jdGwoc2htaWQsIElQQ19STUlELCBOVUxMKTsKICAgIH0KCiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;sys/ipc.h&gt;
+#include &lt;sys/shm.h&gt;
+#include &lt;sys/types.h&gt;
+
+int main() {
+    key_t key = ftok(&quot;shmfile&quot;, 65);
+    int shmid = shmget(key, 1024, 0666 | IPC_CREAT);
+    char *str = (char *)shmat(shmid, (void *)0, 0);
+
+    if (fork() == 0) {
+        // Proceso hijo
+        printf(&quot;Escribiendo en memoria compartida\n&quot;);
+        sprintf(str, &quot;Hola desde el proceso hijo&quot;);
+        shmdt(str);
+    } else {
+        // Proceso padre
+        wait(NULL);
+        printf(&quot;Leyendo de memoria compartida: %s\n&quot;, str);
+        shmdt(str);
+        shmctl(shmid, IPC_RMID, NULL);
+    }
+
+    return 0;
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La sincronización y comunicación entre procesos son componentes esenciales en los sistemas operativos modernos. La sincronización asegura que los procesos no interfieran entre sí al acceder a recursos compartidos, mientras que la comunicación entre procesos permite el intercambio de datos y señales. Comprender estos conceptos y sus implementaciones prácticas es crucial para el desarrollo de aplicaciones robustas y eficientes en entornos multitarea.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='hilos-y-procesos'>&#x25C4;Hilos y procesos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Sincronización y comunicación entre procesos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='problemas-de-concurrencia'>Problemas de concurrencia: condiciones de carrera y deadlocks &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

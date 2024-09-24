@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoreo de NGINX</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/monitoring-nginx" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/monitoring-nginx" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/monitoring-nginx" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/monitoring-nginx" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/monitoring-nginx" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-error-pages'>&#x25C4;Páginas de Error Personalizadas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Monitoreo de NGINX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='logging-and-log-management'>Gestión de Registros y Logs &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Monitorear NGINX es crucial para asegurar el rendimiento, la fiabilidad y la seguridad de tu servidor web. Esta sección te guiará a través de varios métodos y herramientas para monitorear NGINX, desde el análisis básico de registros hasta soluciones de monitoreo avanzadas.</p>
+</div><h1>Conceptos Clave del Monitoreo de NGINX</h1>
+<div class='content'><ul>
+<li><strong>Registros de Acceso</strong>: Rastrean las solicitudes realizadas a tu servidor.</li>
+<li><strong>Registros de Errores</strong>: Registran cualquier problema o error encontrado por NGINX.</li>
+<li><strong>Módulo de Estado</strong>: Proporciona métricas en tiempo real sobre el rendimiento de NGINX.</li>
+<li><strong>Herramientas de Monitoreo de Terceros</strong>: Herramientas como Prometheus, Grafana y Datadog para monitoreo avanzado.</li>
+</ul>
+</div><h1>Registros de Acceso</h1>
+<div class='content'><p>Los registros de acceso registran todas las solicitudes procesadas por NGINX. Estos registros son invaluables para entender los patrones de tráfico, identificar posibles problemas y para propósitos de auditoría.</p>
+</div><h2>Configuración de los Registros de Acceso</h2>
+<div class='content'><p>Por defecto, NGINX registra todas las solicitudes en el registro de acceso. Puedes configurar el formato y la ubicación de estos registros en el archivo de configuración de NGINX.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBsb2dfZm9ybWF0IG1haW4gJyRyZW1vdGVfYWRkciAtICRyZW1vdGVfdXNlciBbJHRpbWVfbG9jYWxdICIkcmVxdWVzdCIgJwogICAgICAgICAgICAgICAgICAgICAgJyRzdGF0dXMgJGJvZHlfYnl0ZXNfc2VudCAiJGh0dHBfcmVmZXJlciIgJwogICAgICAgICAgICAgICAgICAgICAgJyIkaHR0cF91c2VyX2FnZW50IiAiJGh0dHBfeF9mb3J3YXJkZWRfZm9yIic7CgogICAgYWNjZXNzX2xvZyAvdmFyL2xvZy9uZ2lueC9hY2Nlc3MubG9nIG1haW47Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    log_format main '$remote_addr - $remote_user [$time_local] &quot;$request&quot; '
+                      '$status $body_bytes_sent &quot;$http_referer&quot; '
+                      '&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;';
+
+    access_log /var/log/nginx/access.log main;
+}</pre></div><div class='content'><ul>
+<li><strong>log_format</strong>: Define el formato de las entradas del registro.</li>
+<li><strong>access_log</strong>: Especifica el archivo donde se almacenarán los registros y el formato a usar.</li>
+</ul>
+</div><h2>Análisis de los Registros de Acceso</h2>
+<div class='content'><p>Puedes usar herramientas como <code>awk</code>, <code>grep</code>, o herramientas especializadas de análisis de registros como GoAccess para analizar los registros de acceso.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvOiBDb250YXIgZWwgbsO6bWVybyBkZSBzb2xpY2l0dWRlcyBwb3IgSVAKYXdrICd7cHJpbnQgJDF9JyAvdmFyL2xvZy9uZ2lueC9hY2Nlc3MubG9nIHwgc29ydCB8IHVuaXEgLWMgfCBzb3J0IC1ucg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo: Contar el n&uacute;mero de solicitudes por IP
+awk '{print $1}' /var/log/nginx/access.log | sort | uniq -c | sort -nr</pre></div><div class='content'></div><h1>Registros de Errores</h1>
+<div class='content'><p>Los registros de errores capturan cualquier problema o error que ocurra mientras NGINX procesa solicitudes. Esto incluye errores de configuración, errores de tiempo de ejecución y más.</p>
+</div><h2>Configuración de los Registros de Errores</h2>
+<div class='content'><p>Los registros de errores pueden configurarse para capturar diferentes niveles de detalle.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBlcnJvcl9sb2cgL3Zhci9sb2cvbmdpbngvZXJyb3IubG9nIHdhcm47Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    error_log /var/log/nginx/error.log warn;
+}</pre></div><div class='content'><ul>
+<li><strong>error_log</strong>: Especifica el archivo donde se almacenarán los registros de errores y el nivel de detalle (por ejemplo, <code>debug</code>, <code>info</code>, <code>notice</code>, <code>warn</code>, <code>error</code>, <code>crit</code>, <code>alert</code>, <code>emerg</code>).</li>
+</ul>
+</div><h2>Análisis de los Registros de Errores</h2>
+<div class='content'><p>Los registros de errores pueden ser analizados usando herramientas como <code>grep</code> para filtrar tipos específicos de errores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvOiBFbmNvbnRyYXIgdG9kb3MgbG9zIGVycm9yZXMgIjQwNCBOb3QgRm91bmQiCmdyZXAgIjQwNCIgL3Zhci9sb2cvbmdpbngvZXJyb3IubG9n"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo: Encontrar todos los errores &quot;404 Not Found&quot;
+grep &quot;404&quot; /var/log/nginx/error.log</pre></div><div class='content'></div><h1>Módulo de Estado de NGINX</h1>
+<div class='content'><p>El módulo de estado de NGINX proporciona métricas en tiempo real sobre el rendimiento del servidor, incluyendo conexiones activas, solicitudes por segundo y más.</p>
+</div><h2>Habilitación del Módulo de Estado</h2>
+<div class='content'><p>Para habilitar el módulo de estado, necesitas configurar un bloque de ubicación en tu configuración de NGINX.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzZXJ2ZXIgewogICAgICAgIGxvY2F0aW9uIC9uZ2lueF9zdGF0dXMgewogICAgICAgICAgICBzdHViX3N0YXR1czsKICAgICAgICAgICAgYWxsb3cgMTI3LjAuMC4xOyAjIFNvbG8gcGVybWl0aXIgYWNjZXNvIGxvY2FsCiAgICAgICAgICAgIGRlbnkgYWxsOyAjIERlbmVnYXIgdG9kbyBvdHJvIGFjY2VzbwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    server {
+        location /nginx_status {
+            stub_status;
+            allow 127.0.0.1; # Solo permitir acceso local
+            deny all; # Denegar todo otro acceso
+        }
+    }
+}</pre></div><div class='content'></div><h2>Acceso a la Página de Estado</h2>
+<div class='content'><p>Una vez configurado, puedes acceder a la página de estado navegando a <code>http://tu_ip_del_servidor/nginx_status</code>.</p>
+</div><h2>Métricas Proporcionadas</h2>
+<div class='content'><ul>
+<li><strong>Conexiones activas</strong>: El número actual de conexiones de clientes activas.</li>
+<li><strong>Conexiones aceptadas</strong>: El número total de conexiones de clientes aceptadas.</li>
+<li><strong>Conexiones manejadas</strong>: El número total de conexiones manejadas.</li>
+<li><strong>Solicitudes</strong>: El número total de solicitudes de clientes.</li>
+</ul>
+</div><h1>Herramientas de Monitoreo de Terceros</h1>
+<div class='content'><p>Para un monitoreo más avanzado, puedes integrar NGINX con herramientas de terceros como Prometheus, Grafana y Datadog.</p>
+</div><h2>Prometheus y Grafana</h2>
+<div class='content'><p>Prometheus es un sistema de monitoreo de código abierto que recolecta métricas, y Grafana es una herramienta de visualización que puede mostrar estas métricas.</p>
+<h4>Configuración de Prometheus con NGINX</h4>
+<ol>
+<li>
+<p><strong>Instalar el Exportador de Prometheus para NGINX</strong>:</p>
+<pre><code class="language-bash">docker run -d -p 9113:9113 nginx/nginx-prometheus-exporter:latest -nginx.scrape-uri http://localhost:8080/nginx_status
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Prometheus</strong>:</p>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'nginx'
+    static_configs:
+      - targets: ['localhost:9113']
+</code></pre>
+</li>
+<li>
+<p><strong>Visualizar con Grafana</strong>:</p>
+<ul>
+<li>Añadir Prometheus como una fuente de datos en Grafana.</li>
+<li>Importar paneles de NGINX desde el repositorio de paneles de Grafana.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Datadog</h2>
+<div class='content'><p>Datadog es una plataforma de monitoreo y análisis que proporciona monitoreo integral para NGINX.</p>
+<h4>Configuración de Datadog con NGINX</h4>
+<ol>
+<li>
+<p><strong>Instalar el Agente de Datadog</strong>:</p>
+<pre><code class="language-bash">DD_API_KEY=tu_clave_api bash -c &quot;$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Habilitar la Integración de NGINX</strong>:</p>
+<pre><code class="language-yaml"># /etc/datadog-agent/conf.d/nginx.d/conf.yaml
+init_config:
+
+instances:
+  - nginx_status_url: http://localhost/nginx_status
+</code></pre>
+</li>
+<li>
+<p><strong>Ver Métricas en Datadog</strong>:</p>
+<ul>
+<li>Navegar al panel de control de Datadog para ver las métricas de NGINX.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Monitorear NGINX es esencial para mantener la salud y el rendimiento de tu servidor web. Al aprovechar los registros de acceso, los registros de errores, el módulo de estado de NGINX y las herramientas de monitoreo de terceros, puedes obtener valiosos conocimientos sobre la operación de tu servidor y rápidamente identificar y resolver problemas. Ya seas un principiante o un usuario avanzado, estas herramientas y técnicas te ayudarán a asegurar que tu servidor NGINX funcione de manera fluida y eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='custom-error-pages'>&#x25C4;Páginas de Error Personalizadas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Monitoreo de NGINX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='logging-and-log-management'>Gestión de Registros y Logs &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rendimiento de Indexación</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/indexing-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/indexing-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/indexing-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/elasticsearch/indexing-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/indexing-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='geo-search'>&#x25C4;Búsqueda Geoespacial</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Rendimiento de Indexación</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='search-performance'>Rendimiento de Búsqueda &#x25BA;</a>
+			</div>
+</div>
+<div class='index'></div><h2>Introducción</h2>
+<div class='index'><p>El rendimiento de la indexación es un aspecto crítico al trabajar con Elasticsearch, especialmente cuando se trata de grandes conjuntos de datos o la ingesta de datos en tiempo real. Comprender cómo optimizar la indexación puede mejorar significativamente la eficiencia y velocidad de tus operaciones en Elasticsearch.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='index'><ul>
+<li><strong>Indexación</strong>: El proceso de agregar datos a un índice de Elasticsearch.</li>
+<li><strong>Bulk API</strong>: Una herramienta poderosa para realizar múltiples operaciones de indexación en una sola solicitud.</li>
+<li><strong>Intervalo de Actualización</strong>: La frecuencia con la que Elasticsearch hace que los datos indexados sean buscables.</li>
+<li><strong>Fragmentos Réplica</strong>: Copias de los fragmentos primarios que proporcionan redundancia y mejoran el rendimiento de búsqueda.</li>
+<li><strong>Plantillas de Índice</strong>: Configuraciones y mapeos predefinidos que se pueden aplicar automáticamente a nuevos índices.</li>
+</ul>
+</div><h2>Factores que Afectan el Rendimiento de la Indexación</h2>
+<div class='index'><p>Varios factores pueden influir en el rendimiento de la indexación en Elasticsearch:</p>
+<ul>
+<li><strong>Tamaño del Documento</strong>: Los documentos más grandes tardan más en indexarse.</li>
+<li><strong>Configuraciones del Índice</strong>: Configuraciones como el intervalo de actualización y el número de réplicas pueden impactar el rendimiento.</li>
+<li><strong>Recursos de Hardware</strong>: El rendimiento de la CPU, la memoria y el I/O del disco son cruciales.</li>
+<li><strong>Latencia de Red</strong>: Alta latencia puede ralentizar las operaciones de indexación, especialmente en entornos distribuidos.</li>
+</ul>
+</div><h2>Optimización del Rendimiento de la Indexación</h2>
+<div class='index'></div><h2>Usar la Bulk API</h2>
+<div class='index'><p>La Bulk API te permite realizar múltiples operaciones de indexación en una sola solicitud, reduciendo la sobrecarga y mejorando el rendimiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCBfYnVsawp7ICJpbmRleCIgOiB7ICJfaW5kZXgiIDogIm1pX2luZGljZSIsICJfaWQiIDogIjEiIH0gfQp7ICJjYW1wbzEiIDogInZhbG9yMSIgfQp7ICJpbmRleCIgOiB7ICJfaW5kZXgiIDogIm1pX2luZGljZSIsICJfaWQiIDogIjIiIH0gfQp7ICJjYW1wbzEiIDogInZhbG9yMiIgfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST _bulk
+{ &quot;index&quot; : { &quot;_index&quot; : &quot;mi_indice&quot;, &quot;_id&quot; : &quot;1&quot; } }
+{ &quot;campo1&quot; : &quot;valor1&quot; }
+{ &quot;index&quot; : { &quot;_index&quot; : &quot;mi_indice&quot;, &quot;_id&quot; : &quot;2&quot; } }
+{ &quot;campo1&quot; : &quot;valor2&quot; }</pre></div><div class='index'><ul>
+<li><strong>Explicación</strong>: El ejemplo anterior muestra una solicitud bulk que indexa dos documentos en una sola operación. Esto reduce el número de viajes de ida y vuelta en la red y puede mejorar significativamente el rendimiento.</li>
+</ul>
+</div><h2>Ajustar el Intervalo de Actualización</h2>
+<div class='index'><p>El intervalo de actualización predeterminado es de 1 segundo, pero puedes aumentar este intervalo para reducir la sobrecarga de hacer que los datos sean buscables.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9taV9pbmRpY2UvX3NldHRpbmdzCnsKICAiaW5kZXgiIDogewogICAgInJlZnJlc2hfaW50ZXJ2YWwiIDogIjMwcyIKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /mi_indice/_settings
+{
+  &quot;index&quot; : {
+    &quot;refresh_interval&quot; : &quot;30s&quot;
+  }
+}</pre></div><div class='index'><ul>
+<li><strong>Explicación</strong>: Aumentar el intervalo de actualización a 30 segundos puede reducir la frecuencia de las operaciones de actualización, mejorando así el rendimiento de la indexación.</li>
+</ul>
+</div><h2>Optimizar los Fragmentos Réplica</h2>
+<div class='index'><p>Aunque las réplicas mejoran el rendimiento de búsqueda y proporcionan redundancia, pueden ralentizar la indexación. Puedes reducir temporalmente el número de réplicas durante las operaciones de indexación bulk.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9taV9pbmRpY2UvX3NldHRpbmdzCnsKICAiaW5kZXgiIDogewogICAgIm51bWJlcl9vZl9yZXBsaWNhcyIgOiAwCiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /mi_indice/_settings
+{
+  &quot;index&quot; : {
+    &quot;number_of_replicas&quot; : 0
+  }
+}</pre></div><div class='index'><ul>
+<li><strong>Explicación</strong>: Establecer el número de réplicas a 0 durante la indexación bulk puede acelerar el proceso. Recuerda aumentar el número de réplicas al nivel deseado después de la indexación.</li>
+</ul>
+</div><h2>Usar Plantillas de Índice</h2>
+<div class='index'><p>Las plantillas de índice te permiten definir configuraciones y mapeos que se pueden aplicar automáticamente a nuevos índices, asegurando configuraciones de rendimiento consistentes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIF90ZW1wbGF0ZS90ZW1wbGF0ZV8xCnsKICAiaW5kZXhfcGF0dGVybnMiOiBbIm1pX2luZGljZSoiXSwKICAic2V0dGluZ3MiOiB7CiAgICAibnVtYmVyX29mX3NoYXJkcyI6IDEsCiAgICAibnVtYmVyX29mX3JlcGxpY2FzIjogMQogIH0sCiAgIm1hcHBpbmdzIjogewogICAgIl9zb3VyY2UiOiB7CiAgICAgICJlbmFibGVkIjogdHJ1ZQogICAgfSwKICAgICJwcm9wZXJ0aWVzIjogewogICAgICAiY2FtcG8xIjogewogICAgICAgICJ0eXBlIjogInRleHQiCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT _template/template_1
+{
+  &quot;index_patterns&quot;: [&quot;mi_indice*&quot;],
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 1,
+    &quot;number_of_replicas&quot;: 1
+  },
+  &quot;mappings&quot;: {
+    &quot;_source&quot;: {
+      &quot;enabled&quot;: true
+    },
+    &quot;properties&quot;: {
+      &quot;campo1&quot;: {
+        &quot;type&quot;: &quot;text&quot;
+      }
+    }
+  }
+}</pre></div><div class='index'><ul>
+<li><strong>Explicación</strong>: Esta plantilla se aplica a cualquier índice que coincida con el patrón &quot;mi_indice*&quot;. Establece el número de fragmentos y réplicas y define los mapeos para los campos.</li>
+</ul>
+</div><h2>Monitoreo y Solución de Problemas</h2>
+<div class='index'><p>Monitorear el rendimiento de la indexación es crucial para identificar cuellos de botella y asegurar un rendimiento óptimo.</p>
+<ul>
+<li><strong>Herramientas de Monitoreo de Elasticsearch</strong>: Usa herramientas como Kibana, las APIs de monitoreo integradas de Elasticsearch y soluciones de terceros para rastrear métricas de rendimiento de la indexación.</li>
+<li><strong>Registros y Métricas</strong>: Analiza los registros y métricas de Elasticsearch para identificar problemas como tasas de indexación lentas, alto uso de CPU o latencia de red.</li>
+</ul>
+</div><h2>Conclusión</h2>
+<div class='index'><p>Optimizar el rendimiento de la indexación en Elasticsearch implica una combinación de usar las herramientas adecuadas, ajustar configuraciones y monitorear métricas de rendimiento. Al comprender y aplicar estos conceptos, puedes mejorar significativamente la eficiencia y velocidad de tus operaciones en Elasticsearch. Recuerda monitorear y ajustar continuamente tus configuraciones según las necesidades específicas y la carga de trabajo de tu clúster de Elasticsearch.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='geo-search'>&#x25C4;Búsqueda Geoespacial</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Rendimiento de Indexación</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='search-performance'>Rendimiento de Búsqueda &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

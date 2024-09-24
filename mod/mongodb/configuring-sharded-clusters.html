@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Clústeres Fragmentados</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/configuring-sharded-clusters" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/configuring-sharded-clusters" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/configuring-sharded-clusters" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/mongodb/configuring-sharded-clusters" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/configuring-sharded-clusters" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-sharding'>&#x25C4;Introducción a la Fragmentación</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Configuración de Clústeres Fragmentados</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='managing-sharded-clusters'>Gestión de Clústeres Fragmentados &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El fragmentado es un método para distribuir datos a través de múltiples máquinas. MongoDB utiliza el fragmentado para soportar implementaciones con conjuntos de datos muy grandes y operaciones de alto rendimiento. Esta sección te guiará a través del proceso de configuración de clústeres fragmentados en MongoDB, desde lo básico hasta configuraciones avanzadas.</p>
+</div><h1>Introducción al Fragmentado</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: El fragmentado es el proceso de almacenar registros de datos a través de múltiples máquinas y es el enfoque de MongoDB para satisfacer las demandas del crecimiento de datos.</li>
+<li><strong>Propósito</strong>: Ayuda en la escalabilidad horizontal distribuyendo datos a través de múltiples servidores.</li>
+<li><strong>Componentes</strong>:
+<ul>
+<li><strong>Fragmentos</strong>: Estas son las unidades de almacenamiento de datos. Cada fragmento contiene un subconjunto de los datos fragmentados.</li>
+<li><strong>Servidores de Configuración</strong>: Estos almacenan metadatos y configuraciones para el clúster.</li>
+<li><strong>Ruteadores de Consultas (mongos)</strong>: Estos son la interfaz entre las aplicaciones cliente y el clúster fragmentado.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Configuración de un Clúster Fragmentado</h1>
+<div class='content'></div><h2>Requisitos Previos</h2>
+<div class='content'><ul>
+<li><strong>Instalación de MongoDB</strong>: Asegúrate de que MongoDB esté instalado en todos los servidores que formarán parte del clúster fragmentado.</li>
+<li><strong>Configuración de Red</strong>: Todos los servidores deben poder comunicarse entre sí.</li>
+</ul>
+</div><h2>Configuración Paso a Paso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Iniciar los Servidores de Configuración</strong>:</p>
+<ul>
+<li>Los servidores de configuración almacenan metadatos sobre el clúster fragmentado.</li>
+<li>Inicia tres instancias de servidores de configuración para redundancia y fiabilidad.</li>
+</ul>
+<pre><code class="language-bash">mongod --configsvr --replSet configReplSet --dbpath /data/configdb --port 27019
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el Conjunto de Réplicas del Servidor de Configuración</strong>:</p>
+<ul>
+<li>Conéctate a uno de los servidores de configuración e inicia el conjunto de réplicas.</li>
+</ul>
+<pre><code class="language-javascript">mongo --port 27019
+rs.initiate({
+  _id: &quot;configReplSet&quot;,
+  configsvr: true,
+  members: [
+    { _id: 0, host: &quot;configServer1:27019&quot; },
+    { _id: 1, host: &quot;configServer2:27019&quot; },
+    { _id: 2, host: &quot;configServer3:27019&quot; }
+  ]
+})
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar los Servidores de Fragmentos</strong>:</p>
+<ul>
+<li>Cada fragmento es un conjunto de réplicas. Inicia las instancias de mongod para cada fragmento.</li>
+</ul>
+<pre><code class="language-bash">mongod --shardsvr --replSet shardReplSet1 --dbpath /data/shard1 --port 27018
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el Conjunto de Réplicas del Fragmento</strong>:</p>
+<ul>
+<li>Conéctate a uno de los servidores de fragmentos e inicia el conjunto de réplicas.</li>
+</ul>
+<pre><code class="language-javascript">mongo --port 27018
+rs.initiate({
+  _id: &quot;shardReplSet1&quot;,
+  members: [
+    { _id: 0, host: &quot;shardServer1:27018&quot; },
+    { _id: 1, host: &quot;shardServer2:27018&quot; },
+    { _id: 2, host: &quot;shardServer3:27018&quot; }
+  ]
+})
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar las Instancias de mongos</strong>:</p>
+<ul>
+<li>Las instancias de mongos enrutan las consultas al fragmento apropiado.</li>
+</ul>
+<pre><code class="language-bash">mongos --configdb configReplSet/configServer1:27019,configServer2:27019,configServer3:27019 --port 27017
+</code></pre>
+</li>
+<li>
+<p><strong>Agregar Fragmentos al Clúster</strong>:</p>
+<ul>
+<li>Conéctate a la instancia de mongos y agrega los fragmentos.</li>
+</ul>
+<pre><code class="language-javascript">mongo --port 27017
+sh.addShard(&quot;shardReplSet1/shardServer1:27018,shardServer2:27018,shardServer3:27018&quot;)
+</code></pre>
+</li>
+</ol>
+</div><h1>Fragmentar una Colección</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Habilitar el Fragmentado para una Base de Datos</strong>:</p>
+<pre><code class="language-javascript">sh.enableSharding(&quot;myDatabase&quot;)
+</code></pre>
+</li>
+<li>
+<p><strong>Fragmentar una Colección</strong>:</p>
+<ul>
+<li>Elige una clave de fragmento que determine cómo se distribuyen los datos.</li>
+</ul>
+<pre><code class="language-javascript">sh.shardCollection(&quot;myDatabase.myCollection&quot;, { shardKey: 1 })
+</code></pre>
+</li>
+</ol>
+</div><h1>Mejores Prácticas</h1>
+<div class='content'><ul>
+<li><strong>Selección de la Clave de Fragmento</strong>: Elige una clave de fragmento que asegure una distribución uniforme de los datos.</li>
+<li><strong>Monitoreo</strong>: Monitorea regularmente el rendimiento y la salud del clúster.</li>
+<li><strong>Respaldo</strong>: Implementa una estrategia de respaldo robusta.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Configurar un clúster fragmentado en MongoDB implica configurar servidores de configuración, servidores de fragmentos e instancias de mongos. La configuración y gestión adecuadas de estos componentes aseguran una distribución eficiente de los datos y alta disponibilidad. Siguiendo los pasos descritos en esta guía, puedes configurar un clúster fragmentado que escale horizontalmente y maneje grandes volúmenes de datos de manera efectiva.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-sharding'>&#x25C4;Introducción a la Fragmentación</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Configuración de Clústeres Fragmentados</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='managing-sharded-clusters'>Gestión de Clústeres Fragmentados &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

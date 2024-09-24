@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enums y Coincidencia de Patrones en Rust</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/enums-and-pattern-matching" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/enums-and-pattern-matching" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/enums-and-pattern-matching" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rust/enums-and-pattern-matching" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/enums-and-pattern-matching" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='method-syntax'>&#x25C4;Sintaxis de Métodos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Enums y Coincidencia de Patrones en Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='vectors'>Vectores &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a los Enums</h1>
+<div class='content'><p>Los enums, abreviatura de &quot;enumeraciones&quot;, son una característica poderosa en Rust que te permite definir un tipo enumerando sus posibles valores. Los enums son particularmente útiles para representar un valor que podría ser uno de varios tipos diferentes.</p>
+</div><h2>Definiendo Enums</h2>
+<div class='content'><p>Para definir un enum, usa la palabra clave <code>enum</code> seguida del nombre del enum y sus posibles variantes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBEaXJlY3Rpb24gewogICAgTm9ydGgsCiAgICBTb3V0aCwKICAgIEVhc3QsCiAgICBXZXN0LAp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum Direction {
+    North,
+    South,
+    East,
+    West,
+}</pre></div><div class='content'><ul>
+<li><strong>Direction</strong> es el nombre del enum.</li>
+<li><strong>North, South, East, West</strong> son las variantes del enum.</li>
+</ul>
+</div><h2>Usando Enums</h2>
+<div class='content'><p>Puedes crear instancias de un enum especificando el nombre del enum seguido de <code>::</code> y el nombre de la variante.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGRpcmVjdGlvbiA9IERpcmVjdGlvbjo6Tm9ydGg7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let direction = Direction::North;</pre></div><div class='content'></div><h2>Variantes de Enum con Datos</h2>
+<div class='content'><p>Los enums también pueden contener datos, lo que los hace aún más versátiles.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBNZXNzYWdlIHsKICAgIFF1aXQsCiAgICBNb3ZlIHsgeDogaTMyLCB5OiBpMzIgfSwKICAgIFdyaXRlKFN0cmluZyksCiAgICBDaGFuZ2VDb2xvcihpMzIsIGkzMiwgaTMyKSwKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}</pre></div><div class='content'><ul>
+<li><strong>Quit</strong>: No tiene datos asociados.</li>
+<li><strong>Move</strong>: Contiene una estructura anónima con campos <code>x</code> y <code>y</code>.</li>
+<li><strong>Write</strong>: Contiene un <code>String</code>.</li>
+<li><strong>ChangeColor</strong>: Contiene una tupla con tres valores <code>i32</code>.</li>
+</ul>
+</div><h1>Coincidencia de Patrones</h1>
+<div class='content'><p>La coincidencia de patrones es un mecanismo para verificar un valor contra un patrón. Es una construcción de control de flujo poderosa que te permite desestructurar y coincidir con tipos de datos complejos como enums.</p>
+</div><h2>La Expresión `match`</h2>
+<div class='content'><p>La expresión <code>match</code> se usa para comparar un valor contra una serie de patrones y ejecutar código basado en qué patrón coincide.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBkaXJlY3Rpb24gPSBEaXJlY3Rpb246Ok5vcnRoOwoKICAgIG1hdGNoIGRpcmVjdGlvbiB7CiAgICAgICAgRGlyZWN0aW9uOjpOb3J0aCA9PiBwcmludGxuISgiwqFSdW1ibyBhbCBOb3J0ZSEiKSwKICAgICAgICBEaXJlY3Rpb246OlNvdXRoID0+IHByaW50bG4hKCLCoVJ1bWJvIGFsIFN1ciEiKSwKICAgICAgICBEaXJlY3Rpb246OkVhc3QgPT4gcHJpbnRsbiEoIsKhUnVtYm8gYWwgRXN0ZSEiKSwKICAgICAgICBEaXJlY3Rpb246Oldlc3QgPT4gcHJpbnRsbiEoIsKhUnVtYm8gYWwgT2VzdGUhIiksCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let direction = Direction::North;
+
+    match direction {
+        Direction::North =&gt; println!(&quot;&iexcl;Rumbo al Norte!&quot;),
+        Direction::South =&gt; println!(&quot;&iexcl;Rumbo al Sur!&quot;),
+        Direction::East =&gt; println!(&quot;&iexcl;Rumbo al Este!&quot;),
+        Direction::West =&gt; println!(&quot;&iexcl;Rumbo al Oeste!&quot;),
+    }
+}</pre></div><div class='content'><ul>
+<li>La expresión <code>match</code> toma un valor y lo compara contra cada patrón en turno.</li>
+<li>Cuando un patrón coincide, se ejecuta el bloque de código correspondiente.</li>
+</ul>
+</div><h2>Coincidiendo con Enums que Contienen Datos</h2>
+<div class='content'><p>Al coincidir con variantes de enum que contienen datos, puedes vincular los datos a variables dentro del patrón.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gcHJvY2Vzc19tZXNzYWdlKG1zZzogTWVzc2FnZSkgewogICAgbWF0Y2ggbXNnIHsKICAgICAgICBNZXNzYWdlOjpRdWl0ID0+IHByaW50bG4hKCJNZW5zYWplIGRlIHNhbGlkYSByZWNpYmlkby4iKSwKICAgICAgICBNZXNzYWdlOjpNb3ZlIHsgeCwgeSB9ID0+IHByaW50bG4hKCJNb3ZlciBhIGNvb3JkZW5hZGFzOiAoe30sIHt9KSIsIHgsIHkpLAogICAgICAgIE1lc3NhZ2U6OldyaXRlKHRleHRvKSA9PiBwcmludGxuISgiTWVuc2FqZToge30iLCB0ZXh0byksCiAgICAgICAgTWVzc2FnZTo6Q2hhbmdlQ29sb3IociwgZywgYikgPT4gcHJpbnRsbiEoIkNhbWJpYXIgY29sb3IgYSBSR0I6ICh7fSwge30sIHt9KSIsIHIsIGcsIGIpLAogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn process_message(msg: Message) {
+    match msg {
+        Message::Quit =&gt; println!(&quot;Mensaje de salida recibido.&quot;),
+        Message::Move { x, y } =&gt; println!(&quot;Mover a coordenadas: ({}, {})&quot;, x, y),
+        Message::Write(texto) =&gt; println!(&quot;Mensaje: {}&quot;, texto),
+        Message::ChangeColor(r, g, b) =&gt; println!(&quot;Cambiar color a RGB: ({}, {}, {})&quot;, r, g, b),
+    }
+}</pre></div><div class='content'><ul>
+<li><strong>Message::Move { x, y }</strong>: Desestructura la estructura anónima y vincula <code>x</code> y <code>y</code> a los valores respectivos.</li>
+<li><strong>Message::Write(texto)</strong>: Vincula <code>texto</code> al <code>String</code> contenido en la variante.</li>
+<li><strong>Message::ChangeColor(r, g, b)</strong>: Vincula <code>r</code>, <code>g</code> y <code>b</code> a los valores <code>i32</code> respectivos en la tupla.</li>
+</ul>
+</div><h1>Coincidencia de Patrones Avanzada</h1>
+<div class='content'><p>La coincidencia de patrones en Rust puede ser muy sofisticada, permitiendo condiciones complejas y desestructuración.</p>
+</div><h2>Coincidiendo con Múltiples Patrones</h2>
+<div class='content'><p>Puedes coincidir con múltiples patrones usando el operador <code>|</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBkaXJlY3Rpb24gPSBEaXJlY3Rpb246Ok5vcnRoOwoKICAgIG1hdGNoIGRpcmVjdGlvbiB7CiAgICAgICAgRGlyZWN0aW9uOjpOb3J0aCB8IERpcmVjdGlvbjo6U291dGggPT4gcHJpbnRsbiEoIkRpcmVjY2nDs24gdmVydGljYWwiKSwKICAgICAgICBEaXJlY3Rpb246OkVhc3QgfCBEaXJlY3Rpb246Oldlc3QgPT4gcHJpbnRsbiEoIkRpcmVjY2nDs24gaG9yaXpvbnRhbCIpLAogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let direction = Direction::North;
+
+    match direction {
+        Direction::North | Direction::South =&gt; println!(&quot;Direcci&oacute;n vertical&quot;),
+        Direction::East | Direction::West =&gt; println!(&quot;Direcci&oacute;n horizontal&quot;),
+    }
+}</pre></div><div class='content'></div><h2>Coincidiendo con Rangos</h2>
+<div class='content'><p>Puedes coincidir con rangos de valores usando <code>..=</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBudW1iZXIgPSA1OwoKICAgIG1hdGNoIG51bWJlciB7CiAgICAgICAgMS4uPTUgPT4gcHJpbnRsbiEoIkVsIG7Dum1lcm8gZXN0w6EgZW50cmUgMSB5IDUiKSwKICAgICAgICBfID0+IHByaW50bG4hKCJFbCBuw7ptZXJvIGVzdMOhIGZ1ZXJhIGRlIHJhbmdvIiksCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let number = 5;
+
+    match number {
+        1..=5 =&gt; println!(&quot;El n&uacute;mero est&aacute; entre 1 y 5&quot;),
+        _ =&gt; println!(&quot;El n&uacute;mero est&aacute; fuera de rango&quot;),
+    }
+}</pre></div><div class='content'></div><h2>Desestructurando Enums Complejos</h2>
+<div class='content'><p>Puedes desestructurar estructuras de datos anidadas dentro de enums.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBDb21wbGV4TWVzc2FnZSB7CiAgICBNb3ZlIHsgeDogaTMyLCB5OiBpMzIsIHo6IGkzMiB9LAogICAgQ2hhbmdlQ29sb3IgeyByZWQ6IGkzMiwgZ3JlZW46IGkzMiwgYmx1ZTogaTMyIH0sCn0KCmZuIHByb2Nlc3NfY29tcGxleF9tZXNzYWdlKG1zZzogQ29tcGxleE1lc3NhZ2UpIHsKICAgIG1hdGNoIG1zZyB7CiAgICAgICAgQ29tcGxleE1lc3NhZ2U6Ok1vdmUgeyB4LCB5LCB6IH0gPT4gcHJpbnRsbiEoIk1vdmVyIGEgY29vcmRlbmFkYXM6ICh7fSwge30sIHt9KSIsIHgsIHksIHopLAogICAgICAgIENvbXBsZXhNZXNzYWdlOjpDaGFuZ2VDb2xvciB7IHJlZCwgZ3JlZW4sIGJsdWUgfSA9PiBwcmludGxuISgiQ2FtYmlhciBjb2xvciBhIFJHQjogKHt9LCB7fSwge30pIiwgcmVkLCBncmVlbiwgYmx1ZSksCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum ComplexMessage {
+    Move { x: i32, y: i32, z: i32 },
+    ChangeColor { red: i32, green: i32, blue: i32 },
+}
+
+fn process_complex_message(msg: ComplexMessage) {
+    match msg {
+        ComplexMessage::Move { x, y, z } =&gt; println!(&quot;Mover a coordenadas: ({}, {}, {})&quot;, x, y, z),
+        ComplexMessage::ChangeColor { red, green, blue } =&gt; println!(&quot;Cambiar color a RGB: ({}, {}, {})&quot;, red, green, blue),
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Los enums y la coincidencia de patrones son características esenciales en Rust que proporcionan formas poderosas de representar y manipular datos. Los enums te permiten definir un tipo con múltiples variantes, opcionalmente conteniendo datos. La coincidencia de patrones te permite desestructurar y manejar estas variantes de una manera limpia y legible.</p>
+<ul>
+<li><strong>Enums</strong>: Definen tipos con múltiples variantes.</li>
+<li><strong>Coincidencia de Patrones</strong>: Desestructura y maneja tipos de datos complejos.</li>
+</ul>
+<p>Al dominar estos conceptos, puedes escribir código en Rust más expresivo y robusto.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='method-syntax'>&#x25C4;Sintaxis de Métodos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Enums y Coincidencia de Patrones en Rust</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='vectors'>Vectores &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

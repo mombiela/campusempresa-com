@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementación de la Base de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/implementing-the-database" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/implementing-the-database" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/implementing-the-database" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/implementing-the-database" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/implementing-the-database" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='designing-the-database'>&#x25C4;Diseño de la Base de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementación de la Base de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='presenting-your-project'>Presentación de tu Proyecto &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En esta sección, cubriremos los pasos necesarios para implementar una base de datos utilizando PostgreSQL. Esto incluye crear bases de datos, definir esquemas y poblar tablas con datos. Al final de esta sección, tendrás una comprensión sólida de cómo configurar y gestionar una base de datos PostgreSQL.</p>
+</div><h1>Creación de una Base de Datos</h1>
+<div class='content'><p>Para empezar a usar PostgreSQL, primero necesitas crear una base de datos. Aquí te mostramos cómo hacerlo:</p>
+</div><h2>Usando el Comando `createdb`</h2>
+<div class='content'><p>El comando <code>createdb</code> es una forma conveniente de crear una nueva base de datos desde la línea de comandos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3JlYXRlZGIgbWliYXNlZGVkYXRvcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>createdb mibasededatos</pre></div><div class='content'></div><h2>Usando Comandos SQL</h2>
+<div class='content'><p>También puedes crear una base de datos usando comandos SQL dentro de la interfaz <code>psql</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIERBVEFCQVNFIG1pYmFzZWRlZGF0b3M7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE DATABASE mibasededatos;</pre></div><div class='content'><ul>
+<li><strong>Nota:</strong> Asegúrate de tener los permisos necesarios para crear una base de datos.</li>
+</ul>
+</div><h1>Conectarse a una Base de Datos</h1>
+<div class='content'><p>Una vez que la base de datos está creada, necesitas conectarte a ella para empezar a trabajar.</p>
+</div><h2>Usando el Comando `psql`</h2>
+<div class='content'><p>Puedes conectarte a tu base de datos usando la herramienta de línea de comandos <code>psql</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHNxbCBtaWJhc2VkZWRhdG9z"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>psql mibasededatos</pre></div><div class='content'></div><h2>Usando Comandos SQL</h2>
+<div class='content'><p>Dentro de <code>psql</code>, puedes conectarte a una base de datos usando el comando <code>\c</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("XGMgbWliYXNlZGVkYXRvcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>\c mibasededatos</pre></div><div class='content'></div><h1>Definiendo Esquemas</h1>
+<div class='content'><p>Los esquemas son una forma de organizar y gestionar tus objetos de base de datos. Por defecto, PostgreSQL crea un esquema llamado <code>public</code>.</p>
+</div><h2>Creación de un Esquema</h2>
+<div class='content'><p>Puedes crear un nuevo esquema usando el comando <code>CREATE SCHEMA</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFNDSEVNQSBtaWVzcXVlbWE7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE SCHEMA miesquema;</pre></div><div class='content'></div><h2>Configuración del Path de Búsqueda</h2>
+<div class='content'><p>Puedes configurar el path de búsqueda para especificar en qué esquemas PostgreSQL debe buscar primero.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VUIHNlYXJjaF9wYXRoIFRPIG1pZXNxdWVtYSwgcHVibGljOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SET search_path TO miesquema, public;</pre></div><div class='content'></div><h1>Creación de Tablas</h1>
+<div class='content'><p>Las tablas son los bloques fundamentales de una base de datos. Almacenan datos en filas y columnas.</p>
+</div><h2>Creación Básica de una Tabla</h2>
+<div class='content'><p>Aquí te mostramos cómo puedes crear una tabla simple:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHVzdWFyaW9zICgKICAgIGlkIFNFUklBTCBQUklNQVJZIEtFWSwKICAgIG5vbWJyZV91c3VhcmlvIFZBUkNIQVIoNTApIE5PVCBOVUxMLAogICAgY29ycmVvIFZBUkNIQVIoMTAwKSBOT1QgTlVMTCwKICAgIGNyZWFkb19lbiBUSU1FU1RBTVAgREVGQVVMVCBDVVJSRU5UX1RJTUVTVEFNUAopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nombre_usuario VARCHAR(50) NOT NULL,
+    correo VARCHAR(100) NOT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><ul>
+<li><strong>Explicación:</strong>
+<ul>
+<li><code>id SERIAL PRIMARY KEY</code>: Crea una clave primaria auto-incremental.</li>
+<li><code>nombre_usuario VARCHAR(50) NOT NULL</code>: Define una columna de nombre de usuario que no puede ser nula.</li>
+<li><code>correo VARCHAR(100) NOT NULL</code>: Define una columna de correo que no puede ser nula.</li>
+<li><code>creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP</code>: Establece una marca de tiempo por defecto para cuando se crea la fila.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Población de Tablas con Datos</h1>
+<div class='content'><p>Una vez que tus tablas están creadas, puedes empezar a insertar datos en ellas.</p>
+</div><h2>Inserción de Datos</h2>
+<div class='content'><p>Usa el comando <code>INSERT INTO</code> para añadir datos a tu tabla.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gdXN1YXJpb3MgKG5vbWJyZV91c3VhcmlvLCBjb3JyZW8pIFZBTFVFUyAoJ2p1YW5fcGVyZXonLCAnanVhbkBlamVtcGxvLmNvbScpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO usuarios (nombre_usuario, correo) VALUES ('juan_perez', 'juan@ejemplo.com');</pre></div><div class='content'></div><h2>Inserción en Bloque</h2>
+<div class='content'><p>Para insertar múltiples filas a la vez, puedes usar múltiples cláusulas <code>VALUES</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gdXN1YXJpb3MgKG5vbWJyZV91c3VhcmlvLCBjb3JyZW8pIFZBTFVFUyAKKCdhbmFfZ2FyY2lhJywgJ2FuYUBlamVtcGxvLmNvbScpLAooJ21hcmlhJywgJ21hcmlhQGVqZW1wbG8uY29tJyksCignY2FybG9zJywgJ2Nhcmxvc0BlamVtcGxvLmNvbScpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO usuarios (nombre_usuario, correo) VALUES 
+('ana_garcia', 'ana@ejemplo.com'),
+('maria', 'maria@ejemplo.com'),
+('carlos', 'carlos@ejemplo.com');</pre></div><div class='content'></div><h1>Consulta de Datos</h1>
+<div class='content'><p>Recuperar datos de tus tablas se hace usando la sentencia <code>SELECT</code>.</p>
+</div><h2>Consulta Básica</h2>
+<div class='content'><p>Aquí tienes una consulta simple para recuperar todos los usuarios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSB1c3Vhcmlvczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM usuarios;</pre></div><div class='content'></div><h2>Filtrado de Datos</h2>
+<div class='content'><p>Usa la cláusula <code>WHERE</code> para filtrar resultados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSB1c3VhcmlvcyBXSEVSRSBub21icmVfdXN1YXJpbyA9ICdqdWFuX3BlcmV6Jzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM usuarios WHERE nombre_usuario = 'juan_perez';</pre></div><div class='content'></div><h2>Ordenación de Datos</h2>
+<div class='content'><p>Usa la cláusula <code>ORDER BY</code> para ordenar los resultados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSB1c3VhcmlvcyBPUkRFUiBCWSBjcmVhZG9fZW4gREVTQzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM usuarios ORDER BY creado_en DESC;</pre></div><div class='content'></div><h1>Actualización de Datos</h1>
+<div class='content'><p>Para modificar datos existentes, usa la sentencia <code>UPDATE</code>.</p>
+</div><h2>Actualización Básica</h2>
+<div class='content'><p>Aquí te mostramos cómo puedes actualizar el correo de un usuario:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIHVzdWFyaW9zIFNFVCBjb3JyZW8gPSAnbnVldm9fY29ycmVvQGVqZW1wbG8uY29tJyBXSEVSRSBub21icmVfdXN1YXJpbyA9ICdqdWFuX3BlcmV6Jzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE usuarios SET correo = 'nuevo_correo@ejemplo.com' WHERE nombre_usuario = 'juan_perez';</pre></div><div class='content'></div><h1>Eliminación de Datos</h1>
+<div class='content'><p>Para eliminar datos de tu tabla, usa la sentencia <code>DELETE</code>.</p>
+</div><h2>Eliminación Básica</h2>
+<div class='content'><p>Aquí te mostramos cómo puedes eliminar un usuario:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVMRVRFIEZST00gdXN1YXJpb3MgV0hFUkUgbm9tYnJlX3VzdWFyaW8gPSAnanVhbl9wZXJleic7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DELETE FROM usuarios WHERE nombre_usuario = 'juan_perez';</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, cubrimos los pasos esenciales para implementar una base de datos en PostgreSQL. Aprendiste cómo crear y conectarte a una base de datos, definir esquemas, crear y poblar tablas, y realizar operaciones básicas de manipulación de datos. Con estas habilidades, ahora estás equipado para configurar y gestionar una base de datos PostgreSQL de manera efectiva.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='designing-the-database'>&#x25C4;Diseño de la Base de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementación de la Base de Datos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='presenting-your-project'>Presentación de tu Proyecto &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

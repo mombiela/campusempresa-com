@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variables y Hechos en Ansible</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/variables-and-facts" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/variables-and-facts" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/variables-and-facts" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/ansible/variables-and-facts" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/variables-and-facts" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='running-ad-hoc-commands'>&#x25C4;Ejecutando Comandos Ad-Hoc</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Variables y Hechos en Ansible</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='conditionals-and-loops'>Condicionales y Bucles &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En Ansible, las variables y los hechos son componentes esenciales que te permiten gestionar y manipular datos de manera dinámica. Entender cómo usarlos eficazmente puede mejorar significativamente tus scripts de automatización.</p>
+</div><h1>Variables en Ansible</h1>
+<div class='content'><p>Las variables en Ansible se usan para almacenar valores que pueden ser reutilizados a lo largo de tus playbooks. Ayudan a hacer tus playbooks más flexibles y fáciles de mantener.</p>
+</div><h2>Definiendo Variables</h2>
+<div class='content'><p>Las variables pueden ser definidas en varios lugares:</p>
+<ul>
+<li><strong>Playbooks</strong></li>
+<li><strong>Archivos de inventario</strong></li>
+<li><strong>Roles</strong></li>
+<li><strong>Variables de grupo y host</strong></li>
+</ul>
+<h4>Ejemplo: Definiendo Variables en un Playbook</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCi0gbmFtZTogRWplbXBsbyBkZSBQbGF5Ym9vawogIGhvc3RzOiBhbGwKICB2YXJzOgogICAgaHR0cF9wb3J0OiA4MAogICAgbWF4X2NsaWVudHM6IDIwMAogIHRhc2tzOgogICAgLSBuYW1lOiBJbXByaW1pciBlbCBwdWVydG8gSFRUUAogICAgICBkZWJ1ZzoKICAgICAgICBtc2c6ICJFbCBwdWVydG8gSFRUUCBlcyB7eyBodHRwX3BvcnQgfX0iCiAgICAtIG5hbWU6IEltcHJpbWlyIGVsIG3DoXhpbW8gZGUgY2xpZW50ZXMKICAgICAgZGVidWc6CiAgICAgICAgbXNnOiAiRWwgbcOheGltbyBkZSBjbGllbnRlcyBlcyB7eyBtYXhfY2xpZW50cyB9fSI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+- name: Ejemplo de Playbook
+  hosts: all
+  vars:
+    http_port: 80
+    max_clients: 200
+  tasks:
+    - name: Imprimir el puerto HTTP
+      debug:
+        msg: &quot;El puerto HTTP es {{ http_port }}&quot;
+    - name: Imprimir el m&aacute;ximo de clientes
+      debug:
+        msg: &quot;El m&aacute;ximo de clientes es {{ max_clients }}&quot;</pre></div><div class='content'></div><h2>Usando Variables</h2>
+<div class='content'><p>Las variables se referencian usando dobles llaves <code>{{ }}</code>.</p>
+<h4>Ejemplo: Usando Variables en una Tarea</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LSBuYW1lOiBJbnN0YWxhciBBcGFjaGUKICBhcHQ6CiAgICBuYW1lOiBhcGFjaGUyCiAgICBzdGF0ZTogcHJlc2VudAoKLSBuYW1lOiBDb25maWd1cmFyIEFwYWNoZQogIHRlbXBsYXRlOgogICAgc3JjOiB0ZW1wbGF0ZXMvYXBhY2hlMi5jb25mLmoyCiAgICBkZXN0OiAvZXRjL2FwYWNoZTIvYXBhY2hlMi5jb25mCiAgdmFyczoKICAgIHNlcnZlcl9wb3J0OiA4MDgw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>- name: Instalar Apache
+  apt:
+    name: apache2
+    state: present
+
+- name: Configurar Apache
+  template:
+    src: templates/apache2.conf.j2
+    dest: /etc/apache2/apache2.conf
+  vars:
+    server_port: 8080</pre></div><div class='content'></div><h2>Precedencia de Variables</h2>
+<div class='content'><p>Las variables de Ansible tienen un orden específico de precedencia, que determina qué valor de variable se usa cuando hay múltiples definiciones.</p>
+<p>| Nivel de Precedencia | Fuente |
+|----------------------|--------|
+| 1 (Más alto)         | Extra vars (<code>-e</code> en la línea de comando) |
+| 2                    | Task vars (solo para la tarea) |
+| 3                    | Block vars (solo para tareas en el bloque) |
+| 4                    | Role y include vars (con <code>include_vars</code>) |
+| 5                    | Play vars_files |
+| 6                    | Play vars_prompt |
+| 7                    | Play vars |
+| 8                    | Host facts / cached facts |
+| 9                    | Host vars |
+| 10                   | Group vars |
+| 11                   | Inventory vars |
+| 12 (Más bajo)        | Default vars (definidas en roles) |</p>
+</div><h1>Hechos en Ansible</h1>
+<div class='content'><p>Los hechos son piezas de información sobre los nodos gestionados, como direcciones IP, detalles del sistema operativo e información de hardware. Ansible recopila automáticamente hechos al comienzo de la ejecución de un playbook.</p>
+</div><h2>Recopilando Hechos</h2>
+<div class='content'><p>Por defecto, Ansible recopila hechos usando el módulo <code>setup</code>.</p>
+<h4>Ejemplo: Recopilando Hechos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LSBuYW1lOiBSZWNvcGlsYXIgaGVjaG9zCiAgaG9zdHM6IGFsbAogIHRhc2tzOgogICAgLSBuYW1lOiBNb3N0cmFyIHRvZG9zIGxvcyBoZWNob3MKICAgICAgZGVidWc6CiAgICAgICAgdmFyOiBhbnNpYmxlX2ZhY3Rz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>- name: Recopilar hechos
+  hosts: all
+  tasks:
+    - name: Mostrar todos los hechos
+      debug:
+        var: ansible_facts</pre></div><div class='content'></div><h2>Usando Hechos</h2>
+<div class='content'><p>Los hechos pueden ser usados igual que las variables en tus playbooks.</p>
+<h4>Ejemplo: Usando Hechos en una Tarea</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LSBuYW1lOiBJbXByaW1pciBlbCBzaXN0ZW1hIG9wZXJhdGl2bwogIGRlYnVnOgogICAgbXNnOiAiRWwgc2lzdGVtYSBvcGVyYXRpdm8gZXMge3sgYW5zaWJsZV9mYWN0c1snb3NfZmFtaWx5J10gfX0i"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>- name: Imprimir el sistema operativo
+  debug:
+    msg: &quot;El sistema operativo es {{ ansible_facts['os_family'] }}&quot;</pre></div><div class='content'></div><h2>Hechos Personalizados</h2>
+<div class='content'><p>También puedes definir hechos personalizados colocando scripts en el directorio <code>/etc/ansible/facts.d</code> en los nodos gestionados.</p>
+<h4>Ejemplo: Script de Hecho Personalizado</h4>
+<p>Crea un script llamado <code>custom_fact.sh</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKZWNobyAneyJjdXN0b21fZmFjdCI6ICJjdXN0b21fdmFsdWUifSc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+echo '{&quot;custom_fact&quot;: &quot;custom_value&quot;}'</pre></div><div class='content'><p>Coloca el script en <code>/etc/ansible/facts.d/custom_fact.sh</code> y hazlo ejecutable.</p>
+<h4>Ejemplo: Usando Hechos Personalizados</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LSBuYW1lOiBJbXByaW1pciBoZWNobyBwZXJzb25hbGl6YWRvCiAgZGVidWc6CiAgICBtc2c6ICJFbCBoZWNobyBwZXJzb25hbGl6YWRvIGVzIHt7IGFuc2libGVfZmFjdHNbJ2N1c3RvbV9mYWN0J10gfX0i"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>- name: Imprimir hecho personalizado
+  debug:
+    msg: &quot;El hecho personalizado es {{ ansible_facts['custom_fact'] }}&quot;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Entender y usar eficazmente variables y hechos en Ansible es crucial para crear playbooks dinámicos y flexibles. Las variables te permiten almacenar y reutilizar valores, mientras que los hechos proporcionan información detallada sobre tus nodos gestionados. Al dominar estos conceptos, puedes escribir scripts de automatización más eficientes y mantenibles.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='running-ad-hoc-commands'>&#x25C4;Ejecutando Comandos Ad-Hoc</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Variables y Hechos en Ansible</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='conditionals-and-loops'>Condicionales y Bucles &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

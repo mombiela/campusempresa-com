@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Swarm y Orquestación</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/docker-swarm-orchestration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/docker-swarm-orchestration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/docker-swarm-orchestration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/docker/docker-swarm-orchestration" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/docker-swarm-orchestration" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-docker-compose-projects'>&#x25C4;Gestionando Proyectos de Docker Compose</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Docker Swarm y Orquestación</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-services-docker-swarm'>Escalando Servicios con Docker Swarm &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a Docker Swarm</h1>
+<div class='content'><p>Docker Swarm es una herramienta nativa de clustering y orquestación para contenedores Docker. Te permite gestionar un clúster de nodos Docker como un único sistema virtual.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Swarm</strong>: Un grupo de máquinas que están ejecutando Docker y se han unido en un clúster.</li>
+<li><strong>Nodo</strong>: Una máquina individual en un Swarm.
+<ul>
+<li><strong>Nodo Manager</strong>: Responsable de gestionar el Swarm y sus recursos.</li>
+<li><strong>Nodo Worker</strong>: Ejecuta tareas asignadas por el Manager.</li>
+</ul>
+</li>
+<li><strong>Servicio</strong>: Una definición de cómo ejecutar un contenedor, incluyendo la imagen, puertos y réplicas.</li>
+<li><strong>Tarea</strong>: Una instancia única de un contenedor en ejecución que es parte de un servicio.</li>
+<li><strong>Red Overlay</strong>: Una red que abarca todos los nodos en el Swarm, permitiendo que los contenedores se comuniquen de manera segura.</li>
+</ul>
+</div><h1>Configuración de un Docker Swarm</h1>
+<div class='content'><p>Para configurar un Docker Swarm, necesitas al menos una máquina para actuar como Nodo Manager y una o más Nodos Worker.</p>
+</div><h2>Guía Paso a Paso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Inicializar el Swarm en el Nodo Manager</strong>:</p>
+<pre><code class="language-sh">docker swarm init --advertise-addr &lt;MANAGER-IP&gt;
+</code></pre>
+<p>Reemplaza <code>&lt;MANAGER-IP&gt;</code> con la dirección IP de tu Nodo Manager.</p>
+</li>
+<li>
+<p><strong>Unir Nodos Worker al Swarm</strong>:
+En cada Nodo Worker, ejecuta:</p>
+<pre><code class="language-sh">docker swarm join --token &lt;SWARM-TOKEN&gt; &lt;MANAGER-IP&gt;:2377
+</code></pre>
+<p>Reemplaza <code>&lt;SWARM-TOKEN&gt;</code> con el token proporcionado por el comando <code>docker swarm init</code> y <code>&lt;MANAGER-IP&gt;</code> con la dirección IP del Nodo Manager.</p>
+</li>
+</ol>
+</div><h1>Gestión de Servicios en Docker Swarm</h1>
+<div class='content'><p>Una vez que tu Swarm está configurado, puedes comenzar a crear y gestionar servicios.</p>
+</div><h2>Creación de un Servicio</h2>
+<div class='content'><p>Para crear un servicio, usa el comando <code>docker service create</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgY3JlYXRlIC0tbmFtZSBteS1zZXJ2aWNlIC0tcmVwbGljYXMgMyAtcCA4MDo4MCBuZ2lueA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service create --name my-service --replicas 3 -p 80:80 nginx</pre></div><div class='content'><p>Este comando crea un servicio llamado <code>my-service</code> con 3 réplicas del contenedor <code>nginx</code>, exponiendo el puerto 80.</p>
+</div><h2>Listado de Servicios</h2>
+<div class='content'><p>Para listar todos los servicios en el Swarm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgbHM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service ls</pre></div><div class='content'></div><h2>Escalado de un Servicio</h2>
+<div class='content'><p>Para escalar un servicio hacia arriba o hacia abajo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2Ugc2NhbGUgbXktc2VydmljZT01"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service scale my-service=5</pre></div><div class='content'><p>Este comando escala <code>my-service</code> a 5 réplicas.</p>
+</div><h2>Actualización de un Servicio</h2>
+<div class='content'><p>Para actualizar un servicio (por ejemplo, cambiar la versión de la imagen):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgdXBkYXRlIC0taW1hZ2Ugbmdpbng6bGF0ZXN0IG15LXNlcnZpY2U="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service update --image nginx:latest my-service</pre></div><div class='content'></div><h1>Monitoreo y Solución de Problemas</h1>
+<div class='content'><p>El monitoreo y la solución de problemas son cruciales para mantener un Swarm saludable.</p>
+</div><h2>Visualización de Logs del Servicio</h2>
+<div class='content'><p>Para ver los logs de un servicio específico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgbG9ncyBteS1zZXJ2aWNl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service logs my-service</pre></div><div class='content'></div><h2>Inspección de Nodos</h2>
+<div class='content'><p>Para inspeccionar los detalles de un nodo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIG5vZGUgaW5zcGVjdCA8Tk9ERS1JRD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker node inspect &lt;NODE-ID&gt;</pre></div><div class='content'></div><h2>Eliminación de un Nodo</h2>
+<div class='content'><p>Para eliminar un nodo del Swarm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIG5vZGUgcm0gPE5PREUtSUQ+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker node rm &lt;NODE-ID&gt;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Docker Swarm proporciona una manera poderosa y sencilla de gestionar aplicaciones en contenedores a escala. Al entender los conceptos clave y los comandos, puedes orquestar y gestionar eficazmente tus contenedores Docker a través de múltiples nodos. Ya sea que estés desplegando un servicio web simple o una arquitectura compleja de microservicios, Docker Swarm ofrece las herramientas que necesitas para asegurar que tus aplicaciones funcionen de manera fluida y eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-docker-compose-projects'>&#x25C4;Gestionando Proyectos de Docker Compose</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Docker Swarm y Orquestación</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-services-docker-swarm'>Escalando Servicios con Docker Swarm &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

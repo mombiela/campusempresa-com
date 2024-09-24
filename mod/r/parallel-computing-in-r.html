@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computación Paralela en R</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/r/parallel-computing-in-r" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/r/parallel-computing-in-r" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/r/parallel-computing-in-r" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/r/parallel-computing-in-r" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/r/parallel-computing-in-r" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='working-with-large-datasets'>&#x25C4;Trabajando con Grandes Conjuntos de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Computación Paralela en R</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-r-with-hadoop'>Usando R con Hadoop &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La computación paralela es un tipo de computación en la que muchos cálculos o procesos se llevan a cabo simultáneamente. En R, la computación paralela puede acelerar significativamente las tareas de procesamiento de datos al utilizar múltiples núcleos de CPU. Este tema te guiará desde las técnicas básicas hasta las avanzadas de computación paralela en R.</p>
+</div><h1>Introducción a la Computación Paralela</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: La computación paralela implica dividir un problema grande en subproblemas más pequeños que pueden resolverse concurrentemente.</li>
+<li><strong>Beneficios</strong>: Mejor rendimiento, reducción del tiempo de cómputo y utilización eficiente de recursos.</li>
+</ul>
+</div><h1>Paquetes de Computación Paralela en R</h1>
+<div class='content'><p>Varios paquetes en R facilitan la computación paralela. Los más comúnmente utilizados incluyen:</p>
+<ul>
+<li><strong><code>parallel</code></strong>: Un paquete base de R que proporciona funciones para la ejecución paralela.</li>
+<li><strong><code>foreach</code></strong>: Un paquete que soporta la ejecución paralela de bucles.</li>
+<li><strong><code>doParallel</code></strong>: Un backend para el paquete <code>foreach</code> que permite la ejecución paralela utilizando el paquete <code>parallel</code>.</li>
+<li><strong><code>future</code></strong>: Un paquete que proporciona una API simple y unificada para la computación paralela y distribuida.</li>
+</ul>
+</div><h1>Configuración de la Computación Paralela</h1>
+<div class='content'></div><h2>Usando el Paquete `parallel`</h2>
+<div class='content'><p>El paquete <code>parallel</code> está incluido con R y proporciona funciones para la ejecución paralela utilizando múltiples núcleos.</p>
+<h4>Ejemplo: Ejecución Paralela con <code>mclapply</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgZWwgcGFxdWV0ZSBwYXJhbGxlbApsaWJyYXJ5KHBhcmFsbGVsKQoKIyBEZWZpbmlyIHVuYSBmdW5jacOzbiBwYXJhIGVqZWN1dGFyIGVuIHBhcmFsZWxvCm15X2Z1bmN0aW9uIDwtIGZ1bmN0aW9uKHgpIHsKICBTeXMuc2xlZXAoMikgICMgU2ltdWxhciB1bmEgdGFyZWEgcXVlIGNvbnN1bWUgdGllbXBvCiAgcmV0dXJuKHheMikKfQoKIyBDcmVhciB1bmEgbGlzdGEgZGUgZW50cmFkYXMKaW5wdXRfbGlzdCA8LSBsaXN0KDEsIDIsIDMsIDQsIDUpCgojIEVqZWN1dGFyIGxhIGZ1bmNpw7NuIGVuIHBhcmFsZWxvIHVzYW5kbyBtY2xhcHBseQpyZXN1bHQgPC0gbWNsYXBwbHkoaW5wdXRfbGlzdCwgbXlfZnVuY3Rpb24sIG1jLmNvcmVzID0gMikKCnByaW50KHJlc3VsdCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar el paquete parallel
+library(parallel)
+
+# Definir una funci&oacute;n para ejecutar en paralelo
+my_function &lt;- function(x) {
+  Sys.sleep(2)  # Simular una tarea que consume tiempo
+  return(x^2)
+}
+
+# Crear una lista de entradas
+input_list &lt;- list(1, 2, 3, 4, 5)
+
+# Ejecutar la funci&oacute;n en paralelo usando mclapply
+result &lt;- mclapply(input_list, my_function, mc.cores = 2)
+
+print(result)</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>mclapply</code> es una versión paralela de <code>lapply</code>.</li>
+<li><code>mc.cores</code> especifica el número de núcleos a utilizar.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Usando los Paquetes `foreach` y `doParallel`</h2>
+<div class='content'><p>El paquete <code>foreach</code> permite la ejecución paralela de bucles, y <code>doParallel</code> proporciona un backend paralelo.</p>
+<h4>Ejemplo: Ejecución Paralela con <code>foreach</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgbG9zIHBhcXVldGVzIG5lY2VzYXJpb3MKbGlicmFyeShmb3JlYWNoKQpsaWJyYXJ5KGRvUGFyYWxsZWwpCgojIFJlZ2lzdHJhciBlbCBiYWNrZW5kIHBhcmFsZWxvCmNsIDwtIG1ha2VDbHVzdGVyKDIpICAjIENyZWFyIHVuIGNsw7pzdGVyIGNvbiAyIG7DumNsZW9zCnJlZ2lzdGVyRG9QYXJhbGxlbChjbCkKCiMgRWplY3V0YXIgdW4gYnVjbGUgZW4gcGFyYWxlbG8gdXNhbmRvIGZvcmVhY2gKcmVzdWx0IDwtIGZvcmVhY2goaSA9IDE6NSwgLmNvbWJpbmUgPSBjKSAlZG9wYXIlIHsKICBTeXMuc2xlZXAoMikgICMgU2ltdWxhciB1bmEgdGFyZWEgcXVlIGNvbnN1bWUgdGllbXBvCiAgaV4yCn0KCnByaW50KHJlc3VsdCkKCiMgRGV0ZW5lciBlbCBjbMO6c3RlcgpzdG9wQ2x1c3RlcihjbCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar los paquetes necesarios
+library(foreach)
+library(doParallel)
+
+# Registrar el backend paralelo
+cl &lt;- makeCluster(2)  # Crear un cl&uacute;ster con 2 n&uacute;cleos
+registerDoParallel(cl)
+
+# Ejecutar un bucle en paralelo usando foreach
+result &lt;- foreach(i = 1:5, .combine = c) %dopar% {
+  Sys.sleep(2)  # Simular una tarea que consume tiempo
+  i^2
+}
+
+print(result)
+
+# Detener el cl&uacute;ster
+stopCluster(cl)</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>makeCluster</code> crea un clúster de núcleos especificados.</li>
+<li><code>registerDoParallel</code> registra el backend paralelo.</li>
+<li><code>%dopar%</code> se utiliza para ejecutar el bucle en paralelo.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Usando el Paquete `future`</h2>
+<div class='content'><p>El paquete <code>future</code> proporciona una API de alto nivel para la computación paralela y distribuida.</p>
+<h4>Ejemplo: Ejecución Paralela con <code>future</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgZWwgcGFxdWV0ZSBmdXR1cmUKbGlicmFyeShmdXR1cmUpCgojIENvbmZpZ3VyYXIgdW4gcGxhbiBwYXJhIGxhIGVqZWN1Y2nDs24gcGFyYWxlbGEKcGxhbihtdWx0aXNlc3Npb24sIHdvcmtlcnMgPSAyKQoKIyBEZWZpbmlyIHVuYSBmdW5jacOzbiBwYXJhIGVqZWN1dGFyIGVuIHBhcmFsZWxvCm15X2Z1bmN0aW9uIDwtIGZ1bmN0aW9uKHgpIHsKICBTeXMuc2xlZXAoMikgICMgU2ltdWxhciB1bmEgdGFyZWEgcXVlIGNvbnN1bWUgdGllbXBvCiAgcmV0dXJuKHheMikKfQoKIyBFamVjdXRhciBsYSBmdW5jacOzbiBlbiBwYXJhbGVsbyB1c2FuZG8gZnV0dXJlX2xhcHBseQppbnB1dF9saXN0IDwtIGxpc3QoMSwgMiwgMywgNCwgNSkKcmVzdWx0IDwtIGZ1dHVyZV9sYXBwbHkoaW5wdXRfbGlzdCwgbXlfZnVuY3Rpb24pCgpwcmludChyZXN1bHQp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar el paquete future
+library(future)
+
+# Configurar un plan para la ejecuci&oacute;n paralela
+plan(multisession, workers = 2)
+
+# Definir una funci&oacute;n para ejecutar en paralelo
+my_function &lt;- function(x) {
+  Sys.sleep(2)  # Simular una tarea que consume tiempo
+  return(x^2)
+}
+
+# Ejecutar la funci&oacute;n en paralelo usando future_lapply
+input_list &lt;- list(1, 2, 3, 4, 5)
+result &lt;- future_lapply(input_list, my_function)
+
+print(result)</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>:
+<ul>
+<li><code>plan</code> configura la estrategia de ejecución paralela.</li>
+<li><code>future_lapply</code> es una versión paralela de <code>lapply</code>.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Técnicas Avanzadas</h1>
+<div class='content'></div><h2>Balanceo de Carga</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Distribuir tareas uniformemente a través de los recursos disponibles para evitar sobrecargar cualquier recurso individual.</li>
+<li><strong>Técnicas</strong>: Programación dinámica, división de tareas en bloques.</li>
+</ul>
+</div><h2>Tolerancia a Fallos</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Asegurar que el sistema continúe operando incluso si algunos componentes fallan.</li>
+<li><strong>Técnicas</strong>: Puntos de control, mecanismos de reintento.</li>
+</ul>
+</div><h2>Escalabilidad</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: La capacidad de manejar cargas de trabajo crecientes añadiendo recursos.</li>
+<li><strong>Técnicas</strong>: Computación distribuida, soluciones basadas en la nube.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La computación paralela en R puede mejorar enormemente el rendimiento de las tareas de procesamiento de datos al aprovechar múltiples núcleos de CPU. Utilizando paquetes como <code>parallel</code>, <code>foreach</code>, <code>doParallel</code> y <code>future</code>, puedes ejecutar tareas de manera eficiente en paralelo. Comprender técnicas avanzadas como el balanceo de carga, la tolerancia a fallos y la escalabilidad puede optimizar aún más tus flujos de trabajo de computación paralela.</p>
+<p>Al dominar estos conceptos y herramientas, puedes reducir significativamente el tiempo de cómputo y mejorar la eficiencia de tus programas en R.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='working-with-large-datasets'>&#x25C4;Trabajando con Grandes Conjuntos de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Computación Paralela en R</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-r-with-hadoop'>Usando R con Hadoop &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

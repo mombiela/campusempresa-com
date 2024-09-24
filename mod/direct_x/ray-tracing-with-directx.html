@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trazado de Rayos con DirectX</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/ray-tracing-with-directx" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/ray-tracing-with-directx" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/ray-tracing-with-directx" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/direct_x/ray-tracing-with-directx" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/ray-tracing-with-directx" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='directx-12-features'>&#x25C4;Características de DirectX 12</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Trazado de Rayos con DirectX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='virtual-reality-and-directx'>Realidad Virtual y DirectX &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción al Trazado de Rayos</h1>
+<div class='content'><p>El trazado de rayos es una técnica de renderizado que simula la forma en que la luz interactúa con los objetos para producir imágenes realistas. A diferencia de la rasterización tradicional, que procesa cada triángulo individualmente, el trazado de rayos sigue el camino de los rayos de luz a medida que viajan a través de la escena.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Rayos</strong>: Líneas que representan el camino de la luz.</li>
+<li><strong>Intersección</strong>: El punto donde un rayo golpea un objeto.</li>
+<li><strong>Sombreado</strong>: Cálculo del color en el punto de intersección.</li>
+<li><strong>Reflexión y Refracción</strong>: Rayos rebotando en superficies o pasando a través de materiales transparentes.</li>
+<li><strong>Estructuras de Aceleración</strong>: Estructuras de datos que optimizan las pruebas de intersección rayo-objeto.</li>
+</ul>
+</div><h1>Configuración de DirectX para el Trazado de Rayos</h1>
+<div class='content'><p>Antes de sumergirse en el trazado de rayos, asegúrese de tener una configuración básica de DirectX. Esto incluye inicializar Direct3D, crear un dispositivo y configurar una cadena de intercambio.</p>
+</div><h2>Inicialización Básica de DirectX</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW5pY2lhbGl6YXIgRGlyZWN0M0QKRDNEMTJDcmVhdGVEZXZpY2UoLi4uKTsKRDNEMTJfQ09NTUFORF9RVUVVRV9ERVNDIHF1ZXVlRGVzYyA9IHt9OwpJRDNEMTJDb21tYW5kUXVldWUqIGNvbW1hbmRRdWV1ZTsKZGV2aWNlLT5DcmVhdGVDb21tYW5kUXVldWUoJnF1ZXVlRGVzYywgSUlEX1BQVl9BUkdTKCZjb21tYW5kUXVldWUpKTsKCi8vIENyZWFyIENhZGVuYSBkZSBJbnRlcmNhbWJpbwpEWEdJX1NXQVBfQ0hBSU5fREVTQyBzd2FwQ2hhaW5EZXNjID0ge307CklEWEdJU3dhcENoYWluKiBzd2FwQ2hhaW47CmZhY3RvcnktPkNyZWF0ZVN3YXBDaGFpbihjb21tYW5kUXVldWUsICZzd2FwQ2hhaW5EZXNjLCAmc3dhcENoYWluKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Inicializar Direct3D
+D3D12CreateDevice(...);
+D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+ID3D12CommandQueue* commandQueue;
+device-&gt;CreateCommandQueue(&amp;queueDesc, IID_PPV_ARGS(&amp;commandQueue));
+
+// Crear Cadena de Intercambio
+DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
+IDXGISwapChain* swapChain;
+factory-&gt;CreateSwapChain(commandQueue, &amp;swapChainDesc, &amp;swapChain);</pre></div><div class='content'></div><h1>Implementación del Trazado de Rayos en DirectX</h1>
+<h2>Configuración del Pipeline de Trazado de Rayos</h2>
+<div class='content'><p>DirectX 12 introduce la API DXR (DirectX Raytracing), que extiende DirectX 12 para soportar el trazado de rayos. El pipeline de trazado de rayos consta de varios componentes clave:</p>
+<ul>
+<li><strong>Shader de Generación de Rayos</strong>: Inicia los rayos.</li>
+<li><strong>Shader de Intersección</strong>: Determina si y dónde un rayo intersecta un objeto.</li>
+<li><strong>Shader de Cualquier Intersección</strong>: Se ejecuta cuando un rayo intersecta cualquier geometría.</li>
+<li><strong>Shader de Intersección Más Cercana</strong>: Se ejecuta para la intersección más cercana.</li>
+<li><strong>Shader de Fallo</strong>: Se ejecuta cuando un rayo falla en intersectar cualquier geometría.</li>
+</ul>
+</div><h2>Creación del Objeto de Estado del Pipeline de Trazado de Rayos (RTPSO)</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGVmaW5pciBlbCBvYmpldG8gZGUgZXN0YWRvIGRlbCBwaXBlbGluZSBkZSB0cmF6YWRvIGRlIHJheW9zIChSVFBTTykKRDNEMTJfU1RBVEVfT0JKRUNUX0RFU0MgcmF5dHJhY2luZ1BpcGVsaW5lID0ge307CnJheXRyYWNpbmdQaXBlbGluZS5UeXBlID0gRDNEMTJfU1RBVEVfT0JKRUNUX1RZUEVfUkFZVFJBQ0lOR19QSVBFTElORTsKCi8vIEFncmVnYXIgc3Vib2JqZXRvczogc2hhZGVycywgZmlybWFzIHJhw616LCBldGMuCkQzRDEyX0VYUE9SVF9ERVNDIGV4cG9ydERlc2MgPSB7fTsKZXhwb3J0RGVzYy5OYW1lID0gTCJSYXlHZW5TaGFkZXIiOwpleHBvcnREZXNjLkV4cG9ydFRvUmVuYW1lID0gTCJSYXlHZW5TaGFkZXIiOwpyYXl0cmFjaW5nUGlwZWxpbmUucFN1Ym9iamVjdHMgPSAmZXhwb3J0RGVzYzsKcmF5dHJhY2luZ1BpcGVsaW5lLk51bVN1Ym9iamVjdHMgPSAxOwoKLy8gQ3JlYXIgZWwgUlRQU08KSUQzRDEyU3RhdGVPYmplY3QqIHBTdGF0ZU9iamVjdDsKZGV2aWNlLT5DcmVhdGVTdGF0ZU9iamVjdCgmcmF5dHJhY2luZ1BpcGVsaW5lLCBJSURfUFBWX0FSR1MoJnBTdGF0ZU9iamVjdCkpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Definir el objeto de estado del pipeline de trazado de rayos (RTPSO)
+D3D12_STATE_OBJECT_DESC raytracingPipeline = {};
+raytracingPipeline.Type = D3D12_STATE_OBJECT_TYPE_RAYTRACING_PIPELINE;
+
+// Agregar subobjetos: shaders, firmas ra&iacute;z, etc.
+D3D12_EXPORT_DESC exportDesc = {};
+exportDesc.Name = L&quot;RayGenShader&quot;;
+exportDesc.ExportToRename = L&quot;RayGenShader&quot;;
+raytracingPipeline.pSubobjects = &amp;exportDesc;
+raytracingPipeline.NumSubobjects = 1;
+
+// Crear el RTPSO
+ID3D12StateObject* pStateObject;
+device-&gt;CreateStateObject(&amp;raytracingPipeline, IID_PPV_ARGS(&amp;pStateObject));</pre></div><div class='content'></div><h2>Construcción de Estructuras de Aceleración</h2>
+<div class='content'><p>Las estructuras de aceleración son esenciales para un trazado de rayos eficiente. Se dividen en dos tipos: estructuras de aceleración de nivel inferior (BLAS) para objetos individuales y estructuras de aceleración de nivel superior (TLAS) para la escena.</p>
+<h4>Creación de una Estructura de Aceleración de Nivel Inferior (BLAS)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGVmaW5pciBnZW9tZXRyw61hIHBhcmEgQkxBUwpEM0QxMl9SQVlUUkFDSU5HX0dFT01FVFJZX0RFU0MgZ2VvbWV0cnlEZXNjID0ge307Cmdlb21ldHJ5RGVzYy5UeXBlID0gRDNEMTJfUkFZVFJBQ0lOR19HRU9NRVRSWV9UWVBFX1RSSUFOR0xFUzsKZ2VvbWV0cnlEZXNjLlRyaWFuZ2xlcy5WZXJ0ZXhCdWZmZXIuU3RhcnRBZGRyZXNzID0gdmVydGV4QnVmZmVyLT5HZXRHUFVWaXJ0dWFsQWRkcmVzcygpOwpnZW9tZXRyeURlc2MuVHJpYW5nbGVzLlZlcnRleENvdW50ID0gdmVydGV4Q291bnQ7CgovLyBDb25zdHJ1aXIgQkxBUwpEM0QxMl9CVUlMRF9SQVlUUkFDSU5HX0FDQ0VMRVJBVElPTl9TVFJVQ1RVUkVfREVTQyBibGFzRGVzYyA9IHt9OwpibGFzRGVzYy5JbnB1dHMuVHlwZSA9IEQzRDEyX1JBWVRSQUNJTkdfQUNDRUxFUkFUSU9OX1NUUlVDVFVSRV9UWVBFX0JPVFRPTV9MRVZFTDsKYmxhc0Rlc2MuSW5wdXRzLkRlc2NzTGF5b3V0ID0gRDNEMTJfRUxFTUVOVFNfTEFZT1VUX0FSUkFZOwpibGFzRGVzYy5JbnB1dHMucEdlb21ldHJ5RGVzY3MgPSAmZ2VvbWV0cnlEZXNjOwpibGFzRGVzYy5JbnB1dHMuTnVtRGVzY3MgPSAxOwpjb21tYW5kTGlzdC0+QnVpbGRSYXl0cmFjaW5nQWNjZWxlcmF0aW9uU3RydWN0dXJlKCZibGFzRGVzYywgMCwgbnVsbHB0cik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Definir geometr&iacute;a para BLAS
+D3D12_RAYTRACING_GEOMETRY_DESC geometryDesc = {};
+geometryDesc.Type = D3D12_RAYTRACING_GEOMETRY_TYPE_TRIANGLES;
+geometryDesc.Triangles.VertexBuffer.StartAddress = vertexBuffer-&gt;GetGPUVirtualAddress();
+geometryDesc.Triangles.VertexCount = vertexCount;
+
+// Construir BLAS
+D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC blasDesc = {};
+blasDesc.Inputs.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL;
+blasDesc.Inputs.DescsLayout = D3D12_ELEMENTS_LAYOUT_ARRAY;
+blasDesc.Inputs.pGeometryDescs = &amp;geometryDesc;
+blasDesc.Inputs.NumDescs = 1;
+commandList-&gt;BuildRaytracingAccelerationStructure(&amp;blasDesc, 0, nullptr);</pre></div><div class='content'><h4>Creación de una Estructura de Aceleración de Nivel Superior (TLAS)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGVmaW5pciBpbnN0YW5jaWEgcGFyYSBUTEFTCkQzRDEyX1JBWVRSQUNJTkdfSU5TVEFOQ0VfREVTQyBpbnN0YW5jZURlc2MgPSB7fTsKaW5zdGFuY2VEZXNjLlRyYW5zZm9ybSA9IC4uLjsgLy8gRXN0YWJsZWNlciBsYSBtYXRyaXogZGUgdHJhbnNmb3JtYWNpw7NuCmluc3RhbmNlRGVzYy5JbnN0YW5jZUlEID0gMDsKaW5zdGFuY2VEZXNjLkluc3RhbmNlTWFzayA9IDB4RkY7Cmluc3RhbmNlRGVzYy5BY2NlbGVyYXRpb25TdHJ1Y3R1cmUgPSBibGFzLT5HZXRHUFVWaXJ0dWFsQWRkcmVzcygpOwoKLy8gQ29uc3RydWlyIFRMQVMKRDNEMTJfQlVJTERfUkFZVFJBQ0lOR19BQ0NFTEVSQVRJT05fU1RSVUNUVVJFX0RFU0MgdGxhc0Rlc2MgPSB7fTsKdGxhc0Rlc2MuSW5wdXRzLlR5cGUgPSBEM0QxMl9SQVlUUkFDSU5HX0FDQ0VMRVJBVElPTl9TVFJVQ1RVUkVfVFlQRV9UT1BfTEVWRUw7CnRsYXNEZXNjLklucHV0cy5EZXNjc0xheW91dCA9IEQzRDEyX0VMRU1FTlRTX0xBWU9VVF9BUlJBWTsKdGxhc0Rlc2MuSW5wdXRzLkluc3RhbmNlRGVzY3MgPSBpbnN0YW5jZUJ1ZmZlci0+R2V0R1BVVmlydHVhbEFkZHJlc3MoKTsKdGxhc0Rlc2MuSW5wdXRzLk51bURlc2NzID0gMTsKY29tbWFuZExpc3QtPkJ1aWxkUmF5dHJhY2luZ0FjY2VsZXJhdGlvblN0cnVjdHVyZSgmdGxhc0Rlc2MsIDAsIG51bGxwdHIpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Definir instancia para TLAS
+D3D12_RAYTRACING_INSTANCE_DESC instanceDesc = {};
+instanceDesc.Transform = ...; // Establecer la matriz de transformaci&oacute;n
+instanceDesc.InstanceID = 0;
+instanceDesc.InstanceMask = 0xFF;
+instanceDesc.AccelerationStructure = blas-&gt;GetGPUVirtualAddress();
+
+// Construir TLAS
+D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC tlasDesc = {};
+tlasDesc.Inputs.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL;
+tlasDesc.Inputs.DescsLayout = D3D12_ELEMENTS_LAYOUT_ARRAY;
+tlasDesc.Inputs.InstanceDescs = instanceBuffer-&gt;GetGPUVirtualAddress();
+tlasDesc.Inputs.NumDescs = 1;
+commandList-&gt;BuildRaytracingAccelerationStructure(&amp;tlasDesc, 0, nullptr);</pre></div><div class='content'></div><h1>Shaders para el Trazado de Rayos</h1>
+<div class='content'><p>Los shaders son cruciales en el trazado de rayos para generar rayos, manejar intersecciones y sombrear.</p>
+</div><h2>Shader de Generación de Rayos</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2hhZGVyIGRlIEdlbmVyYWNpw7NuIGRlIFJheW9zCltzaGFkZXIoInJheWdlbmVyYXRpb24iKV0Kdm9pZCBSYXlHZW5TaGFkZXIoKQp7CiAgICAvLyBHZW5lcmFyIHJheW9zIHByaW1hcmlvcwogICAgUmF5RGVzYyByYXk7CiAgICByYXkuT3JpZ2luID0gY2FtZXJhUG9zaXRpb247CiAgICByYXkuRGlyZWN0aW9uID0gY2FsY3VsYXRlUmF5RGlyZWN0aW9uKCk7CiAgICBUcmFjZVJheSh0bGFzLCBSQVlfRkxBR19OT05FLCAweEZGLCAwLCAxLCAwLCByYXksIHBheWxvYWQpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Shader de Generaci&oacute;n de Rayos
+[shader(&quot;raygeneration&quot;)]
+void RayGenShader()
+{
+    // Generar rayos primarios
+    RayDesc ray;
+    ray.Origin = cameraPosition;
+    ray.Direction = calculateRayDirection();
+    TraceRay(tlas, RAY_FLAG_NONE, 0xFF, 0, 1, 0, ray, payload);
+}</pre></div><div class='content'></div><h2>Shader de Intersección Más Cercana</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2hhZGVyIGRlIEludGVyc2VjY2nDs24gTcOhcyBDZXJjYW5hCltzaGFkZXIoImNsb3Nlc3RoaXQiKV0Kdm9pZCBDbG9zZXN0SGl0U2hhZGVyKGlub3V0IFJheVBheWxvYWQgcGF5bG9hZCwgaW4gSW50ZXJzZWN0aW9uQXR0cmlidXRlcyBhdHRyaWIpCnsKICAgIC8vIENhbGN1bGFyIHNvbWJyZWFkbyBlbiBlbCBwdW50byBkZSBpbnRlcnNlY2Npw7NuCiAgICBmbG9hdDMgaGl0UG9pbnQgPSByYXkuT3JpZ2luICsgcmF5LkRpcmVjdGlvbiAqIGF0dHJpYi5IaXRUOwogICAgcGF5bG9hZC5Db2xvciA9IGNhbGN1bGF0ZVNoYWRpbmcoaGl0UG9pbnQsIGF0dHJpYi5Ob3JtYWwpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Shader de Intersecci&oacute;n M&aacute;s Cercana
+[shader(&quot;closesthit&quot;)]
+void ClosestHitShader(inout RayPayload payload, in IntersectionAttributes attrib)
+{
+    // Calcular sombreado en el punto de intersecci&oacute;n
+    float3 hitPoint = ray.Origin + ray.Direction * attrib.HitT;
+    payload.Color = calculateShading(hitPoint, attrib.Normal);
+}</pre></div><div class='content'></div><h2>Shader de Fallo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2hhZGVyIGRlIEZhbGxvCltzaGFkZXIoIm1pc3MiKV0Kdm9pZCBNaXNzU2hhZGVyKGlub3V0IFJheVBheWxvYWQgcGF5bG9hZCkKewogICAgLy8gRXN0YWJsZWNlciBjb2xvciBkZSBmb25kbwogICAgcGF5bG9hZC5Db2xvciA9IGZsb2F0MygwLjAsIDAuMCwgMC4wKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Shader de Fallo
+[shader(&quot;miss&quot;)]
+void MissShader(inout RayPayload payload)
+{
+    // Establecer color de fondo
+    payload.Color = float3(0.0, 0.0, 0.0);
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El trazado de rayos con DirectX implica configurar un pipeline especializado, crear estructuras de aceleración y escribir shaders para manejar la generación de rayos, intersecciones y sombreado. Aunque requiere una configuración más compleja en comparación con la rasterización tradicional, los resultados pueden producir imágenes altamente realistas al simular con precisión el comportamiento de la luz.</p>
+<p>Al comprender e implementar estos conceptos, puede aprovechar el poder de DirectX para crear visuales impresionantes en sus aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='directx-12-features'>&#x25C4;Características de DirectX 12</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Trazado de Rayos con DirectX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='virtual-reality-and-directx'>Realidad Virtual y DirectX &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

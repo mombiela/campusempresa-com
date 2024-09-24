@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación Multifactor (MFA) en AWS</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/aws/multi-factor-authentication" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/aws/multi-factor-authentication" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/aws/multi-factor-authentication" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/aws/multi-factor-authentication" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/aws/multi-factor-authentication" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='iam-policies-and-permissions'>&#x25C4;Políticas y permisos de IAM</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Autenticación Multifactor (MFA) en AWS</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-aws-networking'>Introducción a las redes de AWS &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a la Autenticación Multifactor (MFA)</h1>
+<div class='content'><p>La Autenticación Multifactor (MFA) es un sistema de seguridad que requiere más de un método de autenticación para verificar la identidad del usuario para un inicio de sesión u otra transacción. MFA combina dos o más credenciales independientes: lo que el usuario sabe (contraseña), lo que el usuario tiene (token de seguridad) y lo que el usuario es (verificación biométrica).</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Algo que Sabes</strong>: Típicamente una contraseña o PIN.</li>
+<li><strong>Algo que Tienes</strong>: Un dispositivo físico como un smartphone o un token de hardware.</li>
+<li><strong>Algo que Eres</strong>: Verificación biométrica como huellas dactilares o reconocimiento facial.</li>
+</ul>
+</div><h1>Importancia de MFA en AWS</h1>
+<div class='content'><p>Los entornos de AWS a menudo contienen datos sensibles y aplicaciones críticas. Implementar MFA agrega una capa adicional de seguridad, haciendo significativamente más difícil que usuarios no autorizados obtengan acceso.</p>
+</div><h2>Beneficios de MFA</h2>
+<div class='content'><ul>
+<li><strong>Seguridad Mejorada</strong>: Reduce el riesgo de cuentas comprometidas.</li>
+<li><strong>Cumplimiento</strong>: Ayuda a cumplir con los requisitos regulatorios.</li>
+<li><strong>Responsabilidad del Usuario</strong>: Asegura que solo los usuarios autorizados puedan realizar ciertas acciones.</li>
+</ul>
+</div><h1>Configuración de MFA en AWS</h1>
+<div class='content'></div><h2>Requisitos Previos</h2>
+<div class='content'><ul>
+<li>Una cuenta de AWS.</li>
+<li>Acceso a la Consola de Administración de AWS.</li>
+<li>Un dispositivo MFA compatible (por ejemplo, un smartphone con una aplicación MFA como Google Authenticator o un dispositivo de hardware MFA).</li>
+</ul>
+</div><h2>Pasos para Habilitar MFA para Usuarios IAM de AWS</h2>
+<div class='content'><ol>
+<li><strong>Iniciar sesión en la Consola de Administración de AWS</strong>.</li>
+<li><strong>Navegar al Panel de IAM</strong>:
+<ul>
+<li>Ir al servicio IAM desde la Consola de Administración de AWS.</li>
+</ul>
+</li>
+<li><strong>Seleccionar Usuarios</strong>:
+<ul>
+<li>Elegir el usuario para el cual deseas habilitar MFA.</li>
+</ul>
+</li>
+<li><strong>Gestionar Dispositivo MFA</strong>:
+<ul>
+<li>En la sección de detalles del usuario, haz clic en la pestaña &quot;Credenciales de seguridad&quot;.</li>
+<li>Haz clic en &quot;Gestionar&quot; junto a la sección &quot;Dispositivo MFA asignado&quot;.</li>
+</ul>
+</li>
+<li><strong>Elegir Tipo de Dispositivo MFA</strong>:
+<ul>
+<li>Seleccionar &quot;Dispositivo MFA virtual&quot; o &quot;Dispositivo MFA de hardware&quot;.</li>
+</ul>
+</li>
+<li><strong>Configurar el Dispositivo MFA</strong>:
+<ul>
+<li>Para un dispositivo MFA virtual, usar una aplicación MFA para escanear el código QR proporcionado por AWS.</li>
+<li>Para un dispositivo MFA de hardware, ingresar el número de serie del dispositivo.</li>
+</ul>
+</li>
+<li><strong>Asignar Dispositivo MFA</strong>:
+<ul>
+<li>Ingresar los códigos de autenticación generados por el dispositivo MFA para completar la configuración.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo: Habilitación de Dispositivo MFA Virtual</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MS4gQWJyZSBsYSBjb25zb2xhIElBTSBlbiBodHRwczovL2NvbnNvbGUuYXdzLmFtYXpvbi5jb20vaWFtLy4KMi4gRW4gZWwgcGFuZWwgZGUgbmF2ZWdhY2nDs24sIGVsaWdlIFVzdWFyaW9zLgozLiBFbGlnZSBlbCBub21icmUgZGVsIHVzdWFyaW8gcGFyYSBlbCBxdWUgZGVzZWFzIGhhYmlsaXRhciBNRkEuCjQuIEVsaWdlIGxhIHBlc3Rhw7FhIENyZWRlbmNpYWxlcyBkZSBzZWd1cmlkYWQuCjUuIEVuIGxhIHNlY2Npw7NuIEF1dGVudGljYWNpw7NuIG11bHRpZmFjdG9yIChNRkEpLCBlbGlnZSBHZXN0aW9uYXIuCjYuIEVsaWdlIERpc3Bvc2l0aXZvIE1GQSB2aXJ0dWFsIHkgbHVlZ28gZWxpZ2UgQ29udGludWFyLgo3LiBBYnJlIHR1IGFwbGljYWNpw7NuIE1GQSBlbiB0dSBzbWFydHBob25lIHkgZXNjYW5lYSBlbCBjw7NkaWdvIFFSIHF1ZSBzZSBtdWVzdHJhIGVuIGxhIGNvbnNvbGEgZGUgQVdTLgo4LiBJbmdyZXNhIGxvcyBkb3MgY8OzZGlnb3MgZGUgYXV0ZW50aWNhY2nDs24gY29uc2VjdXRpdm9zIGdlbmVyYWRvcyBwb3IgdHUgYXBsaWNhY2nDs24gTUZBLgo5LiBFbGlnZSBBc2lnbmFyIE1GQS4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>1. Abre la consola IAM en https://console.aws.amazon.com/iam/.
+2. En el panel de navegaci&oacute;n, elige Usuarios.
+3. Elige el nombre del usuario para el que deseas habilitar MFA.
+4. Elige la pesta&ntilde;a Credenciales de seguridad.
+5. En la secci&oacute;n Autenticaci&oacute;n multifactor (MFA), elige Gestionar.
+6. Elige Dispositivo MFA virtual y luego elige Continuar.
+7. Abre tu aplicaci&oacute;n MFA en tu smartphone y escanea el c&oacute;digo QR que se muestra en la consola de AWS.
+8. Ingresa los dos c&oacute;digos de autenticaci&oacute;n consecutivos generados por tu aplicaci&oacute;n MFA.
+9. Elige Asignar MFA.</pre></div><div class='content'></div><h1>Configuraciones Avanzadas de MFA</h1>
+<div class='content'></div><h2>MFA para la Cuenta Root</h2>
+<div class='content'><ul>
+<li><strong>Altamente Recomendado</strong>: La cuenta root tiene acceso sin restricciones a tus recursos de AWS.</li>
+<li><strong>Pasos</strong>: Similar a habilitar MFA para usuarios IAM pero realizado a través de la configuración de seguridad de la cuenta root.</li>
+</ul>
+</div><h2>MFA para AWS CLI y SDK</h2>
+<div class='content'><ul>
+<li><strong>Credenciales de Seguridad Temporales</strong>: Usar AWS STS (Servicio de Token de Seguridad) para generar credenciales temporales que requieran MFA.</li>
+<li><strong>Ejemplo</strong>:
+<pre><code class="language-bash">aws sts get-session-token --serial-number arn-del-dispositivo-mfa --token-code código-del-token
+</code></pre>
+</li>
+</ul>
+</div><h2>Imposición de MFA con Políticas IAM</h2>
+<div class='content'><ul>
+<li><strong>Ejemplo de Política IAM</strong>:
+<pre><code class="language-json">{
+    &quot;Version&quot;: &quot;2012-10-17&quot;,
+    &quot;Statement&quot;: [
+        {
+            &quot;Effect&quot;: &quot;Deny&quot;,
+            &quot;Action&quot;: &quot;*&quot;,
+            &quot;Resource&quot;: &quot;*&quot;,
+            &quot;Condition&quot;: {
+                &quot;BoolIfExists&quot;: {
+                    &quot;aws:MultiFactorAuthPresent&quot;: &quot;false&quot;
+                }
+            }
+        }
+    ]
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Solución de Problemas de MFA</h1>
+<div class='content'><ul>
+<li><strong>Dispositivo MFA Perdido</strong>: Usar la cuenta root para deshabilitar MFA para el usuario afectado y reconfigurarlo.</li>
+<li><strong>Problemas de Sincronización</strong>: Asegurarse de que la hora en tu dispositivo MFA esté sincronizada con los servidores de AWS.</li>
+<li><strong>Códigos de Respaldo</strong>: AWS no proporciona códigos de respaldo; considera tener un dispositivo MFA secundario.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La Autenticación Multifactor (MFA) es una medida de seguridad crítica para proteger tu entorno de AWS. Al requerir múltiples formas de verificación, MFA mejora significativamente la seguridad de tus recursos de AWS. Configurar MFA es sencillo y se puede hacer a través de la Consola de Administración de AWS, CLI o SDK. Las configuraciones avanzadas y las políticas pueden imponer aún más el uso de MFA, asegurando prácticas de seguridad robustas en toda tu infraestructura de AWS.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='iam-policies-and-permissions'>&#x25C4;Políticas y permisos de IAM</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Autenticación Multifactor (MFA) en AWS</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-aws-networking'>Introducción a las redes de AWS &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

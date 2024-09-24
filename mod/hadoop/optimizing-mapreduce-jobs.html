@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización de Trabajos MapReduce</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/optimizing-mapreduce-jobs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/optimizing-mapreduce-jobs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/optimizing-mapreduce-jobs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/hadoop/optimizing-mapreduce-jobs" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/optimizing-mapreduce-jobs" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='mapreduce-job-execution'>&#x25C4;Ejecución de Trabajos MapReduce</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización de Trabajos MapReduce</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='yarn-architecture'>Arquitectura de YARN &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Optimizar los trabajos MapReduce es crucial para mejorar el rendimiento y la eficiencia de las aplicaciones Hadoop. Esta sección te guiará a través de varias técnicas y mejores prácticas para optimizar tus trabajos MapReduce, desde niveles básicos hasta avanzados.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Framework MapReduce</strong>: Entiende los componentes básicos de MapReduce - Mapper, Reducer y el flujo de datos entre ellos.</li>
+<li><strong>Configuración del Trabajo</strong>: Aprende cómo configurar tus trabajos MapReduce para un mejor rendimiento.</li>
+<li><strong>Localidad de Datos</strong>: Importancia de procesar los datos donde residen.</li>
+<li><strong>Funciones Combinadoras</strong>: Uso de combinadores para reducir la cantidad de datos transferidos entre el Mapper y el Reducer.</li>
+<li><strong>Particionamiento</strong>: Particionamiento personalizado para equilibrar la carga entre los reducers.</li>
+<li><strong>Ejecución Especulativa</strong>: Manejo de tareas lentas ejecutando tareas duplicadas.</li>
+<li><strong>Gestión de Recursos</strong>: Uso eficiente de los recursos del clúster.</li>
+</ul>
+</div><h1>Configuración del Trabajo</h1>
+<div class='content'><p>Una configuración adecuada del trabajo puede impactar significativamente el rendimiento de tus trabajos MapReduce.</p>
+</div><h2>Ejemplo: Configuración del Número de Reducers</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Sm9iIGpvYiA9IEpvYi5nZXRJbnN0YW5jZShjb25mLCAiZXhhbXBsZS1qb2IiKTsKam9iLnNldE51bVJlZHVjZVRhc2tzKDEwKTsgLy8gQ29uZmlndXJhY2nDs24gZGVsIG7Dum1lcm8gZGUgcmVkdWNlcnM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Job job = Job.getInstance(conf, &quot;example-job&quot;);
+job.setNumReduceTasks(10); // Configuraci&oacute;n del n&uacute;mero de reducers</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: Configurar un número apropiado de reducers puede ayudar a equilibrar la carga y reducir el tiempo de finalización del trabajo. Muy pocos reducers pueden llevar a cuellos de botella, mientras que demasiados pueden causar sobrecarga.</li>
+</ul>
+</div><h1>Localidad de Datos</h1>
+<div class='content'><p>Procesar los datos donde residen (localidad de datos) minimiza la congestión de la red y mejora el rendimiento.</p>
+<ul>
+<li><strong>Colocación de Bloques HDFS</strong>: Asegúrate de que los bloques de datos se coloquen de manera que maximicen la localidad de datos.</li>
+<li><strong>Afinidad de Nodo</strong>: Configura tu trabajo para preferir nodos que tengan los bloques de datos.</li>
+</ul>
+</div><h2>Ejemplo: Habilitación de la Localidad de Datos</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q29uZmlndXJhdGlvbiBjb25mID0gbmV3IENvbmZpZ3VyYXRpb24oKTsKY29uZi5zZXQoIm1hcHJlZHVjZS5qb2J0cmFja2VyLmFkZHJlc3MiLCAibG9jYWwiKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Configuration conf = new Configuration();
+conf.set(&quot;mapreduce.jobtracker.address&quot;, &quot;local&quot;);</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: Esta configuración ayuda a asegurar que el job tracker intente programar tareas en nodos donde los datos ya están presentes.</li>
+</ul>
+</div><h1>Funciones Combinadoras</h1>
+<div class='content'><p>Los combinadores son mini-reducers que procesan la salida del Mapper antes de enviarla al Reducer, reduciendo la cantidad de datos transferidos.</p>
+</div><h2>Ejemplo: Uso de un Combinador</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("am9iLnNldENvbWJpbmVyQ2xhc3MoTXlDb21iaW5lci5jbGFzcyk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>job.setCombinerClass(MyCombiner.class);</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: Al configurar una clase combinadora, puedes reducir la cantidad de datos intermedios que necesitan ser transferidos entre el Mapper y el Reducer.</li>
+</ul>
+</div><h1>Particionamiento</h1>
+<div class='content'><p>El particionamiento personalizado puede ayudar a distribuir la carga de manera uniforme entre los reducers.</p>
+</div><h2>Ejemplo: Particionador Personalizado</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIE15UGFydGl0aW9uZXIgZXh0ZW5kcyBQYXJ0aXRpb25lcjxUZXh0LCBJbnRXcml0YWJsZT4gewogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgaW50IGdldFBhcnRpdGlvbihUZXh0IGtleSwgSW50V3JpdGFibGUgdmFsdWUsIGludCBudW1QYXJ0aXRpb25zKSB7CiAgICAgICAgcmV0dXJuIGtleS5oYXNoQ29kZSgpICUgbnVtUGFydGl0aW9uczsKICAgIH0KfQoKam9iLnNldFBhcnRpdGlvbmVyQ2xhc3MoTXlQYXJ0aXRpb25lci5jbGFzcyk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class MyPartitioner extends Partitioner&lt;Text, IntWritable&gt; {
+    @Override
+    public int getPartition(Text key, IntWritable value, int numPartitions) {
+        return key.hashCode() % numPartitions;
+    }
+}
+
+job.setPartitionerClass(MyPartitioner.class);</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: Un particionador personalizado asegura que los datos se distribuyan de manera uniforme entre los reducers, evitando que algunos reducers estén sobrecargados mientras que otros están infrautilizados.</li>
+</ul>
+</div><h1>Ejecución Especulativa</h1>
+<div class='content'><p>La ejecución especulativa puede ayudar a manejar tareas lentas ejecutando tareas duplicadas en diferentes nodos.</p>
+</div><h2>Ejemplo: Habilitación de la Ejecución Especulativa</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q29uZmlndXJhdGlvbiBjb25mID0gbmV3IENvbmZpZ3VyYXRpb24oKTsKY29uZi5zZXRCb29sZWFuKCJtYXByZWR1Y2UubWFwLnNwZWN1bGF0aXZlIiwgdHJ1ZSk7CmNvbmYuc2V0Qm9vbGVhbigibWFwcmVkdWNlLnJlZHVjZS5zcGVjdWxhdGl2ZSIsIHRydWUpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Configuration conf = new Configuration();
+conf.setBoolean(&quot;mapreduce.map.speculative&quot;, true);
+conf.setBoolean(&quot;mapreduce.reduce.speculative&quot;, true);</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: Habilitar la ejecución especulativa puede ayudar a completar los trabajos más rápido al mitigar el impacto de tareas que se ejecutan lentamente.</li>
+</ul>
+</div><h1>Gestión de Recursos</h1>
+<div class='content'><p>El uso eficiente de los recursos del clúster asegura que tus trabajos MapReduce se ejecuten sin problemas y sin contención de recursos.</p>
+<ul>
+<li><strong>Configuración de YARN</strong>: Configura YARN para asignar recursos de manera efectiva.</li>
+<li><strong>Configuración de Memoria y CPU</strong>: Establece límites apropiados de memoria y CPU para tus tareas.</li>
+</ul>
+</div><h2>Ejemplo: Configuración de Recursos de YARN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q29uZmlndXJhdGlvbiBjb25mID0gbmV3IENvbmZpZ3VyYXRpb24oKTsKY29uZi5zZXQoInlhcm4ubm9kZW1hbmFnZXIucmVzb3VyY2UubWVtb3J5LW1iIiwgIjgxOTIiKTsKY29uZi5zZXQoInlhcm4uc2NoZWR1bGVyLm1heGltdW0tYWxsb2NhdGlvbi1tYiIsICI0MDk2Iik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Configuration conf = new Configuration();
+conf.set(&quot;yarn.nodemanager.resource.memory-mb&quot;, &quot;8192&quot;);
+conf.set(&quot;yarn.scheduler.maximum-allocation-mb&quot;, &quot;4096&quot;);</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: Una configuración adecuada de YARN asegura que los recursos se asignen de manera eficiente, previniendo la contención de recursos y mejorando el rendimiento del trabajo.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Optimizar los trabajos MapReduce implica una combinación de configuración adecuada del trabajo, asegurando la localidad de datos, uso de combinadores, particionamiento personalizado, habilitación de la ejecución especulativa y gestión eficiente de recursos. Siguiendo estas mejores prácticas, puedes mejorar significativamente el rendimiento y la eficiencia de tus aplicaciones Hadoop.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='mapreduce-job-execution'>&#x25C4;Ejecución de Trabajos MapReduce</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización de Trabajos MapReduce</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='yarn-architecture'>Arquitectura de YARN &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

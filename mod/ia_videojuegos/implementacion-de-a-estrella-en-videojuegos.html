@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementación de A* en Videojuegos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ia_videojuegos/implementacion-de-a-estrella-en-videojuegos" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ia_videojuegos/implementacion-de-a-estrella-en-videojuegos" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ia_videojuegos/implementacion-de-a-estrella-en-videojuegos" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/ia_videojuegos/implementacion-de-a-estrella-en-videojuegos" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/ia_videojuegos/implementacion-de-a-estrella-en-videojuegos" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='evitacion-de-obstaculos'>&#x25C4;Evitación de Obstáculos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementación de A* en Videojuegos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='maquinas-de-estados-finite'>Máquinas de Estados Finite (FSM) &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a A*</h1>
+<div class='content'><p>El algoritmo A* (A estrella) es uno de los algoritmos de búsqueda más utilizados en la inteligencia artificial para videojuegos. Es conocido por su eficiencia y precisión al encontrar el camino más corto entre dos puntos en un espacio de búsqueda.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Nodo</strong>: Representa un punto en el espacio de búsqueda.</li>
+<li><strong>G(n)</strong>: El costo desde el nodo inicial hasta el nodo n.</li>
+<li><strong>H(n)</strong>: La heurística que estima el costo desde el nodo n hasta el nodo objetivo.</li>
+<li><strong>F(n)</strong>: La suma de G(n) y H(n), es decir, F(n) = G(n) + H(n).</li>
+</ul>
+</div><h1>Funcionamiento del Algoritmo A*</h1>
+<div class='content'><p>El algoritmo A* utiliza una combinación de búsqueda en anchura y heurística para encontrar el camino más corto. Se basa en dos listas:</p>
+<ul>
+<li><strong>Lista abierta</strong>: Contiene los nodos que se deben evaluar.</li>
+<li><strong>Lista cerrada</strong>: Contiene los nodos que ya han sido evaluados.</li>
+</ul>
+</div><h2>Pasos del Algoritmo</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Inicialización</strong>:</p>
+<ul>
+<li>Añadir el nodo inicial a la lista abierta.</li>
+<li>Establecer G(n) = 0 y H(n) según la heurística.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bucle Principal</strong>:</p>
+<ul>
+<li>Mientras la lista abierta no esté vacía:
+<ul>
+<li>Seleccionar el nodo con el menor F(n) de la lista abierta.</li>
+<li>Si el nodo seleccionado es el nodo objetivo, se ha encontrado el camino.</li>
+<li>Mover el nodo seleccionado de la lista abierta a la lista cerrada.</li>
+<li>Evaluar los nodos vecinos del nodo seleccionado:
+<ul>
+<li>Si el nodo vecino está en la lista cerrada, ignorarlo.</li>
+<li>Si el nodo vecino no está en la lista abierta, añadirlo y calcular G(n), H(n) y F(n).</li>
+<li>Si el nodo vecino ya está en la lista abierta, comprobar si el nuevo camino es mejor (menor G(n)). Si es así, actualizar los valores de G(n), H(n) y F(n).</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo de Código en Python</h2>
+<div class='content'><p>A continuación, se presenta un ejemplo básico de implementación del algoritmo A* en Python:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGhlYXBxCgpkZWYgaGV1cmlzdGljKGEsIGIpOgogICAgcmV0dXJuIGFicyhhWzBdIC0gYlswXSkgKyBhYnMoYVsxXSAtIGJbMV0pCgpkZWYgYV9zdGFyX3NlYXJjaChzdGFydCwgZ29hbCwgZ3JpZCk6CiAgICBvcGVuX2xpc3QgPSBbXQogICAgaGVhcHEuaGVhcHB1c2gob3Blbl9saXN0LCAoMCwgc3RhcnQpKQogICAgY2FtZV9mcm9tID0ge30KICAgIGdfc2NvcmUgPSB7c3RhcnQ6IDB9CiAgICBmX3Njb3JlID0ge3N0YXJ0OiBoZXVyaXN0aWMoc3RhcnQsIGdvYWwpfQoKICAgIHdoaWxlIG9wZW5fbGlzdDoKICAgICAgICBjdXJyZW50ID0gaGVhcHEuaGVhcHBvcChvcGVuX2xpc3QpWzFdCgogICAgICAgIGlmIGN1cnJlbnQgPT0gZ29hbDoKICAgICAgICAgICAgcGF0aCA9IFtdCiAgICAgICAgICAgIHdoaWxlIGN1cnJlbnQgaW4gY2FtZV9mcm9tOgogICAgICAgICAgICAgICAgcGF0aC5hcHBlbmQoY3VycmVudCkKICAgICAgICAgICAgICAgIGN1cnJlbnQgPSBjYW1lX2Zyb21bY3VycmVudF0KICAgICAgICAgICAgcGF0aC5hcHBlbmQoc3RhcnQpCiAgICAgICAgICAgIHBhdGgucmV2ZXJzZSgpCiAgICAgICAgICAgIHJldHVybiBwYXRoCgogICAgICAgIGZvciBuZWlnaGJvciBpbiBnZXRfbmVpZ2hib3JzKGN1cnJlbnQsIGdyaWQpOgogICAgICAgICAgICB0ZW50YXRpdmVfZ19zY29yZSA9IGdfc2NvcmVbY3VycmVudF0gKyAxCgogICAgICAgICAgICBpZiBuZWlnaGJvciBub3QgaW4gZ19zY29yZSBvciB0ZW50YXRpdmVfZ19zY29yZSA8IGdfc2NvcmVbbmVpZ2hib3JdOgogICAgICAgICAgICAgICAgY2FtZV9mcm9tW25laWdoYm9yXSA9IGN1cnJlbnQKICAgICAgICAgICAgICAgIGdfc2NvcmVbbmVpZ2hib3JdID0gdGVudGF0aXZlX2dfc2NvcmUKICAgICAgICAgICAgICAgIGZfc2NvcmVbbmVpZ2hib3JdID0gZ19zY29yZVtuZWlnaGJvcl0gKyBoZXVyaXN0aWMobmVpZ2hib3IsIGdvYWwpCiAgICAgICAgICAgICAgICBoZWFwcS5oZWFwcHVzaChvcGVuX2xpc3QsIChmX3Njb3JlW25laWdoYm9yXSwgbmVpZ2hib3IpKQoKICAgIHJldHVybiBbXQoKZGVmIGdldF9uZWlnaGJvcnMobm9kZSwgZ3JpZCk6CiAgICBuZWlnaGJvcnMgPSBbXQogICAgZm9yIGR4LCBkeSBpbiBbKC0xLCAwKSwgKDEsIDApLCAoMCwgLTEpLCAoMCwgMSldOgogICAgICAgIHgsIHkgPSBub2RlWzBdICsgZHgsIG5vZGVbMV0gKyBkeQogICAgICAgIGlmIDAgPD0geCA8IGxlbihncmlkKSBhbmQgMCA8PSB5IDwgbGVuKGdyaWRbMF0pIGFuZCBncmlkW3hdW3ldID09IDA6CiAgICAgICAgICAgIG5laWdoYm9ycy5hcHBlbmQoKHgsIHkpKQogICAgcmV0dXJuIG5laWdoYm9ycwoKIyBFamVtcGxvIGRlIHVzbwpncmlkID0gWwogICAgWzAsIDEsIDAsIDAsIDBdLAogICAgWzAsIDEsIDAsIDEsIDBdLAogICAgWzAsIDAsIDAsIDEsIDBdLAogICAgWzAsIDEsIDAsIDAsIDBdLAogICAgWzAsIDAsIDAsIDEsIDBdCl0Kc3RhcnQgPSAoMCwgMCkKZ29hbCA9ICg0LCA0KQpwYXRoID0gYV9zdGFyX3NlYXJjaChzdGFydCwgZ29hbCwgZ3JpZCkKcHJpbnQoIkNhbWlubyBlbmNvbnRyYWRvOiIsIHBhdGgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import heapq
+
+def heuristic(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def a_star_search(start, goal, grid):
+    open_list = []
+    heapq.heappush(open_list, (0, start))
+    came_from = {}
+    g_score = {start: 0}
+    f_score = {start: heuristic(start, goal)}
+
+    while open_list:
+        current = heapq.heappop(open_list)[1]
+
+        if current == goal:
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            return path
+
+        for neighbor in get_neighbors(current, grid):
+            tentative_g_score = g_score[current] + 1
+
+            if neighbor not in g_score or tentative_g_score &lt; g_score[neighbor]:
+                came_from[neighbor] = current
+                g_score[neighbor] = tentative_g_score
+                f_score[neighbor] = g_score[neighbor] + heuristic(neighbor, goal)
+                heapq.heappush(open_list, (f_score[neighbor], neighbor))
+
+    return []
+
+def get_neighbors(node, grid):
+    neighbors = []
+    for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+        x, y = node[0] + dx, node[1] + dy
+        if 0 &lt;= x &lt; len(grid) and 0 &lt;= y &lt; len(grid[0]) and grid[x][y] == 0:
+            neighbors.append((x, y))
+    return neighbors
+
+# Ejemplo de uso
+grid = [
+    [0, 1, 0, 0, 0],
+    [0, 1, 0, 1, 0],
+    [0, 0, 0, 1, 0],
+    [0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 0]
+]
+start = (0, 0)
+goal = (4, 4)
+path = a_star_search(start, goal, grid)
+print(&quot;Camino encontrado:&quot;, path)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>heuristic(a, b)</strong>: Calcula la distancia de Manhattan entre dos puntos a y b.</li>
+<li><strong>a_star_search(start, goal, grid)</strong>: Implementa el algoritmo A* para encontrar el camino más corto en una cuadrícula.</li>
+<li><strong>get_neighbors(node, grid)</strong>: Devuelve los vecinos válidos de un nodo en la cuadrícula.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El algoritmo A* es una herramienta poderosa para la búsqueda de caminos en videojuegos debido a su eficiencia y precisión. Comprender su funcionamiento y cómo implementarlo es esencial para cualquier desarrollador de IA en videojuegos. Con la práctica y la adaptación del algoritmo a diferentes escenarios, se pueden lograr resultados óptimos en la navegación de personajes y otros elementos en el juego.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='evitacion-de-obstaculos'>&#x25C4;Evitación de Obstáculos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementación de A* en Videojuegos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='maquinas-de-estados-finite'>Máquinas de Estados Finite (FSM) &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización de rendimiento en REST API</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rest_api/optimizacion-de-rendimiento" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rest_api/optimizacion-de-rendimiento" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rest_api/optimizacion-de-rendimiento" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rest_api/optimizacion-de-rendimiento" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rest_api/optimizacion-de-rendimiento" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pruebas-y-depuracion'>&#x25C4;Pruebas y depuración</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización de rendimiento en REST API</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mantenimiento-y-escalabilidad'>Mantenimiento y escalabilidad &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La optimización de rendimiento en REST API es crucial para asegurar que las aplicaciones sean rápidas, eficientes y escalables. En esta sección, exploraremos diversas técnicas y mejores prácticas para mejorar el rendimiento de tus APIs RESTful.</p>
+</div><h1>Estrategias de Optimización</h1>
+<div class='content'></div><h2>1. Uso de Caché</h2>
+<div class='content'><p>El almacenamiento en caché puede reducir significativamente la carga en el servidor y mejorar los tiempos de respuesta.</p>
+<ul>
+<li><strong>HTTP Caching</strong>: Utiliza encabezados HTTP como <code>Cache-Control</code>, <code>ETag</code> y <code>Last-Modified</code> para controlar el almacenamiento en caché del lado del cliente y del servidor.</li>
+<li><strong>Ejemplo de código</strong>:
+<pre><code class="language-http">GET /api/resource HTTP/1.1
+Host: example.com
+Cache-Control: max-age=3600
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Compresión de Datos</h2>
+<div class='content'><p>La compresión de datos reduce el tamaño de las respuestas HTTP, lo que puede mejorar los tiempos de transferencia.</p>
+<ul>
+<li><strong>Gzip</strong>: Configura tu servidor para comprimir las respuestas usando Gzip.</li>
+<li><strong>Ejemplo de código</strong> (configuración en un servidor Node.js con Express):
+<pre><code class="language-javascript">const express = require('express');
+const compression = require('compression');
+const app = express();
+
+app.use(compression());
+
+app.get('/api/resource', (req, res) =&gt; {
+    res.json({ message: 'Hello, world!' });
+});
+
+app.listen(3000, () =&gt; {
+    console.log('Server running on port 3000');
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>3. Paginación y Filtrado</h2>
+<div class='content'><p>Para manejar grandes volúmenes de datos, implementa paginación y filtrado en tus endpoints.</p>
+<ul>
+<li><strong>Paginación</strong>: Divide los resultados en páginas más pequeñas.</li>
+<li><strong>Filtrado</strong>: Permite a los usuarios solicitar solo los datos que necesitan.</li>
+<li><strong>Ejemplo de código</strong>:
+<pre><code class="language-javascript">app.get('/api/resources', (req, res) =&gt; {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results = {};
+    results.results = data.slice(startIndex, endIndex);
+
+    res.json(results);
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>4. Reducción de la Carga Útil</h2>
+<div class='content'><p>Minimiza la cantidad de datos enviados en cada solicitud y respuesta.</p>
+<ul>
+<li><strong>Selección de Campos</strong>: Permite a los clientes especificar qué campos necesitan.</li>
+<li><strong>Ejemplo de código</strong>:
+<pre><code class="language-javascript">app.get('/api/resource', (req, res) =&gt; {
+    const fields = req.query.fields ? req.query.fields.split(',') : [];
+    let resource = { id: 1, name: 'Resource', description: 'A sample resource' };
+
+    if (fields.length &gt; 0) {
+        resource = fields.reduce((obj, field) =&gt; {
+            if (resource[field]) obj[field] = resource[field];
+            return obj;
+        }, {});
+    }
+
+    res.json(resource);
+});
+</code></pre>
+</li>
+</ul>
+</div><h2>5. Optimización de Consultas a la Base de Datos</h2>
+<div class='content'><p>Las consultas a la base de datos pueden ser un cuello de botella significativo.</p>
+<ul>
+<li><strong>Índices</strong>: Asegúrate de que las tablas de la base de datos tengan los índices adecuados.</li>
+<li><strong>Consultas Eficientes</strong>: Optimiza las consultas SQL para reducir el tiempo de ejecución.</li>
+<li><strong>Ejemplo de código</strong> (consulta optimizada en SQL):
+<pre><code class="language-sql">SELECT id, name FROM resources WHERE status = 'active' ORDER BY created_at DESC LIMIT 10;
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La optimización de rendimiento en REST API es un proceso continuo que requiere atención a múltiples aspectos del desarrollo y la infraestructura. Al implementar técnicas como el uso de caché, compresión de datos, paginación, reducción de la carga útil y optimización de consultas a la base de datos, puedes mejorar significativamente la eficiencia y la velocidad de tus APIs. Recuerda siempre medir y monitorear el rendimiento para identificar áreas de mejora continua.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='pruebas-y-depuracion'>&#x25C4;Pruebas y depuración</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización de rendimiento en REST API</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mantenimiento-y-escalabilidad'>Mantenimiento y escalabilidad &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

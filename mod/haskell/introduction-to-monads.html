@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a los Mónadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/haskell/introduction-to-monads" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/haskell/introduction-to-monads" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/haskell/introduction-to-monads" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/haskell/introduction-to-monads" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/haskell/introduction-to-monads" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='applicative-functors'>&#x25C4;Funtores Aplicativos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introducción a los Mónadas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='common-monads'>Mónadas Comunes: Maybe, Either, List &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Los mónadas son un concepto fundamental en Haskell que puede ser desafiante para los principiantes. Este tema te guiará a través de los conceptos básicos de los mónadas, su propósito y cómo usarlos efectivamente en la programación en Haskell.</p>
+</div><h1>¿Qué es un Mónada?</h1>
+<div class='content'><p>Los mónadas son una clase de tipo en Haskell utilizada para manejar efectos secundarios y gestionar cálculos de manera funcional. Proporcionan una forma de estructurar programas de manera genérica.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Clase de Tipo</strong>: Una clase de tipo define un conjunto de funciones que pueden ser implementadas por diferentes tipos.</li>
+<li><strong>Bind (<code>&gt;&gt;=</code>)</strong>: Una operación fundamental que aplica una función a un valor envuelto.</li>
+<li><strong>Return</strong>: Envuelve un valor en un mónada.</li>
+</ul>
+</div><h1>Clase de Tipo Mónada</h1>
+<div class='content'><p>La clase de tipo Mónada se define en Haskell de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQXBwbGljYXRpdmUgbSA9PiBNb25hZCBtIHdoZXJlCiAgICAoPj49KSAgOjogbSBhIC0+IChhIC0+IG0gYikgLT4gbSBiCiAgICByZXR1cm4gOjogYSAtPiBtIGE="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Applicative m =&gt; Monad m where
+    (&gt;&gt;=)  :: m a -&gt; (a -&gt; m b) -&gt; m b
+    return :: a -&gt; m a</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Applicative m =&gt; Monad m</strong>: Indica que cada Mónada también debe ser un Applicative.</li>
+<li><strong>(&gt;&gt;=) :: m a -&gt; (a -&gt; m b) -&gt; m b</strong>: La función bind toma un valor monádico y una función que devuelve un valor monádico, luego aplica la función al valor desenvuelto.</li>
+<li><strong>return :: a -&gt; m a</strong>: La función return toma un valor y lo envuelve en un mónada.</li>
+</ul>
+</div><h1>Mónadas Comunes</h1>
+<div class='content'></div><h2>Mónada Maybe</h2>
+<div class='content'><p>El mónada <code>Maybe</code> se utiliza para manejar cálculos que podrían fallar.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5zdGFuY2UgTW9uYWQgTWF5YmUgd2hlcmUKICAgIE5vdGhpbmcgPj49IF8gPSBOb3RoaW5nCiAgICBKdXN0IHggID4+PSBmID0gZiB4CiAgICByZXR1cm4gPSBKdXN0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>instance Monad Maybe where
+    Nothing &gt;&gt;= _ = Nothing
+    Just x  &gt;&gt;= f = f x
+    return = Just</pre></div><div class='content'><h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2FmZURpdmlkZSA6OiBEb3VibGUgLT4gRG91YmxlIC0+IE1heWJlIERvdWJsZQpzYWZlRGl2aWRlIF8gMCA9IE5vdGhpbmcKc2FmZURpdmlkZSB4IHkgPSBKdXN0ICh4IC8geSkKCnJlc3VsdCA9IEp1c3QgMTAgPj49IChceCAtPiBzYWZlRGl2aWRlIHggMikgPj49IChceSAtPiBzYWZlRGl2aWRlIHkgMikKLS0gcmVzdWx0IHNlcsOhIEp1c3QgMi41"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>safeDivide :: Double -&gt; Double -&gt; Maybe Double
+safeDivide _ 0 = Nothing
+safeDivide x y = Just (x / y)
+
+result = Just 10 &gt;&gt;= (\x -&gt; safeDivide x 2) &gt;&gt;= (\y -&gt; safeDivide y 2)
+-- result ser&aacute; Just 2.5</pre></div><div class='content'></div><h2>Mónada List</h2>
+<div class='content'><p>El mónada <code>List</code> se utiliza para cálculos no determinísticos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5zdGFuY2UgTW9uYWQgW10gd2hlcmUKICAgIHhzID4+PSBmID0gY29uY2F0IChtYXAgZiB4cykKICAgIHJldHVybiB4ID0gW3hd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>instance Monad [] where
+    xs &gt;&gt;= f = concat (map f xs)
+    return x = [x]</pre></div><div class='content'><h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFpcnMgOjogW2FdIC0+IFtiXSAtPiBbKGEsIGIpXQpwYWlycyB4cyB5cyA9IHhzID4+PSBceCAtPiB5cyA+Pj0gXHkgLT4gcmV0dXJuICh4LCB5KQoKcmVzdWx0ID0gcGFpcnMgWzEsIDJdIFsnYScsICdiJ10KLS0gcmVzdWx0IHNlcsOhIFsoMSwnYScpLCAoMSwnYicpLCAoMiwnYScpLCAoMiwnYicpXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pairs :: [a] -&gt; [b] -&gt; [(a, b)]
+pairs xs ys = xs &gt;&gt;= \x -&gt; ys &gt;&gt;= \y -&gt; return (x, y)
+
+result = pairs [1, 2] ['a', 'b']
+-- result ser&aacute; [(1,'a'), (1,'b'), (2,'a'), (2,'b')]</pre></div><div class='content'></div><h2>Mónada IO</h2>
+<div class='content'><p>El mónada <code>IO</code> se utiliza para manejar operaciones de entrada/salida.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5zdGFuY2UgTW9uYWQgSU8gd2hlcmUKICAgICg+Pj0pICA9IGJpbmRJTwogICAgcmV0dXJuID0gcmV0dXJuSU8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>instance Monad IO where
+    (&gt;&gt;=)  = bindIO
+    return = returnIO</pre></div><div class='content'><h4>Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWFpbiA6OiBJTyAoKQptYWluID0gZG8KICAgIHB1dFN0ckxuICJJbnRyb2R1Y2UgdHUgbm9tYnJlOiIKICAgIG5hbWUgPC0gZ2V0TGluZQogICAgcHV0U3RyTG4gKCJIb2xhLCAiICsrIG5hbWUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>main :: IO ()
+main = do
+    putStrLn &quot;Introduce tu nombre:&quot;
+    name &lt;- getLine
+    putStrLn (&quot;Hola, &quot; ++ name)</pre></div><div class='content'></div><h1>Notación Do</h1>
+<div class='content'><p>Haskell proporciona azúcar sintáctico para las operaciones monádicas llamada &quot;notación do&quot;, que hace que el código monádico sea más legible.</p>
+</div><h2>Ejemplo con Mónada Maybe</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2FmZURpdmlkZSA6OiBEb3VibGUgLT4gRG91YmxlIC0+IE1heWJlIERvdWJsZQpzYWZlRGl2aWRlIF8gMCA9IE5vdGhpbmcKc2FmZURpdmlkZSB4IHkgPSBKdXN0ICh4IC8geSkKCnJlc3VsdCA9IGRvCiAgICB4IDwtIEp1c3QgMTAKICAgIHkgPC0gc2FmZURpdmlkZSB4IDIKICAgIHNhZmVEaXZpZGUgeSAyCi0tIHJlc3VsdCBzZXLDoSBKdXN0IDIuNQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>safeDivide :: Double -&gt; Double -&gt; Maybe Double
+safeDivide _ 0 = Nothing
+safeDivide x y = Just (x / y)
+
+result = do
+    x &lt;- Just 10
+    y &lt;- safeDivide x 2
+    safeDivide y 2
+-- result ser&aacute; Just 2.5</pre></div><div class='content'></div><h2>Ejemplo con Mónada IO</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWFpbiA6OiBJTyAoKQptYWluID0gZG8KICAgIHB1dFN0ckxuICJJbnRyb2R1Y2UgdHUgbm9tYnJlOiIKICAgIG5hbWUgPC0gZ2V0TGluZQogICAgcHV0U3RyTG4gKCJIb2xhLCAiICsrIG5hbWUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>main :: IO ()
+main = do
+    putStrLn &quot;Introduce tu nombre:&quot;
+    name &lt;- getLine
+    putStrLn (&quot;Hola, &quot; ++ name)</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>Los mónadas son una poderosa abstracción en Haskell que ayudan a manejar efectos secundarios y estructurar programas funcionales. Al entender la clase de tipo Mónada, mónadas comunes como <code>Maybe</code>, <code>List</code> y <code>IO</code>, y usar la notación do, puedes escribir código en Haskell más expresivo y mantenible. Practicar con estos conceptos profundizará tu comprensión y competencia en la programación en Haskell.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='applicative-functors'>&#x25C4;Funtores Aplicativos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Introducción a los Mónadas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='common-monads'>Mónadas Comunes: Maybe, Either, List &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

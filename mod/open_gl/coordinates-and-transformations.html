@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entendiendo Coordenadas y Transformaciones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/coordinates-and-transformations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/coordinates-and-transformations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/coordinates-and-transformations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/coordinates-and-transformations" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/coordinates-and-transformations" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='drawing-basic-shapes'>&#x25C4;Dibujando Formas Básicas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Entendiendo Coordenadas y Transformaciones</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='coloring-and-shading'>Coloreado y Sombreado &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Entender las coordenadas y transformaciones es fundamental para trabajar con OpenGL. Este tema cubrirá los conceptos básicos de los sistemas de coordenadas, transformaciones y cómo aplicarlas en OpenGL. Al final de esta sección, podrás manipular objetos en el espacio 3D de manera efectiva.</p>
+</div><h1>Sistemas de Coordenadas</h1>
+<div class='content'><p>En OpenGL, se utilizan varios sistemas de coordenadas para transformar vértices desde el espacio del objeto hasta el espacio de la pantalla.</p>
+<ul>
+<li><strong>Coordenadas del Objeto</strong>: Las coordenadas locales de un objeto.</li>
+<li><strong>Coordenadas del Mundo</strong>: Las coordenadas de un objeto en el espacio del mundo.</li>
+<li><strong>Coordenadas de Vista</strong>: Las coordenadas desde la perspectiva de la cámara.</li>
+<li><strong>Coordenadas de Recorte</strong>: Las coordenadas después de aplicar la matriz de proyección.</li>
+<li><strong>Coordenadas Normalizadas del Dispositivo (NDC)</strong>: Las coordenadas después de la división de perspectiva.</li>
+<li><strong>Coordenadas de Ventana</strong>: Las coordenadas finales en la pantalla.</li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVsOpcnRpY2UgZW4gY29vcmRlbmFkYXMgZGVsIG9iamV0bwp2ZWMzIG9iamVjdFZlcnRleCA9IHZlYzMoMS4wLCAxLjAsIDEuMCk7CgovLyBMYSBtYXRyaXogZGUgbW9kZWxvIHRyYW5zZm9ybWEgbGFzIGNvb3JkZW5hZGFzIGRlbCBvYmpldG8gYSBjb29yZGVuYWRhcyBkZWwgbXVuZG8KbWF0NCBtb2RlbCA9IG1hdDQoMS4wKTsKdmVjNCB3b3JsZFZlcnRleCA9IG1vZGVsICogdmVjNChvYmplY3RWZXJ0ZXgsIDEuMCk7CgovLyBMYSBtYXRyaXogZGUgdmlzdGEgdHJhbnNmb3JtYSBsYXMgY29vcmRlbmFkYXMgZGVsIG11bmRvIGEgY29vcmRlbmFkYXMgZGUgdmlzdGEKbWF0NCB2aWV3ID0gbG9va0F0KGNhbWVyYVBvcywgY2FtZXJhVGFyZ2V0LCB1cFZlY3Rvcik7CnZlYzQgdmlld1ZlcnRleCA9IHZpZXcgKiB3b3JsZFZlcnRleDsKCi8vIExhIG1hdHJpeiBkZSBwcm95ZWNjacOzbiB0cmFuc2Zvcm1hIGxhcyBjb29yZGVuYWRhcyBkZSB2aXN0YSBhIGNvb3JkZW5hZGFzIGRlIHJlY29ydGUKbWF0NCBwcm9qZWN0aW9uID0gcGVyc3BlY3RpdmUocmFkaWFucyg0NS4wZiksIGFzcGVjdFJhdGlvLCAwLjFmLCAxMDAuMGYpOwp2ZWM0IGNsaXBWZXJ0ZXggPSBwcm9qZWN0aW9uICogdmlld1ZlcnRleDsKCi8vIERpdmlzacOzbiBkZSBwZXJzcGVjdGl2YSBwYXJhIG9idGVuZXIgTkRDCnZlYzMgbmRjVmVydGV4ID0gY2xpcFZlcnRleC54eXogLyBjbGlwVmVydGV4Lnc7CgovLyBUcmFuc2Zvcm1hY2nDs24gZGVsIHZpZXdwb3J0IHBhcmEgb2J0ZW5lciBjb29yZGVuYWRhcyBkZSB2ZW50YW5hCnZlYzIgd2luZG93VmVydGV4ID0gKG5kY1ZlcnRleC54eSArIDEuMCkgLyAyLjAgKiB2ZWMyKHdpbmRvd1dpZHRoLCB3aW5kb3dIZWlnaHQpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// V&eacute;rtice en coordenadas del objeto
+vec3 objectVertex = vec3(1.0, 1.0, 1.0);
+
+// La matriz de modelo transforma las coordenadas del objeto a coordenadas del mundo
+mat4 model = mat4(1.0);
+vec4 worldVertex = model * vec4(objectVertex, 1.0);
+
+// La matriz de vista transforma las coordenadas del mundo a coordenadas de vista
+mat4 view = lookAt(cameraPos, cameraTarget, upVector);
+vec4 viewVertex = view * worldVertex;
+
+// La matriz de proyecci&oacute;n transforma las coordenadas de vista a coordenadas de recorte
+mat4 projection = perspective(radians(45.0f), aspectRatio, 0.1f, 100.0f);
+vec4 clipVertex = projection * viewVertex;
+
+// Divisi&oacute;n de perspectiva para obtener NDC
+vec3 ndcVertex = clipVertex.xyz / clipVertex.w;
+
+// Transformaci&oacute;n del viewport para obtener coordenadas de ventana
+vec2 windowVertex = (ndcVertex.xy + 1.0) / 2.0 * vec2(windowWidth, windowHeight);</pre></div><div class='content'></div><h1>Transformaciones</h1>
+<div class='content'><p>Las transformaciones se utilizan para mover, rotar y escalar objetos en OpenGL. Las transformaciones principales son:</p>
+<ul>
+<li><strong>Traslación</strong>: Mover un objeto en el espacio 3D.</li>
+<li><strong>Rotación</strong>: Rotar un objeto alrededor de un eje.</li>
+<li><strong>Escalado</strong>: Cambiar el tamaño de un objeto.</li>
+</ul>
+</div><h2>Traslación</h2>
+<div class='content'><p>La traslación mueve un objeto por un cierto desplazamiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWF0NCB0cmFuc2xhdGlvbiA9IG1hdDQoMS4wKTsKdHJhbnNsYXRpb24gPSB0cmFuc2xhdGUodHJhbnNsYXRpb24sIHZlYzMoMS4wLCAyLjAsIDMuMCkpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mat4 translation = mat4(1.0);
+translation = translate(translation, vec3(1.0, 2.0, 3.0));</pre></div><div class='content'></div><h2>Rotación</h2>
+<div class='content'><p>La rotación rota un objeto alrededor de un eje especificado por un cierto ángulo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWF0NCByb3RhdGlvbiA9IG1hdDQoMS4wKTsKcm90YXRpb24gPSByb3RhdGUocm90YXRpb24sIHJhZGlhbnMoNDUuMGYpLCB2ZWMzKDAuMCwgMS4wLCAwLjApKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mat4 rotation = mat4(1.0);
+rotation = rotate(rotation, radians(45.0f), vec3(0.0, 1.0, 0.0));</pre></div><div class='content'></div><h2>Escalado</h2>
+<div class='content'><p>El escalado cambia el tamaño de un objeto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWF0NCBzY2FsaW5nID0gbWF0NCgxLjApOwpzY2FsaW5nID0gc2NhbGUoc2NhbGluZywgdmVjMygyLjAsIDIuMCwgMi4wKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mat4 scaling = mat4(1.0);
+scaling = scale(scaling, vec3(2.0, 2.0, 2.0));</pre></div><div class='content'></div><h1>Combinando Transformaciones</h1>
+<div class='content'><p>Las transformaciones se pueden combinar multiplicando sus matrices. El orden de la multiplicación es crucial.</p>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWF0NCBtb2RlbCA9IG1hdDQoMS4wKTsKbW9kZWwgPSB0cmFuc2xhdGUobW9kZWwsIHZlYzMoMS4wLCAyLjAsIDMuMCkpOyAvLyBUcmFzbGFjacOzbgptb2RlbCA9IHJvdGF0ZShtb2RlbCwgcmFkaWFucyg0NS4wZiksIHZlYzMoMC4wLCAxLjAsIDAuMCkpOyAvLyBSb3RhY2nDs24KbW9kZWwgPSBzY2FsZShtb2RlbCwgdmVjMygyLjAsIDIuMCwgMi4wKSk7IC8vIEVzY2FsYWRv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mat4 model = mat4(1.0);
+model = translate(model, vec3(1.0, 2.0, 3.0)); // Traslaci&oacute;n
+model = rotate(model, radians(45.0f), vec3(0.0, 1.0, 0.0)); // Rotaci&oacute;n
+model = scale(model, vec3(2.0, 2.0, 2.0)); // Escalado</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un ejemplo simple donde aplicamos estas transformaciones a un cubo.</p>
+</div><h2>Vertex Shader</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0IChsb2NhdGlvbiA9IDApIGluIHZlYzMgYVBvczsKCnVuaWZvcm0gbWF0NCBtb2RlbDsKdW5pZm9ybSBtYXQ0IHZpZXc7CnVuaWZvcm0gbWF0NCBwcm9qZWN0aW9uOwoKdm9pZCBtYWluKCkKewogICAgZ2xfUG9zaXRpb24gPSBwcm9qZWN0aW9uICogdmlldyAqIG1vZGVsICogdmVjNChhUG9zLCAxLjApOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout (location = 0) in vec3 aPos;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
+}</pre></div><div class='content'></div><h2>Fragment Shader</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKb3V0IHZlYzQgRnJhZ0NvbG9yOwoKdm9pZCBtYWluKCkKewogICAgRnJhZ0NvbG9yID0gdmVjNCgxLjAsIDAuNSwgMC4yLCAxLjApOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(1.0, 0.5, 0.2, 1.0);
+}</pre></div><div class='content'></div><h2>Programa Principal</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29uZmlndXJhciBkYXRvcyBkZSB2w6lydGljZXMgKHkgYnVmZmVyKHMpKSB5IGNvbmZpZ3VyYXIgYXRyaWJ1dG9zIGRlIHbDqXJ0aWNlcwpmbG9hdCB2ZXJ0aWNlc1tdID0gewogICAgLy8gcG9zaWNpb25lcyAgICAgICAgICAKICAgIC0wLjVmLCAtMC41ZiwgLTAuNWYsICAKICAgICAwLjVmLCAtMC41ZiwgLTAuNWYsICAKICAgICAwLjVmLCAgMC41ZiwgLTAuNWYsICAKICAgICAwLjVmLCAgMC41ZiwgLTAuNWYsICAKICAgIC0wLjVmLCAgMC41ZiwgLTAuNWYsICAKICAgIC0wLjVmLCAtMC41ZiwgLTAuNWYsICAKCiAgICAvLyAuLi4gKG90cm9zIHbDqXJ0aWNlcykKfTsKCi8vIEluaWNpYWxpemFyIGJ1ZmZlcnMgeSBjb25maWd1cmFyIGF0cmlidXRvcyBkZSB2w6lydGljZXMKdW5zaWduZWQgaW50IFZCTywgVkFPOwpnbEdlblZlcnRleEFycmF5cygxLCAmVkFPKTsKZ2xHZW5CdWZmZXJzKDEsICZWQk8pOwoKZ2xCaW5kVmVydGV4QXJyYXkoVkFPKTsKCmdsQmluZEJ1ZmZlcihHTF9BUlJBWV9CVUZGRVIsIFZCTyk7CmdsQnVmZmVyRGF0YShHTF9BUlJBWV9CVUZGRVIsIHNpemVvZih2ZXJ0aWNlcyksIHZlcnRpY2VzLCBHTF9TVEFUSUNfRFJBVyk7CgpnbFZlcnRleEF0dHJpYlBvaW50ZXIoMCwgMywgR0xfRkxPQVQsIEdMX0ZBTFNFLCAzICogc2l6ZW9mKGZsb2F0KSwgKHZvaWQqKTApOwpnbEVuYWJsZVZlcnRleEF0dHJpYkFycmF5KDApOwoKLy8gQnVjbGUgcHJpbmNpcGFsIGRlIHJlbmRlcml6YWRvCndoaWxlICghZ2xmd1dpbmRvd1Nob3VsZENsb3NlKHdpbmRvdykpCnsKICAgIC8vIE1hbmVqbyBkZSBlbnRyYWRhCiAgICBwcm9jZXNzSW5wdXQod2luZG93KTsKCiAgICAvLyBSZW5kZXJpemFkbwogICAgZ2xDbGVhcihHTF9DT0xPUl9CVUZGRVJfQklUIHwgR0xfREVQVEhfQlVGRkVSX0JJVCk7CgogICAgLy8gQWN0aXZhciBzaGFkZXIKICAgIG91clNoYWRlci51c2UoKTsKCiAgICAvLyBDcmVhciB0cmFuc2Zvcm1hY2lvbmVzCiAgICBtYXQ0IG1vZGVsID0gbWF0NCgxLjBmKTsKICAgIG1vZGVsID0gdHJhbnNsYXRlKG1vZGVsLCB2ZWMzKDAuMGYsIDAuMGYsIC0zLjBmKSk7CiAgICBtb2RlbCA9IHJvdGF0ZShtb2RlbCwgKGZsb2F0KWdsZndHZXRUaW1lKCksIHZlYzMoMC41ZiwgMS4wZiwgMC4wZikpOwogICAgb3VyU2hhZGVyLnNldE1hdDQoIm1vZGVsIiwgbW9kZWwpOwoKICAgIG1hdDQgdmlldyA9IG1hdDQoMS4wZik7CiAgICB2aWV3ID0gdHJhbnNsYXRlKHZpZXcsIHZlYzMoMC4wZiwgMC4wZiwgLTUuMGYpKTsKICAgIG91clNoYWRlci5zZXRNYXQ0KCJ2aWV3Iiwgdmlldyk7CgogICAgbWF0NCBwcm9qZWN0aW9uID0gcGVyc3BlY3RpdmUocmFkaWFucyg0NS4wZiksIChmbG9hdClTQ1JfV0lEVEggLyAoZmxvYXQpU0NSX0hFSUdIVCwgMC4xZiwgMTAwLjBmKTsKICAgIG91clNoYWRlci5zZXRNYXQ0KCJwcm9qZWN0aW9uIiwgcHJvamVjdGlvbik7CgogICAgLy8gUmVuZGVyaXphciBjb250ZW5lZG9yCiAgICBnbEJpbmRWZXJ0ZXhBcnJheShWQU8pOwogICAgZ2xEcmF3QXJyYXlzKEdMX1RSSUFOR0xFUywgMCwgMzYpOwoKICAgIC8vIEludGVyY2FtYmlhciBidWZmZXJzIHkgc29uZGVhciBldmVudG9zIGRlIElPCiAgICBnbGZ3U3dhcEJ1ZmZlcnMod2luZG93KTsKICAgIGdsZndQb2xsRXZlbnRzKCk7Cn0KCi8vIERlc2Fsb2phciByZWN1cnNvcwpnbERlbGV0ZVZlcnRleEFycmF5cygxLCAmVkFPKTsKZ2xEZWxldGVCdWZmZXJzKDEsICZWQk8pOwoKZ2xmd1Rlcm1pbmF0ZSgpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Configurar datos de v&eacute;rtices (y buffer(s)) y configurar atributos de v&eacute;rtices
+float vertices[] = {
+    // posiciones          
+    -0.5f, -0.5f, -0.5f,  
+     0.5f, -0.5f, -0.5f,  
+     0.5f,  0.5f, -0.5f,  
+     0.5f,  0.5f, -0.5f,  
+    -0.5f,  0.5f, -0.5f,  
+    -0.5f, -0.5f, -0.5f,  
+
+    // ... (otros v&eacute;rtices)
+};
+
+// Inicializar buffers y configurar atributos de v&eacute;rtices
+unsigned int VBO, VAO;
+glGenVertexArrays(1, &amp;VAO);
+glGenBuffers(1, &amp;VBO);
+
+glBindVertexArray(VAO);
+
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+
+// Bucle principal de renderizado
+while (!glfwWindowShouldClose(window))
+{
+    // Manejo de entrada
+    processInput(window);
+
+    // Renderizado
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Activar shader
+    ourShader.use();
+
+    // Crear transformaciones
+    mat4 model = mat4(1.0f);
+    model = translate(model, vec3(0.0f, 0.0f, -3.0f));
+    model = rotate(model, (float)glfwGetTime(), vec3(0.5f, 1.0f, 0.0f));
+    ourShader.setMat4(&quot;model&quot;, model);
+
+    mat4 view = mat4(1.0f);
+    view = translate(view, vec3(0.0f, 0.0f, -5.0f));
+    ourShader.setMat4(&quot;view&quot;, view);
+
+    mat4 projection = perspective(radians(45.0f), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+    ourShader.setMat4(&quot;projection&quot;, projection);
+
+    // Renderizar contenedor
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // Intercambiar buffers y sondear eventos de IO
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+
+// Desalojar recursos
+glDeleteVertexArrays(1, &amp;VAO);
+glDeleteBuffers(1, &amp;VBO);
+
+glfwTerminate();</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Entender las coordenadas y transformaciones es esencial para la programación de gráficos 3D en OpenGL. Al dominar estos conceptos, puedes controlar la posición, orientación y escala de los objetos en tu escena. Practica combinando diferentes transformaciones para ver sus efectos y solidificar tu comprensión.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='drawing-basic-shapes'>&#x25C4;Dibujando Formas Básicas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Entendiendo Coordenadas y Transformaciones</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='coloring-and-shading'>Coloreado y Sombreado &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auditoría y Registro en PostgreSQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/auditing-and-logging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/auditing-and-logging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/auditing-and-logging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/auditing-and-logging" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/auditing-and-logging" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-encryption'>&#x25C4;Encriptación de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Auditoría y Registro en PostgreSQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='extensions-and-modules'>Extensiones y Módulos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La auditoría y el registro son componentes cruciales en la gestión de bases de datos, proporcionando información sobre las actividades de la base de datos y ayudando en la resolución de problemas, la optimización del rendimiento y la monitorización de la seguridad. Esta sección te guiará desde las técnicas básicas hasta las avanzadas para la auditoría y el registro en PostgreSQL.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Registro</strong>: Registro de eventos de la base de datos, errores y otras actividades significativas.</li>
+<li><strong>Auditoría</strong>: Seguimiento de acciones específicas realizadas en la base de datos, a menudo con fines de seguridad y cumplimiento.</li>
+</ul>
+</div><h1>Registro en PostgreSQL</h1>
+<div class='content'></div><h2>Configuración del Registro</h2>
+<div class='content'><p>PostgreSQL utiliza el archivo <code>postgresql.conf</code> para configurar el registro. Los parámetros clave incluyen:</p>
+<ul>
+<li><code>log_destination</code>: Define dónde enviar la salida del registro (por ejemplo, <code>stderr</code>, <code>csvlog</code>, <code>syslog</code>).</li>
+<li><code>logging_collector</code>: Habilita la recopilación de mensajes de registro en archivos de registro.</li>
+<li><code>log_directory</code>: Especifica el directorio donde se almacenarán los archivos de registro.</li>
+<li><code>log_filename</code>: Define el patrón de nombres para los archivos de registro.</li>
+<li><code>log_statement</code>: Controla qué declaraciones SQL se registran (<code>none</code>, <code>ddl</code>, <code>mod</code>, <code>all</code>).</li>
+</ul>
+<p>Ejemplo de configuración en <code>postgresql.conf</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9nX2Rlc3RpbmF0aW9uID0gJ3N0ZGVycicKbG9nZ2luZ19jb2xsZWN0b3IgPSBvbgpsb2dfZGlyZWN0b3J5ID0gJ3BnX2xvZycKbG9nX2ZpbGVuYW1lID0gJ3Bvc3RncmVzcWwtJVktJW0tJWRfJUglTSVTLmxvZycKbG9nX3N0YXRlbWVudCA9ICdhbGwn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>log_destination = 'stderr'
+logging_collector = on
+log_directory = 'pg_log'
+log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+log_statement = 'all'</pre></div><div class='content'></div><h2>Niveles de Registro</h2>
+<div class='content'><p>PostgreSQL admite varios niveles de registro:</p>
+<ul>
+<li><code>DEBUG</code></li>
+<li><code>INFO</code></li>
+<li><code>NOTICE</code></li>
+<li><code>WARNING</code></li>
+<li><code>ERROR</code></li>
+<li><code>LOG</code></li>
+<li><code>FATAL</code></li>
+<li><code>PANIC</code></li>
+</ul>
+<p>Ejemplo de configuración del nivel de registro:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9nX21pbl9tZXNzYWdlcyA9ICdXQVJOSU5HJw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>log_min_messages = 'WARNING'</pre></div><div class='content'></div><h2>Rotación de Registros</h2>
+<div class='content'><p>La rotación de registros ayuda a gestionar el tamaño de los archivos de registro y asegura que los registros se archiven adecuadamente.</p>
+<ul>
+<li><code>log_rotation_age</code>: Edad máxima de un archivo de registro antes de ser rotado.</li>
+<li><code>log_rotation_size</code>: Tamaño máximo de un archivo de registro antes de ser rotado.</li>
+</ul>
+<p>Ejemplo de configuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9nX3JvdGF0aW9uX2FnZSA9IDFkCmxvZ19yb3RhdGlvbl9zaXplID0gMTBNQg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>log_rotation_age = 1d
+log_rotation_size = 10MB</pre></div><div class='content'></div><h1>Auditoría en PostgreSQL</h1>
+<div class='content'></div><h2>Uso de `pgAudit`</h2>
+<div class='content'><p><code>pgAudit</code> (Auditoría de PostgreSQL) es una extensión que proporciona un registro detallado de auditoría de sesiones y objetos.</p>
+<ul>
+<li><strong>Instalación</strong>: Asegúrate de que <code>pgAudit</code> esté instalado y configurado.</li>
+<li><strong>Configuración</strong>: Habilita <code>pgAudit</code> en <code>postgresql.conf</code>.</li>
+</ul>
+<p>Ejemplo de configuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2hhcmVkX3ByZWxvYWRfbGlicmFyaWVzID0gJ3BnYXVkaXQnCnBnYXVkaXQubG9nID0gJ2FsbCc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>shared_preload_libraries = 'pgaudit'
+pgaudit.log = 'all'</pre></div><div class='content'></div><h2>Auditoría de Acciones Específicas</h2>
+<div class='content'><p>Puedes configurar <code>pgAudit</code> para registrar tipos específicos de acciones:</p>
+<ul>
+<li><code>READ</code>: Registra las declaraciones SELECT.</li>
+<li><code>WRITE</code>: Registra las declaraciones INSERT, UPDATE, DELETE y TRUNCATE.</li>
+<li><code>FUNCTION</code>: Registra las llamadas a funciones.</li>
+<li><code>ROLE</code>: Registra los cambios de roles y permisos.</li>
+</ul>
+<p>Ejemplo de configuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGdhdWRpdC5sb2cgPSAncmVhZCwgd3JpdGUn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pgaudit.log = 'read, write'</pre></div><div class='content'></div><h2>Ejemplo: Auditoría de Acceso a Tablas</h2>
+<div class='content'><p>Para auditar el acceso a una tabla específica:</p>
+<ol>
+<li>
+<p>Crea la tabla:</p>
+<pre><code class="language-sql">CREATE TABLE sensitive_data (
+    id SERIAL PRIMARY KEY,
+    info TEXT
+);
+</code></pre>
+</li>
+<li>
+<p>Configura <code>pgAudit</code> para registrar el acceso:</p>
+<pre><code class="language-plaintext">pgaudit.log = 'read, write'
+</code></pre>
+</li>
+<li>
+<p>Realiza operaciones y verifica los registros:</p>
+<pre><code class="language-sql">INSERT INTO sensitive_data (info) VALUES ('Confidential');
+SELECT * FROM sensitive_data;
+</code></pre>
+</li>
+</ol>
+<p>Los registros capturarán estas operaciones, proporcionando una pista de auditoría.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La auditoría y el registro en PostgreSQL son esenciales para mantener la seguridad, el rendimiento y el cumplimiento de la base de datos. Al configurar los ajustes de registro y utilizar herramientas como <code>pgAudit</code>, puedes obtener información valiosa sobre las actividades de la base de datos y asegurarte de que todas las acciones críticas sean rastreadas y registradas. Este conocimiento es fundamental tanto para los administradores de bases de datos como para los desarrolladores para gestionar y asegurar eficazmente las bases de datos PostgreSQL.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-encryption'>&#x25C4;Encriptación de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Auditoría y Registro en PostgreSQL</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='extensions-and-modules'>Extensiones y Módulos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

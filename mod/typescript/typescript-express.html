@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TypeScript con Express</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/typescript/typescript-express" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/typescript/typescript-express" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/typescript/typescript-express" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/typescript/typescript-express" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/typescript/typescript-express" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='typescript-nodejs'>&#x25C4;TypeScript con Node.js</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">TypeScript con Express</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='typescript-graphql'>TypeScript con GraphQL &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a TypeScript con Express</h1>
+<div class='content'><p>TypeScript es un lenguaje poderoso que se basa en JavaScript añadiendo definiciones de tipos estáticos. Express es un marco de aplicaciones web minimalista y flexible para Node.js que proporciona un conjunto robusto de características para aplicaciones web y móviles. Combinar TypeScript con Express permite a los desarrolladores escribir código más robusto y mantenible.</p>
+</div><h1>Configuración de TypeScript con Express</h1>
+<div class='content'><p>Antes de sumergirnos en la codificación, necesitamos configurar nuestro entorno de desarrollo.</p>
+</div><h2>Prerrequisitos</h2>
+<div class='content'><ul>
+<li>Node.js instalado</li>
+<li>npm (Node Package Manager) instalado</li>
+</ul>
+</div><h2>Pasos para Configurar</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Inicializar un nuevo proyecto Node.js:</strong></p>
+<pre><code class="language-bash">mkdir typescript-express-app
+cd typescript-express-app
+npm init -y
+</code></pre>
+</li>
+<li>
+<p><strong>Instalar TypeScript y Express:</strong></p>
+<pre><code class="language-bash">npm install typescript ts-node @types/node @types/express express
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un archivo <code>tsconfig.json</code>:</strong></p>
+<pre><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;target&quot;: &quot;ES6&quot;,
+    &quot;module&quot;: &quot;commonjs&quot;,
+    &quot;strict&quot;: true,
+    &quot;esModuleInterop&quot;: true,
+    &quot;skipLibCheck&quot;: true,
+    &quot;forceConsistentCasingInFileNames&quot;: true,
+    &quot;outDir&quot;: &quot;./dist&quot;
+  },
+  &quot;include&quot;: [&quot;src/**/*&quot;],
+  &quot;exclude&quot;: [&quot;node_modules&quot;]
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Crear la estructura del proyecto:</strong></p>
+<pre><code class="language-bash">mkdir src
+touch src/index.ts
+</code></pre>
+</li>
+</ol>
+</div><h1>Construyendo un Servidor Básico de Express con TypeScript</h1>
+<div class='content'><p>Vamos a crear un servidor simple de Express usando TypeScript.</p>
+</div><h2>Escribiendo el Código del Servidor</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Importar los módulos necesarios:</strong></p>
+<pre><code class="language-typescript">import express, { Request, Response } from 'express';
+</code></pre>
+</li>
+<li>
+<p><strong>Inicializar la aplicación Express:</strong></p>
+<pre><code class="language-typescript">const app = express();
+const port = 3000;
+</code></pre>
+</li>
+<li>
+<p><strong>Definir una ruta básica:</strong></p>
+<pre><code class="language-typescript">app.get('/', (req: Request, res: Response) =&gt; {
+  res.send('¡Hola, TypeScript con Express!');
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el servidor:</strong></p>
+<pre><code class="language-typescript">app.listen(port, () =&gt; {
+  console.log(`El servidor está corriendo en http://localhost:${port}`);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Completar el archivo <code>src/index.ts</code>:</strong></p>
+<pre><code class="language-typescript">import express, { Request, Response } from 'express';
+
+const app = express();
+const port = 3000;
+
+app.get('/', (req: Request, res: Response) =&gt; {
+  res.send('¡Hola, TypeScript con Express!');
+});
+
+app.listen(port, () =&gt; {
+  console.log(`El servidor está corriendo en http://localhost:${port}`);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Ejecutar el servidor:</strong></p>
+<pre><code class="language-bash">npx ts-node src/index.ts
+</code></pre>
+</li>
+</ol>
+</div><h1>Añadiendo Middleware</h1>
+<div class='content'><p>Las funciones middleware son funciones que tienen acceso al objeto de solicitud (<code>req</code>), al objeto de respuesta (<code>res</code>), y a la siguiente función middleware en el ciclo de solicitud-respuesta de la aplicación.</p>
+</div><h2>Ejemplo de Middleware</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un middleware de registro:</strong></p>
+<pre><code class="language-typescript">const loggerMiddleware = (req: Request, res: Response, next: Function) =&gt; {
+  console.log(`${req.method} ${req.url}`);
+  next();
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Usar el middleware en la aplicación:</strong></p>
+<pre><code class="language-typescript">app.use(loggerMiddleware);
+</code></pre>
+</li>
+<li>
+<p><strong>Completar <code>src/index.ts</code> con middleware:</strong></p>
+<pre><code class="language-typescript">import express, { Request, Response } from 'express';
+
+const app = express();
+const port = 3000;
+
+const loggerMiddleware = (req: Request, res: Response, next: Function) =&gt; {
+  console.log(`${req.method} ${req.url}`);
+  next();
+};
+
+app.use(loggerMiddleware);
+
+app.get('/', (req: Request, res: Response) =&gt; {
+  res.send('¡Hola, TypeScript con Express!');
+});
+
+app.listen(port, () =&gt; {
+  console.log(`El servidor está corriendo en http://localhost:${port}`);
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Temas Avanzados</h1>
+<h2>Definiciones de Tipos para Request y Response</h2>
+<div class='content'><p>TypeScript nos permite definir tipos personalizados para los objetos de solicitud y respuesta para asegurar la seguridad de tipos.</p>
+<ol>
+<li>
+<p><strong>Definir un tipo personalizado para el cuerpo de la solicitud:</strong></p>
+<pre><code class="language-typescript">interface UserRequest extends Request {
+  body: {
+    name: string;
+    age: number;
+  };
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Usar el tipo personalizado en una ruta:</strong></p>
+<pre><code class="language-typescript">app.post('/user', (req: UserRequest, res: Response) =&gt; {
+  const { name, age } = req.body;
+  res.send(`El usuario ${name} tiene ${age} años`);
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>Middleware de Manejo de Errores</h2>
+<div class='content'><p>El middleware de manejo de errores se define de la misma manera que otros middleware, excepto que tiene cuatro argumentos en lugar de tres: <code>(err, req, res, next)</code>.</p>
+<ol>
+<li>
+<p><strong>Crear un middleware de manejo de errores:</strong></p>
+<pre><code class="language-typescript">const errorHandler = (err: Error, req: Request, res: Response, next: Function) =&gt; {
+  console.error(err.message);
+  res.status(500).send('Error Interno del Servidor');
+};
+</code></pre>
+</li>
+<li>
+<p><strong>Usar el middleware de manejo de errores:</strong></p>
+<pre><code class="language-typescript">app.use(errorHandler);
+</code></pre>
+</li>
+</ol>
+</div><h2>Usando Async/Await con Express</h2>
+<div class='content'><p>Manejar operaciones asíncronas es crucial en las aplicaciones web modernas.</p>
+<ol>
+<li>
+<p><strong>Crear un manejador de rutas asíncrono:</strong></p>
+<pre><code class="language-typescript">app.get('/data', async (req: Request, res: Response) =&gt; {
+  try {
+    const data = await fetchDataFromDatabase();
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Error al obtener los datos');
+  }
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Función simulada <code>fetchDataFromDatabase</code>:</strong></p>
+<pre><code class="language-typescript">const fetchDataFromDatabase = async () =&gt; {
+  return new Promise((resolve) =&gt; {
+    setTimeout(() =&gt; {
+      resolve({ message: 'Datos obtenidos exitosamente' });
+    }, 1000);
+  });
+};
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Combinar TypeScript con Express mejora la experiencia de desarrollo al proporcionar seguridad de tipos y mejores herramientas. Este curso cubrió la configuración de un proyecto TypeScript con Express, la creación de un servidor básico, la adición de middleware, la definición de tipos personalizados, el manejo de errores y el uso de async/await. Con estas habilidades, puedes construir aplicaciones web robustas y mantenibles.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='typescript-nodejs'>&#x25C4;TypeScript con Node.js</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">TypeScript con Express</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='typescript-graphql'>TypeScript con GraphQL &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particionamiento y Shuffling en Apache Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/partitioning-and-shuffling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/partitioning-and-shuffling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/partitioning-and-shuffling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/apachespark/partitioning-and-shuffling" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/partitioning-and-shuffling" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-serialization'>&#x25C4;Serialización de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Particionamiento y Shuffling en Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='caching-and-persistence'>Caché y Persistencia &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El particionamiento y el shuffling son conceptos críticos en Apache Spark que impactan significativamente el rendimiento y la eficiencia de tus aplicaciones Spark. Entender estos conceptos te ayudará a optimizar tus tareas de procesamiento de datos.</p>
+</div><h1>¿Qué es el Particionamiento?</h1>
+<div class='content'><p>El particionamiento es el proceso de dividir un conjunto de datos grande en trozos más pequeños y manejables, llamados particiones. Cada partición puede ser procesada en paralelo, lo cual es una característica clave del modelo de computación distribuida de Spark.</p>
+<ul>
+<li><strong>Particionamiento por Defecto</strong>: Por defecto, Spark particiona los datos basándose en el número de núcleos disponibles.</li>
+<li><strong>Particionamiento Personalizado</strong>: Puedes definir un particionamiento personalizado para optimizar el procesamiento de datos.</li>
+</ul>
+</div><h2>Por Qué el Particionamiento Importa</h2>
+<div class='content'><ul>
+<li><strong>Procesamiento Paralelo</strong>: Permite la ejecución concurrente de tareas.</li>
+<li><strong>Localidad de Datos</strong>: Asegura que los datos se procesen cerca de donde están almacenados, reduciendo los tiempos de transferencia de datos.</li>
+<li><strong>Gestión de Recursos</strong>: Utiliza eficientemente los recursos del clúster.</li>
+</ul>
+</div><h1>¿Qué es el Shuffling?</h1>
+<div class='content'><p>El shuffling es el proceso de redistribuir datos a través de particiones, lo cual a menudo implica mover datos entre diferentes nodos en el clúster. Esto puede ser una operación costosa en términos de tiempo y recursos.</p>
+<ul>
+<li><strong>Cuándo Ocurre el Shuffling</strong>: El shuffling ocurre durante operaciones como <code>groupByKey</code>, <code>reduceByKey</code>, <code>join</code>, etc.</li>
+<li><strong>Impacto en el Rendimiento</strong>: El shuffling puede causar cuellos de botella significativos en el rendimiento si no se gestiona adecuadamente.</li>
+</ul>
+</div><h2>Ejemplos de Operaciones que Causan Shuffling</h2>
+<div class='content'><ul>
+<li><strong>groupByKey</strong>: Agrupa datos por clave, causando un shuffle para llevar todos los valores de una clave a una sola partición.</li>
+<li><strong>reduceByKey</strong>: Similar a <code>groupByKey</code>, pero realiza una reducción en los valores.</li>
+<li><strong>join</strong>: Combina dos conjuntos de datos basándose en una clave, a menudo requiriendo que los datos se barajen para alinear las claves.</li>
+</ul>
+</div><h1>Ejemplos de Código</h1>
+<div class='content'></div><h2>Particionamiento por Defecto</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsuc3FsLlNwYXJrU2Vzc2lvbgoKdmFsIHNwYXJrID0gU3BhcmtTZXNzaW9uLmJ1aWxkZXIuYXBwTmFtZSgiUGFydGl0aW9uaW5nRXhhbXBsZSIpLmdldE9yQ3JlYXRlKCkKdmFsIGRhdGEgPSBTZXEoMSwgMiwgMywgNCwgNSwgNiwgNywgOCwgOSwgMTApCnZhbCByZGQgPSBzcGFyay5zcGFya0NvbnRleHQucGFyYWxsZWxpemUoZGF0YSkKCnByaW50bG4ocyJOdW1iZXIgb2YgcGFydGl0aW9uczogJHtyZGQuZ2V0TnVtUGFydGl0aW9uc30iKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.sql.SparkSession
+
+val spark = SparkSession.builder.appName(&quot;PartitioningExample&quot;).getOrCreate()
+val data = Seq(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+val rdd = spark.sparkContext.parallelize(data)
+
+println(s&quot;Number of partitions: ${rdd.getNumPartitions}&quot;)</pre></div><div class='content'></div><h2>Particionamiento Personalizado</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGN1c3RvbVJkZCA9IHJkZC5yZXBhcnRpdGlvbig0KQpwcmludGxuKHMiTnVtYmVyIG9mIHBhcnRpdGlvbnMgYWZ0ZXIgcmVwYXJ0aXRpb25pbmc6ICR7Y3VzdG9tUmRkLmdldE51bVBhcnRpdGlvbnN9Iik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val customRdd = rdd.repartition(4)
+println(s&quot;Number of partitions after repartitioning: ${customRdd.getNumPartitions}&quot;)</pre></div><div class='content'></div><h2>Ejemplo de Shuffling con groupByKey</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHBhaXJSZGQgPSByZGQubWFwKHggPT4gKHggJSAyLCB4KSkKdmFsIGdyb3VwZWRSZGQgPSBwYWlyUmRkLmdyb3VwQnlLZXkoKQoKZ3JvdXBlZFJkZC5jb2xsZWN0KCkuZm9yZWFjaChwcmludGxuKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val pairRdd = rdd.map(x =&gt; (x % 2, x))
+val groupedRdd = pairRdd.groupByKey()
+
+groupedRdd.collect().foreach(println)</pre></div><div class='content'></div><h1>Optimización del Particionamiento y el Shuffling</h1>
+<div class='content'></div><h2>Elegir el Número Correcto de Particiones</h2>
+<div class='content'><ul>
+<li><strong>Muy Pocas Particiones</strong>: Puede llevar a una subutilización de los recursos.</li>
+<li><strong>Demasiadas Particiones</strong>: Puede causar sobrecarga debido a una programación excesiva de tareas.</li>
+</ul>
+</div><h2>Evitar el Shuffling Innecesario</h2>
+<div class='content'><ul>
+<li><strong>Usar reduceByKey en Lugar de groupByKey</strong>: <code>reduceByKey</code> realiza una reducción local antes del shuffling, reduciendo la cantidad de datos barajados.</li>
+<li><strong>Joins de Difusión</strong>: Para conjuntos de datos pequeños, usa joins de difusión para evitar el shuffling.</li>
+</ul>
+</div><h2>Ejemplo de reduceByKey</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJlZHVjZWRSZGQgPSBwYWlyUmRkLnJlZHVjZUJ5S2V5KF8gKyBfKQpyZWR1Y2VkUmRkLmNvbGxlY3QoKS5mb3JlYWNoKHByaW50bG4p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val reducedRdd = pairRdd.reduceByKey(_ + _)
+reducedRdd.collect().foreach(println)</pre></div><div class='content'></div><h2>Ejemplo de Join de Difusión</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHNtYWxsRGF0YSA9IFNlcSgoMSwgImEiKSwgKDIsICJiIikpCnZhbCBzbWFsbFJkZCA9IHNwYXJrLnNwYXJrQ29udGV4dC5wYXJhbGxlbGl6ZShzbWFsbERhdGEpCnZhbCBicm9hZGNhc3RTbWFsbFJkZCA9IHNwYXJrLnNwYXJrQ29udGV4dC5icm9hZGNhc3Qoc21hbGxSZGQuY29sbGVjdEFzTWFwKCkpCgp2YWwgam9pbmVkUmRkID0gcmRkLm1hcCh4ID0+ICh4LCBicm9hZGNhc3RTbWFsbFJkZC52YWx1ZS5nZXRPckVsc2UoeCwgInVua25vd24iKSkpCmpvaW5lZFJkZC5jb2xsZWN0KCkuZm9yZWFjaChwcmludGxuKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val smallData = Seq((1, &quot;a&quot;), (2, &quot;b&quot;))
+val smallRdd = spark.sparkContext.parallelize(smallData)
+val broadcastSmallRdd = spark.sparkContext.broadcast(smallRdd.collectAsMap())
+
+val joinedRdd = rdd.map(x =&gt; (x, broadcastSmallRdd.value.getOrElse(x, &quot;unknown&quot;)))
+joinedRdd.collect().foreach(println)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Entender y gestionar efectivamente el particionamiento y el shuffling en Apache Spark es crucial para optimizar el rendimiento de tus aplicaciones Spark. Al elegir cuidadosamente el número de particiones y minimizar el shuffling innecesario, puedes mejorar significativamente la eficiencia de tus tareas de procesamiento de datos. Siempre considera la naturaleza de tus datos y las operaciones que necesitas realizar al diseñar tus trabajos en Spark.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='data-serialization'>&#x25C4;Serialización de Datos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Particionamiento y Shuffling en Apache Spark</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='caching-and-persistence'>Caché y Persistencia &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

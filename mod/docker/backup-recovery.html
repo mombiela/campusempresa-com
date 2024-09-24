@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respaldo y Recuperación</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/backup-recovery" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/backup-recovery" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/backup-recovery" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/docker/backup-recovery" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/backup-recovery" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='optimizing-docker-images'>&#x25C4;Optimizando Imágenes de Docker</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Respaldo y Recuperación</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-studies-real-world-examples'>Estudios de Caso y Ejemplos del Mundo Real &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>El respaldo y la recuperación son aspectos cruciales de la gestión de contenedores Docker y sus datos. Esta sección te guiará a través de los conceptos, herramientas y mejores prácticas para respaldar y recuperar eficazmente los contenedores Docker y sus datos asociados.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Respaldo</strong>: El proceso de crear copias de datos para protegerse contra la pérdida de datos.</li>
+<li><strong>Recuperación</strong>: El proceso de restaurar datos desde respaldos a su estado original o funcional.</li>
+<li><strong>Volúmenes</strong>: El mecanismo preferido de Docker para persistir datos generados y utilizados por contenedores Docker.</li>
+<li><strong>Montajes Vinculados</strong>: Una forma de montar un directorio o archivo desde la máquina host en un contenedor.</li>
+</ul>
+</div><h1>Estrategias de Respaldo</h1>
+<div class='content'></div><h2>Respaldos de Volúmenes</h2>
+<div class='content'><p>Los volúmenes son el método más común para persistir datos en Docker. Respaldar volúmenes asegura que puedas restaurar el estado de tus datos incluso si el contenedor es eliminado.</p>
+<h4>Ejemplo: Respaldando un Volumen</h4>
+<ol>
+<li>
+<p><strong>Identificar el volumen</strong>: Usa el comando <code>docker volume ls</code> para listar todos los volúmenes.</p>
+<pre><code class="language-sh">docker volume ls
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un respaldo</strong>: Usa el comando <code>docker run</code> para crear un archivo tar del contenido del volumen.</p>
+<pre><code class="language-sh">docker run --rm -v my_volume:/volume -v $(pwd):/backup busybox tar cvf /backup/backup.tar /volume
+</code></pre>
+<ul>
+<li><code>my_volume</code>: El nombre del volumen a respaldar.</li>
+<li><code>$(pwd)</code>: El directorio actual en el host donde se almacenará el respaldo.</li>
+<li><code>busybox</code>: Una imagen ligera de Docker usada para crear el archivo tar.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Respaldos de Contenedores</h2>
+<div class='content'><p>Respaldar el contenedor completo incluye tanto el sistema de archivos del contenedor como su configuración.</p>
+<h4>Ejemplo: Respaldando un Contenedor</h4>
+<ol>
+<li>
+<p><strong>Confirmar el contenedor</strong>: Crea una nueva imagen desde el estado actual del contenedor.</p>
+<pre><code class="language-sh">docker commit my_container my_backup_image
+</code></pre>
+<ul>
+<li><code>my_container</code>: El nombre o ID del contenedor.</li>
+<li><code>my_backup_image</code>: El nombre de la nueva imagen.</li>
+</ul>
+</li>
+<li>
+<p><strong>Guardar la imagen</strong>: Exporta la imagen a un archivo tar.</p>
+<pre><code class="language-sh">docker save -o my_backup_image.tar my_backup_image
+</code></pre>
+<ul>
+<li><code>my_backup_image.tar</code>: El nombre del archivo tar.</li>
+<li><code>my_backup_image</code>: El nombre de la imagen a guardar.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Estrategias de Recuperación</h1>
+<div class='content'></div><h2>Recuperación de Volúmenes</h2>
+<div class='content'><p>Restaurar datos desde un respaldo de volumen implica extraer el archivo tar de nuevo en un volumen Docker.</p>
+<h4>Ejemplo: Restaurando un Volumen</h4>
+<ol>
+<li>
+<p><strong>Crear un nuevo volumen</strong>: Si el volumen original se pierde, crea uno nuevo.</p>
+<pre><code class="language-sh">docker volume create my_volume
+</code></pre>
+</li>
+<li>
+<p><strong>Restaurar el respaldo</strong>: Usa el comando <code>docker run</code> para extraer el archivo tar en el volumen.</p>
+<pre><code class="language-sh">docker run --rm -v my_volume:/volume -v $(pwd):/backup busybox tar xvf /backup/backup.tar -C /
+</code></pre>
+<ul>
+<li><code>my_volume</code>: El nombre del volumen a restaurar.</li>
+<li><code>$(pwd)</code>: El directorio en el host donde se encuentra el archivo tar de respaldo.</li>
+<li><code>busybox</code>: Una imagen ligera de Docker usada para extraer el archivo tar.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Recuperación de Contenedores</h2>
+<div class='content'><p>Restaurar un contenedor desde un respaldo implica cargar la imagen guardada y crear un nuevo contenedor a partir de ella.</p>
+<h4>Ejemplo: Restaurando un Contenedor</h4>
+<ol>
+<li>
+<p><strong>Cargar la imagen</strong>: Importa el archivo tar de la imagen guardada.</p>
+<pre><code class="language-sh">docker load -i my_backup_image.tar
+</code></pre>
+<ul>
+<li><code>my_backup_image.tar</code>: El nombre del archivo tar.</li>
+</ul>
+</li>
+<li>
+<p><strong>Ejecutar un nuevo contenedor</strong>: Crea un nuevo contenedor desde la imagen restaurada.</p>
+<pre><code class="language-sh">docker run -d --name my_restored_container my_backup_image
+</code></pre>
+<ul>
+<li><code>my_restored_container</code>: El nombre del nuevo contenedor.</li>
+<li><code>my_backup_image</code>: El nombre de la imagen restaurada.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Mejores Prácticas</h1>
+<div class='content'><ul>
+<li><strong>Respaldos Regulares</strong>: Programa respaldos regulares para minimizar la pérdida de datos.</li>
+<li><strong>Automatizar Respaldos</strong>: Usa scripts o herramientas para automatizar el proceso de respaldo.</li>
+<li><strong>Probar Restauraciones</strong>: Prueba regularmente tu proceso de recuperación para asegurar que los respaldos sean válidos.</li>
+<li><strong>Almacenar Respaldos de Forma Segura</strong>: Mantén los respaldos en una ubicación segura y redundante.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El respaldo y la recuperación son prácticas esenciales para mantener la integridad y disponibilidad de tus entornos Docker. Al comprender e implementar las estrategias discutidas en esta sección, puedes asegurar que tus datos estén protegidos y puedan ser rápidamente restaurados en caso de una falla. Prueba regularmente tus procesos de respaldo y recuperación para asegurar que funcionen como se espera y mantén tus datos seguros.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='optimizing-docker-images'>&#x25C4;Optimizando Imágenes de Docker</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Respaldo y Recuperación</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-studies-real-world-examples'>Estudios de Caso y Ejemplos del Mundo Real &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

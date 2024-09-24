@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Realización de Operaciones CRUD</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/performing-crud-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/performing-crud-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/performing-crud-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/php/performing-crud-operations" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/php/performing-crud-operations" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='connecting-to-mysql-database'>&#x25C4;Conexión a una Base de Datos MySQL</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Realización de Operaciones CRUD</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-prepared-statements'>Uso de Sentencias Preparadas &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>CRUD significa Crear, Leer, Actualizar y Eliminar. Estas son las cuatro operaciones básicas para gestionar datos en una base de datos. En esta sección, aprenderemos cómo realizar estas operaciones usando PHP y MySQL.</p>
+</div><h1>Prerrequisitos</h1>
+<div class='content'><p>Antes de sumergirnos en las operaciones CRUD, asegúrate de tener:</p>
+<ul>
+<li>Un entendimiento básico de la sintaxis de PHP.</li>
+<li>Un entorno de servidor local (por ejemplo, XAMPP, WAMP o MAMP).</li>
+<li>MySQL instalado y en funcionamiento.</li>
+<li>Una base de datos y una tabla con las que trabajar.</li>
+</ul>
+</div><h1>Configuración de la Base de Datos</h1>
+<div class='content'><p>Primero, vamos a crear una base de datos y una tabla para realizar nuestras operaciones CRUD.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIERBVEFCQVNFIGNydWRfZXhhbXBsZTsKVVNFIGNydWRfZXhhbXBsZTsKCkNSRUFURSBUQUJMRSB1c2VycyAoCiAgICBpZCBJTlQgQVVUT19JTkNSRU1FTlQgUFJJTUFSWSBLRVksCiAgICBuYW1lIFZBUkNIQVIoMTAwKSBOT1QgTlVMTCwKICAgIGVtYWlsIFZBUkNIQVIoMTAwKSBOT1QgTlVMTCBVTklRVUUsCiAgICBjcmVhdGVkX2F0IFRJTUVTVEFNUCBERUZBVUxUIENVUlJFTlRfVElNRVNUQU1QCik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE DATABASE crud_example;
+USE crud_example;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'></div><h1>Conectando a la Base de Datos</h1>
+<div class='content'><p>Para interactuar con la base de datos, necesitamos establecer una conexión usando PHP.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJHNlcnZlcm5hbWUgPSAibG9jYWxob3N0IjsKJHVzZXJuYW1lID0gInJvb3QiOwokcGFzc3dvcmQgPSAiIjsKJGRibmFtZSA9ICJjcnVkX2V4YW1wbGUiOwoKLy8gQ3JlYXIgY29uZXhpw7NuCiRjb25uID0gbmV3IG15c3FsaSgkc2VydmVybmFtZSwgJHVzZXJuYW1lLCAkcGFzc3dvcmQsICRkYm5hbWUpOwoKLy8gVmVyaWZpY2FyIGNvbmV4acOzbgppZiAoJGNvbm4tPmNvbm5lY3RfZXJyb3IpIHsKICAgIGRpZSgiQ29uZXhpw7NuIGZhbGxpZGE6ICIgLiAkY29ubi0+Y29ubmVjdF9lcnJvcik7Cn0KZWNobyAiQ29uZWN0YWRvIGV4aXRvc2FtZW50ZSI7Cj8+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+$dbname = &quot;crud_example&quot;;
+
+// Crear conexi&oacute;n
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar conexi&oacute;n
+if ($conn-&gt;connect_error) {
+    die(&quot;Conexi&oacute;n fallida: &quot; . $conn-&gt;connect_error);
+}
+echo &quot;Conectado exitosamente&quot;;
+?&gt;</pre></div><div class='content'></div><h1>Operación de Creación</h1>
+<div class='content'><p>Para insertar datos en la base de datos, usamos la declaración SQL <code>INSERT INTO</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJG5hbWUgPSAiSm9obiBEb2UiOwokZW1haWwgPSAiam9obi5kb2VAZXhhbXBsZS5jb20iOwoKJHNxbCA9ICJJTlNFUlQgSU5UTyB1c2VycyAobmFtZSwgZW1haWwpIFZBTFVFUyAoJyRuYW1lJywgJyRlbWFpbCcpIjsKCmlmICgkY29ubi0+cXVlcnkoJHNxbCkgPT09IFRSVUUpIHsKICAgIGVjaG8gIk51ZXZvIHJlZ2lzdHJvIGNyZWFkbyBleGl0b3NhbWVudGUiOwp9IGVsc2UgewogICAgZWNobyAiRXJyb3I6ICIgLiAkc3FsIC4gIjxicj4iIC4gJGNvbm4tPmVycm9yOwp9Cj8+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$name = &quot;John Doe&quot;;
+$email = &quot;john.doe@example.com&quot;;
+
+$sql = &quot;INSERT INTO users (name, email) VALUES ('$name', '$email')&quot;;
+
+if ($conn-&gt;query($sql) === TRUE) {
+    echo &quot;Nuevo registro creado exitosamente&quot;;
+} else {
+    echo &quot;Error: &quot; . $sql . &quot;&lt;br&gt;&quot; . $conn-&gt;error;
+}
+?&gt;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>$name</code> y <code>$email</code> son los datos que queremos insertar.</li>
+<li>La declaración <code>INSERT INTO</code> especifica la tabla (<code>users</code>) y las columnas (<code>name</code>, <code>email</code>) donde se insertarán los datos.</li>
+<li><code>$conn-&gt;query($sql)</code> ejecuta la declaración SQL.</li>
+</ul>
+</div><h1>Operación de Lectura</h1>
+<div class='content'><p>Para recuperar datos de la base de datos, usamos la declaración SQL <code>SELECT</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJHNxbCA9ICJTRUxFQ1QgaWQsIG5hbWUsIGVtYWlsLCBjcmVhdGVkX2F0IEZST00gdXNlcnMiOwokcmVzdWx0ID0gJGNvbm4tPnF1ZXJ5KCRzcWwpOwoKaWYgKCRyZXN1bHQtPm51bV9yb3dzID4gMCkgewogICAgLy8gU2FsaWRhIGRlIGRhdG9zIGRlIGNhZGEgZmlsYQogICAgd2hpbGUoJHJvdyA9ICRyZXN1bHQtPmZldGNoX2Fzc29jKCkpIHsKICAgICAgICBlY2hvICJpZDogIiAuICRyb3dbImlkIl0uICIgLSBOb21icmU6ICIgLiAkcm93WyJuYW1lIl0uICIgLSBFbWFpbDogIiAuICRyb3dbImVtYWlsIl0uICIgLSBDcmVhZG8gZW46ICIgLiAkcm93WyJjcmVhdGVkX2F0Il0uICI8YnI+IjsKICAgIH0KfSBlbHNlIHsKICAgIGVjaG8gIjAgcmVzdWx0YWRvcyI7Cn0KPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$sql = &quot;SELECT id, name, email, created_at FROM users&quot;;
+$result = $conn-&gt;query($sql);
+
+if ($result-&gt;num_rows &gt; 0) {
+    // Salida de datos de cada fila
+    while($row = $result-&gt;fetch_assoc()) {
+        echo &quot;id: &quot; . $row[&quot;id&quot;]. &quot; - Nombre: &quot; . $row[&quot;name&quot;]. &quot; - Email: &quot; . $row[&quot;email&quot;]. &quot; - Creado en: &quot; . $row[&quot;created_at&quot;]. &quot;&lt;br&gt;&quot;;
+    }
+} else {
+    echo &quot;0 resultados&quot;;
+}
+?&gt;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li>La declaración <code>SELECT</code> especifica las columnas que queremos recuperar.</li>
+<li><code>$result = $conn-&gt;query($sql)</code> ejecuta la declaración SQL.</li>
+<li><code>$result-&gt;num_rows</code> verifica si hay filas devueltas.</li>
+<li><code>while($row = $result-&gt;fetch_assoc())</code> recorre el conjunto de resultados y obtiene cada fila como un array asociativo.</li>
+</ul>
+</div><h1>Operación de Actualización</h1>
+<div class='content'><p>Para actualizar datos existentes, usamos la declaración SQL <code>UPDATE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGlkID0gMTsKJG5ld0VtYWlsID0gIm5ldy5lbWFpbEBleGFtcGxlLmNvbSI7Cgokc3FsID0gIlVQREFURSB1c2VycyBTRVQgZW1haWw9JyRuZXdFbWFpbCcgV0hFUkUgaWQ9JGlkIjsKCmlmICgkY29ubi0+cXVlcnkoJHNxbCkgPT09IFRSVUUpIHsKICAgIGVjaG8gIlJlZ2lzdHJvIGFjdHVhbGl6YWRvIGV4aXRvc2FtZW50ZSI7Cn0gZWxzZSB7CiAgICBlY2hvICJFcnJvciBhY3R1YWxpemFuZG8gZWwgcmVnaXN0cm86ICIgLiAkY29ubi0+ZXJyb3I7Cn0KPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$id = 1;
+$newEmail = &quot;new.email@example.com&quot;;
+
+$sql = &quot;UPDATE users SET email='$newEmail' WHERE id=$id&quot;;
+
+if ($conn-&gt;query($sql) === TRUE) {
+    echo &quot;Registro actualizado exitosamente&quot;;
+} else {
+    echo &quot;Error actualizando el registro: &quot; . $conn-&gt;error;
+}
+?&gt;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>$id</code> es el identificador del registro que queremos actualizar.</li>
+<li><code>$newEmail</code> es el nuevo valor para la columna de email.</li>
+<li>La declaración <code>UPDATE</code> especifica la tabla (<code>users</code>), el nuevo valor (<code>email='$newEmail'</code>) y la condición (<code>WHERE id=$id</code>).</li>
+</ul>
+</div><h1>Operación de Eliminación</h1>
+<div class='content'><p>Para eliminar datos de la base de datos, usamos la declaración SQL <code>DELETE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGlkID0gMTsKCiRzcWwgPSAiREVMRVRFIEZST00gdXNlcnMgV0hFUkUgaWQ9JGlkIjsKCmlmICgkY29ubi0+cXVlcnkoJHNxbCkgPT09IFRSVUUpIHsKICAgIGVjaG8gIlJlZ2lzdHJvIGVsaW1pbmFkbyBleGl0b3NhbWVudGUiOwp9IGVsc2UgewogICAgZWNobyAiRXJyb3IgZWxpbWluYW5kbyBlbCByZWdpc3RybzogIiAuICRjb25uLT5lcnJvcjsKfQo/Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$id = 1;
+
+$sql = &quot;DELETE FROM users WHERE id=$id&quot;;
+
+if ($conn-&gt;query($sql) === TRUE) {
+    echo &quot;Registro eliminado exitosamente&quot;;
+} else {
+    echo &quot;Error eliminando el registro: &quot; . $conn-&gt;error;
+}
+?&gt;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>$id</code> es el identificador del registro que queremos eliminar.</li>
+<li>La declaración <code>DELETE</code> especifica la tabla (<code>users</code>) y la condición (<code>WHERE id=$id</code>).</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, cubrimos los conceptos básicos de realizar operaciones CRUD usando PHP y MySQL:</p>
+<ul>
+<li><strong>Crear</strong>: Insertar nuevos registros en la base de datos.</li>
+<li><strong>Leer</strong>: Recuperar registros de la base de datos.</li>
+<li><strong>Actualizar</strong>: Modificar registros existentes en la base de datos.</li>
+<li><strong>Eliminar</strong>: Eliminar registros de la base de datos.</li>
+</ul>
+<p>Entender estas operaciones es fundamental para gestionar datos en cualquier aplicación web. Practica estos ejemplos y experimenta con diferentes consultas para profundizar tu comprensión.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='connecting-to-mysql-database'>&#x25C4;Conexión a una Base de Datos MySQL</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Realización de Operaciones CRUD</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='using-prepared-statements'>Uso de Sentencias Preparadas &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

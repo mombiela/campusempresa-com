@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizaciones Continuas y Reversiones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/rolling-updates-and-rollbacks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/rolling-updates-and-rollbacks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/rolling-updates-and-rollbacks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/rolling-updates-and-rollbacks" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/rolling-updates-and-rollbacks" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='configmaps-and-secrets'>&#x25C4;ConfigMaps y Secrets</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Actualizaciones Continuas y Reversiones</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-applications'>Escalado de Aplicaciones &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las actualizaciones continuas y las reversiones son conceptos esenciales en Kubernetes para gestionar despliegues de aplicaciones. Permiten actualizar tus aplicaciones sin tiempo de inactividad y volver a versiones anteriores si algo sale mal.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Actualización Continua</strong>: Una estrategia de despliegue que actualiza pods de manera incremental para asegurar un tiempo de inactividad mínimo.</li>
+<li><strong>Reversión</strong>: El proceso de volver a una versión de despliegue anterior si la actual falla o tiene problemas.</li>
+<li><strong>Despliegue</strong>: Un recurso de Kubernetes que gestiona un conjunto de pods idénticos, asegurando que un número especificado de ellos esté en ejecución.</li>
+</ul>
+</div><h1>Actualizaciones Continuas</h1>
+<div class='content'></div><h2>Cómo Funcionan las Actualizaciones Continuas</h2>
+<div class='content'><p>Durante una actualización continua, Kubernetes reemplaza de manera incremental los pods antiguos con nuevos. Esto asegura que tu aplicación permanezca disponible durante todo el proceso de actualización.</p>
+</div><h2>Pasos para Realizar una Actualización Continua</h2>
+<div class='content'><ol>
+<li><strong>Actualizar el Despliegue</strong>: Modificar la configuración del despliegue para especificar la nueva versión de la aplicación.</li>
+<li><strong>Aplicar la Actualización</strong>: Usar <code>kubectl apply</code> para aplicar los cambios.</li>
+<li><strong>Monitorear la Actualización</strong>: Verificar el estado del despliegue para asegurar que la actualización esté procediendo como se espera.</li>
+</ol>
+</div><h2>Ejemplo: Realizando una Actualización Continua</h2>
+<div class='content'><p>Supongamos que tienes un despliegue llamado <code>my-app</code> y quieres actualizar su imagen a una nueva versión.</p>
+<ol>
+<li>
+<p><strong>Ver la configuración actual del despliegue</strong>:</p>
+<pre><code class="language-sh">kubectl get deployment my-app -o yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Actualizar el despliegue para usar la nueva imagen</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app-container
+        image: my-app:2.0  # Actualiza la versión de la imagen aquí
+</code></pre>
+</li>
+<li>
+<p><strong>Aplicar la configuración actualizada</strong>:</p>
+<pre><code class="language-sh">kubectl apply -f my-app-deployment.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Monitorear el estado del despliegue</strong>:</p>
+<pre><code class="language-sh">kubectl rollout status deployment/my-app
+</code></pre>
+</li>
+</ol>
+</div><h2>Estrategias de Actualización Continua</h2>
+<div class='content'><ul>
+<li><strong>Max Surge</strong>: El número máximo de pods que pueden ser creados por encima del número deseado de pods durante la actualización.</li>
+<li><strong>Max Unavailable</strong>: El número máximo de pods que pueden estar no disponibles durante la actualización.</li>
+</ul>
+<p>Ejemplo de configuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3BlYzoKICBzdHJhdGVneToKICAgIHR5cGU6IFJvbGxpbmdVcGRhdGUKICAgIHJvbGxpbmdVcGRhdGU6CiAgICAgIG1heFN1cmdlOiAxCiAgICAgIG1heFVuYXZhaWxhYmxlOiAx"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1</pre></div><div class='content'></div><h1>Reversiones</h1>
+<div class='content'></div><h2>Cómo Funcionan las Reversiones</h2>
+<div class='content'><p>Una reversión revierte el despliegue a una versión anterior si la versión actual tiene problemas. Kubernetes mantiene un historial de despliegues anteriores, lo que facilita volver a un estado estable.</p>
+</div><h2>Pasos para Realizar una Reversión</h2>
+<div class='content'><ol>
+<li><strong>Verificar el Historial de Despliegue</strong>: Ver el historial de despliegues anteriores.</li>
+<li><strong>Revertir a una Revisión Anterior</strong>: Usar <code>kubectl rollout undo</code> para volver a una revisión específica.</li>
+<li><strong>Monitorear la Reversión</strong>: Asegurarse de que la reversión sea exitosa y que la aplicación esté estable.</li>
+</ol>
+</div><h2>Ejemplo: Realizando una Reversión</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Ver el historial del despliegue</strong>:</p>
+<pre><code class="language-sh">kubectl rollout history deployment/my-app
+</code></pre>
+</li>
+<li>
+<p><strong>Revertir a una revisión anterior</strong>:</p>
+<pre><code class="language-sh">kubectl rollout undo deployment/my-app --to-revision=2
+</code></pre>
+</li>
+<li>
+<p><strong>Monitorear el estado de la reversión</strong>:</p>
+<pre><code class="language-sh">kubectl rollout status deployment/my-app
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las actualizaciones continuas y las reversiones son características poderosas en Kubernetes que ayudan a asegurar que tus aplicaciones se actualicen sin problemas y puedan revertirse rápidamente si surgen problemas. Al entender y utilizar estas características, puedes mantener una alta disponibilidad y fiabilidad para tus aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='configmaps-and-secrets'>&#x25C4;ConfigMaps y Secrets</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Actualizaciones Continuas y Reversiones</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scaling-applications'>Escalado de Aplicaciones &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

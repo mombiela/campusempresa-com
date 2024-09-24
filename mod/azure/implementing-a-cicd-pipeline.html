@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Implementación de una Canalización CI/CD en Azure</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/azure/implementing-a-cicd-pipeline" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/azure/implementing-a-cicd-pipeline" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/azure/implementing-a-cicd-pipeline" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/azure/implementing-a-cicd-pipeline" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/azure/implementing-a-cicd-pipeline" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='building-a-serverless-api'>&#x25C4;Construcción de una API sin Servidor</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementación de una Canalización CI/CD en Azure</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='migrating-on-premises-applications-to-azure'>Migración de Aplicaciones On-Premises a Azure &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La Integración Continua (CI) y el Despliegue Continuo (CD) son prácticas esenciales en el desarrollo de software moderno. Ayudan a automatizar el proceso de integración de cambios de código, pruebas y despliegue de aplicaciones. En esta sección, exploraremos cómo implementar una canalización CI/CD utilizando Azure DevOps.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Integración Continua (CI):</strong> La práctica de integrar automáticamente los cambios de código de múltiples contribuyentes en un repositorio compartido varias veces al día.</li>
+<li><strong>Despliegue Continuo (CD):</strong> La práctica de desplegar automáticamente cada cambio que pasa las pruebas automatizadas a producción.</li>
+<li><strong>Azure DevOps:</strong> Un conjunto de herramientas de desarrollo proporcionadas por Microsoft para apoyar todo el ciclo de vida del desarrollo de software.</li>
+</ul>
+</div><h1>Configuración de Azure DevOps</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Crear una Organización en Azure DevOps:</strong></p>
+<ul>
+<li>Ve al <a href="https://dev.azure.com/">portal de Azure DevOps</a>.</li>
+<li>Inicia sesión con tu cuenta de Microsoft.</li>
+<li>Haz clic en &quot;Crear nueva organización&quot; y sigue las indicaciones.</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear un Proyecto:</strong></p>
+<ul>
+<li>Una vez que tu organización esté configurada, haz clic en &quot;Nuevo Proyecto.&quot;</li>
+<li>Proporciona un nombre y una descripción para tu proyecto.</li>
+<li>Elige la visibilidad (pública o privada) y haz clic en &quot;Crear.&quot;</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuración de Repositorios</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Crear un Repositorio:</strong></p>
+<ul>
+<li>Navega a Repos &gt; Archivos.</li>
+<li>Haz clic en &quot;Nuevo Repositorio.&quot;</li>
+<li>Proporciona un nombre e inicialízalo con un archivo README.</li>
+</ul>
+</li>
+<li>
+<p><strong>Clonar el Repositorio:</strong></p>
+<pre><code class="language-bash">git clone https://dev.azure.com/tuorganizacion/tuprojecto/_git/turepositorio
+cd turepositorio
+</code></pre>
+</li>
+</ul>
+</div><h1>Configuración de la Integración Continua (CI)</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Crear una Canalización de Construcción:</strong></p>
+<ul>
+<li>Navega a Pipelines &gt; Pipelines.</li>
+<li>Haz clic en &quot;Nueva Canalización.&quot;</li>
+<li>Selecciona el repositorio que deseas construir.</li>
+<li>Elige la plantilla que se ajuste a tu proyecto (por ejemplo, ASP.NET Core, Node.js).</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el Archivo YAML:</strong></p>
+<ul>
+<li>Azure DevOps utiliza archivos YAML para definir la canalización de construcción.</li>
+<li>Ejemplo para una aplicación Node.js:
+<pre><code class="language-yaml">trigger:
+  - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: UseNode@2
+    inputs:
+      version: '14.x'
+  - script: |
+      npm install
+      npm test
+    displayName: 'Instalar y Probar'
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Ejecutar la Canalización:</strong></p>
+<ul>
+<li>Guarda y ejecuta la canalización.</li>
+<li>Monitorea el proceso de construcción y asegúrate de que se complete con éxito.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuración del Despliegue Continuo (CD)</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Crear una Canalización de Despliegue:</strong></p>
+<ul>
+<li>Navega a Pipelines &gt; Releases.</li>
+<li>Haz clic en &quot;Nueva Canalización.&quot;</li>
+<li>Selecciona el artefacto de construcción de la canalización CI.</li>
+<li>Añade etapas para el despliegue (por ejemplo, Dev, QA, Producción).</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar Tareas de Despliegue:</strong></p>
+<ul>
+<li>Ejemplo para desplegar en un Azure App Service:
+<pre><code class="language-yaml">stages:
+  - stage: Deploy
+    jobs:
+      - job: DeployJob
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - task: AzureWebApp@1
+            inputs:
+              azureSubscription: 'tu-suscripción-azure'
+              appName: 'tu-nombre-app-service'
+              package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Activar el Despliegue:</strong></p>
+<ul>
+<li>Define activadores para crear automáticamente un despliegue cuando una construcción se complete.</li>
+<li>Monitorea el proceso de despliegue y asegúrate de que se complete con éxito.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Monitoreo y Mantenimiento</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Monitorear Canalizaciones:</strong></p>
+<ul>
+<li>Utiliza los paneles de Azure DevOps para monitorear el estado de tus canalizaciones.</li>
+<li>Configura alertas y notificaciones para fallos en la construcción y el despliegue.</li>
+</ul>
+</li>
+<li>
+<p><strong>Mantener Canalizaciones:</strong></p>
+<ul>
+<li>Actualiza regularmente las configuraciones de tus canalizaciones para adaptarte a los cambios en tu proyecto.</li>
+<li>Optimiza el rendimiento de la canalización almacenando en caché las dependencias y paralelizando tareas.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Implementar una canalización CI/CD en Azure DevOps implica configurar repositorios, configurar canalizaciones de construcción y despliegue, y monitorear y mantener continuamente estas canalizaciones. Al automatizar los procesos de integración y despliegue, puedes asegurar una entrega más rápida y confiable de tus aplicaciones de software.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='building-a-serverless-api'>&#x25C4;Construcción de una API sin Servidor</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Implementación de una Canalización CI/CD en Azure</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='migrating-on-premises-applications-to-azure'>Migración de Aplicaciones On-Premises a Azure &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

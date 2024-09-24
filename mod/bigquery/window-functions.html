@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funciones de Ventana en BigQuery</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/window-functions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/window-functions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/window-functions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bigquery/window-functions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/window-functions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='common-table-expressions'>&#x25C4;Expresiones de tabla comunes (CTEs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Funciones de Ventana en BigQuery</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='handling-nulls'>Manejo de NULLs &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las funciones de ventana son una característica poderosa en SQL que te permiten realizar cálculos a través de un conjunto de filas de una tabla que están relacionadas con la fila actual. Este tema te guiará desde los conceptos básicos hasta el uso avanzado de las funciones de ventana en BigQuery.</p>
+</div><h1>Introducción a las Funciones de Ventana</h1>
+<div class='content'><p>Las funciones de ventana realizan cálculos a través de un conjunto de filas de una tabla que están de alguna manera relacionadas con la fila actual. A menudo se utilizan para totales acumulados, promedios móviles y clasificación.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Ventana</strong>: El conjunto de filas sobre las que opera la función.</li>
+<li><strong>Partición</strong>: Divide el conjunto de resultados en particiones a las que se aplica la función de ventana.</li>
+<li><strong>Orden</strong>: Define el orden de las filas dentro de cada partición.</li>
+<li><strong>Marco</strong>: Especifica un subconjunto de filas dentro de la partición.</li>
+</ul>
+</div><h1>Sintaxis Básica</h1>
+<div class='content'><p>La sintaxis básica para una función de ventana en BigQuery es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogIGNvbHVtbjEsCiAgY29sdW1uMiwKICB3aW5kb3dfZnVuY3Rpb24oKSBPVkVSICgKICAgIFtQQVJUSVRJT04gQlkgcGFydGl0aW9uX2V4cHJlc3Npb25dCiAgICBbT1JERVIgQlkgb3JkZXJfZXhwcmVzc2lvbl0KICAgIFt3aW5kb3dfZnJhbWVdCiAgKSBBUyBhbGlhc19uYW1lCkZST00gCiAgdGFibGVfbmFtZTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+  column1,
+  column2,
+  window_function() OVER (
+    [PARTITION BY partition_expression]
+    [ORDER BY order_expression]
+    [window_frame]
+  ) AS alias_name
+FROM 
+  table_name;</pre></div><div class='content'></div><h2>Ejemplo: Usando ROW_NUMBER()</h2>
+<div class='content'><p>La función <code>ROW_NUMBER()</code> asigna un número único a cada fila dentro de la partición de un conjunto de resultados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogIG5hbWUsCiAgZGVwYXJ0bWVudCwKICBST1dfTlVNQkVSKCkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnQgT1JERVIgQlkgbmFtZSkgQVMgcm93X251bQpGUk9NIAogIGVtcGxveWVlczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+  name,
+  department,
+  ROW_NUMBER() OVER (PARTITION BY department ORDER BY name) AS row_num
+FROM 
+  employees;</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><strong>PARTITION BY department</strong>: Las filas se particionan por la columna <code>department</code>.</li>
+<li><strong>ORDER BY name</strong>: Las filas dentro de cada partición se ordenan por la columna <code>name</code>.</li>
+<li><strong>ROW_NUMBER()</strong>: Asigna un número único a cada fila dentro de la partición.</li>
+</ul>
+</div><h1>Funciones de Ventana Comunes</h1>
+<div class='content'></div><h2>RANK() y DENSE_RANK()</h2>
+<div class='content'><ul>
+<li><strong>RANK()</strong>: Asigna un rango a cada fila dentro de la partición, con huecos en la clasificación.</li>
+<li><strong>DENSE_RANK()</strong>: Similar a <code>RANK()</code>, pero sin huecos en la clasificación.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogIG5hbWUsCiAgZGVwYXJ0bWVudCwKICBSQU5LKCkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnQgT1JERVIgQlkgc2FsYXJ5IERFU0MpIEFTIHJhbmssCiAgREVOU0VfUkFOSygpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50IE9SREVSIEJZIHNhbGFyeSBERVNDKSBBUyBkZW5zZV9yYW5rCkZST00gCiAgZW1wbG95ZWVzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+  name,
+  department,
+  RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank,
+  DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS dense_rank
+FROM 
+  employees;</pre></div><div class='content'></div><h2>SUM() y AVG()</h2>
+<div class='content'><ul>
+<li><strong>SUM()</strong>: Calcula la suma de un conjunto de valores.</li>
+<li><strong>AVG()</strong>: Calcula el promedio de un conjunto de valores.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogIGRlcGFydG1lbnQsCiAgc2FsYXJ5LAogIFNVTShzYWxhcnkpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50KSBBUyB0b3RhbF9zYWxhcnksCiAgQVZHKHNhbGFyeSkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnQpIEFTIGF2Z19zYWxhcnkKRlJPTSAKICBlbXBsb3llZXM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+  department,
+  salary,
+  SUM(salary) OVER (PARTITION BY department) AS total_salary,
+  AVG(salary) OVER (PARTITION BY department) AS avg_salary
+FROM 
+  employees;</pre></div><div class='content'></div><h2>LAG() y LEAD()</h2>
+<div class='content'><ul>
+<li><strong>LAG()</strong>: Accede a datos de una fila anterior en el mismo conjunto de resultados.</li>
+<li><strong>LEAD()</strong>: Accede a datos de una fila posterior en el mismo conjunto de resultados.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogIG5hbWUsCiAgc2FsYXJ5LAogIExBRyhzYWxhcnksIDEpIE9WRVIgKE9SREVSIEJZIHNhbGFyeSkgQVMgcHJldmlvdXNfc2FsYXJ5LAogIExFQUQoc2FsYXJ5LCAxKSBPVkVSIChPUkRFUiBCWSBzYWxhcnkpIEFTIG5leHRfc2FsYXJ5CkZST00gCiAgZW1wbG95ZWVzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+  name,
+  salary,
+  LAG(salary, 1) OVER (ORDER BY salary) AS previous_salary,
+  LEAD(salary, 1) OVER (ORDER BY salary) AS next_salary
+FROM 
+  employees;</pre></div><div class='content'></div><h1>Uso Avanzado</h1>
+<div class='content'></div><h2>Marcos de Ventana</h2>
+<div class='content'><p>Los marcos de ventana definen un subconjunto de filas dentro de la partición. El marco predeterminado es <code>RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogIG5hbWUsCiAgc2FsYXJ5LAogIFNVTShzYWxhcnkpIE9WRVIgKAogICAgT1JERVIgQlkgc2FsYXJ5IAogICAgUk9XUyBCRVRXRUVOIDEgUFJFQ0VESU5HIEFORCAxIEZPTExPV0lORwogICkgQVMgbW92aW5nX3N1bQpGUk9NIAogIGVtcGxveWVlczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+  name,
+  salary,
+  SUM(salary) OVER (
+    ORDER BY salary 
+    ROWS BETWEEN 1 PRECEDING AND 1 FOLLOWING
+  ) AS moving_sum
+FROM 
+  employees;</pre></div><div class='content'></div><h2>Combinando Múltiples Funciones de Ventana</h2>
+<div class='content'><p>Puedes usar múltiples funciones de ventana en una sola consulta para realizar cálculos complejos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogIG5hbWUsCiAgZGVwYXJ0bWVudCwKICBzYWxhcnksCiAgUkFOSygpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50IE9SREVSIEJZIHNhbGFyeSBERVNDKSBBUyByYW5rLAogIFNVTShzYWxhcnkpIE9WRVIgKFBBUlRJVElPTiBCWSBkZXBhcnRtZW50KSBBUyB0b3RhbF9zYWxhcnksCiAgQVZHKHNhbGFyeSkgT1ZFUiAoUEFSVElUSU9OIEJZIGRlcGFydG1lbnQpIEFTIGF2Z19zYWxhcnkKRlJPTSAKICBlbXBsb3llZXM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+  name,
+  department,
+  salary,
+  RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS rank,
+  SUM(salary) OVER (PARTITION BY department) AS total_salary,
+  AVG(salary) OVER (PARTITION BY department) AS avg_salary
+FROM 
+  employees;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Las funciones de ventana en BigQuery proporcionan una forma poderosa de realizar cálculos complejos sobre un conjunto de filas relacionadas con la fila actual. Al comprender y utilizar la partición, el orden y el marco, puedes aprovechar las funciones de ventana para obtener conocimientos más profundos de tus datos. Practica usando estas funciones con diferentes conjuntos de datos para volverte competente en su aplicación.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='common-table-expressions'>&#x25C4;Expresiones de tabla comunes (CTEs)</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Funciones de Ventana en BigQuery</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='handling-nulls'>Manejo de NULLs &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

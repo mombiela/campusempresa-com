@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Señales en Django</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/signals" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/signals" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/signals" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/django/signals" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/django/signals" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='middleware'>&#x25C4;Middleware</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Señales en Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-uploads'>Carga de Archivos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a las Señales</h1>
+<div class='content'><p>Las señales de Django son una característica poderosa que permite que las aplicaciones desacopladas sean notificadas cuando ocurren ciertas acciones en otro lugar del marco de trabajo. Proporcionan una forma de ejecutar algún código basado en ciertos eventos que ocurren en la aplicación Django.</p>
+<ul>
+<li><strong>Definición</strong>: Las señales son una forma de permitir que las aplicaciones desacopladas sean notificadas cuando ocurren ciertos eventos.</li>
+<li><strong>Casos de Uso</strong>: Las señales a menudo se utilizan para realizar acciones como enviar notificaciones, actualizar modelos relacionados o registrar actividades.</li>
+</ul>
+</div><h1>Conceptos Básicos</h1>
+<div class='content'><p>Antes de profundizar en la implementación, es importante entender algunos conceptos básicos relacionados con las señales de Django.</p>
+<ul>
+<li><strong>Emisor</strong>: El emisor es el modelo o clase que envía la señal.</li>
+<li><strong>Receptor</strong>: El receptor es la función o método que se llama cuando se envía la señal.</li>
+<li><strong>Señal</strong>: La señal en sí es una instancia de la clase <code>Signal</code>.</li>
+</ul>
+</div><h1>Señales Incorporadas</h1>
+<div class='content'><p>Django viene con varias señales incorporadas que puedes usar de inmediato.</p>
+<ul>
+<li><strong>pre_save</strong>: Se envía antes de que se llame al método <code>save()</code> de un modelo.</li>
+<li><strong>post_save</strong>: Se envía después de que se llame al método <code>save()</code> de un modelo.</li>
+<li><strong>pre_delete</strong>: Se envía antes de que se llame al método <code>delete()</code> de un modelo.</li>
+<li><strong>post_delete</strong>: Se envía después de que se llame al método <code>delete()</code> de un modelo.</li>
+</ul>
+</div><h1>Creación y Conexión de Señales</h1>
+<div class='content'><p>Para crear y conectar señales, debes seguir estos pasos:</p>
+<ol>
+<li><strong>Definir la Señal</strong>: Crear una instancia de la clase <code>Signal</code>.</li>
+<li><strong>Crear la Función Receptora</strong>: Definir la función que manejará la señal.</li>
+<li><strong>Conectar la Señal al Receptor</strong>: Usar el método <code>connect()</code> para vincular la señal al receptor.</li>
+</ol>
+</div><h2>Ejemplo: Usando la Señal `post_save`</h2>
+<div class='content'><p>Vamos a crear un ejemplo simple donde enviamos un correo electrónico de bienvenida a un usuario después de que se registre.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBzaWduYWxzLnB5CmZyb20gZGphbmdvLmRiLm1vZGVscy5zaWduYWxzIGltcG9ydCBwb3N0X3NhdmUKZnJvbSBkamFuZ28uZGlzcGF0Y2ggaW1wb3J0IHJlY2VpdmVyCmZyb20gZGphbmdvLmNvcmUubWFpbCBpbXBvcnQgc2VuZF9tYWlsCmZyb20gZGphbmdvLmNvbnRyaWIuYXV0aC5tb2RlbHMgaW1wb3J0IFVzZXIKCkByZWNlaXZlcihwb3N0X3NhdmUsIHNlbmRlcj1Vc2VyKQpkZWYgc2VuZF93ZWxjb21lX2VtYWlsKHNlbmRlciwgaW5zdGFuY2UsIGNyZWF0ZWQsICoqa3dhcmdzKToKICAgIGlmIGNyZWF0ZWQ6CiAgICAgICAgc2VuZF9tYWlsKAogICAgICAgICAgICAnwqFCaWVudmVuaWRvIScsCiAgICAgICAgICAgICdHcmFjaWFzIHBvciByZWdpc3RyYXJ0ZSBlbiBudWVzdHJvIHNpdGlvIHdlYi4nLAogICAgICAgICAgICAnZnJvbUBleGFtcGxlLmNvbScsCiAgICAgICAgICAgIFtpbnN0YW5jZS5lbWFpbF0sCiAgICAgICAgICAgIGZhaWxfc2lsZW50bHk9RmFsc2UsCiAgICAgICAgKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># signals.py
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.core.mail import send_mail
+from django.contrib.auth.models import User
+
+@receiver(post_save, sender=User)
+def send_welcome_email(sender, instance, created, **kwargs):
+    if created:
+        send_mail(
+            '&iexcl;Bienvenido!',
+            'Gracias por registrarte en nuestro sitio web.',
+            'from@example.com',
+            [instance.email],
+            fail_silently=False,
+        )</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>@receiver(post_save, sender=User)</strong>: Este decorador conecta la función <code>send_welcome_email</code> a la señal <code>post_save</code> del modelo <code>User</code>.</li>
+<li><strong>instance</strong>: La instancia del modelo que se guardó.</li>
+<li><strong>created</strong>: Un booleano que indica si se creó un nuevo registro.</li>
+</ul>
+</div><h1>Señales Personalizadas</h1>
+<div class='content'><p>También puedes crear tus propias señales personalizadas.</p>
+</div><h2>Ejemplo: Señal Personalizada</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBzaWduYWxzLnB5CmZyb20gZGphbmdvLmRpc3BhdGNoIGltcG9ydCBTaWduYWwsIHJlY2VpdmVyCgojIERlZmluaXIgdW5hIHNlw7FhbCBwZXJzb25hbGl6YWRhCnVzZXJfbG9nZ2VkX2luID0gU2lnbmFsKHByb3ZpZGluZ19hcmdzPVsidXNlciIsICJ0aW1lc3RhbXAiXSkKCiMgQ3JlYXIgdW5hIGZ1bmNpw7NuIHJlY2VwdG9yYQpAcmVjZWl2ZXIodXNlcl9sb2dnZWRfaW4pCmRlZiBsb2dfdXNlcl9sb2dpbihzZW5kZXIsICoqa3dhcmdzKToKICAgIHVzZXIgPSBrd2FyZ3NbJ3VzZXInXQogICAgdGltZXN0YW1wID0ga3dhcmdzWyd0aW1lc3RhbXAnXQogICAgcHJpbnQoZiJFbCB1c3VhcmlvIHt1c2VyfSBpbmljacOzIHNlc2nDs24gYSBsYXMge3RpbWVzdGFtcH0iKQoKIyBFbiBhbGfDum4gbHVnYXIgZGUgdHUgY8OzZGlnbywgZW52w61hIGxhIHNlw7FhbAp1c2VyX2xvZ2dlZF9pbi5zZW5kKHNlbmRlcj1Ob25lLCB1c2VyPSdqb2huX2RvZScsIHRpbWVzdGFtcD0nMjAyMy0xMC0wMSAxMjowMDowMCcp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># signals.py
+from django.dispatch import Signal, receiver
+
+# Definir una se&ntilde;al personalizada
+user_logged_in = Signal(providing_args=[&quot;user&quot;, &quot;timestamp&quot;])
+
+# Crear una funci&oacute;n receptora
+@receiver(user_logged_in)
+def log_user_login(sender, **kwargs):
+    user = kwargs['user']
+    timestamp = kwargs['timestamp']
+    print(f&quot;El usuario {user} inici&oacute; sesi&oacute;n a las {timestamp}&quot;)
+
+# En alg&uacute;n lugar de tu c&oacute;digo, env&iacute;a la se&ntilde;al
+user_logged_in.send(sender=None, user='john_doe', timestamp='2023-10-01 12:00:00')</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>user_logged_in = Signal(providing_args=[&quot;user&quot;, &quot;timestamp&quot;])</strong>: Esto crea una señal personalizada que espera argumentos <code>user</code> y <code>timestamp</code>.</li>
+<li><strong>@receiver(user_logged_in)</strong>: Este decorador conecta la función <code>log_user_login</code> a la señal <code>user_logged_in</code>.</li>
+<li><strong>user_logged_in.send()</strong>: Esto envía la señal con los argumentos especificados.</li>
+</ul>
+</div><h1>Mejores Prácticas</h1>
+<div class='content'><ul>
+<li><strong>Evitar Importaciones Circulares</strong>: Coloca los manejadores de señales en un archivo separado (por ejemplo, <code>signals.py</code>) e impórtalos en el archivo <code>apps.py</code> de tu aplicación.</li>
+<li><strong>Usar Referencias Débiles</strong>: Por defecto, Django usa referencias débiles para conectar señales, lo que ayuda a prevenir fugas de memoria.</li>
+<li><strong>Mantener los Manejadores de Señales Simples</strong>: Los manejadores de señales deben ser simples y rápidos para evitar cuellos de botella en el rendimiento.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las señales de Django son una herramienta poderosa para desacoplar diferentes partes de tu aplicación y reaccionar a eventos de manera limpia y eficiente. Al entender y utilizar tanto las señales incorporadas como las personalizadas, puedes crear aplicaciones Django más modulares y mantenibles. Recuerda seguir las mejores prácticas para asegurar que tus manejadores de señales sean eficientes y evitar problemas comunes como las importaciones circulares.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='middleware'>&#x25C4;Middleware</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Señales en Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-uploads'>Carga de Archivos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fugas de Memoria y Gestión</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/c/memory-leaks-and-management" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/c/memory-leaks-and-management" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/c/memory-leaks-and-management" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/c/memory-leaks-and-management" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/c/memory-leaks-and-management" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dynamic-arrays'>&#x25C4;Arreglos Dinámicos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Fugas de Memoria y Gestión</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-operations'>Operaciones con Archivos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a la Gestión de Memoria</h1>
+<div class='content'><p>La gestión de memoria es un aspecto crucial de la programación en C. Involucra la asignación, uso y desasignación de memoria de manera eficiente y sin errores. Entender la gestión de memoria ayuda a prevenir fugas de memoria, que pueden llevar a un uso ineficiente de los recursos y a fallos en el programa.</p>
+</div><h1>Asignación Dinámica de Memoria</h1>
+<div class='content'><p>La asignación dinámica de memoria permite a los programas solicitar memoria en tiempo de ejecución. Esto se hace utilizando funciones de la biblioteca estándar de C.</p>
+</div><h2>Funciones Clave</h2>
+<div class='content'><ul>
+<li><code>malloc()</code>: Asigna un número especificado de bytes y devuelve un puntero a la memoria asignada.</li>
+<li><code>calloc()</code>: Asigna memoria para un array de elementos, los inicializa a cero y devuelve un puntero a la memoria.</li>
+<li><code>realloc()</code>: Cambia el tamaño de la memoria previamente asignada.</li>
+<li><code>free()</code>: Desasigna la memoria previamente asignada.</li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KCmludCBtYWluKCkgewogICAgaW50ICpwdHI7CiAgICBpbnQgbiwgaTsKCiAgICAvLyBOw7ptZXJvIGRlIGVsZW1lbnRvcwogICAgbiA9IDU7CgogICAgLy8gQXNpZ25hciBtZW1vcmlhIGRpbsOhbWljYW1lbnRlIHVzYW5kbyBtYWxsb2MoKQogICAgcHRyID0gKGludCopbWFsbG9jKG4gKiBzaXplb2YoaW50KSk7CgogICAgLy8gVmVyaWZpY2FyIHNpIGxhIG1lbW9yaWEgaGEgc2lkbyBhc2lnbmFkYSBleGl0b3NhbWVudGUgcG9yIG1hbGxvYyBvIG5vCiAgICBpZiAocHRyID09IE5VTEwpIHsKICAgICAgICBwcmludGYoIk1lbW9yaWEgbm8gYXNpZ25hZGEuXG4iKTsKICAgICAgICBleGl0KDApOwogICAgfSBlbHNlIHsKICAgICAgICAvLyBMYSBtZW1vcmlhIGhhIHNpZG8gYXNpZ25hZGEgZXhpdG9zYW1lbnRlCiAgICAgICAgcHJpbnRmKCJNZW1vcmlhIGFzaWduYWRhIGV4aXRvc2FtZW50ZSB1c2FuZG8gbWFsbG9jLlxuIik7CgogICAgICAgIC8vIE9idGVuZXIgbG9zIGVsZW1lbnRvcyBkZWwgYXJyYXkKICAgICAgICBmb3IgKGkgPSAwOyBpIDwgbjsgKytpKSB7CiAgICAgICAgICAgIHB0cltpXSA9IGkgKyAxOwogICAgICAgIH0KCiAgICAgICAgLy8gSW1wcmltaXIgbG9zIGVsZW1lbnRvcyBkZWwgYXJyYXkKICAgICAgICBwcmludGYoIkxvcyBlbGVtZW50b3MgZGVsIGFycmF5IHNvbjogIik7CiAgICAgICAgZm9yIChpID0gMDsgaSA8IG47ICsraSkgewogICAgICAgICAgICBwcmludGYoIiVkICIsIHB0cltpXSk7CiAgICAgICAgfQoKICAgICAgICAvLyBMaWJlcmFyIGxhIG1lbW9yaWEKICAgICAgICBmcmVlKHB0cik7CiAgICAgICAgcHJpbnRmKCJcbk1lbW9yaWEgbGliZXJhZGEgZXhpdG9zYW1lbnRlLlxuIik7CiAgICB9CgogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int *ptr;
+    int n, i;
+
+    // N&uacute;mero de elementos
+    n = 5;
+
+    // Asignar memoria din&aacute;micamente usando malloc()
+    ptr = (int*)malloc(n * sizeof(int));
+
+    // Verificar si la memoria ha sido asignada exitosamente por malloc o no
+    if (ptr == NULL) {
+        printf(&quot;Memoria no asignada.\n&quot;);
+        exit(0);
+    } else {
+        // La memoria ha sido asignada exitosamente
+        printf(&quot;Memoria asignada exitosamente usando malloc.\n&quot;);
+
+        // Obtener los elementos del array
+        for (i = 0; i &lt; n; ++i) {
+            ptr[i] = i + 1;
+        }
+
+        // Imprimir los elementos del array
+        printf(&quot;Los elementos del array son: &quot;);
+        for (i = 0; i &lt; n; ++i) {
+            printf(&quot;%d &quot;, ptr[i]);
+        }
+
+        // Liberar la memoria
+        free(ptr);
+        printf(&quot;\nMemoria liberada exitosamente.\n&quot;);
+    }
+
+    return 0;
+}</pre></div><div class='content'></div><h1>Fugas de Memoria</h1>
+<div class='content'><p>Una fuga de memoria ocurre cuando un programa asigna memoria pero no la desasigna después de usarla. Esto puede llevar a un aumento gradual en el uso de memoria, eventualmente causando que el programa se quede sin memoria y falle.</p>
+</div><h2>Causas Comunes</h2>
+<div class='content'><ul>
+<li>Olvidar llamar a <code>free()</code> después de <code>malloc()</code>, <code>calloc()</code> o <code>realloc()</code>.</li>
+<li>Perder el puntero a la memoria asignada antes de liberarla.</li>
+</ul>
+</div><h2>Ejemplo de una Fuga de Memoria</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KCnZvaWQgY3JlYXRlTWVtb3J5TGVhaygpIHsKICAgIGludCAqcHRyID0gKGludCopbWFsbG9jKDEwICogc2l6ZW9mKGludCkpOwogICAgLy8gTGEgbWVtb3JpYSBlcyBhc2lnbmFkYSBwZXJvIG5vIGxpYmVyYWRhCn0KCmludCBtYWluKCkgewogICAgY3JlYXRlTWVtb3J5TGVhaygpOwogICAgLy8gT2N1cnJlIHVuYSBmdWdhIGRlIG1lbW9yaWEgYXF1w60KICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+void createMemoryLeak() {
+    int *ptr = (int*)malloc(10 * sizeof(int));
+    // La memoria es asignada pero no liberada
+}
+
+int main() {
+    createMemoryLeak();
+    // Ocurre una fuga de memoria aqu&iacute;
+    return 0;
+}</pre></div><div class='content'></div><h1>Mejores Prácticas para la Gestión de Memoria</h1>
+<div class='content'><ul>
+<li>Siempre emparejar <code>malloc()</code>, <code>calloc()</code> y <code>realloc()</code> con <code>free()</code>.</li>
+<li>Usar herramientas como Valgrind para detectar fugas de memoria.</li>
+<li>Inicializar punteros a <code>NULL</code> y verificar antes de liberar.</li>
+<li>Evitar perder punteros a la memoria asignada dinámicamente.</li>
+</ul>
+</div><h2>Ejemplo con Gestión de Memoria Adecuada</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KCnZvaWQgY3JlYXRlTWVtb3J5KCkgewogICAgaW50ICpwdHIgPSAoaW50KiltYWxsb2MoMTAgKiBzaXplb2YoaW50KSk7CiAgICBpZiAocHRyID09IE5VTEwpIHsKICAgICAgICBwcmludGYoIk1lbW9yaWEgbm8gYXNpZ25hZGEuXG4iKTsKICAgICAgICBleGl0KDApOwogICAgfQogICAgLy8gVXNhciBsYSBtZW1vcmlhIGFzaWduYWRhCiAgICBmb3IgKGludCBpID0gMDsgaSA8IDEwOyBpKyspIHsKICAgICAgICBwdHJbaV0gPSBpOwogICAgfQogICAgLy8gTGliZXJhciBsYSBtZW1vcmlhIGFzaWduYWRhCiAgICBmcmVlKHB0cik7Cn0KCmludCBtYWluKCkgewogICAgY3JlYXRlTWVtb3J5KCk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+void createMemory() {
+    int *ptr = (int*)malloc(10 * sizeof(int));
+    if (ptr == NULL) {
+        printf(&quot;Memoria no asignada.\n&quot;);
+        exit(0);
+    }
+    // Usar la memoria asignada
+    for (int i = 0; i &lt; 10; i++) {
+        ptr[i] = i;
+    }
+    // Liberar la memoria asignada
+    free(ptr);
+}
+
+int main() {
+    createMemory();
+    return 0;
+}</pre></div><div class='content'></div><h1>Herramientas para Detectar Fugas de Memoria</h1>
+<div class='content'><ul>
+<li><strong>Valgrind</strong>: Una herramienta de programación para depuración de memoria, detección de fugas de memoria y perfilado.</li>
+<li><strong>AddressSanitizer</strong>: Un detector rápido de errores de memoria.</li>
+</ul>
+</div><h2>Usando Valgrind</h2>
+<div class='content'><p>Para usar Valgrind para verificar fugas de memoria:</p>
+<ol>
+<li>Compila tu programa con información de depuración: <code>gcc -g -o myprogram myprogram.c</code></li>
+<li>Ejecuta Valgrind: <code>valgrind --leak-check=full ./myprogram</code></li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La gestión de memoria es una habilidad fundamental para los programadores en C. El uso adecuado de las funciones de asignación y desasignación de memoria dinámica es esencial para evitar fugas de memoria. Siguiendo las mejores prácticas y utilizando herramientas como Valgrind, puedes asegurar un uso eficiente y sin errores de la memoria en tus programas.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='dynamic-arrays'>&#x25C4;Arreglos Dinámicos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Fugas de Memoria y Gestión</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='file-operations'>Operaciones con Archivos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

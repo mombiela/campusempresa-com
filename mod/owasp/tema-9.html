@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A01:2021 - Broken Access Control</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/owasp/tema-9" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/owasp/tema-9" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/owasp/tema-9" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/owasp/tema-9" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/owasp/tema-9" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='tema-8'>&#x25C4;Introducción al OWASP Top Ten</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">A01:2021 - Broken Access Control</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='tema-10'>A02:2021 - Cryptographic Failures &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>El control de acceso es un mecanismo fundamental en la seguridad de aplicaciones web. Se refiere a las políticas y procedimientos que determinan quién puede acceder a qué recursos en una aplicación. El problema de &quot;Broken Access Control&quot; ocurre cuando estas políticas no se implementan correctamente, permitiendo a usuarios no autorizados acceder a recursos restringidos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Control de Acceso</strong>: Conjunto de mecanismos que restringen el acceso a recursos a usuarios autorizados.</li>
+<li><strong>Autenticación vs. Autorización</strong>:
+<ul>
+<li><strong>Autenticación</strong>: Verificación de la identidad del usuario.</li>
+<li><strong>Autorización</strong>: Determinación de los permisos del usuario autenticado.</li>
+</ul>
+</li>
+<li><strong>Principio de Menor Privilegio</strong>: Los usuarios deben tener solo los permisos necesarios para realizar sus tareas.</li>
+</ul>
+</div><h1>Tipos Comunes de Fallos en el Control de Acceso</h1>
+<div class='content'><ul>
+<li><strong>Bypass de Autorización</strong>: Acceso a recursos sin pasar por los controles de autorización.</li>
+<li><strong>Escalada de Privilegios</strong>: Un usuario obtiene permisos más altos de los que debería tener.</li>
+<li><strong>Acceso Directo a Objetos</strong>: Acceso a recursos mediante la manipulación de URLs, parámetros o formularios.</li>
+</ul>
+</div><h1>Ejemplos de Broken Access Control</h1>
+<div class='content'></div><h2>Ejemplo 1: Acceso Directo a Objetos</h2>
+<div class='content'><p>Un usuario puede acceder a los datos de otro usuario manipulando la URL.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVUkwgb3JpZ2luYWwgcGFyYSBhY2NlZGVyIGEgbG9zIGRhdG9zIGRlbCB1c3VhcmlvCmh0dHA6Ly9leGFtcGxlLmNvbS91c2VyLzEyMwoKIyBNYW5pcHVsYWNpw7NuIGRlIGxhIFVSTCBwYXJhIGFjY2VkZXIgYSBsb3MgZGF0b3MgZGUgb3RybyB1c3VhcmlvCmh0dHA6Ly9leGFtcGxlLmNvbS91c2VyLzEyNA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># URL original para acceder a los datos del usuario
+http://example.com/user/123
+
+# Manipulaci&oacute;n de la URL para acceder a los datos de otro usuario
+http://example.com/user/124</pre></div><div class='content'></div><h2>Ejemplo 2: Escalada de Privilegios</h2>
+<div class='content'><p>Un usuario regular intenta acceder a una página de administración.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVUkwgcGFyYSB1c3VhcmlvcyByZWd1bGFyZXMKaHR0cDovL2V4YW1wbGUuY29tL3VzZXIvZGFzaGJvYXJkCgojIFVSTCBwYXJhIGFkbWluaXN0cmFkb3JlcwpodHRwOi8vZXhhbXBsZS5jb20vYWRtaW4vZGFzaGJvYXJk"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># URL para usuarios regulares
+http://example.com/user/dashboard
+
+# URL para administradores
+http://example.com/admin/dashboard</pre></div><div class='content'><p>Si el control de acceso no está bien implementado, un usuario regular podría acceder a la página de administración.</p>
+</div><h1>Mejores Prácticas para Prevenir Broken Access Control</h1>
+<div class='content'><ul>
+<li><strong>Implementar controles de acceso en el servidor</strong>: No confiar en controles de acceso implementados solo en el cliente.</li>
+<li><strong>Utilizar listas de control de acceso (ACL)</strong>: Definir claramente qué usuarios tienen acceso a qué recursos.</li>
+<li><strong>Revisar y auditar permisos regularmente</strong>: Asegurarse de que los permisos asignados sean los correctos.</li>
+<li><strong>Principio de Menor Privilegio</strong>: Asignar solo los permisos necesarios a cada usuario.</li>
+<li><strong>Validar el acceso en cada solicitud</strong>: No asumir que un usuario tiene acceso a un recurso basado en una solicitud anterior.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Identificación de Fallos en el Control de Acceso</h2>
+<div class='content'><p>Dado el siguiente código, identifique y corrija los problemas de control de acceso.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDw7NkaWdvIG9yaWdpbmFsCmRlZiBnZXRfdXNlcl9kYXRhKHVzZXJfaWQpOgogICAgdXNlciA9IGRiLmdldF91c2VyKHVzZXJfaWQpCiAgICByZXR1cm4gdXNlci5kYXRhCgojIEPDs2RpZ28gY29ycmVnaWRvCmRlZiBnZXRfdXNlcl9kYXRhKGN1cnJlbnRfdXNlciwgdXNlcl9pZCk6CiAgICBpZiBjdXJyZW50X3VzZXIuaWQgIT0gdXNlcl9pZCBhbmQgbm90IGN1cnJlbnRfdXNlci5pc19hZG1pbjoKICAgICAgICByYWlzZSBQZXJtaXNzaW9uRXJyb3IoIkFjY2VzcyBEZW5pZWQiKQogICAgdXNlciA9IGRiLmdldF91c2VyKHVzZXJfaWQpCiAgICByZXR1cm4gdXNlci5kYXRh"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># C&oacute;digo original
+def get_user_data(user_id):
+    user = db.get_user(user_id)
+    return user.data
+
+# C&oacute;digo corregido
+def get_user_data(current_user, user_id):
+    if current_user.id != user_id and not current_user.is_admin:
+        raise PermissionError(&quot;Access Denied&quot;)
+    user = db.get_user(user_id)
+    return user.data</pre></div><div class='content'></div><h2>Ejercicio 2: Implementación de Control de Acceso</h2>
+<div class='content'><p>Implemente un control de acceso básico para una aplicación web en Python usando Flask.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIGpzb25pZnkKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKIyBTaW11bGFjacOzbiBkZSBiYXNlIGRlIGRhdG9zIGRlIHVzdWFyaW9zCnVzZXJzX2RiID0gewogICAgMTogeyJpZCI6IDEsICJuYW1lIjogIkFsaWNlIiwgInJvbGUiOiAidXNlciJ9LAogICAgMjogeyJpZCI6IDIsICJuYW1lIjogIkJvYiIsICJyb2xlIjogImFkbWluIn0KfQoKZGVmIGdldF9jdXJyZW50X3VzZXIoKToKICAgICMgU2ltdWxhY2nDs24gZGUgYXV0ZW50aWNhY2nDs24KICAgIHVzZXJfaWQgPSBpbnQocmVxdWVzdC5oZWFkZXJzLmdldCgnWC1Vc2VyLUlEJykpCiAgICByZXR1cm4gdXNlcnNfZGIuZ2V0KHVzZXJfaWQpCgpAYXBwLnJvdXRlKCcvYWRtaW4nLCBtZXRob2RzPVsnR0VUJ10pCmRlZiBhZG1pbl9kYXNoYm9hcmQoKToKICAgIGN1cnJlbnRfdXNlciA9IGdldF9jdXJyZW50X3VzZXIoKQogICAgaWYgY3VycmVudF91c2VyWydyb2xlJ10gIT0gJ2FkbWluJzoKICAgICAgICByZXR1cm4ganNvbmlmeSh7ImVycm9yIjogIkFjY2VzcyBEZW5pZWQifSksIDQwMwogICAgcmV0dXJuIGpzb25pZnkoeyJtZXNzYWdlIjogIldlbGNvbWUgdG8gdGhlIGFkbWluIGRhc2hib2FyZCJ9KQoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# Simulaci&oacute;n de base de datos de usuarios
+users_db = {
+    1: {&quot;id&quot;: 1, &quot;name&quot;: &quot;Alice&quot;, &quot;role&quot;: &quot;user&quot;},
+    2: {&quot;id&quot;: 2, &quot;name&quot;: &quot;Bob&quot;, &quot;role&quot;: &quot;admin&quot;}
+}
+
+def get_current_user():
+    # Simulaci&oacute;n de autenticaci&oacute;n
+    user_id = int(request.headers.get('X-User-ID'))
+    return users_db.get(user_id)
+
+@app.route('/admin', methods=['GET'])
+def admin_dashboard():
+    current_user = get_current_user()
+    if current_user['role'] != 'admin':
+        return jsonify({&quot;error&quot;: &quot;Access Denied&quot;}), 403
+    return jsonify({&quot;message&quot;: &quot;Welcome to the admin dashboard&quot;})
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El control de acceso es una parte crítica de la seguridad de las aplicaciones web. Los fallos en el control de acceso pueden permitir a usuarios no autorizados acceder a recursos restringidos, lo que puede tener consecuencias graves. Implementar controles de acceso robustos y seguir las mejores prácticas puede ayudar a prevenir estos problemas y proteger la integridad y confidencialidad de los datos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='tema-8'>&#x25C4;Introducción al OWASP Top Ten</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">A01:2021 - Broken Access Control</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='tema-10'>A02:2021 - Cryptographic Failures &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

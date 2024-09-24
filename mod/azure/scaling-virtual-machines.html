@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escalado de Máquinas Virtuales</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/azure/scaling-virtual-machines" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/azure/scaling-virtual-machines" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/azure/scaling-virtual-machines" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/azure/scaling-virtual-machines" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/azure/scaling-virtual-machines" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-virtual-machines'>&#x25C4;Gestión de Máquinas Virtuales</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Escalado de Máquinas Virtuales</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='monitoring-and-troubleshooting-virtual-machines'>Monitoreo y Solución de Problemas de Máquinas Virtuales &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Escalar máquinas virtuales (VMs) en Azure es una habilidad crucial para gestionar cargas de trabajo de manera eficiente. Este tema cubrirá los conceptos básicos del escalado de VMs, diferentes estrategias de escalado y técnicas avanzadas para asegurar un rendimiento óptimo y gestión de costos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Escalar Verticalmente vs. Escalar Horizontalmente</strong>: Entender la diferencia entre aumentar el tamaño de una VM (escalar verticalmente) y aumentar el número de VMs (escalar horizontalmente).</li>
+<li><strong>Conjuntos de Escala de VMs de Azure</strong>: Un servicio que te permite crear y gestionar un grupo de VMs balanceadas por carga.</li>
+<li><strong>Autoescalado</strong>: Ajustar automáticamente el número de instancias de VM basado en la demanda.</li>
+<li><strong>Escalado Manual</strong>: Ajustar manualmente el número de instancias de VM.</li>
+</ul>
+</div><h1>Escalar Verticalmente vs. Escalar Horizontalmente</h1>
+<h2>Escalar Verticalmente</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Aumentar el tamaño (CPU, memoria) de una VM existente.</li>
+<li><strong>Caso de Uso</strong>: Adecuado para aplicaciones que requieren más recursos pero no pueden distribuirse en múltiples VMs.</li>
+<li><strong>Ejemplo</strong>:
+<pre><code class="language-markdown">Supongamos que tienes una VM con 2 CPUs y 4GB de RAM. Escalar verticalmente podría implicar actualizar a una VM con 4 CPUs y 8GB de RAM.
+</code></pre>
+</li>
+</ul>
+</div><h2>Escalar Horizontalmente</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Aumentar el número de instancias de VM.</li>
+<li><strong>Caso de Uso</strong>: Ideal para aplicaciones que pueden distribuirse en múltiples VMs, como servidores web.</li>
+<li><strong>Ejemplo</strong>:
+<pre><code class="language-markdown">Si tienes una VM manejando tráfico web, escalar horizontalmente podría implicar agregar más VMs para distribuir la carga.
+</code></pre>
+</li>
+</ul>
+</div><h1>Conjuntos de Escala de VMs de Azure</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Los Conjuntos de Escala de VMs de Azure te permiten crear y gestionar un grupo de VMs idénticas y balanceadas por carga.</li>
+<li><strong>Beneficios</strong>:
+<ul>
+<li>Fácil de gestionar y escalar.</li>
+<li>Integrado con Azure Load Balancer.</li>
+<li>Soporta autoescalado.</li>
+</ul>
+</li>
+<li><strong>Ejemplo</strong>:
+<pre><code class="language-markdown">Crear un Conjunto de Escala de VM usando Azure CLI:
+```bash
+az vmss create --resource-group myResourceGroup --name myScaleSet --image UbuntuLTS --upgrade-policy-mode automatic --admin-username azureuser --generate-ssh-keys
+</code></pre>
+</li>
+</ul>
+</div><h1>Autoescalado</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Ajusta automáticamente el número de instancias de VM basado en reglas y métricas predefinidas.</li>
+<li><strong>Beneficios</strong>:
+<ul>
+<li>Rentable: Solo pagas por lo que usas.</li>
+<li>Rendimiento: Asegura que tu aplicación pueda manejar cargas variables.</li>
+</ul>
+</li>
+<li><strong>Ejemplo</strong>:
+<pre><code class="language-markdown">Configurar autoescalado para un Conjunto de Escala de VM:
+```bash
+az monitor autoscale create --resource-group myResourceGroup --resource myScaleSet --resource-type Microsoft.Compute/virtualMachineScaleSets --name myAutoscale --min-count 1 --max-count 10 --count 1
+az monitor autoscale rule create --resource-group myResourceGroup --autoscale-name myAutoscale --condition &quot;Percentage CPU &gt; 75 avg 5m&quot; --scale out 1
+az monitor autoscale rule create --resource-group myResourceGroup --autoscale-name myAutoscale --condition &quot;Percentage CPU &lt; 25 avg 5m&quot; --scale in 1
+</code></pre>
+</li>
+</ul>
+</div><h1>Escalado Manual</h1>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Ajustar manualmente el número de instancias de VM.</li>
+<li><strong>Beneficios</strong>:
+<ul>
+<li>Control total sobre las decisiones de escalado.</li>
+<li>Útil para cargas de trabajo predecibles.</li>
+</ul>
+</li>
+<li><strong>Ejemplo</strong>:
+<pre><code class="language-markdown">Escalar manualmente un Conjunto de Escala de VM usando Azure CLI:
+```bash
+az vmss scale --resource-group myResourceGroup --name myScaleSet --new-capacity 5
+</code></pre>
+</li>
+</ul>
+</div><h1>Resumen</h1>
+<div class='content'><p>Escalar máquinas virtuales en Azure implica entender la diferencia entre escalar verticalmente y escalar horizontalmente, utilizar Conjuntos de Escala de VMs de Azure e implementar autoescalado para mayor eficiencia. El escalado manual proporciona control para cargas de trabajo predecibles. Dominar estas técnicas asegura que tus aplicaciones puedan manejar cargas variables de manera eficiente mientras optimizas los costos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='managing-virtual-machines'>&#x25C4;Gestión de Máquinas Virtuales</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Escalado de Máquinas Virtuales</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='monitoring-and-troubleshooting-virtual-machines'>Monitoreo y Solución de Problemas de Máquinas Virtuales &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

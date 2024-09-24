@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda entre Clústeres</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/cross-cluster-search" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/cross-cluster-search" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/cross-cluster-search" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/elasticsearch/cross-cluster-search" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/cross-cluster-search" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='index-templates'>&#x25C4;Plantillas de Índice</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Búsqueda entre Clústeres</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='snapshot-restore'>Instantáneas y Restauración &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La Búsqueda entre Clústeres (CCS) es una característica poderosa en Elasticsearch que te permite buscar a través de múltiples clústeres como si fueran un solo clúster. Esto es particularmente útil para organizaciones que tienen datos distribuidos en diferentes ubicaciones geográficas o necesitan gestionar datos a través de múltiples clústeres para escalabilidad y redundancia.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Clúster</strong>: Una colección de uno o más nodos (servidores) que juntos contienen todos tus datos y proporcionan capacidades de indexación y búsqueda federadas.</li>
+<li><strong>Búsqueda entre Clústeres</strong>: La capacidad de realizar consultas de búsqueda a través de múltiples clústeres de Elasticsearch.</li>
+<li><strong>Clúster Remoto</strong>: Un clúster que está configurado para ser buscado desde otro clúster.</li>
+</ul>
+</div><h1>Configuración de la Búsqueda entre Clústeres</h1>
+<div class='content'></div><h2>Configuración de Clústeres Remotos</h2>
+<div class='content'><p>Para habilitar la Búsqueda entre Clústeres, primero necesitas configurar los clústeres remotos. Esto implica configurar los clústeres para que se reconozcan entre sí.</p>
+<ol>
+<li>
+<p><strong>Agregar Configuraciones de Clúster Remoto</strong>:
+Puedes agregar configuraciones de clúster remoto en el archivo de configuración <code>elasticsearch.yml</code> o a través de la API de configuraciones del clúster.</p>
+<pre><code class="language-yaml">cluster:
+  remote:
+    cluster_one:
+      seeds: [&quot;host1:9300&quot;, &quot;host2:9300&quot;]
+    cluster_two:
+      seeds: [&quot;host3:9300&quot;, &quot;host4:9300&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Usando la API de Configuraciones del Clúster</strong>:
+Puedes agregar dinámicamente clústeres remotos usando la siguiente llamada a la API:</p>
+<pre><code class="language-json">PUT /_cluster/settings
+{
+  &quot;persistent&quot;: {
+    &quot;cluster.remote.cluster_one.seeds&quot;: [&quot;host1:9300&quot;, &quot;host2:9300&quot;],
+    &quot;cluster.remote.cluster_two.seeds&quot;: [&quot;host3:9300&quot;, &quot;host4:9300&quot;]
+  }
+}
+</code></pre>
+</li>
+</ol>
+</div><h2>Consultas a Través de Clústeres</h2>
+<div class='content'><p>Una vez que los clústeres remotos están configurados, puedes realizar búsquedas a través de ellos usando la siguiente sintaxis:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9jbHVzdGVyX29uZTppbmRleF9uYW1lLGNsdXN0ZXJfdHdvOmluZGV4X25hbWUvX3NlYXJjaAp7CiAgInF1ZXJ5IjogewogICAgIm1hdGNoX2FsbCI6IHt9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /cluster_one:index_name,cluster_two:index_name/_search
+{
+  &quot;query&quot;: {
+    &quot;match_all&quot;: {}
+  }
+}</pre></div><div class='content'><p>En este ejemplo, <code>cluster_one:index_name</code> y <code>cluster_two:index_name</code> especifican los índices en los respectivos clústeres.</p>
+</div><h1>Ejemplo: Consulta de Búsqueda entre Clústeres</h1>
+<div class='content'><p>Veamos un ejemplo práctico donde buscamos documentos que contienen el término &quot;Elasticsearch&quot; a través de dos clústeres.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9jbHVzdGVyX29uZTpsb2dzLTIwMjMuMDEsY2x1c3Rlcl90d286bG9ncy0yMDIzLjAxL19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJtYXRjaCI6IHsKICAgICAgIm1lc3NhZ2UiOiAiRWxhc3RpY3NlYXJjaCIKICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /cluster_one:logs-2023.01,cluster_two:logs-2023.01/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;message&quot;: &quot;Elasticsearch&quot;
+    }
+  }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>GET /cluster_one:logs-2023.01,cluster_two:logs-2023.01/_search</strong>: Esta línea especifica que la búsqueda debe realizarse en el índice <code>logs-2023.01</code> en ambos <code>cluster_one</code> y <code>cluster_two</code>.</li>
+<li><strong>&quot;query&quot;: { &quot;match&quot;: { &quot;message&quot;: &quot;Elasticsearch&quot; } }</strong>: Esta parte de la consulta especifica que estamos buscando documentos donde el campo <code>message</code> contiene el término &quot;Elasticsearch&quot;.</li>
+</ul>
+</div><h1>Consideraciones de Rendimiento</h1>
+<div class='content'><p>Al realizar Búsquedas entre Clústeres, es importante considerar lo siguiente:</p>
+<ul>
+<li><strong>Latencia de Red</strong>: Buscar a través de clústeres ubicados en diferentes regiones geográficas puede introducir latencia de red.</li>
+<li><strong>Utilización de Recursos</strong>: Las Búsquedas entre Clústeres pueden ser intensivas en recursos. Asegúrate de que tus clústeres estén adecuadamente provisionados para manejar la carga.</li>
+<li><strong>Seguridad</strong>: Asegúrate de que la comunicación segura (por ejemplo, TLS) esté configurada entre clústeres para proteger los datos en tránsito.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La Búsqueda entre Clústeres en Elasticsearch es una característica poderosa que te permite buscar a través de múltiples clústeres sin problemas. Al configurar clústeres remotos y usar la sintaxis de consulta adecuada, puedes aprovechar esta capacidad para gestionar y buscar datos distribuidos de manera efectiva. Siempre considera las implicaciones de rendimiento y seguridad al configurar la Búsqueda entre Clústeres para asegurar operaciones óptimas y seguras.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='index-templates'>&#x25C4;Plantillas de Índice</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Búsqueda entre Clústeres</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='snapshot-restore'>Instantáneas y Restauración &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

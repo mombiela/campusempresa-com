@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudio de Caso: NGINX en Microservicios</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/case-study-microservices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/case-study-microservices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/case-study-microservices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/case-study-microservices" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/case-study-microservices" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-study-load-balancer'>&#x25C4;Estudio de Caso: NGINX como Balanceador de Carga</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Estudio de Caso: NGINX en Microservicios</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-content-delivery'>Estudio de Caso: NGINX para Entrega de Contenido &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este estudio de caso, exploraremos cómo NGINX puede ser utilizado de manera efectiva en una arquitectura de microservicios. Cubriremos las siguientes áreas clave:</p>
+<ul>
+<li>Visión general de la arquitectura de microservicios</li>
+<li>Rol de NGINX en microservicios</li>
+<li>Ejemplos prácticos y configuraciones</li>
+<li>Mejores prácticas y errores comunes</li>
+</ul>
+</div><h1>Visión General de la Arquitectura de Microservicios</h1>
+<div class='content'><p>La arquitectura de microservicios es un patrón de diseño donde las aplicaciones están compuestas por pequeños servicios independientes que se comunican a través de una red.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Independencia de Servicios</strong>: Cada microservicio se desarrolla, despliega y escala de manera independiente.</li>
+<li><strong>Comunicación</strong>: Los microservicios se comunican utilizando protocolos ligeros como HTTP/HTTPS, gRPC o colas de mensajes.</li>
+<li><strong>Gestión Descentralizada de Datos</strong>: Cada servicio gestiona su propia base de datos o almacenamiento.</li>
+</ul>
+</div><h1>Rol de NGINX en Microservicios</h1>
+<div class='content'><p>NGINX puede desempeñar múltiples roles en una arquitectura de microservicios, incluyendo:</p>
+<ul>
+<li><strong>Proxy Inverso</strong>: Dirige las solicitudes del cliente al microservicio adecuado.</li>
+<li><strong>Balanceador de Carga</strong>: Distribuye el tráfico entrante entre múltiples instancias de un microservicio.</li>
+<li><strong>Gateway de API</strong>: Gestiona las solicitudes de API, incluyendo enrutamiento, limitación de tasa y autenticación.</li>
+<li><strong>Malla de Servicios</strong>: Facilita la comunicación entre servicios, a menudo en conjunto con otras herramientas como Istio.</li>
+</ul>
+</div><h2>Ejemplo de Proxy Inverso</h2>
+<div class='content'><p>Un proxy inverso reenvía las solicitudes del cliente a los servicios de backend. Aquí hay una configuración básica de NGINX para un proxy inverso:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKCiAgICBsb2NhdGlvbiAvc2VydmljZTEvIHsKICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9zZXJ2aWNlMV9iYWNrZW5kOwogICAgfQoKICAgIGxvY2F0aW9uIC9zZXJ2aWNlMi8gewogICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL3NlcnZpY2UyX2JhY2tlbmQ7CiAgICB9Cn0KCnVwc3RyZWFtIHNlcnZpY2UxX2JhY2tlbmQgewogICAgc2VydmVyIHNlcnZpY2UxLmV4YW1wbGUuY29tOwp9Cgp1cHN0cmVhbSBzZXJ2aWNlMl9iYWNrZW5kIHsKICAgIHNlcnZlciBzZXJ2aWNlMi5leGFtcGxlLmNvbTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+
+    location /service1/ {
+        proxy_pass http://service1_backend;
+    }
+
+    location /service2/ {
+        proxy_pass http://service2_backend;
+    }
+}
+
+upstream service1_backend {
+    server service1.example.com;
+}
+
+upstream service2_backend {
+    server service2.example.com;
+}</pre></div><div class='content'></div><h2>Ejemplo de Balanceador de Carga</h2>
+<div class='content'><p>NGINX puede distribuir el tráfico entre múltiples instancias de un servicio para asegurar alta disponibilidad y fiabilidad.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXBzdHJlYW0gbXlhcHAgewogICAgc2VydmVyIGFwcDEuZXhhbXBsZS5jb207CiAgICBzZXJ2ZXIgYXBwMi5leGFtcGxlLmNvbTsKICAgIHNlcnZlciBhcHAzLmV4YW1wbGUuY29tOwp9CgpzZXJ2ZXIgewogICAgbGlzdGVuIDgwOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL215YXBwOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>upstream myapp {
+    server app1.example.com;
+    server app2.example.com;
+    server app3.example.com;
+}
+
+server {
+    listen 80;
+
+    location / {
+        proxy_pass http://myapp;
+    }
+}</pre></div><div class='content'></div><h2>Ejemplo de Gateway de API</h2>
+<div class='content'><p>Un Gateway de API puede gestionar y enrutar las solicitudes de API al microservicio adecuado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKCiAgICBsb2NhdGlvbiAvYXBpL3YxLyB7CiAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYXBpX3YxX2JhY2tlbmQ7CiAgICB9CgogICAgbG9jYXRpb24gL2FwaS92Mi8gewogICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2FwaV92Ml9iYWNrZW5kOwogICAgfQp9Cgp1cHN0cmVhbSBhcGlfdjFfYmFja2VuZCB7CiAgICBzZXJ2ZXIgYXBpX3YxLmV4YW1wbGUuY29tOwp9Cgp1cHN0cmVhbSBhcGlfdjJfYmFja2VuZCB7CiAgICBzZXJ2ZXIgYXBpX3YyLmV4YW1wbGUuY29tOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+
+    location /api/v1/ {
+        proxy_pass http://api_v1_backend;
+    }
+
+    location /api/v2/ {
+        proxy_pass http://api_v2_backend;
+    }
+}
+
+upstream api_v1_backend {
+    server api_v1.example.com;
+}
+
+upstream api_v2_backend {
+    server api_v2.example.com;
+}</pre></div><div class='content'></div><h1>Mejores Prácticas y Errores Comunes</h1>
+<h2>Mejores Prácticas</h2>
+<div class='content'><ul>
+<li><strong>Usar Verificaciones de Salud</strong>: Asegúrese de que NGINX pueda detectar y evitar servicios de backend no saludables.</li>
+<li><strong>Habilitar Caché</strong>: Mejore el rendimiento almacenando en caché las respuestas cuando sea apropiado.</li>
+<li><strong>Comunicación Segura</strong>: Use SSL/TLS para cifrar el tráfico entre los clientes y NGINX, y entre NGINX y los servicios de backend.</li>
+<li><strong>Monitorear y Registrar</strong>: Implemente monitoreo y registro para rastrear el rendimiento y solucionar problemas.</li>
+</ul>
+</div><h2>Errores Comunes</h2>
+<div class='content'><ul>
+<li><strong>Complicar Demasiado la Configuración</strong>: Mantenga las configuraciones de NGINX lo más simples posible para evitar desafíos de mantenimiento.</li>
+<li><strong>Ignorar la Seguridad</strong>: Siempre asegure su configuración de NGINX para prevenir vulnerabilidades.</li>
+<li><strong>Descuidar la Escalabilidad</strong>: Planifique la escalabilidad desde el principio para manejar el aumento de carga de manera adecuada.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>NGINX es una herramienta poderosa en una arquitectura de microservicios, ofreciendo capacidades como proxy inverso, balanceo de carga y actuación como un gateway de API. Siguiendo las mejores prácticas y evitando errores comunes, puede aprovechar NGINX para construir aplicaciones de microservicios robustas, escalables y seguras.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='case-study-load-balancer'>&#x25C4;Estudio de Caso: NGINX como Balanceador de Carga</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Estudio de Caso: NGINX en Microservicios</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='case-study-content-delivery'>Estudio de Caso: NGINX para Entrega de Contenido &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

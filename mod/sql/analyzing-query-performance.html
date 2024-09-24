@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analizando el Rendimiento de Consultas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/analyzing-query-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/analyzing-query-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/analyzing-query-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sql/analyzing-query-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/analyzing-query-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='index-optimization'>&#x25C4;Optimización de Índices</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Analizando el Rendimiento de Consultas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='database-maintenance'>Mantenimiento de Bases de Datos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Analizar el rendimiento de las consultas es crucial para optimizar las consultas SQL y garantizar operaciones eficientes en la base de datos. Esta sección te guiará a través de los conceptos básicos del análisis de rendimiento de consultas, problemas comunes de rendimiento y técnicas avanzadas de optimización.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Plan de Ejecución de Consultas</strong>: Un mapa que el motor de la base de datos sigue para ejecutar una consulta.</li>
+<li><strong>Índices</strong>: Estructuras que mejoran la velocidad de las operaciones de recuperación de datos.</li>
+<li><strong>Optimización de Consultas</strong>: Técnicas y estrategias para mejorar el rendimiento de las consultas.</li>
+<li><strong>Métricas de Rendimiento</strong>: Mediciones como el tiempo de ejecución, uso de CPU y operaciones de E/S.</li>
+</ul>
+</div><h1>Entendiendo los Planes de Ejecución de Consultas</h1>
+<div class='content'><p>Los planes de ejecución de consultas son esenciales para entender cómo se ejecutan las consultas SQL y dónde pueden estar los posibles cuellos de botella.</p>
+</div><h2>Visualización de Planes de Ejecución</h2>
+<div class='content'><p>La mayoría de las bases de datos SQL proporcionan herramientas para ver los planes de ejecución. Por ejemplo, en SQL Server, puedes usar la declaración <code>EXPLAIN</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>Interpretación de Planes de Ejecución</h2>
+<div class='content'><p>Los planes de ejecución pueden ser complejos, pero aquí hay algunos elementos clave a tener en cuenta:</p>
+<ul>
+<li><strong>Scan</strong>: Indica un escaneo completo de la tabla, lo cual puede ser lento para tablas grandes.</li>
+<li><strong>Seek</strong>: Indica una búsqueda en el índice, que generalmente es más rápida que un escaneo.</li>
+<li><strong>Join</strong>: Muestra cómo se unen las tablas, lo cual puede ser una fuente de ineficiencia si no está optimizado.</li>
+</ul>
+</div><h1>Uso de Índices</h1>
+<div class='content'><p>Los índices son críticos para mejorar el rendimiento de las consultas, especialmente para conjuntos de datos grandes.</p>
+</div><h2>Creación de Índices</h2>
+<div class='content'><p>Puedes crear índices en columnas que se usan frecuentemente en cláusulas <code>WHERE</code> o condiciones de unión.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXBhcnRtZW50IE9OIGVtcGxveWVlcyhkZXBhcnRtZW50KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_department ON employees(department);</pre></div><div class='content'></div><h2>Tipos de Índices</h2>
+<div class='content'><ul>
+<li><strong>Índice Agrupado</strong>: Ordena y almacena las filas de datos en la tabla basándose en la clave del índice.</li>
+<li><strong>Índice No Agrupado</strong>: Contiene una lista ordenada de referencias a los datos de la tabla.</li>
+</ul>
+</div><h2>Cuándo Usar Índices</h2>
+<div class='content'><ul>
+<li>Usa índices en columnas que se buscan frecuentemente.</li>
+<li>Evita el exceso de índices, ya que pueden ralentizar las operaciones <code>INSERT</code>, <code>UPDATE</code> y <code>DELETE</code>.</li>
+</ul>
+</div><h1>Técnicas de Optimización de Consultas</h1>
+<div class='content'><p>Optimizar consultas implica varias estrategias para garantizar que se ejecuten eficientemente.</p>
+</div><h2>Simplificación de Consultas</h2>
+<div class='content'><p>Descompón consultas complejas en subconsultas más simples o usa Expresiones de Tabla Común (CTEs).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V0lUSCBTYWxlc0RlcHQgQVMgKAogICAgU0VMRUNUICogRlJPTSBlbXBsb3llZXMgV0hFUkUgZGVwYXJ0bWVudCA9ICdTYWxlcycKKQpTRUxFQ1QgKiBGUk9NIFNhbGVzRGVwdCBXSEVSRSBzYWxhcnkgPiA1MDAwMDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WITH SalesDept AS (
+    SELECT * FROM employees WHERE department = 'Sales'
+)
+SELECT * FROM SalesDept WHERE salary &gt; 50000;</pre></div><div class='content'></div><h2>Evitar Select *</h2>
+<div class='content'><p>Selecciona solo las columnas que necesitas para reducir la cantidad de datos procesados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIG5hbWUsIHNhbGFyeSBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT name, salary FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>Uso Eficiente de Uniones</h2>
+<div class='content'><p>Asegúrate de que las uniones se realicen en columnas indexadas y usa el tipo de unión apropiado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGUubmFtZSwgZC5kZXBhcnRtZW50X25hbWUKRlJPTSBlbXBsb3llZXMgZQpKT0lOIGRlcGFydG1lbnRzIGQgT04gZS5kZXBhcnRtZW50X2lkID0gZC5pZDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT e.name, d.department_name
+FROM employees e
+JOIN departments d ON e.department_id = d.id;</pre></div><div class='content'></div><h1>Métricas de Rendimiento</h1>
+<div class='content'><p>Monitorear las métricas de rendimiento ayuda a identificar y resolver problemas de rendimiento.</p>
+</div><h2>Tiempo de Ejecución</h2>
+<div class='content'><p>Mide cuánto tiempo tarda en ejecutarse una consulta.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VUIFNUQVRJU1RJQ1MgVElNRSBPTjsKU0VMRUNUICogRlJPTSBlbXBsb3llZXMgV0hFUkUgZGVwYXJ0bWVudCA9ICdTYWxlcyc7ClNFVCBTVEFUSVNUSUNTIFRJTUUgT0ZGOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SET STATISTICS TIME ON;
+SELECT * FROM employees WHERE department = 'Sales';
+SET STATISTICS TIME OFF;</pre></div><div class='content'></div><h2>Uso de CPU</h2>
+<div class='content'><p>Monitorea el uso de CPU para identificar consultas que consumen recursos excesivos.</p>
+</div><h2>Operaciones de E/S</h2>
+<div class='content'><p>Rastrea las operaciones de E/S para encontrar consultas que leen o escriben grandes cantidades de datos.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Analizar el rendimiento de las consultas es una habilidad vital para cualquier programador SQL. Al entender los planes de ejecución, usar índices de manera efectiva, optimizar consultas y monitorear métricas de rendimiento, puedes asegurar que tus consultas SQL se ejecuten de manera eficiente y efectiva. Practica estas técnicas regularmente para volverte competente en el análisis de rendimiento de consultas.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='index-optimization'>&#x25C4;Optimización de Índices</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Analizando el Rendimiento de Consultas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='database-maintenance'>Mantenimiento de Bases de Datos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

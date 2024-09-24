@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuantización y Poda en PyTorch</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/quantization-and-pruning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/quantization-and-pruning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/quantization-and-pruning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/pytorch/quantization-and-pruning" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/quantization-and-pruning" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='distributed-training'>&#x25C4;Entrenamiento Distribuido</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Cuantización y Poda en PyTorch</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='graph-neural-networks'>Redes Neuronales de Grafos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La cuantización y la poda son dos técnicas utilizadas para optimizar modelos de aprendizaje profundo, haciéndolos más eficientes y rápidos sin comprometer significativamente la precisión. Esta sección te guiará a través de los conceptos básicos de estas técnicas, su implementación en PyTorch y su uso avanzado.</p>
+</div><h1>Cuantización</h1>
+<div class='content'></div><h2>¿Qué es la Cuantización?</h2>
+<div class='content'><p>La cuantización es el proceso de reducir el número de bits que representan un número. En el contexto del aprendizaje profundo, implica convertir los pesos y activaciones de una red neuronal de precisión de punto flotante (32 bits) a una precisión más baja (por ejemplo, enteros de 8 bits).</p>
+</div><h2>Beneficios de la Cuantización</h2>
+<div class='content'><ul>
+<li><strong>Tamaño de Modelo Reducido</strong>: Los pesos de menor precisión ocupan menos memoria.</li>
+<li><strong>Aumento de la Velocidad de Inferencia</strong>: Las operaciones en datos de menor precisión son más rápidas.</li>
+<li><strong>Menor Consumo de Energía</strong>: Se requiere menos potencia computacional.</li>
+</ul>
+</div><h2>Tipos de Cuantización</h2>
+<div class='content'><ul>
+<li><strong>Cuantización Dinámica</strong>: Los pesos se cuantizan después del entrenamiento, pero las activaciones se cuantizan dinámicamente durante la inferencia.</li>
+<li><strong>Cuantización Estática</strong>: Tanto los pesos como las activaciones se cuantizan después del entrenamiento.</li>
+<li><strong>Entrenamiento Consciente de Cuantización (QAT)</strong>: El modelo se entrena teniendo en cuenta la cuantización, lo que lleva a una mejor precisión.</li>
+</ul>
+</div><h2>Implementación de Cuantización Dinámica en PyTorch</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCgojIENhcmdhciB1biBtb2RlbG8gcHJlZW50cmVuYWRvCm1vZGVsID0gbW9kZWxzLnJlc25ldDE4KHByZXRyYWluZWQ9VHJ1ZSkKCiMgQXBsaWNhciBjdWFudGl6YWNpw7NuIGRpbsOhbWljYQpxdWFudGl6ZWRfbW9kZWwgPSB0b3JjaC5xdWFudGl6YXRpb24ucXVhbnRpemVfZHluYW1pYygKICAgIG1vZGVsLCB7dG9yY2gubm4uTGluZWFyfSwgZHR5cGU9dG9yY2gucWludDgKKQoKIyBJbXByaW1pciBlbCBtb2RlbG8gcGFyYSB2ZXIgbG9zIGNhbWJpb3MKcHJpbnQocXVhbnRpemVkX21vZGVsKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torchvision.models as models
+
+# Cargar un modelo preentrenado
+model = models.resnet18(pretrained=True)
+
+# Aplicar cuantizaci&oacute;n din&aacute;mica
+quantized_model = torch.quantization.quantize_dynamic(
+    model, {torch.nn.Linear}, dtype=torch.qint8
+)
+
+# Imprimir el modelo para ver los cambios
+print(quantized_model)</pre></div><div class='content'></div><h2>Implementación de Cuantización Estática en PyTorch</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCgojIENhcmdhciB1biBtb2RlbG8gcHJlZW50cmVuYWRvCm1vZGVsID0gbW9kZWxzLnJlc25ldDE4KHByZXRyYWluZWQ9VHJ1ZSkKbW9kZWwuZXZhbCgpCgojIEZ1c2lvbmFyIGxhcyBjYXBhcyAobmVjZXNhcmlvIHBhcmEgbGEgY3VhbnRpemFjacOzbiBlc3TDoXRpY2EpCm1vZGVsLmZ1c2VfbW9kZWwoKQoKIyBQcmVwYXJhciBlbCBtb2RlbG8gcGFyYSBsYSBjdWFudGl6YWNpw7NuIGVzdMOhdGljYQptb2RlbC5xY29uZmlnID0gdG9yY2gucXVhbnRpemF0aW9uLmdldF9kZWZhdWx0X3Fjb25maWcoJ2ZiZ2VtbScpCnRvcmNoLnF1YW50aXphdGlvbi5wcmVwYXJlKG1vZGVsLCBpbnBsYWNlPVRydWUpCgojIENhbGlicmFyIGVsIG1vZGVsbyBjb24gdW4gY29uanVudG8gZGUgZGF0b3MgcmVwcmVzZW50YXRpdm8KIyAoQXF1w60sIHVzYW1vcyB1bmEgZW50cmFkYSBmaWN0aWNpYSBwb3Igc2ltcGxpY2lkYWQpCmlucHV0X3RlbnNvciA9IHRvcmNoLnJhbmRuKDEsIDMsIDIyNCwgMjI0KQptb2RlbChpbnB1dF90ZW5zb3IpCgojIENvbnZlcnRpciBlbCBtb2RlbG8gYSB1bmEgdmVyc2nDs24gY3VhbnRpemFkYQp0b3JjaC5xdWFudGl6YXRpb24uY29udmVydChtb2RlbCwgaW5wbGFjZT1UcnVlKQoKIyBJbXByaW1pciBlbCBtb2RlbG8gcGFyYSB2ZXIgbG9zIGNhbWJpb3MKcHJpbnQobW9kZWwp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torchvision.models as models
+
+# Cargar un modelo preentrenado
+model = models.resnet18(pretrained=True)
+model.eval()
+
+# Fusionar las capas (necesario para la cuantizaci&oacute;n est&aacute;tica)
+model.fuse_model()
+
+# Preparar el modelo para la cuantizaci&oacute;n est&aacute;tica
+model.qconfig = torch.quantization.get_default_qconfig('fbgemm')
+torch.quantization.prepare(model, inplace=True)
+
+# Calibrar el modelo con un conjunto de datos representativo
+# (Aqu&iacute;, usamos una entrada ficticia por simplicidad)
+input_tensor = torch.randn(1, 3, 224, 224)
+model(input_tensor)
+
+# Convertir el modelo a una versi&oacute;n cuantizada
+torch.quantization.convert(model, inplace=True)
+
+# Imprimir el modelo para ver los cambios
+print(model)</pre></div><div class='content'></div><h2>Entrenamiento Consciente de Cuantización (QAT)</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCgojIENhcmdhciB1biBtb2RlbG8gcHJlZW50cmVuYWRvCm1vZGVsID0gbW9kZWxzLnJlc25ldDE4KHByZXRyYWluZWQ9VHJ1ZSkKbW9kZWwudHJhaW4oKQoKIyBGdXNpb25hciBsYXMgY2FwYXMKbW9kZWwuZnVzZV9tb2RlbCgpCgojIFByZXBhcmFyIGVsIG1vZGVsbyBwYXJhIFFBVAptb2RlbC5xY29uZmlnID0gdG9yY2gucXVhbnRpemF0aW9uLmdldF9kZWZhdWx0X3FhdF9xY29uZmlnKCdmYmdlbW0nKQp0b3JjaC5xdWFudGl6YXRpb24ucHJlcGFyZV9xYXQobW9kZWwsIGlucGxhY2U9VHJ1ZSkKCiMgQWp1c3RhciBlbCBtb2RlbG8gY29uIGRhdG9zIGRlIGVudHJlbmFtaWVudG8KIyAoQXF1w60sIHVzYW1vcyB1biBidWNsZSBkZSBlbnRyZW5hbWllbnRvIGZpY3RpY2lvIHBvciBzaW1wbGljaWRhZCkKb3B0aW1pemVyID0gdG9yY2gub3B0aW0uU0dEKG1vZGVsLnBhcmFtZXRlcnMoKSwgbHI9MC4wMSkKZm9yIGVwb2NoIGluIHJhbmdlKDUpOgogICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICBvdXRwdXQgPSBtb2RlbChpbnB1dF90ZW5zb3IpCiAgICBsb3NzID0gdG9yY2gubm4uZnVuY3Rpb25hbC5jcm9zc19lbnRyb3B5KG91dHB1dCwgdG9yY2gudGVuc29yKFswXSkpCiAgICBsb3NzLmJhY2t3YXJkKCkKICAgIG9wdGltaXplci5zdGVwKCkKCiMgQ29udmVydGlyIGVsIG1vZGVsbyBhIHVuYSB2ZXJzacOzbiBjdWFudGl6YWRhCnRvcmNoLnF1YW50aXphdGlvbi5jb252ZXJ0KG1vZGVsLCBpbnBsYWNlPVRydWUpCgojIEltcHJpbWlyIGVsIG1vZGVsbyBwYXJhIHZlciBsb3MgY2FtYmlvcwpwcmludChtb2RlbCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torchvision.models as models
+
+# Cargar un modelo preentrenado
+model = models.resnet18(pretrained=True)
+model.train()
+
+# Fusionar las capas
+model.fuse_model()
+
+# Preparar el modelo para QAT
+model.qconfig = torch.quantization.get_default_qat_qconfig('fbgemm')
+torch.quantization.prepare_qat(model, inplace=True)
+
+# Ajustar el modelo con datos de entrenamiento
+# (Aqu&iacute;, usamos un bucle de entrenamiento ficticio por simplicidad)
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+for epoch in range(5):
+    optimizer.zero_grad()
+    output = model(input_tensor)
+    loss = torch.nn.functional.cross_entropy(output, torch.tensor([0]))
+    loss.backward()
+    optimizer.step()
+
+# Convertir el modelo a una versi&oacute;n cuantizada
+torch.quantization.convert(model, inplace=True)
+
+# Imprimir el modelo para ver los cambios
+print(model)</pre></div><div class='content'></div><h1>Poda</h1>
+<div class='content'></div><h2>¿Qué es la Poda?</h2>
+<div class='content'><p>La poda implica eliminar pesos menos importantes de una red neuronal para reducir su tamaño y complejidad. Esto puede llevar a tiempos de inferencia más rápidos y un uso reducido de memoria.</p>
+</div><h2>Beneficios de la Poda</h2>
+<div class='content'><ul>
+<li><strong>Tamaño de Modelo Reducido</strong>: Menos pesos significan un modelo más pequeño.</li>
+<li><strong>Aumento de la Velocidad de Inferencia</strong>: Se requiere menos computación.</li>
+<li><strong>Potencial para Mejor Generalización</strong>: Eliminar pesos redundantes puede a veces mejorar la generalización del modelo.</li>
+</ul>
+</div><h2>Tipos de Poda</h2>
+<div class='content'><ul>
+<li><strong>Poda No Estructurada</strong>: Los pesos individuales se podan según su magnitud.</li>
+<li><strong>Poda Estructurada</strong>: Neuronas, canales o capas enteras se podan.</li>
+</ul>
+</div><h2>Implementación de Poda No Estructurada en PyTorch</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubi51dGlscy5wcnVuZSBhcyBwcnVuZQppbXBvcnQgdG9yY2h2aXNpb24ubW9kZWxzIGFzIG1vZGVscwoKIyBDYXJnYXIgdW4gbW9kZWxvIHByZWVudHJlbmFkbwptb2RlbCA9IG1vZGVscy5yZXNuZXQxOChwcmV0cmFpbmVkPVRydWUpCgojIEFwbGljYXIgcG9kYSBubyBlc3RydWN0dXJhZGEgYSBsYSBwcmltZXJhIGNhcGEKcHJ1bmUubDFfdW5zdHJ1Y3R1cmVkKG1vZGVsLmxheWVyMVswXS5jb252MSwgbmFtZT0nd2VpZ2h0JywgYW1vdW50PTAuMikKCiMgSW1wcmltaXIgZWwgbW9kZWxvIHBhcmEgdmVyIGxvcyBjYW1iaW9zCnByaW50KG1vZGVsLmxheWVyMVswXS5jb252MS53ZWlnaHQp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn.utils.prune as prune
+import torchvision.models as models
+
+# Cargar un modelo preentrenado
+model = models.resnet18(pretrained=True)
+
+# Aplicar poda no estructurada a la primera capa
+prune.l1_unstructured(model.layer1[0].conv1, name='weight', amount=0.2)
+
+# Imprimir el modelo para ver los cambios
+print(model.layer1[0].conv1.weight)</pre></div><div class='content'></div><h2>Implementación de Poda Estructurada en PyTorch</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubi51dGlscy5wcnVuZSBhcyBwcnVuZQppbXBvcnQgdG9yY2h2aXNpb24ubW9kZWxzIGFzIG1vZGVscwoKIyBDYXJnYXIgdW4gbW9kZWxvIHByZWVudHJlbmFkbwptb2RlbCA9IG1vZGVscy5yZXNuZXQxOChwcmV0cmFpbmVkPVRydWUpCgojIEFwbGljYXIgcG9kYSBlc3RydWN0dXJhZGEgYSBsYSBwcmltZXJhIGNhcGEKcHJ1bmUubG5fc3RydWN0dXJlZChtb2RlbC5sYXllcjFbMF0uY29udjEsIG5hbWU9J3dlaWdodCcsIGFtb3VudD0wLjIsIG49MiwgZGltPTApCgojIEltcHJpbWlyIGVsIG1vZGVsbyBwYXJhIHZlciBsb3MgY2FtYmlvcwpwcmludChtb2RlbC5sYXllcjFbMF0uY29udjEud2VpZ2h0KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn.utils.prune as prune
+import torchvision.models as models
+
+# Cargar un modelo preentrenado
+model = models.resnet18(pretrained=True)
+
+# Aplicar poda estructurada a la primera capa
+prune.ln_structured(model.layer1[0].conv1, name='weight', amount=0.2, n=2, dim=0)
+
+# Imprimir el modelo para ver los cambios
+print(model.layer1[0].conv1.weight)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La cuantización y la poda son técnicas poderosas para optimizar modelos de aprendizaje profundo. La cuantización reduce la precisión de los pesos y activaciones, lo que lleva a modelos más pequeños y rápidos. La poda elimina pesos menos importantes, reduciendo el tamaño y la complejidad del modelo. Ambas técnicas pueden implementarse en PyTorch con relativa facilidad, permitiéndote desplegar modelos eficientes en entornos con recursos limitados.</p>
+<p>Al comprender y aplicar estas técnicas, puedes mejorar significativamente el rendimiento de tus modelos de aprendizaje profundo, haciéndolos más adecuados para aplicaciones del mundo real.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='distributed-training'>&#x25C4;Entrenamiento Distribuido</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Cuantización y Poda en PyTorch</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='graph-neural-networks'>Redes Neuronales de Grafos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

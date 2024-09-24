@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texturas y Mapeo de Texturas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/textures-and-texture-mapping" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/textures-and-texture-mapping" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/textures-and-texture-mapping" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/textures-and-texture-mapping" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/textures-and-texture-mapping" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-shaders'>&#x25C4;Introducción a los Shaders</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Texturas y Mapeo de Texturas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='lighting-and-materials'>Iluminación y Materiales &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a las Texturas</h1>
+<div class='content'><p>Las texturas son imágenes aplicadas a las superficies de formas o modelos 3D para darles más detalle y realismo. En OpenGL, las texturas se pueden usar para agregar color, patrones u otros efectos visuales a los objetos.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Imagen de Textura</strong>: El archivo de imagen (por ejemplo, PNG, JPEG) que se utilizará como textura.</li>
+<li><strong>Coordenadas de Textura</strong>: Coordenadas que mapean la imagen de textura a la geometría.</li>
+<li><strong>Filtrado de Textura</strong>: Técnicas para determinar cómo los píxeles de textura (texels) se mapean a los píxeles de la pantalla.</li>
+<li><strong>Mipmaps</strong>: Secuencias de imágenes pre-calculadas y optimizadas que acompañan a una textura principal, utilizadas para aumentar la velocidad de renderizado y reducir artefactos.</li>
+</ul>
+</div><h1>Cargando Texturas</h1>
+<div class='content'><p>Para usar texturas en OpenGL, primero necesitas cargar la imagen de textura en tu programa.</p>
+</div><h2>Ejemplo: Cargando una Textura</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0x1aW50IHRleHR1cmE7CmdsR2VuVGV4dHVyZXMoMSwgJnRleHR1cmEpOwpnbEJpbmRUZXh0dXJlKEdMX1RFWFRVUkVfMkQsIHRleHR1cmEpOwoKLy8gQ2FyZ2FyIGltYWdlbiwgY3JlYXIgdGV4dHVyYSB5IGdlbmVyYXIgbWlwbWFwcwppbnQgYW5jaG8sIGFsdG8sIG5yQ2FuYWxlczsKdW5zaWduZWQgY2hhciAqZGF0YSA9IHN0YmlfbG9hZCgicnV0YS9hL3R1L2ltYWdlbi5qcGciLCAmYW5jaG8sICZhbHRvLCAmbnJDYW5hbGVzLCAwKTsKaWYgKGRhdGEpCnsKICAgIGdsVGV4SW1hZ2UyRChHTF9URVhUVVJFXzJELCAwLCBHTF9SR0IsIGFuY2hvLCBhbHRvLCAwLCBHTF9SR0IsIEdMX1VOU0lHTkVEX0JZVEUsIGRhdGEpOwogICAgZ2xHZW5lcmF0ZU1pcG1hcChHTF9URVhUVVJFXzJEKTsKfQplbHNlCnsKICAgIHN0ZDo6Y291dCA8PCAiRXJyb3IgYWwgY2FyZ2FyIGxhIHRleHR1cmEiIDw8IHN0ZDo6ZW5kbDsKfQpzdGJpX2ltYWdlX2ZyZWUoZGF0YSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GLuint textura;
+glGenTextures(1, &amp;textura);
+glBindTexture(GL_TEXTURE_2D, textura);
+
+// Cargar imagen, crear textura y generar mipmaps
+int ancho, alto, nrCanales;
+unsigned char *data = stbi_load(&quot;ruta/a/tu/imagen.jpg&quot;, &amp;ancho, &amp;alto, &amp;nrCanales, 0);
+if (data)
+{
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, ancho, alto, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+}
+else
+{
+    std::cout &lt;&lt; &quot;Error al cargar la textura&quot; &lt;&lt; std::endl;
+}
+stbi_image_free(data);</pre></div><div class='content'><ul>
+<li><strong>stbi_load</strong>: Función de la biblioteca STB image para cargar imágenes.</li>
+<li><strong>glTexImage2D</strong>: Especifica una imagen de textura bidimensional.</li>
+<li><strong>glGenerateMipmap</strong>: Genera mipmaps para la textura especificada.</li>
+</ul>
+</div><h1>Coordenadas de Textura</h1>
+<div class='content'><p>Las coordenadas de textura van de (0,0) a (1,1), donde (0,0) es la esquina inferior izquierda y (1,1) es la esquina superior derecha de la textura.</p>
+</div><h2>Ejemplo: Aplicando Coordenadas de Textura</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZmxvYXQgdmVydGljZXNbXSA9IHsKICAgIC8vIHBvc2ljaW9uZXMgICAgICAgICAgLy8gY29vcmRlbmFkYXMgZGUgdGV4dHVyYQogICAgIDAuNWYsICAwLjVmLCAwLjBmLCAgIDEuMGYsIDEuMGYsIC8vIGFycmliYSBkZXJlY2hhCiAgICAgMC41ZiwgLTAuNWYsIDAuMGYsICAgMS4wZiwgMC4wZiwgLy8gYWJham8gZGVyZWNoYQogICAgLTAuNWYsIC0wLjVmLCAwLjBmLCAgIDAuMGYsIDAuMGYsIC8vIGFiYWpvIGl6cXVpZXJkYQogICAgLTAuNWYsICAwLjVmLCAwLjBmLCAgIDAuMGYsIDEuMGYgIC8vIGFycmliYSBpenF1aWVyZGEgCn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>float vertices[] = {
+    // posiciones          // coordenadas de textura
+     0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // arriba derecha
+     0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // abajo derecha
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // abajo izquierda
+    -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // arriba izquierda 
+};</pre></div><div class='content'><ul>
+<li><strong>Coordenadas de Textura</strong>: Los dos últimos valores en cada vértice especifican las coordenadas de textura.</li>
+</ul>
+</div><h1>Filtrado de Textura</h1>
+<div class='content'><p>El filtrado de textura determina cómo se muestrea una textura cuando se escala hacia arriba o hacia abajo.</p>
+</div><h2>Tipos de Filtrado de Textura</h2>
+<div class='content'><ul>
+<li><strong>Filtrado de Vecino Más Cercano</strong>: Elige el texel más cercano.</li>
+<li><strong>Filtrado Lineal</strong>: Interpola entre múltiples texels.</li>
+</ul>
+</div><h2>Ejemplo: Configurando el Filtrado de Textura</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xUZXhQYXJhbWV0ZXJpKEdMX1RFWFRVUkVfMkQsIEdMX1RFWFRVUkVfTUlOX0ZJTFRFUiwgR0xfTElORUFSKTsKZ2xUZXhQYXJhbWV0ZXJpKEdMX1RFWFRVUkVfMkQsIEdMX1RFWFRVUkVfTUFHX0ZJTFRFUiwgR0xfTElORUFSKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);</pre></div><div class='content'><ul>
+<li><strong>GL_TEXTURE_MIN_FILTER</strong>: Filtro usado cuando la textura se minimiza.</li>
+<li><strong>GL_TEXTURE_MAG_FILTER</strong>: Filtro usado cuando la textura se magnifica.</li>
+</ul>
+</div><h1>Mipmaps</h1>
+<div class='content'><p>Los mipmaps son una serie de texturas pre-calculadas, cada una de las cuales es una representación de resolución progresivamente más baja de la misma imagen.</p>
+</div><h2>Ejemplo: Generando Mipmaps</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xHZW5lcmF0ZU1pcG1hcChHTF9URVhUVVJFXzJEKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>glGenerateMipmap(GL_TEXTURE_2D);</pre></div><div class='content'><ul>
+<li><strong>glGenerateMipmap</strong>: Genera automáticamente todos los mipmaps necesarios para la textura actualmente vinculada.</li>
+</ul>
+</div><h1>Técnicas Avanzadas de Mapeo de Texturas</h1>
+<div class='content'><p>A medida que avances, puedes explorar técnicas de mapeo de texturas más complejas como:</p>
+<ul>
+<li><strong>Multi-texturizado</strong>: Usar múltiples texturas en un solo objeto.</li>
+<li><strong>Mapeo de Normales</strong>: Agregar más detalle a las superficies simulando pequeños bultos y abolladuras.</li>
+<li><strong>Mapeo de Cubo</strong>: Usar una textura de cubo para crear reflejos.</li>
+</ul>
+</div><h2>Ejemplo: Multi-texturizado</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xBY3RpdmVUZXh0dXJlKEdMX1RFWFRVUkUwKTsKZ2xCaW5kVGV4dHVyZShHTF9URVhUVVJFXzJELCB0ZXh0dXJhMSk7CmdsVW5pZm9ybTFpKGdsR2V0VW5pZm9ybUxvY2F0aW9uKHNoYWRlclByb2dyYW0sICJ0ZXh0dXJhMSIpLCAwKTsKCmdsQWN0aXZlVGV4dHVyZShHTF9URVhUVVJFMSk7CmdsQmluZFRleHR1cmUoR0xfVEVYVFVSRV8yRCwgdGV4dHVyYTIpOwpnbFVuaWZvcm0xaShnbEdldFVuaWZvcm1Mb2NhdGlvbihzaGFkZXJQcm9ncmFtLCAidGV4dHVyYTIiKSwgMSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>glActiveTexture(GL_TEXTURE0);
+glBindTexture(GL_TEXTURE_2D, textura1);
+glUniform1i(glGetUniformLocation(shaderProgram, &quot;textura1&quot;), 0);
+
+glActiveTexture(GL_TEXTURE1);
+glBindTexture(GL_TEXTURE_2D, textura2);
+glUniform1i(glGetUniformLocation(shaderProgram, &quot;textura2&quot;), 1);</pre></div><div class='content'><ul>
+<li><strong>glActiveTexture</strong>: Selecciona qué unidad de textura activar.</li>
+<li><strong>glUniform1i</strong>: Establece el muestreador de textura en la unidad de textura correcta.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las texturas y el mapeo de texturas son conceptos fundamentales en OpenGL que mejoran significativamente la calidad visual de los objetos renderizados. Al entender cómo cargar texturas, aplicar coordenadas de textura y usar filtrado de texturas y mipmaps, puedes crear gráficos más realistas y visualmente atractivos. A medida que avances, explorar técnicas como el multi-texturizado y el mapeo de normales ampliará aún más tu capacidad para crear escenas complejas y detalladas.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='introduction-to-shaders'>&#x25C4;Introducción a los Shaders</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Texturas y Mapeo de Texturas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='lighting-and-materials'>Iluminación y Materiales &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

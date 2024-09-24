@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas Geoespaciales en MongoDB</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/geospatial-queries" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/geospatial-queries" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/geospatial-queries" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/mongodb/geospatial-queries" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/geospatial-queries" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='full-text-search'>&#x25C4;Búsqueda de Texto Completo</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Consultas Geoespaciales en MongoDB</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='time-series-data'>Datos de Series Temporales &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a las Consultas Geoespaciales</h1>
+<div class='content'><p>Las consultas geoespaciales te permiten realizar búsquedas y operaciones basadas en la ubicación en tus datos. MongoDB soporta consultas geoespaciales mediante el uso de índices geoespaciales y operadores de consulta específicos.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Tipos de Datos Geoespaciales</strong>: MongoDB soporta dos tipos principales de datos geoespaciales: <code>Point</code> y <code>Polygon</code>.</li>
+<li><strong>Índices Geoespaciales</strong>: Índices que permiten consultas eficientes de datos geoespaciales.</li>
+<li><strong>Operadores de Consulta Geoespaciales</strong>: Operadores que te permiten realizar varias consultas geoespaciales.</li>
+</ul>
+</div><h1>Tipos de Datos Geoespaciales</h1>
+<div class='content'><p>MongoDB soporta objetos GeoJSON y pares de coordenadas heredados para datos geoespaciales.</p>
+</div><h2>Objetos GeoJSON</h2>
+<div class='content'><p>GeoJSON es un formato para codificar una variedad de estructuras de datos geográficos.</p>
+<ul>
+<li><strong>Point</strong>: Representa una única ubicación.
+<pre><code class="language-json">{ &quot;type&quot;: &quot;Point&quot;, &quot;coordinates&quot;: [longitud, latitud] }
+</code></pre>
+</li>
+<li><strong>Polygon</strong>: Representa un área encerrada por una serie de puntos.
+<pre><code class="language-json">{ 
+  &quot;type&quot;: &quot;Polygon&quot;, 
+  &quot;coordinates&quot;: [
+    [ [longitud1, latitud1], [longitud2, latitud2], [longitud3, latitud3], [longitud1, latitud1] ]
+  ] 
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>Pares de Coordenadas Heredados</h2>
+<div class='content'><p>Los pares de coordenadas heredados son simples arrays de <code>[longitud, latitud]</code>.</p>
+</div><h1>Índices Geoespaciales</h1>
+<div class='content'><p>Para realizar consultas geoespaciales de manera eficiente, necesitas crear índices geoespaciales.</p>
+</div><h2>Índice 2dsphere</h2>
+<div class='content'><p>El índice <code>2dsphere</code> soporta consultas que interpretan geometrías en una esfera similar a la Tierra.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5jcmVhdGVJbmRleCh7IGxvY2F0aW9uOiAiMmRzcGhlcmUiIH0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.createIndex({ location: &quot;2dsphere&quot; })</pre></div><div class='content'></div><h2>Índice 2d</h2>
+<div class='content'><p>El índice <code>2d</code> soporta consultas en un plano cartesiano plano.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5jcmVhdGVJbmRleCh7IGxvY2F0aW9uOiAiMmQiIH0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.createIndex({ location: &quot;2d&quot; })</pre></div><div class='content'></div><h1>Operadores de Consulta Geoespaciales</h1>
+<div class='content'><p>MongoDB proporciona varios operadores para realizar consultas geoespaciales.</p>
+</div><h2>$near</h2>
+<div class='content'><p>Encuentra documentos que están cerca de un punto especificado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5maW5kKHsKICBsb2NhdGlvbjogewogICAgJG5lYXI6IHsKICAgICAgJGdlb21ldHJ5OiB7IHR5cGU6ICJQb2ludCIsIGNvb3JkaW5hdGVzOiBbbG9uZ2l0dWQsIGxhdGl0dWRdIH0sCiAgICAgICRtYXhEaXN0YW5jZTogZGlzdGFuY2lhX2VuX21ldHJvcwogICAgfQogIH0KfSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.find({
+  location: {
+    $near: {
+      $geometry: { type: &quot;Point&quot;, coordinates: [longitud, latitud] },
+      $maxDistance: distancia_en_metros
+    }
+  }
+})</pre></div><div class='content'></div><h2>$geoWithin</h2>
+<div class='content'><p>Encuentra documentos dentro de una geometría especificada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5maW5kKHsKICBsb2NhdGlvbjogewogICAgJGdlb1dpdGhpbjogewogICAgICAkZ2VvbWV0cnk6IHsKICAgICAgICB0eXBlOiAiUG9seWdvbiIsCiAgICAgICAgY29vcmRpbmF0ZXM6IFsgWyBbbG9uZ2l0dWQxLCBsYXRpdHVkMV0sIFtsb25naXR1ZDIsIGxhdGl0dWQyXSwgW2xvbmdpdHVkMywgbGF0aXR1ZDNdLCBbbG9uZ2l0dWQxLCBsYXRpdHVkMV0gXSBdCiAgICAgIH0KICAgIH0KICB9Cn0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.find({
+  location: {
+    $geoWithin: {
+      $geometry: {
+        type: &quot;Polygon&quot;,
+        coordinates: [ [ [longitud1, latitud1], [longitud2, latitud2], [longitud3, latitud3], [longitud1, latitud1] ] ]
+      }
+    }
+  }
+})</pre></div><div class='content'></div><h2>$geoIntersects</h2>
+<div class='content'><p>Encuentra documentos que intersectan con una geometría especificada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY29sbGVjdGlvbi5maW5kKHsKICBsb2NhdGlvbjogewogICAgJGdlb0ludGVyc2VjdHM6IHsKICAgICAgJGdlb21ldHJ5OiB7CiAgICAgICAgdHlwZTogIlBvbHlnb24iLAogICAgICAgIGNvb3JkaW5hdGVzOiBbIFsgW2xvbmdpdHVkMSwgbGF0aXR1ZDFdLCBbbG9uZ2l0dWQyLCBsYXRpdHVkMl0sIFtsb25naXR1ZDMsIGxhdGl0dWQzXSwgW2xvbmdpdHVkMSwgbGF0aXR1ZDFdIF0gXQogICAgICB9CiAgICB9CiAgfQp9KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.collection.find({
+  location: {
+    $geoIntersects: {
+      $geometry: {
+        type: &quot;Polygon&quot;,
+        coordinates: [ [ [longitud1, latitud1], [longitud2, latitud2], [longitud3, latitud3], [longitud1, latitud1] ] ]
+      }
+    }
+  }
+})</pre></div><div class='content'></div><h1>Ejemplos y Ejercicios</h1>
+<div class='content'></div><h2>Ejemplo 1: Creando un Índice Geoespacial</h2>
+<div class='content'><p>Crea un índice <code>2dsphere</code> en una colección llamada <code>places</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIucGxhY2VzLmNyZWF0ZUluZGV4KHsgbG9jYXRpb246ICIyZHNwaGVyZSIgfSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.places.createIndex({ location: &quot;2dsphere&quot; })</pre></div><div class='content'></div><h2>Ejemplo 2: Encontrando Ubicaciones Cercanas</h2>
+<div class='content'><p>Encuentra todos los lugares dentro de 500 metros de un punto específico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIucGxhY2VzLmZpbmQoewogIGxvY2F0aW9uOiB7CiAgICAkbmVhcjogewogICAgICAkZ2VvbWV0cnk6IHsgdHlwZTogIlBvaW50IiwgY29vcmRpbmF0ZXM6IFstNzMuOTcsIDQwLjc3XSB9LAogICAgICAkbWF4RGlzdGFuY2U6IDUwMAogICAgfQogIH0KfSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.places.find({
+  location: {
+    $near: {
+      $geometry: { type: &quot;Point&quot;, coordinates: [-73.97, 40.77] },
+      $maxDistance: 500
+    }
+  }
+})</pre></div><div class='content'></div><h2>Ejercicio 1: Creando y Consultando Datos Geoespaciales</h2>
+<div class='content'><ol>
+<li>Inserta algunos documentos con datos geoespaciales en una colección llamada <code>restaurants</code>.</li>
+<li>Crea un índice <code>2dsphere</code> en el campo <code>location</code>.</li>
+<li>Escribe una consulta para encontrar todos los restaurantes dentro de 1 kilómetro de un punto dado.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUGFzbyAxOiBJbnNlcnRhciBkb2N1bWVudG9zCmRiLnJlc3RhdXJhbnRzLmluc2VydE1hbnkoWwogIHsgbmFtZTogIlJlc3RhdXJhbnQgQSIsIGxvY2F0aW9uOiB7IHR5cGU6ICJQb2ludCIsIGNvb3JkaW5hdGVzOiBbLTczLjk3LCA0MC43N10gfSB9LAogIHsgbmFtZTogIlJlc3RhdXJhbnQgQiIsIGxvY2F0aW9uOiB7IHR5cGU6ICJQb2ludCIsIGNvb3JkaW5hdGVzOiBbLTczLjk4LCA0MC43OF0gfSB9LAogIHsgbmFtZTogIlJlc3RhdXJhbnQgQyIsIGxvY2F0aW9uOiB7IHR5cGU6ICJQb2ludCIsIGNvb3JkaW5hdGVzOiBbLTczLjk5LCA0MC43OV0gfSB9Cl0pCgovLyBQYXNvIDI6IENyZWFyIHVuIMOtbmRpY2UgMmRzcGhlcmUKZGIucmVzdGF1cmFudHMuY3JlYXRlSW5kZXgoeyBsb2NhdGlvbjogIjJkc3BoZXJlIiB9KQoKLy8gUGFzbyAzOiBDb25zdWx0YXIgcmVzdGF1cmFudGVzIGNlcmNhbm9zCmRiLnJlc3RhdXJhbnRzLmZpbmQoewogIGxvY2F0aW9uOiB7CiAgICAkbmVhcjogewogICAgICAkZ2VvbWV0cnk6IHsgdHlwZTogIlBvaW50IiwgY29vcmRpbmF0ZXM6IFstNzMuOTcsIDQwLjc3XSB9LAogICAgICAkbWF4RGlzdGFuY2U6IDEwMDAKICAgIH0KICB9Cn0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Paso 1: Insertar documentos
+db.restaurants.insertMany([
+  { name: &quot;Restaurant A&quot;, location: { type: &quot;Point&quot;, coordinates: [-73.97, 40.77] } },
+  { name: &quot;Restaurant B&quot;, location: { type: &quot;Point&quot;, coordinates: [-73.98, 40.78] } },
+  { name: &quot;Restaurant C&quot;, location: { type: &quot;Point&quot;, coordinates: [-73.99, 40.79] } }
+])
+
+// Paso 2: Crear un &iacute;ndice 2dsphere
+db.restaurants.createIndex({ location: &quot;2dsphere&quot; })
+
+// Paso 3: Consultar restaurantes cercanos
+db.restaurants.find({
+  location: {
+    $near: {
+      $geometry: { type: &quot;Point&quot;, coordinates: [-73.97, 40.77] },
+      $maxDistance: 1000
+    }
+  }
+})</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Las consultas geoespaciales en MongoDB te permiten realizar potentes búsquedas y operaciones basadas en la ubicación. Al entender los tipos de datos geoespaciales, índices y operadores de consulta, puedes gestionar y consultar datos geoespaciales de manera eficiente en tus aplicaciones. Practica creando índices y ejecutando consultas para volverte competente en el manejo de datos geoespaciales con MongoDB.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='full-text-search'>&#x25C4;Búsqueda de Texto Completo</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Consultas Geoespaciales en MongoDB</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='time-series-data'>Datos de Series Temporales &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

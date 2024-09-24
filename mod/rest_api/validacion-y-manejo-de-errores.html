@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación y manejo de errores en REST API</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rest_api/validacion-y-manejo-de-errores" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rest_api/validacion-y-manejo-de-errores" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rest_api/validacion-y-manejo-de-errores" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rest_api/validacion-y-manejo-de-errores" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rest_api/validacion-y-manejo-de-errores" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='manejo-de-peticiones-y-respuestas'>&#x25C4;Manejo de peticiones y respuestas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Validación y manejo de errores en REST API</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='autenticacion-y-autorizacion'>Autenticación y autorización &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, aprenderemos sobre la importancia de la validación y el manejo de errores en el desarrollo de REST APIs. Estos aspectos son cruciales para garantizar la robustez, seguridad y usabilidad de las APIs. Cubriremos conceptos clave, prácticas recomendadas y ejemplos de implementación.</p>
+</div><h1>Validación de Datos</h1>
+<div class='content'></div><h2>¿Qué es la validación de datos?</h2>
+<div class='content'><p>La validación de datos es el proceso de asegurar que los datos enviados a la API cumplen con los requisitos esperados antes de ser procesados. Esto incluye verificar tipos de datos, formatos, rangos y otras restricciones.</p>
+</div><h2>Importancia de la validación</h2>
+<div class='content'><ul>
+<li><strong>Seguridad</strong>: Previene ataques como la inyección de SQL.</li>
+<li><strong>Integridad de datos</strong>: Asegura que los datos almacenados sean correctos y consistentes.</li>
+<li><strong>Experiencia del usuario</strong>: Proporciona retroalimentación inmediata sobre errores en los datos enviados.</li>
+</ul>
+</div><h2>Tipos de validación</h2>
+<div class='content'><ul>
+<li><strong>Validación del lado del cliente</strong>: Realizada en el navegador antes de enviar los datos al servidor.</li>
+<li><strong>Validación del lado del servidor</strong>: Realizada en el servidor para asegurar que los datos recibidos son válidos.</li>
+</ul>
+</div><h2>Ejemplo de validación en Node.js con Express</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwphcHAudXNlKGV4cHJlc3MuanNvbigpKTsKCmFwcC5wb3N0KCcvYXBpL3VzZXJzJywgKHJlcSwgcmVzKSA9PiB7CiAgICBjb25zdCB7IG5hbWUsIGVtYWlsLCBhZ2UgfSA9IHJlcS5ib2R5OwoKICAgIC8vIFZhbGlkYWNpw7NuIGLDoXNpY2EKICAgIGlmICghbmFtZSB8fCAhZW1haWwgfHwgIWFnZSkgewogICAgICAgIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7IGVycm9yOiAnVG9kb3MgbG9zIGNhbXBvcyBzb24gb2JsaWdhdG9yaW9zJyB9KTsKICAgIH0KCiAgICAvLyBWYWxpZGFjacOzbiBkZSB0aXBvcyBkZSBkYXRvcwogICAgaWYgKHR5cGVvZiBuYW1lICE9PSAnc3RyaW5nJyB8fCB0eXBlb2YgZW1haWwgIT09ICdzdHJpbmcnIHx8IHR5cGVvZiBhZ2UgIT09ICdudW1iZXInKSB7CiAgICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoNDAwKS5qc29uKHsgZXJyb3I6ICdUaXBvcyBkZSBkYXRvcyBpbmNvcnJlY3RvcycgfSk7CiAgICB9CgogICAgLy8gVmFsaWRhY2nDs24gZGUgZm9ybWF0byBkZSBlbWFpbAogICAgY29uc3QgZW1haWxSZWdleCA9IC9eW15cc0BdK0BbXlxzQF0rXC5bXlxzQF0rJC87CiAgICBpZiAoIWVtYWlsUmVnZXgudGVzdChlbWFpbCkpIHsKICAgICAgICByZXR1cm4gcmVzLnN0YXR1cyg0MDApLmpzb24oeyBlcnJvcjogJ0Zvcm1hdG8gZGUgZW1haWwgaW52w6FsaWRvJyB9KTsKICAgIH0KCiAgICByZXMuc3RhdHVzKDIwMSkuanNvbih7IG1lc3NhZ2U6ICdVc3VhcmlvIGNyZWFkbyBleGl0b3NhbWVudGUnIH0pOwp9KTsKCmFwcC5saXN0ZW4oMzAwMCwgKCkgPT4gY29uc29sZS5sb2coJ1NlcnZlciBydW5uaW5nIG9uIHBvcnQgMzAwMCcpKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.post('/api/users', (req, res) =&gt; {
+    const { name, email, age } = req.body;
+
+    // Validaci&oacute;n b&aacute;sica
+    if (!name || !email || !age) {
+        return res.status(400).json({ error: 'Todos los campos son obligatorios' });
+    }
+
+    // Validaci&oacute;n de tipos de datos
+    if (typeof name !== 'string' || typeof email !== 'string' || typeof age !== 'number') {
+        return res.status(400).json({ error: 'Tipos de datos incorrectos' });
+    }
+
+    // Validaci&oacute;n de formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        return res.status(400).json({ error: 'Formato de email inv&aacute;lido' });
+    }
+
+    res.status(201).json({ message: 'Usuario creado exitosamente' });
+});
+
+app.listen(3000, () =&gt; console.log('Server running on port 3000'));</pre></div><div class='content'></div><h1>Manejo de Errores</h1>
+<div class='content'></div><h2>¿Qué es el manejo de errores?</h2>
+<div class='content'><p>El manejo de errores es el proceso de capturar, gestionar y responder a errores que ocurren durante la ejecución de una API. Esto incluye errores de validación, errores del servidor y errores de red.</p>
+</div><h2>Importancia del manejo de errores</h2>
+<div class='content'><ul>
+<li><strong>Robustez</strong>: Asegura que la API puede manejar situaciones inesperadas sin fallar.</li>
+<li><strong>Seguridad</strong>: Evita la exposición de información sensible.</li>
+<li><strong>Usabilidad</strong>: Proporciona mensajes de error claros y útiles a los usuarios.</li>
+</ul>
+</div><h2>Tipos de errores comunes</h2>
+<div class='content'><ul>
+<li><strong>Errores de cliente (4xx)</strong>: Errores causados por solicitudes incorrectas del cliente.</li>
+<li><strong>Errores del servidor (5xx)</strong>: Errores causados por problemas en el servidor.</li>
+</ul>
+</div><h2>Ejemplo de manejo de errores en Node.js con Express</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwphcHAudXNlKGV4cHJlc3MuanNvbigpKTsKCmFwcC5nZXQoJy9hcGkvcmVzb3VyY2UnLCAocmVxLCByZXMsIG5leHQpID0+IHsKICAgIHRyeSB7CiAgICAgICAgLy8gU2ltdWxhY2nDs24gZGUgdW4gZXJyb3IgZGVsIHNlcnZpZG9yCiAgICAgICAgdGhyb3cgbmV3IEVycm9yKCdFcnJvciBkZWwgc2Vydmlkb3InKTsKICAgIH0gY2F0Y2ggKGVycm9yKSB7CiAgICAgICAgbmV4dChlcnJvcik7CiAgICB9Cn0pOwoKLy8gTWlkZGxld2FyZSBkZSBtYW5lam8gZGUgZXJyb3JlcwphcHAudXNlKChlcnIsIHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgICBjb25zb2xlLmVycm9yKGVyci5zdGFjayk7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IGVycm9yOiAnT2N1cnJpw7MgdW4gZXJyb3IgZW4gZWwgc2Vydmlkb3InIH0pOwp9KTsKCmFwcC5saXN0ZW4oMzAwMCwgKCkgPT4gY29uc29sZS5sb2coJ1NlcnZlciBydW5uaW5nIG9uIHBvcnQgMzAwMCcpKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+app.use(express.json());
+
+app.get('/api/resource', (req, res, next) =&gt; {
+    try {
+        // Simulaci&oacute;n de un error del servidor
+        throw new Error('Error del servidor');
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Middleware de manejo de errores
+app.use((err, req, res, next) =&gt; {
+    console.error(err.stack);
+    res.status(500).json({ error: 'Ocurri&oacute; un error en el servidor' });
+});
+
+app.listen(3000, () =&gt; console.log('Server running on port 3000'));</pre></div><div class='content'></div><h1>Prácticas recomendadas</h1>
+<div class='content'></div><h2>Validación</h2>
+<div class='content'><ul>
+<li><strong>Usar librerías de validación</strong>: Librerías como Joi, Yup o Validator.js pueden simplificar la validación.</li>
+<li><strong>Validar tanto en el cliente como en el servidor</strong>: Aunque la validación del lado del cliente mejora la experiencia del usuario, la validación del lado del servidor es esencial para la seguridad.</li>
+</ul>
+</div><h2>Manejo de errores</h2>
+<div class='content'><ul>
+<li><strong>Usar códigos de estado HTTP apropiados</strong>: Asegúrate de devolver el código de estado HTTP correcto para cada tipo de error.</li>
+<li><strong>No exponer detalles internos</strong>: Evita incluir información sensible en los mensajes de error.</li>
+<li><strong>Registrar errores</strong>: Implementa un sistema de logging para registrar y monitorear errores.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La validación y el manejo de errores son componentes esenciales en el desarrollo de REST APIs. Implementar una validación robusta y un manejo de errores adecuado no solo mejora la seguridad y la integridad de los datos, sino que también proporciona una mejor experiencia al usuario. Asegúrate de seguir las prácticas recomendadas y utilizar herramientas adecuadas para simplificar estos procesos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='manejo-de-peticiones-y-respuestas'>&#x25C4;Manejo de peticiones y respuestas</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Validación y manejo de errores en REST API</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='autenticacion-y-autorizacion'>Autenticación y autorización &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

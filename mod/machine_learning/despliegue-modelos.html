@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despliegue de Modelos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/despliegue-modelos" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/despliegue-modelos" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/despliegue-modelos" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/machine_learning/despliegue-modelos" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/machine_learning/despliegue-modelos" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementacion-python'>&#x25C4;Implementación en Python: Scikit-Learn</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Despliegue de Modelos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mantenimiento-actualizacion'>Mantenimiento y Actualización de Modelos &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El despliegue de modelos de Machine Learning es una etapa crucial en el ciclo de vida de un proyecto de aprendizaje automático. Este proceso implica llevar un modelo entrenado desde un entorno de desarrollo a un entorno de producción donde pueda ser utilizado para hacer predicciones en tiempo real o en batch. En esta sección, exploraremos los conceptos clave, las mejores prácticas y los métodos comunes para desplegar modelos de Machine Learning.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Entorno de Desarrollo vs. Entorno de Producción</strong>: Diferencias entre los entornos donde se entrena el modelo y donde se utiliza.</li>
+<li><strong>API (Interfaz de Programación de Aplicaciones)</strong>: Cómo exponer el modelo para que otras aplicaciones puedan interactuar con él.</li>
+<li><strong>Contenedores y Orquestación</strong>: Uso de tecnologías como Docker y Kubernetes para gestionar el despliegue.</li>
+<li><strong>Monitorización y Mantenimiento</strong>: Estrategias para asegurar que el modelo sigue funcionando correctamente una vez desplegado.</li>
+</ul>
+</div><h1>Métodos Comunes de Despliegue</h1>
+<div class='content'></div><h2>Despliegue como Servicio Web</h2>
+<div class='content'><p>Una de las formas más comunes de desplegar un modelo es como un servicio web. Esto permite que el modelo sea accesible a través de una API RESTful.</p>
+<h4>Pasos para Desplegar un Modelo como Servicio Web</h4>
+<ol>
+<li>
+<p><strong>Serialización del Modelo</strong>: Guardar el modelo entrenado en un formato que pueda ser cargado posteriormente.</p>
+<pre><code class="language-python">import joblib
+joblib.dump(model, 'model.pkl')
+</code></pre>
+</li>
+<li>
+<p><strong>Creación de una API</strong>: Usar un framework como Flask para crear una API que cargue el modelo y responda a las solicitudes.</p>
+<pre><code class="language-python">from flask import Flask, request, jsonify
+import joblib
+
+app = Flask(__name__)
+model = joblib.load('model.pkl')
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.get_json(force=True)
+    prediction = model.predict([data['input']])
+    return jsonify({'prediction': prediction.tolist()})
+
+if __name__ == '__main__':
+    app.run(port=5000, debug=True)
+</code></pre>
+</li>
+<li>
+<p><strong>Prueba de la API</strong>: Usar herramientas como Postman o curl para enviar solicitudes y verificar que el modelo responde correctamente.</p>
+</li>
+</ol>
+</div><h2>Despliegue en Contenedores</h2>
+<div class='content'><p>El uso de contenedores, como Docker, facilita la creación de entornos consistentes y portátiles para el despliegue de modelos.</p>
+<h4>Pasos para Desplegar un Modelo en un Contenedor Docker</h4>
+<ol>
+<li>
+<p><strong>Crear un Dockerfile</strong>: Definir las instrucciones para construir la imagen del contenedor.</p>
+<pre><code class="language-Dockerfile">FROM python:3.8-slim
+
+WORKDIR /app
+
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+COPY . .
+
+CMD [&quot;python&quot;, &quot;app.py&quot;]
+</code></pre>
+</li>
+<li>
+<p><strong>Construir la Imagen Docker</strong>: Crear la imagen del contenedor.</p>
+<pre><code class="language-sh">docker build -t model-api .
+</code></pre>
+</li>
+<li>
+<p><strong>Ejecutar el Contenedor</strong>: Iniciar el contenedor con la imagen creada.</p>
+<pre><code class="language-sh">docker run -p 5000:5000 model-api
+</code></pre>
+</li>
+</ol>
+</div><h2>Despliegue en la Nube</h2>
+<div class='content'><p>Las plataformas en la nube como AWS, Google Cloud y Azure ofrecen servicios específicos para el despliegue de modelos de Machine Learning.</p>
+<h4>Ejemplo: Despliegue en AWS SageMaker</h4>
+<ol>
+<li><strong>Entrenamiento del Modelo en SageMaker</strong>: Utilizar los servicios de entrenamiento de SageMaker.</li>
+<li><strong>Creación de un Endpoint</strong>: Desplegar el modelo entrenado como un endpoint en SageMaker.</li>
+<li><strong>Consumo del Endpoint</strong>: Enviar solicitudes al endpoint para obtener predicciones.</li>
+</ol>
+</div><h1>Monitorización y Mantenimiento</h1>
+<div class='content'><p>Una vez que el modelo está desplegado, es crucial monitorizar su rendimiento y realizar mantenimiento regular.</p>
+<ul>
+<li><strong>Monitorización de Rendimiento</strong>: Uso de herramientas como Prometheus y Grafana para monitorizar métricas de rendimiento.</li>
+<li><strong>Actualización del Modelo</strong>: Estrategias para actualizar el modelo con nuevos datos y reentrenamiento.</li>
+<li><strong>Gestión de Versiones</strong>: Mantener versiones del modelo para asegurar la trazabilidad y la capacidad de revertir cambios si es necesario.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El despliegue de modelos de Machine Learning es un proceso complejo que requiere una planificación cuidadosa y el uso de diversas tecnologías. Desde la creación de APIs hasta el uso de contenedores y servicios en la nube, existen múltiples enfoques para llevar un modelo desde el desarrollo hasta la producción. La monitorización y el mantenimiento continuo son esenciales para asegurar que el modelo sigue siendo efectivo y fiable a lo largo del tiempo.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementacion-python'>&#x25C4;Implementación en Python: Scikit-Learn</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Despliegue de Modelos</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mantenimiento-actualizacion'>Mantenimiento y Actualización de Modelos &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

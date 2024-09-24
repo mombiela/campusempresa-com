@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprendiendo la Arquitectura de NGINX</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/nginx-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/nginx-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/nginx-architecture" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/nginx-architecture" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/nginx-architecture" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='starting-and-stopping-nginx'>&#x25C4;Iniciar y Detener NGINX</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Comprendiendo la Arquitectura de NGINX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nginx-configuration-file-structure'>Estructura del Archivo de Configuración de NGINX &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a NGINX</h1>
+<div class='content'><p>NGINX es un servidor HTTP de alto rendimiento, proxy inverso y servidor proxy IMAP/POP3. Es conocido por su estabilidad, conjunto de características ricas, configuración simple y bajo consumo de recursos.</p>
+</div><h1>Componentes Clave de la Arquitectura de NGINX</h1>
+<div class='content'></div><h2>Procesos Maestro y Trabajador</h2>
+<div class='content'><ul>
+<li><strong>Proceso Maestro</strong>: Gestiona los procesos trabajadores, lee y evalúa los archivos de configuración, y mantiene el proceso principal.</li>
+<li><strong>Procesos Trabajadores</strong>: Manejan el procesamiento real de las solicitudes. Cada proceso trabajador es de un solo hilo y maneja múltiples conexiones utilizando E/S asincrónica y no bloqueante.</li>
+</ul>
+</div><h2>Arquitectura Basada en Eventos</h2>
+<div class='content'><ul>
+<li><strong>Bucle de Eventos</strong>: NGINX utiliza un modelo basado en eventos donde cada proceso trabajador ejecuta un bucle que espera eventos (como conexiones entrantes) y los procesa.</li>
+<li><strong>E/S No Bloqueante</strong>: Permite a NGINX manejar muchas conexiones simultáneamente sin crear un nuevo hilo para cada conexión.</li>
+</ul>
+</div><h2>Módulos</h2>
+<div class='content'><ul>
+<li><strong>Módulos Core</strong>: Proporcionan funcionalidad esencial como procesamiento HTTP, de correo y de flujo.</li>
+<li><strong>Módulos Opcionales</strong>: Extienden las capacidades de NGINX, como SSL, compresión Gzip y reescritura de URL.</li>
+</ul>
+</div><h2>Archivos de Configuración</h2>
+<div class='content'><ul>
+<li><strong>nginx.conf</strong>: El archivo de configuración principal donde defines configuraciones del servidor, procesos trabajadores y otras directivas.</li>
+<li><strong>Incluir Directivas</strong>: Permite dividir la configuración en múltiples archivos para una mejor organización.</li>
+</ul>
+</div><h1>Ejemplo de Configuración de NGINX</h1>
+<div class='content'><p>A continuación, se muestra un ejemplo simple de un archivo <code>nginx.conf</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d29ya2VyX3Byb2Nlc3NlcyAgMTsKCmV2ZW50cyB7CiAgICB3b3JrZXJfY29ubmVjdGlvbnMgIDEwMjQ7Cn0KCmh0dHAgewogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gICAgICAgODA7CiAgICAgICAgc2VydmVyX25hbWUgIGxvY2FsaG9zdDsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHJvb3QgICBodG1sOwogICAgICAgICAgICBpbmRleCAgaW5kZXguaHRtbCBpbmRleC5odG07CiAgICAgICAgfQoKICAgICAgICBlcnJvcl9wYWdlICAgNTAwIDUwMiA1MDMgNTA0ICAvNTB4Lmh0bWw7CiAgICAgICAgbG9jYXRpb24gPSAvNTB4Lmh0bWwgewogICAgICAgICAgICByb290ICAgaHRtbDsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    server {
+        listen       80;
+        server_name  localhost;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>worker_processes 1;</strong>: Define el número de procesos trabajadores.</li>
+<li><strong>events</strong>: Bloque donde configuras configuraciones relacionadas con eventos.
+<ul>
+<li><strong>worker_connections 1024;</strong>: Número máximo de conexiones simultáneas por trabajador.</li>
+</ul>
+</li>
+<li><strong>http</strong>: Bloque donde se definen configuraciones del servidor HTTP.
+<ul>
+<li><strong>server</strong>: Define un servidor virtual.
+<ul>
+<li><strong>listen 80;</strong>: El servidor escucha en el puerto 80.</li>
+<li><strong>server_name localhost;</strong>: Nombre del servidor.</li>
+<li><strong>location /</strong>: Define cómo procesar solicitudes a la URL raíz.
+<ul>
+<li><strong>root html;</strong>: Directorio raíz para archivos.</li>
+<li><strong>index index.html index.htm;</strong>: Archivos predeterminados para servir.</li>
+</ul>
+</li>
+<li><strong>error_page 500 502 503 504 /50x.html;</strong>: Páginas de error personalizadas.</li>
+<li><strong>location = /50x.html</strong>: Define cómo servir la página de error personalizada.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conceptos Avanzados</h1>
+<div class='content'></div><h2>Balanceo de Carga</h2>
+<div class='content'><p>NGINX puede distribuir el tráfico entrante entre múltiples servidores para asegurar alta disponibilidad y fiabilidad.</p>
+<h4>Ejemplo de Configuración</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>upstream backend</strong>: Define un grupo de servidores backend.
+<ul>
+<li><strong>server backend1.example.com;</strong>: Primer servidor backend.</li>
+<li><strong>server backend2.example.com;</strong>: Segundo servidor backend.</li>
+</ul>
+</li>
+<li><strong>proxy_pass http://backend;</strong>: Reenvía solicitudes al grupo backend definido.</li>
+</ul>
+</div><h2>Caché</h2>
+<div class='content'><p>NGINX puede almacenar en caché respuestas para mejorar el rendimiento y reducir la carga en los servidores backend.</p>
+<h4>Ejemplo de Configuración</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBwcm94eV9jYWNoZV9wYXRoIC9kYXRhL25naW54L2NhY2hlIGxldmVscz0xOjIga2V5c196b25lPW15X2NhY2hlOjEwbSBtYXhfc2l6ZT0xMGcgaW5hY3RpdmU9NjBtIHVzZV90ZW1wX3BhdGg9b2ZmOwoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfY2FjaGUgbXlfY2FjaGU7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    proxy_cache_path /data/nginx/cache levels=1:2 keys_zone=my_cache:10m max_size=10g inactive=60m use_temp_path=off;
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_cache my_cache;
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>proxy_cache_path</strong>: Define la ruta de almacenamiento de la caché y configuraciones.
+<ul>
+<li><strong>/data/nginx/cache</strong>: Directorio para almacenamiento de la caché.</li>
+<li><strong>levels=1:2</strong>: Estructura de directorios para archivos de caché.</li>
+<li><strong>keys_zone=my_cache:10m</strong>: Define una zona de memoria compartida para claves de caché.</li>
+<li><strong>max_size=10g</strong>: Tamaño máximo de la caché.</li>
+<li><strong>inactive=60m</strong>: Tiempo después del cual los elementos de caché inactivos son eliminados.</li>
+<li><strong>use_temp_path=off</strong>: Desactiva el almacenamiento de archivos temporales.</li>
+</ul>
+</li>
+<li><strong>proxy_cache my_cache;</strong>: Habilita la caché para la ubicación.</li>
+</ul>
+</div><h1>Resumen</h1>
+<div class='content'><p>Comprender la arquitectura de NGINX es crucial para configurar y optimizar efectivamente tu servidor. Los componentes clave incluyen los procesos maestro y trabajador, la arquitectura basada en eventos y el diseño modular. Al dominar los archivos de configuración y características avanzadas como el balanceo de carga y la caché, puedes aprovechar NGINX para construir aplicaciones web escalables y de alto rendimiento.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='starting-and-stopping-nginx'>&#x25C4;Iniciar y Detener NGINX</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Comprendiendo la Arquitectura de NGINX</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='nginx-configuration-file-structure'>Estructura del Archivo de Configuración de NGINX &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

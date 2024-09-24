@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregaciones en Elasticsearch</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/aggregations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/aggregations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/aggregations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/elasticsearch/aggregations" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/aggregations" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='filtering-and-sorting'>&#x25C4;Filtrado y Ordenación</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Agregaciones en Elasticsearch</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scripting'>Scripting &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las agregaciones en Elasticsearch te permiten realizar operaciones complejas de análisis y resumen de datos en tus datos indexados. Este tema te guiará desde los conceptos básicos de las agregaciones hasta conceptos más avanzados, proporcionando explicaciones claras, ejemplos y ejercicios.</p>
+</div><h1>Introducción a las Agregaciones</h1>
+<div class='content'><p>Las agregaciones son una característica poderosa en Elasticsearch que te permiten extraer información de tus datos. Te permiten agrupar, filtrar y realizar cálculos en tus datos.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Buckets</strong>: Contenedores que contienen documentos que coinciden con un criterio específico.</li>
+<li><strong>Métricas</strong>: Cálculos realizados en los documentos de un bucket.</li>
+<li><strong>Agregaciones de Pipeline</strong>: Agregaciones que toman la salida de otras agregaciones como su entrada.</li>
+</ul>
+</div><h1>Tipos de Agregaciones</h1>
+<div class='content'><p>Elasticsearch ofrece varios tipos de agregaciones, cada uno con diferentes propósitos. Cubriremos los más comúnmente utilizados.</p>
+</div><h2>Agregaciones de Bucket</h2>
+<div class='content'><p>Las agregaciones de bucket crean buckets de documentos basados en ciertos criterios.</p>
+<h4>Agregación de Términos</h4>
+<p>Agrupa documentos por un campo específico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJhZ2dzIjogewogICAgImdlbnJlcyI6IHsKICAgICAgInRlcm1zIjogewogICAgICAgICJmaWVsZCI6ICJnZW5yZS5rZXl3b3JkIgogICAgICB9CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;aggs&quot;: {
+    &quot;genres&quot;: {
+      &quot;terms&quot;: {
+        &quot;field&quot;: &quot;genre.keyword&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><h4>Agregación de Rango</h4>
+<p>Agrupa documentos en rangos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJhZ2dzIjogewogICAgInByaWNlX3JhbmdlcyI6IHsKICAgICAgInJhbmdlIjogewogICAgICAgICJmaWVsZCI6ICJwcmljZSIsCiAgICAgICAgInJhbmdlcyI6IFsKICAgICAgICAgIHsgInRvIjogNTAgfSwKICAgICAgICAgIHsgImZyb20iOiA1MCwgInRvIjogMTAwIH0sCiAgICAgICAgICB7ICJmcm9tIjogMTAwIH0KICAgICAgICBdCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;aggs&quot;: {
+    &quot;price_ranges&quot;: {
+      &quot;range&quot;: {
+        &quot;field&quot;: &quot;price&quot;,
+        &quot;ranges&quot;: [
+          { &quot;to&quot;: 50 },
+          { &quot;from&quot;: 50, &quot;to&quot;: 100 },
+          { &quot;from&quot;: 100 }
+        ]
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h2>Agregaciones de Métricas</h2>
+<div class='content'><p>Las agregaciones de métricas calculan métricas, como promedios y sumas, de los documentos en un bucket.</p>
+<h4>Agregación de Promedio</h4>
+<p>Calcula el valor promedio de un campo numérico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJhZ2dzIjogewogICAgImF2ZXJhZ2VfcHJpY2UiOiB7CiAgICAgICJhdmciOiB7CiAgICAgICAgImZpZWxkIjogInByaWNlIgogICAgICB9CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;aggs&quot;: {
+    &quot;average_price&quot;: {
+      &quot;avg&quot;: {
+        &quot;field&quot;: &quot;price&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><h4>Agregación de Suma</h4>
+<p>Calcula la suma de un campo numérico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJhZ2dzIjogewogICAgInRvdGFsX3NhbGVzIjogewogICAgICAic3VtIjogewogICAgICAgICJmaWVsZCI6ICJzYWxlcyIKICAgICAgfQogICAgfQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;aggs&quot;: {
+    &quot;total_sales&quot;: {
+      &quot;sum&quot;: {
+        &quot;field&quot;: &quot;sales&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h2>Agregaciones de Pipeline</h2>
+<div class='content'><p>Las agregaciones de pipeline toman la salida de otras agregaciones como su entrada.</p>
+<h4>Agregación de Derivada</h4>
+<p>Calcula la derivada de una métrica especificada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJhZ2dzIjogewogICAgInNhbGVzX292ZXJfdGltZSI6IHsKICAgICAgImRhdGVfaGlzdG9ncmFtIjogewogICAgICAgICJmaWVsZCI6ICJkYXRlIiwKICAgICAgICAiaW50ZXJ2YWwiOiAibW9udGgiCiAgICAgIH0sCiAgICAgICJhZ2dzIjogewogICAgICAgICJzYWxlcyI6IHsKICAgICAgICAgICJzdW0iOiB7CiAgICAgICAgICAgICJmaWVsZCI6ICJzYWxlcyIKICAgICAgICAgIH0KICAgICAgICB9LAogICAgICAgICJzYWxlc19kZXJpdmF0aXZlIjogewogICAgICAgICAgImRlcml2YXRpdmUiOiB7CiAgICAgICAgICAgICJidWNrZXRzX3BhdGgiOiAic2FsZXMiCiAgICAgICAgICB9CiAgICAgICAgfQogICAgICB9CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;aggs&quot;: {
+    &quot;sales_over_time&quot;: {
+      &quot;date_histogram&quot;: {
+        &quot;field&quot;: &quot;date&quot;,
+        &quot;interval&quot;: &quot;month&quot;
+      },
+      &quot;aggs&quot;: {
+        &quot;sales&quot;: {
+          &quot;sum&quot;: {
+            &quot;field&quot;: &quot;sales&quot;
+          }
+        },
+        &quot;sales_derivative&quot;: {
+          &quot;derivative&quot;: {
+            &quot;buckets_path&quot;: &quot;sales&quot;
+          }
+        }
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h1>Agregaciones Avanzadas</h1>
+<div class='content'></div><h2>Agregaciones Anidadas</h2>
+<div class='content'><p>Las agregaciones anidadas te permiten realizar agregaciones dentro de documentos anidados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJhZ2dzIjogewogICAgIm5lc3RlZF9jb21tZW50cyI6IHsKICAgICAgIm5lc3RlZCI6IHsKICAgICAgICAicGF0aCI6ICJjb21tZW50cyIKICAgICAgfSwKICAgICAgImFnZ3MiOiB7CiAgICAgICAgImF2Z19yYXRpbmciOiB7CiAgICAgICAgICAiYXZnIjogewogICAgICAgICAgICAiZmllbGQiOiAiY29tbWVudHMucmF0aW5nIgogICAgICAgICAgfQogICAgICAgIH0KICAgICAgfQogICAgfQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;aggs&quot;: {
+    &quot;nested_comments&quot;: {
+      &quot;nested&quot;: {
+        &quot;path&quot;: &quot;comments&quot;
+      },
+      &quot;aggs&quot;: {
+        &quot;avg_rating&quot;: {
+          &quot;avg&quot;: {
+            &quot;field&quot;: &quot;comments.rating&quot;
+          }
+        }
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h2>Combinación de Agregaciones</h2>
+<div class='content'><p>Combinar múltiples agregaciones puede proporcionar información más profunda.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJhZ2dzIjogewogICAgImdlbnJlcyI6IHsKICAgICAgInRlcm1zIjogewogICAgICAgICJmaWVsZCI6ICJnZW5yZS5rZXl3b3JkIgogICAgICB9LAogICAgICAiYWdncyI6IHsKICAgICAgICAiYXZlcmFnZV9wcmljZSI6IHsKICAgICAgICAgICJhdmciOiB7CiAgICAgICAgICAgICJmaWVsZCI6ICJwcmljZSIKICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;aggs&quot;: {
+    &quot;genres&quot;: {
+      &quot;terms&quot;: {
+        &quot;field&quot;: &quot;genre.keyword&quot;
+      },
+      &quot;aggs&quot;: {
+        &quot;average_price&quot;: {
+          &quot;avg&quot;: {
+            &quot;field&quot;: &quot;price&quot;
+          }
+        }
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h1>Ejercicios</h1>
+<div class='content'><ol>
+<li><strong>Agregación de Términos Básica</strong>: Crea una agregación de términos para agrupar documentos por el campo <code>category</code>.</li>
+<li><strong>Agregación de Rango</strong>: Crea una agregación de rango para agrupar documentos por rangos de precio: 0-50, 50-100 y 100+.</li>
+<li><strong>Combinación de Agregaciones</strong>: Combina una agregación de términos en <code>category</code> con una agregación de promedio en <code>price</code>.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las agregaciones en Elasticsearch son una herramienta versátil para el análisis de datos, permitiéndote agrupar, filtrar y calcular métricas en tus datos. Al entender y utilizar diferentes tipos de agregaciones, desde agregaciones básicas de bucket y métricas hasta agregaciones anidadas y de pipeline más avanzadas, puedes extraer información valiosa de tus datos. Practica con los ejercicios proporcionados para solidificar tu comprensión y volverte competente en el uso de agregaciones en Elasticsearch.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='filtering-and-sorting'>&#x25C4;Filtrado y Ordenación</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Agregaciones en Elasticsearch</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='scripting'>Scripting &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

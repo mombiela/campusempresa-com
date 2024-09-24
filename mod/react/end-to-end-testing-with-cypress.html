@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas de Extremo a Extremo con Cypress</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/react/end-to-end-testing-with-cypress" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/react/end-to-end-testing-with-cypress" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/react/end-to-end-testing-with-cypress" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/react/end-to-end-testing-with-cypress" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/react/end-to-end-testing-with-cypress" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='testing-components-with-react-testing-library'>&#x25C4;Pruebas de Componentes con React Testing Library</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pruebas de Extremo a Extremo con Cypress</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mocking-and-spying'>Simulación y Espionaje &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a las Pruebas de Extremo a Extremo</h1>
+<div class='content'><p>Las pruebas de extremo a extremo (E2E) son una metodología utilizada para probar si el flujo de una aplicación se está ejecutando como se diseñó de principio a fin. El objetivo es simular escenarios reales de usuarios para validar el sistema en su totalidad.</p>
+<ul>
+<li><strong>Propósito de las Pruebas E2E</strong>: Asegurarse de que los componentes integrados de una aplicación funcionen como se espera.</li>
+<li><strong>Beneficios</strong>:
+<ul>
+<li>Detecta problemas en la interfaz de usuario.</li>
+<li>Valida el flujo general del sistema.</li>
+<li>Asegura que la aplicación funcione en escenarios del mundo real.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Introducción a Cypress</h1>
+<div class='content'><p>Cypress es un marco de pruebas E2E moderno y de código abierto construido para la web. Proporciona una experiencia de prueba robusta, rápida y confiable para cualquier cosa que se ejecute en un navegador.</p>
+<ul>
+<li><strong>Características Clave</strong>:
+<ul>
+<li>Viaje en el tiempo: Depuración facilitada al ver instantáneas de tus pruebas.</li>
+<li>Recargas en tiempo real: Recarga automáticamente las pruebas al guardar.</li>
+<li>Espera automática: No es necesario agregar esperas o pausas a tus pruebas.</li>
+<li>Espías, stubs y relojes: Controla e inspecciona el comportamiento de funciones, respuestas del servidor o temporizadores.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Configuración de Cypress en un Proyecto React</h1>
+<div class='content'><p>Para comenzar a usar Cypress en tu proyecto React, sigue estos pasos:</p>
+<ol>
+<li>
+<p><strong>Instalar Cypress</strong>:</p>
+<pre><code class="language-bash">npm install cypress --save-dev
+</code></pre>
+</li>
+<li>
+<p><strong>Abrir Cypress</strong>:</p>
+<pre><code class="language-bash">npx cypress open
+</code></pre>
+</li>
+<li>
+<p><strong>Estructura del Proyecto</strong>:
+Cypress creará un directorio <code>cypress</code> en la raíz de tu proyecto con la siguiente estructura:</p>
+<pre><code>cypress/
+  ├── fixtures/
+  ├── integration/
+  ├── plugins/
+  └── support/
+</code></pre>
+</li>
+</ol>
+</div><h1>Escribiendo Tu Primera Prueba</h1>
+<div class='content'><p>Vamos a escribir una prueba simple para verificar si nuestra aplicación React se carga correctamente.</p>
+<ol>
+<li>
+<p><strong>Crear un Archivo de Prueba</strong>:
+Crea un nuevo archivo en el directorio <code>cypress/integration</code>, por ejemplo, <code>app_spec.js</code>.</p>
+</li>
+<li>
+<p><strong>Escribir la Prueba</strong>:</p>
+<pre><code class="language-javascript">describe('Mi Primera Prueba', () =&gt; {
+  it('Visita la URL raíz de la aplicación', () =&gt; {
+    cy.visit('http://localhost:3000');
+    cy.contains('Welcome to React');
+  });
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Ejecutar la Prueba</strong>:
+Abre Cypress y ejecuta la prueba. Deberías ver que la prueba pasa si tu aplicación muestra &quot;Welcome to React&quot; en la página de inicio.</p>
+</li>
+</ol>
+</div><h1>Técnicas Avanzadas de Pruebas</h1>
+<h2>Interacción con Elementos</h2>
+<div class='content'><p>Aprende cómo interactuar con varios elementos en la página.</p>
+<ul>
+<li>
+<p><strong>Hacer Clic en un Botón</strong>:</p>
+<pre><code class="language-javascript">cy.get('button').click();
+</code></pre>
+</li>
+<li>
+<p><strong>Escribir en un Input</strong>:</p>
+<pre><code class="language-javascript">cy.get('input[name=&quot;username&quot;]').type('miusuario');
+</code></pre>
+</li>
+</ul>
+</div><h2>Aserciones</h2>
+<div class='content'><p>Las aserciones se utilizan para validar el estado de tu aplicación.</p>
+<ul>
+<li>
+<p><strong>Verificar la Visibilidad de un Elemento</strong>:</p>
+<pre><code class="language-javascript">cy.get('button').should('be.visible');
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar el Texto de un Elemento</strong>:</p>
+<pre><code class="language-javascript">cy.get('h1').should('have.text', 'Welcome to React');
+</code></pre>
+</li>
+</ul>
+</div><h2>Simulación de Solicitudes API</h2>
+<div class='content'><p>Cypress te permite simular y mockear solicitudes API para probar diferentes escenarios.</p>
+<ul>
+<li><strong>Simular una Solicitud GET</strong>:
+<pre><code class="language-javascript">cy.server();
+cy.route('GET', '/api/users', 'fixture:users.json').as('getUsers');
+cy.visit('/users');
+cy.wait('@getUsers');
+</code></pre>
+</li>
+</ul>
+</div><h1>Mejores Prácticas</h1>
+<div class='content'><ul>
+<li><strong>Mantén las Pruebas Independientes</strong>: Cada prueba debe poder ejecutarse independientemente de las demás.</li>
+<li><strong>Usa Fixtures para Datos de Prueba</strong>: Almacena y reutiliza datos de prueba usando fixtures.</li>
+<li><strong>Limpia el Estado Entre Pruebas</strong>: Asegúrate de que el estado de la aplicación se restablezca entre pruebas para evitar pruebas inestables.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las pruebas de extremo a extremo con Cypress proporcionan una manera poderosa de asegurar que tu aplicación React funcione como se espera en escenarios del mundo real. Al configurar Cypress, escribir pruebas básicas y aprovechar técnicas avanzadas, puedes crear un conjunto de pruebas robusto que ayude a mantener la calidad y confiabilidad de tu aplicación.</p>
+<p>Recuerda seguir las mejores prácticas para mantener tus pruebas mantenibles y confiables. ¡Felices pruebas!</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='testing-components-with-react-testing-library'>&#x25C4;Pruebas de Componentes con React Testing Library</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Pruebas de Extremo a Extremo con Cypress</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='mocking-and-spying'>Simulación y Espionaje &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

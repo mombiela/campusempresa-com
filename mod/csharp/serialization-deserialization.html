@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serialización y Deserialización en C#</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/csharp/serialization-deserialization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/csharp/serialization-deserialization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/csharp/serialization-deserialization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/csharp/serialization-deserialization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/csharp/serialization-deserialization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='file-streams'>&#x25C4;Flujos de Archivos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Serialización y Deserialización en C#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-linq'>Introducción a LINQ &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La serialización y deserialización son conceptos esenciales en C# para convertir objetos en un formato que pueda ser fácilmente almacenado o transmitido y luego reconstruirlos de nuevo en objetos. Este tema cubrirá los aspectos básicos y avanzados de la serialización y deserialización en C#.</p>
+</div><h1>¿Qué es la Serialización?</h1>
+<div class='content'><p>La serialización es el proceso de convertir un objeto en una secuencia de bytes para almacenar el objeto o transmitirlo a la memoria, una base de datos o un archivo. Su propósito principal es guardar el estado de un objeto para que pueda ser recreado cuando sea necesario.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Estado del Objeto</strong>: Los datos contenidos dentro de un objeto.</li>
+<li><strong>Secuencia de Bytes</strong>: Una secuencia de bytes que representa el estado del objeto.</li>
+<li><strong>Almacenamiento/Transmisión</strong>: El medio donde se almacenan o transmiten los datos serializados.</li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uSU87CnVzaW5nIFN5c3RlbS5SdW50aW1lLlNlcmlhbGl6YXRpb24uRm9ybWF0dGVycy5CaW5hcnk7CgpbU2VyaWFsaXphYmxlXQpwdWJsaWMgY2xhc3MgUGVyc29uCnsKICAgIHB1YmxpYyBzdHJpbmcgTmFtZSB7IGdldDsgc2V0OyB9CiAgICBwdWJsaWMgaW50IEFnZSB7IGdldDsgc2V0OyB9Cn0KCmNsYXNzIFByb2dyYW0KewogICAgc3RhdGljIHZvaWQgTWFpbigpCiAgICB7CiAgICAgICAgUGVyc29uIHBlcnNvbiA9IG5ldyBQZXJzb24geyBOYW1lID0gIkpvaG4iLCBBZ2UgPSAzMCB9OwoKICAgICAgICAvLyBTZXJpYWxpemFyCiAgICAgICAgQmluYXJ5Rm9ybWF0dGVyIGZvcm1hdHRlciA9IG5ldyBCaW5hcnlGb3JtYXR0ZXIoKTsKICAgICAgICB1c2luZyAoRmlsZVN0cmVhbSBzdHJlYW0gPSBuZXcgRmlsZVN0cmVhbSgicGVyc29uLmRhdCIsIEZpbGVNb2RlLkNyZWF0ZSkpCiAgICAgICAgewogICAgICAgICAgICBmb3JtYXR0ZXIuU2VyaWFsaXplKHN0cmVhbSwgcGVyc29uKTsKICAgICAgICB9CgogICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCJPYmpldG8gUGVyc29uIHNlcmlhbGl6YWRvLiIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+[Serializable]
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Person person = new Person { Name = &quot;John&quot;, Age = 30 };
+
+        // Serializar
+        BinaryFormatter formatter = new BinaryFormatter();
+        using (FileStream stream = new FileStream(&quot;person.dat&quot;, FileMode.Create))
+        {
+            formatter.Serialize(stream, person);
+        }
+
+        Console.WriteLine(&quot;Objeto Person serializado.&quot;);
+    }
+}</pre></div><div class='content'></div><h1>¿Qué es la Deserialización?</h1>
+<div class='content'><p>La deserialización es el proceso inverso de la serialización. Involucra convertir una secuencia de bytes de nuevo en un objeto. Esto es útil para reconstruir el objeto desde su estado almacenado o transmitido.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Reconstrucción</strong>: El proceso de crear un objeto a partir de una secuencia de bytes.</li>
+<li><strong>Secuencia de Bytes</strong>: Los datos serializados que representan el estado del objeto.</li>
+</ul>
+</div><h2>Ejemplo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uSU87CnVzaW5nIFN5c3RlbS5SdW50aW1lLlNlcmlhbGl6YXRpb24uRm9ybWF0dGVycy5CaW5hcnk7CgpbU2VyaWFsaXphYmxlXQpwdWJsaWMgY2xhc3MgUGVyc29uCnsKICAgIHB1YmxpYyBzdHJpbmcgTmFtZSB7IGdldDsgc2V0OyB9CiAgICBwdWJsaWMgaW50IEFnZSB7IGdldDsgc2V0OyB9Cn0KCmNsYXNzIFByb2dyYW0KewogICAgc3RhdGljIHZvaWQgTWFpbigpCiAgICB7CiAgICAgICAgUGVyc29uIHBlcnNvbjsKCiAgICAgICAgLy8gRGVzZXJpYWxpemFyCiAgICAgICAgQmluYXJ5Rm9ybWF0dGVyIGZvcm1hdHRlciA9IG5ldyBCaW5hcnlGb3JtYXR0ZXIoKTsKICAgICAgICB1c2luZyAoRmlsZVN0cmVhbSBzdHJlYW0gPSBuZXcgRmlsZVN0cmVhbSgicGVyc29uLmRhdCIsIEZpbGVNb2RlLk9wZW4pKQogICAgICAgIHsKICAgICAgICAgICAgcGVyc29uID0gKFBlcnNvbilmb3JtYXR0ZXIuRGVzZXJpYWxpemUoc3RyZWFtKTsKICAgICAgICB9CgogICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCQiT2JqZXRvIFBlcnNvbiBkZXNlcmlhbGl6YWRvLiBOb21icmU6IHtwZXJzb24uTmFtZX0sIEVkYWQ6IHtwZXJzb24uQWdlfSIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+
+[Serializable]
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Person person;
+
+        // Deserializar
+        BinaryFormatter formatter = new BinaryFormatter();
+        using (FileStream stream = new FileStream(&quot;person.dat&quot;, FileMode.Open))
+        {
+            person = (Person)formatter.Deserialize(stream);
+        }
+
+        Console.WriteLine($&quot;Objeto Person deserializado. Nombre: {person.Name}, Edad: {person.Age}&quot;);
+    }
+}</pre></div><div class='content'></div><h1>Tipos de Serialización</h1>
+<div class='content'></div><h2>Serialización Binaria</h2>
+<div class='content'><ul>
+<li><strong>Descripción</strong>: Convierte un objeto en un formato binario.</li>
+<li><strong>Caso de Uso</strong>: Eficiente para almacenamiento y transmisión, pero no legible por humanos.</li>
+<li><strong>Ejemplo</strong>: Usando <code>BinaryFormatter</code>.</li>
+</ul>
+</div><h2>Serialización XML</h2>
+<div class='content'><ul>
+<li><strong>Descripción</strong>: Convierte un objeto en un formato XML.</li>
+<li><strong>Caso de Uso</strong>: Legible por humanos y útil para servicios web.</li>
+<li><strong>Ejemplo</strong>: Usando <code>XmlSerializer</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uSU87CnVzaW5nIFN5c3RlbS5YbWwuU2VyaWFsaXphdGlvbjsKCnB1YmxpYyBjbGFzcyBQZXJzb24KewogICAgcHVibGljIHN0cmluZyBOYW1lIHsgZ2V0OyBzZXQ7IH0KICAgIHB1YmxpYyBpbnQgQWdlIHsgZ2V0OyBzZXQ7IH0KfQoKY2xhc3MgUHJvZ3JhbQp7CiAgICBzdGF0aWMgdm9pZCBNYWluKCkKICAgIHsKICAgICAgICBQZXJzb24gcGVyc29uID0gbmV3IFBlcnNvbiB7IE5hbWUgPSAiSm9obiIsIEFnZSA9IDMwIH07CgogICAgICAgIC8vIFNlcmlhbGl6YXIKICAgICAgICBYbWxTZXJpYWxpemVyIHNlcmlhbGl6ZXIgPSBuZXcgWG1sU2VyaWFsaXplcih0eXBlb2YoUGVyc29uKSk7CiAgICAgICAgdXNpbmcgKEZpbGVTdHJlYW0gc3RyZWFtID0gbmV3IEZpbGVTdHJlYW0oInBlcnNvbi54bWwiLCBGaWxlTW9kZS5DcmVhdGUpKQogICAgICAgIHsKICAgICAgICAgICAgc2VyaWFsaXplci5TZXJpYWxpemUoc3RyZWFtLCBwZXJzb24pOwogICAgICAgIH0KCiAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoIk9iamV0byBQZXJzb24gc2VyaWFsaXphZG8gYSBYTUwuIik7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.IO;
+using System.Xml.Serialization;
+
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Person person = new Person { Name = &quot;John&quot;, Age = 30 };
+
+        // Serializar
+        XmlSerializer serializer = new XmlSerializer(typeof(Person));
+        using (FileStream stream = new FileStream(&quot;person.xml&quot;, FileMode.Create))
+        {
+            serializer.Serialize(stream, person);
+        }
+
+        Console.WriteLine(&quot;Objeto Person serializado a XML.&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Serialización JSON</h2>
+<div class='content'><ul>
+<li><strong>Descripción</strong>: Convierte un objeto en un formato JSON.</li>
+<li><strong>Caso de Uso</strong>: Legible por humanos, ampliamente usado en aplicaciones web.</li>
+<li><strong>Ejemplo</strong>: Usando <code>JsonSerializer</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uVGV4dC5Kc29uOwoKcHVibGljIGNsYXNzIFBlcnNvbgp7CiAgICBwdWJsaWMgc3RyaW5nIE5hbWUgeyBnZXQ7IHNldDsgfQogICAgcHVibGljIGludCBBZ2UgeyBnZXQ7IHNldDsgfQp9CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIFBlcnNvbiBwZXJzb24gPSBuZXcgUGVyc29uIHsgTmFtZSA9ICJKb2huIiwgQWdlID0gMzAgfTsKCiAgICAgICAgLy8gU2VyaWFsaXphcgogICAgICAgIHN0cmluZyBqc29uU3RyaW5nID0gSnNvblNlcmlhbGl6ZXIuU2VyaWFsaXplKHBlcnNvbik7CiAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoIk9iamV0byBQZXJzb24gc2VyaWFsaXphZG8gYSBKU09OOiIpOwogICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKGpzb25TdHJpbmcpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Text.Json;
+
+public class Person
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Person person = new Person { Name = &quot;John&quot;, Age = 30 };
+
+        // Serializar
+        string jsonString = JsonSerializer.Serialize(person);
+        Console.WriteLine(&quot;Objeto Person serializado a JSON:&quot;);
+        Console.WriteLine(jsonString);
+    }
+}</pre></div><div class='content'></div><h1>Temas Avanzados</h1>
+<div class='content'></div><h2>Serialización Personalizada</h2>
+<div class='content'><ul>
+<li><strong>Descripción</strong>: Implementar lógica personalizada para la serialización y deserialización.</li>
+<li><strong>Caso de Uso</strong>: Cuando la serialización por defecto no cumple con los requisitos.</li>
+<li><strong>Ejemplo</strong>: Implementando la interfaz <code>ISerializable</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uSU87CnVzaW5nIFN5c3RlbS5SdW50aW1lLlNlcmlhbGl6YXRpb247CnVzaW5nIFN5c3RlbS5SdW50aW1lLlNlcmlhbGl6YXRpb24uRm9ybWF0dGVycy5CaW5hcnk7CgpbU2VyaWFsaXphYmxlXQpwdWJsaWMgY2xhc3MgUGVyc29uIDogSVNlcmlhbGl6YWJsZQp7CiAgICBwdWJsaWMgc3RyaW5nIE5hbWUgeyBnZXQ7IHNldDsgfQogICAgcHVibGljIGludCBBZ2UgeyBnZXQ7IHNldDsgfQoKICAgIHB1YmxpYyBQZXJzb24oKSB7IH0KCiAgICBwcm90ZWN0ZWQgUGVyc29uKFNlcmlhbGl6YXRpb25JbmZvIGluZm8sIFN0cmVhbWluZ0NvbnRleHQgY29udGV4dCkKICAgIHsKICAgICAgICBOYW1lID0gaW5mby5HZXRTdHJpbmcoIk5hbWUiKTsKICAgICAgICBBZ2UgPSBpbmZvLkdldEludDMyKCJBZ2UiKTsKICAgIH0KCiAgICBwdWJsaWMgdm9pZCBHZXRPYmplY3REYXRhKFNlcmlhbGl6YXRpb25JbmZvIGluZm8sIFN0cmVhbWluZ0NvbnRleHQgY29udGV4dCkKICAgIHsKICAgICAgICBpbmZvLkFkZFZhbHVlKCJOYW1lIiwgTmFtZSk7CiAgICAgICAgaW5mby5BZGRWYWx1ZSgiQWdlIiwgQWdlKTsKICAgIH0KfQoKY2xhc3MgUHJvZ3JhbQp7CiAgICBzdGF0aWMgdm9pZCBNYWluKCkKICAgIHsKICAgICAgICBQZXJzb24gcGVyc29uID0gbmV3IFBlcnNvbiB7IE5hbWUgPSAiSm9obiIsIEFnZSA9IDMwIH07CgogICAgICAgIC8vIFNlcmlhbGl6YXIKICAgICAgICBCaW5hcnlGb3JtYXR0ZXIgZm9ybWF0dGVyID0gbmV3IEJpbmFyeUZvcm1hdHRlcigpOwogICAgICAgIHVzaW5nIChGaWxlU3RyZWFtIHN0cmVhbSA9IG5ldyBGaWxlU3RyZWFtKCJwZXJzb25fY3VzdG9tLmRhdCIsIEZpbGVNb2RlLkNyZWF0ZSkpCiAgICAgICAgewogICAgICAgICAgICBmb3JtYXR0ZXIuU2VyaWFsaXplKHN0cmVhbSwgcGVyc29uKTsKICAgICAgICB9CgogICAgICAgIC8vIERlc2VyaWFsaXphcgogICAgICAgIHVzaW5nIChGaWxlU3RyZWFtIHN0cmVhbSA9IG5ldyBGaWxlU3RyZWFtKCJwZXJzb25fY3VzdG9tLmRhdCIsIEZpbGVNb2RlLk9wZW4pKQogICAgICAgIHsKICAgICAgICAgICAgcGVyc29uID0gKFBlcnNvbilmb3JtYXR0ZXIuRGVzZXJpYWxpemUoc3RyZWFtKTsKICAgICAgICB9CgogICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCQiT2JqZXRvIFBlcnNvbiBkZXNlcmlhbGl6YWRvLiBOb21icmU6IHtwZXJzb24uTmFtZX0sIEVkYWQ6IHtwZXJzb24uQWdlfSIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+
+[Serializable]
+public class Person : ISerializable
+{
+    public string Name { get; set; }
+    public int Age { get; set; }
+
+    public Person() { }
+
+    protected Person(SerializationInfo info, StreamingContext context)
+    {
+        Name = info.GetString(&quot;Name&quot;);
+        Age = info.GetInt32(&quot;Age&quot;);
+    }
+
+    public void GetObjectData(SerializationInfo info, StreamingContext context)
+    {
+        info.AddValue(&quot;Name&quot;, Name);
+        info.AddValue(&quot;Age&quot;, Age);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Person person = new Person { Name = &quot;John&quot;, Age = 30 };
+
+        // Serializar
+        BinaryFormatter formatter = new BinaryFormatter();
+        using (FileStream stream = new FileStream(&quot;person_custom.dat&quot;, FileMode.Create))
+        {
+            formatter.Serialize(stream, person);
+        }
+
+        // Deserializar
+        using (FileStream stream = new FileStream(&quot;person_custom.dat&quot;, FileMode.Open))
+        {
+            person = (Person)formatter.Deserialize(stream);
+        }
+
+        Console.WriteLine($&quot;Objeto Person deserializado. Nombre: {person.Name}, Edad: {person.Age}&quot;);
+    }
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>La serialización y deserialización son técnicas poderosas en C# para convertir objetos a y desde un formato almacenable o transmisible. Entender los diferentes tipos de serialización (binaria, XML, JSON) y cómo implementar la serialización personalizada puede mejorar enormemente tu capacidad para gestionar datos en tus aplicaciones. Al dominar estos conceptos, puedes asegurar que tus aplicaciones puedan almacenar y transmitir datos de manera eficiente mientras mantienen la integridad y estructura de tus objetos.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='file-streams'>&#x25C4;Flujos de Archivos</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Serialización y Deserialización en C#</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-linq'>Introducción a LINQ &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

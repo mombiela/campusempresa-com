@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación Perezosa y Streams</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/scala/lazy-evaluation-streams" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/scala/lazy-evaluation-streams" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/scala/lazy-evaluation-streams" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/scala/lazy-evaluation-streams" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/scala/lazy-evaluation-streams" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='functional-error-handling'>&#x25C4;Manejo Funcional de Errores</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Evaluación Perezosa y Streams</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-concurrency'>Introducción a la Concurrencia &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a la Evaluación Perezosa</h1>
+<div class='content'><p>La evaluación perezosa es un concepto poderoso en Scala que permite aplazar la computación hasta que el valor sea realmente necesario. Esto puede llevar a mejoras en el rendimiento y la capacidad de trabajar con estructuras de datos potencialmente infinitas.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Evaluación Ansiosa</strong>: La computación ocurre tan pronto como la expresión se vincula a una variable.</li>
+<li><strong>Evaluación Perezosa</strong>: La computación se aplaza hasta que el valor se usa realmente.</li>
+<li><strong>Beneficios</strong>: Mejora del rendimiento, capacidad para manejar estructuras de datos grandes o infinitas, y evitación de computaciones innecesarias.</li>
+</ul>
+</div><h2>Ejemplo de Evaluación Perezosa</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGVhZ2VyVmFsdWUgPSB7CiAgcHJpbnRsbigiRXZhbHVhY2nDs24gYW5zaW9zYSIpCiAgNDIKfQoKbGF6eSB2YWwgbGF6eVZhbHVlID0gewogIHByaW50bG4oIkV2YWx1YWNpw7NuIHBlcmV6b3NhIikKICA0Mgp9CgpwcmludGxuKCJBbnRlcyBkZSBhY2NlZGVyIGEgbGF6eVZhbHVlIikKcHJpbnRsbihsYXp5VmFsdWUpICAvLyBFc3RvIGRlc2VuY2FkZW5hcsOhIGxhIGNvbXB1dGFjacOzbgpwcmludGxuKGxhenlWYWx1ZSkgIC8vIEVzdG8gbm8gZGVzZW5jYWRlbmFyw6EgbGEgY29tcHV0YWNpw7NuIG51ZXZhbWVudGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val eagerValue = {
+  println(&quot;Evaluaci&oacute;n ansiosa&quot;)
+  42
+}
+
+lazy val lazyValue = {
+  println(&quot;Evaluaci&oacute;n perezosa&quot;)
+  42
+}
+
+println(&quot;Antes de acceder a lazyValue&quot;)
+println(lazyValue)  // Esto desencadenar&aacute; la computaci&oacute;n
+println(lazyValue)  // Esto no desencadenar&aacute; la computaci&oacute;n nuevamente</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>eagerValue</code> se computa inmediatamente.</li>
+<li><code>lazyValue</code> se computa solo cuando se accede por primera vez.</li>
+</ul>
+</div><h1>Introducción a los Streams</h1>
+<div class='content'><p>Los streams en Scala son un tipo de lista perezosa que te permite trabajar con secuencias de datos potencialmente infinitas. Se evalúan de manera perezosa, lo que significa que los elementos se computan solo cuando son necesarios.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Stream</strong>: Una lista perezosa donde los elementos se computan bajo demanda.</li>
+<li><strong>Streams Infinitos</strong>: Streams que pueden representar una secuencia infinita de datos.</li>
+<li><strong>Casos de Uso</strong>: Manejo de grandes conjuntos de datos, representación de secuencias infinitas y mejora del rendimiento al evitar computaciones innecesarias.</li>
+</ul>
+</div><h2>Creación y Uso de Streams</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ3JlYWNpw7NuIGRlIHVuIFN0cmVhbSBmaW5pdG8KdmFsIGZpbml0ZVN0cmVhbSA9IFN0cmVhbSgxLCAyLCAzLCA0LCA1KQpwcmludGxuKGZpbml0ZVN0cmVhbSkgIC8vIFN0cmVhbSgxLCA/KQoKLy8gQ3JlYWNpw7NuIGRlIHVuIFN0cmVhbSBpbmZpbml0bwp2YWwgaW5maW5pdGVTdHJlYW0gPSBTdHJlYW0uZnJvbSgxKQpwcmludGxuKGluZmluaXRlU3RyZWFtLnRha2UoNSkudG9MaXN0KSAgLy8gTGlzdCgxLCAyLCAzLCA0LCA1KQoKLy8gRGVmaW5pY2nDs24gZGUgdW4gU3RyZWFtIHBlcnNvbmFsaXphZG8KZGVmIGZpYnMoYTogSW50LCBiOiBJbnQpOiBTdHJlYW1bSW50XSA9IGEgIzo6IGZpYnMoYiwgYSArIGIpCnZhbCBmaWJvbmFjY2lTdHJlYW0gPSBmaWJzKDAsIDEpCnByaW50bG4oZmlib25hY2NpU3RyZWFtLnRha2UoMTApLnRvTGlzdCkgIC8vIExpc3QoMCwgMSwgMSwgMiwgMywgNSwgOCwgMTMsIDIxLCAzNCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Creaci&oacute;n de un Stream finito
+val finiteStream = Stream(1, 2, 3, 4, 5)
+println(finiteStream)  // Stream(1, ?)
+
+// Creaci&oacute;n de un Stream infinito
+val infiniteStream = Stream.from(1)
+println(infiniteStream.take(5).toList)  // List(1, 2, 3, 4, 5)
+
+// Definici&oacute;n de un Stream personalizado
+def fibs(a: Int, b: Int): Stream[Int] = a #:: fibs(b, a + b)
+val fibonacciStream = fibs(0, 1)
+println(fibonacciStream.take(10).toList)  // List(0, 1, 1, 2, 3, 5, 8, 13, 21, 34)</pre></div><div class='content'></div><h2>Trabajando con Streams</h2>
+<div class='content'><p>Los streams soportan muchas de las mismas operaciones que otras colecciones, como <code>map</code>, <code>filter</code> y <code>fold</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHN0cmVhbSA9IFN0cmVhbS5mcm9tKDEpCgovLyBNYXBlbyBzb2JyZSB1biBTdHJlYW0KdmFsIGRvdWJsZWRTdHJlYW0gPSBzdHJlYW0ubWFwKF8gKiAyKQpwcmludGxuKGRvdWJsZWRTdHJlYW0udGFrZSg1KS50b0xpc3QpICAvLyBMaXN0KDIsIDQsIDYsIDgsIDEwKQoKLy8gRmlsdHJhZG8gZGUgdW4gU3RyZWFtCnZhbCBldmVuU3RyZWFtID0gc3RyZWFtLmZpbHRlcihfICUgMiA9PSAwKQpwcmludGxuKGV2ZW5TdHJlYW0udGFrZSg1KS50b0xpc3QpICAvLyBMaXN0KDIsIDQsIDYsIDgsIDEwKQoKLy8gUGxlZ2FkbyBkZSB1biBTdHJlYW0KdmFsIHN1bU9mRmlyc3RGaXZlID0gc3RyZWFtLnRha2UoNSkuZm9sZExlZnQoMCkoXyArIF8pCnByaW50bG4oc3VtT2ZGaXJzdEZpdmUpICAvLyAxNQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val stream = Stream.from(1)
+
+// Mapeo sobre un Stream
+val doubledStream = stream.map(_ * 2)
+println(doubledStream.take(5).toList)  // List(2, 4, 6, 8, 10)
+
+// Filtrado de un Stream
+val evenStream = stream.filter(_ % 2 == 0)
+println(evenStream.take(5).toList)  // List(2, 4, 6, 8, 10)
+
+// Plegado de un Stream
+val sumOfFirstFive = stream.take(5).foldLeft(0)(_ + _)
+println(sumOfFirstFive)  // 15</pre></div><div class='content'></div><h1>Uso Avanzado de la Evaluación Perezosa y Streams</h1>
+<div class='content'><p>A medida que te sientas más cómodo con la evaluación perezosa y los streams, puedes comenzar a aprovechar estos conceptos en escenarios más complejos.</p>
+</div><h2>Memoización con Evaluación Perezosa</h2>
+<div class='content'><p>La memoización es una técnica donde almacenas los resultados de llamadas a funciones costosas y los reutilizas cuando ocurren las mismas entradas nuevamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGV4cGVuc2l2ZUNvbXB1dGF0aW9uKHg6IEludCk6IEludCA9IHsKICBwcmludGxuKHMiQ29tcHV0YW5kbyAkeCIpCiAgeCAqIHgKfQoKbGF6eSB2YWwgbWVtb2l6ZWRWYWx1ZSA9IGV4cGVuc2l2ZUNvbXB1dGF0aW9uKDEwKQpwcmludGxuKG1lbW9pemVkVmFsdWUpICAvLyBDb21wdXRhbmRvIDEwLCAxMDAKcHJpbnRsbihtZW1vaXplZFZhbHVlKSAgLy8gMTAwIChzaW4gY29tcHV0YWNpw7NuIGVzdGEgdmV6KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def expensiveComputation(x: Int): Int = {
+  println(s&quot;Computando $x&quot;)
+  x * x
+}
+
+lazy val memoizedValue = expensiveComputation(10)
+println(memoizedValue)  // Computando 10, 100
+println(memoizedValue)  // 100 (sin computaci&oacute;n esta vez)</pre></div><div class='content'></div><h2>Combinación de Streams</h2>
+<div class='content'><p>Puedes combinar múltiples streams para crear secuencias más complejas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGV2ZW5zID0gU3RyZWFtLmZyb20oMiwgMikKdmFsIG9kZHMgPSBTdHJlYW0uZnJvbSgxLCAyKQp2YWwgY29tYmluZWQgPSBldmVucy56aXAob2RkcykubWFwIHsgY2FzZSAoZXZlbiwgb2RkKSA9PiBldmVuICsgb2RkIH0KcHJpbnRsbihjb21iaW5lZC50YWtlKDUpLnRvTGlzdCkgIC8vIExpc3QoMywgNywgMTEsIDE1LCAxOSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val evens = Stream.from(2, 2)
+val odds = Stream.from(1, 2)
+val combined = evens.zip(odds).map { case (even, odd) =&gt; even + odd }
+println(combined.take(5).toList)  // List(3, 7, 11, 15, 19)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La evaluación perezosa y los streams son herramientas poderosas en Scala que pueden ayudarte a escribir código más eficiente y expresivo. Al aplazar las computaciones hasta que sean necesarias y trabajar con estructuras de datos potencialmente infinitas, puedes manejar grandes conjuntos de datos y secuencias complejas de manera más efectiva. Practica el uso de estos conceptos en tus proyectos para comprender completamente sus beneficios y aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='functional-error-handling'>&#x25C4;Manejo Funcional de Errores</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Evaluación Perezosa y Streams</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-concurrency'>Introducción a la Concurrencia &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

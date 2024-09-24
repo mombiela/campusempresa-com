@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización del Rendimiento en Django</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/performance-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/performance-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/performance-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/django/performance-optimization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/django/performance-optimization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='deploying-to-aws'>&#x25C4;Desplegando en AWS</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización del Rendimiento en Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-django-rest-framework'>Introducción a Django REST Framework &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La optimización del rendimiento es crucial para asegurar que tus aplicaciones Django funcionen eficientemente y puedan manejar altas cargas de tráfico. Este tema te guiará a través de varias técnicas y mejores prácticas para optimizar el rendimiento de tus aplicaciones Django, desde niveles principiantes hasta avanzados.</p>
+</div><h1>Entendiendo los Cuellos de Botella del Rendimiento</h1>
+<div class='content'><p>Antes de sumergirse en las técnicas de optimización, es esencial entender dónde pueden ocurrir los cuellos de botella en una aplicación Django.</p>
+<ul>
+<li><strong>Consultas a la Base de Datos</strong>: Consultas ineficientes pueden ralentizar tu aplicación.</li>
+<li><strong>Renderizado de Plantillas</strong>: Plantillas complejas pueden aumentar el tiempo de renderizado.</li>
+<li><strong>Archivos Estáticos</strong>: Servir archivos estáticos de manera ineficiente puede degradar el rendimiento.</li>
+<li><strong>Middleware</strong>: Middleware innecesario o mal escrito puede añadir sobrecarga.</li>
+<li><strong>Paquetes de Terceros</strong>: Algunos paquetes pueden introducir problemas de rendimiento.</li>
+</ul>
+</div><h1>Optimización de la Base de Datos</h1>
+<div class='content'></div><h2>Consultas Eficientes</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Usar el ORM de Django Eficientemente</strong>: Escribe consultas que minimicen los accesos a la base de datos.</p>
+<pre><code class="language-python"># Ineficiente: Múltiples consultas
+libros = [libro for libro in Book.objects.all()]
+
+# Eficiente: Una sola consulta
+libros = Book.objects.all()
+</code></pre>
+</li>
+<li>
+<p><strong>Select Related y Prefetch Related</strong>: Usa estos métodos para reducir el número de consultas.</p>
+<pre><code class="language-python"># Ineficiente: Múltiples consultas para objetos relacionados
+libros = Book.objects.all()
+for libro in libros:
+    autor = libro.author
+
+# Eficiente: Una sola consulta con objetos relacionados
+libros = Book.objects.select_related('author').all()
+</code></pre>
+</li>
+</ul>
+</div><h2>Indexación</h2>
+<div class='content'><ul>
+<li><strong>Añadir Índices</strong>: Asegúrate de que los campos consultados frecuentemente estén indexados.
+<pre><code class="language-python">class Book(models.Model):
+    title = models.CharField(max_length=100, db_index=True)
+</code></pre>
+</li>
+</ul>
+</div><h2>Herramientas de Optimización de Consultas</h2>
+<div class='content'><ul>
+<li><strong>Django Debug Toolbar</strong>: Usa esta herramienta para analizar y optimizar consultas.
+<pre><code class="language-bash">pip install django-debug-toolbar
+</code></pre>
+</li>
+</ul>
+</div><h1>Caching</h1>
+<div class='content'></div><h2>Tipos de Caching</h2>
+<div class='content'><ul>
+<li><strong>Caching de Base de Datos</strong>: Cachea resultados de consultas para reducir la carga de la base de datos.</li>
+<li><strong>Caching de Plantillas</strong>: Cachea plantillas renderizadas para evitar re-renderizado.</li>
+<li><strong>Caching de Vistas</strong>: Cachea vistas completas para servir contenido pre-renderizado.</li>
+</ul>
+</div><h2>Implementación de Caching</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Usar el Framework de Cache de Django</strong>: Configura el caching en <code>settings.py</code>.</p>
+<pre><code class="language-python">CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Cachear una Vista</strong>: Usa el decorador <code>cache_page</code>.</p>
+<pre><code class="language-python">from django.views.decorators.cache import cache_page
+
+@cache_page(60 * 15)
+def my_view(request):
+    # Código de la vista aquí
+</code></pre>
+</li>
+</ul>
+</div><h1>Archivos Estáticos y de Medios</h1>
+<div class='content'></div><h2>Servir Archivos Estáticos Eficientemente</h2>
+<div class='content'><ul>
+<li><strong>Usar un CDN</strong>: Desplaza el servicio de archivos estáticos a una Red de Entrega de Contenidos.</li>
+<li><strong>Comando <code>collectstatic</code> de Django</strong>: Recoge archivos estáticos para un servicio eficiente.
+<pre><code class="language-bash">python manage.py collectstatic
+</code></pre>
+</li>
+</ul>
+</div><h2>Optimización de Archivos de Medios</h2>
+<div class='content'><ul>
+<li><strong>Compresión de Imágenes</strong>: Comprime imágenes para reducir tiempos de carga.</li>
+<li><strong>Carga Perezosa</strong>: Carga imágenes solo cuando están en el viewport.</li>
+</ul>
+</div><h1>Optimización de Middleware</h1>
+<div class='content'></div><h2>Análisis de Middleware</h2>
+<div class='content'><ul>
+<li><strong>Orden del Middleware</strong>: Asegúrate de que el middleware esté ordenado correctamente para minimizar el tiempo de procesamiento.</li>
+<li><strong>Eliminar Middleware Innecesario</strong>: Desactiva middleware que no sea esencial.</li>
+</ul>
+</div><h1>Técnicas Avanzadas</h1>
+<div class='content'></div><h2>Procesamiento Asíncrono</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Celery</strong>: Usa Celery para tareas en segundo plano.</p>
+<pre><code class="language-bash">pip install celery
+</code></pre>
+<pre><code class="language-python"># settings.py
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+</code></pre>
+<pre><code class="language-python"># tasks.py
+from celery import shared_task
+
+@shared_task
+def add(x, y):
+    return x + y
+</code></pre>
+</li>
+</ul>
+</div><h2>Balanceo de Carga</h2>
+<div class='content'><ul>
+<li><strong>Escalado Horizontal</strong>: Distribuye el tráfico a través de múltiples servidores.</li>
+<li><strong>Usar Nginx</strong>: Configura Nginx como un proxy inverso y balanceador de carga.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La optimización del rendimiento en Django implica una combinación de consultas eficientes a la base de datos, estrategias efectivas de caching, servicio optimizado de archivos estáticos y de medios, y una gestión cuidadosa del middleware. Al entender e implementar estas técnicas, puedes mejorar significativamente el rendimiento de tus aplicaciones Django, asegurando que sean escalables y responsivas bajo altas cargas de tráfico.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='deploying-to-aws'>&#x25C4;Desplegando en AWS</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Optimización del Rendimiento en Django</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='introduction-to-django-rest-framework'>Introducción a Django REST Framework &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

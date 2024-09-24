@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrando Kafka con Otros Sistemas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/integrating-kafka-with-other-systems" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/integrating-kafka-with-other-systems" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/integrating-kafka-with-other-systems" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kafka/integrating-kafka-with-other-systems" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/integrating-kafka-with-other-systems" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementing-a-stream-processing-application'>&#x25C4;Implementación de una Aplicación de Procesamiento de Streams</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Integrando Kafka con Otros Sistemas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='deploying-kafka-in-production'>Despliegue de Kafka en Producción &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Apache Kafka es una herramienta poderosa para construir pipelines de datos en tiempo real y aplicaciones de streaming. Sin embargo, su verdadero potencial se realiza cuando se integra con otros sistemas. Esta sección cubrirá cómo integrar Kafka con varios sistemas, incluyendo bases de datos, plataformas de big data y microservicios.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Producers y Consumers</strong>: Entender el rol de los producers y consumers en Kafka.</li>
+<li><strong>Connectors</strong>: Usar Kafka Connect para integrar con sistemas externos.</li>
+<li><strong>Streams API</strong>: Aprovechar Kafka Streams para el procesamiento de datos en tiempo real.</li>
+<li><strong>Schema Registry</strong>: Gestionar esquemas para la serialización y deserialización de datos.</li>
+</ul>
+</div><h1>Integrando Kafka con Bases de Datos</h1>
+<h2>Usando Kafka Connect</h2>
+<div class='content'><p>Kafka Connect es una herramienta para transmitir datos de manera escalable y confiable entre Kafka y otros sistemas. Viene con una variedad de conectores para diferentes bases de datos.</p>
+<h4>Ejemplo: Conectando a una Base de Datos MySQL</h4>
+<ol>
+<li>
+<p><strong>Instalar el Conector MySQL</strong>:</p>
+<pre><code class="language-bash">confluent-hub install debezium/debezium-connector-mysql:latest
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar el Conector</strong>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;mysql-connector&quot;,
+  &quot;config&quot;: {
+    &quot;connector.class&quot;: &quot;io.debezium.connector.mysql.MySqlConnector&quot;,
+    &quot;tasks.max&quot;: &quot;1&quot;,
+    &quot;database.hostname&quot;: &quot;localhost&quot;,
+    &quot;database.port&quot;: &quot;3306&quot;,
+    &quot;database.user&quot;: &quot;root&quot;,
+    &quot;database.password&quot;: &quot;password&quot;,
+    &quot;database.server.id&quot;: &quot;184054&quot;,
+    &quot;database.server.name&quot;: &quot;dbserver1&quot;,
+    &quot;database.whitelist&quot;: &quot;inventory&quot;,
+    &quot;database.history.kafka.bootstrap.servers&quot;: &quot;localhost:9092&quot;,
+    &quot;database.history.kafka.topic&quot;: &quot;schema-changes.inventory&quot;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Desplegar el Conector</strong>:</p>
+<pre><code class="language-bash">curl -X POST -H &quot;Content-Type: application/json&quot; --data @mysql-connector.json http://localhost:8083/connectors
+</code></pre>
+</li>
+</ol>
+</div><h2>Usando Kafka Streams</h2>
+<div class='content'><p>Kafka Streams puede ser usado para procesar datos de bases de datos en tiempo real.</p>
+<h4>Ejemplo: Procesamiento Simple de Streams</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UHJvcGVydGllcyBwcm9wcyA9IG5ldyBQcm9wZXJ0aWVzKCk7CnByb3BzLnB1dChTdHJlYW1zQ29uZmlnLkFQUExJQ0FUSU9OX0lEX0NPTkZJRywgInN0cmVhbXMtZXhhbXBsZSIpOwpwcm9wcy5wdXQoU3RyZWFtc0NvbmZpZy5CT09UU1RSQVBfU0VSVkVSU19DT05GSUcsICJsb2NhbGhvc3Q6OTA5MiIpOwpwcm9wcy5wdXQoU3RyZWFtc0NvbmZpZy5ERUZBVUxUX0tFWV9TRVJERV9DTEFTU19DT05GSUcsIFNlcmRlcy5TdHJpbmcoKS5nZXRDbGFzcygpKTsKcHJvcHMucHV0KFN0cmVhbXNDb25maWcuREVGQVVMVF9WQUxVRV9TRVJERV9DTEFTU19DT05GSUcsIFNlcmRlcy5TdHJpbmcoKS5nZXRDbGFzcygpKTsKClN0cmVhbXNCdWlsZGVyIGJ1aWxkZXIgPSBuZXcgU3RyZWFtc0J1aWxkZXIoKTsKS1N0cmVhbTxTdHJpbmcsIFN0cmluZz4gc291cmNlID0gYnVpbGRlci5zdHJlYW0oImlucHV0LXRvcGljIik7CktTdHJlYW08U3RyaW5nLCBTdHJpbmc+IHRyYW5zZm9ybWVkID0gc291cmNlLm1hcFZhbHVlcyh2YWx1ZSAtPiB2YWx1ZS50b1VwcGVyQ2FzZSgpKTsKdHJhbnNmb3JtZWQudG8oIm91dHB1dC10b3BpYyIpOwoKS2Fma2FTdHJlYW1zIHN0cmVhbXMgPSBuZXcgS2Fma2FTdHJlYW1zKGJ1aWxkZXIuYnVpbGQoKSwgcHJvcHMpOwpzdHJlYW1zLnN0YXJ0KCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Properties props = new Properties();
+props.put(StreamsConfig.APPLICATION_ID_CONFIG, &quot;streams-example&quot;);
+props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, &quot;localhost:9092&quot;);
+props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+
+StreamsBuilder builder = new StreamsBuilder();
+KStream&lt;String, String&gt; source = builder.stream(&quot;input-topic&quot;);
+KStream&lt;String, String&gt; transformed = source.mapValues(value -&gt; value.toUpperCase());
+transformed.to(&quot;output-topic&quot;);
+
+KafkaStreams streams = new KafkaStreams(builder.build(), props);
+streams.start();</pre></div><div class='content'></div><h1>Integrando Kafka con Plataformas de Big Data</h1>
+<h2>Hadoop</h2>
+<div class='content'><p>Kafka puede ser integrado con Hadoop para procesamiento por lotes.</p>
+<h4>Ejemplo: Usando Kafka Connect con HDFS</h4>
+<ol>
+<li>
+<p><strong>Instalar el Conector HDFS</strong>:</p>
+<pre><code class="language-bash">confluent-hub install confluentinc/kafka-connect-hdfs:latest
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar el Conector</strong>:</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;hdfs-sink-connector&quot;,
+  &quot;config&quot;: {
+    &quot;connector.class&quot;: &quot;io.confluent.connect.hdfs.HdfsSinkConnector&quot;,
+    &quot;tasks.max&quot;: &quot;1&quot;,
+    &quot;topics&quot;: &quot;input-topic&quot;,
+    &quot;hdfs.url&quot;: &quot;hdfs://localhost:9000&quot;,
+    &quot;flush.size&quot;: &quot;3&quot;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Desplegar el Conector</strong>:</p>
+<pre><code class="language-bash">curl -X POST -H &quot;Content-Type: application/json&quot; --data @hdfs-sink-connector.json http://localhost:8083/connectors
+</code></pre>
+</li>
+</ol>
+</div><h2>Spark</h2>
+<div class='content'><p>Kafka puede ser integrado con Apache Spark para análisis en tiempo real.</p>
+<h4>Ejemplo: Usando Spark Structured Streaming con Kafka</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCgpzcGFyayA9IFNwYXJrU2Vzc2lvbi5idWlsZGVyIFwKICAgIC5hcHBOYW1lKCJLYWZrYVNwYXJrSW50ZWdyYXRpb24iKSBcCiAgICAuZ2V0T3JDcmVhdGUoKQoKZGYgPSBzcGFyayBcCiAgICAucmVhZFN0cmVhbSBcCiAgICAuZm9ybWF0KCJrYWZrYSIpIFwKICAgIC5vcHRpb24oImthZmthLmJvb3RzdHJhcC5zZXJ2ZXJzIiwgImxvY2FsaG9zdDo5MDkyIikgXAogICAgLm9wdGlvbigic3Vic2NyaWJlIiwgImlucHV0LXRvcGljIikgXAogICAgLmxvYWQoKQoKZGYuc2VsZWN0RXhwcigiQ0FTVChrZXkgQVMgU1RSSU5HKSIsICJDQVNUKHZhbHVlIEFTIFNUUklORykiKSBcCiAgICAud3JpdGVTdHJlYW0gXAogICAgLmZvcm1hdCgiY29uc29sZSIpIFwKICAgIC5zdGFydCgpIFwKICAgIC5hd2FpdFRlcm1pbmF0aW9uKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+
+spark = SparkSession.builder \
+    .appName(&quot;KafkaSparkIntegration&quot;) \
+    .getOrCreate()
+
+df = spark \
+    .readStream \
+    .format(&quot;kafka&quot;) \
+    .option(&quot;kafka.bootstrap.servers&quot;, &quot;localhost:9092&quot;) \
+    .option(&quot;subscribe&quot;, &quot;input-topic&quot;) \
+    .load()
+
+df.selectExpr(&quot;CAST(key AS STRING)&quot;, &quot;CAST(value AS STRING)&quot;) \
+    .writeStream \
+    .format(&quot;console&quot;) \
+    .start() \
+    .awaitTermination()</pre></div><div class='content'></div><h1>Integrando Kafka con Microservicios</h1>
+<div class='content'><p>Kafka es a menudo usado como la columna vertebral para la comunicación entre microservicios debido a su alto rendimiento y tolerancia a fallos.</p>
+</div><h2>Ejemplo: Comunicación entre Microservicios</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Servicio Productor</strong>:</p>
+<pre><code class="language-java">Properties props = new Properties();
+props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+props.put(&quot;key.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+props.put(&quot;value.serializer&quot;, &quot;org.apache.kafka.common.serialization.StringSerializer&quot;);
+
+Producer&lt;String, String&gt; producer = new KafkaProducer&lt;&gt;(props);
+producer.send(new ProducerRecord&lt;&gt;(&quot;input-topic&quot;, &quot;key&quot;, &quot;value&quot;));
+producer.close();
+</code></pre>
+</li>
+<li>
+<p><strong>Servicio Consumidor</strong>:</p>
+<pre><code class="language-java">Properties props = new Properties();
+props.put(&quot;bootstrap.servers&quot;, &quot;localhost:9092&quot;);
+props.put(&quot;group.id&quot;, &quot;test-group&quot;);
+props.put(&quot;key.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+props.put(&quot;value.deserializer&quot;, &quot;org.apache.kafka.common.serialization.StringDeserializer&quot;);
+
+KafkaConsumer&lt;String, String&gt; consumer = new KafkaConsumer&lt;&gt;(props);
+consumer.subscribe(Arrays.asList(&quot;input-topic&quot;));
+
+while (true) {
+    ConsumerRecords&lt;String, String&gt; records = consumer.poll(Duration.ofMillis(100));
+    for (ConsumerRecord&lt;String, String&gt; record : records) {
+        System.out.printf(&quot;offset = %d, key = %s, value = %s%n&quot;, record.offset(), record.key(), record.value());
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Integrar Kafka con otros sistemas puede mejorar significativamente tus capacidades de procesamiento de datos. Ya sea que estés conectando a bases de datos, plataformas de big data o microservicios, Kafka proporciona herramientas y APIs robustas para facilitar una integración sin problemas. Al dominar estas integraciones, puedes construir pipelines de datos escalables y en tiempo real que impulsen tus aplicaciones y servicios.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='implementing-a-stream-processing-application'>&#x25C4;Implementación de una Aplicación de Procesamiento de Streams</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Integrando Kafka con Otros Sistemas</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='deploying-kafka-in-production'>Despliegue de Kafka en Producción &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

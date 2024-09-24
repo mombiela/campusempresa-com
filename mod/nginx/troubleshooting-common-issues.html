@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solución de Problemas Comunes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/troubleshooting-common-issues" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/troubleshooting-common-issues" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/troubleshooting-common-issues" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body>
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png" style="visibility:hiddenxx;"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/troubleshooting-common-issues" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/troubleshooting-common-issues" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content"><div class='row navigation'>
+	<div class='col-4'>
+					<a href='logging-and-log-management'>&#x25C4;Gestión de Registros y Logs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Solución de Problemas Comunes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='debugging-nginx'>Depuración de NGINX &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>NGINX es un potente servidor web y servidor proxy inverso, pero como cualquier software, puede encontrar problemas. Esta sección te guiará a través de la solución de problemas comunes que puedes enfrentar al trabajar con NGINX, desde niveles principiantes hasta avanzados.</p>
+</div><h1>Problemas Comunes y Soluciones</h1>
+<div class='content'></div><h2>1. NGINX No Inicia</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Verificar Sintaxis de Configuración</strong>: Antes de iniciar NGINX, asegúrate de que tu archivo de configuración sea sintácticamente correcto.</p>
+<pre><code class="language-bash">sudo nginx -t
+</code></pre>
+<p>Si hay errores, NGINX proporcionará detalles sobre lo que necesita ser corregido.</p>
+</li>
+<li>
+<p><strong>Conflictos de Puerto</strong>: Asegúrate de que el puerto al que NGINX intenta enlazarse (generalmente el puerto 80 o 443) no esté ya en uso por otro servicio.</p>
+<pre><code class="language-bash">sudo lsof -i :80
+</code></pre>
+<p>Si otro servicio está usando el puerto, es posible que necesites detener ese servicio o cambiar el puerto que usa NGINX.</p>
+</li>
+<li>
+<p><strong>Problemas de Permisos</strong>: Asegúrate de que NGINX tenga los permisos necesarios para acceder a sus archivos de configuración y a los directorios que sirve.</p>
+<pre><code class="language-bash">sudo chown -R www-data:www-data /var/www/html
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Error 403 Prohibido</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Permisos de Archivos</strong>: Asegúrate de que los archivos y directorios servidos por NGINX tengan los permisos correctos.</p>
+<pre><code class="language-bash">sudo chmod -R 755 /var/www/html
+</code></pre>
+</li>
+<li>
+<p><strong>Configuración de NGINX</strong>: Verifica el <code>nginx.conf</code> o los archivos de configuración específicos del sitio para asegurarte de que la directiva <code>root</code> apunte al directorio correcto.</p>
+<pre><code class="language-nginx">server {
+    listen 80;
+    server_name example.com;
+    root /var/www/html;
+    index index.html;
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>3. Error 404 No Encontrado</h2>
+<div class='content'><ul>
+<li><strong>Verificar Rutas de Archivos</strong>: Asegúrate de que las rutas de archivos especificadas en tu configuración coincidan con las ubicaciones reales de los archivos.</li>
+<li><strong>Directiva Root Correcta</strong>: Verifica que la directiva <code>root</code> en tu bloque de servidor apunte al directorio correcto.</li>
+</ul>
+</div><h2>4. Error 502 Puerta de Enlace Incorrecta</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Servicio Backend Caído</strong>: Asegúrate de que el servicio backend (por ejemplo, un servidor PHP-FPM o Node.js) esté en funcionamiento.</p>
+<pre><code class="language-bash">sudo systemctl status php7.4-fpm
+</code></pre>
+</li>
+<li>
+<p><strong>Configuración de Upstream Incorrecta</strong>: Verifica que la configuración del servidor upstream en NGINX sea correcta.</p>
+<pre><code class="language-nginx">upstream backend {
+    server 127.0.0.1:3000;
+}
+
+server {
+    listen 80;
+    location / {
+        proxy_pass http://backend;
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>5. Error 504 Tiempo de Espera de la Puerta de Enlace Agotado</h2>
+<div class='content'><ul>
+<li><strong>Aumentar Configuraciones de Tiempo de Espera</strong>: Si el servicio backend tarda más en responder, es posible que necesites aumentar las configuraciones de tiempo de espera en tu configuración de NGINX.
+<pre><code class="language-nginx">server {
+    listen 80;
+    location / {
+        proxy_connect_timeout 600;
+        proxy_send_timeout 600;
+        proxy_read_timeout 600;
+        send_timeout 600;
+        proxy_pass http://backend;
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>6. Problemas de SSL/TLS</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Verificar Archivos de Certificado</strong>: Asegúrate de que el certificado SSL y los archivos de clave estén correctamente especificados y accesibles.</p>
+<pre><code class="language-nginx">server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Permisos Correctos</strong>: Asegúrate de que los archivos de certificado tengan los permisos correctos.</p>
+<pre><code class="language-bash">sudo chmod 600 /etc/nginx/ssl/example.com.key
+</code></pre>
+</li>
+</ul>
+</div><h2>7. Alto Uso de CPU/Memoria</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Optimizar Configuración</strong>: Revisa y optimiza las configuraciones de NGINX, como los procesos de trabajo y las conexiones.</p>
+<pre><code class="language-nginx">worker_processes auto;
+events {
+    worker_connections 1024;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Caché</strong>: Implementa caché para reducir la carga en el servidor.</p>
+<pre><code class="language-nginx">location / {
+    proxy_cache my_cache;
+    proxy_cache_valid 200 1h;
+    proxy_pass http://backend;
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Solucionar problemas en NGINX puede ser un desafío, pero entender los problemas comunes y sus soluciones puede facilitar significativamente el proceso. Siempre comienza verificando la sintaxis de la configuración, verificando rutas de archivos y permisos, y asegurándote de que los servicios backend estén funcionando correctamente. Con estos pasos, puedes resolver la mayoría de los problemas comunes de NGINX de manera eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='logging-and-log-management'>&#x25C4;Gestión de Registros y Logs</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Solución de Problemas Comunes</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='debugging-nginx'>Depuración de NGINX &#x25BA;</a>
+			</div>
+</div>
+</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>
