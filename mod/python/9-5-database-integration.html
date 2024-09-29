@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo 9: Desarrollo Web con Flask</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/9-5-database-integration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/9-5-database-integration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/9-5-database-integration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/python/9-5-database-integration" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/python/9-5-database-integration" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-4'>
+					<a href='9-4-form-handling'>&#x25C4;Manejo de Formularios</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Módulo 9: Desarrollo Web con Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='10-1-unit-testing-unittest'>Pruebas Unitarias con unittest &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>9-5: Integración de Bases de Datos</h1>
+<div class='content'></div><h2>Introducción</h2>
+<div class='content'><p>En esta sección, aprenderemos cómo integrar bases de datos en nuestras aplicaciones web utilizando Flask. Trabajaremos con SQLite, una base de datos ligera y fácil de usar que es ideal para aplicaciones pequeñas y medianas. También veremos cómo utilizar SQLAlchemy, un ORM (Object-Relational Mapping) que facilita la interacción con bases de datos relacionales.</p>
+</div><h2>Objetivos</h2>
+<div class='content'><ul>
+<li>Entender cómo configurar una base de datos en Flask.</li>
+<li>Aprender a utilizar SQLAlchemy para interactuar con la base de datos.</li>
+<li>Realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en la base de datos.</li>
+<li>Integrar la base de datos con nuestra aplicación Flask.</li>
+</ul>
+</div><h2>Configuración del Entorno</h2>
+<div class='content'><p>Antes de comenzar, asegúrate de tener Flask y SQLAlchemy instalados. Puedes instalarlos utilizando pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2sgU1FMQWxjaGVteQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask SQLAlchemy</pre></div><div class='content'></div><h2>Configuración de la Base de Datos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar la Aplicación Flask:</strong></p>
+<p>Primero, necesitamos configurar nuestra aplicación Flask para utilizar SQLAlchemy. Crea un archivo llamado <code>app.py</code> y añade el siguiente código:</p>
+<pre><code class="language-python">from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+db = SQLAlchemy(app)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+</code></pre>
+<p>Aquí, hemos configurado la URI de la base de datos para utilizar SQLite y hemos inicializado SQLAlchemy con nuestra aplicación Flask.</p>
+</li>
+<li>
+<p><strong>Definir Modelos:</strong></p>
+<p>Los modelos son clases que representan tablas en la base de datos. Vamos a definir un modelo simple para un usuario.</p>
+<pre><code class="language-python">class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f&quot;User('{self.username}', '{self.email}')&quot;
+</code></pre>
+<p>En este modelo, hemos definido una tabla <code>User</code> con tres columnas: <code>id</code>, <code>username</code> y <code>email</code>.</p>
+</li>
+<li>
+<p><strong>Crear la Base de Datos:</strong></p>
+<p>Para crear la base de datos y las tablas, abre una terminal y ejecuta el siguiente comando en el intérprete de Python:</p>
+<pre><code class="language-python">from app import db
+db.create_all()
+</code></pre>
+<p>Esto creará un archivo <code>site.db</code> con la tabla <code>User</code>.</p>
+</li>
+</ol>
+</div><h2>Operaciones CRUD</h2>
+<div class='content'><p>Ahora que tenemos nuestra base de datos configurada, vamos a realizar operaciones CRUD.</p>
+<ol>
+<li>
+<p><strong>Crear un Usuario:</strong></p>
+<pre><code class="language-python">from app import db, User
+
+new_user = User(username='john_doe', email='john@example.com')
+db.session.add(new_user)
+db.session.commit()
+</code></pre>
+</li>
+<li>
+<p><strong>Leer Usuarios:</strong></p>
+<pre><code class="language-python">users = User.query.all()
+print(users)
+
+user = User.query.filter_by(username='john_doe').first()
+print(user)
+</code></pre>
+</li>
+<li>
+<p><strong>Actualizar un Usuario:</strong></p>
+<pre><code class="language-python">user = User.query.filter_by(username='john_doe').first()
+user.email = 'john_doe@example.com'
+db.session.commit()
+</code></pre>
+</li>
+<li>
+<p><strong>Eliminar un Usuario:</strong></p>
+<pre><code class="language-python">user = User.query.filter_by(username='john_doe').first()
+db.session.delete(user)
+db.session.commit()
+</code></pre>
+</li>
+</ol>
+</div><h2>Integración con la Aplicación Flask</h2>
+<div class='content'><p>Vamos a integrar estas operaciones CRUD en nuestra aplicación Flask utilizando rutas.</p>
+<ol>
+<li>
+<p><strong>Crear Rutas:</strong></p>
+<pre><code class="language-python">from flask import render_template, url_for, flash, redirect
+from app import app, db, User
+
+@app.route('/')
+def home():
+    users = User.query.all()
+    return render_template('home.html', users=users)
+
+@app.route('/add_user', methods=['POST'])
+def add_user():
+    username = request.form['username']
+    email = request.form['email']
+    new_user = User(username=username, email=email)
+    db.session.add(new_user)
+    db.session.commit()
+    flash('User added successfully!', 'success')
+    return redirect(url_for('home'))
+</code></pre>
+</li>
+<li>
+<p><strong>Crear Plantillas:</strong></p>
+<p>Crea un archivo <code>home.html</code> en una carpeta llamada <code>templates</code>:</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Home&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Users&lt;/h1&gt;
+    &lt;ul&gt;
+        {% for user in users %}
+            &lt;li&gt;{{ user.username }} - {{ user.email }}&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+    &lt;form action=&quot;{{ url_for('add_user') }}&quot; method=&quot;POST&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;username&quot; placeholder=&quot;Username&quot;&gt;
+        &lt;input type=&quot;email&quot; name=&quot;email&quot; placeholder=&quot;Email&quot;&gt;
+        &lt;button type=&quot;submit&quot;&gt;Add User&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio:</strong></p>
+<ol>
+<li>Añade una nueva ruta para actualizar un usuario.</li>
+<li>Añade una nueva ruta para eliminar un usuario.</li>
+<li>Modifica la plantilla <code>home.html</code> para incluir botones de actualización y eliminación junto a cada usuario.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+<ol>
+<li>
+<p><strong>Ruta para Actualizar un Usuario:</strong></p>
+<pre><code class="language-python">@app.route('/update_user/&lt;int:id&gt;', methods=['POST'])
+def update_user(id):
+    user = User.query.get_or_404(id)
+    user.username = request.form['username']
+    user.email = request.form['email']
+    db.session.commit()
+    flash('User updated successfully!', 'success')
+    return redirect(url_for('home'))
+</code></pre>
+</li>
+<li>
+<p><strong>Ruta para Eliminar un Usuario:</strong></p>
+<pre><code class="language-python">@app.route('/delete_user/&lt;int:id&gt;', methods=['POST'])
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    db.session.delete(user)
+    db.session.commit()
+    flash('User deleted successfully!', 'success')
+    return redirect(url_for('home'))
+</code></pre>
+</li>
+<li>
+<p><strong>Modificar <code>home.html</code>:</strong></p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Home&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Users&lt;/h1&gt;
+    &lt;ul&gt;
+        {% for user in users %}
+            &lt;li&gt;
+                {{ user.username }} - {{ user.email }}
+                &lt;form action=&quot;{{ url_for('update_user', id=user.id) }}&quot; method=&quot;POST&quot;&gt;
+                    &lt;input type=&quot;text&quot; name=&quot;username&quot; value=&quot;{{ user.username }}&quot;&gt;
+                    &lt;input type=&quot;email&quot; name=&quot;email&quot; value=&quot;{{ user.email }}&quot;&gt;
+                    &lt;button type=&quot;submit&quot;&gt;Update&lt;/button&gt;
+                &lt;/form&gt;
+                &lt;form action=&quot;{{ url_for('delete_user', id=user.id) }}&quot; method=&quot;POST&quot;&gt;
+                    &lt;button type=&quot;submit&quot;&gt;Delete&lt;/button&gt;
+                &lt;/form&gt;
+            &lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+    &lt;form action=&quot;{{ url_for('add_user') }}&quot; method=&quot;POST&quot;&gt;
+        &lt;input type=&quot;text&quot; name=&quot;username&quot; placeholder=&quot;Username&quot;&gt;
+        &lt;input type=&quot;email&quot; name=&quot;email&quot; placeholder=&quot;Email&quot;&gt;
+        &lt;button type=&quot;submit&quot;&gt;Add User&lt;/button&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+</li>
+</ol>
+</div><h2>Conclusión</h2>
+<div class='content'><p>En esta sección, hemos aprendido cómo integrar una base de datos en una aplicación Flask utilizando SQLAlchemy. Hemos cubierto la configuración de la base de datos, la definición de modelos, y cómo realizar operaciones CRUD. Además, hemos integrado estas operaciones en nuestra aplicación Flask mediante rutas y plantillas.</p>
+<p>En el siguiente módulo, exploraremos cómo realizar pruebas y depuración en nuestras aplicaciones Flask para asegurar su correcto funcionamiento.</p>
+</div><div class='row navigation'>
+	<div class='col-4'>
+					<a href='9-4-form-handling'>&#x25C4;Manejo de Formularios</a>
+			</div>
+	<div class='col-4 text-center'>
+		<a href="./" class="title">Módulo 9: Desarrollo Web con Flask</a>
+	</div>
+	<div class='col-4 text-end'>
+					<a href='10-1-unit-testing-unittest'>Pruebas Unitarias con unittest &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>
