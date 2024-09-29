@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrencia: Hilos y Procesos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/08-04-concurrency-threads-and-processes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/08-04-concurrency-threads-and-processes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/08-04-concurrency-threads-and-processes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/python/08-04-concurrency-threads-and-processes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/python/08-04-concurrency-threads-and-processes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-context-managers' title="Administradores de Contexto">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Concurrencia: Hilos y Procesos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio para Programación Asíncrona">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La concurrencia es una técnica que permite que múltiples tareas se ejecuten de manera simultánea, mejorando la eficiencia y el rendimiento de las aplicaciones. En Python, la concurrencia se puede lograr utilizando hilos (threads) y procesos (processes). Este tema cubre los conceptos básicos de hilos y procesos, cómo utilizarlos en Python, y proporciona ejemplos prácticos y ejercicios para reforzar el aprendizaje.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Concurrencia vs. Paralelismo</strong>:</p>
+<ul>
+<li><strong>Concurrencia</strong>: Múltiples tareas progresan simultáneamente.</li>
+<li><strong>Paralelismo</strong>: Múltiples tareas se ejecutan exactamente al mismo tiempo, generalmente en múltiples núcleos de CPU.</li>
+</ul>
+</li>
+<li>
+<p><strong>Hilos (Threads)</strong>:</p>
+<ul>
+<li>Un hilo es la unidad más pequeña de procesamiento que puede ser programada.</li>
+<li>Los hilos comparten el mismo espacio de memoria dentro de un proceso.</li>
+</ul>
+</li>
+<li>
+<p><strong>Procesos (Processes)</strong>:</p>
+<ul>
+<li>Un proceso es una instancia de un programa en ejecución.</li>
+<li>Los procesos tienen su propio espacio de memoria independiente.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Hilos en Python</h1>
+<div class='content'><p>Python proporciona el módulo <code>threading</code> para trabajar con hilos. A continuación, se muestra un ejemplo básico de cómo crear y ejecutar hilos.</p>
+</div><h2>Ejemplo: Uso de Hilos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwppbXBvcnQgdGltZQoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGYiTnVtYmVyOiB7aX0iKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCmRlZiBwcmludF9sZXR0ZXJzKCk6CiAgICBmb3IgbGV0dGVyIGluICdhYmNkZSc6CiAgICAgICAgcHJpbnQoZiJMZXR0ZXI6IHtsZXR0ZXJ9IikKICAgICAgICB0aW1lLnNsZWVwKDEpCgojIENyZWFyIGhpbG9zCnRocmVhZDEgPSB0aHJlYWRpbmcuVGhyZWFkKHRhcmdldD1wcmludF9udW1iZXJzKQp0aHJlYWQyID0gdGhyZWFkaW5nLlRocmVhZCh0YXJnZXQ9cHJpbnRfbGV0dGVycykKCiMgSW5pY2lhciBoaWxvcwp0aHJlYWQxLnN0YXJ0KCkKdGhyZWFkMi5zdGFydCgpCgojIEVzcGVyYXIgYSBxdWUgbG9zIGhpbG9zIHRlcm1pbmVuCnRocmVhZDEuam9pbigpCnRocmVhZDIuam9pbigpCgpwcmludCgiSGlsb3MgY29tcGxldGFkb3MiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+import time
+
+def print_numbers():
+    for i in range(5):
+        print(f&quot;Number: {i}&quot;)
+        time.sleep(1)
+
+def print_letters():
+    for letter in 'abcde':
+        print(f&quot;Letter: {letter}&quot;)
+        time.sleep(1)
+
+# Crear hilos
+thread1 = threading.Thread(target=print_numbers)
+thread2 = threading.Thread(target=print_letters)
+
+# Iniciar hilos
+thread1.start()
+thread2.start()
+
+# Esperar a que los hilos terminen
+thread1.join()
+thread2.join()
+
+print(&quot;Hilos completados&quot;)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importación de Módulos</strong>: Se importan los módulos <code>threading</code> y <code>time</code>.</li>
+<li><strong>Definición de Funciones</strong>: Se definen dos funciones, <code>print_numbers</code> y <code>print_letters</code>, que imprimen números y letras respectivamente.</li>
+<li><strong>Creación de Hilos</strong>: Se crean dos hilos, <code>thread1</code> y <code>thread2</code>, asignando las funciones como objetivos.</li>
+<li><strong>Inicio de Hilos</strong>: Se inician los hilos con <code>start()</code>.</li>
+<li><strong>Esperar Finalización</strong>: Se utiliza <code>join()</code> para esperar a que ambos hilos terminen antes de continuar.</li>
+</ol>
+</div><h1>Procesos en Python</h1>
+<div class='content'><p>Para trabajar con procesos, Python proporciona el módulo <code>multiprocessing</code>. A continuación, se muestra un ejemplo básico de cómo crear y ejecutar procesos.</p>
+</div><h2>Ejemplo: Uso de Procesos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG11bHRpcHJvY2Vzc2luZwppbXBvcnQgdGltZQoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGYiTnVtYmVyOiB7aX0iKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCmRlZiBwcmludF9sZXR0ZXJzKCk6CiAgICBmb3IgbGV0dGVyIGluICdhYmNkZSc6CiAgICAgICAgcHJpbnQoZiJMZXR0ZXI6IHtsZXR0ZXJ9IikKICAgICAgICB0aW1lLnNsZWVwKDEpCgojIENyZWFyIHByb2Nlc29zCnByb2Nlc3MxID0gbXVsdGlwcm9jZXNzaW5nLlByb2Nlc3ModGFyZ2V0PXByaW50X251bWJlcnMpCnByb2Nlc3MyID0gbXVsdGlwcm9jZXNzaW5nLlByb2Nlc3ModGFyZ2V0PXByaW50X2xldHRlcnMpCgojIEluaWNpYXIgcHJvY2Vzb3MKcHJvY2VzczEuc3RhcnQoKQpwcm9jZXNzMi5zdGFydCgpCgojIEVzcGVyYXIgYSBxdWUgbG9zIHByb2Nlc29zIHRlcm1pbmVuCnByb2Nlc3MxLmpvaW4oKQpwcm9jZXNzMi5qb2luKCkKCnByaW50KCJQcm9jZXNvcyBjb21wbGV0YWRvcyIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import multiprocessing
+import time
+
+def print_numbers():
+    for i in range(5):
+        print(f&quot;Number: {i}&quot;)
+        time.sleep(1)
+
+def print_letters():
+    for letter in 'abcde':
+        print(f&quot;Letter: {letter}&quot;)
+        time.sleep(1)
+
+# Crear procesos
+process1 = multiprocessing.Process(target=print_numbers)
+process2 = multiprocessing.Process(target=print_letters)
+
+# Iniciar procesos
+process1.start()
+process2.start()
+
+# Esperar a que los procesos terminen
+process1.join()
+process2.join()
+
+print(&quot;Procesos completados&quot;)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importación de Módulos</strong>: Se importan los módulos <code>multiprocessing</code> y <code>time</code>.</li>
+<li><strong>Definición de Funciones</strong>: Se definen dos funciones, <code>print_numbers</code> y <code>print_letters</code>, que imprimen números y letras respectivamente.</li>
+<li><strong>Creación de Procesos</strong>: Se crean dos procesos, <code>process1</code> y <code>process2</code>, asignando las funciones como objetivos.</li>
+<li><strong>Inicio de Procesos</strong>: Se inician los procesos con <code>start()</code>.</li>
+<li><strong>Esperar Finalización</strong>: Se utiliza <code>join()</code> para esperar a que ambos procesos terminen antes de continuar.</li>
+</ol>
+</div><h1>Comparación: Hilos vs. Procesos</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>Hilos (Threads)</th>
+<th>Procesos (Processes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Espacio de Memoria</td>
+<td>Comparten el mismo espacio de memoria</td>
+<td>Tienen su propio espacio de memoria</td>
+</tr>
+<tr>
+<td>Creación</td>
+<td>Más rápidos y ligeros</td>
+<td>Más lentos y pesados</td>
+</tr>
+<tr>
+<td>Comunicación</td>
+<td>Más fácil (comparten memoria)</td>
+<td>Más difícil (necesitan mecanismos de IPC)</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Menos seguros (problemas de sincronización)</td>
+<td>Más seguros (memoria independiente)</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Contador Concurrente</h2>
+<div class='content'><p>Escribe un programa que cree dos hilos. Un hilo debe contar de 1 a 5 y el otro hilo debe contar de 6 a 10. Ambos hilos deben imprimir los números con un retraso de 1 segundo entre cada número.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwppbXBvcnQgdGltZQoKZGVmIGNvdW50X3VwX3RvXzUoKToKICAgIGZvciBpIGluIHJhbmdlKDEsIDYpOgogICAgICAgIHByaW50KGYiQ291bnQgMS01OiB7aX0iKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCmRlZiBjb3VudF91cF90b18xMCgpOgogICAgZm9yIGkgaW4gcmFuZ2UoNiwgMTEpOgogICAgICAgIHByaW50KGYiQ291bnQgNi0xMDoge2l9IikKICAgICAgICB0aW1lLnNsZWVwKDEpCgojIENyZWFyIGhpbG9zCnRocmVhZDEgPSB0aHJlYWRpbmcuVGhyZWFkKHRhcmdldD1jb3VudF91cF90b181KQp0aHJlYWQyID0gdGhyZWFkaW5nLlRocmVhZCh0YXJnZXQ9Y291bnRfdXBfdG9fMTApCgojIEluaWNpYXIgaGlsb3MKdGhyZWFkMS5zdGFydCgpCnRocmVhZDIuc3RhcnQoKQoKIyBFc3BlcmFyIGEgcXVlIGxvcyBoaWxvcyB0ZXJtaW5lbgp0aHJlYWQxLmpvaW4oKQp0aHJlYWQyLmpvaW4oKQoKcHJpbnQoIkNvbnRhZG9yZXMgY29tcGxldGFkb3MiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+import time
+
+def count_up_to_5():
+    for i in range(1, 6):
+        print(f&quot;Count 1-5: {i}&quot;)
+        time.sleep(1)
+
+def count_up_to_10():
+    for i in range(6, 11):
+        print(f&quot;Count 6-10: {i}&quot;)
+        time.sleep(1)
+
+# Crear hilos
+thread1 = threading.Thread(target=count_up_to_5)
+thread2 = threading.Thread(target=count_up_to_10)
+
+# Iniciar hilos
+thread1.start()
+thread2.start()
+
+# Esperar a que los hilos terminen
+thread1.join()
+thread2.join()
+
+print(&quot;Contadores completados&quot;)</pre></div><div class='content'></div><h2>Ejercicio 2: Procesos Concurrentes</h2>
+<div class='content'><p>Escribe un programa que cree dos procesos. Un proceso debe imprimir &quot;Proceso 1&quot; cinco veces con un retraso de 1 segundo entre cada impresión, y el otro proceso debe imprimir &quot;Proceso 2&quot; cinco veces con el mismo retraso.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG11bHRpcHJvY2Vzc2luZwppbXBvcnQgdGltZQoKZGVmIHByb2Nlc3Nfb25lKCk6CiAgICBmb3IgXyBpbiByYW5nZSg1KToKICAgICAgICBwcmludCgiUHJvY2VzbyAxIikKICAgICAgICB0aW1lLnNsZWVwKDEpCgpkZWYgcHJvY2Vzc190d28oKToKICAgIGZvciBfIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KCJQcm9jZXNvIDIiKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCiMgQ3JlYXIgcHJvY2Vzb3MKcHJvY2VzczEgPSBtdWx0aXByb2Nlc3NpbmcuUHJvY2Vzcyh0YXJnZXQ9cHJvY2Vzc19vbmUpCnByb2Nlc3MyID0gbXVsdGlwcm9jZXNzaW5nLlByb2Nlc3ModGFyZ2V0PXByb2Nlc3NfdHdvKQoKIyBJbmljaWFyIHByb2Nlc29zCnByb2Nlc3MxLnN0YXJ0KCkKcHJvY2VzczIuc3RhcnQoKQoKIyBFc3BlcmFyIGEgcXVlIGxvcyBwcm9jZXNvcyB0ZXJtaW5lbgpwcm9jZXNzMS5qb2luKCkKcHJvY2VzczIuam9pbigpCgpwcmludCgiUHJvY2Vzb3MgY29tcGxldGFkb3MiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import multiprocessing
+import time
+
+def process_one():
+    for _ in range(5):
+        print(&quot;Proceso 1&quot;)
+        time.sleep(1)
+
+def process_two():
+    for _ in range(5):
+        print(&quot;Proceso 2&quot;)
+        time.sleep(1)
+
+# Crear procesos
+process1 = multiprocessing.Process(target=process_one)
+process2 = multiprocessing.Process(target=process_two)
+
+# Iniciar procesos
+process1.start()
+process2.start()
+
+# Esperar a que los procesos terminen
+process1.join()
+process2.join()
+
+print(&quot;Procesos completados&quot;)</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de concurrencia utilizando hilos y procesos en Python. Aprendimos cómo crear y manejar hilos y procesos, y discutimos las diferencias clave entre ellos. Además, proporcionamos ejemplos prácticos y ejercicios para reforzar el aprendizaje. La concurrencia es una herramienta poderosa para mejorar el rendimiento de las aplicaciones, y comprender cómo utilizar hilos y procesos es esencial para cualquier programador avanzado en Python.</p>
+<p>En el próximo tema, exploraremos los <strong>Administradores de Contexto</strong>, una característica avanzada de Python que facilita la gestión de recursos como archivos y conexiones de red.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-context-managers' title="Administradores de Contexto">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio para Programación Asíncrona">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

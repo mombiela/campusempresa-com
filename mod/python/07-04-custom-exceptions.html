@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Excepciones Personalizadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/07-04-custom-exceptions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/07-04-custom-exceptions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/07-04-custom-exceptions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/python/07-04-custom-exceptions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/python/07-04-custom-exceptions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-raising-exceptions' title="Lanzamiento de Excepciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Excepciones Personalizadas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-decorators' title="Decoradores">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En Python, las excepciones son una forma de manejar errores y situaciones excepcionales que pueden ocurrir durante la ejecución de un programa. Aunque Python proporciona muchas excepciones integradas, a veces es útil definir nuestras propias excepciones personalizadas para manejar situaciones específicas de nuestra aplicación.</p>
+</div><h1>¿Por Qué Usar Excepciones Personalizadas?</h1>
+<div class='content'><p>Las excepciones personalizadas nos permiten:</p>
+<ul>
+<li><strong>Claridad</strong>: Hacer que el código sea más legible y comprensible.</li>
+<li><strong>Especificidad</strong>: Manejar errores específicos de nuestra aplicación que no están cubiertos por las excepciones integradas.</li>
+<li><strong>Mantenimiento</strong>: Facilitar el mantenimiento del código al proporcionar mensajes de error más significativos.</li>
+</ul>
+</div><h1>Definiendo una Excepción Personalizada</h1>
+<div class='content'><p>Para definir una excepción personalizada en Python, creamos una nueva clase que hereda de la clase base <code>Exception</code>. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTWlFeGNlcGNpb25QZXJzb25hbGl6YWRhKEV4Y2VwdGlvbik6CiAgICAiIiJDbGFzZSBiYXNlIHBhcmEgb3RyYXMgZXhjZXBjaW9uZXMgcGVyc29uYWxpemFkYXMiIiIKICAgIHBhc3MKCmNsYXNzIFZhbG9yRGVtYXNpYWRvQWx0b0Vycm9yKE1pRXhjZXBjaW9uUGVyc29uYWxpemFkYSk6CiAgICAiIiJFeGNlcGNpw7NuIGxhbnphZGEgY3VhbmRvIGVsIHZhbG9yIGVzIGRlbWFzaWFkbyBhbHRvIiIiCiAgICBwYXNzCgpjbGFzcyBWYWxvckRlbWFzaWFkb0Jham9FcnJvcihNaUV4Y2VwY2lvblBlcnNvbmFsaXphZGEpOgogICAgIiIiRXhjZXBjacOzbiBsYW56YWRhIGN1YW5kbyBlbCB2YWxvciBlcyBkZW1hc2lhZG8gYmFqbyIiIgogICAgcGFzcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MiExcepcionPersonalizada(Exception):
+    &quot;&quot;&quot;Clase base para otras excepciones personalizadas&quot;&quot;&quot;
+    pass
+
+class ValorDemasiadoAltoError(MiExcepcionPersonalizada):
+    &quot;&quot;&quot;Excepci&oacute;n lanzada cuando el valor es demasiado alto&quot;&quot;&quot;
+    pass
+
+class ValorDemasiadoBajoError(MiExcepcionPersonalizada):
+    &quot;&quot;&quot;Excepci&oacute;n lanzada cuando el valor es demasiado bajo&quot;&quot;&quot;
+    pass</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Vamos a crear un ejemplo donde utilizamos estas excepciones personalizadas. Supongamos que tenemos una función que verifica si un número está dentro de un rango permitido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHZlcmlmaWNhcl92YWxvcih2YWxvcik6CiAgICBpZiB2YWxvciA+IDEwMDoKICAgICAgICByYWlzZSBWYWxvckRlbWFzaWFkb0FsdG9FcnJvcigiRWwgdmFsb3IgZXMgZGVtYXNpYWRvIGFsdG8hIikKICAgIGVsaWYgdmFsb3IgPCAxOgogICAgICAgIHJhaXNlIFZhbG9yRGVtYXNpYWRvQmFqb0Vycm9yKCJFbCB2YWxvciBlcyBkZW1hc2lhZG8gYmFqbyEiKQogICAgZWxzZToKICAgICAgICBwcmludCgiRWwgdmFsb3IgZXN0w6EgZGVudHJvIGRlbCByYW5nbyBwZXJtaXRpZG8uIikKCiMgUHJvYmFuZG8gbGEgZnVuY2nDs24KdHJ5OgogICAgdmVyaWZpY2FyX3ZhbG9yKDE1MCkKZXhjZXB0IFZhbG9yRGVtYXNpYWRvQWx0b0Vycm9yIGFzIGU6CiAgICBwcmludChlKQpleGNlcHQgVmFsb3JEZW1hc2lhZG9CYWpvRXJyb3IgYXMgZToKICAgIHByaW50KGUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def verificar_valor(valor):
+    if valor &gt; 100:
+        raise ValorDemasiadoAltoError(&quot;El valor es demasiado alto!&quot;)
+    elif valor &lt; 1:
+        raise ValorDemasiadoBajoError(&quot;El valor es demasiado bajo!&quot;)
+    else:
+        print(&quot;El valor est&aacute; dentro del rango permitido.&quot;)
+
+# Probando la funci&oacute;n
+try:
+    verificar_valor(150)
+except ValorDemasiadoAltoError as e:
+    print(e)
+except ValorDemasiadoBajoError as e:
+    print(e)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Definición de Excepciones</strong>:</p>
+<ul>
+<li><code>MiExcepcionPersonalizada</code>: Clase base para nuestras excepciones personalizadas.</li>
+<li><code>ValorDemasiadoAltoError</code> y <code>ValorDemasiadoBajoError</code>: Excepciones específicas que heredan de <code>MiExcepcionPersonalizada</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Función <code>verificar_valor</code></strong>:</p>
+<ul>
+<li>Verifica si el valor está dentro del rango permitido (1 a 100).</li>
+<li>Lanza <code>ValorDemasiadoAltoError</code> si el valor es mayor que 100.</li>
+<li>Lanza <code>ValorDemasiadoBajoError</code> si el valor es menor que 1.</li>
+<li>Imprime un mensaje si el valor está dentro del rango permitido.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bloque <code>try-except</code></strong>:</p>
+<ul>
+<li>Llama a la función <code>verificar_valor</code> con un valor de 150.</li>
+<li>Captura y maneja las excepciones <code>ValorDemasiadoAltoError</code> y <code>ValorDemasiadoBajoError</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una excepción personalizada llamada <code>EdadInvalidaError</code> que se lanzará cuando una función llamada <code>verificar_edad</code> reciba una edad que no esté en el rango de 0 a 120. La función debe lanzar la excepción con un mensaje adecuado si la edad es inválida.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgRWRhZEludmFsaWRhRXJyb3IoRXhjZXB0aW9uKToKICAgICIiIkV4Y2VwY2nDs24gbGFuemFkYSBjdWFuZG8gbGEgZWRhZCBubyBlc3TDoSBlbiBlbCByYW5nbyBwZXJtaXRpZG8iIiIKICAgIHBhc3MKCmRlZiB2ZXJpZmljYXJfZWRhZChlZGFkKToKICAgIGlmIGVkYWQgPCAwIG9yIGVkYWQgPiAxMjA6CiAgICAgICAgcmFpc2UgRWRhZEludmFsaWRhRXJyb3IoIkxhIGVkYWQgZGViZSBlc3RhciBlbnRyZSAwIHkgMTIwIGHDsW9zLiIpCiAgICBlbHNlOgogICAgICAgIHByaW50KCJMYSBlZGFkIGVzIHbDoWxpZGEuIikKCiMgUHJvYmFuZG8gbGEgZnVuY2nDs24KdHJ5OgogICAgdmVyaWZpY2FyX2VkYWQoMTUwKQpleGNlcHQgRWRhZEludmFsaWRhRXJyb3IgYXMgZToKICAgIHByaW50KGUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class EdadInvalidaError(Exception):
+    &quot;&quot;&quot;Excepci&oacute;n lanzada cuando la edad no est&aacute; en el rango permitido&quot;&quot;&quot;
+    pass
+
+def verificar_edad(edad):
+    if edad &lt; 0 or edad &gt; 120:
+        raise EdadInvalidaError(&quot;La edad debe estar entre 0 y 120 a&ntilde;os.&quot;)
+    else:
+        print(&quot;La edad es v&aacute;lida.&quot;)
+
+# Probando la funci&oacute;n
+try:
+    verificar_edad(150)
+except EdadInvalidaError as e:
+    print(e)</pre></div><div class='content'></div><h2>Explicación de la Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Definición de Excepción</strong>:</p>
+<ul>
+<li><code>EdadInvalidaError</code>: Excepción personalizada que se lanza cuando la edad no está en el rango permitido.</li>
+</ul>
+</li>
+<li>
+<p><strong>Función <code>verificar_edad</code></strong>:</p>
+<ul>
+<li>Verifica si la edad está dentro del rango permitido (0 a 120).</li>
+<li>Lanza <code>EdadInvalidaError</code> si la edad es menor que 0 o mayor que 120.</li>
+<li>Imprime un mensaje si la edad está dentro del rango permitido.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bloque <code>try-except</code></strong>:</p>
+<ul>
+<li>Llama a la función <code>verificar_edad</code> con un valor de 150.</li>
+<li>Captura y maneja la excepción <code>EdadInvalidaError</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las excepciones personalizadas son una herramienta poderosa para manejar errores específicos en nuestras aplicaciones. Nos permiten proporcionar mensajes de error claros y específicos, lo que facilita la depuración y el mantenimiento del código. En el siguiente módulo, exploraremos temas avanzados como decoradores y generadores, que nos permitirán escribir código más eficiente y reutilizable.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-raising-exceptions' title="Lanzamiento de Excepciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-decorators' title="Decoradores">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSockets</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/javascript/07-03-websockets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/javascript/07-03-websockets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/javascript/07-03-websockets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/javascript/07-03-websockets" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/javascript/07-03-websockets" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-fetch-api-ajax' title="Fetch API y AJAX">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">WebSockets</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-service-workers-pwas' title="Service Workers y Aplicaciones Web Progresivas (PWAs)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a WebSockets</h1>
+<div class='content'><p>WebSockets es una tecnología que permite la comunicación bidireccional en tiempo real entre un cliente y un servidor. A diferencia de HTTP, que sigue un modelo de solicitud-respuesta, WebSockets permite que el servidor envíe datos al cliente sin que el cliente tenga que solicitarlo explícitamente. Esto es especialmente útil para aplicaciones que requieren actualizaciones en tiempo real, como chats, juegos en línea y aplicaciones financieras.</p>
+</div><h2>Características de WebSockets</h2>
+<div class='content'><ul>
+<li><strong>Comunicación Bidireccional</strong>: Tanto el cliente como el servidor pueden enviar mensajes en cualquier momento.</li>
+<li><strong>Persistencia de Conexión</strong>: Una vez establecida, la conexión permanece abierta, eliminando la necesidad de múltiples solicitudes HTTP.</li>
+<li><strong>Bajo Overhead</strong>: Menos sobrecarga en comparación con HTTP, ya que no se envían encabezados HTTP completos con cada mensaje.</li>
+</ul>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'><p>Para trabajar con WebSockets, necesitarás un servidor que soporte WebSockets y un cliente que pueda conectarse a ese servidor. En este ejemplo, utilizaremos Node.js para el servidor y JavaScript en el navegador para el cliente.</p>
+</div><h2>Instalación de Node.js y WebSocket</h2>
+<div class='content'><ol>
+<li><strong>Instalar Node.js</strong>: Si no tienes Node.js instalado, descárgalo e instálalo desde <a href="https://nodejs.org/">nodejs.org</a>.</li>
+<li><strong>Crear un Proyecto Node.js</strong>: Abre tu terminal y crea un nuevo proyecto.
+<pre><code class="language-bash">mkdir websocket-demo
+cd websocket-demo
+npm init -y
+</code></pre>
+</li>
+<li><strong>Instalar el Paquete WebSocket</strong>: Utilizaremos la biblioteca <code>ws</code> para manejar WebSockets en Node.js.
+<pre><code class="language-bash">npm install ws
+</code></pre>
+</li>
+</ol>
+</div><h1>Creación del Servidor WebSocket</h1>
+<div class='content'><p>Vamos a crear un servidor WebSocket básico que escuche conexiones entrantes y envíe mensajes a los clientes conectados.</p>
+</div><h2>Código del Servidor</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc2VydmVyLmpzCmNvbnN0IFdlYlNvY2tldCA9IHJlcXVpcmUoJ3dzJyk7Cgpjb25zdCBzZXJ2ZXIgPSBuZXcgV2ViU29ja2V0LlNlcnZlcih7IHBvcnQ6IDgwODAgfSk7CgpzZXJ2ZXIub24oJ2Nvbm5lY3Rpb24nLCAod3MpID0+IHsKICAgIGNvbnNvbGUubG9nKCdOdWV2byBjbGllbnRlIGNvbmVjdGFkbycpOwoKICAgIC8vIEVudmlhciB1biBtZW5zYWplIGFsIGNsaWVudGUKICAgIHdzLnNlbmQoJ0JpZW52ZW5pZG8gYWwgc2Vydmlkb3IgV2ViU29ja2V0IScpOwoKICAgIC8vIE1hbmVqYXIgbWVuc2FqZXMgcmVjaWJpZG9zIGRlbCBjbGllbnRlCiAgICB3cy5vbignbWVzc2FnZScsIChtZXNzYWdlKSA9PiB7CiAgICAgICAgY29uc29sZS5sb2coYE1lbnNhamUgcmVjaWJpZG86ICR7bWVzc2FnZX1gKTsKICAgICAgICAvLyBSZXNwb25kZXIgYWwgY2xpZW50ZQogICAgICAgIHdzLnNlbmQoYFNlcnZpZG9yIHJlY2liacOzOiAke21lc3NhZ2V9YCk7CiAgICB9KTsKCiAgICAvLyBNYW5lamFyIGxhIGRlc2NvbmV4acOzbiBkZWwgY2xpZW50ZQogICAgd3Mub24oJ2Nsb3NlJywgKCkgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdDbGllbnRlIGRlc2NvbmVjdGFkbycpOwogICAgfSk7Cn0pOwoKY29uc29sZS5sb2coJ1NlcnZpZG9yIFdlYlNvY2tldCBlc2N1Y2hhbmRvIGVuIHdzOi8vbG9jYWxob3N0OjgwODAnKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// server.js
+const WebSocket = require('ws');
+
+const server = new WebSocket.Server({ port: 8080 });
+
+server.on('connection', (ws) =&gt; {
+    console.log('Nuevo cliente conectado');
+
+    // Enviar un mensaje al cliente
+    ws.send('Bienvenido al servidor WebSocket!');
+
+    // Manejar mensajes recibidos del cliente
+    ws.on('message', (message) =&gt; {
+        console.log(`Mensaje recibido: ${message}`);
+        // Responder al cliente
+        ws.send(`Servidor recibi&oacute;: ${message}`);
+    });
+
+    // Manejar la desconexi&oacute;n del cliente
+    ws.on('close', () =&gt; {
+        console.log('Cliente desconectado');
+    });
+});
+
+console.log('Servidor WebSocket escuchando en ws://localhost:8080');</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Importar WebSocket</strong>: Importamos la biblioteca <code>ws</code>.</li>
+<li><strong>Crear el Servidor</strong>: Creamos un servidor WebSocket que escucha en el puerto 8080.</li>
+<li><strong>Manejo de Conexiones</strong>: Cuando un cliente se conecta, enviamos un mensaje de bienvenida.</li>
+<li><strong>Manejo de Mensajes</strong>: Escuchamos los mensajes del cliente y respondemos con una confirmación.</li>
+<li><strong>Manejo de Desconexiones</strong>: Registramos cuando un cliente se desconecta.</li>
+</ul>
+</div><h1>Creación del Cliente WebSocket</h1>
+<div class='content'><p>Ahora, crearemos un cliente WebSocket en JavaScript que se conecte a nuestro servidor.</p>
+</div><h2>Código del Cliente</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBpbmRleC5odG1sIC0tPgo8IURPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4iPgo8aGVhZD4KICAgIDxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KICAgIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICAgIDx0aXRsZT5XZWJTb2NrZXQgQ2xpZW50PC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5XZWJTb2NrZXQgQ2xpZW50PC9oMT4KICAgIDxidXR0b24gaWQ9InNlbmRNZXNzYWdlIj5FbnZpYXIgTWVuc2FqZTwvYnV0dG9uPgogICAgPHNjcmlwdD4KICAgICAgICBjb25zdCB3cyA9IG5ldyBXZWJTb2NrZXQoJ3dzOi8vbG9jYWxob3N0OjgwODAnKTsKCiAgICAgICAgd3Mub25vcGVuID0gKCkgPT4gewogICAgICAgICAgICBjb25zb2xlLmxvZygnQ29uZWN0YWRvIGFsIHNlcnZpZG9yIFdlYlNvY2tldCcpOwogICAgICAgIH07CgogICAgICAgIHdzLm9ubWVzc2FnZSA9IChldmVudCkgPT4gewogICAgICAgICAgICBjb25zb2xlLmxvZyhgTWVuc2FqZSBkZWwgc2Vydmlkb3I6ICR7ZXZlbnQuZGF0YX1gKTsKICAgICAgICB9OwoKICAgICAgICB3cy5vbmNsb3NlID0gKCkgPT4gewogICAgICAgICAgICBjb25zb2xlLmxvZygnRGVzY29uZWN0YWRvIGRlbCBzZXJ2aWRvciBXZWJTb2NrZXQnKTsKICAgICAgICB9OwoKICAgICAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnc2VuZE1lc3NhZ2UnKS5hZGRFdmVudExpc3RlbmVyKCdjbGljaycsICgpID0+IHsKICAgICAgICAgICAgd3Muc2VuZCgnSG9sYSwgc2Vydmlkb3IhJyk7CiAgICAgICAgfSk7CiAgICA8L3NjcmlwdD4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- index.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;WebSocket Client&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;WebSocket Client&lt;/h1&gt;
+    &lt;button id=&quot;sendMessage&quot;&gt;Enviar Mensaje&lt;/button&gt;
+    &lt;script&gt;
+        const ws = new WebSocket('ws://localhost:8080');
+
+        ws.onopen = () =&gt; {
+            console.log('Conectado al servidor WebSocket');
+        };
+
+        ws.onmessage = (event) =&gt; {
+            console.log(`Mensaje del servidor: ${event.data}`);
+        };
+
+        ws.onclose = () =&gt; {
+            console.log('Desconectado del servidor WebSocket');
+        };
+
+        document.getElementById('sendMessage').addEventListener('click', () =&gt; {
+            ws.send('Hola, servidor!');
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Conexión al Servidor</strong>: Creamos una nueva instancia de <code>WebSocket</code> y nos conectamos al servidor en <code>ws://localhost:8080</code>.</li>
+<li><strong>Manejo de Eventos</strong>:
+<ul>
+<li><code>onopen</code>: Se ejecuta cuando la conexión se establece.</li>
+<li><code>onmessage</code>: Se ejecuta cuando se recibe un mensaje del servidor.</li>
+<li><code>onclose</code>: Se ejecuta cuando la conexión se cierra.</li>
+</ul>
+</li>
+<li><strong>Enviar Mensaje</strong>: Al hacer clic en el botón, enviamos un mensaje al servidor.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Mejorar el Cliente WebSocket</h2>
+<div class='content'><p><strong>Objetivo</strong>: Modificar el cliente WebSocket para que pueda enviar mensajes personalizados al servidor.</p>
+<ol>
+<li><strong>Agregar un Campo de Entrada</strong>: Añade un campo de entrada en el HTML para que el usuario pueda escribir un mensaje personalizado.</li>
+<li><strong>Enviar el Mensaje</strong>: Modifica el evento <code>click</code> del botón para enviar el mensaje escrito por el usuario.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSBpbmRleC5odG1sIC0tPgo8IURPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4iPgo8aGVhZD4KICAgIDxtZXRhIGNoYXJzZXQ9IlVURi04Ij4KICAgIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICAgIDx0aXRsZT5XZWJTb2NrZXQgQ2xpZW50PC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5XZWJTb2NrZXQgQ2xpZW50PC9oMT4KICAgIDxpbnB1dCB0eXBlPSJ0ZXh0IiBpZD0ibWVzc2FnZUlucHV0IiBwbGFjZWhvbGRlcj0iRXNjcmliZSB0dSBtZW5zYWplIGFxdcOtIj4KICAgIDxidXR0b24gaWQ9InNlbmRNZXNzYWdlIj5FbnZpYXIgTWVuc2FqZTwvYnV0dG9uPgogICAgPHNjcmlwdD4KICAgICAgICBjb25zdCB3cyA9IG5ldyBXZWJTb2NrZXQoJ3dzOi8vbG9jYWxob3N0OjgwODAnKTsKCiAgICAgICAgd3Mub25vcGVuID0gKCkgPT4gewogICAgICAgICAgICBjb25zb2xlLmxvZygnQ29uZWN0YWRvIGFsIHNlcnZpZG9yIFdlYlNvY2tldCcpOwogICAgICAgIH07CgogICAgICAgIHdzLm9ubWVzc2FnZSA9IChldmVudCkgPT4gewogICAgICAgICAgICBjb25zb2xlLmxvZyhgTWVuc2FqZSBkZWwgc2Vydmlkb3I6ICR7ZXZlbnQuZGF0YX1gKTsKICAgICAgICB9OwoKICAgICAgICB3cy5vbmNsb3NlID0gKCkgPT4gewogICAgICAgICAgICBjb25zb2xlLmxvZygnRGVzY29uZWN0YWRvIGRlbCBzZXJ2aWRvciBXZWJTb2NrZXQnKTsKICAgICAgICB9OwoKICAgICAgICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgnc2VuZE1lc3NhZ2UnKS5hZGRFdmVudExpc3RlbmVyKCdjbGljaycsICgpID0+IHsKICAgICAgICAgICAgY29uc3QgbWVzc2FnZSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdtZXNzYWdlSW5wdXQnKS52YWx1ZTsKICAgICAgICAgICAgd3Muc2VuZChtZXNzYWdlKTsKICAgICAgICB9KTsKICAgIDwvc2NyaXB0Pgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- index.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;WebSocket Client&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;WebSocket Client&lt;/h1&gt;
+    &lt;input type=&quot;text&quot; id=&quot;messageInput&quot; placeholder=&quot;Escribe tu mensaje aqu&iacute;&quot;&gt;
+    &lt;button id=&quot;sendMessage&quot;&gt;Enviar Mensaje&lt;/button&gt;
+    &lt;script&gt;
+        const ws = new WebSocket('ws://localhost:8080');
+
+        ws.onopen = () =&gt; {
+            console.log('Conectado al servidor WebSocket');
+        };
+
+        ws.onmessage = (event) =&gt; {
+            console.log(`Mensaje del servidor: ${event.data}`);
+        };
+
+        ws.onclose = () =&gt; {
+            console.log('Desconectado del servidor WebSocket');
+        };
+
+        document.getElementById('sendMessage').addEventListener('click', () =&gt; {
+            const message = document.getElementById('messageInput').value;
+            ws.send(message);
+        });
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Ejercicio 2: Manejar Múltiples Clientes</h2>
+<div class='content'><p><strong>Objetivo</strong>: Modificar el servidor WebSocket para que maneje múltiples clientes y envíe un mensaje a todos los clientes cuando uno de ellos envíe un mensaje.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc2VydmVyLmpzCmNvbnN0IFdlYlNvY2tldCA9IHJlcXVpcmUoJ3dzJyk7Cgpjb25zdCBzZXJ2ZXIgPSBuZXcgV2ViU29ja2V0LlNlcnZlcih7IHBvcnQ6IDgwODAgfSk7CgpzZXJ2ZXIub24oJ2Nvbm5lY3Rpb24nLCAod3MpID0+IHsKICAgIGNvbnNvbGUubG9nKCdOdWV2byBjbGllbnRlIGNvbmVjdGFkbycpOwoKICAgIHdzLnNlbmQoJ0JpZW52ZW5pZG8gYWwgc2Vydmlkb3IgV2ViU29ja2V0IScpOwoKICAgIHdzLm9uKCdtZXNzYWdlJywgKG1lc3NhZ2UpID0+IHsKICAgICAgICBjb25zb2xlLmxvZyhgTWVuc2FqZSByZWNpYmlkbzogJHttZXNzYWdlfWApOwogICAgICAgIC8vIEVudmlhciBlbCBtZW5zYWplIGEgdG9kb3MgbG9zIGNsaWVudGVzIGNvbmVjdGFkb3MKICAgICAgICBzZXJ2ZXIuY2xpZW50cy5mb3JFYWNoKGNsaWVudCA9PiB7CiAgICAgICAgICAgIGlmIChjbGllbnQucmVhZHlTdGF0ZSA9PT0gV2ViU29ja2V0Lk9QRU4pIHsKICAgICAgICAgICAgICAgIGNsaWVudC5zZW5kKGBDbGllbnRlIGRpam86ICR7bWVzc2FnZX1gKTsKICAgICAgICAgICAgfQogICAgICAgIH0pOwogICAgfSk7CgogICAgd3Mub24oJ2Nsb3NlJywgKCkgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdDbGllbnRlIGRlc2NvbmVjdGFkbycpOwogICAgfSk7Cn0pOwoKY29uc29sZS5sb2coJ1NlcnZpZG9yIFdlYlNvY2tldCBlc2N1Y2hhbmRvIGVuIHdzOi8vbG9jYWxob3N0OjgwODAnKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// server.js
+const WebSocket = require('ws');
+
+const server = new WebSocket.Server({ port: 8080 });
+
+server.on('connection', (ws) =&gt; {
+    console.log('Nuevo cliente conectado');
+
+    ws.send('Bienvenido al servidor WebSocket!');
+
+    ws.on('message', (message) =&gt; {
+        console.log(`Mensaje recibido: ${message}`);
+        // Enviar el mensaje a todos los clientes conectados
+        server.clients.forEach(client =&gt; {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(`Cliente dijo: ${message}`);
+            }
+        });
+    });
+
+    ws.on('close', () =&gt; {
+        console.log('Cliente desconectado');
+    });
+});
+
+console.log('Servidor WebSocket escuchando en ws://localhost:8080');</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre WebSockets, una tecnología poderosa para la comunicación en tiempo real entre clientes y servidores. Hemos configurado un servidor WebSocket básico utilizando Node.js y un cliente WebSocket en JavaScript. Además, hemos realizado ejercicios prácticos para mejorar nuestra comprensión y habilidades en el manejo de WebSockets.</p>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En la siguiente sección, exploraremos los Service Workers y las Aplicaciones Web Progresivas (PWAs), que nos permitirán crear aplicaciones web más robustas y capaces de funcionar sin conexión a internet.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-fetch-api-ajax' title="Fetch API y AJAX">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-service-workers-pwas' title="Service Workers y Aplicaciones Web Progresivas (PWAs)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

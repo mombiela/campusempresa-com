@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Workers y Aplicaciones Web Progresivas (PWAs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/javascript/07-04-service-workers-pwas" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/javascript/07-04-service-workers-pwas" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/javascript/07-04-service-workers-pwas" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/javascript/07-04-service-workers-pwas" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/javascript/07-04-service-workers-pwas" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-websockets' title="WebSockets">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Service Workers y Aplicaciones Web Progresivas (PWAs)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-introduction-webassembly' title="Introducción a WebAssembly">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las Aplicaciones Web Progresivas (PWAs) son aplicaciones web que utilizan tecnologías modernas para ofrecer una experiencia similar a las aplicaciones nativas. Los Service Workers son una de las tecnologías clave que permiten a las PWAs funcionar sin conexión, recibir notificaciones push y mejorar el rendimiento.</p>
+</div><h2>¿Qué es un Service Worker?</h2>
+<div class='content'><p>Un Service Worker es un script que el navegador ejecuta en segundo plano, separado de la página web. Permite interceptar y controlar las solicitudes de red, almacenar recursos en caché y manejar notificaciones push.</p>
+</div><h2>Características de las PWAs</h2>
+<div class='content'><ol>
+<li><strong>Responsivas</strong>: Funcionan en cualquier dispositivo y tamaño de pantalla.</li>
+<li><strong>Conectividad Independiente</strong>: Pueden funcionar sin conexión o con conexiones de baja calidad.</li>
+<li><strong>Actualizables</strong>: Siempre están actualizadas gracias a los Service Workers.</li>
+<li><strong>Seguras</strong>: Se sirven a través de HTTPS para prevenir ataques de seguridad.</li>
+<li><strong>Reenganchables</strong>: Pueden enviar notificaciones push para reenganchar a los usuarios.</li>
+<li><strong>Instalables</strong>: Pueden ser añadidas a la pantalla de inicio del dispositivo sin necesidad de una tienda de aplicaciones.</li>
+</ol>
+</div><h1>Configuración de un Service Worker</h1>
+<div class='content'></div><h2>Registro del Service Worker</h2>
+<div class='content'><p>Para utilizar un Service Worker, primero debes registrarlo en tu aplicación web. Esto se hace en el archivo JavaScript principal de tu aplicación.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKCdzZXJ2aWNlV29ya2VyJyBpbiBuYXZpZ2F0b3IpIHsKICB3aW5kb3cuYWRkRXZlbnRMaXN0ZW5lcignbG9hZCcsICgpID0+IHsKICAgIG5hdmlnYXRvci5zZXJ2aWNlV29ya2VyLnJlZ2lzdGVyKCcvc2VydmljZS13b3JrZXIuanMnKQogICAgICAudGhlbihyZWdpc3RyYXRpb24gPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdTZXJ2aWNlIFdvcmtlciByZWdpc3RyYWRvIGNvbiDDqXhpdG86JywgcmVnaXN0cmF0aW9uKTsKICAgICAgfSkKICAgICAgLmNhdGNoKGVycm9yID0+IHsKICAgICAgICBjb25zb2xlLmxvZygnRXJyb3IgYWwgcmVnaXN0cmFyIGVsIFNlcnZpY2UgV29ya2VyOicsIGVycm9yKTsKICAgICAgfSk7CiAgfSk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () =&gt; {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration =&gt; {
+        console.log('Service Worker registrado con &eacute;xito:', registration);
+      })
+      .catch(error =&gt; {
+        console.log('Error al registrar el Service Worker:', error);
+      });
+  });
+}</pre></div><div class='content'></div><h2>Instalación del Service Worker</h2>
+<div class='content'><p>El archivo <code>service-worker.js</code> contiene el código del Service Worker. Durante la fase de instalación, puedes almacenar en caché los recursos necesarios para que tu aplicación funcione sin conexión.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgQ0FDSEVfTkFNRSA9ICdteS1jYWNoZS12MSc7CmNvbnN0IHVybHNUb0NhY2hlID0gWwogICcvJywKICAnL3N0eWxlcy9tYWluLmNzcycsCiAgJy9zY3JpcHQvbWFpbi5qcycKXTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignaW5zdGFsbCcsIGV2ZW50ID0+IHsKICBldmVudC53YWl0VW50aWwoCiAgICBjYWNoZXMub3BlbihDQUNIRV9OQU1FKQogICAgICAudGhlbihjYWNoZSA9PiB7CiAgICAgICAgY29uc29sZS5sb2coJ0FicmllbmRvIGNhY2jDqScpOwogICAgICAgIHJldHVybiBjYWNoZS5hZGRBbGwodXJsc1RvQ2FjaGUpOwogICAgICB9KQogICk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const CACHE_NAME = 'my-cache-v1';
+const urlsToCache = [
+  '/',
+  '/styles/main.css',
+  '/script/main.js'
+];
+
+self.addEventListener('install', event =&gt; {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache =&gt; {
+        console.log('Abriendo cach&eacute;');
+        return cache.addAll(urlsToCache);
+      })
+  );
+});</pre></div><div class='content'></div><h2>Activación del Service Worker</h2>
+<div class='content'><p>Después de la instalación, el Service Worker se activa y puede gestionar las solicitudes de red.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VsZi5hZGRFdmVudExpc3RlbmVyKCdhY3RpdmF0ZScsIGV2ZW50ID0+IHsKICBjb25zdCBjYWNoZVdoaXRlbGlzdCA9IFtDQUNIRV9OQU1FXTsKICBldmVudC53YWl0VW50aWwoCiAgICBjYWNoZXMua2V5cygpLnRoZW4oY2FjaGVOYW1lcyA9PiB7CiAgICAgIHJldHVybiBQcm9taXNlLmFsbCgKICAgICAgICBjYWNoZU5hbWVzLm1hcChjYWNoZU5hbWUgPT4gewogICAgICAgICAgaWYgKGNhY2hlV2hpdGVsaXN0LmluZGV4T2YoY2FjaGVOYW1lKSA9PT0gLTEpIHsKICAgICAgICAgICAgcmV0dXJuIGNhY2hlcy5kZWxldGUoY2FjaGVOYW1lKTsKICAgICAgICAgIH0KICAgICAgICB9KQogICAgICApOwogICAgfSkKICApOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>self.addEventListener('activate', event =&gt; {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames =&gt; {
+      return Promise.all(
+        cacheNames.map(cacheName =&gt; {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});</pre></div><div class='content'></div><h2>Intercepción de Solicitudes de Red</h2>
+<div class='content'><p>El Service Worker puede interceptar las solicitudes de red y responder con recursos almacenados en caché.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VsZi5hZGRFdmVudExpc3RlbmVyKCdmZXRjaCcsIGV2ZW50ID0+IHsKICBldmVudC5yZXNwb25kV2l0aCgKICAgIGNhY2hlcy5tYXRjaChldmVudC5yZXF1ZXN0KQogICAgICAudGhlbihyZXNwb25zZSA9PiB7CiAgICAgICAgaWYgKHJlc3BvbnNlKSB7CiAgICAgICAgICByZXR1cm4gcmVzcG9uc2U7CiAgICAgICAgfQogICAgICAgIHJldHVybiBmZXRjaChldmVudC5yZXF1ZXN0KTsKICAgICAgfSkKICApOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>self.addEventListener('fetch', event =&gt; {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response =&gt; {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Registro y Caché de Recursos</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Registrar un Service Worker y almacenar en caché los recursos de la aplicación.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Crea un archivo <code>service-worker.js</code> en la raíz de tu proyecto.</li>
+<li>Registra el Service Worker en tu archivo JavaScript principal.</li>
+<li>En el archivo <code>service-worker.js</code>, almacena en caché los recursos necesarios durante la fase de instalación.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQXJjaGl2byBwcmluY2lwYWwgKGUuZy4sIG1haW4uanMpCmlmICgnc2VydmljZVdvcmtlcicgaW4gbmF2aWdhdG9yKSB7CiAgd2luZG93LmFkZEV2ZW50TGlzdGVuZXIoJ2xvYWQnLCAoKSA9PiB7CiAgICBuYXZpZ2F0b3Iuc2VydmljZVdvcmtlci5yZWdpc3RlcignL3NlcnZpY2Utd29ya2VyLmpzJykKICAgICAgLnRoZW4ocmVnaXN0cmF0aW9uID0+IHsKICAgICAgICBjb25zb2xlLmxvZygnU2VydmljZSBXb3JrZXIgcmVnaXN0cmFkbyBjb24gw6l4aXRvOicsIHJlZ2lzdHJhdGlvbik7CiAgICAgIH0pCiAgICAgIC5jYXRjaChlcnJvciA9PiB7CiAgICAgICAgY29uc29sZS5sb2coJ0Vycm9yIGFsIHJlZ2lzdHJhciBlbCBTZXJ2aWNlIFdvcmtlcjonLCBlcnJvcik7CiAgICAgIH0pOwogIH0pOwp9CgovLyBBcmNoaXZvIHNlcnZpY2Utd29ya2VyLmpzCmNvbnN0IENBQ0hFX05BTUUgPSAnbXktY2FjaGUtdjEnOwpjb25zdCB1cmxzVG9DYWNoZSA9IFsKICAnLycsCiAgJy9zdHlsZXMvbWFpbi5jc3MnLAogICcvc2NyaXB0L21haW4uanMnCl07CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLm9wZW4oQ0FDSEVfTkFNRSkKICAgICAgLnRoZW4oY2FjaGUgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdBYnJpZW5kbyBjYWNow6knKTsKICAgICAgICByZXR1cm4gY2FjaGUuYWRkQWxsKHVybHNUb0NhY2hlKTsKICAgICAgfSkKICApOwp9KTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignZmV0Y2gnLCBldmVudCA9PiB7CiAgZXZlbnQucmVzcG9uZFdpdGgoCiAgICBjYWNoZXMubWF0Y2goZXZlbnQucmVxdWVzdCkKICAgICAgLnRoZW4ocmVzcG9uc2UgPT4gewogICAgICAgIGlmIChyZXNwb25zZSkgewogICAgICAgICAgcmV0dXJuIHJlc3BvbnNlOwogICAgICAgIH0KICAgICAgICByZXR1cm4gZmV0Y2goZXZlbnQucmVxdWVzdCk7CiAgICAgIH0pCiAgKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Archivo principal (e.g., main.js)
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () =&gt; {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration =&gt; {
+        console.log('Service Worker registrado con &eacute;xito:', registration);
+      })
+      .catch(error =&gt; {
+        console.log('Error al registrar el Service Worker:', error);
+      });
+  });
+}
+
+// Archivo service-worker.js
+const CACHE_NAME = 'my-cache-v1';
+const urlsToCache = [
+  '/',
+  '/styles/main.css',
+  '/script/main.js'
+];
+
+self.addEventListener('install', event =&gt; {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache =&gt; {
+        console.log('Abriendo cach&eacute;');
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+self.addEventListener('fetch', event =&gt; {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response =&gt; {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});</pre></div><div class='content'></div><h2>Ejercicio 2: Actualización del Caché</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Actualizar el caché cuando se despliega una nueva versión de la aplicación.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Modifica el archivo <code>service-worker.js</code> para eliminar cachés antiguos durante la fase de activación.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgQ0FDSEVfTkFNRSA9ICdteS1jYWNoZS12Mic7IC8vIENhbWJpYSBlbCBub21icmUgZGVsIGNhY2jDqSBwYXJhIGFjdHVhbGl6YXJsbwpjb25zdCB1cmxzVG9DYWNoZSA9IFsKICAnLycsCiAgJy9zdHlsZXMvbWFpbi5jc3MnLAogICcvc2NyaXB0L21haW4uanMnCl07CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2luc3RhbGwnLCBldmVudCA9PiB7CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLm9wZW4oQ0FDSEVfTkFNRSkKICAgICAgLnRoZW4oY2FjaGUgPT4gewogICAgICAgIGNvbnNvbGUubG9nKCdBYnJpZW5kbyBjYWNow6knKTsKICAgICAgICByZXR1cm4gY2FjaGUuYWRkQWxsKHVybHNUb0NhY2hlKTsKICAgICAgfSkKICApOwp9KTsKCnNlbGYuYWRkRXZlbnRMaXN0ZW5lcignYWN0aXZhdGUnLCBldmVudCA9PiB7CiAgY29uc3QgY2FjaGVXaGl0ZWxpc3QgPSBbQ0FDSEVfTkFNRV07CiAgZXZlbnQud2FpdFVudGlsKAogICAgY2FjaGVzLmtleXMoKS50aGVuKGNhY2hlTmFtZXMgPT4gewogICAgICByZXR1cm4gUHJvbWlzZS5hbGwoCiAgICAgICAgY2FjaGVOYW1lcy5tYXAoY2FjaGVOYW1lID0+IHsKICAgICAgICAgIGlmIChjYWNoZVdoaXRlbGlzdC5pbmRleE9mKGNhY2hlTmFtZSkgPT09IC0xKSB7CiAgICAgICAgICAgIHJldHVybiBjYWNoZXMuZGVsZXRlKGNhY2hlTmFtZSk7CiAgICAgICAgICB9CiAgICAgICAgfSkKICAgICAgKTsKICAgIH0pCiAgKTsKfSk7CgpzZWxmLmFkZEV2ZW50TGlzdGVuZXIoJ2ZldGNoJywgZXZlbnQgPT4gewogIGV2ZW50LnJlc3BvbmRXaXRoKAogICAgY2FjaGVzLm1hdGNoKGV2ZW50LnJlcXVlc3QpCiAgICAgIC50aGVuKHJlc3BvbnNlID0+IHsKICAgICAgICBpZiAocmVzcG9uc2UpIHsKICAgICAgICAgIHJldHVybiByZXNwb25zZTsKICAgICAgICB9CiAgICAgICAgcmV0dXJuIGZldGNoKGV2ZW50LnJlcXVlc3QpOwogICAgICB9KQogICk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const CACHE_NAME = 'my-cache-v2'; // Cambia el nombre del cach&eacute; para actualizarlo
+const urlsToCache = [
+  '/',
+  '/styles/main.css',
+  '/script/main.js'
+];
+
+self.addEventListener('install', event =&gt; {
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache =&gt; {
+        console.log('Abriendo cach&eacute;');
+        return cache.addAll(urlsToCache);
+      })
+  );
+});
+
+self.addEventListener('activate', event =&gt; {
+  const cacheWhitelist = [CACHE_NAME];
+  event.waitUntil(
+    caches.keys().then(cacheNames =&gt; {
+      return Promise.all(
+        cacheNames.map(cacheName =&gt; {
+          if (cacheWhitelist.indexOf(cacheName) === -1) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    })
+  );
+});
+
+self.addEventListener('fetch', event =&gt; {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response =&gt; {
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
+      })
+  );
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Los Service Workers son una herramienta poderosa para mejorar la experiencia del usuario en aplicaciones web, permitiendo funcionalidades como el funcionamiento sin conexión y las notificaciones push. Las PWAs combinan lo mejor de las aplicaciones web y nativas, ofreciendo una experiencia rica y responsiva. Con la práctica y la implementación de estos conceptos, podrás crear aplicaciones web modernas y eficientes.</p>
+<p>En el próximo módulo, exploraremos cómo utilizar la API Fetch y AJAX para realizar solicitudes de red asíncronas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-websockets' title="WebSockets">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-introduction-webassembly' title="Introducción a WebAssembly">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

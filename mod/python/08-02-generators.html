@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generadores</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/08-02-generators" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/08-02-generators" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/08-02-generators" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/python/08-02-generators" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/python/08-02-generators" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-decorators' title="Decoradores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Generadores</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-context-managers' title="Administradores de Contexto">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los generadores en Python son una forma especial de iteradores que permiten crear secuencias de valores de manera eficiente y perezosa (lazy evaluation). A diferencia de las funciones normales que devuelven un valor y terminan su ejecución, los generadores pueden pausar su ejecución y reanudarla más tarde, lo que los hace ideales para trabajar con grandes conjuntos de datos o flujos de datos continuos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Iterador</strong>: Un objeto que implementa los métodos <code>__iter__()</code> y <code>__next__()</code>, permitiendo iterar sobre sus elementos uno a uno.</li>
+<li><strong>Generador</strong>: Un tipo especial de iterador que se define utilizando una función con la palabra clave <code>yield</code> en lugar de <code>return</code>.</li>
+<li><strong>Lazy Evaluation</strong>: Evaluación diferida de una expresión hasta que su valor sea necesario, lo que permite ahorrar memoria y mejorar el rendimiento.</li>
+</ul>
+</div><h1>Creación de Generadores</h1>
+<div class='content'></div><h2>Usando Funciones con `yield`</h2>
+<div class='content'><p>La forma más común de crear un generador es mediante una función que utiliza la palabra clave <code>yield</code> para devolver valores uno a uno.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGNvbnRhZG9yKG1heGltbyk6CiAgICBjb250YWRvciA9IDAKICAgIHdoaWxlIGNvbnRhZG9yIDwgbWF4aW1vOgogICAgICAgIHlpZWxkIGNvbnRhZG9yCiAgICAgICAgY29udGFkb3IgKz0gMQoKIyBVc28gZGVsIGdlbmVyYWRvcgpmb3IgbnVtZXJvIGluIGNvbnRhZG9yKDUpOgogICAgcHJpbnQobnVtZXJvKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def contador(maximo):
+    contador = 0
+    while contador &lt; maximo:
+        yield contador
+        contador += 1
+
+# Uso del generador
+for numero in contador(5):
+    print(numero)</pre></div><div class='content'><p><strong>Explicación:</strong></p>
+<ol>
+<li>La función <code>contador</code> es un generador porque utiliza <code>yield</code>.</li>
+<li>Cada vez que se llama a <code>yield</code>, la ejecución de la función se pausa y se devuelve el valor actual de <code>contador</code>.</li>
+<li>La próxima vez que se itera sobre el generador, la ejecución se reanuda justo después de la última llamada a <code>yield</code>.</li>
+</ol>
+</div><h2>Usando Expresiones Generadoras</h2>
+<div class='content'><p>Las expresiones generadoras son similares a las comprensiones de listas, pero en lugar de crear una lista en memoria, crean un generador.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFeHByZXNpw7NuIGdlbmVyYWRvcmEKZ2VuZXJhZG9yID0gKHggKiB4IGZvciB4IGluIHJhbmdlKDUpKQoKIyBVc28gZGVsIGdlbmVyYWRvcgpmb3IgdmFsb3IgaW4gZ2VuZXJhZG9yOgogICAgcHJpbnQodmFsb3Ip"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Expresi&oacute;n generadora
+generador = (x * x for x in range(5))
+
+# Uso del generador
+for valor in generador:
+    print(valor)</pre></div><div class='content'><p><strong>Explicación:</strong></p>
+<ol>
+<li>La expresión <code>(x * x for x in range(5))</code> crea un generador que calcula los cuadrados de los números del 0 al 4.</li>
+<li>Al iterar sobre el generador, se calculan y devuelven los valores uno a uno.</li>
+</ol>
+</div><h1>Ejemplos Prácticos</h1>
+<div class='content'></div><h2>Generador de Números Fibonacci</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGZpYm9uYWNjaShuKToKICAgIGEsIGIgPSAwLCAxCiAgICBmb3IgXyBpbiByYW5nZShuKToKICAgICAgICB5aWVsZCBhCiAgICAgICAgYSwgYiA9IGIsIGEgKyBiCgojIFVzbyBkZWwgZ2VuZXJhZG9yCmZvciBudW1lcm8gaW4gZmlib25hY2NpKDEwKToKICAgIHByaW50KG51bWVybyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def fibonacci(n):
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+
+# Uso del generador
+for numero in fibonacci(10):
+    print(numero)</pre></div><div class='content'><p><strong>Explicación:</strong></p>
+<ol>
+<li>La función <code>fibonacci</code> genera los primeros <code>n</code> números de la secuencia de Fibonacci.</li>
+<li>Cada llamada a <code>yield</code> devuelve el valor actual de <code>a</code> y luego actualiza <code>a</code> y <code>b</code>.</li>
+</ol>
+</div><h2>Generador Infinito</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGNvbnRhZG9yX2luZmluaXRvKCk6CiAgICBjb250YWRvciA9IDAKICAgIHdoaWxlIFRydWU6CiAgICAgICAgeWllbGQgY29udGFkb3IKICAgICAgICBjb250YWRvciArPSAxCgojIFVzbyBkZWwgZ2VuZXJhZG9yCmZvciBudW1lcm8gaW4gY29udGFkb3JfaW5maW5pdG8oKToKICAgIGlmIG51bWVybyA+IDEwOgogICAgICAgIGJyZWFrCiAgICBwcmludChudW1lcm8p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def contador_infinito():
+    contador = 0
+    while True:
+        yield contador
+        contador += 1
+
+# Uso del generador
+for numero in contador_infinito():
+    if numero &gt; 10:
+        break
+    print(numero)</pre></div><div class='content'><p><strong>Explicación:</strong></p>
+<ol>
+<li>La función <code>contador_infinito</code> genera un contador infinito.</li>
+<li>El bucle <code>while True</code> asegura que el generador nunca se detenga a menos que se rompa explícitamente.</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Generador de Números Pares</h2>
+<div class='content'><p><strong>Instrucciones:</strong>
+Crea un generador que devuelva los primeros <code>n</code> números pares.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIG51bWVyb3NfcGFyZXMobik6CiAgICBmb3IgaSBpbiByYW5nZShuKToKICAgICAgICB5aWVsZCBpICogMgoKIyBVc28gZGVsIGdlbmVyYWRvcgpmb3IgbnVtZXJvIGluIG51bWVyb3NfcGFyZXMoNSk6CiAgICBwcmludChudW1lcm8p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def numeros_pares(n):
+    for i in range(n):
+        yield i * 2
+
+# Uso del generador
+for numero in numeros_pares(5):
+    print(numero)</pre></div><div class='content'><p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIG51bWVyb3NfcGFyZXMobik6CiAgICBmb3IgaSBpbiByYW5nZShuKToKICAgICAgICB5aWVsZCBpICogMgoKIyBVc28gZGVsIGdlbmVyYWRvcgpmb3IgbnVtZXJvIGluIG51bWVyb3NfcGFyZXMoNSk6CiAgICBwcmludChudW1lcm8p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def numeros_pares(n):
+    for i in range(n):
+        yield i * 2
+
+# Uso del generador
+for numero in numeros_pares(5):
+    print(numero)</pre></div><div class='content'></div><h2>Ejercicio 2: Generador de Números Primos</h2>
+<div class='content'><p><strong>Instrucciones:</strong>
+Crea un generador que devuelva los primeros <code>n</code> números primos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGVzX3ByaW1vKG51bSk6CiAgICBpZiBudW0gPCAyOgogICAgICAgIHJldHVybiBGYWxzZQogICAgZm9yIGkgaW4gcmFuZ2UoMiwgaW50KG51bSAqKiAwLjUpICsgMSk6CiAgICAgICAgaWYgbnVtICUgaSA9PSAwOgogICAgICAgICAgICByZXR1cm4gRmFsc2UKICAgIHJldHVybiBUcnVlCgpkZWYgbnVtZXJvc19wcmltb3Mobik6CiAgICBjb250YWRvciwgbnVtID0gMCwgMgogICAgd2hpbGUgY29udGFkb3IgPCBuOgogICAgICAgIGlmIGVzX3ByaW1vKG51bSk6CiAgICAgICAgICAgIHlpZWxkIG51bQogICAgICAgICAgICBjb250YWRvciArPSAxCiAgICAgICAgbnVtICs9IDEKCiMgVXNvIGRlbCBnZW5lcmFkb3IKZm9yIHByaW1vIGluIG51bWVyb3NfcHJpbW9zKDUpOgogICAgcHJpbnQocHJpbW8p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def es_primo(num):
+    if num &lt; 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+def numeros_primos(n):
+    contador, num = 0, 2
+    while contador &lt; n:
+        if es_primo(num):
+            yield num
+            contador += 1
+        num += 1
+
+# Uso del generador
+for primo in numeros_primos(5):
+    print(primo)</pre></div><div class='content'><p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGVzX3ByaW1vKG51bSk6CiAgICBpZiBudW0gPCAyOgogICAgICAgIHJldHVybiBGYWxzZQogICAgZm9yIGkgaW4gcmFuZ2UoMiwgaW50KG51bSAqKiAwLjUpICsgMSk6CiAgICAgICAgaWYgbnVtICUgaSA9PSAwOgogICAgICAgICAgICByZXR1cm4gRmFsc2UKICAgIHJldHVybiBUcnVlCgpkZWYgbnVtZXJvc19wcmltb3Mobik6CiAgICBjb250YWRvciwgbnVtID0gMCwgMgogICAgd2hpbGUgY29udGFkb3IgPCBuOgogICAgICAgIGlmIGVzX3ByaW1vKG51bSk6CiAgICAgICAgICAgIHlpZWxkIG51bQogICAgICAgICAgICBjb250YWRvciArPSAxCiAgICAgICAgbnVtICs9IDEKCiMgVXNvIGRlbCBnZW5lcmFkb3IKZm9yIHByaW1vIGluIG51bWVyb3NfcHJpbW9zKDUpOgogICAgcHJpbnQocHJpbW8p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def es_primo(num):
+    if num &lt; 2:
+        return False
+    for i in range(2, int(num ** 0.5) + 1):
+        if num % i == 0:
+            return False
+    return True
+
+def numeros_primos(n):
+    contador, num = 0, 2
+    while contador &lt; n:
+        if es_primo(num):
+            yield num
+            contador += 1
+        num += 1
+
+# Uso del generador
+for primo in numeros_primos(5):
+    print(primo)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Los generadores son una herramienta poderosa en Python para manejar secuencias de datos de manera eficiente y con un uso mínimo de memoria. Al utilizar <code>yield</code>, puedes crear iteradores personalizados que pueden pausar y reanudar su ejecución, lo que es especialmente útil para trabajar con grandes conjuntos de datos o flujos de datos continuos. Con la práctica, los generadores pueden convertirse en una parte esencial de tu caja de herramientas de programación en Python.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-decorators' title="Decoradores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-context-managers' title="Administradores de Contexto">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

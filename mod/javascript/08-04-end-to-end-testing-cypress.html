@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas de Extremo a Extremo con Cypress</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/javascript/08-04-end-to-end-testing-cypress" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/javascript/08-04-end-to-end-testing-cypress" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/javascript/08-04-end-to-end-testing-cypress" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/javascript/08-04-end-to-end-testing-cypress" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/javascript/08-04-end-to-end-testing-cypress" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-integration-testing' title="Pruebas de Integración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Pruebas de Extremo a Extremo con Cypress</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-optimizing-performance' title="Optimización del Rendimiento de JavaScript">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las pruebas de extremo a extremo (E2E) son esenciales para garantizar que una aplicación funcione correctamente desde la perspectiva del usuario. Cypress es una herramienta moderna y poderosa para realizar pruebas E2E en aplicaciones web. En esta sección, aprenderás cómo configurar Cypress, escribir y ejecutar pruebas E2E, y aplicar buenas prácticas para asegurar la calidad de tu aplicación.</p>
+</div><h1>¿Qué es Cypress?</h1>
+<div class='content'><p>Cypress es un framework de pruebas E2E que permite a los desarrolladores escribir pruebas en JavaScript para verificar el comportamiento de sus aplicaciones web. Cypress se destaca por su facilidad de uso, velocidad y capacidad de depuración.</p>
+</div><h2>Características Clave de Cypress</h2>
+<div class='content'><ul>
+<li><strong>Tiempo Real</strong>: Cypress ejecuta las pruebas en tiempo real, mostrando resultados instantáneos.</li>
+<li><strong>Depuración</strong>: Cypress proporciona herramientas de depuración integradas, como snapshots y videos.</li>
+<li><strong>Automatización</strong>: Permite la automatización completa de pruebas de usuario.</li>
+<li><strong>API Intuitiva</strong>: Ofrece una API sencilla y poderosa para escribir pruebas.</li>
+</ul>
+</div><h1>Configuración de Cypress</h1>
+<div class='content'></div><h2>Paso 1: Instalación</h2>
+<div class='content'><p>Primero, necesitas instalar Cypress en tu proyecto. Asegúrate de tener Node.js y npm instalados. Luego, ejecuta el siguiente comando en tu terminal:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgY3lwcmVzcyAtLXNhdmUtZGV2"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install cypress --save-dev</pre></div><div class='content'></div><h2>Paso 2: Inicialización</h2>
+<div class='content'><p>Una vez instalado, inicializa Cypress ejecutando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnB4IGN5cHJlc3Mgb3Blbg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npx cypress open</pre></div><div class='content'><p>Este comando abrirá la interfaz de usuario de Cypress y creará una estructura de directorios básica en tu proyecto.</p>
+</div><h2>Estructura de Directorios</h2>
+<div class='content'><p>Cypress crea una carpeta <code>cypress</code> en tu proyecto con la siguiente estructura:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3lwcmVzcy8KICDilJzilIDilIAgZml4dHVyZXMvCiAg4pSc4pSA4pSAIGludGVncmF0aW9uLwogIOKUnOKUgOKUgCBwbHVnaW5zLwogIOKUlOKUgOKUgCBzdXBwb3J0Lw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cypress/
+  ├── fixtures/
+  ├── integration/
+  ├── plugins/
+  └── support/</pre></div><div class='content'><ul>
+<li><strong>fixtures/</strong>: Contiene datos de prueba.</li>
+<li><strong>integration/</strong>: Contiene los archivos de prueba.</li>
+<li><strong>plugins/</strong>: Configuración de plugins.</li>
+<li><strong>support/</strong>: Archivos de soporte y comandos personalizados.</li>
+</ul>
+</div><h1>Escribiendo Pruebas E2E</h1>
+<div class='content'></div><h2>Ejemplo Básico</h2>
+<div class='content'><p>Vamos a escribir una prueba básica que verifica si la página principal de una aplicación se carga correctamente.</p>
+<ol>
+<li>Crea un archivo de prueba en <code>cypress/integration</code> llamado <code>home.spec.js</code>.</li>
+<li>Añade el siguiente código:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVzY3JpYmUoJ1DDoWdpbmEgUHJpbmNpcGFsJywgKCkgPT4gewogIGl0KCdkZWJlcsOtYSBjYXJnYXIgY29ycmVjdGFtZW50ZScsICgpID0+IHsKICAgIGN5LnZpc2l0KCdodHRwOi8vbG9jYWxob3N0OjMwMDAnKTsgLy8gQ2FtYmlhIGxhIFVSTCBzZWfDum4gdHUgY29uZmlndXJhY2nDs24KICAgIGN5LmNvbnRhaW5zKCdCaWVudmVuaWRvIGEgbWkgYXBsaWNhY2nDs24nKTsgLy8gVmVyaWZpY2EgcXVlIGVsIHRleHRvIGVzdMOpIHByZXNlbnRlCiAgfSk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>describe('P&aacute;gina Principal', () =&gt; {
+  it('deber&iacute;a cargar correctamente', () =&gt; {
+    cy.visit('http://localhost:3000'); // Cambia la URL seg&uacute;n tu configuraci&oacute;n
+    cy.contains('Bienvenido a mi aplicaci&oacute;n'); // Verifica que el texto est&eacute; presente
+  });
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>describe</code>: Define un conjunto de pruebas relacionadas.</li>
+<li><code>it</code>: Define una prueba individual.</li>
+<li><code>cy.visit</code>: Navega a la URL especificada.</li>
+<li><code>cy.contains</code>: Verifica que el texto especificado esté presente en la página.</li>
+</ul>
+</div><h2>Ejecución de Pruebas</h2>
+<div class='content'><p>Para ejecutar las pruebas, abre Cypress con:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnB4IGN5cHJlc3Mgb3Blbg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npx cypress open</pre></div><div class='content'><p>Selecciona el archivo <code>home.spec.js</code> en la interfaz de Cypress para ejecutar la prueba.</p>
+</div><h1>Buenas Prácticas</h1>
+<div class='content'></div><h2>Organización de Pruebas</h2>
+<div class='content'><ul>
+<li><strong>Modularización</strong>: Divide las pruebas en archivos y carpetas lógicas.</li>
+<li><strong>Reutilización</strong>: Utiliza comandos personalizados y archivos de soporte para evitar duplicación de código.</li>
+</ul>
+</div><h2>Estrategias de Espera</h2>
+<div class='content'><ul>
+<li><strong>Comandos de Espera</strong>: Utiliza <code>cy.wait</code> para manejar tiempos de espera específicos.</li>
+<li><strong>Asserts</strong>: Usa asserts para esperar condiciones específicas antes de continuar.</li>
+</ul>
+</div><h2>Manejo de Datos</h2>
+<div class='content'><ul>
+<li><strong>Fixtures</strong>: Utiliza archivos en la carpeta <code>fixtures</code> para manejar datos de prueba.</li>
+<li><strong>Comandos Personalizados</strong>: Crea comandos personalizados para operaciones repetitivas.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Escribe una prueba E2E que verifique el proceso de inicio de sesión en una aplicación web.</p>
+<ol>
+<li>Crea un archivo de prueba en <code>cypress/integration</code> llamado <code>login.spec.js</code>.</li>
+<li>Añade el siguiente código:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVzY3JpYmUoJ1Byb2Nlc28gZGUgSW5pY2lvIGRlIFNlc2nDs24nLCAoKSA9PiB7CiAgaXQoJ2RlYmVyw61hIGluaWNpYXIgc2VzacOzbiBjb3JyZWN0YW1lbnRlIGNvbiBjcmVkZW5jaWFsZXMgdsOhbGlkYXMnLCAoKSA9PiB7CiAgICBjeS52aXNpdCgnaHR0cDovL2xvY2FsaG9zdDozMDAwL2xvZ2luJyk7IC8vIENhbWJpYSBsYSBVUkwgc2Vnw7puIHR1IGNvbmZpZ3VyYWNpw7NuCiAgICBjeS5nZXQoJ2lucHV0W25hbWU9InVzZXJuYW1lIl0nKS50eXBlKCd1c3VhcmlvJyk7IC8vIENhbWJpYSBlbCBzZWxlY3RvciBzZWfDum4gdHUgY29uZmlndXJhY2nDs24KICAgIGN5LmdldCgnaW5wdXRbbmFtZT0icGFzc3dvcmQiXScpLnR5cGUoJ2NvbnRyYXNlw7FhJyk7IC8vIENhbWJpYSBlbCBzZWxlY3RvciBzZWfDum4gdHUgY29uZmlndXJhY2nDs24KICAgIGN5LmdldCgnYnV0dG9uW3R5cGU9InN1Ym1pdCJdJykuY2xpY2soKTsKICAgIGN5LnVybCgpLnNob3VsZCgnaW5jbHVkZScsICcvZGFzaGJvYXJkJyk7IC8vIFZlcmlmaWNhIHF1ZSBsYSBVUkwgY2FtYmllIGEgL2Rhc2hib2FyZAogICAgY3kuY29udGFpbnMoJ0JpZW52ZW5pZG8sIHVzdWFyaW8nKTsgLy8gVmVyaWZpY2EgcXVlIGVsIHRleHRvIGRlIGJpZW52ZW5pZGEgZXN0w6kgcHJlc2VudGUKICB9KTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>describe('Proceso de Inicio de Sesi&oacute;n', () =&gt; {
+  it('deber&iacute;a iniciar sesi&oacute;n correctamente con credenciales v&aacute;lidas', () =&gt; {
+    cy.visit('http://localhost:3000/login'); // Cambia la URL seg&uacute;n tu configuraci&oacute;n
+    cy.get('input[name=&quot;username&quot;]').type('usuario'); // Cambia el selector seg&uacute;n tu configuraci&oacute;n
+    cy.get('input[name=&quot;password&quot;]').type('contrase&ntilde;a'); // Cambia el selector seg&uacute;n tu configuraci&oacute;n
+    cy.get('button[type=&quot;submit&quot;]').click();
+    cy.url().should('include', '/dashboard'); // Verifica que la URL cambie a /dashboard
+    cy.contains('Bienvenido, usuario'); // Verifica que el texto de bienvenida est&eacute; presente
+  });
+});</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Visitar la Página de Inicio de Sesión</strong>:</p>
+<pre><code class="language-javascript">cy.visit('http://localhost:3000/login');
+</code></pre>
+</li>
+<li>
+<p><strong>Ingresar Credenciales</strong>:</p>
+<pre><code class="language-javascript">cy.get('input[name=&quot;username&quot;]').type('usuario');
+cy.get('input[name=&quot;password&quot;]').type('contraseña');
+</code></pre>
+</li>
+<li>
+<p><strong>Enviar el Formulario</strong>:</p>
+<pre><code class="language-javascript">cy.get('button[type=&quot;submit&quot;]').click();
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar Redirección y Texto de Bienvenida</strong>:</p>
+<pre><code class="language-javascript">cy.url().should('include', '/dashboard');
+cy.contains('Bienvenido, usuario');
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido a configurar Cypress, escribir y ejecutar pruebas E2E, y aplicar buenas prácticas para asegurar la calidad de tu aplicación. Cypress es una herramienta poderosa que facilita la creación de pruebas robustas y confiables, mejorando la calidad y la experiencia del usuario en tus aplicaciones web.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-integration-testing' title="Pruebas de Integración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-optimizing-performance' title="Optimización del Rendimiento de JavaScript">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de pdb para Depuración</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/python/09-05-using-pdb-for-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/09-05-using-pdb-for-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/09-05-using-pdb-for-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/python/09-05-using-pdb-for-debugging" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/python/09-05-using-pdb-for-debugging" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-debugging-techniques' title="Técnicas de Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Uso de pdb para Depuración</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-introduction-to-web-development' title="Introducción al Desarrollo Web">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El depurador <code>pdb</code> (Python Debugger) es una herramienta poderosa que permite a los desarrolladores inspeccionar y controlar la ejecución de programas Python. Con <code>pdb</code>, puedes establecer puntos de interrupción, inspeccionar variables, ejecutar código línea por línea y mucho más. En esta sección, aprenderemos cómo utilizar <code>pdb</code> para depurar programas Python de manera efectiva.</p>
+</div><h1>1. Introducción a pdb</h1>
+<div class='content'><p><code>pdb</code> es el depurador estándar de Python y se incluye en la biblioteca estándar. Proporciona una interfaz interactiva para depurar programas Python.</p>
+</div><h2>Características Clave de pdb:</h2>
+<div class='content'><ul>
+<li><strong>Puntos de interrupción</strong>: Detener la ejecución en una línea específica.</li>
+<li><strong>Inspección de variables</strong>: Ver el valor de las variables en cualquier punto de la ejecución.</li>
+<li><strong>Ejecución paso a paso</strong>: Ejecutar el código línea por línea.</li>
+<li><strong>Evaluación de expresiones</strong>: Evaluar expresiones Python en el contexto actual.</li>
+</ul>
+</div><h1>2. Iniciando pdb</h1>
+<div class='content'><p>Puedes iniciar <code>pdb</code> de varias maneras:</p>
+</div><h2>2.1. Desde la línea de comandos</h2>
+<div class='content'><p>Puedes ejecutar un script Python con <code>pdb</code> desde la línea de comandos usando la opción <code>-m pdb</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uIC1tIHBkYiBtaV9zY3JpcHQucHk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python -m pdb mi_script.py</pre></div><div class='content'></div><h2>2.2. Insertando `pdb.set_trace()`</h2>
+<div class='content'><p>Otra manera común de iniciar <code>pdb</code> es insertando <code>pdb.set_trace()</code> en el código donde deseas comenzar la depuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBkYgoKZGVmIG1pX2Z1bmNpb24oKToKICAgIHggPSAxMAogICAgeSA9IDIwCiAgICBwZGIuc2V0X3RyYWNlKCkgICMgSW5pY2lhIGVsIGRlcHVyYWRvciBhcXXDrQogICAgeiA9IHggKyB5CiAgICBwcmludCh6KQoKbWlfZnVuY2lvbigp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pdb
+
+def mi_funcion():
+    x = 10
+    y = 20
+    pdb.set_trace()  # Inicia el depurador aqu&iacute;
+    z = x + y
+    print(z)
+
+mi_funcion()</pre></div><div class='content'></div><h1>3. Comandos Básicos de pdb</h1>
+<div class='content'><p>Una vez que <code>pdb</code> está activo, puedes usar varios comandos para controlar la ejecución del programa:</p>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>l</code> o <code>list</code></td>
+<td>Muestra el código fuente alrededor de la línea actual.</td>
+</tr>
+<tr>
+<td><code>n</code> o <code>next</code></td>
+<td>Ejecuta la siguiente línea de código.</td>
+</tr>
+<tr>
+<td><code>s</code> o <code>step</code></td>
+<td>Entra en la siguiente función.</td>
+</tr>
+<tr>
+<td><code>c</code> o <code>continue</code></td>
+<td>Continúa la ejecución hasta el siguiente punto de interrupción.</td>
+</tr>
+<tr>
+<td><code>b</code> o <code>break</code></td>
+<td>Establece un punto de interrupción en una línea específica.</td>
+</tr>
+<tr>
+<td><code>p</code> o <code>print</code></td>
+<td>Imprime el valor de una variable o expresión.</td>
+</tr>
+<tr>
+<td><code>q</code> o <code>quit</code></td>
+<td>Sale del depurador y termina el programa.</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ejemplo de Uso de Comandos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBkYgoKZGVmIHN1bWEoYSwgYik6CiAgICByZXR1cm4gYSArIGIKCmRlZiBtYWluKCk6CiAgICB4ID0gNQogICAgeSA9IDEwCiAgICBwZGIuc2V0X3RyYWNlKCkgICMgSW5pY2lhIGVsIGRlcHVyYWRvciBhcXXDrQogICAgcmVzdWx0YWRvID0gc3VtYSh4LCB5KQogICAgcHJpbnQoZiJSZXN1bHRhZG86IHtyZXN1bHRhZG99IikKCm1haW4oKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pdb
+
+def suma(a, b):
+    return a + b
+
+def main():
+    x = 5
+    y = 10
+    pdb.set_trace()  # Inicia el depurador aqu&iacute;
+    resultado = suma(x, y)
+    print(f&quot;Resultado: {resultado}&quot;)
+
+main()</pre></div><div class='content'><p>Cuando el depurador se activa, puedes usar los comandos mencionados para inspeccionar y controlar la ejecución:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PiAvcnV0YS9hL3R1L3NjcmlwdC5weSgxMCltYWluKCkKLT4gcmVzdWx0YWRvID0gc3VtYSh4LCB5KQooUGRiKSBsCiAgNSAgICAgZGVmIHN1bWEoYSwgYik6CiAgNiAgICAgICAgIHJldHVybiBhICsgYgogIDcgICAgIAogIDggICAgIGRlZiBtYWluKCk6CiAgOSAgICAgICAgIHggPSA1CiAxMCAgLT4gICAgIHkgPSAxMAogMTEgICAgICAgICBwZGIuc2V0X3RyYWNlKCkgICMgSW5pY2lhIGVsIGRlcHVyYWRvciBhcXXDrQogMTIgICAgICAgICByZXN1bHRhZG8gPSBzdW1hKHgsIHkpCiAxMyAgICAgICAgIHByaW50KGYiUmVzdWx0YWRvOiB7cmVzdWx0YWRvfSIpCiAxNCAgICAgCiAxNSAgICAgbWFpbigpCihQZGIpIHAgeAo1CihQZGIpIG4KPiAvcnV0YS9hL3R1L3NjcmlwdC5weSgxMSltYWluKCkKLT4gcGRiLnNldF90cmFjZSgpICAjIEluaWNpYSBlbCBkZXB1cmFkb3IgYXF1w60KKFBkYikgbgo+IC9ydXRhL2EvdHUvc2NyaXB0LnB5KDEyKW1haW4oKQotPiByZXN1bHRhZG8gPSBzdW1hKHgsIHkpCihQZGIpIHMKLS1DYWxsLS0KPiAvcnV0YS9hL3R1L3NjcmlwdC5weSg1KXN1bWEoKQotPiBkZWYgc3VtYShhLCBiKToKKFBkYikgbgo+IC9ydXRhL2EvdHUvc2NyaXB0LnB5KDYpc3VtYSgpCi0+IHJldHVybiBhICsgYgooUGRiKSBwIGEKNQooUGRiKSBwIGIKMTAKKFBkYikgbgo+IC9ydXRhL2EvdHUvc2NyaXB0LnB5KDEyKW1haW4oKQotPiByZXN1bHRhZG8gPSBzdW1hKHgsIHkpCihQZGIpIHAgcmVzdWx0YWRvCjE1CihQZGIpIGMKUmVzdWx0YWRvOiAxNQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&gt; /ruta/a/tu/script.py(10)main()
+-&gt; resultado = suma(x, y)
+(Pdb) l
+  5     def suma(a, b):
+  6         return a + b
+  7     
+  8     def main():
+  9         x = 5
+ 10  -&gt;     y = 10
+ 11         pdb.set_trace()  # Inicia el depurador aqu&iacute;
+ 12         resultado = suma(x, y)
+ 13         print(f&quot;Resultado: {resultado}&quot;)
+ 14     
+ 15     main()
+(Pdb) p x
+5
+(Pdb) n
+&gt; /ruta/a/tu/script.py(11)main()
+-&gt; pdb.set_trace()  # Inicia el depurador aqu&iacute;
+(Pdb) n
+&gt; /ruta/a/tu/script.py(12)main()
+-&gt; resultado = suma(x, y)
+(Pdb) s
+--Call--
+&gt; /ruta/a/tu/script.py(5)suma()
+-&gt; def suma(a, b):
+(Pdb) n
+&gt; /ruta/a/tu/script.py(6)suma()
+-&gt; return a + b
+(Pdb) p a
+5
+(Pdb) p b
+10
+(Pdb) n
+&gt; /ruta/a/tu/script.py(12)main()
+-&gt; resultado = suma(x, y)
+(Pdb) p resultado
+15
+(Pdb) c
+Resultado: 15</pre></div><div class='content'></div><h1>4. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Dado el siguiente código, usa <code>pdb</code> para encontrar y corregir el error:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGNhbGN1bGFyX2FyZWEoYmFzZSwgYWx0dXJhKToKICAgIGFyZWEgPSBiYXNlICogYWx0dXJhIC8gMgogICAgcmV0dXJuIGFyZWEKCmRlZiBtYWluKCk6CiAgICBiYXNlID0gMTAKICAgIGFsdHVyYSA9IDUKICAgIHBkYi5zZXRfdHJhY2UoKSAgIyBJbmljaWEgZWwgZGVwdXJhZG9yIGFxdcOtCiAgICBhcmVhID0gY2FsY3VsYXJfYXJlYShiYXNlLCBhbHR1cmEpCiAgICBwcmludChmIkVsIMOhcmVhIGRlbCB0cmnDoW5ndWxvIGVzOiB7YXJlYX0iKQoKbWFpbigp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def calcular_area(base, altura):
+    area = base * altura / 2
+    return area
+
+def main():
+    base = 10
+    altura = 5
+    pdb.set_trace()  # Inicia el depurador aqu&iacute;
+    area = calcular_area(base, altura)
+    print(f&quot;El &aacute;rea del tri&aacute;ngulo es: {area}&quot;)
+
+main()</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Ejecuta el script y usa <code>pdb</code> para inspeccionar las variables y la ejecución.</li>
+<li>Verifica que los valores de <code>base</code> y <code>altura</code> sean correctos.</li>
+<li>Asegúrate de que la fórmula para calcular el área del triángulo sea correcta.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PiAvcnV0YS9hL3R1L3NjcmlwdC5weSgxMCltYWluKCkKLT4gYXJlYSA9IGNhbGN1bGFyX2FyZWEoYmFzZSwgYWx0dXJhKQooUGRiKSBwIGJhc2UKMTAKKFBkYikgcCBhbHR1cmEKNQooUGRiKSBuCj4gL3J1dGEvYS90dS9zY3JpcHQucHkoMTEpbWFpbigpCi0+IHByaW50KGYiRWwgw6FyZWEgZGVsIHRyacOhbmd1bG8gZXM6IHthcmVhfSIpCihQZGIpIHAgYXJlYQoyNS4wCihQZGIpIGMKRWwgw6FyZWEgZGVsIHRyacOhbmd1bG8gZXM6IDI1LjA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&gt; /ruta/a/tu/script.py(10)main()
+-&gt; area = calcular_area(base, altura)
+(Pdb) p base
+10
+(Pdb) p altura
+5
+(Pdb) n
+&gt; /ruta/a/tu/script.py(11)main()
+-&gt; print(f&quot;El &aacute;rea del tri&aacute;ngulo es: {area}&quot;)
+(Pdb) p area
+25.0
+(Pdb) c
+El &aacute;rea del tri&aacute;ngulo es: 25.0</pre></div><div class='content'><p>En este caso, el código es correcto y no hay errores. El área del triángulo se calcula correctamente como 25.0.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo utilizar <code>pdb</code> para depurar programas Python. Hemos cubierto cómo iniciar <code>pdb</code>, los comandos básicos para controlar la ejecución y un ejercicio práctico para aplicar lo aprendido. La depuración es una habilidad esencial para cualquier programador, y <code>pdb</code> es una herramienta valiosa para ayudarte a encontrar y corregir errores en tu código.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-debugging-techniques' title="Técnicas de Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-introduction-to-web-development' title="Introducción al Desarrollo Web">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

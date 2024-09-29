@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Memoria</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/javascript/09-02-memory-management" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/javascript/09-02-memory-management" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/javascript/09-02-memory-management" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/javascript/09-02-memory-management" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/javascript/09-02-memory-management" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-optimizing-performance' title="Optimización del Rendimiento de JavaScript">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Gestión de Memoria</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-efficient-dom-manipulation' title="Manipulación Eficiente del DOM">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La gestión de memoria es un aspecto crucial en cualquier lenguaje de programación, y JavaScript no es una excepción. Entender cómo JavaScript maneja la memoria te permitirá escribir código más eficiente y evitar problemas comunes como las fugas de memoria.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>1. **Asignación de Memoria**</h2>
+<div class='content'><ul>
+<li><strong>Variables y Objetos:</strong> Cuando declaras una variable o creas un objeto, JavaScript asigna memoria para almacenar su valor.</li>
+<li><strong>Funciones:</strong> Las funciones también requieren memoria para almacenar su código y su contexto de ejecución.</li>
+</ul>
+</div><h2>2. **Alcance de Variables**</h2>
+<div class='content'><ul>
+<li><strong>Global:</strong> Variables declaradas fuera de cualquier función tienen un alcance global.</li>
+<li><strong>Local:</strong> Variables declaradas dentro de una función tienen un alcance local y se eliminan cuando la función termina su ejecución.</li>
+</ul>
+</div><h2>3. **Recolección de Basura (Garbage Collection)**</h2>
+<div class='content'><ul>
+<li><strong>Automática:</strong> JavaScript utiliza un recolector de basura automático para liberar memoria que ya no se utiliza.</li>
+<li><strong>Algoritmos:</strong> Los algoritmos más comunes son el &quot;Mark-and-Sweep&quot; y el &quot;Reference Counting&quot;.</li>
+</ul>
+</div><h1>Asignación y Liberación de Memoria</h1>
+<div class='content'></div><h2>Asignación de Memoria</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQXNpZ25hY2nDs24gZGUgbWVtb3JpYSBwYXJhIHVuYSB2YXJpYWJsZQpsZXQgbm9tYnJlID0gIkp1YW4iOwoKLy8gQXNpZ25hY2nDs24gZGUgbWVtb3JpYSBwYXJhIHVuIG9iamV0bwpsZXQgcGVyc29uYSA9IHsKICAgIG5vbWJyZTogIkp1YW4iLAogICAgZWRhZDogMzAKfTsKCi8vIEFzaWduYWNpw7NuIGRlIG1lbW9yaWEgcGFyYSB1bmEgZnVuY2nDs24KZnVuY3Rpb24gc2FsdWRhcigpIHsKICAgIGNvbnNvbGUubG9nKCJIb2xhIik7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Asignaci&oacute;n de memoria para una variable
+let nombre = &quot;Juan&quot;;
+
+// Asignaci&oacute;n de memoria para un objeto
+let persona = {
+    nombre: &quot;Juan&quot;,
+    edad: 30
+};
+
+// Asignaci&oacute;n de memoria para una funci&oacute;n
+function saludar() {
+    console.log(&quot;Hola&quot;);
+}</pre></div><div class='content'></div><h2>Liberación de Memoria</h2>
+<div class='content'><p>La liberación de memoria en JavaScript es manejada automáticamente por el recolector de basura. Sin embargo, es importante entender cómo funciona para evitar fugas de memoria.</p>
+<h4>Ejemplo de Recolección de Basura</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gY3JlYXJPYmpldG8oKSB7CiAgICBsZXQgb2JqZXRvID0gewogICAgICAgIG5vbWJyZTogIk9iamV0byBUZW1wb3JhbCIKICAgIH07CiAgICAvLyBFbCBvYmpldG8gJ29iamV0bycgc2Vyw6EgcmVjb2xlY3RhZG8gcG9yIGVsIGdhcmJhZ2UgY29sbGVjdG9yCiAgICAvLyBjdWFuZG8gbGEgZnVuY2nDs24gdGVybWluZSBzdSBlamVjdWNpw7NuIHkgbm8gaGF5YSBtw6FzIHJlZmVyZW5jaWFzIGEgw6lsLgp9CmNyZWFyT2JqZXRvKCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function crearObjeto() {
+    let objeto = {
+        nombre: &quot;Objeto Temporal&quot;
+    };
+    // El objeto 'objeto' ser&aacute; recolectado por el garbage collector
+    // cuando la funci&oacute;n termine su ejecuci&oacute;n y no haya m&aacute;s referencias a &eacute;l.
+}
+crearObjeto();</pre></div><div class='content'></div><h1>Fugas de Memoria Comunes</h1>
+<div class='content'></div><h2>1. **Variables Globales No Intencionadas**</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gY3JlYXJGdWdhKCkgewogICAgZnVnYSA9ICJFc3RvIGVzIHVuYSBmdWdhIGRlIG1lbW9yaWEiOyAvLyAnZnVnYScgc2UgY29udmllcnRlIGVuIHVuYSB2YXJpYWJsZSBnbG9iYWwKfQpjcmVhckZ1Z2EoKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function crearFuga() {
+    fuga = &quot;Esto es una fuga de memoria&quot;; // 'fuga' se convierte en una variable global
+}
+crearFuga();</pre></div><div class='content'></div><h2>2. **Referencias Cíclicas**</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gY3JlYXJDaWNsbygpIHsKICAgIGxldCBvYmpldG9BID0ge307CiAgICBsZXQgb2JqZXRvQiA9IHt9OwoKICAgIG9iamV0b0EucmVmID0gb2JqZXRvQjsKICAgIG9iamV0b0IucmVmID0gb2JqZXRvQTsKfQpjcmVhckNpY2xvKCk7Ci8vICdvYmpldG9BJyB5ICdvYmpldG9CJyBzZSByZWZlcmVuY2lhbiBtdXR1YW1lbnRlLCBjcmVhbmRvIHVuYSByZWZlcmVuY2lhIGPDrWNsaWNhLg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function crearCiclo() {
+    let objetoA = {};
+    let objetoB = {};
+
+    objetoA.ref = objetoB;
+    objetoB.ref = objetoA;
+}
+crearCiclo();
+// 'objetoA' y 'objetoB' se referencian mutuamente, creando una referencia c&iacute;clica.</pre></div><div class='content'></div><h2>3. **Manejo Incorrecto de Listeners de Eventos**</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGJvdG9uID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1pQm90b24iKTsKCmZ1bmN0aW9uIG1hbmVqYXJDbGljaygpIHsKICAgIGNvbnNvbGUubG9nKCJCb3TDs24gY2xpY2tlYWRvIik7Cn0KCmJvdG9uLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIiwgbWFuZWphckNsaWNrKTsKCi8vIFNpIG5vIGVsaW1pbmFtb3MgZWwgbGlzdGVuZXIsIHB1ZWRlIGNhdXNhciB1bmEgZnVnYSBkZSBtZW1vcmlhCmJvdG9uLnJlbW92ZUV2ZW50TGlzdGVuZXIoImNsaWNrIiwgbWFuZWphckNsaWNrKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let boton = document.getElementById(&quot;miBoton&quot;);
+
+function manejarClick() {
+    console.log(&quot;Bot&oacute;n clickeado&quot;);
+}
+
+boton.addEventListener(&quot;click&quot;, manejarClick);
+
+// Si no eliminamos el listener, puede causar una fuga de memoria
+boton.removeEventListener(&quot;click&quot;, manejarClick);</pre></div><div class='content'></div><h1>Consejos para Evitar Fugas de Memoria</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Usa <code>let</code> y <code>const</code> para Declarar Variables:</strong></p>
+<ul>
+<li>Evita variables globales no intencionadas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Elimina Listeners de Eventos No Necesarios:</strong></p>
+<ul>
+<li>Asegúrate de eliminar los listeners de eventos cuando ya no sean necesarios.</li>
+</ul>
+</li>
+<li>
+<p><strong>Evita Referencias Cíclicas:</strong></p>
+<ul>
+<li>Asegúrate de que los objetos no se referencien mutuamente sin necesidad.</li>
+</ul>
+</li>
+<li>
+<p><strong>Usa Herramientas de Depuración:</strong></p>
+<ul>
+<li>Utiliza herramientas como el perfilador de memoria en Chrome DevTools para identificar y solucionar fugas de memoria.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Identificar y Corregir Fugas de Memoria</h2>
+<div class='content'><p>Dado el siguiente código, identifica y corrige las fugas de memoria:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGJvdG9uID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1pQm90b24iKTsKCmZ1bmN0aW9uIG1hbmVqYXJDbGljaygpIHsKICAgIGNvbnNvbGUubG9nKCJCb3TDs24gY2xpY2tlYWRvIik7Cn0KCmJvdG9uLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIiwgbWFuZWphckNsaWNrKTsKCmZ1bmN0aW9uIGNyZWFyRnVnYSgpIHsKICAgIGZ1Z2EgPSAiRXN0byBlcyB1bmEgZnVnYSBkZSBtZW1vcmlhIjsgLy8gRnVnYSBkZSBtZW1vcmlhCn0KCmNyZWFyRnVnYSgpOwoKZnVuY3Rpb24gY3JlYXJDaWNsbygpIHsKICAgIGxldCBvYmpldG9BID0ge307CiAgICBsZXQgb2JqZXRvQiA9IHt9OwoKICAgIG9iamV0b0EucmVmID0gb2JqZXRvQjsKICAgIG9iamV0b0IucmVmID0gb2JqZXRvQTsgLy8gUmVmZXJlbmNpYSBjw61jbGljYQp9CgpjcmVhckNpY2xvKCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let boton = document.getElementById(&quot;miBoton&quot;);
+
+function manejarClick() {
+    console.log(&quot;Bot&oacute;n clickeado&quot;);
+}
+
+boton.addEventListener(&quot;click&quot;, manejarClick);
+
+function crearFuga() {
+    fuga = &quot;Esto es una fuga de memoria&quot;; // Fuga de memoria
+}
+
+crearFuga();
+
+function crearCiclo() {
+    let objetoA = {};
+    let objetoB = {};
+
+    objetoA.ref = objetoB;
+    objetoB.ref = objetoA; // Referencia c&iacute;clica
+}
+
+crearCiclo();</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGJvdG9uID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoIm1pQm90b24iKTsKCmZ1bmN0aW9uIG1hbmVqYXJDbGljaygpIHsKICAgIGNvbnNvbGUubG9nKCJCb3TDs24gY2xpY2tlYWRvIik7Cn0KCmJvdG9uLmFkZEV2ZW50TGlzdGVuZXIoImNsaWNrIiwgbWFuZWphckNsaWNrKTsKCi8vIEVsaW1pbmFyIGVsIGxpc3RlbmVyIGN1YW5kbyB5YSBubyBzZWEgbmVjZXNhcmlvCmJvdG9uLnJlbW92ZUV2ZW50TGlzdGVuZXIoImNsaWNrIiwgbWFuZWphckNsaWNrKTsKCmZ1bmN0aW9uIGNyZWFyRnVnYSgpIHsKICAgIGxldCBmdWdhID0gIkVzdG8gZXMgdW5hIGZ1Z2EgZGUgbWVtb3JpYSI7IC8vIFVzYXIgJ2xldCcgcGFyYSBldml0YXIgdmFyaWFibGUgZ2xvYmFsCn0KCmNyZWFyRnVnYSgpOwoKZnVuY3Rpb24gY3JlYXJDaWNsbygpIHsKICAgIGxldCBvYmpldG9BID0ge307CiAgICBsZXQgb2JqZXRvQiA9IHt9OwoKICAgIG9iamV0b0EucmVmID0gb2JqZXRvQjsKICAgIG9iamV0b0IucmVmID0gb2JqZXRvQTsKCiAgICAvLyBFbGltaW5hciByZWZlcmVuY2lhcyBjw61jbGljYXMgY3VhbmRvIHlhIG5vIHNlYW4gbmVjZXNhcmlhcwogICAgb2JqZXRvQS5yZWYgPSBudWxsOwogICAgb2JqZXRvQi5yZWYgPSBudWxsOwp9CgpjcmVhckNpY2xvKCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let boton = document.getElementById(&quot;miBoton&quot;);
+
+function manejarClick() {
+    console.log(&quot;Bot&oacute;n clickeado&quot;);
+}
+
+boton.addEventListener(&quot;click&quot;, manejarClick);
+
+// Eliminar el listener cuando ya no sea necesario
+boton.removeEventListener(&quot;click&quot;, manejarClick);
+
+function crearFuga() {
+    let fuga = &quot;Esto es una fuga de memoria&quot;; // Usar 'let' para evitar variable global
+}
+
+crearFuga();
+
+function crearCiclo() {
+    let objetoA = {};
+    let objetoB = {};
+
+    objetoA.ref = objetoB;
+    objetoB.ref = objetoA;
+
+    // Eliminar referencias c&iacute;clicas cuando ya no sean necesarias
+    objetoA.ref = null;
+    objetoB.ref = null;
+}
+
+crearCiclo();</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La gestión de memoria en JavaScript es fundamental para escribir código eficiente y evitar problemas de rendimiento. Entender cómo funciona la asignación y liberación de memoria, así como las técnicas para evitar fugas de memoria, te permitirá desarrollar aplicaciones más robustas y eficientes. En el próximo módulo, exploraremos cómo optimizar el rendimiento de JavaScript para mejorar aún más la eficiencia de tus aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-optimizing-performance' title="Optimización del Rendimiento de JavaScript">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-efficient-dom-manipulation' title="Manipulación Eficiente del DOM">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

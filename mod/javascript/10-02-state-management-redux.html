@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Estado con Redux</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/javascript/10-02-state-management-redux" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/javascript/10-02-state-management-redux" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/javascript/10-02-state-management-redux" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/javascript/10-02-state-management-redux" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/javascript/10-02-state-management-redux" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-introduction-react' title="Introducción a React">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Gestión de Estado con Redux</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-vuejs-basics' title="Conceptos Básicos de Vue.js">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Redux es una librería de JavaScript para la gestión del estado de aplicaciones. Es especialmente útil en aplicaciones grandes donde el manejo del estado puede volverse complejo y difícil de mantener. Redux se basa en tres principios fundamentales:</p>
+<ol>
+<li><strong>Estado Único</strong>: Toda la información de la aplicación se almacena en un único objeto de estado.</li>
+<li><strong>Estado de Solo Lectura</strong>: El estado es inmutable y solo puede ser modificado emitiendo acciones.</li>
+<li><strong>Cambios mediante Funciones Puras</strong>: Los cambios en el estado se realizan mediante funciones puras llamadas reductores (reducers).</li>
+</ol>
+</div><h1>Instalación de Redux</h1>
+<div class='content'><p>Para comenzar a usar Redux en tu proyecto, primero necesitas instalarlo. Puedes hacerlo usando npm o yarn:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgcmVkdXggcmVhY3QtcmVkdXg="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install redux react-redux</pre></div><div class='content'><p>O con yarn:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eWFybiBhZGQgcmVkdXggcmVhY3QtcmVkdXg="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>yarn add redux react-redux</pre></div><div class='content'></div><h1>Conceptos Básicos de Redux</h1>
+<div class='content'></div><h2>Estado (State)</h2>
+<div class='content'><p>El estado en Redux es un objeto que contiene toda la información de la aplicación. Este estado es inmutable y solo puede ser modificado mediante acciones.</p>
+</div><h2>Acciones (Actions)</h2>
+<div class='content'><p>Las acciones son objetos que describen un cambio en el estado. Cada acción debe tener una propiedad <code>type</code> que indica el tipo de acción a realizar. Opcionalmente, pueden incluir datos adicionales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgaW5jcmVtZW50QWN0aW9uID0gewogIHR5cGU6ICdJTkNSRU1FTlQnLAogIHBheWxvYWQ6IDEKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const incrementAction = {
+  type: 'INCREMENT',
+  payload: 1
+};</pre></div><div class='content'></div><h2>Reductores (Reducers)</h2>
+<div class='content'><p>Los reductores son funciones puras que toman el estado actual y una acción como argumentos, y devuelven un nuevo estado. No deben tener efectos secundarios ni modificar el estado directamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgaW5pdGlhbFN0YXRlID0geyBjb3VudDogMCB9OwoKZnVuY3Rpb24gY291bnRlclJlZHVjZXIoc3RhdGUgPSBpbml0aWFsU3RhdGUsIGFjdGlvbikgewogIHN3aXRjaCAoYWN0aW9uLnR5cGUpIHsKICAgIGNhc2UgJ0lOQ1JFTUVOVCc6CiAgICAgIHJldHVybiB7IGNvdW50OiBzdGF0ZS5jb3VudCArIGFjdGlvbi5wYXlsb2FkIH07CiAgICBjYXNlICdERUNSRU1FTlQnOgogICAgICByZXR1cm4geyBjb3VudDogc3RhdGUuY291bnQgLSBhY3Rpb24ucGF5bG9hZCB9OwogICAgZGVmYXVsdDoKICAgICAgcmV0dXJuIHN0YXRlOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const initialState = { count: 0 };
+
+function counterReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + action.payload };
+    case 'DECREMENT':
+      return { count: state.count - action.payload };
+    default:
+      return state;
+  }
+}</pre></div><div class='content'></div><h2>Store</h2>
+<div class='content'><p>El store es el objeto que contiene el estado de la aplicación. Se crea usando el reductor y proporciona métodos para acceder al estado, despachar acciones y suscribirse a cambios en el estado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgY3JlYXRlU3RvcmUgfSBmcm9tICdyZWR1eCc7Cgpjb25zdCBzdG9yZSA9IGNyZWF0ZVN0b3JlKGNvdW50ZXJSZWR1Y2VyKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { createStore } from 'redux';
+
+const store = createStore(counterReducer);</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear una pequeña aplicación de contador usando Redux.</p>
+</div><h2>Paso 1: Definir Acciones</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYWN0aW9ucy5qcwpleHBvcnQgY29uc3QgaW5jcmVtZW50ID0gKHZhbHVlKSA9PiAoewogIHR5cGU6ICdJTkNSRU1FTlQnLAogIHBheWxvYWQ6IHZhbHVlCn0pOwoKZXhwb3J0IGNvbnN0IGRlY3JlbWVudCA9ICh2YWx1ZSkgPT4gKHsKICB0eXBlOiAnREVDUkVNRU5UJywKICBwYXlsb2FkOiB2YWx1ZQp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// actions.js
+export const increment = (value) =&gt; ({
+  type: 'INCREMENT',
+  payload: value
+});
+
+export const decrement = (value) =&gt; ({
+  type: 'DECREMENT',
+  payload: value
+});</pre></div><div class='content'></div><h2>Paso 2: Crear el Reductor</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVkdWNlci5qcwpjb25zdCBpbml0aWFsU3RhdGUgPSB7IGNvdW50OiAwIH07CgpleHBvcnQgZnVuY3Rpb24gY291bnRlclJlZHVjZXIoc3RhdGUgPSBpbml0aWFsU3RhdGUsIGFjdGlvbikgewogIHN3aXRjaCAoYWN0aW9uLnR5cGUpIHsKICAgIGNhc2UgJ0lOQ1JFTUVOVCc6CiAgICAgIHJldHVybiB7IGNvdW50OiBzdGF0ZS5jb3VudCArIGFjdGlvbi5wYXlsb2FkIH07CiAgICBjYXNlICdERUNSRU1FTlQnOgogICAgICByZXR1cm4geyBjb3VudDogc3RhdGUuY291bnQgLSBhY3Rpb24ucGF5bG9hZCB9OwogICAgZGVmYXVsdDoKICAgICAgcmV0dXJuIHN0YXRlOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// reducer.js
+const initialState = { count: 0 };
+
+export function counterReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'INCREMENT':
+      return { count: state.count + action.payload };
+    case 'DECREMENT':
+      return { count: state.count - action.payload };
+    default:
+      return state;
+  }
+}</pre></div><div class='content'></div><h2>Paso 3: Crear el Store</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3RvcmUuanMKaW1wb3J0IHsgY3JlYXRlU3RvcmUgfSBmcm9tICdyZWR1eCc7CmltcG9ydCB7IGNvdW50ZXJSZWR1Y2VyIH0gZnJvbSAnLi9yZWR1Y2VyJzsKCmV4cG9ydCBjb25zdCBzdG9yZSA9IGNyZWF0ZVN0b3JlKGNvdW50ZXJSZWR1Y2VyKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// store.js
+import { createStore } from 'redux';
+import { counterReducer } from './reducer';
+
+export const store = createStore(counterReducer);</pre></div><div class='content'></div><h2>Paso 4: Conectar React con Redux</h2>
+<div class='content'><p>Para conectar React con Redux, usamos el paquete <code>react-redux</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQXBwLmpzCmltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFByb3ZpZGVyLCB1c2VEaXNwYXRjaCwgdXNlU2VsZWN0b3IgfSBmcm9tICdyZWFjdC1yZWR1eCc7CmltcG9ydCB7IHN0b3JlIH0gZnJvbSAnLi9zdG9yZSc7CmltcG9ydCB7IGluY3JlbWVudCwgZGVjcmVtZW50IH0gZnJvbSAnLi9hY3Rpb25zJzsKCmZ1bmN0aW9uIENvdW50ZXIoKSB7CiAgY29uc3QgY291bnQgPSB1c2VTZWxlY3Rvcigoc3RhdGUpID0+IHN0YXRlLmNvdW50KTsKICBjb25zdCBkaXNwYXRjaCA9IHVzZURpc3BhdGNoKCk7CgogIHJldHVybiAoCiAgICA8ZGl2PgogICAgICA8aDE+e2NvdW50fTwvaDE+CiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gZGlzcGF0Y2goaW5jcmVtZW50KDEpKX0+SW5jcmVtZW50PC9idXR0b24+CiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gZGlzcGF0Y2goZGVjcmVtZW50KDEpKX0+RGVjcmVtZW50PC9idXR0b24+CiAgICA8L2Rpdj4KICApOwp9CgpmdW5jdGlvbiBBcHAoKSB7CiAgcmV0dXJuICgKICAgIDxQcm92aWRlciBzdG9yZT17c3RvcmV9PgogICAgICA8Q291bnRlciAvPgogICAgPC9Qcm92aWRlcj4KICApOwp9CgpleHBvcnQgZGVmYXVsdCBBcHA7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// App.js
+import React from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { store } from './store';
+import { increment, decrement } from './actions';
+
+function Counter() {
+  const count = useSelector((state) =&gt; state.count);
+  const dispatch = useDispatch();
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{count}&lt;/h1&gt;
+      &lt;button onClick={() =&gt; dispatch(increment(1))}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch(decrement(1))}&gt;Decrement&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;Provider store={store}&gt;
+      &lt;Counter /&gt;
+    &lt;/Provider&gt;
+  );
+}
+
+export default App;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una aplicación de lista de tareas (To-Do List) usando Redux. La aplicación debe permitir agregar, eliminar y marcar tareas como completadas.</p>
+<h4>Requisitos</h4>
+<ol>
+<li><strong>Acciones</strong>: Define acciones para agregar, eliminar y marcar tareas.</li>
+<li><strong>Reductor</strong>: Crea un reductor que maneje las acciones definidas.</li>
+<li><strong>Store</strong>: Configura el store con el reductor.</li>
+<li><strong>Componentes</strong>: Crea componentes React para mostrar y manipular la lista de tareas.</li>
+<li><strong>Conexión</strong>: Conecta los componentes React con Redux usando <code>react-redux</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>Acciones</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYWN0aW9ucy5qcwpleHBvcnQgY29uc3QgYWRkVGFzayA9ICh0YXNrKSA9PiAoewogIHR5cGU6ICdBRERfVEFTSycsCiAgcGF5bG9hZDogdGFzawp9KTsKCmV4cG9ydCBjb25zdCByZW1vdmVUYXNrID0gKGlkKSA9PiAoewogIHR5cGU6ICdSRU1PVkVfVEFTSycsCiAgcGF5bG9hZDogaWQKfSk7CgpleHBvcnQgY29uc3QgdG9nZ2xlVGFzayA9IChpZCkgPT4gKHsKICB0eXBlOiAnVE9HR0xFX1RBU0snLAogIHBheWxvYWQ6IGlkCn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// actions.js
+export const addTask = (task) =&gt; ({
+  type: 'ADD_TASK',
+  payload: task
+});
+
+export const removeTask = (id) =&gt; ({
+  type: 'REMOVE_TASK',
+  payload: id
+});
+
+export const toggleTask = (id) =&gt; ({
+  type: 'TOGGLE_TASK',
+  payload: id
+});</pre></div><div class='content'><h4>Reductor</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVkdWNlci5qcwpjb25zdCBpbml0aWFsU3RhdGUgPSB7IHRhc2tzOiBbXSB9OwoKZXhwb3J0IGZ1bmN0aW9uIHRhc2tzUmVkdWNlcihzdGF0ZSA9IGluaXRpYWxTdGF0ZSwgYWN0aW9uKSB7CiAgc3dpdGNoIChhY3Rpb24udHlwZSkgewogICAgY2FzZSAnQUREX1RBU0snOgogICAgICByZXR1cm4geyB0YXNrczogWy4uLnN0YXRlLnRhc2tzLCB7IGlkOiBEYXRlLm5vdygpLCB0ZXh0OiBhY3Rpb24ucGF5bG9hZCwgY29tcGxldGVkOiBmYWxzZSB9XSB9OwogICAgY2FzZSAnUkVNT1ZFX1RBU0snOgogICAgICByZXR1cm4geyB0YXNrczogc3RhdGUudGFza3MuZmlsdGVyKHRhc2sgPT4gdGFzay5pZCAhPT0gYWN0aW9uLnBheWxvYWQpIH07CiAgICBjYXNlICdUT0dHTEVfVEFTSyc6CiAgICAgIHJldHVybiB7CiAgICAgICAgdGFza3M6IHN0YXRlLnRhc2tzLm1hcCh0YXNrID0+CiAgICAgICAgICB0YXNrLmlkID09PSBhY3Rpb24ucGF5bG9hZCA/IHsgLi4udGFzaywgY29tcGxldGVkOiAhdGFzay5jb21wbGV0ZWQgfSA6IHRhc2sKICAgICAgICApCiAgICAgIH07CiAgICBkZWZhdWx0OgogICAgICByZXR1cm4gc3RhdGU7CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// reducer.js
+const initialState = { tasks: [] };
+
+export function tasksReducer(state = initialState, action) {
+  switch (action.type) {
+    case 'ADD_TASK':
+      return { tasks: [...state.tasks, { id: Date.now(), text: action.payload, completed: false }] };
+    case 'REMOVE_TASK':
+      return { tasks: state.tasks.filter(task =&gt; task.id !== action.payload) };
+    case 'TOGGLE_TASK':
+      return {
+        tasks: state.tasks.map(task =&gt;
+          task.id === action.payload ? { ...task, completed: !task.completed } : task
+        )
+      };
+    default:
+      return state;
+  }
+}</pre></div><div class='content'><h4>Store</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3RvcmUuanMKaW1wb3J0IHsgY3JlYXRlU3RvcmUgfSBmcm9tICdyZWR1eCc7CmltcG9ydCB7IHRhc2tzUmVkdWNlciB9IGZyb20gJy4vcmVkdWNlcic7CgpleHBvcnQgY29uc3Qgc3RvcmUgPSBjcmVhdGVTdG9yZSh0YXNrc1JlZHVjZXIpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// store.js
+import { createStore } from 'redux';
+import { tasksReducer } from './reducer';
+
+export const store = createStore(tasksReducer);</pre></div><div class='content'><h4>Componentes</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQXBwLmpzCmltcG9ydCBSZWFjdCwgeyB1c2VTdGF0ZSB9IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgUHJvdmlkZXIsIHVzZURpc3BhdGNoLCB1c2VTZWxlY3RvciB9IGZyb20gJ3JlYWN0LXJlZHV4JzsKaW1wb3J0IHsgc3RvcmUgfSBmcm9tICcuL3N0b3JlJzsKaW1wb3J0IHsgYWRkVGFzaywgcmVtb3ZlVGFzaywgdG9nZ2xlVGFzayB9IGZyb20gJy4vYWN0aW9ucyc7CgpmdW5jdGlvbiBUYXNrTGlzdCgpIHsKICBjb25zdCB0YXNrcyA9IHVzZVNlbGVjdG9yKChzdGF0ZSkgPT4gc3RhdGUudGFza3MpOwogIGNvbnN0IGRpc3BhdGNoID0gdXNlRGlzcGF0Y2goKTsKICBjb25zdCBbdGFzaywgc2V0VGFza10gPSB1c2VTdGF0ZSgnJyk7CgogIGNvbnN0IGhhbmRsZUFkZFRhc2sgPSAoKSA9PiB7CiAgICBpZiAodGFzay50cmltKCkpIHsKICAgICAgZGlzcGF0Y2goYWRkVGFzayh0YXNrKSk7CiAgICAgIHNldFRhc2soJycpOwogICAgfQogIH07CgogIHJldHVybiAoCiAgICA8ZGl2PgogICAgICA8aW5wdXQKICAgICAgICB0eXBlPSJ0ZXh0IgogICAgICAgIHZhbHVlPXt0YXNrfQogICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0VGFzayhlLnRhcmdldC52YWx1ZSl9CiAgICAgICAgcGxhY2Vob2xkZXI9IkFkZCBhIG5ldyB0YXNrIgogICAgICAvPgogICAgICA8YnV0dG9uIG9uQ2xpY2s9e2hhbmRsZUFkZFRhc2t9PkFkZCBUYXNrPC9idXR0b24+CiAgICAgIDx1bD4KICAgICAgICB7dGFza3MubWFwKCh0YXNrKSA9PiAoCiAgICAgICAgICA8bGkga2V5PXt0YXNrLmlkfT4KICAgICAgICAgICAgPHNwYW4KICAgICAgICAgICAgICBzdHlsZT17eyB0ZXh0RGVjb3JhdGlvbjogdGFzay5jb21wbGV0ZWQgPyAnbGluZS10aHJvdWdoJyA6ICdub25lJyB9fQogICAgICAgICAgICAgIG9uQ2xpY2s9eygpID0+IGRpc3BhdGNoKHRvZ2dsZVRhc2sodGFzay5pZCkpfQogICAgICAgICAgICA+CiAgICAgICAgICAgICAge3Rhc2sudGV4dH0KICAgICAgICAgICAgPC9zcGFuPgogICAgICAgICAgICA8YnV0dG9uIG9uQ2xpY2s9eygpID0+IGRpc3BhdGNoKHJlbW92ZVRhc2sodGFzay5pZCkpfT5SZW1vdmU8L2J1dHRvbj4KICAgICAgICAgIDwvbGk+CiAgICAgICAgKSl9CiAgICAgIDwvdWw+CiAgICA8L2Rpdj4KICApOwp9CgpmdW5jdGlvbiBBcHAoKSB7CiAgcmV0dXJuICgKICAgIDxQcm92aWRlciBzdG9yZT17c3RvcmV9PgogICAgICA8VGFza0xpc3QgLz4KICAgIDwvUHJvdmlkZXI+CiAgKTsKfQoKZXhwb3J0IGRlZmF1bHQgQXBwOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// App.js
+import React, { useState } from 'react';
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { store } from './store';
+import { addTask, removeTask, toggleTask } from './actions';
+
+function TaskList() {
+  const tasks = useSelector((state) =&gt; state.tasks);
+  const dispatch = useDispatch();
+  const [task, setTask] = useState('');
+
+  const handleAddTask = () =&gt; {
+    if (task.trim()) {
+      dispatch(addTask(task));
+      setTask('');
+    }
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type=&quot;text&quot;
+        value={task}
+        onChange={(e) =&gt; setTask(e.target.value)}
+        placeholder=&quot;Add a new task&quot;
+      /&gt;
+      &lt;button onClick={handleAddTask}&gt;Add Task&lt;/button&gt;
+      &lt;ul&gt;
+        {tasks.map((task) =&gt; (
+          &lt;li key={task.id}&gt;
+            &lt;span
+              style={{ textDecoration: task.completed ? 'line-through' : 'none' }}
+              onClick={() =&gt; dispatch(toggleTask(task.id))}
+            &gt;
+              {task.text}
+            &lt;/span&gt;
+            &lt;button onClick={() =&gt; dispatch(removeTask(task.id))}&gt;Remove&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+function App() {
+  return (
+    &lt;Provider store={store}&gt;
+      &lt;TaskList /&gt;
+    &lt;/Provider&gt;
+  );
+}
+
+export default App;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido los conceptos básicos de Redux y cómo integrarlo con React para gestionar el estado de una aplicación. Hemos cubierto la creación de acciones, reductores y el store, así como la conexión de componentes React con Redux. Además, hemos implementado una aplicación de contador y una lista de tareas para practicar estos conceptos.</p>
+<p>En el siguiente módulo, exploraremos más sobre los frameworks y librerías de JavaScript, comenzando con una introducción a React.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-introduction-react' title="Introducción a React">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-vuejs-basics' title="Conceptos Básicos de Vue.js">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>
