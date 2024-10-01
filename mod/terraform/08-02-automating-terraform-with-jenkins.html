@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatización de Terraform con Jenkins</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/08-02-automating-terraform-with-jenkins" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/08-02-automating-terraform-with-jenkins" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/08-02-automating-terraform-with-jenkins" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/terraform/08-02-automating-terraform-with-jenkins" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/08-02-automating-terraform-with-jenkins" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-integrating-terraform-with-cicd' title="Integración de Terraform con CI/CD">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Automatización de Terraform con Jenkins</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-using-terraform-with-github-actions' title="Uso de Terraform con GitHub Actions">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, aprenderemos cómo integrar y automatizar Terraform con Jenkins, una herramienta de integración continua y entrega continua (CI/CD) ampliamente utilizada. La automatización de Terraform con Jenkins permite la implementación y gestión de infraestructura como código (IaC) de manera eficiente y repetible.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Entender la integración de Terraform con Jenkins.</li>
+<li>Configurar un pipeline de Jenkins para ejecutar scripts de Terraform.</li>
+<li>Implementar buenas prácticas en la automatización de Terraform con Jenkins.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Conocimientos básicos de Terraform y Jenkins.</li>
+<li>Jenkins instalado y configurado.</li>
+<li>Terraform instalado en el servidor de Jenkins.</li>
+<li>Acceso a un proveedor de nube (AWS, Azure, GCP, etc.).</li>
+</ul>
+</div><h1>Paso 1: Instalación de Plugins Necesarios en Jenkins</h1>
+<div class='content'><p>Para comenzar, asegúrate de que Jenkins tenga los plugins necesarios instalados:</p>
+<ol>
+<li><strong>Pipeline</strong>: Permite la creación de pipelines de Jenkins.</li>
+<li><strong>Git</strong>: Para clonar repositorios de Git.</li>
+<li><strong>Terraform</strong>: Plugin específico para ejecutar comandos de Terraform.</li>
+</ol>
+</div><h2>Instalación de Plugins</h2>
+<div class='content'><ol>
+<li>Navega a <code>Manage Jenkins</code> &gt; <code>Manage Plugins</code>.</li>
+<li>En la pestaña <code>Available</code>, busca y selecciona los plugins mencionados.</li>
+<li>Haz clic en <code>Install without restart</code>.</li>
+</ol>
+</div><h1>Paso 2: Configuración del Pipeline de Jenkins</h1>
+<div class='content'></div><h2>Creación del Pipeline</h2>
+<div class='content'><ol>
+<li>En el dashboard de Jenkins, haz clic en <code>New Item</code>.</li>
+<li>Selecciona <code>Pipeline</code> y proporciona un nombre para tu proyecto.</li>
+<li>Haz clic en <code>OK</code>.</li>
+</ol>
+</div><h2>Configuración del Pipeline Script</h2>
+<div class='content'><p>En la sección <code>Pipeline</code>, selecciona <code>Pipeline script</code> y agrega el siguiente script:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CgogICAgZW52aXJvbm1lbnQgewogICAgICAgIC8vIERlZmluZSBlbnZpcm9ubWVudCB2YXJpYWJsZXMKICAgICAgICBURl9WRVJTSU9OID0gJzEuMC4wJwogICAgICAgIEFXU19DUkVERU5USUFMU19JRCA9ICdhd3MtY3JlZGVudGlhbHMtaWQnCiAgICB9CgogICAgc3RhZ2VzIHsKICAgICAgICBzdGFnZSgnQ2hlY2tvdXQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIC8vIENsb25hIGVsIHJlcG9zaXRvcmlvIGRlIEdpdAogICAgICAgICAgICAgICAgZ2l0IHVybDogJ2h0dHBzOi8vZ2l0aHViLmNvbS90dS1yZXBvc2l0b3Jpby90ZXJyYWZvcm0tcHJvamVjdC5naXQnLCBicmFuY2g6ICdtYWluJwogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICBzdGFnZSgnSW5pdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgLy8gSW5pY2lhbGl6YSBUZXJyYWZvcm0KICAgICAgICAgICAgICAgIHNoICd0ZXJyYWZvcm0gaW5pdCcKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgc3RhZ2UoJ1BsYW4nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIC8vIEVqZWN1dGEgdGVycmFmb3JtIHBsYW4KICAgICAgICAgICAgICAgIHNoICd0ZXJyYWZvcm0gcGxhbiAtb3V0PXRmcGxhbicKICAgICAgICAgICAgfQogICAgICAgIH0KCiAgICAgICAgc3RhZ2UoJ0FwcGx5JykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICAvLyBBcGxpY2EgbG9zIGNhbWJpb3MgZGUgVGVycmFmb3JtCiAgICAgICAgICAgICAgICBzaCAndGVycmFmb3JtIGFwcGx5IC1hdXRvLWFwcHJvdmUgdGZwbGFuJwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIHBvc3QgewogICAgICAgIGFsd2F5cyB7CiAgICAgICAgICAgIC8vIExpbXBpYSBsb3MgYXJjaGl2b3MgZ2VuZXJhZG9zIHBvciBUZXJyYWZvcm0KICAgICAgICAgICAgY2xlYW5XcygpCiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+
+    environment {
+        // Define environment variables
+        TF_VERSION = '1.0.0'
+        AWS_CREDENTIALS_ID = 'aws-credentials-id'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Clona el repositorio de Git
+                git url: 'https://github.com/tu-repositorio/terraform-project.git', branch: 'main'
+            }
+        }
+
+        stage('Init') {
+            steps {
+                // Inicializa Terraform
+                sh 'terraform init'
+            }
+        }
+
+        stage('Plan') {
+            steps {
+                // Ejecuta terraform plan
+                sh 'terraform plan -out=tfplan'
+            }
+        }
+
+        stage('Apply') {
+            steps {
+                // Aplica los cambios de Terraform
+                sh 'terraform apply -auto-approve tfplan'
+            }
+        }
+    }
+
+    post {
+        always {
+            // Limpia los archivos generados por Terraform
+            cleanWs()
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Script</h2>
+<div class='content'><ul>
+<li><strong>agent any</strong>: Ejecuta el pipeline en cualquier agente disponible.</li>
+<li><strong>environment</strong>: Define variables de entorno, como la versión de Terraform y las credenciales de AWS.</li>
+<li><strong>stages</strong>: Define las etapas del pipeline.
+<ul>
+<li><strong>Checkout</strong>: Clona el repositorio de Git.</li>
+<li><strong>Init</strong>: Inicializa Terraform.</li>
+<li><strong>Plan</strong>: Genera un plan de ejecución de Terraform.</li>
+<li><strong>Apply</strong>: Aplica los cambios planificados.</li>
+</ul>
+</li>
+<li><strong>post</strong>: Define acciones a realizar después de la ejecución del pipeline, como limpiar el espacio de trabajo.</li>
+</ul>
+</div><h1>Paso 3: Configuración de Credenciales en Jenkins</h1>
+<div class='content'><p>Para que Jenkins pueda interactuar con tu proveedor de nube, necesitas configurar las credenciales adecuadas:</p>
+<ol>
+<li>Navega a <code>Manage Jenkins</code> &gt; <code>Manage Credentials</code>.</li>
+<li>Agrega nuevas credenciales para tu proveedor de nube (por ejemplo, AWS Access Key y Secret Key).</li>
+<li>Asegúrate de que el ID de las credenciales coincida con el definido en el script del pipeline (<code>AWS_CREDENTIALS_ID</code>).</li>
+</ol>
+</div><h1>Paso 4: Ejecución del Pipeline</h1>
+<div class='content'><ol>
+<li>Guarda la configuración del pipeline.</li>
+<li>En el dashboard del proyecto, haz clic en <code>Build Now</code> para ejecutar el pipeline.</li>
+<li>Monitorea la ejecución en la consola de salida para asegurarte de que todos los pasos se completen correctamente.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un pipeline de Jenkins que:</p>
+<ol>
+<li>Clona un repositorio de Git con configuraciones de Terraform.</li>
+<li>Inicializa Terraform.</li>
+<li>Genera un plan de ejecución.</li>
+<li>Aplica los cambios.</li>
+<li>Limpia el espacio de trabajo al finalizar.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><p>Sigue los pasos descritos anteriormente para configurar y ejecutar el pipeline.</p>
+</div><h1>Errores Comunes y Soluciones</h1>
+<div class='content'></div><h2>Error: `terraform: command not found`</h2>
+<div class='content'><ul>
+<li><strong>Solución</strong>: Asegúrate de que Terraform esté instalado en el servidor de Jenkins y que su ruta esté incluida en las variables de entorno.</li>
+</ul>
+</div><h2>Error: `Error acquiring the state lock`</h2>
+<div class='content'><ul>
+<li><strong>Solución</strong>: Verifica que no haya otra ejecución de Terraform en curso y que el estado no esté bloqueado.</li>
+</ul>
+</div><h2>Error: `Access Denied`</h2>
+<div class='content'><ul>
+<li><strong>Solución</strong>: Asegúrate de que las credenciales configuradas en Jenkins tengan los permisos necesarios para interactuar con el proveedor de nube.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo automatizar Terraform con Jenkins mediante la creación de un pipeline. Esta integración permite gestionar la infraestructura de manera eficiente y repetible, siguiendo las mejores prácticas de CI/CD. Con esta base, puedes expandir y personalizar tu pipeline para adaptarlo a las necesidades específicas de tu proyecto.</p>
+<p>En la siguiente sección, exploraremos cómo usar Terraform con GitHub Actions para una integración continua aún más fluida.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-integrating-terraform-with-cicd' title="Integración de Terraform con CI/CD">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-using-terraform-with-github-actions' title="Uso de Terraform con GitHub Actions">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

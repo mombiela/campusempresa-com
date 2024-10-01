@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reinicio y Punto de Control</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jcl/05-04-restart-checkpoint" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jcl/05-04-restart-checkpoint" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jcl/05-04-restart-checkpoint" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/jcl/05-04-restart-checkpoint" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/jcl/05-04-restart-checkpoint" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-generation-data-groups' title="Grupos de Datos de Generación (GDGs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Reinicio y Punto de Control</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-common-jcl-errors' title="Errores Comunes de JCL">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos los conceptos de reinicio y punto de control en JCL. Estos mecanismos son esenciales para la gestión de trabajos largos o críticos, permitiendo la recuperación y continuación de trabajos en caso de fallos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Punto de Control (Checkpoint):</strong></p>
+<ul>
+<li>Un punto de control es una marca en el procesamiento de un trabajo que permite guardar el estado actual del trabajo.</li>
+<li>Si el trabajo falla, puede reiniciarse desde el último punto de control en lugar de comenzar desde el principio.</li>
+</ul>
+</li>
+<li>
+<p><strong>Reinicio (Restart):</strong></p>
+<ul>
+<li>El reinicio es el proceso de reanudar un trabajo desde un punto de control específico.</li>
+<li>Esto es útil para evitar la repetición de pasos ya completados y ahorrar tiempo y recursos.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Implementación de Puntos de Control y Reinicio</h1>
+<div class='content'></div><h2>Declaración de Puntos de Control</h2>
+<div class='content'><p>Para implementar puntos de control en JCL, se utiliza la declaración <code>CHKPT</code> en combinación con el sistema de gestión de trabajos (JES2 o JES3). Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9TVEVQMSAgICBFWEVDIFBHTT1NWVBST0csUkVHSU9OPTRNLENPTkQ9KDAsTkUpCi8vU1lTQ0hLICAgREQgIERTTj1NWS5DSEVDS1BPSU5ULkRBVEEsRElTUD0oTkVXLENBVExHLERFTEVURSksCi8vICAgICAgICAgICAgIFVOSVQ9U1lTREEsU1BBQ0U9KENZTCwoMSwxKSksRENCPShSRUNGTT1GQixMUkVDTD04MCxCTEtTSVpFPTgwMCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//STEP1    EXEC PGM=MYPROG,REGION=4M,COND=(0,NE)
+//SYSCHK   DD  DSN=MY.CHECKPOINT.DATA,DISP=(NEW,CATLG,DELETE),
+//             UNIT=SYSDA,SPACE=(CYL,(1,1)),DCB=(RECFM=FB,LRECL=80,BLKSIZE=800)</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>SYSCHK</code> es el DD que define el conjunto de datos donde se almacenarán los puntos de control.</li>
+<li><code>DSN</code> especifica el nombre del conjunto de datos.</li>
+<li><code>DISP</code> define la disposición del conjunto de datos.</li>
+<li><code>UNIT</code> y <code>SPACE</code> especifican la unidad y el espacio de almacenamiento.</li>
+<li><code>DCB</code> define las características del conjunto de datos.</li>
+</ul>
+</div><h2>Reinicio desde un Punto de Control</h2>
+<div class='content'><p>Para reiniciar un trabajo desde un punto de control, se utiliza el parámetro <code>RESTART</code> en la declaración <code>JOB</code> o <code>EXEC</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgICBKT0IgKEFDQ1QpLCdSRVNUQVJUIEpPQicsQ0xBU1M9QSxNU0dDTEFTUz1YLE5PVElGWT0mU1lTVUlELAovLyAgICAgICAgIFJFU1RBUlQ9U1RFUDEKLy9TVEVQMSAgICBFWEVDIFBHTT1NWVBST0csUkVHSU9OPTRNLENPTkQ9KDAsTkUpCi8vU1lTQ0hLICAgREQgIERTTj1NWS5DSEVDS1BPSU5ULkRBVEEsRElTUD1PTEQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB    JOB (ACCT),'RESTART JOB',CLASS=A,MSGCLASS=X,NOTIFY=&amp;SYSUID,
+//         RESTART=STEP1
+//STEP1    EXEC PGM=MYPROG,REGION=4M,COND=(0,NE)
+//SYSCHK   DD  DSN=MY.CHECKPOINT.DATA,DISP=OLD</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>RESTART=STEP1</code> indica que el trabajo debe reiniciarse desde el paso <code>STEP1</code>.</li>
+<li><code>DISP=OLD</code> en <code>SYSCHK</code> asegura que el conjunto de datos de puntos de control existente se utilice para el reinicio.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que tenemos un trabajo que procesa un gran volumen de datos y queremos implementar puntos de control para poder reiniciar en caso de fallo.</p>
+</div><h2>Código JCL Completo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgICBKT0IgKEFDQ1QpLCdEQVRBIFBST0NFU1NJTkcnLENMQVNTPUEsTVNHQ0xBU1M9WCxOT1RJRlk9JlNZU1VJRAovL1NURVAxICAgIEVYRUMgUEdNPU1ZUFJPRyxSRUdJT049NE0sQ09ORD0oMCxORSkKLy9TWVNJTiAgICBERCAgKgogIC8vIEFxdcOtIGlyw61hbiBsb3MgZGF0b3MgZGUgZW50cmFkYSBwYXJhIGVsIHByb2dyYW1hCi8qCi8vU1lTT1VUICAgREQgIFNZU09VVD0qCi8vU1lTQ0hLICAgREQgIERTTj1NWS5DSEVDS1BPSU5ULkRBVEEsRElTUD0oTkVXLENBVExHLERFTEVURSksCi8vICAgICAgICAgICAgIFVOSVQ9U1lTREEsU1BBQ0U9KENZTCwoMSwxKSksRENCPShSRUNGTT1GQixMUkVDTD04MCxCTEtTSVpFPTgwMCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB    JOB (ACCT),'DATA PROCESSING',CLASS=A,MSGCLASS=X,NOTIFY=&amp;SYSUID
+//STEP1    EXEC PGM=MYPROG,REGION=4M,COND=(0,NE)
+//SYSIN    DD  *
+  // Aqu&iacute; ir&iacute;an los datos de entrada para el programa
+/*
+//SYSOUT   DD  SYSOUT=*
+//SYSCHK   DD  DSN=MY.CHECKPOINT.DATA,DISP=(NEW,CATLG,DELETE),
+//             UNIT=SYSDA,SPACE=(CYL,(1,1)),DCB=(RECFM=FB,LRECL=80,BLKSIZE=800)</pre></div><div class='content'></div><h2>Reinicio del Trabajo</h2>
+<div class='content'><p>Si el trabajo falla y necesitamos reiniciarlo, modificamos el JCL de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgICBKT0IgKEFDQ1QpLCdSRVNUQVJUIEpPQicsQ0xBU1M9QSxNU0dDTEFTUz1YLE5PVElGWT0mU1lTVUlELAovLyAgICAgICAgIFJFU1RBUlQ9U1RFUDEKLy9TVEVQMSAgICBFWEVDIFBHTT1NWVBST0csUkVHSU9OPTRNLENPTkQ9KDAsTkUpCi8vU1lTSU4gICAgREQgICoKICAvLyBBcXXDrSBpcsOtYW4gbG9zIGRhdG9zIGRlIGVudHJhZGEgcGFyYSBlbCBwcm9ncmFtYQovKgovL1NZU09VVCAgIEREICBTWVNPVVQ9KgovL1NZU0NISyAgIEREICBEU049TVkuQ0hFQ0tQT0lOVC5EQVRBLERJU1A9T0xE"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB    JOB (ACCT),'RESTART JOB',CLASS=A,MSGCLASS=X,NOTIFY=&amp;SYSUID,
+//         RESTART=STEP1
+//STEP1    EXEC PGM=MYPROG,REGION=4M,COND=(0,NE)
+//SYSIN    DD  *
+  // Aqu&iacute; ir&iacute;an los datos de entrada para el programa
+/*
+//SYSOUT   DD  SYSOUT=*
+//SYSCHK   DD  DSN=MY.CHECKPOINT.DATA,DISP=OLD</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Escribe un JCL que ejecute un programa llamado <code>DATAPROC</code> y defina un conjunto de datos para puntos de control.</li>
+<li>Simula un fallo en el trabajo y escribe el JCL necesario para reiniciar el trabajo desde el punto de control.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>Paso 1: JCL Inicial</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgICBKT0IgKEFDQ1QpLCdEQVRBIFBST0NFU1NJTkcnLENMQVNTPUEsTVNHQ0xBU1M9WCxOT1RJRlk9JlNZU1VJRAovL1NURVAxICAgIEVYRUMgUEdNPURBVEFQUk9DLFJFR0lPTj00TSxDT05EPSgwLE5FKQovL1NZU0lOICAgIEREICAqCiAgLy8gQXF1w60gaXLDrWFuIGxvcyBkYXRvcyBkZSBlbnRyYWRhIHBhcmEgZWwgcHJvZ3JhbWEKLyoKLy9TWVNPVVQgICBERCAgU1lTT1VUPSoKLy9TWVNDSEsgICBERCAgRFNOPU1ZLkNIRUNLUE9JTlQuREFUQSxESVNQPShORVcsQ0FUTEcsREVMRVRFKSwKLy8gICAgICAgICAgICAgVU5JVD1TWVNEQSxTUEFDRT0oQ1lMLCgxLDEpKSxEQ0I9KFJFQ0ZNPUZCLExSRUNMPTgwLEJMS1NJWkU9ODAwKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB    JOB (ACCT),'DATA PROCESSING',CLASS=A,MSGCLASS=X,NOTIFY=&amp;SYSUID
+//STEP1    EXEC PGM=DATAPROC,REGION=4M,COND=(0,NE)
+//SYSIN    DD  *
+  // Aqu&iacute; ir&iacute;an los datos de entrada para el programa
+/*
+//SYSOUT   DD  SYSOUT=*
+//SYSCHK   DD  DSN=MY.CHECKPOINT.DATA,DISP=(NEW,CATLG,DELETE),
+//             UNIT=SYSDA,SPACE=(CYL,(1,1)),DCB=(RECFM=FB,LRECL=80,BLKSIZE=800)</pre></div><div class='content'><h4>Paso 2: JCL de Reinicio</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly9NWUpPQiAgICBKT0IgKEFDQ1QpLCdSRVNUQVJUIEpPQicsQ0xBU1M9QSxNU0dDTEFTUz1YLE5PVElGWT0mU1lTVUlELAovLyAgICAgICAgIFJFU1RBUlQ9U1RFUDEKLy9TVEVQMSAgICBFWEVDIFBHTT1EQVRBUFJPQyxSRUdJT049NE0sQ09ORD0oMCxORSkKLy9TWVNJTiAgICBERCAgKgogIC8vIEFxdcOtIGlyw61hbiBsb3MgZGF0b3MgZGUgZW50cmFkYSBwYXJhIGVsIHByb2dyYW1hCi8qCi8vU1lTT1VUICAgREQgIFNZU09VVD0qCi8vU1lTQ0hLICAgREQgIERTTj1NWS5DSEVDS1BPSU5ULkRBVEEsRElTUD1PTEQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>//MYJOB    JOB (ACCT),'RESTART JOB',CLASS=A,MSGCLASS=X,NOTIFY=&amp;SYSUID,
+//         RESTART=STEP1
+//STEP1    EXEC PGM=DATAPROC,REGION=4M,COND=(0,NE)
+//SYSIN    DD  *
+  // Aqu&iacute; ir&iacute;an los datos de entrada para el programa
+/*
+//SYSOUT   DD  SYSOUT=*
+//SYSCHK   DD  DSN=MY.CHECKPOINT.DATA,DISP=OLD</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los conceptos de puntos de control y reinicio en JCL, cómo implementarlos y cómo utilizarlos para gestionar trabajos de manera eficiente. Estos mecanismos son cruciales para asegurar la continuidad y eficiencia en el procesamiento de trabajos largos o críticos. En el siguiente módulo, exploraremos técnicas avanzadas de manejo de errores y depuración en JCL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-generation-data-groups' title="Grupos de Datos de Generación (GDGs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-common-jcl-errors' title="Errores Comunes de JCL">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Inseguro</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/09-02-unsafe-rust" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/09-02-unsafe-rust" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/09-02-unsafe-rust" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rust/09-02-unsafe-rust" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/09-02-unsafe-rust" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-macros' title="Macros">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Rust Inseguro</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-ffi' title="FFI (Interfaz de Función Extranjera)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Rust es conocido por su enfoque en la seguridad y la prevención de errores comunes en la programación de sistemas, como los desbordamientos de búfer y las condiciones de carrera. Sin embargo, hay situaciones en las que necesitas más control sobre el hardware o el rendimiento, y para eso, Rust proporciona un bloque de código especial llamado <code>unsafe</code>. Este módulo te enseñará cómo y cuándo usar Rust inseguro.</p>
+</div><h1>¿Qué es Rust Inseguro?</h1>
+<div class='content'><p>El bloque <code>unsafe</code> en Rust permite realizar operaciones que el compilador no puede verificar como seguras. Esto incluye:</p>
+<ul>
+<li>Desreferenciar punteros sin procesar.</li>
+<li>Llamar a funciones o métodos <code>unsafe</code>.</li>
+<li>Acceder o modificar variables estáticas mutables.</li>
+<li>Implementar traits <code>unsafe</code>.</li>
+</ul>
+</div><h2>Ejemplo Básico de `unsafe`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgbnVtID0gNTsKCiAgICAvLyBDcmVhciB1biBwdW50ZXJvIHNpbiBwcm9jZXNhcgogICAgbGV0IHIxID0gJm51bSBhcyAqY29uc3QgaTMyOwogICAgbGV0IHIyID0gJm11dCBudW0gYXMgKm11dCBpMzI7CgogICAgdW5zYWZlIHsKICAgICAgICAvLyBEZXNyZWZlcmVuY2lhciBwdW50ZXJvcyBzaW4gcHJvY2VzYXIKICAgICAgICBwcmludGxuISgicjEgaXM6IHt9IiwgKnIxKTsKICAgICAgICBwcmludGxuISgicjIgaXM6IHt9IiwgKnIyKTsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut num = 5;
+
+    // Crear un puntero sin procesar
+    let r1 = &amp;num as *const i32;
+    let r2 = &amp;mut num as *mut i32;
+
+    unsafe {
+        // Desreferenciar punteros sin procesar
+        println!(&quot;r1 is: {}&quot;, *r1);
+        println!(&quot;r2 is: {}&quot;, *r2);
+    }
+}</pre></div><div class='content'><p>En este ejemplo, <code>r1</code> y <code>r2</code> son punteros sin procesar. Dentro del bloque <code>unsafe</code>, desreferenciamos estos punteros para leer sus valores.</p>
+</div><h1>Operaciones Permitidas en `unsafe`</h1>
+<div class='content'></div><h2>1. Desreferenciar Punteros sin Procesar</h2>
+<div class='content'><p>Los punteros sin procesar (<code>*const T</code> y <code>*mut T</code>) son similares a los punteros en C. No tienen garantías de seguridad, por lo que desreferenciarlos es una operación insegura.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IG11dCBudW0gPSA0MjsKbGV0IHIgPSAmbXV0IG51bSBhcyAqbXV0IGkzMjsKCnVuc2FmZSB7CiAgICAqciA9IDEzOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let mut num = 42;
+let r = &amp;mut num as *mut i32;
+
+unsafe {
+    *r = 13;
+}</pre></div><div class='content'></div><h2>2. Llamar a Funciones `unsafe`</h2>
+<div class='content'><p>Algunas funciones están marcadas como <code>unsafe</code> porque realizan operaciones que no pueden ser verificadas por el compilador.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5zYWZlIGZuIGRhbmdlcm91cygpIHt9Cgp1bnNhZmUgewogICAgZGFuZ2Vyb3VzKCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>unsafe fn dangerous() {}
+
+unsafe {
+    dangerous();
+}</pre></div><div class='content'></div><h2>3. Acceder a Variables Estáticas Mutables</h2>
+<div class='content'><p>Las variables estáticas mutables (<code>static mut</code>) pueden ser accedidas y modificadas dentro de bloques <code>unsafe</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RhdGljIG11dCBDT1VOVEVSOiBpMzIgPSAwOwoKdW5zYWZlIHsKICAgIENPVU5URVIgKz0gMTsKICAgIHByaW50bG4hKCJDT1VOVEVSOiB7fSIsIENPVU5URVIpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>static mut COUNTER: i32 = 0;
+
+unsafe {
+    COUNTER += 1;
+    println!(&quot;COUNTER: {}&quot;, COUNTER);
+}</pre></div><div class='content'></div><h2>4. Implementar Traits `unsafe`</h2>
+<div class='content'><p>Algunos traits pueden ser implementados como <code>unsafe</code> para indicar que su implementación puede no ser segura.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5zYWZlIHRyYWl0IEZvbyB7CiAgICAvLyBNw6l0b2RvcyBkZWwgdHJhaXQKfQoKdW5zYWZlIGltcGwgRm9vIGZvciBpMzIgewogICAgLy8gSW1wbGVtZW50YWNpw7NuIGRlbCB0cmFpdAp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>unsafe trait Foo {
+    // M&eacute;todos del trait
+}
+
+unsafe impl Foo for i32 {
+    // Implementaci&oacute;n del trait
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Desreferenciar Punteros sin Procesar</h2>
+<div class='content'><p>Crea un programa que utilice punteros sin procesar para intercambiar los valores de dos variables.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYSA9IDU7CiAgICBsZXQgbXV0IGIgPSAxMDsKCiAgICBsZXQgcDEgPSAmbXV0IGEgYXMgKm11dCBpMzI7CiAgICBsZXQgcDIgPSAmbXV0IGIgYXMgKm11dCBpMzI7CgogICAgdW5zYWZlIHsKICAgICAgICBsZXQgdGVtcCA9ICpwMTsKICAgICAgICAqcDEgPSAqcDI7CiAgICAgICAgKnAyID0gdGVtcDsKICAgIH0KCiAgICBwcmludGxuISgiYToge30sIGI6IHt9IiwgYSwgYik7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut a = 5;
+    let mut b = 10;
+
+    let p1 = &amp;mut a as *mut i32;
+    let p2 = &amp;mut b as *mut i32;
+
+    unsafe {
+        let temp = *p1;
+        *p1 = *p2;
+        *p2 = temp;
+    }
+
+    println!(&quot;a: {}, b: {}&quot;, a, b);
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Función `unsafe`</h2>
+<div class='content'><p>Escribe una función <code>unsafe</code> que tome un puntero sin procesar y lo desreferencie para devolver el valor.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5zYWZlIGZuIGdldF92YWx1ZShwdHI6ICpjb25zdCBpMzIpIC0+IGkzMiB7CiAgICAqcHRyCn0KCmZuIG1haW4oKSB7CiAgICBsZXQgbnVtID0gNDI7CiAgICBsZXQgcHRyID0gJm51bSBhcyAqY29uc3QgaTMyOwoKICAgIHVuc2FmZSB7CiAgICAgICAgbGV0IHZhbHVlID0gZ2V0X3ZhbHVlKHB0cik7CiAgICAgICAgcHJpbnRsbiEoIlZhbHVlOiB7fSIsIHZhbHVlKTsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>unsafe fn get_value(ptr: *const i32) -&gt; i32 {
+    *ptr
+}
+
+fn main() {
+    let num = 42;
+    let ptr = &amp;num as *const i32;
+
+    unsafe {
+        let value = get_value(ptr);
+        println!(&quot;Value: {}&quot;, value);
+    }
+}</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'></div><h2>Error 1: Desreferenciar Punteros Nulos</h2>
+<div class='content'><p>Desreferenciar un puntero nulo puede causar un fallo en tiempo de ejecución.</p>
+<h4>Solución</h4>
+<p>Siempre verifica que el puntero no sea nulo antes de desreferenciarlo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IHB0cjogKmNvbnN0IGkzMiA9IHN0ZDo6cHRyOjpudWxsKCk7CmlmICFwdHIuaXNfbnVsbCgpIHsKICAgIHVuc2FmZSB7CiAgICAgICAgcHJpbnRsbiEoIlZhbHVlOiB7fSIsICpwdHIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let ptr: *const i32 = std::ptr::null();
+if !ptr.is_null() {
+    unsafe {
+        println!(&quot;Value: {}&quot;, *ptr);
+    }
+}</pre></div><div class='content'></div><h2>Error 2: Condiciones de Carrera</h2>
+<div class='content'><p>Modificar variables estáticas mutables sin la debida sincronización puede causar condiciones de carrera.</p>
+<h4>Solución</h4>
+<p>Utiliza primitivas de sincronización como <code>Mutex</code> o <code>Atomic</code> para asegurar el acceso seguro a variables compartidas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6TXV0ZXg7CgpsYXp5X3N0YXRpYyEgewogICAgc3RhdGljIHJlZiBDT1VOVEVSOiBNdXRleDxpMzI+ID0gTXV0ZXg6Om5ldygwKTsKfQoKZm4gaW5jcmVtZW50KCkgewogICAgbGV0IG11dCBjb3VudGVyID0gQ09VTlRFUi5sb2NrKCkudW53cmFwKCk7CiAgICAqY291bnRlciArPSAxOwp9CgpmbiBtYWluKCkgewogICAgaW5jcmVtZW50KCk7CiAgICBwcmludGxuISgiQ09VTlRFUjoge30iLCAqQ09VTlRFUi5sb2NrKCkudW53cmFwKCkpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::Mutex;
+
+lazy_static! {
+    static ref COUNTER: Mutex&lt;i32&gt; = Mutex::new(0);
+}
+
+fn increment() {
+    let mut counter = COUNTER.lock().unwrap();
+    *counter += 1;
+}
+
+fn main() {
+    increment();
+    println!(&quot;COUNTER: {}&quot;, *COUNTER.lock().unwrap());
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El uso de <code>unsafe</code> en Rust te proporciona un gran poder y flexibilidad, pero también conlleva una gran responsabilidad. Es crucial entender cuándo y cómo usar <code>unsafe</code> para evitar errores críticos en tu código. Asegúrate de encapsular el código inseguro y proporcionar garantías de seguridad siempre que sea posible.</p>
+<p>En el próximo tema, exploraremos la Interfaz de Función Extranjera (FFI) en Rust, que te permitirá interactuar con bibliotecas escritas en otros lenguajes como C.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-macros' title="Macros">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-ffi' title="FFI (Interfaz de Función Extranjera)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

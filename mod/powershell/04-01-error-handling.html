@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Errores</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/powershell/04-01-error-handling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/powershell/04-01-error-handling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/powershell/04-01-error-handling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/powershell/04-01-error-handling" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/powershell/04-01-error-handling" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-05-sorting-grouping' title="Ordenación y Agrupación de Objetos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de Errores</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-debugging-scripts' title="Depuración de Scripts">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El manejo de errores es una parte crucial de cualquier lenguaje de scripting o programación, y PowerShell no es una excepción. En este tema, aprenderás cómo manejar errores de manera efectiva en tus scripts de PowerShell para hacerlos más robustos y confiables.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Tipos de Errores</strong>:</p>
+<ul>
+<li><strong>Errores de Terminación (Terminating Errors)</strong>: Son errores graves que detienen la ejecución del script.</li>
+<li><strong>Errores No Terminantes (Non-Terminating Errors)</strong>: Son errores que permiten que el script continúe ejecutándose.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cmdlets de Manejo de Errores</strong>:</p>
+<ul>
+<li><code>Try</code>, <code>Catch</code>, <code>Finally</code>: Bloques de código para manejar errores.</li>
+<li><code>Throw</code>: Genera un error de terminación.</li>
+<li><code>ErrorAction</code>: Parámetro para controlar cómo se manejan los errores.</li>
+</ul>
+</li>
+<li>
+<p><strong>Variables Automáticas</strong>:</p>
+<ul>
+<li><code>$Error</code>: Contiene una lista de los errores más recientes.</li>
+<li><code>$?</code>: Indica si el último comando se ejecutó correctamente.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Uso de Try, Catch y Finally</h2>
+<div class='content'><p>El bloque <code>Try</code> contiene el código que puede generar un error. Si ocurre un error, el control pasa al bloque <code>Catch</code>. El bloque <code>Finally</code> se ejecuta independientemente de si ocurrió un error o no.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHJ5IHsKICAgICMgQ8OzZGlnbyBxdWUgcHVlZGUgZ2VuZXJhciB1biBlcnJvcgogICAgJHJlc3VsdCA9IDEgLyAwCn0gY2F0Y2ggewogICAgIyBNYW5lam8gZGVsIGVycm9yCiAgICBXcml0ZS1Ib3N0ICJPY3VycmnDsyB1biBlcnJvcjogJF8iCn0gZmluYWxseSB7CiAgICAjIEPDs2RpZ28gcXVlIHNpZW1wcmUgc2UgZWplY3V0YQogICAgV3JpdGUtSG9zdCAiQmxvcXVlIEZpbmFsbHkgZWplY3V0YWRvLiIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>try {
+    # C&oacute;digo que puede generar un error
+    $result = 1 / 0
+} catch {
+    # Manejo del error
+    Write-Host &quot;Ocurri&oacute; un error: $_&quot;
+} finally {
+    # C&oacute;digo que siempre se ejecuta
+    Write-Host &quot;Bloque Finally ejecutado.&quot;
+}</pre></div><div class='content'></div><h2>Uso de Throw</h2>
+<div class='content'><p>El cmdlet <code>Throw</code> se utiliza para generar un error de terminación manualmente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gVGVzdC1FcnJvciB7CiAgICBwYXJhbSAoJHZhbHVlKQogICAgaWYgKCR2YWx1ZSAtZXEgJG51bGwpIHsKICAgICAgICB0aHJvdyAiRWwgdmFsb3Igbm8gcHVlZGUgc2VyIG51bG8uIgogICAgfQogICAgV3JpdGUtSG9zdCAiRWwgdmFsb3IgZXM6ICR2YWx1ZSIKfQoKdHJ5IHsKICAgIFRlc3QtRXJyb3IgJG51bGwKfSBjYXRjaCB7CiAgICBXcml0ZS1Ib3N0ICJFcnJvciBjYXB0dXJhZG86ICRfIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function Test-Error {
+    param ($value)
+    if ($value -eq $null) {
+        throw &quot;El valor no puede ser nulo.&quot;
+    }
+    Write-Host &quot;El valor es: $value&quot;
+}
+
+try {
+    Test-Error $null
+} catch {
+    Write-Host &quot;Error capturado: $_&quot;
+}</pre></div><div class='content'></div><h2>Uso de ErrorAction</h2>
+<div class='content'><p>El parámetro <code>ErrorAction</code> controla cómo se manejan los errores en un cmdlet específico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R2V0LUl0ZW0gIkM6XE5vRXhpc3RlLnR4dCIgLUVycm9yQWN0aW9uIFNpbGVudGx5Q29udGludWUKCmlmICgkPykgewogICAgV3JpdGUtSG9zdCAiRWwgYXJjaGl2byBmdWUgZW5jb250cmFkby4iCn0gZWxzZSB7CiAgICBXcml0ZS1Ib3N0ICJFbCBhcmNoaXZvIG5vIGZ1ZSBlbmNvbnRyYWRvLiIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Get-Item &quot;C:\NoExiste.txt&quot; -ErrorAction SilentlyContinue
+
+if ($?) {
+    Write-Host &quot;El archivo fue encontrado.&quot;
+} else {
+    Write-Host &quot;El archivo no fue encontrado.&quot;
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Manejo Básico de Errores</h2>
+<div class='content'><p>Escribe un script que intente leer un archivo que no existe y maneje el error de manera adecuada.</p>
+<h4>Instrucciones:</h4>
+<ol>
+<li>Usa un bloque <code>Try</code> para intentar leer un archivo inexistente.</li>
+<li>Usa un bloque <code>Catch</code> para capturar y mostrar el error.</li>
+<li>Usa un bloque <code>Finally</code> para mostrar un mensaje final.</li>
+</ol>
+<h4>Solución:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHJ5IHsKICAgIEdldC1Db250ZW50ICJDOlxOb0V4aXN0ZS50eHQiCn0gY2F0Y2ggewogICAgV3JpdGUtSG9zdCAiRXJyb3I6IE5vIHNlIHB1ZG8gbGVlciBlbCBhcmNoaXZvLiBEZXRhbGxlczogJF8iCn0gZmluYWxseSB7CiAgICBXcml0ZS1Ib3N0ICJJbnRlbnRvIGRlIGxlY3R1cmEgZGUgYXJjaGl2byBjb21wbGV0YWRvLiIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>try {
+    Get-Content &quot;C:\NoExiste.txt&quot;
+} catch {
+    Write-Host &quot;Error: No se pudo leer el archivo. Detalles: $_&quot;
+} finally {
+    Write-Host &quot;Intento de lectura de archivo completado.&quot;
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Uso de Throw</h2>
+<div class='content'><p>Crea una función que verifique si un número es positivo. Si el número es negativo, la función debe generar un error.</p>
+<h4>Instrucciones:</h4>
+<ol>
+<li>Define una función <code>Check-Positive</code>.</li>
+<li>Usa <code>Throw</code> para generar un error si el número es negativo.</li>
+<li>Maneja el error usando <code>Try</code> y <code>Catch</code>.</li>
+</ol>
+<h4>Solución:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gQ2hlY2stUG9zaXRpdmUgewogICAgcGFyYW0gKCRudW1iZXIpCiAgICBpZiAoJG51bWJlciAtbHQgMCkgewogICAgICAgIHRocm93ICJFbCBuw7ptZXJvIG5vIHB1ZWRlIHNlciBuZWdhdGl2by4iCiAgICB9CiAgICBXcml0ZS1Ib3N0ICJFbCBuw7ptZXJvIGVzIHBvc2l0aXZvOiAkbnVtYmVyIgp9Cgp0cnkgewogICAgQ2hlY2stUG9zaXRpdmUgLTUKfSBjYXRjaCB7CiAgICBXcml0ZS1Ib3N0ICJFcnJvciBjYXB0dXJhZG86ICRfIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function Check-Positive {
+    param ($number)
+    if ($number -lt 0) {
+        throw &quot;El n&uacute;mero no puede ser negativo.&quot;
+    }
+    Write-Host &quot;El n&uacute;mero es positivo: $number&quot;
+}
+
+try {
+    Check-Positive -5
+} catch {
+    Write-Host &quot;Error capturado: $_&quot;
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, has aprendido cómo manejar errores en PowerShell utilizando bloques <code>Try</code>, <code>Catch</code> y <code>Finally</code>, así como el cmdlet <code>Throw</code> y el parámetro <code>ErrorAction</code>. Estos conceptos te ayudarán a escribir scripts más robustos y a manejar situaciones inesperadas de manera efectiva.</p>
+<p>En el próximo tema, exploraremos técnicas de depuración de scripts para identificar y solucionar problemas en tu código de PowerShell.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-05-sorting-grouping' title="Ordenación y Agrupación de Objetos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-debugging-scripts' title="Depuración de Scripts">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

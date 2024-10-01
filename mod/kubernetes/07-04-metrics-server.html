@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Servidor de Métricas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/07-04-metrics-server" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/07-04-metrics-server" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/07-04-metrics-server" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/07-04-metrics-server" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/07-04-metrics-server" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-health-checks-probes' title="Verificaciones de Salud y Sondas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Servidor de Métricas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-rbac' title="Control de Acceso Basado en Roles (RBAC)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El servidor de métricas (Metrics Server) es un componente esencial en Kubernetes para la recopilación de métricas de recursos como CPU y memoria de los nodos y pods en el clúster. Estas métricas son cruciales para la autoescalabilidad y el monitoreo del rendimiento.</p>
+</div><h1>¿Qué es el Servidor de Métricas?</h1>
+<div class='content'><p>El servidor de métricas es una implementación de la API de métricas de Kubernetes. Proporciona métricas de uso de recursos en tiempo real para los nodos y pods, que pueden ser utilizadas por otros componentes del clúster, como el autoescalador horizontal de pods (HPA).</p>
+</div><h2>Características Clave:</h2>
+<div class='content'><ul>
+<li><strong>Recopilación de métricas en tiempo real</strong>: Proporciona datos actualizados sobre el uso de recursos.</li>
+<li><strong>Ligero y eficiente</strong>: Diseñado para ser eficiente en términos de recursos.</li>
+<li><strong>Integración con HPA</strong>: Utilizado por el HPA para escalar pods en función de las métricas de uso de recursos.</li>
+</ul>
+</div><h1>Instalación del Servidor de Métricas</h1>
+<div class='content'><p>Para instalar el servidor de métricas en tu clúster de Kubernetes, puedes usar el siguiente manifiesto YAML:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogTmFtZXNwYWNlCm1ldGFkYXRhOgogIG5hbWU6IGt1YmUtc3lzdGVtCgotLS0KCmFwaVZlcnNpb246IGFwcHMvdjEKa2luZDogRGVwbG95bWVudAptZXRhZGF0YToKICBuYW1lOiBtZXRyaWNzLXNlcnZlcgogIG5hbWVzcGFjZToga3ViZS1zeXN0ZW0KICBsYWJlbHM6CiAgICBrOHMtYXBwOiBtZXRyaWNzLXNlcnZlcgpzcGVjOgogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGs4cy1hcHA6IG1ldHJpY3Mtc2VydmVyCiAgdGVtcGxhdGU6CiAgICBtZXRhZGF0YToKICAgICAgbGFiZWxzOgogICAgICAgIGs4cy1hcHA6IG1ldHJpY3Mtc2VydmVyCiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IG1ldHJpY3Mtc2VydmVyCiAgICAgICAgaW1hZ2U6IGs4cy5nY3IuaW8vbWV0cmljcy1zZXJ2ZXIvbWV0cmljcy1zZXJ2ZXI6djAuNC40CiAgICAgICAgYXJnczoKICAgICAgICAtIC0ta3ViZWxldC1pbnNlY3VyZS10bHMKICAgICAgICBwb3J0czoKICAgICAgICAtIG5hbWU6IG1haW4tcG9ydAogICAgICAgICAgY29udGFpbmVyUG9ydDogNDQzCiAgICAgICAgICBwcm90b2NvbDogVENQCiAgICAgICAgcmVzb3VyY2VzOgogICAgICAgICAgcmVxdWVzdHM6CiAgICAgICAgICAgIG1lbW9yeTogMTAwTWkKICAgICAgICAgICAgY3B1OiAxMDBtCiAgICAgICAgICBsaW1pdHM6CiAgICAgICAgICAgIG1lbW9yeTogMjAwTWkKICAgICAgICAgICAgY3B1OiAyMDBtCiAgICAgIG5vZGVTZWxlY3RvcjoKICAgICAgICBrdWJlcm5ldGVzLmlvL29zOiBsaW51eAogICAgICB0b2xlcmF0aW9uczoKICAgICAgLSBrZXk6IG5vZGUtcm9sZS5rdWJlcm5ldGVzLmlvL21hc3RlcgogICAgICAgIGVmZmVjdDogTm9TY2hlZHVsZQoKLS0tCgphcGlWZXJzaW9uOiB2MQpraW5kOiBTZXJ2aWNlCm1ldGFkYXRhOgogIG5hbWU6IG1ldHJpY3Mtc2VydmVyCiAgbmFtZXNwYWNlOiBrdWJlLXN5c3RlbQogIGxhYmVsczoKICAgIGs4cy1hcHA6IG1ldHJpY3Mtc2VydmVyCnNwZWM6CiAgcG9ydHM6CiAgLSBwb3J0OiA0NDMKICAgIHRhcmdldFBvcnQ6IG1haW4tcG9ydAogIHNlbGVjdG9yOgogICAgazhzLWFwcDogbWV0cmljcy1zZXJ2ZXI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-system
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metrics-server
+  namespace: kube-system
+  labels:
+    k8s-app: metrics-server
+spec:
+  selector:
+    matchLabels:
+      k8s-app: metrics-server
+  template:
+    metadata:
+      labels:
+        k8s-app: metrics-server
+    spec:
+      containers:
+      - name: metrics-server
+        image: k8s.gcr.io/metrics-server/metrics-server:v0.4.4
+        args:
+        - --kubelet-insecure-tls
+        ports:
+        - name: main-port
+          containerPort: 443
+          protocol: TCP
+        resources:
+          requests:
+            memory: 100Mi
+            cpu: 100m
+          limits:
+            memory: 200Mi
+            cpu: 200m
+      nodeSelector:
+        kubernetes.io/os: linux
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        effect: NoSchedule
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: metrics-server
+  namespace: kube-system
+  labels:
+    k8s-app: metrics-server
+spec:
+  ports:
+  - port: 443
+    targetPort: main-port
+  selector:
+    k8s-app: metrics-server</pre></div><div class='content'></div><h2>Explicación del Manifiesto:</h2>
+<div class='content'><ul>
+<li><strong>Namespace</strong>: El servidor de métricas se despliega en el namespace <code>kube-system</code>.</li>
+<li><strong>Deployment</strong>: Define el despliegue del servidor de métricas con una réplica.</li>
+<li><strong>Container</strong>: Especifica la imagen del servidor de métricas y los recursos solicitados y limitados.</li>
+<li><strong>Service</strong>: Expone el servidor de métricas en el puerto 443.</li>
+</ul>
+</div><h1>Verificación de la Instalación</h1>
+<div class='content'><p>Para verificar que el servidor de métricas está funcionando correctamente, puedes ejecutar el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgZGVwbG95bWVudCBtZXRyaWNzLXNlcnZlciAtbiBrdWJlLXN5c3RlbQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get deployment metrics-server -n kube-system</pre></div><div class='content'><p>Deberías ver una salida similar a esta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TkFNRSAgICAgICAgICAgICBSRUFEWSAgIFVQLVRPLURBVEUgICBBVkFJTEFCTEUgICBBR0UKbWV0cmljcy1zZXJ2ZXIgICAxLzEgICAgIDEgICAgICAgICAgICAxICAgICAgICAgICA1bQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NAME             READY   UP-TO-DATE   AVAILABLE   AGE
+metrics-server   1/1     1            1           5m</pre></div><div class='content'></div><h1>Uso del Servidor de Métricas</h1>
+<div class='content'><p>Una vez que el servidor de métricas está instalado y funcionando, puedes usarlo para obtener métricas de los nodos y pods.</p>
+</div><h2>Obtener Métricas de Nodos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCB0b3Agbm9kZXM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl top nodes</pre></div><div class='content'><p>Salida esperada:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TkFNRSAgICAgICAgICAgQ1BVKGNvcmVzKSAgIENQVSUgICBNRU1PUlkoYnl0ZXMpICAgTUVNT1JZJQpub2RlMSAgICAgICAgICAyNTBtICAgICAgICAgMTIlICAgIDEwMjRNaSAgICAgICAgICA1MCUKbm9kZTIgICAgICAgICAgMzAwbSAgICAgICAgIDE1JSAgICAyMDQ4TWkgICAgICAgICAgNjAl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NAME           CPU(cores)   CPU%   MEMORY(bytes)   MEMORY%
+node1          250m         12%    1024Mi          50%
+node2          300m         15%    2048Mi          60%</pre></div><div class='content'></div><h2>Obtener Métricas de Pods</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCB0b3AgcG9kcyAtLWFsbC1uYW1lc3BhY2Vz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl top pods --all-namespaces</pre></div><div class='content'><p>Salida esperada:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TkFNRVNQQUNFICAgICBOQU1FICAgICAgICAgICAgICAgICAgICAgICAgICAgIENQVShjb3JlcykgICBNRU1PUlkoYnl0ZXMpCmRlZmF1bHQgICAgICAgbXktYXBwLTVkOGQ2ZjZkNmQtYWJjZGUgICAgICAgICA1MG0gICAgICAgICAgMTI4TWkKa3ViZS1zeXN0ZW0gICBrdWJlLWRucy02ZDhkNmY2ZDZkLXh5ejEyICAgICAgIDIwbSAgICAgICAgICA2NE1p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NAMESPACE     NAME                            CPU(cores)   MEMORY(bytes)
+default       my-app-5d8d6f6d6d-abcde         50m          128Mi
+kube-system   kube-dns-6d8d6f6d6d-xyz12       20m          64Mi</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Instalación del Servidor de Métricas</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Instalar el servidor de métricas en tu clúster de Kubernetes.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Aplica el manifiesto YAML proporcionado anteriormente.</li>
+<li>Verifica que el servidor de métricas está funcionando correctamente.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejercicio 2: Uso del Servidor de Métricas</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Obtener métricas de uso de recursos de nodos y pods.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Ejecuta <code>kubectl top nodes</code> para ver las métricas de los nodos.</li>
+<li>Ejecuta <code>kubectl top pods --all-namespaces</code> para ver las métricas de los pods.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBtZXRyaWNzLXNlcnZlci55YW1sCmt1YmVjdGwgZ2V0IGRlcGxveW1lbnQgbWV0cmljcy1zZXJ2ZXIgLW4ga3ViZS1zeXN0ZW0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f metrics-server.yaml
+kubectl get deployment metrics-server -n kube-system</pre></div><div class='content'><h4>Solución al Ejercicio 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCB0b3Agbm9kZXMKa3ViZWN0bCB0b3AgcG9kcyAtLWFsbC1uYW1lc3BhY2Vz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl top nodes
+kubectl top pods --all-namespaces</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre el servidor de métricas en Kubernetes, su importancia y cómo instalarlo y usarlo para obtener métricas de uso de recursos en tiempo real. Estas métricas son esenciales para el monitoreo y la autoescalabilidad en un clúster de Kubernetes. Con esta base, estás preparado para integrar el servidor de métricas con otros componentes como el autoescalador horizontal de pods (HPA) para mejorar la eficiencia y el rendimiento de tus aplicaciones en Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-health-checks-probes' title="Verificaciones de Salud y Sondas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-rbac' title="Control de Acceso Basado en Roles (RBAC)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

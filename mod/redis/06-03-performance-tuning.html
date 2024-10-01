@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuste de Rendimiento</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/06-03-performance-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/06-03-performance-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/06-03-performance-tuning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/redis/06-03-performance-tuning" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/06-03-performance-tuning" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-latency-and-throughput' title="Latencia y Rendimiento">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ajuste de Rendimiento</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-monitoring-and-metrics' title="Monitoreo y Métricas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo ajustar el rendimiento de Redis para maximizar su eficiencia y capacidad de respuesta. Redis es conocido por su alta velocidad y rendimiento, pero hay varias configuraciones y prácticas que pueden ayudar a optimizar aún más su funcionamiento.</p>
+</div><h1>1. Introducción al Ajuste de Rendimiento</h1>
+<div class='content'><p>El ajuste de rendimiento en Redis implica la optimización de varios aspectos del sistema, incluyendo la configuración de Redis, la gestión de memoria, y la optimización de las operaciones de entrada/salida (I/O). A continuación, se detallan los conceptos clave y las técnicas para ajustar el rendimiento de Redis.</p>
+</div><h1>2. Configuración de Redis</h1>
+<div class='content'></div><h2>2.1. Configuración de Memoria</h2>
+<div class='content'><p>Redis permite configurar varios parámetros relacionados con la memoria para optimizar su uso. Aquí hay algunos parámetros importantes:</p>
+<ul>
+<li><code>maxmemory</code>: Define la cantidad máxima de memoria que Redis puede usar. Es crucial establecer este valor para evitar que Redis consuma toda la memoria del sistema.</li>
+<li><code>maxmemory-policy</code>: Define la política de eliminación de datos cuando se alcanza el límite de <code>maxmemory</code>. Las políticas incluyen <code>volatile-lru</code>, <code>allkeys-lru</code>, <code>volatile-random</code>, <code>allkeys-random</code>, <code>volatile-ttl</code>, y <code>noeviction</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIGNvbmZpZ3VyYWNpw7NuIGVuIHJlZGlzLmNvbmYKbWF4bWVtb3J5IDJnYgptYXhtZW1vcnktcG9saWN5IGFsbGtleXMtbHJ1"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de configuraci&oacute;n en redis.conf
+maxmemory 2gb
+maxmemory-policy allkeys-lru</pre></div><div class='content'></div><h2>2.2. Configuración de Persistencia</h2>
+<div class='content'><p>La persistencia en Redis puede afectar el rendimiento debido a las operaciones de escritura en disco. Redis ofrece dos mecanismos de persistencia: RDB (instantáneas) y AOF (archivos de solo adición).</p>
+<ul>
+<li><strong>RDB</strong>: Genera instantáneas en intervalos regulares. Es menos intensivo en I/O pero puede perder datos recientes en caso de fallo.</li>
+<li><strong>AOF</strong>: Registra cada operación de escritura. Es más intensivo en I/O pero ofrece mayor durabilidad.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIGNvbmZpZ3VyYWNpw7NuIGVuIHJlZGlzLmNvbmYKc2F2ZSA5MDAgMQpzYXZlIDMwMCAxMApzYXZlIDYwIDEwMDAwCmFwcGVuZG9ubHkgeWVzCmFwcGVuZGZzeW5jIGV2ZXJ5c2Vj"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de configuraci&oacute;n en redis.conf
+save 900 1
+save 300 10
+save 60 10000
+appendonly yes
+appendfsync everysec</pre></div><div class='content'></div><h1>3. Optimización de Operaciones de Entrada/Salida (I/O)</h1>
+<div class='content'></div><h2>3.1. Uso de Pipelining</h2>
+<div class='content'><p>El pipelining permite enviar múltiples comandos a Redis sin esperar una respuesta inmediata para cada uno, reduciendo la latencia de red.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGVuIFB5dGhvbiB1c2FuZG8gcmVkaXMtcHkKaW1wb3J0IHJlZGlzCgpyID0gcmVkaXMuUmVkaXMoKQoKcGlwZSA9IHIucGlwZWxpbmUoKQpwaXBlLnNldCgna2V5MScsICd2YWx1ZTEnKQpwaXBlLnNldCgna2V5MicsICd2YWx1ZTInKQpwaXBlLmV4ZWN1dGUoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo en Python usando redis-py
+import redis
+
+r = redis.Redis()
+
+pipe = r.pipeline()
+pipe.set('key1', 'value1')
+pipe.set('key2', 'value2')
+pipe.execute()</pre></div><div class='content'></div><h2>3.2. Configuración de Redes</h2>
+<div class='content'><p>Asegúrate de que Redis esté configurado para usar interfaces de red rápidas y de baja latencia. Configura el parámetro <code>tcp-backlog</code> para manejar más conexiones simultáneas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIGNvbmZpZ3VyYWNpw7NuIGVuIHJlZGlzLmNvbmYKdGNwLWJhY2tsb2cgNTEx"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de configuraci&oacute;n en redis.conf
+tcp-backlog 511</pre></div><div class='content'></div><h1>4. Optimización de Comandos</h1>
+<div class='content'></div><h2>4.1. Uso de Comandos Eficientes</h2>
+<div class='content'><p>Algunos comandos de Redis son más eficientes que otros. Por ejemplo, <code>MGET</code> es más eficiente que múltiples <code>GET</code> individuales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIHVzbyBkZSBNR0VUCk1HRVQga2V5MSBrZXkyIGtleTM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de uso de MGET
+MGET key1 key2 key3</pre></div><div class='content'></div><h2>4.2. Evitar Comandos Costosos</h2>
+<div class='content'><p>Evita comandos que pueden ser costosos en términos de tiempo de ejecución, como <code>KEYS</code> en grandes conjuntos de datos. En su lugar, usa <code>SCAN</code> para iterar sobre las claves.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIHVzbyBkZSBTQ0FOClNDQU4gMCBNQVRDSCBwYXR0ZXJuIENPVU5UIDEwMDA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de uso de SCAN
+SCAN 0 MATCH pattern COUNT 1000</pre></div><div class='content'></div><h1>5. Monitoreo y Métricas</h1>
+<div class='content'></div><h2>5.1. Uso de Redis INFO</h2>
+<div class='content'><p>El comando <code>INFO</code> proporciona una gran cantidad de información sobre el estado de Redis, incluyendo estadísticas de memoria, CPU, y red.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIHVzbyBkZSBJTkZPCklORk8gbWVtb3J5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de uso de INFO
+INFO memory</pre></div><div class='content'></div><h2>5.2. Herramientas de Monitoreo</h2>
+<div class='content'><p>Utiliza herramientas de monitoreo como Redis Sentinel, Prometheus, y Grafana para obtener una visión detallada del rendimiento de Redis.</p>
+</div><h1>6. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de Memoria</h2>
+<div class='content'><ol>
+<li>Configura Redis para usar un máximo de 1GB de memoria y establece la política de eliminación en <code>allkeys-lru</code>.</li>
+<li>Verifica la configuración usando el comando <code>CONFIG GET</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTb2x1Y2nDs24KbWF4bWVtb3J5IDFnYgptYXhtZW1vcnktcG9saWN5IGFsbGtleXMtbHJ1CgojIFZlcmlmaWNhY2nDs24KQ09ORklHIEdFVCBtYXhtZW1vcnkKQ09ORklHIEdFVCBtYXhtZW1vcnktcG9saWN5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Soluci&oacute;n
+maxmemory 1gb
+maxmemory-policy allkeys-lru
+
+# Verificaci&oacute;n
+CONFIG GET maxmemory
+CONFIG GET maxmemory-policy</pre></div><div class='content'></div><h2>Ejercicio 2: Uso de Pipelining</h2>
+<div class='content'><ol>
+<li>Escribe un script en Python que use pipelining para establecer 100 claves en Redis.</li>
+<li>Mide el tiempo de ejecución con y sin pipelining.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTb2x1Y2nDs24KaW1wb3J0IHJlZGlzCmltcG9ydCB0aW1lCgpyID0gcmVkaXMuUmVkaXMoKQoKIyBTaW4gcGlwZWxpbmluZwpzdGFydCA9IHRpbWUudGltZSgpCmZvciBpIGluIHJhbmdlKDEwMCk6CiAgICByLnNldChmJ2tleXtpfScsIGYndmFsdWV7aX0nKQplbmQgPSB0aW1lLnRpbWUoKQpwcmludChmIlNpbiBwaXBlbGluaW5nOiB7ZW5kIC0gc3RhcnR9IHNlZ3VuZG9zIikKCiMgQ29uIHBpcGVsaW5pbmcKc3RhcnQgPSB0aW1lLnRpbWUoKQpwaXBlID0gci5waXBlbGluZSgpCmZvciBpIGluIHJhbmdlKDEwMCk6CiAgICBwaXBlLnNldChmJ2tleXtpfScsIGYndmFsdWV7aX0nKQpwaXBlLmV4ZWN1dGUoKQplbmQgPSB0aW1lLnRpbWUoKQpwcmludChmIkNvbiBwaXBlbGluaW5nOiB7ZW5kIC0gc3RhcnR9IHNlZ3VuZG9zIik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Soluci&oacute;n
+import redis
+import time
+
+r = redis.Redis()
+
+# Sin pipelining
+start = time.time()
+for i in range(100):
+    r.set(f'key{i}', f'value{i}')
+end = time.time()
+print(f&quot;Sin pipelining: {end - start} segundos&quot;)
+
+# Con pipelining
+start = time.time()
+pipe = r.pipeline()
+for i in range(100):
+    pipe.set(f'key{i}', f'value{i}')
+pipe.execute()
+end = time.time()
+print(f&quot;Con pipelining: {end - start} segundos&quot;)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto varias técnicas y configuraciones para ajustar el rendimiento de Redis. Desde la configuración de memoria y persistencia hasta la optimización de operaciones de I/O y comandos, estas prácticas pueden ayudar a maximizar la eficiencia y capacidad de respuesta de tu instancia de Redis. Asegúrate de monitorear continuamente el rendimiento y ajustar las configuraciones según sea necesario para mantener un rendimiento óptimo.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-latency-and-throughput' title="Latencia y Rendimiento">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-monitoring-and-metrics' title="Monitoreo y Métricas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

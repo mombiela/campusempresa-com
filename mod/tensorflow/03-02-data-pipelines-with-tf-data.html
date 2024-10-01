@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipelines de Datos con tf.data</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/03-02-data-pipelines-with-tf-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/03-02-data-pipelines-with-tf-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/03-02-data-pipelines-with-tf-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/03-02-data-pipelines-with-tf-data" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/03-02-data-pipelines-with-tf-data" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-loading-data' title="Cargando Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Pipelines de Datos con tf.data</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-data-augmentation' title="Aumento de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos a utilizar el módulo <code>tf.data</code> de TensorFlow para crear pipelines de datos eficientes y escalables. Los pipelines de datos son esenciales para manejar grandes volúmenes de datos y realizar operaciones de preprocesamiento de manera eficiente.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Comprender la importancia de los pipelines de datos.</li>
+<li>Aprender a crear y manipular datasets con <code>tf.data</code>.</li>
+<li>Implementar operaciones comunes de preprocesamiento de datos.</li>
+<li>Optimizar pipelines de datos para mejorar el rendimiento.</li>
+</ul>
+</div><h1>¿Qué es tf.data?</h1>
+<div class='content'><p><code>tf.data</code> es un módulo de TensorFlow que proporciona una API para construir pipelines de datos complejos. Permite cargar, preprocesar y alimentar datos a los modelos de manera eficiente.</p>
+</div><h2>Ventajas de usar tf.data</h2>
+<div class='content'><ul>
+<li><strong>Eficiencia</strong>: Optimiza el uso de memoria y CPU.</li>
+<li><strong>Escalabilidad</strong>: Maneja grandes volúmenes de datos.</li>
+<li><strong>Flexibilidad</strong>: Permite realizar operaciones de preprocesamiento complejas.</li>
+</ul>
+</div><h1>Creación de un Dataset</h1>
+<div class='content'></div><h2>Ejemplo Básico</h2>
+<div class='content'><p>Comencemos creando un dataset simple a partir de una lista de números.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQ3JlYXIgdW4gZGF0YXNldCBhIHBhcnRpciBkZSB1bmEgbGlzdGEKZGF0YSA9IFsxLCAyLCAzLCA0LCA1XQpkYXRhc2V0ID0gdGYuZGF0YS5EYXRhc2V0LmZyb21fdGVuc29yX3NsaWNlcyhkYXRhKQoKIyBJdGVyYXIgc29icmUgZWwgZGF0YXNldApmb3IgZWxlbWVudCBpbiBkYXRhc2V0OgogICAgcHJpbnQoZWxlbWVudC5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Crear un dataset a partir de una lista
+data = [1, 2, 3, 4, 5]
+dataset = tf.data.Dataset.from_tensor_slices(data)
+
+# Iterar sobre el dataset
+for element in dataset:
+    print(element.numpy())</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>tf.data.Dataset.from_tensor_slices(data)</code>: Crea un dataset a partir de una lista de tensores.</li>
+<li>Iteramos sobre el dataset para imprimir cada elemento.</li>
+</ul>
+</div><h2>Cargando Datos desde Archivos</h2>
+<div class='content'><p>Podemos cargar datos desde archivos utilizando <code>tf.data.TextLineDataset</code> para archivos de texto o <code>tf.data.TFRecordDataset</code> para archivos TFRecord.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1biBkYXRhc2V0IGEgcGFydGlyIGRlIHVuIGFyY2hpdm8gZGUgdGV4dG8KZmlsZV9wYXRoID0gJ3BhdGgvdG8veW91ci9maWxlLnR4dCcKZGF0YXNldCA9IHRmLmRhdGEuVGV4dExpbmVEYXRhc2V0KGZpbGVfcGF0aCkKCiMgSXRlcmFyIHNvYnJlIGVsIGRhdGFzZXQKZm9yIGxpbmUgaW4gZGF0YXNldC50YWtlKDUpOiAgIyBUb21hciBsYXMgcHJpbWVyYXMgNSBsw61uZWFzCiAgICBwcmludChsaW5lLm51bXB5KCkuZGVjb2RlKCd1dGYtOCcpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear un dataset a partir de un archivo de texto
+file_path = 'path/to/your/file.txt'
+dataset = tf.data.TextLineDataset(file_path)
+
+# Iterar sobre el dataset
+for line in dataset.take(5):  # Tomar las primeras 5 l&iacute;neas
+    print(line.numpy().decode('utf-8'))</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>tf.data.TextLineDataset(file_path)</code>: Crea un dataset a partir de un archivo de texto.</li>
+<li><code>dataset.take(5)</code>: Toma las primeras 5 líneas del dataset.</li>
+</ul>
+</div><h1>Operaciones de Preprocesamiento</h1>
+<div class='content'></div><h2>Mapeo</h2>
+<div class='content'><p>La operación <code>map</code> aplica una función a cada elemento del dataset.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGdW5jacOzbiBkZSBwcmVwcm9jZXNhbWllbnRvCmRlZiBwcmVwcm9jZXNzKHgpOgogICAgcmV0dXJuIHggKiAyCgojIEFwbGljYXIgbGEgZnVuY2nDs24gZGUgcHJlcHJvY2VzYW1pZW50bwpkYXRhc2V0ID0gZGF0YXNldC5tYXAocHJlcHJvY2VzcykKCiMgSXRlcmFyIHNvYnJlIGVsIGRhdGFzZXQKZm9yIGVsZW1lbnQgaW4gZGF0YXNldDoKICAgIHByaW50KGVsZW1lbnQubnVtcHkoKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Funci&oacute;n de preprocesamiento
+def preprocess(x):
+    return x * 2
+
+# Aplicar la funci&oacute;n de preprocesamiento
+dataset = dataset.map(preprocess)
+
+# Iterar sobre el dataset
+for element in dataset:
+    print(element.numpy())</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>dataset.map(preprocess)</code>: Aplica la función <code>preprocess</code> a cada elemento del dataset.</li>
+</ul>
+</div><h2>Filtrado</h2>
+<div class='content'><p>La operación <code>filter</code> permite filtrar elementos del dataset según una condición.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGdW5jacOzbiBkZSBmaWx0cmFkbwpkZWYgZmlsdGVyX2ZuKHgpOgogICAgcmV0dXJuIHggJSAyID09IDAKCiMgQXBsaWNhciBsYSBmdW5jacOzbiBkZSBmaWx0cmFkbwpkYXRhc2V0ID0gZGF0YXNldC5maWx0ZXIoZmlsdGVyX2ZuKQoKIyBJdGVyYXIgc29icmUgZWwgZGF0YXNldApmb3IgZWxlbWVudCBpbiBkYXRhc2V0OgogICAgcHJpbnQoZWxlbWVudC5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Funci&oacute;n de filtrado
+def filter_fn(x):
+    return x % 2 == 0
+
+# Aplicar la funci&oacute;n de filtrado
+dataset = dataset.filter(filter_fn)
+
+# Iterar sobre el dataset
+for element in dataset:
+    print(element.numpy())</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>dataset.filter(filter_fn)</code>: Filtra los elementos del dataset que cumplen con la condición definida en <code>filter_fn</code>.</li>
+</ul>
+</div><h2>Batching</h2>
+<div class='content'><p>La operación <code>batch</code> agrupa elementos en lotes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBZ3J1cGFyIGVsZW1lbnRvcyBlbiBsb3RlcyBkZSB0YW1hw7FvIDIKZGF0YXNldCA9IGRhdGFzZXQuYmF0Y2goMikKCiMgSXRlcmFyIHNvYnJlIGVsIGRhdGFzZXQKZm9yIGJhdGNoIGluIGRhdGFzZXQ6CiAgICBwcmludChiYXRjaC5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Agrupar elementos en lotes de tama&ntilde;o 2
+dataset = dataset.batch(2)
+
+# Iterar sobre el dataset
+for batch in dataset:
+    print(batch.numpy())</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>dataset.batch(2)</code>: Agrupa los elementos del dataset en lotes de tamaño 2.</li>
+</ul>
+</div><h1>Optimización de Pipelines</h1>
+<div class='content'></div><h2>Prefetching</h2>
+<div class='content'><p>La operación <code>prefetch</code> permite cargar datos en segundo plano mientras el modelo está entrenando.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQcmVmZXRjaGluZyBwYXJhIG1lam9yYXIgZWwgcmVuZGltaWVudG8KZGF0YXNldCA9IGRhdGFzZXQucHJlZmV0Y2goYnVmZmVyX3NpemU9dGYuZGF0YS5leHBlcmltZW50YWwuQVVUT1RVTkUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Prefetching para mejorar el rendimiento
+dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)</code>: Prefetching automático para optimizar el rendimiento.</li>
+</ul>
+</div><h2>Intercalado</h2>
+<div class='content'><p>La operación <code>interleave</code> permite leer datos de múltiples fuentes en paralelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGdW5jacOzbiBwYXJhIGNyZWFyIGRhdGFzZXRzIGEgcGFydGlyIGRlIGFyY2hpdm9zCmRlZiBjcmVhdGVfZGF0YXNldChmaWxlX3BhdGgpOgogICAgcmV0dXJuIHRmLmRhdGEuVGV4dExpbmVEYXRhc2V0KGZpbGVfcGF0aCkKCiMgTGlzdGEgZGUgYXJjaGl2b3MKZmlsZV9wYXRocyA9IFsnZmlsZTEudHh0JywgJ2ZpbGUyLnR4dCcsICdmaWxlMy50eHQnXQoKIyBDcmVhciB1biBkYXRhc2V0IGludGVyY2FsYWRvCmRhdGFzZXQgPSB0Zi5kYXRhLkRhdGFzZXQuZnJvbV90ZW5zb3Jfc2xpY2VzKGZpbGVfcGF0aHMpCmRhdGFzZXQgPSBkYXRhc2V0LmludGVybGVhdmUoY3JlYXRlX2RhdGFzZXQsIGN5Y2xlX2xlbmd0aD0zLCBibG9ja19sZW5ndGg9MSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Funci&oacute;n para crear datasets a partir de archivos
+def create_dataset(file_path):
+    return tf.data.TextLineDataset(file_path)
+
+# Lista de archivos
+file_paths = ['file1.txt', 'file2.txt', 'file3.txt']
+
+# Crear un dataset intercalado
+dataset = tf.data.Dataset.from_tensor_slices(file_paths)
+dataset = dataset.interleave(create_dataset, cycle_length=3, block_length=1)</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>dataset.interleave(create_dataset, cycle_length=3, block_length=1)</code>: Lee datos de 3 archivos en paralelo, un bloque a la vez.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un pipeline de datos que:</p>
+<ol>
+<li>Cargue datos desde un archivo de texto.</li>
+<li>Aplique una función de preprocesamiento que convierta cada línea a mayúsculas.</li>
+<li>Filtre las líneas que contienen la palabra &quot;ERROR&quot;.</li>
+<li>Agrupe las líneas en lotes de tamaño 3.</li>
+<li>Prefetch los datos para optimizar el rendimiento.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRnVuY2nDs24gZGUgcHJlcHJvY2VzYW1pZW50bwpkZWYgcHJlcHJvY2VzcyhsaW5lKToKICAgIHJldHVybiB0Zi5zdHJpbmdzLnVwcGVyKGxpbmUpCgojIEZ1bmNpw7NuIGRlIGZpbHRyYWRvCmRlZiBmaWx0ZXJfZm4obGluZSk6CiAgICByZXR1cm4gdGYuc3RyaW5ncy5yZWdleF9mdWxsX21hdGNoKGxpbmUsICIuKkVSUk9SLioiKQoKIyBDcmVhciBlbCBkYXRhc2V0CmZpbGVfcGF0aCA9ICdwYXRoL3RvL3lvdXIvZmlsZS50eHQnCmRhdGFzZXQgPSB0Zi5kYXRhLlRleHRMaW5lRGF0YXNldChmaWxlX3BhdGgpCgojIEFwbGljYXIgbGFzIG9wZXJhY2lvbmVzCmRhdGFzZXQgPSBkYXRhc2V0Lm1hcChwcmVwcm9jZXNzKQpkYXRhc2V0ID0gZGF0YXNldC5maWx0ZXIoZmlsdGVyX2ZuKQpkYXRhc2V0ID0gZGF0YXNldC5iYXRjaCgzKQpkYXRhc2V0ID0gZGF0YXNldC5wcmVmZXRjaChidWZmZXJfc2l6ZT10Zi5kYXRhLmV4cGVyaW1lbnRhbC5BVVRPVFVORSkKCiMgSXRlcmFyIHNvYnJlIGVsIGRhdGFzZXQKZm9yIGJhdGNoIGluIGRhdGFzZXQ6CiAgICBwcmludChbbGluZS5udW1weSgpLmRlY29kZSgndXRmLTgnKSBmb3IgbGluZSBpbiBiYXRjaF0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Funci&oacute;n de preprocesamiento
+def preprocess(line):
+    return tf.strings.upper(line)
+
+# Funci&oacute;n de filtrado
+def filter_fn(line):
+    return tf.strings.regex_full_match(line, &quot;.*ERROR.*&quot;)
+
+# Crear el dataset
+file_path = 'path/to/your/file.txt'
+dataset = tf.data.TextLineDataset(file_path)
+
+# Aplicar las operaciones
+dataset = dataset.map(preprocess)
+dataset = dataset.filter(filter_fn)
+dataset = dataset.batch(3)
+dataset = dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)
+
+# Iterar sobre el dataset
+for batch in dataset:
+    print([line.numpy().decode('utf-8') for line in batch])</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>tf.strings.upper(line)</code>: Convierte la línea a mayúsculas.</li>
+<li><code>tf.strings.regex_full_match(line, &quot;.*ERROR.*&quot;)</code>: Filtra las líneas que contienen la palabra &quot;ERROR&quot;.</li>
+<li><code>dataset.batch(3)</code>: Agrupa las líneas en lotes de tamaño 3.</li>
+<li><code>dataset.prefetch(buffer_size=tf.data.experimental.AUTOTUNE)</code>: Prefetching automático para optimizar el rendimiento.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido a utilizar <code>tf.data</code> para crear pipelines de datos eficientes y escalables. Hemos cubierto cómo crear datasets, aplicar operaciones de preprocesamiento, y optimizar los pipelines para mejorar el rendimiento. Estas habilidades son fundamentales para manejar grandes volúmenes de datos y preparar datos de manera eficiente para el entrenamiento de modelos en TensorFlow.</p>
+<p>En el próximo módulo, exploraremos técnicas avanzadas de manejo de datos, incluyendo el aumento de datos y el trabajo con conjuntos de datos complejos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-loading-data' title="Cargando Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-data-augmentation' title="Aumento de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

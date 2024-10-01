@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enums y Coincidencia de Patrones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/04-03-enums-pattern-matching" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/04-03-enums-pattern-matching" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/04-03-enums-pattern-matching" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rust/04-03-enums-pattern-matching" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/04-03-enums-pattern-matching" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-using-structs' title="Usando Structs">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Enums y Coincidencia de Patrones</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-vectors' title="Vectores">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos sobre los <code>enums</code> en Rust y cómo utilizar la coincidencia de patrones (<code>pattern matching</code>) para trabajar con ellos de manera efectiva. Los <code>enums</code> son una característica poderosa que permite definir un tipo que puede ser uno de varios valores diferentes. La coincidencia de patrones es una técnica que permite manejar estos valores de manera segura y expresiva.</p>
+</div><h1>¿Qué es un Enum?</h1>
+<div class='content'><p>Un <code>enum</code> (abreviatura de &quot;enumeration&quot;) es un tipo que puede tener diferentes variantes. Cada variante puede tener datos asociados de diferentes tipos. Los <code>enums</code> son útiles cuando un valor puede ser una de varias cosas diferentes.</p>
+</div><h2>Definición de un Enum</h2>
+<div class='content'><p>Aquí hay un ejemplo básico de un <code>enum</code> en Rust:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBJcEFkZHJLaW5kIHsKICAgIFY0LAogICAgVjYsCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum IpAddrKind {
+    V4,
+    V6,
+}</pre></div><div class='content'><p>En este ejemplo, <code>IpAddrKind</code> es un <code>enum</code> que puede ser <code>V4</code> o <code>V6</code>.</p>
+</div><h2>Usando un Enum</h2>
+<div class='content'><p>Para usar un <code>enum</code>, primero debes definir una variable de ese tipo y luego asignarle una de las variantes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IGZvdXIgPSBJcEFkZHJLaW5kOjpWNDsKbGV0IHNpeCA9IElwQWRkcktpbmQ6OlY2Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let four = IpAddrKind::V4;
+let six = IpAddrKind::V6;</pre></div><div class='content'></div><h2>Enums con Datos Asociados</h2>
+<div class='content'><p>Los <code>enums</code> también pueden tener datos asociados con cada variante. Aquí hay un ejemplo más complejo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBJcEFkZHIgewogICAgVjQoU3RyaW5nKSwKICAgIFY2KFN0cmluZyksCn0KCmxldCBob21lID0gSXBBZGRyOjpWNChTdHJpbmc6OmZyb20oIjEyNy4wLjAuMSIpKTsKbGV0IGxvb3BiYWNrID0gSXBBZGRyOjpWNihTdHJpbmc6OmZyb20oIjo6MSIpKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum IpAddr {
+    V4(String),
+    V6(String),
+}
+
+let home = IpAddr::V4(String::from(&quot;127.0.0.1&quot;));
+let loopback = IpAddr::V6(String::from(&quot;::1&quot;));</pre></div><div class='content'><p>En este caso, cada variante de <code>IpAddr</code> tiene un <code>String</code> asociado.</p>
+</div><h1>Coincidencia de Patrones</h1>
+<div class='content'><p>La coincidencia de patrones es una característica que permite verificar y extraer valores de <code>enums</code> de manera segura y concisa. La herramienta principal para la coincidencia de patrones en Rust es la expresión <code>match</code>.</p>
+</div><h2>Uso Básico de `match`</h2>
+<div class='content'><p>Aquí hay un ejemplo de cómo usar <code>match</code> con el <code>enum</code> <code>IpAddrKind</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gcm91dGUoaXBfa2luZDogSXBBZGRyS2luZCkgewogICAgbWF0Y2ggaXBfa2luZCB7CiAgICAgICAgSXBBZGRyS2luZDo6VjQgPT4gcHJpbnRsbiEoIkNhbGwgSVB2NCByb3V0ZSIpLAogICAgICAgIElwQWRkcktpbmQ6OlY2ID0+IHByaW50bG4hKCJDYWxsIElQdjYgcm91dGUiKSwKICAgIH0KfQoKbGV0IGZvdXIgPSBJcEFkZHJLaW5kOjpWNDsKcm91dGUoZm91cik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn route(ip_kind: IpAddrKind) {
+    match ip_kind {
+        IpAddrKind::V4 =&gt; println!(&quot;Call IPv4 route&quot;),
+        IpAddrKind::V6 =&gt; println!(&quot;Call IPv6 route&quot;),
+    }
+}
+
+let four = IpAddrKind::V4;
+route(four);</pre></div><div class='content'><p>En este ejemplo, la función <code>route</code> toma un <code>IpAddrKind</code> y usa <code>match</code> para decidir qué hacer en función de la variante.</p>
+</div><h2>Coincidencia de Patrones con Datos Asociados</h2>
+<div class='content'><p>Cuando los <code>enums</code> tienen datos asociados, puedes extraer esos datos en la expresión <code>match</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBNZXNzYWdlIHsKICAgIFF1aXQsCiAgICBNb3ZlIHsgeDogaTMyLCB5OiBpMzIgfSwKICAgIFdyaXRlKFN0cmluZyksCiAgICBDaGFuZ2VDb2xvcihpMzIsIGkzMiwgaTMyKSwKfQoKZm4gcHJvY2Vzc19tZXNzYWdlKG1zZzogTWVzc2FnZSkgewogICAgbWF0Y2ggbXNnIHsKICAgICAgICBNZXNzYWdlOjpRdWl0ID0+IHByaW50bG4hKCJRdWl0IiksCiAgICAgICAgTWVzc2FnZTo6TW92ZSB7IHgsIHkgfSA9PiBwcmludGxuISgiTW92ZSB0byAoe30sIHt9KSIsIHgsIHkpLAogICAgICAgIE1lc3NhZ2U6OldyaXRlKHRleHQpID0+IHByaW50bG4hKCJUZXh0IG1lc3NhZ2U6IHt9IiwgdGV4dCksCiAgICAgICAgTWVzc2FnZTo6Q2hhbmdlQ29sb3IociwgZywgYikgPT4gcHJpbnRsbiEoIkNoYW5nZSBjb2xvciB0byBSR0Ioe30sIHt9LCB7fSkiLCByLCBnLCBiKSwKICAgIH0KfQoKbGV0IG1zZyA9IE1lc3NhZ2U6Ok1vdmUgeyB4OiAxMCwgeTogMjAgfTsKcHJvY2Vzc19tZXNzYWdlKG1zZyk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum Message {
+    Quit,
+    Move { x: i32, y: i32 },
+    Write(String),
+    ChangeColor(i32, i32, i32),
+}
+
+fn process_message(msg: Message) {
+    match msg {
+        Message::Quit =&gt; println!(&quot;Quit&quot;),
+        Message::Move { x, y } =&gt; println!(&quot;Move to ({}, {})&quot;, x, y),
+        Message::Write(text) =&gt; println!(&quot;Text message: {}&quot;, text),
+        Message::ChangeColor(r, g, b) =&gt; println!(&quot;Change color to RGB({}, {}, {})&quot;, r, g, b),
+    }
+}
+
+let msg = Message::Move { x: 10, y: 20 };
+process_message(msg);</pre></div><div class='content'><p>En este ejemplo, <code>Message</code> es un <code>enum</code> con varias variantes, algunas de las cuales tienen datos asociados. La función <code>process_message</code> usa <code>match</code> para manejar cada variante y extraer los datos asociados.</p>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Definir y Usar un Enum</h2>
+<div class='content'><p>Define un <code>enum</code> llamado <code>Coin</code> que tenga variantes para <code>Penny</code>, <code>Nickel</code>, <code>Dime</code> y <code>Quarter</code>. Luego, escribe una función que tome un <code>Coin</code> y devuelva su valor en centavos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBDb2luIHsKICAgIFBlbm55LAogICAgTmlja2VsLAogICAgRGltZSwKICAgIFF1YXJ0ZXIsCn0KCmZuIHZhbHVlX2luX2NlbnRzKGNvaW46IENvaW4pIC0+IHU4IHsKICAgIG1hdGNoIGNvaW4gewogICAgICAgIENvaW46OlBlbm55ID0+IDEsCiAgICAgICAgQ29pbjo6Tmlja2VsID0+IDUsCiAgICAgICAgQ29pbjo6RGltZSA9PiAxMCwKICAgICAgICBDb2luOjpRdWFydGVyID0+IDI1LAogICAgfQp9CgpsZXQgY29pbiA9IENvaW46OkRpbWU7CnByaW50bG4hKCJWYWx1ZSBpbiBjZW50czoge30iLCB2YWx1ZV9pbl9jZW50cyhjb2luKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum Coin {
+    Penny,
+    Nickel,
+    Dime,
+    Quarter,
+}
+
+fn value_in_cents(coin: Coin) -&gt; u8 {
+    match coin {
+        Coin::Penny =&gt; 1,
+        Coin::Nickel =&gt; 5,
+        Coin::Dime =&gt; 10,
+        Coin::Quarter =&gt; 25,
+    }
+}
+
+let coin = Coin::Dime;
+println!(&quot;Value in cents: {}&quot;, value_in_cents(coin));</pre></div><div class='content'></div><h2>Ejercicio 2: Enum con Datos Asociados</h2>
+<div class='content'><p>Define un <code>enum</code> llamado <code>Shape</code> que tenga variantes para <code>Circle</code>, <code>Rectangle</code> y <code>Triangle</code>, cada una con datos asociados para sus dimensiones. Luego, escribe una función que tome un <code>Shape</code> y calcule su área.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW51bSBTaGFwZSB7CiAgICBDaXJjbGUoZjY0KSwKICAgIFJlY3RhbmdsZSB7IHdpZHRoOiBmNjQsIGhlaWdodDogZjY0IH0sCiAgICBUcmlhbmdsZSB7IGJhc2U6IGY2NCwgaGVpZ2h0OiBmNjQgfSwKfQoKZm4gYXJlYShzaGFwZTogU2hhcGUpIC0+IGY2NCB7CiAgICBtYXRjaCBzaGFwZSB7CiAgICAgICAgU2hhcGU6OkNpcmNsZShyYWRpdXMpID0+IHN0ZDo6ZjY0Ojpjb25zdHM6OlBJICogcmFkaXVzICogcmFkaXVzLAogICAgICAgIFNoYXBlOjpSZWN0YW5nbGUgeyB3aWR0aCwgaGVpZ2h0IH0gPT4gd2lkdGggKiBoZWlnaHQsCiAgICAgICAgU2hhcGU6OlRyaWFuZ2xlIHsgYmFzZSwgaGVpZ2h0IH0gPT4gMC41ICogYmFzZSAqIGhlaWdodCwKICAgIH0KfQoKbGV0IGNpcmNsZSA9IFNoYXBlOjpDaXJjbGUoMTAuMCk7CnByaW50bG4hKCJBcmVhIG9mIGNpcmNsZToge30iLCBhcmVhKGNpcmNsZSkpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>enum Shape {
+    Circle(f64),
+    Rectangle { width: f64, height: f64 },
+    Triangle { base: f64, height: f64 },
+}
+
+fn area(shape: Shape) -&gt; f64 {
+    match shape {
+        Shape::Circle(radius) =&gt; std::f64::consts::PI * radius * radius,
+        Shape::Rectangle { width, height } =&gt; width * height,
+        Shape::Triangle { base, height } =&gt; 0.5 * base * height,
+    }
+}
+
+let circle = Shape::Circle(10.0);
+println!(&quot;Area of circle: {}&quot;, area(circle));</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los <code>enums</code> en Rust y cómo usar la coincidencia de patrones para trabajar con ellos de manera efectiva. Los <code>enums</code> permiten definir tipos que pueden ser uno de varios valores diferentes, y la coincidencia de patrones proporciona una forma segura y expresiva de manejar estos valores. Con estos conocimientos, estás preparado para manejar estructuras de datos más complejas y escribir código más robusto y legible en Rust.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-using-structs' title="Usando Structs">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-vectors' title="Vectores">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programación Paralela con Coarrays</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fortran/07-03-parallel-programming-coarrays" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fortran/07-03-parallel-programming-coarrays" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fortran/07-03-parallel-programming-coarrays" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/fortran/07-03-parallel-programming-coarrays" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/fortran/07-03-parallel-programming-coarrays" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-operator-overloading' title="Sobrecarga de Operadores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Programación Paralela con Coarrays</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-interfacing-with-c' title="Interfaz con C">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La programación paralela es una técnica que permite ejecutar múltiples operaciones simultáneamente, aprovechando al máximo los recursos de hardware disponibles. En Fortran, los coarrays son una extensión del lenguaje que facilita la programación paralela de manera eficiente y relativamente sencilla.</p>
+</div><h1>Introducción a los Coarrays</h1>
+<div class='content'><p>Los coarrays en Fortran permiten distribuir datos y tareas entre múltiples imágenes (procesos paralelos). Cada imagen puede ejecutar su propio código y acceder a sus propios datos, así como a los datos de otras imágenes.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Imagen</strong>: Una instancia de un programa que se ejecuta en paralelo con otras instancias.</li>
+<li><strong>Coarray</strong>: Una variable que puede ser accedida por múltiples imágenes.</li>
+<li><strong>Sintaxis de Coarray</strong>: Se utiliza <code>[]</code> para especificar dimensiones de coarray.</li>
+</ul>
+</div><h2>Ejemplo Básico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBoZWxsb19jb2FycmF5CiAgaW1wbGljaXQgbm9uZQogIGludGVnZXIgOjogbWUsIG51bV9pbWFnZXMKCiAgISBPYnRlbmVyIGVsIG7Dum1lcm8gZGUgaW3DoWdlbmVzIHkgZWwgw61uZGljZSBkZSBsYSBpbWFnZW4gYWN0dWFsCiAgbnVtX2ltYWdlcyA9IG51bV9pbWFnZXMoKQogIG1lID0gdGhpc19pbWFnZSgpCgogIHByaW50ICosICdIZWxsbyBmcm9tIGltYWdlICcsIG1lLCAnIG9mICcsIG51bV9pbWFnZXMKZW5kIHByb2dyYW0gaGVsbG9fY29hcnJheQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program hello_coarray
+  implicit none
+  integer :: me, num_images
+
+  ! Obtener el n&uacute;mero de im&aacute;genes y el &iacute;ndice de la imagen actual
+  num_images = num_images()
+  me = this_image()
+
+  print *, 'Hello from image ', me, ' of ', num_images
+end program hello_coarray</pre></div><div class='content'><p>En este ejemplo, cada imagen imprime su propio número y el total de imágenes.</p>
+</div><h1>Declaración y Uso de Coarrays</h1>
+<div class='content'></div><h2>Declaración de Coarrays</h2>
+<div class='content'><p>Para declarar un coarray, se utiliza la siguiente sintaxis:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVhbCA6OiBhcnJheVsqXSAgISBDb2FycmF5IGRlIHVuYSBkaW1lbnNpw7NuCnJlYWwgOjogbWF0cml4KDEwLCAxMClbKl0gICEgQ29hcnJheSBiaWRpbWVuc2lvbmFs"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>real :: array[*]  ! Coarray de una dimensi&oacute;n
+real :: matrix(10, 10)[*]  ! Coarray bidimensional</pre></div><div class='content'></div><h2>Acceso a Coarrays</h2>
+<div class='content'><p>Para acceder a los elementos de un coarray en una imagen específica, se utiliza la notación <code>array[imagen]</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBjb2FycmF5X2V4YW1wbGUKICBpbXBsaWNpdCBub25lCiAgaW50ZWdlciA6OiBtZSwgbnVtX2ltYWdlcwogIHJlYWwgOjogZGF0YVsqXQoKICBudW1faW1hZ2VzID0gbnVtX2ltYWdlcygpCiAgbWUgPSB0aGlzX2ltYWdlKCkKCiAgISBBc2lnbmFyIHVuIHZhbG9yIGEgZGF0YSBlbiBjYWRhIGltYWdlbgogIGRhdGEgPSBtZQoKICAhIFNpbmNyb25pemFyIHRvZGFzIGxhcyBpbcOhZ2VuZXMKICBzeW5jIGFsbAoKICAhIEltcHJpbWlyIGVsIHZhbG9yIGRlIGRhdGEgZW4gbGEgaW1hZ2VuIDEKICBpZiAobWUgPT0gMSkgdGhlbgogICAgcHJpbnQgKiwgJ0RhdGEgaW4gaW1hZ2UgMTogJywgZGF0YVsxXQogICAgcHJpbnQgKiwgJ0RhdGEgaW4gaW1hZ2UgMjogJywgZGF0YVsyXQogIGVuZCBpZgplbmQgcHJvZ3JhbSBjb2FycmF5X2V4YW1wbGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program coarray_example
+  implicit none
+  integer :: me, num_images
+  real :: data[*]
+
+  num_images = num_images()
+  me = this_image()
+
+  ! Asignar un valor a data en cada imagen
+  data = me
+
+  ! Sincronizar todas las im&aacute;genes
+  sync all
+
+  ! Imprimir el valor de data en la imagen 1
+  if (me == 1) then
+    print *, 'Data in image 1: ', data[1]
+    print *, 'Data in image 2: ', data[2]
+  end if
+end program coarray_example</pre></div><div class='content'></div><h1>Sincronización</h1>
+<div class='content'><p>La sincronización es crucial en la programación paralela para asegurar que todas las imágenes estén en el mismo punto de ejecución antes de proceder.</p>
+</div><h2>Sentencias de Sincronización</h2>
+<div class='content'><ul>
+<li><code>sync all</code>: Sincroniza todas las imágenes.</li>
+<li><code>sync images</code>: Sincroniza un subconjunto específico de imágenes.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3luYyBhbGwgICEgU2luY3Jvbml6YSB0b2RhcyBsYXMgaW3DoWdlbmVzCnN5bmMgaW1hZ2VzKDIsIDMpICAhIFNpbmNyb25pemEgc29sbyBsYXMgaW3DoWdlbmVzIDIgeSAz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sync all  ! Sincroniza todas las im&aacute;genes
+sync images(2, 3)  ! Sincroniza solo las im&aacute;genes 2 y 3</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Suma Paralela</h2>
+<div class='content'><p>Escribe un programa en Fortran que utilice coarrays para calcular la suma de un arreglo distribuido entre múltiples imágenes.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSBwYXJhbGxlbF9zdW0KICBpbXBsaWNpdCBub25lCiAgaW50ZWdlciwgcGFyYW1ldGVyIDo6IG4gPSAxMDAKICBpbnRlZ2VyIDo6IGksIG1lLCBudW1faW1hZ2VzCiAgcmVhbCA6OiBsb2NhbF9zdW0sIHRvdGFsX3N1bQogIHJlYWwsIGRpbWVuc2lvbihuKSA6OiBhcnJheQogIHJlYWwsIGRpbWVuc2lvbihuL251bV9pbWFnZXMpIDo6IGxvY2FsX2FycmF5WypdCgogIG51bV9pbWFnZXMgPSBudW1faW1hZ2VzKCkKICBtZSA9IHRoaXNfaW1hZ2UoKQoKICAhIEluaWNpYWxpemFyIGVsIGFycmVnbG8gZW4gbGEgaW1hZ2VuIDEKICBpZiAobWUgPT0gMSkgdGhlbgogICAgYXJyYXkgPSAoLyAoaSwgaSA9IDEsIG4pIC8pCiAgZW5kIGlmCgogICEgRGlzdHJpYnVpciBlbCBhcnJlZ2xvIGVudHJlIGxhcyBpbcOhZ2VuZXMKICBjYWxsIGRpc3RyaWJ1dGVfYXJyYXkoYXJyYXksIGxvY2FsX2FycmF5KQoKICAhIENhbGN1bGFyIGxhIHN1bWEgbG9jYWwKICBsb2NhbF9zdW0gPSBzdW0obG9jYWxfYXJyYXkpCgogICEgU2luY3Jvbml6YXIgeSBzdW1hciBsb3MgcmVzdWx0YWRvcyBsb2NhbGVzCiAgc3luYyBhbGwKICB0b3RhbF9zdW0gPSBzdW0obG9jYWxfc3VtWzpdKQoKICAhIEltcHJpbWlyIGVsIHJlc3VsdGFkbyBlbiBsYSBpbWFnZW4gMQogIGlmIChtZSA9PSAxKSB0aGVuCiAgICBwcmludCAqLCAnVG90YWwgc3VtOiAnLCB0b3RhbF9zdW0KICBlbmQgaWYKZW5kIHByb2dyYW0gcGFyYWxsZWxfc3VtCgpzdWJyb3V0aW5lIGRpc3RyaWJ1dGVfYXJyYXkoYXJyYXksIGxvY2FsX2FycmF5KQogIHJlYWwsIGRpbWVuc2lvbig6KSwgaW50ZW50KGluKSA6OiBhcnJheQogIHJlYWwsIGRpbWVuc2lvbig6KSwgaW50ZW50KG91dCkgOjogbG9jYWxfYXJyYXkKICBpbnRlZ2VyIDo6IGksIG1lLCBudW1faW1hZ2VzLCBsb2NhbF9zaXplCgogIG51bV9pbWFnZXMgPSBudW1faW1hZ2VzKCkKICBtZSA9IHRoaXNfaW1hZ2UoKQogIGxvY2FsX3NpemUgPSBzaXplKGxvY2FsX2FycmF5KQoKICAhIERpc3RyaWJ1aXIgZWwgYXJyZWdsbwogIGRvIGkgPSAxLCBsb2NhbF9zaXplCiAgICBsb2NhbF9hcnJheShpKSA9IGFycmF5KChtZS0xKSpsb2NhbF9zaXplICsgaSkKICBlbmQgZG8KZW5kIHN1YnJvdXRpbmUgZGlzdHJpYnV0ZV9hcnJheQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program parallel_sum
+  implicit none
+  integer, parameter :: n = 100
+  integer :: i, me, num_images
+  real :: local_sum, total_sum
+  real, dimension(n) :: array
+  real, dimension(n/num_images) :: local_array[*]
+
+  num_images = num_images()
+  me = this_image()
+
+  ! Inicializar el arreglo en la imagen 1
+  if (me == 1) then
+    array = (/ (i, i = 1, n) /)
+  end if
+
+  ! Distribuir el arreglo entre las im&aacute;genes
+  call distribute_array(array, local_array)
+
+  ! Calcular la suma local
+  local_sum = sum(local_array)
+
+  ! Sincronizar y sumar los resultados locales
+  sync all
+  total_sum = sum(local_sum[:])
+
+  ! Imprimir el resultado en la imagen 1
+  if (me == 1) then
+    print *, 'Total sum: ', total_sum
+  end if
+end program parallel_sum
+
+subroutine distribute_array(array, local_array)
+  real, dimension(:), intent(in) :: array
+  real, dimension(:), intent(out) :: local_array
+  integer :: i, me, num_images, local_size
+
+  num_images = num_images()
+  me = this_image()
+  local_size = size(local_array)
+
+  ! Distribuir el arreglo
+  do i = 1, local_size
+    local_array(i) = array((me-1)*local_size + i)
+  end do
+end subroutine distribute_array</pre></div><div class='content'></div><h2>Retroalimentación y Consejos</h2>
+<div class='content'><ul>
+<li><strong>Error Común</strong>: No sincronizar las imágenes antes de acceder a los datos de otras imágenes puede llevar a resultados incorrectos.</li>
+<li><strong>Consejo</strong>: Utiliza <code>sync all</code> o <code>sync images</code> para asegurar que todas las imágenes estén en el mismo punto de ejecución antes de proceder.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido los conceptos básicos de la programación paralela con coarrays en Fortran. Hemos visto cómo declarar y utilizar coarrays, cómo sincronizar imágenes y cómo aplicar estos conceptos en un ejercicio práctico. La programación paralela puede mejorar significativamente el rendimiento de tus programas, especialmente en sistemas con múltiples núcleos o procesadores. En el próximo módulo, exploraremos más técnicas avanzadas y mejores prácticas para optimizar tu código Fortran.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-operator-overloading' title="Sobrecarga de Operadores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-interfacing-with-c' title="Interfaz con C">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

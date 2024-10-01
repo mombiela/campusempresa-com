@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depuración de Terraform</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/09-02-debugging-terraform" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/09-02-debugging-terraform" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/09-02-debugging-terraform" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/terraform/09-02-debugging-terraform" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/09-02-debugging-terraform" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-common-errors' title="Errores Comunes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Depuración de Terraform</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-state-management-issues' title="Problemas de Gestión del Estado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La depuración es una habilidad esencial para cualquier desarrollador o ingeniero de infraestructura. En este módulo, aprenderemos cómo identificar y resolver problemas en las configuraciones de Terraform. Exploraremos las herramientas y técnicas que Terraform proporciona para facilitar la depuración.</p>
+</div><h1>1. Introducción a la Depuración en Terraform</h1>
+<div class='content'><p>Terraform ofrece varias herramientas y comandos que ayudan a identificar y solucionar problemas en las configuraciones. A continuación, se describen algunas de las más importantes:</p>
+<ul>
+<li><strong>Comando <code>terraform plan</code></strong>: Este comando muestra los cambios que Terraform realizará en la infraestructura. Es útil para verificar que los cambios sean los esperados antes de aplicarlos.</li>
+<li><strong>Comando <code>terraform apply</code></strong>: Aplica los cambios planificados a la infraestructura. Si ocurre un error, Terraform proporciona mensajes detallados para ayudar a identificar el problema.</li>
+<li><strong>Comando <code>terraform debug</code></strong>: Habilita el modo de depuración, proporcionando información detallada sobre la ejecución de Terraform.</li>
+<li><strong>Archivos de registro</strong>: Terraform puede generar archivos de registro que contienen información detallada sobre la ejecución.</li>
+</ul>
+</div><h1>2. Uso del Comando `terraform plan`</h1>
+<div class='content'><p>El comando <code>terraform plan</code> es una herramienta fundamental para la depuración. Permite ver los cambios que se realizarán en la infraestructura sin aplicarlos realmente. Esto es útil para identificar configuraciones incorrectas o cambios inesperados.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCn0KCnJlc291cmNlICJhd3NfaW5zdGFuY2UiICJleGFtcGxlIiB7CiAgYW1pICAgICAgICAgICA9ICJhbWktMGM1NWIxNTljYmZhZmUxZjAiCiAgaW5zdGFuY2VfdHlwZSA9ICJ0Mi5taWNybyIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.micro&quot;
+}</pre></div><div class='content'><p>Para ver el plan de ejecución, utilizamos el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHBsYW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform plan</pre></div><div class='content'><p><strong>Salida esperada:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QW4gZXhlY3V0aW9uIHBsYW4gaGFzIGJlZW4gZ2VuZXJhdGVkIGFuZCBpcyBzaG93biBiZWxvdy4KUmVzb3VyY2UgYWN0aW9ucyBhcmUgaW5kaWNhdGVkIHdpdGggdGhlIGZvbGxvd2luZyBzeW1ib2xzOgogICsgY3JlYXRlCgpUZXJyYWZvcm0gd2lsbCBwZXJmb3JtIHRoZSBmb2xsb3dpbmcgYWN0aW9uczoKCiAgIyBhd3NfaW5zdGFuY2UuZXhhbXBsZSB3aWxsIGJlIGNyZWF0ZWQKICArIHJlc291cmNlICJhd3NfaW5zdGFuY2UiICJleGFtcGxlIiB7CiAgICAgICsgYW1pICAgICAgICAgICA9ICJhbWktMGM1NWIxNTljYmZhZmUxZjAiCiAgICAgICsgaW5zdGFuY2VfdHlwZSA9ICJ0Mi5taWNybyIKICAgICAgLi4uCiAgICB9CgpQbGFuOiAxIHRvIGFkZCwgMCB0byBjaGFuZ2UsIDAgdG8gZGVzdHJveS4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>An execution plan has been generated and is shown below.
+Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_instance.example will be created
+  + resource &quot;aws_instance&quot; &quot;example&quot; {
+      + ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+      + instance_type = &quot;t2.micro&quot;
+      ...
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.</pre></div><div class='content'></div><h1>3. Uso del Comando `terraform apply`</h1>
+<div class='content'><p>El comando <code>terraform apply</code> aplica los cambios planificados a la infraestructura. Si ocurre un error durante la aplicación, Terraform proporciona mensajes detallados que pueden ayudar a identificar el problema.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGFwcGx5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform apply</pre></div><div class='content'><p><strong>Salida esperada:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXdzX2luc3RhbmNlLmV4YW1wbGU6IENyZWF0aW5nLi4uCmF3c19pbnN0YW5jZS5leGFtcGxlOiBTdGlsbCBjcmVhdGluZy4uLiBbMTBzIGVsYXBzZWRdCmF3c19pbnN0YW5jZS5leGFtcGxlOiBDcmVhdGlvbiBjb21wbGV0ZSBhZnRlciAxNXMgW2lkPWktMGFiY2QxMjM0ZWZnaDU2NzhdCgpBcHBseSBjb21wbGV0ZSEgUmVzb3VyY2VzOiAxIGFkZGVkLCAwIGNoYW5nZWQsIDAgZGVzdHJveWVkLg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>aws_instance.example: Creating...
+aws_instance.example: Still creating... [10s elapsed]
+aws_instance.example: Creation complete after 15s [id=i-0abcd1234efgh5678]
+
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.</pre></div><div class='content'><p>Si ocurre un error, la salida incluirá detalles sobre el problema:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RXJyb3I6IEVycm9yIGxhdW5jaGluZyBzb3VyY2UgaW5zdGFuY2U6IEludmFsaWRBTUlJRC5Ob3RGb3VuZDogVGhlIGltYWdlIGlkICdbYW1pLTBjNTViMTU5Y2JmYWZlMWYwXScgZG9lcyBub3QgZXhpc3Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Error: Error launching source instance: InvalidAMIID.NotFound: The image id '[ami-0c55b159cbfafe1f0]' does not exist</pre></div><div class='content'></div><h1>4. Habilitar el Modo de Depuración</h1>
+<div class='content'><p>El modo de depuración proporciona información detallada sobre la ejecución de Terraform. Para habilitarlo, utilizamos la variable de entorno <code>TF_LOG</code>.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXhwb3J0IFRGX0xPRz1ERUJVRwp0ZXJyYWZvcm0gYXBwbHk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>export TF_LOG=DEBUG
+terraform apply</pre></div><div class='content'><p><strong>Salida esperada:</strong></p>
+<p>La salida incluirá información detallada sobre cada paso de la ejecución, lo que puede ayudar a identificar problemas específicos.</p>
+</div><h1>5. Archivos de Registro</h1>
+<div class='content'><p>Terraform puede generar archivos de registro que contienen información detallada sobre la ejecución. Para habilitar los registros, utilizamos la variable de entorno <code>TF_LOG_PATH</code>.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXhwb3J0IFRGX0xPRz1ERUJVRwpleHBvcnQgVEZfTE9HX1BBVEg9Li90ZXJyYWZvcm0ubG9nCnRlcnJhZm9ybSBhcHBseQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>export TF_LOG=DEBUG
+export TF_LOG_PATH=./terraform.log
+terraform apply</pre></div><div class='content'><p><strong>Salida esperada:</strong></p>
+<p>La información de depuración se guardará en el archivo <code>terraform.log</code>, que puede ser revisado para identificar problemas.</p>
+</div><h1>6. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea una configuración de Terraform que despliegue una instancia de EC2 en AWS.</li>
+<li>Introduce un error intencional en la configuración (por ejemplo, usa un ID de AMI incorrecto).</li>
+<li>Utiliza los comandos <code>terraform plan</code> y <code>terraform apply</code> para identificar y solucionar el problema.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Configuración de Terraform:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCn0KCnJlc291cmNlICJhd3NfaW5zdGFuY2UiICJleGFtcGxlIiB7CiAgYW1pICAgICAgICAgICA9ICJhbWktaW5jb3JyZWN0IgogIGluc3RhbmNlX3R5cGUgPSAidDIubWljcm8iCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = &quot;ami-incorrect&quot;
+  instance_type = &quot;t2.micro&quot;
+}</pre></div><div class='content'><ol start="2">
+<li>Ejecuta <code>terraform plan</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHBsYW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform plan</pre></div><div class='content'><p><strong>Salida esperada:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RXJyb3I6IEVycm9yIGxhdW5jaGluZyBzb3VyY2UgaW5zdGFuY2U6IEludmFsaWRBTUlJRC5Ob3RGb3VuZDogVGhlIGltYWdlIGlkICdbYW1pLWluY29ycmVjdF0nIGRvZXMgbm90IGV4aXN0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Error: Error launching source instance: InvalidAMIID.NotFound: The image id '[ami-incorrect]' does not exist</pre></div><div class='content'><ol start="3">
+<li>Corrige el ID de AMI y vuelve a ejecutar <code>terraform plan</code> y <code>terraform apply</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCn0KCnJlc291cmNlICJhd3NfaW5zdGFuY2UiICJleGFtcGxlIiB7CiAgYW1pICAgICAgICAgICA9ICJhbWktMGM1NWIxNTljYmZhZmUxZjAiCiAgaW5zdGFuY2VfdHlwZSA9ICJ0Mi5taWNybyIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
+  instance_type = &quot;t2.micro&quot;
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHBsYW4KdGVycmFmb3JtIGFwcGx5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform plan
+terraform apply</pre></div><div class='content'></div><h1>7. Conclusión</h1>
+<div class='content'><p>La depuración es una parte esencial del uso de Terraform. Utilizando comandos como <code>terraform plan</code>, <code>terraform apply</code>, y habilitando el modo de depuración, podemos identificar y solucionar problemas en nuestras configuraciones de manera eficiente. La práctica constante y la revisión de los mensajes de error detallados proporcionados por Terraform son clave para mejorar nuestras habilidades de depuración.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-common-errors' title="Errores Comunes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-state-management-issues' title="Problemas de Gestión del Estado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

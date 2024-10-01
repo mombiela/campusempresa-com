@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapeo de Sombras</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/06-03-shadow-mapping" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/06-03-shadow-mapping" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/06-03-shadow-mapping" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/06-03-shadow-mapping" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/06-03-shadow-mapping" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-post-processing' title="Efectos de Post-Procesamiento">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mapeo de Sombras</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-environment-mapping' title="Mapeo de Entorno">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El mapeo de sombras es una técnica avanzada de renderizado que permite agregar sombras realistas a una escena 3D. Esta técnica es ampliamente utilizada en gráficos por computadora para mejorar la percepción de profundidad y realismo.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Mapa de Sombras (Shadow Map)</strong>: Es una textura que almacena la información de profundidad desde la perspectiva de la fuente de luz.</li>
+<li><strong>Proyección de Sombras</strong>: Proceso de proyectar las sombras en la escena desde la perspectiva de la cámara.</li>
+<li><strong>Comparación de Profundidad</strong>: Técnica para determinar si un fragmento está en sombra comparando su profundidad con la almacenada en el mapa de sombras.</li>
+</ol>
+</div><h1>Pasos para Implementar el Mapeo de Sombras</h1>
+<div class='content'></div><h2>1. Generar el Mapa de Sombras</h2>
+<div class='content'><p>Primero, renderizamos la escena desde la perspectiva de la fuente de luz y almacenamos la información de profundidad en una textura.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29uZmlndXJhY2nDs24gZGVsIGZyYW1lYnVmZmVyIHBhcmEgZWwgbWFwYSBkZSBzb21icmFzCkdMdWludCBkZXB0aE1hcEZCTzsKZ2xHZW5GcmFtZWJ1ZmZlcnMoMSwgJmRlcHRoTWFwRkJPKTsKCi8vIENyZWFyIGxhIHRleHR1cmEgcGFyYSBlbCBtYXBhIGRlIHNvbWJyYXMKR0x1aW50IGRlcHRoTWFwOwpnbEdlblRleHR1cmVzKDEsICZkZXB0aE1hcCk7CmdsQmluZFRleHR1cmUoR0xfVEVYVFVSRV8yRCwgZGVwdGhNYXApOwpnbFRleEltYWdlMkQoR0xfVEVYVFVSRV8yRCwgMCwgR0xfREVQVEhfQ09NUE9ORU5ULCBTSEFET1dfV0lEVEgsIFNIQURPV19IRUlHSFQsIDAsIEdMX0RFUFRIX0NPTVBPTkVOVCwgR0xfRkxPQVQsIE5VTEwpOwpnbFRleFBhcmFtZXRlcmkoR0xfVEVYVFVSRV8yRCwgR0xfVEVYVFVSRV9NSU5fRklMVEVSLCBHTF9ORUFSRVNUKTsKZ2xUZXhQYXJhbWV0ZXJpKEdMX1RFWFRVUkVfMkQsIEdMX1RFWFRVUkVfTUFHX0ZJTFRFUiwgR0xfTkVBUkVTVCk7CmdsVGV4UGFyYW1ldGVyaShHTF9URVhUVVJFXzJELCBHTF9URVhUVVJFX1dSQVBfUywgR0xfQ0xBTVBfVE9fQk9SREVSKTsKZ2xUZXhQYXJhbWV0ZXJpKEdMX1RFWFRVUkVfMkQsIEdMX1RFWFRVUkVfV1JBUF9ULCBHTF9DTEFNUF9UT19CT1JERVIpOwpmbG9hdCBib3JkZXJDb2xvcltdID0geyAxLjAsIDEuMCwgMS4wLCAxLjAgfTsKZ2xUZXhQYXJhbWV0ZXJmdihHTF9URVhUVVJFXzJELCBHTF9URVhUVVJFX0JPUkRFUl9DT0xPUiwgYm9yZGVyQ29sb3IpOwoKLy8gQWRqdW50YXIgbGEgdGV4dHVyYSBhbCBmcmFtZWJ1ZmZlcgpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgZGVwdGhNYXBGQk8pOwpnbEZyYW1lYnVmZmVyVGV4dHVyZTJEKEdMX0ZSQU1FQlVGRkVSLCBHTF9ERVBUSF9BVFRBQ0hNRU5ULCBHTF9URVhUVVJFXzJELCBkZXB0aE1hcCwgMCk7CmdsRHJhd0J1ZmZlcihHTF9OT05FKTsKZ2xSZWFkQnVmZmVyKEdMX05PTkUpOwpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgMCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Configuraci&oacute;n del framebuffer para el mapa de sombras
+GLuint depthMapFBO;
+glGenFramebuffers(1, &amp;depthMapFBO);
+
+// Crear la textura para el mapa de sombras
+GLuint depthMap;
+glGenTextures(1, &amp;depthMap);
+glBindTexture(GL_TEXTURE_2D, depthMap);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+// Adjuntar la textura al framebuffer
+glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+glDrawBuffer(GL_NONE);
+glReadBuffer(GL_NONE);
+glBindFramebuffer(GL_FRAMEBUFFER, 0);</pre></div><div class='content'></div><h2>2. Renderizar la Escena desde la Perspectiva de la Luz</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29uZmlndXJhciBsYSB2aXN0YSB5IHByb3llY2Npw7NuIGRlc2RlIGxhIHBlcnNwZWN0aXZhIGRlIGxhIGx1egpnbG06Om1hdDQgbGlnaHRQcm9qZWN0aW9uLCBsaWdodFZpZXc7CmdsbTo6bWF0NCBsaWdodFNwYWNlTWF0cml4OwpmbG9hdCBuZWFyX3BsYW5lID0gMS4wZiwgZmFyX3BsYW5lID0gNy41ZjsKbGlnaHRQcm9qZWN0aW9uID0gZ2xtOjpvcnRobygtMTAuMGYsIDEwLjBmLCAtMTAuMGYsIDEwLjBmLCBuZWFyX3BsYW5lLCBmYXJfcGxhbmUpOwpsaWdodFZpZXcgPSBnbG06Omxvb2tBdChsaWdodFBvcywgZ2xtOjp2ZWMzKDAuMGYpLCBnbG06OnZlYzMoMC4wLCAxLjAsIDAuMCkpOwpsaWdodFNwYWNlTWF0cml4ID0gbGlnaHRQcm9qZWN0aW9uICogbGlnaHRWaWV3OwoKLy8gUmVuZGVyaXphciBsYSBlc2NlbmEgYSBsYSB0ZXh0dXJhIGRlbCBtYXBhIGRlIHNvbWJyYXMKZ2xWaWV3cG9ydCgwLCAwLCBTSEFET1dfV0lEVEgsIFNIQURPV19IRUlHSFQpOwpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgZGVwdGhNYXBGQk8pOwpnbENsZWFyKEdMX0RFUFRIX0JVRkZFUl9CSVQpOwpzaGFkb3dTaGFkZXIudXNlKCk7CnNoYWRvd1NoYWRlci5zZXRNYXQ0KCJsaWdodFNwYWNlTWF0cml4IiwgbGlnaHRTcGFjZU1hdHJpeCk7CnJlbmRlclNjZW5lKHNoYWRvd1NoYWRlcik7CmdsQmluZEZyYW1lYnVmZmVyKEdMX0ZSQU1FQlVGRkVSLCAwKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Configurar la vista y proyecci&oacute;n desde la perspectiva de la luz
+glm::mat4 lightProjection, lightView;
+glm::mat4 lightSpaceMatrix;
+float near_plane = 1.0f, far_plane = 7.5f;
+lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+lightView = glm::lookAt(lightPos, glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+lightSpaceMatrix = lightProjection * lightView;
+
+// Renderizar la escena a la textura del mapa de sombras
+glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
+glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+glClear(GL_DEPTH_BUFFER_BIT);
+shadowShader.use();
+shadowShader.setMat4(&quot;lightSpaceMatrix&quot;, lightSpaceMatrix);
+renderScene(shadowShader);
+glBindFramebuffer(GL_FRAMEBUFFER, 0);</pre></div><div class='content'></div><h2>3. Renderizar la Escena con Sombras</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29uZmlndXJhciBsYSB2aXN0YSB5IHByb3llY2Npw7NuIGRlc2RlIGxhIHBlcnNwZWN0aXZhIGRlIGxhIGPDoW1hcmEKZ2xtOjptYXQ0IHByb2plY3Rpb24gPSBnbG06OnBlcnNwZWN0aXZlKGdsbTo6cmFkaWFucyhjYW1lcmEuWm9vbSksIChmbG9hdClTQ1JfV0lEVEggLyAoZmxvYXQpU0NSX0hFSUdIVCwgMC4xZiwgMTAwLjBmKTsKZ2xtOjptYXQ0IHZpZXcgPSBjYW1lcmEuR2V0Vmlld01hdHJpeCgpOwpzaGFkZXIudXNlKCk7CnNoYWRlci5zZXRNYXQ0KCJwcm9qZWN0aW9uIiwgcHJvamVjdGlvbik7CnNoYWRlci5zZXRNYXQ0KCJ2aWV3Iiwgdmlldyk7CgovLyBQYXNhciBsYSBtYXRyaXogZGUgZXNwYWNpbyBkZSBsdXogeSBlbCBtYXBhIGRlIHNvbWJyYXMgYWwgc2hhZGVyCnNoYWRlci5zZXRNYXQ0KCJsaWdodFNwYWNlTWF0cml4IiwgbGlnaHRTcGFjZU1hdHJpeCk7CmdsQWN0aXZlVGV4dHVyZShHTF9URVhUVVJFMSk7CmdsQmluZFRleHR1cmUoR0xfVEVYVFVSRV8yRCwgZGVwdGhNYXApOwpzaGFkZXIuc2V0SW50KCJzaGFkb3dNYXAiLCAxKTsKCi8vIFJlbmRlcml6YXIgbGEgZXNjZW5hIGNvbiBzb21icmFzCnJlbmRlclNjZW5lKHNoYWRlcik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Configurar la vista y proyecci&oacute;n desde la perspectiva de la c&aacute;mara
+glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+glm::mat4 view = camera.GetViewMatrix();
+shader.use();
+shader.setMat4(&quot;projection&quot;, projection);
+shader.setMat4(&quot;view&quot;, view);
+
+// Pasar la matriz de espacio de luz y el mapa de sombras al shader
+shader.setMat4(&quot;lightSpaceMatrix&quot;, lightSpaceMatrix);
+glActiveTexture(GL_TEXTURE1);
+glBindTexture(GL_TEXTURE_2D, depthMap);
+shader.setInt(&quot;shadowMap&quot;, 1);
+
+// Renderizar la escena con sombras
+renderScene(shader);</pre></div><div class='content'></div><h2>4. Shader para Comparación de Profundidad</h2>
+<div class='content'><p>Vertex Shader:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0IChsb2NhdGlvbiA9IDApIGluIHZlYzMgYVBvczsKbGF5b3V0IChsb2NhdGlvbiA9IDEpIGluIHZlYzMgYU5vcm1hbDsKbGF5b3V0IChsb2NhdGlvbiA9IDIpIGluIHZlYzIgYVRleENvb3JkczsKCm91dCB2ZWMyIFRleENvb3JkczsKb3V0IHZlYzQgRnJhZ1Bvc0xpZ2h0U3BhY2U7Cgp1bmlmb3JtIG1hdDQgbW9kZWw7CnVuaWZvcm0gbWF0NCB2aWV3Owp1bmlmb3JtIG1hdDQgcHJvamVjdGlvbjsKdW5pZm9ybSBtYXQ0IGxpZ2h0U3BhY2VNYXRyaXg7Cgp2b2lkIG1haW4oKQp7CiAgICBUZXhDb29yZHMgPSBhVGV4Q29vcmRzOwogICAgdmVjNCBmcmFnUG9zID0gbW9kZWwgKiB2ZWM0KGFQb3MsIDEuMCk7CiAgICBGcmFnUG9zTGlnaHRTcGFjZSA9IGxpZ2h0U3BhY2VNYXRyaXggKiBmcmFnUG9zOwogICAgZ2xfUG9zaXRpb24gPSBwcm9qZWN0aW9uICogdmlldyAqIGZyYWdQb3M7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aNormal;
+layout (location = 2) in vec2 aTexCoords;
+
+out vec2 TexCoords;
+out vec4 FragPosLightSpace;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform mat4 lightSpaceMatrix;
+
+void main()
+{
+    TexCoords = aTexCoords;
+    vec4 fragPos = model * vec4(aPos, 1.0);
+    FragPosLightSpace = lightSpaceMatrix * fragPos;
+    gl_Position = projection * view * fragPos;
+}</pre></div><div class='content'><p>Fragment Shader:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKb3V0IHZlYzQgRnJhZ0NvbG9yOwoKaW4gdmVjMiBUZXhDb29yZHM7CmluIHZlYzQgRnJhZ1Bvc0xpZ2h0U3BhY2U7Cgp1bmlmb3JtIHNhbXBsZXIyRCBzaGFkb3dNYXA7CnVuaWZvcm0gdmVjMyBsaWdodFBvczsKdW5pZm9ybSB2ZWMzIHZpZXdQb3M7CgpmbG9hdCBTaGFkb3dDYWxjdWxhdGlvbih2ZWM0IGZyYWdQb3NMaWdodFNwYWNlKQp7CiAgICAvLyBUcmFuc2Zvcm1hciBjb29yZGVuYWRhcyBkZSBmcmFnbWVudG8gYSBlc3BhY2lvIGRlIHRleHR1cmEKICAgIHZlYzMgcHJvakNvb3JkcyA9IGZyYWdQb3NMaWdodFNwYWNlLnh5eiAvIGZyYWdQb3NMaWdodFNwYWNlLnc7CiAgICBwcm9qQ29vcmRzID0gcHJvakNvb3JkcyAqIDAuNSArIDAuNTsKICAgIGZsb2F0IGNsb3Nlc3REZXB0aCA9IHRleHR1cmUoc2hhZG93TWFwLCBwcm9qQ29vcmRzLnh5KS5yOwogICAgZmxvYXQgY3VycmVudERlcHRoID0gcHJvakNvb3Jkcy56OwogICAgZmxvYXQgc2hhZG93ID0gY3VycmVudERlcHRoID4gY2xvc2VzdERlcHRoID8gMS4wIDogMC4wOwogICAgcmV0dXJuIHNoYWRvdzsKfQoKdm9pZCBtYWluKCkKewogICAgZmxvYXQgc2hhZG93ID0gU2hhZG93Q2FsY3VsYXRpb24oRnJhZ1Bvc0xpZ2h0U3BhY2UpOwogICAgdmVjMyBjb2xvciA9IHZlYzMoMS4wKSAqICgxLjAgLSBzaGFkb3cpOwogICAgRnJhZ0NvbG9yID0gdmVjNChjb2xvciwgMS4wKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+out vec4 FragColor;
+
+in vec2 TexCoords;
+in vec4 FragPosLightSpace;
+
+uniform sampler2D shadowMap;
+uniform vec3 lightPos;
+uniform vec3 viewPos;
+
+float ShadowCalculation(vec4 fragPosLightSpace)
+{
+    // Transformar coordenadas de fragmento a espacio de textura
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    projCoords = projCoords * 0.5 + 0.5;
+    float closestDepth = texture(shadowMap, projCoords.xy).r;
+    float currentDepth = projCoords.z;
+    float shadow = currentDepth &gt; closestDepth ? 1.0 : 0.0;
+    return shadow;
+}
+
+void main()
+{
+    float shadow = ShadowCalculation(FragPosLightSpace);
+    vec3 color = vec3(1.0) * (1.0 - shadow);
+    FragColor = vec4(color, 1.0);
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Implementa el mapeo de sombras en una escena simple con una fuente de luz direccional y varios objetos. Asegúrate de seguir los pasos descritos anteriormente y ajustar los parámetros según sea necesario.</p>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Configura el framebuffer y la textura para el mapa de sombras.</li>
+<li>Renderiza la escena desde la perspectiva de la luz y almacena la información de profundidad.</li>
+<li>Renderiza la escena desde la perspectiva de la cámara, utilizando el mapa de sombras para calcular las sombras.</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo implementar el mapeo de sombras en OpenGL. Esta técnica mejora significativamente el realismo de las escenas 3D al agregar sombras precisas y dinámicas. Hemos cubierto los conceptos clave, los pasos de implementación y proporcionado un ejercicio práctico para reforzar el aprendizaje. En el siguiente módulo, exploraremos otros efectos especiales y técnicas avanzadas de renderizado.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-post-processing' title="Efectos de Post-Procesamiento">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-environment-mapping' title="Mapeo de Entorno">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

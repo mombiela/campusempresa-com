@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización de Imágenes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/webpack/05-03-image-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/webpack/05-03-image-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/webpack/05-03-image-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/webpack/05-03-image-optimization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/webpack/05-03-image-optimization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-optimizing-css' title="Optimización de CSS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimización de Imágenes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-bundle-analysis' title="Análisis de Paquetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La optimización de imágenes es un paso crucial en el proceso de construcción de aplicaciones web eficientes. Las imágenes suelen ser uno de los recursos más pesados en una página web, y optimizarlas puede mejorar significativamente el rendimiento y la velocidad de carga. En esta sección, aprenderemos cómo optimizar imágenes utilizando Webpack.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Compresión de Imágenes</strong>: Reducir el tamaño de las imágenes sin perder calidad perceptible.</li>
+<li><strong>Formatos de Imágenes</strong>: Utilizar formatos de imagen adecuados como JPEG, PNG, SVG, y WebP.</li>
+<li><strong>Carga Diferida (Lazy Loading)</strong>: Cargar imágenes solo cuando son necesarias, es decir, cuando están a punto de entrar en el viewport del usuario.</li>
+</ol>
+</div><h1>Configuración Básica</h1>
+<div class='content'></div><h2>Instalación de Loaders</h2>
+<div class='content'><p>Para optimizar imágenes en Webpack, utilizaremos <code>image-webpack-loader</code> junto con <code>file-loader</code> o <code>url-loader</code>. Primero, instalemos estos loaders:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgLS1zYXZlLWRldiBpbWFnZS13ZWJwYWNrLWxvYWRlciBmaWxlLWxvYWRlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install --save-dev image-webpack-loader file-loader</pre></div><div class='content'></div><h2>Configuración del Archivo Webpack</h2>
+<div class='content'><p>A continuación, configuraremos nuestro archivo <code>webpack.config.js</code> para incluir estos loaders:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIGVudHJ5OiAnLi9zcmMvaW5kZXguanMnLAogIG91dHB1dDogewogICAgZmlsZW5hbWU6ICdidW5kbGUuanMnLAogICAgcGF0aDogcGF0aC5yZXNvbHZlKF9fZGlybmFtZSwgJ2Rpc3QnKSwKICB9LAogIG1vZHVsZTogewogICAgcnVsZXM6IFsKICAgICAgewogICAgICAgIHRlc3Q6IC9cLihwbmd8anBlP2d8Z2lmfHN2ZykkL2ksCiAgICAgICAgdXNlOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgIGxvYWRlcjogJ2ZpbGUtbG9hZGVyJywKICAgICAgICAgICAgb3B0aW9uczogewogICAgICAgICAgICAgIG5hbWU6ICdbcGF0aF1bbmFtZV0uW2V4dF0nLAogICAgICAgICAgICB9LAogICAgICAgICAgfSwKICAgICAgICAgIHsKICAgICAgICAgICAgbG9hZGVyOiAnaW1hZ2Utd2VicGFjay1sb2FkZXInLAogICAgICAgICAgICBvcHRpb25zOiB7CiAgICAgICAgICAgICAgbW96anBlZzogewogICAgICAgICAgICAgICAgcHJvZ3Jlc3NpdmU6IHRydWUsCiAgICAgICAgICAgICAgICBxdWFsaXR5OiA2NSwKICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgIC8vIE9wdGlwbmcgZW5hYmxlZDogZmFsc2Ugd2lsbCBkaXNhYmxlIG9wdGlwbmcKICAgICAgICAgICAgICBvcHRpcG5nOiB7CiAgICAgICAgICAgICAgICBlbmFibGVkOiBmYWxzZSwKICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgIHBuZ3F1YW50OiB7CiAgICAgICAgICAgICAgICBxdWFsaXR5OiBbMC42NSwgMC45MF0sCiAgICAgICAgICAgICAgICBzcGVlZDogNCwKICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgIGdpZnNpY2xlOiB7CiAgICAgICAgICAgICAgICBpbnRlcmxhY2VkOiBmYWxzZSwKICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgIC8vIHRoZSB3ZWJwIG9wdGlvbiB3aWxsIGVuYWJsZSBXRUJQCiAgICAgICAgICAgICAgd2VicDogewogICAgICAgICAgICAgICAgcXVhbGl0eTogNzUsCiAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgfSwKICAgICAgICAgIH0sCiAgICAgICAgXSwKICAgICAgfSwKICAgIF0sCiAgfSwKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 65,
+              },
+              // Optipng enabled: false will disable optipng
+              optipng: {
+                enabled: false,
+              },
+              pngquant: {
+                quality: [0.65, 0.90],
+                speed: 4,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              // the webp option will enable WEBP
+              webp: {
+                quality: 75,
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+};</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>file-loader</strong>: Este loader se encarga de copiar las imágenes a la carpeta de salida (<code>dist</code>) y actualizar las referencias en el código.</li>
+<li><strong>image-webpack-loader</strong>: Este loader optimiza las imágenes utilizando varias herramientas de compresión.</li>
+</ul>
+<h4>Opciones de <code>image-webpack-loader</code></h4>
+<ul>
+<li><strong>mozjpeg</strong>: Optimiza imágenes JPEG.</li>
+<li><strong>optipng</strong>: Optimiza imágenes PNG.</li>
+<li><strong>pngquant</strong>: Otra herramienta para optimizar imágenes PNG.</li>
+<li><strong>gifsicle</strong>: Optimiza imágenes GIF.</li>
+<li><strong>webp</strong>: Convierte imágenes a formato WebP, que es un formato de imagen moderno que proporciona una compresión superior.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que tenemos una imagen <code>src/images/logo.png</code>. Con la configuración anterior, Webpack optimizará esta imagen y la copiará a la carpeta <code>dist/images</code>.</p>
+</div><h2>Código HTML</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDxtZXRhIG5hbWU9InZpZXdwb3J0IiBjb250ZW50PSJ3aWR0aD1kZXZpY2Utd2lkdGgsIGluaXRpYWwtc2NhbGU9MS4wIj4KICA8dGl0bGU+V2VicGFjayBJbWFnZSBPcHRpbWl6YXRpb248L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogIDxpbWcgc3JjPSJpbWFnZXMvbG9nby5wbmciIGFsdD0iTG9nbyI+CiAgPHNjcmlwdCBzcmM9ImJ1bmRsZS5qcyI+PC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Webpack Image Optimization&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;img src=&quot;images/logo.png&quot; alt=&quot;Logo&quot;&gt;
+  &lt;script src=&quot;bundle.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Código JavaScript</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICcuL2ltYWdlcy9sb2dvLnBuZyc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import './images/logo.png';</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Optimización de Imágenes</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Optimizar una imagen PNG y una imagen JPEG utilizando Webpack.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Instala <code>image-webpack-loader</code> y <code>file-loader</code>.</li>
+<li>Configura <code>webpack.config.js</code> para optimizar las imágenes.</li>
+<li>Añade una imagen PNG y una imagen JPEG a tu proyecto.</li>
+<li>Importa las imágenes en tu archivo JavaScript.</li>
+<li>Verifica que las imágenes optimizadas se encuentran en la carpeta <code>dist</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li><strong>Instalación de Loaders</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgLS1zYXZlLWRldiBpbWFnZS13ZWJwYWNrLWxvYWRlciBmaWxlLWxvYWRlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install --save-dev image-webpack-loader file-loader</pre></div><div class='content'><ol start="2">
+<li><strong>Configuración de <code>webpack.config.js</code></strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIGVudHJ5OiAnLi9zcmMvaW5kZXguanMnLAogIG91dHB1dDogewogICAgZmlsZW5hbWU6ICdidW5kbGUuanMnLAogICAgcGF0aDogcGF0aC5yZXNvbHZlKF9fZGlybmFtZSwgJ2Rpc3QnKSwKICB9LAogIG1vZHVsZTogewogICAgcnVsZXM6IFsKICAgICAgewogICAgICAgIHRlc3Q6IC9cLihwbmd8anBlP2d8Z2lmfHN2ZykkL2ksCiAgICAgICAgdXNlOiBbCiAgICAgICAgICB7CiAgICAgICAgICAgIGxvYWRlcjogJ2ZpbGUtbG9hZGVyJywKICAgICAgICAgICAgb3B0aW9uczogewogICAgICAgICAgICAgIG5hbWU6ICdbcGF0aF1bbmFtZV0uW2V4dF0nLAogICAgICAgICAgICB9LAogICAgICAgICAgfSwKICAgICAgICAgIHsKICAgICAgICAgICAgbG9hZGVyOiAnaW1hZ2Utd2VicGFjay1sb2FkZXInLAogICAgICAgICAgICBvcHRpb25zOiB7CiAgICAgICAgICAgICAgbW96anBlZzogewogICAgICAgICAgICAgICAgcHJvZ3Jlc3NpdmU6IHRydWUsCiAgICAgICAgICAgICAgICBxdWFsaXR5OiA2NSwKICAgICAgICAgICAgICB9LAogICAgICAgICAgICAgIG9wdGlwbmc6IHsKICAgICAgICAgICAgICAgIGVuYWJsZWQ6IGZhbHNlLAogICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgcG5ncXVhbnQ6IHsKICAgICAgICAgICAgICAgIHF1YWxpdHk6IFswLjY1LCAwLjkwXSwKICAgICAgICAgICAgICAgIHNwZWVkOiA0LAogICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgZ2lmc2ljbGU6IHsKICAgICAgICAgICAgICAgIGludGVybGFjZWQ6IGZhbHNlLAogICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgd2VicDogewogICAgICAgICAgICAgICAgcXVhbGl0eTogNzUsCiAgICAgICAgICAgICAgfSwKICAgICAgICAgICAgfSwKICAgICAgICAgIH0sCiAgICAgICAgXSwKICAgICAgfSwKICAgIF0sCiAgfSwKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: '[path][name].[ext]',
+            },
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                progressive: true,
+                quality: 65,
+              },
+              optipng: {
+                enabled: false,
+              },
+              pngquant: {
+                quality: [0.65, 0.90],
+                speed: 4,
+              },
+              gifsicle: {
+                interlaced: false,
+              },
+              webp: {
+                quality: 75,
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+};</pre></div><div class='content'><ol start="3">
+<li>
+<p><strong>Añadir Imágenes</strong>: Coloca <code>logo.png</code> y <code>banner.jpg</code> en la carpeta <code>src/images</code>.</p>
+</li>
+<li>
+<p><strong>Importar Imágenes en <code>index.js</code></strong>:</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICcuL2ltYWdlcy9sb2dvLnBuZyc7CmltcG9ydCAnLi9pbWFnZXMvYmFubmVyLmpwZyc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import './images/logo.png';
+import './images/banner.jpg';</pre></div><div class='content'><ol start="5">
+<li><strong>Verificar Imágenes Optimizadas</strong>: Ejecuta Webpack y verifica que las imágenes optimizadas se encuentran en la carpeta <code>dist/images</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnB4IHdlYnBhY2sgLS1jb25maWcgd2VicGFjay5jb25maWcuanM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npx webpack --config webpack.config.js</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo optimizar imágenes utilizando Webpack. La optimización de imágenes es esencial para mejorar el rendimiento de las aplicaciones web. Hemos cubierto la instalación y configuración de <code>image-webpack-loader</code> y <code>file-loader</code>, y hemos visto un ejemplo práctico de cómo optimizar imágenes en un proyecto Webpack. En la siguiente sección, exploraremos más técnicas de optimización para mejorar aún más el rendimiento de nuestras aplicaciones web.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-optimizing-css' title="Optimización de CSS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-bundle-analysis' title="Análisis de Paquetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

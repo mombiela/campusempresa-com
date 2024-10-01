@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desplegando en AWS</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/08-03-deploying-aws" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/08-03-deploying-aws" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/08-03-deploying-aws" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/springboot/08-03-deploying-aws" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/08-03-deploying-aws" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-deploying-heroku' title="Desplegando en Heroku">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Desplegando en AWS</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-deploying-kubernetes' title="Desplegando en Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo desplegar una aplicación Spring Boot en Amazon Web Services (AWS). AWS es una de las plataformas de nube más populares y ofrece una amplia gama de servicios que pueden ayudarte a escalar y gestionar tu aplicación de manera eficiente.</p>
+</div><h1>Objetivos del Tema</h1>
+<div class='content'><ul>
+<li>Entender los conceptos básicos de AWS.</li>
+<li>Configurar una cuenta de AWS.</li>
+<li>Desplegar una aplicación Spring Boot en AWS Elastic Beanstalk.</li>
+<li>Configurar una base de datos RDS para tu aplicación.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Conocimientos básicos de Spring Boot.</li>
+<li>Una cuenta de AWS (puedes registrarte en <a href="https://aws.amazon.com/free/">AWS Free Tier</a>).</li>
+<li>Familiaridad con la línea de comandos.</li>
+</ul>
+</div><h1>1. Introducción a AWS</h1>
+<div class='content'></div><h2>¿Qué es AWS?</h2>
+<div class='content'><p>Amazon Web Services (AWS) es una plataforma de servicios en la nube que ofrece servicios como computación, almacenamiento, bases de datos, y más. AWS permite a los desarrolladores desplegar y gestionar aplicaciones de manera escalable y segura.</p>
+</div><h2>Servicios Clave para Despliegue</h2>
+<div class='content'><ul>
+<li><strong>Elastic Beanstalk</strong>: Plataforma como servicio (PaaS) que facilita el despliegue y escalado de aplicaciones web.</li>
+<li><strong>RDS (Relational Database Service)</strong>: Servicio de base de datos gestionado que facilita la configuración, operación y escalado de bases de datos relacionales en la nube.</li>
+</ul>
+</div><h1>2. Configuración de tu Cuenta de AWS</h1>
+<div class='content'></div><h2>Paso 1: Crear una Cuenta de AWS</h2>
+<div class='content'><ol>
+<li>Ve a <a href="https://aws.amazon.com/free/">AWS Free Tier</a> y haz clic en &quot;Create a Free Account&quot;.</li>
+<li>Sigue las instrucciones para completar el registro.</li>
+</ol>
+</div><h2>Paso 2: Configurar Credenciales de AWS CLI</h2>
+<div class='content'><ol>
+<li>Instala AWS CLI siguiendo las instrucciones en <a href="https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html">AWS CLI Installation</a>.</li>
+<li>Configura AWS CLI con el comando:
+<pre><code class="language-bash">aws configure
+</code></pre>
+Proporciona tu <code>AWS Access Key ID</code>, <code>AWS Secret Access Key</code>, <code>Default region name</code> y <code>Default output format</code>.</li>
+</ol>
+</div><h1>3. Desplegando una Aplicación Spring Boot en Elastic Beanstalk</h1>
+<div class='content'></div><h2>Paso 1: Preparar tu Aplicación Spring Boot</h2>
+<div class='content'><ol>
+<li>Asegúrate de que tu aplicación Spring Boot esté empaquetada como un archivo JAR. Puedes hacerlo con:
+<pre><code class="language-bash">./mvnw clean package
+</code></pre>
+Esto generará un archivo <code>*.jar</code> en el directorio <code>target</code>.</li>
+</ol>
+</div><h2>Paso 2: Crear un Entorno en Elastic Beanstalk</h2>
+<div class='content'><ol>
+<li>Inicia sesión en la <a href="https://aws.amazon.com/console/">Consola de AWS</a>.</li>
+<li>Navega a <strong>Elastic Beanstalk</strong> y haz clic en &quot;Create Application&quot;.</li>
+<li>Proporciona un nombre para tu aplicación y selecciona &quot;Java&quot; como plataforma.</li>
+<li>Sube el archivo JAR generado en el paso anterior.</li>
+<li>Haz clic en &quot;Create Environment&quot; y selecciona &quot;Web server environment&quot;.</li>
+<li>Sigue las instrucciones para completar la configuración.</li>
+</ol>
+</div><h2>Paso 3: Desplegar la Aplicación</h2>
+<div class='content'><ol>
+<li>Una vez que el entorno esté listo, Elastic Beanstalk desplegará automáticamente tu aplicación.</li>
+<li>Puedes acceder a tu aplicación a través de la URL proporcionada por Elastic Beanstalk.</li>
+</ol>
+</div><h1>4. Configuración de una Base de Datos RDS</h1>
+<div class='content'></div><h2>Paso 1: Crear una Instancia de RDS</h2>
+<div class='content'><ol>
+<li>En la consola de AWS, navega a <strong>RDS</strong> y haz clic en &quot;Create database&quot;.</li>
+<li>Selecciona &quot;Standard Create&quot; y elige el motor de base de datos (por ejemplo, MySQL).</li>
+<li>Configura los detalles de la instancia, como el nombre de la base de datos, el nombre de usuario y la contraseña.</li>
+<li>Asegúrate de que la instancia esté en la misma VPC que tu aplicación Elastic Beanstalk.</li>
+</ol>
+</div><h2>Paso 2: Conectar tu Aplicación a RDS</h2>
+<div class='content'><ol>
+<li>En tu archivo <code>application.properties</code> o <code>application.yml</code>, configura la conexión a la base de datos:
+<pre><code class="language-properties">spring.datasource.url=jdbc:mysql://&lt;RDS_ENDPOINT&gt;:3306/&lt;DB_NAME&gt;
+spring.datasource.username=&lt;DB_USERNAME&gt;
+spring.datasource.password=&lt;DB_PASSWORD&gt;
+</code></pre>
+</li>
+<li>Reempaqueta tu aplicación y vuelve a desplegarla en Elastic Beanstalk.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Despliega una Aplicación Spring Boot en AWS</h2>
+<div class='content'><ol>
+<li>Crea una aplicación Spring Boot simple que tenga una conexión a una base de datos MySQL.</li>
+<li>Despliega la aplicación en AWS Elastic Beanstalk.</li>
+<li>Configura una base de datos RDS y conecta tu aplicación a esta base de datos.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Sigue los pasos mencionados en las secciones anteriores para crear y desplegar tu aplicación.</li>
+<li>Verifica que tu aplicación esté funcionando correctamente accediendo a la URL proporcionada por Elastic Beanstalk.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, has aprendido cómo desplegar una aplicación Spring Boot en AWS utilizando Elastic Beanstalk y cómo configurar una base de datos RDS. AWS proporciona una plataforma robusta y escalable para desplegar y gestionar aplicaciones, lo que facilita el proceso de despliegue y mantenimiento.</p>
+<p>En el siguiente tema, aprenderás sobre el despliegue de aplicaciones Spring Boot en Kubernetes, lo que te permitirá gestionar aplicaciones en contenedores de manera eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-deploying-heroku' title="Desplegando en Heroku">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-deploying-kubernetes' title="Desplegando en Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

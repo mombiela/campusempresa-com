@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creando Mapas Geográficos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/d3_js/05-03-geo-maps" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/d3_js/05-03-geo-maps" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/d3_js/05-03-geo-maps" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/d3_js/05-03-geo-maps" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/d3_js/05-03-geo-maps" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-force-layouts' title="Creando Diseños de Fuerza">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creando Mapas Geográficos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-custom-visualizations' title="Creando Visualizaciones Personalizadas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos a crear mapas geográficos utilizando D3.js. Los mapas geográficos son una herramienta poderosa para visualizar datos espaciales y pueden ser utilizados en una variedad de aplicaciones, desde la visualización de datos demográficos hasta la representación de rutas de transporte.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Entender los conceptos básicos de la proyección geográfica.</li>
+<li>Aprender a cargar y manipular datos geográficos.</li>
+<li>Crear mapas básicos utilizando D3.js.</li>
+<li>Añadir interactividad a los mapas.</li>
+</ul>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#conceptos-basicos-de-proyeccion-geografica">Conceptos Básicos de Proyección Geográfica</a></li>
+<li><a href="#cargando-y-manipulando-datos-geograficos">Cargando y Manipulando Datos Geográficos</a></li>
+<li><a href="#creando-un-mapa-basico">Creando un Mapa Básico</a></li>
+<li><a href="#anadiendo-interactividad">Añadiendo Interactividad</a></li>
+<li><a href="#ejercicio-practico">Ejercicio Práctico</a></li>
+</ol>
+</div><h1>Conceptos Básicos de Proyección Geográfica</h1>
+<div class='content'></div><h2>¿Qué es una Proyección Geográfica?</h2>
+<div class='content'><p>Una proyección geográfica es una forma de representar la superficie curva de la Tierra en un plano bidimensional. Existen diferentes tipos de proyecciones, cada una con sus propias ventajas y desventajas.</p>
+</div><h2>Tipos Comunes de Proyecciones</h2>
+<div class='content'><ul>
+<li><strong>Proyección Mercator</strong>: Comúnmente utilizada en mapas de navegación.</li>
+<li><strong>Proyección Albers</strong>: Buena para áreas de gran extensión en latitudes medias.</li>
+<li><strong>Proyección Ortográfica</strong>: Representa la Tierra como si se viera desde el espacio.</li>
+</ul>
+</div><h2>Ejemplo de Proyección en D3.js</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGVmaW5pZW5kbyB1bmEgcHJveWVjY2nDs24gTWVyY2F0b3IKY29uc3QgcHJvamVjdGlvbiA9IGQzLmdlb01lcmNhdG9yKCkKICAgIC5zY2FsZSgxMDApIC8vIEVzY2FsYSBkZSBsYSBwcm95ZWNjacOzbgogICAgLnRyYW5zbGF0ZShbd2lkdGggLyAyLCBoZWlnaHQgLyAyXSk7IC8vIFRyYXNsYWRhciBhbCBjZW50cm8gZGVsIFNWRwoKLy8gQ3JlYXIgdW4gZ2VuZXJhZG9yIGRlIGNhbWlub3MgYmFzYWRvIGVuIGxhIHByb3llY2Npw7NuCmNvbnN0IHBhdGggPSBkMy5nZW9QYXRoKCkucHJvamVjdGlvbihwcm9qZWN0aW9uKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Definiendo una proyecci&oacute;n Mercator
+const projection = d3.geoMercator()
+    .scale(100) // Escala de la proyecci&oacute;n
+    .translate([width / 2, height / 2]); // Trasladar al centro del SVG
+
+// Crear un generador de caminos basado en la proyecci&oacute;n
+const path = d3.geoPath().projection(projection);</pre></div><div class='content'></div><h1>Cargando y Manipulando Datos Geográficos</h1>
+<div class='content'></div><h2>Formatos de Datos Geográficos</h2>
+<div class='content'><ul>
+<li><strong>GeoJSON</strong>: Un formato común para representar datos geográficos.</li>
+<li><strong>TopoJSON</strong>: Una extensión de GeoJSON que reduce el tamaño del archivo.</li>
+</ul>
+</div><h2>Cargando Datos GeoJSON</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZDMuanNvbigncGF0aC90by9nZW9qc29uL2ZpbGUuanNvbicpLnRoZW4oZGF0YSA9PiB7CiAgICAvLyBNYW5pcHVsYXIgbG9zIGRhdG9zIGFxdcOtCiAgICBjb25zb2xlLmxvZyhkYXRhKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>d3.json('path/to/geojson/file.json').then(data =&gt; {
+    // Manipular los datos aqu&iacute;
+    console.log(data);
+});</pre></div><div class='content'></div><h2>Ejemplo de Datos GeoJSON</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ0eXBlIjogIkZlYXR1cmVDb2xsZWN0aW9uIiwKICAiZmVhdHVyZXMiOiBbCiAgICB7CiAgICAgICJ0eXBlIjogIkZlYXR1cmUiLAogICAgICAiZ2VvbWV0cnkiOiB7CiAgICAgICAgInR5cGUiOiAiUG9seWdvbiIsCiAgICAgICAgImNvb3JkaW5hdGVzIjogW1tbMzAsIDEwXSwgWzQwLCA0MF0sIFsyMCwgNDBdLCBbMTAsIDIwXSwgWzMwLCAxMF1dXQogICAgICB9LAogICAgICAicHJvcGVydGllcyI6IHsKICAgICAgICAibmFtZSI6ICJFeGFtcGxlIFBvbHlnb24iCiAgICAgIH0KICAgIH0KICBdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;type&quot;: &quot;FeatureCollection&quot;,
+  &quot;features&quot;: [
+    {
+      &quot;type&quot;: &quot;Feature&quot;,
+      &quot;geometry&quot;: {
+        &quot;type&quot;: &quot;Polygon&quot;,
+        &quot;coordinates&quot;: [[[30, 10], [40, 40], [20, 40], [10, 20], [30, 10]]]
+      },
+      &quot;properties&quot;: {
+        &quot;name&quot;: &quot;Example Polygon&quot;
+      }
+    }
+  ]
+}</pre></div><div class='content'></div><h1>Creando un Mapa Básico</h1>
+<div class='content'></div><h2>Configuración del SVG</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgd2lkdGggPSA5NjA7CmNvbnN0IGhlaWdodCA9IDUwMDsKCmNvbnN0IHN2ZyA9IGQzLnNlbGVjdCgnYm9keScpLmFwcGVuZCgnc3ZnJykKICAgIC5hdHRyKCd3aWR0aCcsIHdpZHRoKQogICAgLmF0dHIoJ2hlaWdodCcsIGhlaWdodCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const width = 960;
+const height = 500;
+
+const svg = d3.select('body').append('svg')
+    .attr('width', width)
+    .attr('height', height);</pre></div><div class='content'></div><h2>Dibujando el Mapa</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZDMuanNvbigncGF0aC90by9nZW9qc29uL2ZpbGUuanNvbicpLnRoZW4oZGF0YSA9PiB7CiAgICBzdmcuc2VsZWN0QWxsKCdwYXRoJykKICAgICAgICAuZGF0YShkYXRhLmZlYXR1cmVzKQogICAgICAgIC5lbnRlcigpLmFwcGVuZCgncGF0aCcpCiAgICAgICAgLmF0dHIoJ2QnLCBwYXRoKQogICAgICAgIC5hdHRyKCdmaWxsJywgJ3N0ZWVsYmx1ZScpCiAgICAgICAgLmF0dHIoJ3N0cm9rZScsICdibGFjaycpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>d3.json('path/to/geojson/file.json').then(data =&gt; {
+    svg.selectAll('path')
+        .data(data.features)
+        .enter().append('path')
+        .attr('d', path)
+        .attr('fill', 'steelblue')
+        .attr('stroke', 'black');
+});</pre></div><div class='content'></div><h1>Añadiendo Interactividad</h1>
+<div class='content'></div><h2>Resaltando Regiones al Pasar el Ratón</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3ZnLnNlbGVjdEFsbCgncGF0aCcpCiAgICAub24oJ21vdXNlb3ZlcicsIGZ1bmN0aW9uKCkgewogICAgICAgIGQzLnNlbGVjdCh0aGlzKS5hdHRyKCdmaWxsJywgJ29yYW5nZScpOwogICAgfSkKICAgIC5vbignbW91c2VvdXQnLCBmdW5jdGlvbigpIHsKICAgICAgICBkMy5zZWxlY3QodGhpcykuYXR0cignZmlsbCcsICdzdGVlbGJsdWUnKTsKICAgIH0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>svg.selectAll('path')
+    .on('mouseover', function() {
+        d3.select(this).attr('fill', 'orange');
+    })
+    .on('mouseout', function() {
+        d3.select(this).attr('fill', 'steelblue');
+    });</pre></div><div class='content'></div><h2>Mostrando Información al Hacer Clic</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3ZnLnNlbGVjdEFsbCgncGF0aCcpCiAgICAub24oJ2NsaWNrJywgZnVuY3Rpb24oZXZlbnQsIGQpIHsKICAgICAgICBhbGVydChgWW91IGNsaWNrZWQgb24gJHtkLnByb3BlcnRpZXMubmFtZX1gKTsKICAgIH0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>svg.selectAll('path')
+    .on('click', function(event, d) {
+        alert(`You clicked on ${d.properties.name}`);
+    });</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio: Crear un Mapa Interactivo de un País</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Crear un mapa interactivo de un país de tu elección.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Cargar un archivo GeoJSON del país.</li>
+<li>Dibujar el mapa utilizando D3.js.</li>
+<li>Añadir interactividad para resaltar regiones y mostrar información al hacer clic.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29uZmlndXJhY2nDs24gZGVsIFNWRwpjb25zdCB3aWR0aCA9IDk2MDsKY29uc3QgaGVpZ2h0ID0gNTAwOwoKY29uc3Qgc3ZnID0gZDMuc2VsZWN0KCdib2R5JykuYXBwZW5kKCdzdmcnKQogICAgLmF0dHIoJ3dpZHRoJywgd2lkdGgpCiAgICAuYXR0cignaGVpZ2h0JywgaGVpZ2h0KTsKCi8vIERlZmluaWVuZG8gdW5hIHByb3llY2Npw7NuCmNvbnN0IHByb2plY3Rpb24gPSBkMy5nZW9NZXJjYXRvcigpCiAgICAuc2NhbGUoMTAwMCkKICAgIC50cmFuc2xhdGUoW3dpZHRoIC8gMiwgaGVpZ2h0IC8gMl0pOwoKY29uc3QgcGF0aCA9IGQzLmdlb1BhdGgoKS5wcm9qZWN0aW9uKHByb2plY3Rpb24pOwoKLy8gQ2FyZ2FuZG8geSBkaWJ1amFuZG8gZWwgbWFwYQpkMy5qc29uKCdwYXRoL3RvL2NvdW50cnkvZ2VvanNvbi5qc29uJykudGhlbihkYXRhID0+IHsKICAgIHN2Zy5zZWxlY3RBbGwoJ3BhdGgnKQogICAgICAgIC5kYXRhKGRhdGEuZmVhdHVyZXMpCiAgICAgICAgLmVudGVyKCkuYXBwZW5kKCdwYXRoJykKICAgICAgICAuYXR0cignZCcsIHBhdGgpCiAgICAgICAgLmF0dHIoJ2ZpbGwnLCAnc3RlZWxibHVlJykKICAgICAgICAuYXR0cignc3Ryb2tlJywgJ2JsYWNrJykKICAgICAgICAub24oJ21vdXNlb3ZlcicsIGZ1bmN0aW9uKCkgewogICAgICAgICAgICBkMy5zZWxlY3QodGhpcykuYXR0cignZmlsbCcsICdvcmFuZ2UnKTsKICAgICAgICB9KQogICAgICAgIC5vbignbW91c2VvdXQnLCBmdW5jdGlvbigpIHsKICAgICAgICAgICAgZDMuc2VsZWN0KHRoaXMpLmF0dHIoJ2ZpbGwnLCAnc3RlZWxibHVlJyk7CiAgICAgICAgfSkKICAgICAgICAub24oJ2NsaWNrJywgZnVuY3Rpb24oZXZlbnQsIGQpIHsKICAgICAgICAgICAgYWxlcnQoYFlvdSBjbGlja2VkIG9uICR7ZC5wcm9wZXJ0aWVzLm5hbWV9YCk7CiAgICAgICAgfSk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Configuraci&oacute;n del SVG
+const width = 960;
+const height = 500;
+
+const svg = d3.select('body').append('svg')
+    .attr('width', width)
+    .attr('height', height);
+
+// Definiendo una proyecci&oacute;n
+const projection = d3.geoMercator()
+    .scale(1000)
+    .translate([width / 2, height / 2]);
+
+const path = d3.geoPath().projection(projection);
+
+// Cargando y dibujando el mapa
+d3.json('path/to/country/geojson.json').then(data =&gt; {
+    svg.selectAll('path')
+        .data(data.features)
+        .enter().append('path')
+        .attr('d', path)
+        .attr('fill', 'steelblue')
+        .attr('stroke', 'black')
+        .on('mouseover', function() {
+            d3.select(this).attr('fill', 'orange');
+        })
+        .on('mouseout', function() {
+            d3.select(this).attr('fill', 'steelblue');
+        })
+        .on('click', function(event, d) {
+            alert(`You clicked on ${d.properties.name}`);
+        });
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido a crear mapas geográficos utilizando D3.js. Hemos cubierto los conceptos básicos de proyección geográfica, cómo cargar y manipular datos geográficos, y cómo crear un mapa básico con interactividad. Estos conocimientos te permitirán visualizar datos espaciales de manera efectiva y crear mapas interactivos para tus proyectos.</p>
+<p>En el próximo módulo, exploraremos cómo añadir interactividad y animación a nuestras visualizaciones para hacerlas más dinámicas y atractivas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-force-layouts' title="Creando Diseños de Fuerza">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-custom-visualizations' title="Creando Visualizaciones Personalizadas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

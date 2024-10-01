@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis del rendimiento de consultas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/08-04-analyzing-query-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/08-04-analyzing-query-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/08-04-analyzing-query-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sql/08-04-analyzing-query-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/08-04-analyzing-query-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-query-optimization-techniques' title="Técnicas de optimización de consultas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Análisis del rendimiento de consultas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-transactions' title="Introducción a las transacciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El análisis del rendimiento de consultas es una habilidad crucial para cualquier desarrollador o administrador de bases de datos. Optimizar las consultas SQL puede mejorar significativamente la eficiencia y la velocidad de las aplicaciones que dependen de bases de datos. En esta sección, aprenderás a identificar y solucionar problemas de rendimiento en tus consultas SQL.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Plan de Ejecución</strong>: Un plan de ejecución es una representación detallada de cómo el motor de la base de datos ejecuta una consulta. Incluye información sobre los índices utilizados, los métodos de acceso a las tablas y el orden de las operaciones.</li>
+<li><strong>Índices</strong>: Los índices son estructuras que mejoran la velocidad de las operaciones de consulta en una base de datos. Sin embargo, también pueden ralentizar las operaciones de escritura.</li>
+<li><strong>Estadísticas</strong>: Las estadísticas proporcionan información sobre la distribución de los datos en las tablas y son utilizadas por el optimizador de consultas para elegir el mejor plan de ejecución.</li>
+<li><strong>Costos de Consulta</strong>: Los costos de consulta son estimaciones del tiempo y los recursos necesarios para ejecutar una consulta. Estos costos ayudan a identificar consultas ineficientes.</li>
+</ol>
+</div><h1>Herramientas para el Análisis de Consultas</h1>
+<div class='content'></div><h2>1. EXPLAIN</h2>
+<div class='content'><p>La instrucción <code>EXPLAIN</code> muestra el plan de ejecución de una consulta. Es una herramienta fundamental para entender cómo se ejecuta una consulta y dónde pueden estar los cuellos de botella.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50X2lkID0gMTA7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department_id = 10;</pre></div><div class='content'></div><h2>2. EXPLAIN ANALYZE</h2>
+<div class='content'><p><code>EXPLAIN ANALYZE</code> no solo muestra el plan de ejecución, sino que también ejecuta la consulta y proporciona tiempos reales de ejecución. Esto es útil para comparar las estimaciones del plan de ejecución con los tiempos reales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gZW1wbG95ZWVzIFdIRVJFIGRlcGFydG1lbnRfaWQgPSAxMDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM employees WHERE department_id = 10;</pre></div><div class='content'></div><h2>3. Herramientas de Monitoreo</h2>
+<div class='content'><p>Muchas bases de datos proporcionan herramientas de monitoreo que pueden ayudar a identificar consultas lentas y analizar su rendimiento. Ejemplos incluyen:</p>
+<ul>
+<li><strong>MySQL</strong>: Performance Schema</li>
+<li><strong>PostgreSQL</strong>: pg_stat_statements</li>
+<li><strong>SQL Server</strong>: SQL Server Profiler</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Paso 1: Identificar una Consulta Lenta</h2>
+<div class='content'><p>Supongamos que tenemos la siguiente consulta que está tardando demasiado en ejecutarse:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBvcmRlcnMgV0hFUkUgb3JkZXJfZGF0ZSA+ICcyMDIzLTAxLTAxJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM orders WHERE order_date &gt; '2023-01-01';</pre></div><div class='content'></div><h2>Paso 2: Analizar el Plan de Ejecución</h2>
+<div class='content'><p>Usamos <code>EXPLAIN</code> para ver el plan de ejecución:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIG9yZGVycyBXSEVSRSBvcmRlcl9kYXRlID4gJzIwMjMtMDEtMDEnOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM orders WHERE order_date &gt; '2023-01-01';</pre></div><div class='content'><p>El resultado podría ser algo como esto:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>select_type</th>
+<th>table</th>
+<th>type</th>
+<th>possible_keys</th>
+<th>key</th>
+<th>key_len</th>
+<th>ref</th>
+<th>rows</th>
+<th>Extra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>SIMPLE</td>
+<td>orders</td>
+<td>ALL</td>
+<td>NULL</td>
+<td>NULL</td>
+<td>NULL</td>
+<td>NULL</td>
+<td>10000</td>
+<td>Using where</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Paso 3: Interpretar el Plan de Ejecución</h2>
+<div class='content'><ul>
+<li><strong>type: ALL</strong>: Indica un escaneo completo de la tabla, lo cual es ineficiente para tablas grandes.</li>
+<li><strong>possible_keys: NULL</strong>: No hay índices que puedan ser utilizados para esta consulta.</li>
+</ul>
+</div><h2>Paso 4: Crear un Índice</h2>
+<div class='content'><p>Para mejorar el rendimiento, podemos crear un índice en la columna <code>order_date</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9vcmRlcl9kYXRlIE9OIG9yZGVycyhvcmRlcl9kYXRlKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_order_date ON orders(order_date);</pre></div><div class='content'></div><h2>Paso 5: Reanalizar el Plan de Ejecución</h2>
+<div class='content'><p>Volvemos a ejecutar <code>EXPLAIN</code> para ver si el índice se está utilizando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIG9yZGVycyBXSEVSRSBvcmRlcl9kYXRlID4gJzIwMjMtMDEtMDEnOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM orders WHERE order_date &gt; '2023-01-01';</pre></div><div class='content'><p>El nuevo resultado podría ser:</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>select_type</th>
+<th>table</th>
+<th>type</th>
+<th>possible_keys</th>
+<th>key</th>
+<th>key_len</th>
+<th>ref</th>
+<th>rows</th>
+<th>Extra</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>SIMPLE</td>
+<td>orders</td>
+<td>RANGE</td>
+<td>idx_order_date</td>
+<td>idx_order_date</td>
+<td>4</td>
+<td>NULL</td>
+<td>100</td>
+<td>Using where</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Paso 6: Verificar el Rendimiento</h2>
+<div class='content'><p>Finalmente, usamos <code>EXPLAIN ANALYZE</code> para verificar el tiempo de ejecución real:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gb3JkZXJzIFdIRVJFIG9yZGVyX2RhdGUgPiAnMjAyMy0wMS0wMSc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM orders WHERE order_date &gt; '2023-01-01';</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Optimización de Consultas</h2>
+<div class='content'><p>Dada la siguiente consulta, usa <code>EXPLAIN</code> y <code>EXPLAIN ANALYZE</code> para identificar problemas de rendimiento y optimizar la consulta.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBzYWxlcyBXSEVSRSBwcm9kdWN0X2lkID0gMTIzNDU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM sales WHERE product_id = 12345;</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Ejecutar EXPLAIN</strong>:</p>
+<pre><code class="language-sql">EXPLAIN SELECT * FROM sales WHERE product_id = 12345;
+</code></pre>
+</li>
+<li>
+<p><strong>Interpretar el Plan de Ejecución</strong>:</p>
+<ul>
+<li>Si el tipo es <code>ALL</code>, significa que se está haciendo un escaneo completo de la tabla.</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear un Índice</strong>:</p>
+<pre><code class="language-sql">CREATE INDEX idx_product_id ON sales(product_id);
+</code></pre>
+</li>
+<li>
+<p><strong>Reanalizar el Plan de Ejecución</strong>:</p>
+<pre><code class="language-sql">EXPLAIN SELECT * FROM sales WHERE product_id = 12345;
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar el Rendimiento</strong>:</p>
+<pre><code class="language-sql">EXPLAIN ANALYZE SELECT * FROM sales WHERE product_id = 12345;
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El análisis del rendimiento de consultas es esencial para mantener una base de datos eficiente y rápida. Utilizando herramientas como <code>EXPLAIN</code> y <code>EXPLAIN ANALYZE</code>, junto con la creación de índices y el monitoreo continuo, puedes identificar y solucionar problemas de rendimiento en tus consultas SQL. En el próximo módulo, exploraremos las transacciones y cómo manejarlas de manera efectiva para asegurar la integridad de los datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-query-optimization-techniques' title="Técnicas de optimización de consultas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-transactions' title="Introducción a las transacciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

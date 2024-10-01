@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Shaking</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/webpack/03-03-tree-shaking" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/webpack/03-03-tree-shaking" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/webpack/03-03-tree-shaking" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/webpack/03-03-tree-shaking" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/webpack/03-03-tree-shaking" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-caching' title="Caché">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Tree Shaking</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-lazy-loading' title="Carga Perezosa">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Tree Shaking es una técnica de optimización que permite eliminar el código muerto (código que no se utiliza) de los archivos JavaScript durante el proceso de construcción. Esta técnica es especialmente útil en aplicaciones modernas donde se utilizan módulos ES6, ya que permite reducir el tamaño del bundle final y mejorar el rendimiento de la aplicación.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Código Muerto</strong>: Código que no se utiliza en la aplicación y que puede ser eliminado sin afectar la funcionalidad.</li>
+<li><strong>Módulos ES6</strong>: La sintaxis de importación y exportación de ES6 permite a Webpack identificar qué partes del código se están utilizando y cuáles no.</li>
+<li><strong>Árbol de Dependencias</strong>: La estructura jerárquica de los módulos y sus dependencias que Webpack analiza para determinar qué código puede ser eliminado.</li>
+</ul>
+</div><h1>Configuración Básica para Tree Shaking</h1>
+<div class='content'><p>Para habilitar Tree Shaking en un proyecto Webpack, es necesario seguir estos pasos:</p>
+<ol>
+<li><strong>Usar Módulos ES6</strong>: Asegúrate de que tu código utiliza la sintaxis de importación y exportación de ES6.</li>
+<li><strong>Configurar el Modo de Producción</strong>: Webpack habilita automáticamente Tree Shaking cuando se configura en modo de producción.</li>
+</ol>
+</div><h2>Ejemplo de Configuración</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKY29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIG1vZGU6ICdwcm9kdWN0aW9uJywgLy8gSGFiaWxpdGEgb3B0aW1pemFjaW9uZXMgY29tbyBUcmVlIFNoYWtpbmcKICBlbnRyeTogJy4vc3JjL2luZGV4LmpzJywKICBvdXRwdXQ6IHsKICAgIGZpbGVuYW1lOiAnYnVuZGxlLmpzJywKICAgIHBhdGg6IHBhdGgucmVzb2x2ZShfX2Rpcm5hbWUsICdkaXN0JykKICB9LAogIG1vZHVsZTogewogICAgcnVsZXM6IFsKICAgICAgewogICAgICAgIHRlc3Q6IC9cLmpzJC8sCiAgICAgICAgZXhjbHVkZTogL25vZGVfbW9kdWxlcy8sCiAgICAgICAgdXNlOiB7CiAgICAgICAgICBsb2FkZXI6ICdiYWJlbC1sb2FkZXInLAogICAgICAgICAgb3B0aW9uczogewogICAgICAgICAgICBwcmVzZXRzOiBbJ0BiYWJlbC9wcmVzZXQtZW52J10KICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgIF0KICB9Cn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+const path = require('path');
+
+module.exports = {
+  mode: 'production', // Habilita optimizaciones como Tree Shaking
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ]
+  }
+};</pre></div><div class='content'></div><h2>Ejemplo de Código</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL3V0aWxpdGllcy5qcwpleHBvcnQgZnVuY3Rpb24gYWRkKGEsIGIpIHsKICByZXR1cm4gYSArIGI7Cn0KCmV4cG9ydCBmdW5jdGlvbiBzdWJ0cmFjdChhLCBiKSB7CiAgcmV0dXJuIGEgLSBiOwp9CgovLyBzcmMvaW5kZXguanMKaW1wb3J0IHsgYWRkIH0gZnJvbSAnLi91dGlsaXRpZXMnOwoKY29uc29sZS5sb2coYWRkKDIsIDMpKTsgLy8gVXRpbGl6YSBzb2xvIGxhIGZ1bmNpw7NuICdhZGQn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/utilities.js
+export function add(a, b) {
+  return a + b;
+}
+
+export function subtract(a, b) {
+  return a - b;
+}
+
+// src/index.js
+import { add } from './utilities';
+
+console.log(add(2, 3)); // Utiliza solo la funci&oacute;n 'add'</pre></div><div class='content'><p>En este ejemplo, la función <code>subtract</code> no se utiliza en <code>index.js</code>, por lo que Webpack puede eliminarla del bundle final.</p>
+</div><h1>Verificación de Tree Shaking</h1>
+<div class='content'><p>Para verificar que Tree Shaking está funcionando correctamente, puedes inspeccionar el bundle generado. Una forma de hacerlo es utilizando herramientas como <code>webpack-bundle-analyzer</code>.</p>
+</div><h2>Instalación de Webpack Bundle Analyzer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgLS1zYXZlLWRldiB3ZWJwYWNrLWJ1bmRsZS1hbmFseXplcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install --save-dev webpack-bundle-analyzer</pre></div><div class='content'></div><h2>Configuración</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKY29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKY29uc3QgeyBCdW5kbGVBbmFseXplclBsdWdpbiB9ID0gcmVxdWlyZSgnd2VicGFjay1idW5kbGUtYW5hbHl6ZXInKTsKCm1vZHVsZS5leHBvcnRzID0gewogIG1vZGU6ICdwcm9kdWN0aW9uJywKICBlbnRyeTogJy4vc3JjL2luZGV4LmpzJywKICBvdXRwdXQ6IHsKICAgIGZpbGVuYW1lOiAnYnVuZGxlLmpzJywKICAgIHBhdGg6IHBhdGgucmVzb2x2ZShfX2Rpcm5hbWUsICdkaXN0JykKICB9LAogIG1vZHVsZTogewogICAgcnVsZXM6IFsKICAgICAgewogICAgICAgIHRlc3Q6IC9cLmpzJC8sCiAgICAgICAgZXhjbHVkZTogL25vZGVfbW9kdWxlcy8sCiAgICAgICAgdXNlOiB7CiAgICAgICAgICBsb2FkZXI6ICdiYWJlbC1sb2FkZXInLAogICAgICAgICAgb3B0aW9uczogewogICAgICAgICAgICBwcmVzZXRzOiBbJ0BiYWJlbC9wcmVzZXQtZW52J10KICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgIF0KICB9LAogIHBsdWdpbnM6IFsKICAgIG5ldyBCdW5kbGVBbmFseXplclBsdWdpbigpCiAgXQp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+const path = require('path');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+
+module.exports = {
+  mode: 'production',
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ]
+  },
+  plugins: [
+    new BundleAnalyzerPlugin()
+  ]
+};</pre></div><div class='content'></div><h2>Ejecución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnB4IHdlYnBhY2s="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npx webpack</pre></div><div class='content'><p>Esto abrirá una ventana del navegador mostrando un análisis visual del bundle, donde podrás verificar que el código no utilizado ha sido eliminado.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea un archivo <code>math.js</code> con las siguientes funciones:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL21hdGguanMKZXhwb3J0IGZ1bmN0aW9uIG11bHRpcGx5KGEsIGIpIHsKICByZXR1cm4gYSAqIGI7Cn0KCmV4cG9ydCBmdW5jdGlvbiBkaXZpZGUoYSwgYikgewogIHJldHVybiBhIC8gYjsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/math.js
+export function multiply(a, b) {
+  return a * b;
+}
+
+export function divide(a, b) {
+  return a / b;
+}</pre></div><div class='content'><ol start="2">
+<li>Modifica <code>index.js</code> para importar y utilizar solo la función <code>multiply</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2luZGV4LmpzCmltcG9ydCB7IG11bHRpcGx5IH0gZnJvbSAnLi9tYXRoJzsKCmNvbnNvbGUubG9nKG11bHRpcGx5KDQsIDUpKTsgLy8gVXRpbGl6YSBzb2xvIGxhIGZ1bmNpw7NuICdtdWx0aXBseSc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/index.js
+import { multiply } from './math';
+
+console.log(multiply(4, 5)); // Utiliza solo la funci&oacute;n 'multiply'</pre></div><div class='content'><ol start="3">
+<li>Configura Webpack para el modo de producción y verifica que la función <code>divide</code> no se incluye en el bundle final.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Archivo <code>math.js</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL21hdGguanMKZXhwb3J0IGZ1bmN0aW9uIG11bHRpcGx5KGEsIGIpIHsKICByZXR1cm4gYSAqIGI7Cn0KCmV4cG9ydCBmdW5jdGlvbiBkaXZpZGUoYSwgYikgewogIHJldHVybiBhIC8gYjsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/math.js
+export function multiply(a, b) {
+  return a * b;
+}
+
+export function divide(a, b) {
+  return a / b;
+}</pre></div><div class='content'><ol start="2">
+<li>Archivo <code>index.js</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2luZGV4LmpzCmltcG9ydCB7IG11bHRpcGx5IH0gZnJvbSAnLi9tYXRoJzsKCmNvbnNvbGUubG9nKG11bHRpcGx5KDQsIDUpKTsgLy8gVXRpbGl6YSBzb2xvIGxhIGZ1bmNpw7NuICdtdWx0aXBseSc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/index.js
+import { multiply } from './math';
+
+console.log(multiply(4, 5)); // Utiliza solo la funci&oacute;n 'multiply'</pre></div><div class='content'><ol start="3">
+<li>Configuración de Webpack:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKY29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIG1vZGU6ICdwcm9kdWN0aW9uJywKICBlbnRyeTogJy4vc3JjL2luZGV4LmpzJywKICBvdXRwdXQ6IHsKICAgIGZpbGVuYW1lOiAnYnVuZGxlLmpzJywKICAgIHBhdGg6IHBhdGgucmVzb2x2ZShfX2Rpcm5hbWUsICdkaXN0JykKICB9LAogIG1vZHVsZTogewogICAgcnVsZXM6IFsKICAgICAgewogICAgICAgIHRlc3Q6IC9cLmpzJC8sCiAgICAgICAgZXhjbHVkZTogL25vZGVfbW9kdWxlcy8sCiAgICAgICAgdXNlOiB7CiAgICAgICAgICBsb2FkZXI6ICdiYWJlbC1sb2FkZXInLAogICAgICAgICAgb3B0aW9uczogewogICAgICAgICAgICBwcmVzZXRzOiBbJ0BiYWJlbC9wcmVzZXQtZW52J10KICAgICAgICAgIH0KICAgICAgICB9CiAgICAgIH0KICAgIF0KICB9Cn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+const path = require('path');
+
+module.exports = {
+  mode: 'production',
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist')
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env']
+          }
+        }
+      }
+    ]
+  }
+};</pre></div><div class='content'><ol start="4">
+<li>Ejecuta Webpack y verifica el bundle generado.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Tree Shaking es una técnica poderosa para optimizar el tamaño de los bundles en aplicaciones JavaScript modernas. Al eliminar el código muerto, se mejora el rendimiento de la aplicación y se reduce el tiempo de carga. Asegúrate de utilizar módulos ES6 y configurar Webpack en modo de producción para aprovechar al máximo esta técnica.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-caching' title="Caché">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-lazy-loading' title="Carga Perezosa">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

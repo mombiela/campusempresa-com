@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funciones de Pérdida y Optimizadores</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/04-04-loss-functions-and-optimizers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/04-04-loss-functions-and-optimizers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/04-04-loss-functions-and-optimizers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/04-04-loss-functions-and-optimizers" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/04-04-loss-functions-and-optimizers" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-activation-functions' title="Funciones de Activación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Funciones de Pérdida y Optimizadores</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-cnns' title="Introducción a CNNs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre las funciones de pérdida y los optimizadores, dos componentes cruciales en el entrenamiento de redes neuronales con TensorFlow. Las funciones de pérdida nos ayudan a medir qué tan bien está funcionando nuestro modelo, mientras que los optimizadores ajustan los pesos del modelo para minimizar la pérdida.</p>
+</div><h1>1. Funciones de Pérdida</h1>
+<div class='content'><p>Las funciones de pérdida, también conocidas como funciones de costo, son métricas que cuantifican la diferencia entre las predicciones del modelo y los valores reales. La elección de la función de pérdida depende del tipo de problema que estamos resolviendo (regresión, clasificación, etc.).</p>
+</div><h2>1.1 Funciones de Pérdida Comunes</h2>
+<div class='content'><h4>1.1.1 Error Cuadrático Medio (MSE)</h4>
+<p>Utilizado principalmente en problemas de regresión.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRWplbXBsbyBkZSBNU0UKeV90cnVlID0gWzEuMCwgMi4wLCAzLjBdCnlfcHJlZCA9IFsxLjUsIDIuNSwgMy41XQptc2UgPSB0Zi5rZXJhcy5sb3NzZXMuTWVhblNxdWFyZWRFcnJvcigpCmxvc3MgPSBtc2UoeV90cnVlLCB5X3ByZWQpCnByaW50KCdNU0U6JywgbG9zcy5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Ejemplo de MSE
+y_true = [1.0, 2.0, 3.0]
+y_pred = [1.5, 2.5, 3.5]
+mse = tf.keras.losses.MeanSquaredError()
+loss = mse(y_true, y_pred)
+print('MSE:', loss.numpy())</pre></div><div class='content'><h4>1.1.2 Entropía Cruzada Binaria</h4>
+<p>Utilizada en problemas de clasificación binaria.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIEVudHJvcMOtYSBDcnV6YWRhIEJpbmFyaWEKeV90cnVlID0gWzAsIDEsIDAsIDFdCnlfcHJlZCA9IFswLjEsIDAuOSwgMC4yLCAwLjhdCmJjZSA9IHRmLmtlcmFzLmxvc3Nlcy5CaW5hcnlDcm9zc2VudHJvcHkoKQpsb3NzID0gYmNlKHlfdHJ1ZSwgeV9wcmVkKQpwcmludCgnQmluYXJ5IENyb3NzZW50cm9weTonLCBsb3NzLm51bXB5KCkp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de Entrop&iacute;a Cruzada Binaria
+y_true = [0, 1, 0, 1]
+y_pred = [0.1, 0.9, 0.2, 0.8]
+bce = tf.keras.losses.BinaryCrossentropy()
+loss = bce(y_true, y_pred)
+print('Binary Crossentropy:', loss.numpy())</pre></div><div class='content'><h4>1.1.3 Entropía Cruzada Categórica</h4>
+<p>Utilizada en problemas de clasificación multiclase.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIEVudHJvcMOtYSBDcnV6YWRhIENhdGVnw7NyaWNhCnlfdHJ1ZSA9IFtbMCwgMSwgMF0sIFswLCAwLCAxXV0KeV9wcmVkID0gW1swLjA1LCAwLjk1LCAwXSwgWzAuMSwgMC44LCAwLjFdXQpjY2UgPSB0Zi5rZXJhcy5sb3NzZXMuQ2F0ZWdvcmljYWxDcm9zc2VudHJvcHkoKQpsb3NzID0gY2NlKHlfdHJ1ZSwgeV9wcmVkKQpwcmludCgnQ2F0ZWdvcmljYWwgQ3Jvc3NlbnRyb3B5OicsIGxvc3MubnVtcHkoKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de Entrop&iacute;a Cruzada Categ&oacute;rica
+y_true = [[0, 1, 0], [0, 0, 1]]
+y_pred = [[0.05, 0.95, 0], [0.1, 0.8, 0.1]]
+cce = tf.keras.losses.CategoricalCrossentropy()
+loss = cce(y_true, y_pred)
+print('Categorical Crossentropy:', loss.numpy())</pre></div><div class='content'></div><h2>1.2 Selección de la Función de Pérdida</h2>
+<div class='content'><p>La selección de la función de pérdida adecuada es crucial para el éxito del modelo. Aquí hay una tabla que resume las funciones de pérdida comunes y sus aplicaciones:</p>
+<table>
+<thead>
+<tr>
+<th>Tipo de Problema</th>
+<th>Función de Pérdida</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Regresión</td>
+<td>Error Cuadrático Medio (MSE)</td>
+</tr>
+<tr>
+<td>Clasificación Binaria</td>
+<td>Entropía Cruzada Binaria</td>
+</tr>
+<tr>
+<td>Clasificación Multiclase</td>
+<td>Entropía Cruzada Categórica</td>
+</tr>
+</tbody>
+</table>
+</div><h1>2. Optimizadores</h1>
+<div class='content'><p>Los optimizadores son algoritmos que ajustan los pesos del modelo para minimizar la función de pérdida. TensorFlow proporciona varios optimizadores que se pueden utilizar según las necesidades del modelo.</p>
+</div><h2>2.1 Optimizadores Comunes</h2>
+<div class='content'><h4>2.1.1 Gradiente Descendente Estocástico (SGD)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIFNHRAptb2RlbCA9IHRmLmtlcmFzLlNlcXVlbnRpYWwoW3RmLmtlcmFzLmxheWVycy5EZW5zZSgxKV0pCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPXRmLmtlcmFzLm9wdGltaXplcnMuU0dEKGxlYXJuaW5nX3JhdGU9MC4wMSksIGxvc3M9J21zZScp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de SGD
+model = tf.keras.Sequential([tf.keras.layers.Dense(1)])
+model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.01), loss='mse')</pre></div><div class='content'><h4>2.1.2 Adam</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIEFkYW0KbW9kZWwuY29tcGlsZShvcHRpbWl6ZXI9dGYua2VyYXMub3B0aW1pemVycy5BZGFtKGxlYXJuaW5nX3JhdGU9MC4wMDEpLCBsb3NzPSdtc2UnKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de Adam
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.001), loss='mse')</pre></div><div class='content'><h4>2.1.3 RMSprop</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIFJNU3Byb3AKbW9kZWwuY29tcGlsZShvcHRpbWl6ZXI9dGYua2VyYXMub3B0aW1pemVycy5STVNwcm9wKGxlYXJuaW5nX3JhdGU9MC4wMDEpLCBsb3NzPSdtc2UnKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de RMSprop
+model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.001), loss='mse')</pre></div><div class='content'></div><h2>2.2 Comparación de Optimizadores</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Optimizador</th>
+<th>Ventajas</th>
+<th>Desventajas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SGD</td>
+<td>Simple y eficiente para problemas grandes</td>
+<td>Puede ser lento y quedarse atrapado en mínimos locales</td>
+</tr>
+<tr>
+<td>Adam</td>
+<td>Combina las ventajas de AdaGrad y RMSprop</td>
+<td>Requiere más memoria</td>
+</tr>
+<tr>
+<td>RMSprop</td>
+<td>Maneja bien el decaimiento de la tasa de aprendizaje</td>
+<td>Puede ser sensible a la configuración de hiperparámetros</td>
+</tr>
+</tbody>
+</table>
+</div><h1>3. Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a construir un modelo simple de regresión para ilustrar cómo se utilizan las funciones de pérdida y los optimizadores en TensorFlow.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKaW1wb3J0IG51bXB5IGFzIG5wCgojIEdlbmVyYXIgZGF0b3MgZGUgZWplbXBsbwpYID0gbnAuYXJyYXkoW1sxXSwgWzJdLCBbM10sIFs0XV0sIGR0eXBlPWZsb2F0KQp5ID0gbnAuYXJyYXkoW1syXSwgWzRdLCBbNl0sIFs4XV0sIGR0eXBlPWZsb2F0KQoKIyBEZWZpbmlyIGVsIG1vZGVsbwptb2RlbCA9IHRmLmtlcmFzLlNlcXVlbnRpYWwoWwogICAgdGYua2VyYXMubGF5ZXJzLkRlbnNlKHVuaXRzPTEsIGlucHV0X3NoYXBlPVsxXSkKXSkKCiMgQ29tcGlsYXIgZWwgbW9kZWxvCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPXRmLmtlcmFzLm9wdGltaXplcnMuQWRhbShsZWFybmluZ19yYXRlPTAuMDEpLCBsb3NzPSdtZWFuX3NxdWFyZWRfZXJyb3InKQoKIyBFbnRyZW5hciBlbCBtb2RlbG8KbW9kZWwuZml0KFgsIHksIGVwb2Nocz01MDAsIHZlcmJvc2U9MCkKCiMgSGFjZXIgcHJlZGljY2lvbmVzCnByaW50KG1vZGVsLnByZWRpY3QoWzEwLjBdKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+import numpy as np
+
+# Generar datos de ejemplo
+X = np.array([[1], [2], [3], [4]], dtype=float)
+y = np.array([[2], [4], [6], [8]], dtype=float)
+
+# Definir el modelo
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(units=1, input_shape=[1])
+])
+
+# Compilar el modelo
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.01), loss='mean_squared_error')
+
+# Entrenar el modelo
+model.fit(X, y, epochs=500, verbose=0)
+
+# Hacer predicciones
+print(model.predict([10.0]))</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Generación de Datos</strong>: Creamos un conjunto de datos simple donde <code>X</code> son las entradas y <code>y</code> son las salidas.</li>
+<li><strong>Definición del Modelo</strong>: Utilizamos <code>tf.keras.Sequential</code> para definir un modelo con una sola capa densa.</li>
+<li><strong>Compilación del Modelo</strong>: Compilamos el modelo utilizando el optimizador Adam y la función de pérdida MSE.</li>
+<li><strong>Entrenamiento del Modelo</strong>: Entrenamos el modelo durante 500 épocas.</li>
+<li><strong>Predicciones</strong>: Utilizamos el modelo entrenado para hacer predicciones.</li>
+</ol>
+</div><h1>4. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Clasificación Binaria</h2>
+<div class='content'><p>Crea un modelo de clasificación binaria utilizando la función de pérdida de entropía cruzada binaria y el optimizador SGD.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKaW1wb3J0IG51bXB5IGFzIG5wCgojIEdlbmVyYXIgZGF0b3MgZGUgZWplbXBsbwpYID0gbnAuYXJyYXkoW1swXSwgWzFdLCBbMl0sIFszXV0sIGR0eXBlPWZsb2F0KQp5ID0gbnAuYXJyYXkoW1swXSwgWzBdLCBbMV0sIFsxXV0sIGR0eXBlPWZsb2F0KQoKIyBEZWZpbmlyIGVsIG1vZGVsbwptb2RlbCA9IHRmLmtlcmFzLlNlcXVlbnRpYWwoWwogICAgdGYua2VyYXMubGF5ZXJzLkRlbnNlKHVuaXRzPTEsIGlucHV0X3NoYXBlPVsxXSwgYWN0aXZhdGlvbj0nc2lnbW9pZCcpCl0pCgojIENvbXBpbGFyIGVsIG1vZGVsbwptb2RlbC5jb21waWxlKG9wdGltaXplcj10Zi5rZXJhcy5vcHRpbWl6ZXJzLlNHRChsZWFybmluZ19yYXRlPTAuMDEpLCBsb3NzPSdiaW5hcnlfY3Jvc3NlbnRyb3B5JykKCiMgRW50cmVuYXIgZWwgbW9kZWxvCm1vZGVsLmZpdChYLCB5LCBlcG9jaHM9NTAwLCB2ZXJib3NlPTApCgojIEhhY2VyIHByZWRpY2Npb25lcwpwcmludChtb2RlbC5wcmVkaWN0KFsxLjVdKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+import numpy as np
+
+# Generar datos de ejemplo
+X = np.array([[0], [1], [2], [3]], dtype=float)
+y = np.array([[0], [0], [1], [1]], dtype=float)
+
+# Definir el modelo
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(units=1, input_shape=[1], activation='sigmoid')
+])
+
+# Compilar el modelo
+model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.01), loss='binary_crossentropy')
+
+# Entrenar el modelo
+model.fit(X, y, epochs=500, verbose=0)
+
+# Hacer predicciones
+print(model.predict([1.5]))</pre></div><div class='content'></div><h2>Ejercicio 2: Clasificación Multiclase</h2>
+<div class='content'><p>Crea un modelo de clasificación multiclase utilizando la función de pérdida de entropía cruzada categórica y el optimizador RMSprop.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKaW1wb3J0IG51bXB5IGFzIG5wCgojIEdlbmVyYXIgZGF0b3MgZGUgZWplbXBsbwpYID0gbnAuYXJyYXkoW1swXSwgWzFdLCBbMl0sIFszXV0sIGR0eXBlPWZsb2F0KQp5ID0gbnAuYXJyYXkoW1sxLCAwLCAwXSwgWzAsIDEsIDBdLCBbMCwgMCwgMV0sIFsxLCAwLCAwXV0sIGR0eXBlPWZsb2F0KQoKIyBEZWZpbmlyIGVsIG1vZGVsbwptb2RlbCA9IHRmLmtlcmFzLlNlcXVlbnRpYWwoWwogICAgdGYua2VyYXMubGF5ZXJzLkRlbnNlKHVuaXRzPTMsIGlucHV0X3NoYXBlPVsxXSwgYWN0aXZhdGlvbj0nc29mdG1heCcpCl0pCgojIENvbXBpbGFyIGVsIG1vZGVsbwptb2RlbC5jb21waWxlKG9wdGltaXplcj10Zi5rZXJhcy5vcHRpbWl6ZXJzLlJNU3Byb3AobGVhcm5pbmdfcmF0ZT0wLjAxKSwgbG9zcz0nY2F0ZWdvcmljYWxfY3Jvc3NlbnRyb3B5JykKCiMgRW50cmVuYXIgZWwgbW9kZWxvCm1vZGVsLmZpdChYLCB5LCBlcG9jaHM9NTAwLCB2ZXJib3NlPTApCgojIEhhY2VyIHByZWRpY2Npb25lcwpwcmludChtb2RlbC5wcmVkaWN0KFsxLjVdKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+import numpy as np
+
+# Generar datos de ejemplo
+X = np.array([[0], [1], [2], [3]], dtype=float)
+y = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0]], dtype=float)
+
+# Definir el modelo
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(units=3, input_shape=[1], activation='softmax')
+])
+
+# Compilar el modelo
+model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=0.01), loss='categorical_crossentropy')
+
+# Entrenar el modelo
+model.fit(X, y, epochs=500, verbose=0)
+
+# Hacer predicciones
+print(model.predict([1.5]))</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las funciones de pérdida y los optimizadores en TensorFlow. Las funciones de pérdida nos ayudan a medir el rendimiento del modelo, mientras que los optimizadores ajustan los pesos del modelo para minimizar la pérdida. Hemos visto ejemplos prácticos y ejercicios para reforzar estos conceptos. En el próximo módulo, exploraremos las Redes Neuronales Convolucionales (CNNs).</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-activation-functions' title="Funciones de Activación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-cnns' title="Introducción a CNNs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

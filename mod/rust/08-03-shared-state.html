@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado Compartido</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/08-03-shared-state" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/08-03-shared-state" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/08-03-shared-state" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rust/08-03-shared-state" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/08-03-shared-state" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-message-passing' title="Paso de Mensajes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Estado Compartido</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-macros' title="Macros">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos cómo manejar el estado compartido en programas concurrentes en Rust. La concurrencia puede ser compleja debido a la necesidad de coordinar el acceso a datos compartidos entre múltiples hilos. Rust proporciona herramientas y mecanismos para manejar estos desafíos de manera segura y eficiente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Mutex (Mutual Exclusion)</strong>: Un mecanismo que permite que solo un hilo acceda a un recurso compartido a la vez.</li>
+<li><strong>Arc (Atomic Reference Counting)</strong>: Un contador de referencias atómico que permite compartir datos entre múltiples hilos de manera segura.</li>
+<li><strong>Condiciones de Carrera</strong>: Situaciones donde el resultado del programa depende del orden de ejecución de los hilos.</li>
+</ol>
+</div><h1>Mutex</h1>
+<div class='content'><p>Un <code>Mutex</code> en Rust garantiza que solo un hilo pueda acceder a los datos protegidos por el <code>Mutex</code> a la vez. Aquí hay un ejemplo básico de cómo usar un <code>Mutex</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6e0FyYywgTXV0ZXh9Owp1c2Ugc3RkOjp0aHJlYWQ7CgpmbiBtYWluKCkgewogICAgbGV0IGNvdW50ZXIgPSBBcmM6Om5ldyhNdXRleDo6bmV3KDApKTsKICAgIGxldCBtdXQgaGFuZGxlcyA9IHZlYyFbXTsKCiAgICBmb3IgXyBpbiAwLi4xMCB7CiAgICAgICAgbGV0IGNvdW50ZXIgPSBBcmM6OmNsb25lKCZjb3VudGVyKTsKICAgICAgICBsZXQgaGFuZGxlID0gdGhyZWFkOjpzcGF3bihtb3ZlIHx8IHsKICAgICAgICAgICAgbGV0IG11dCBudW0gPSBjb3VudGVyLmxvY2soKS51bndyYXAoKTsKICAgICAgICAgICAgKm51bSArPSAxOwogICAgICAgIH0pOwogICAgICAgIGhhbmRsZXMucHVzaChoYW5kbGUpOwogICAgfQoKICAgIGZvciBoYW5kbGUgaW4gaGFuZGxlcyB7CiAgICAgICAgaGFuZGxlLmpvaW4oKS51bndyYXAoKTsKICAgIH0KCiAgICBwcmludGxuISgiUmVzdWx0OiB7fSIsICpjb3VudGVyLmxvY2soKS51bndyYXAoKSk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..10 {
+        let counter = Arc::clone(&amp;counter);
+        let handle = thread::spawn(move || {
+            let mut num = counter.lock().unwrap();
+            *num += 1;
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!(&quot;Result: {}&quot;, *counter.lock().unwrap());
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Arc</strong>: <code>Arc::new(Mutex::new(0))</code> crea un contador protegido por un <code>Mutex</code> y envuelto en un <code>Arc</code> para permitir el acceso compartido entre hilos.</li>
+<li><strong>Clonación de Arc</strong>: <code>Arc::clone(&amp;counter)</code> clona el <code>Arc</code> para que cada hilo tenga su propia referencia al contador.</li>
+<li><strong>Bloqueo del Mutex</strong>: <code>counter.lock().unwrap()</code> bloquea el <code>Mutex</code> para acceder al contador. <code>unwrap()</code> se usa para manejar posibles errores de bloqueo.</li>
+<li><strong>Incremento del Contador</strong>: <code>*num += 1</code> incrementa el contador protegido por el <code>Mutex</code>.</li>
+<li><strong>Unión de Hilos</strong>: <code>handle.join().unwrap()</code> asegura que todos los hilos completen su ejecución antes de continuar.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Contador Concurrente</h2>
+<div class='content'><p>Crea un programa que inicie 5 hilos, cada uno incrementando un contador compartido 100 veces. Usa <code>Mutex</code> y <code>Arc</code> para manejar el estado compartido.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNlIHN0ZDo6c3luYzo6e0FyYywgTXV0ZXh9Owp1c2Ugc3RkOjp0aHJlYWQ7CgpmbiBtYWluKCkgewogICAgbGV0IGNvdW50ZXIgPSBBcmM6Om5ldyhNdXRleDo6bmV3KDApKTsKICAgIGxldCBtdXQgaGFuZGxlcyA9IHZlYyFbXTsKCiAgICBmb3IgXyBpbiAwLi41IHsKICAgICAgICBsZXQgY291bnRlciA9IEFyYzo6Y2xvbmUoJmNvdW50ZXIpOwogICAgICAgIGxldCBoYW5kbGUgPSB0aHJlYWQ6OnNwYXduKG1vdmUgfHwgewogICAgICAgICAgICBmb3IgXyBpbiAwLi4xMDAgewogICAgICAgICAgICAgICAgbGV0IG11dCBudW0gPSBjb3VudGVyLmxvY2soKS51bndyYXAoKTsKICAgICAgICAgICAgICAgICpudW0gKz0gMTsKICAgICAgICAgICAgfQogICAgICAgIH0pOwogICAgICAgIGhhbmRsZXMucHVzaChoYW5kbGUpOwogICAgfQoKICAgIGZvciBoYW5kbGUgaW4gaGFuZGxlcyB7CiAgICAgICAgaGFuZGxlLmpvaW4oKS51bndyYXAoKTsKICAgIH0KCiAgICBwcmludGxuISgiRmluYWwgY291bnRlciB2YWx1ZToge30iLCAqY291bnRlci5sb2NrKCkudW53cmFwKCkpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>use std::sync::{Arc, Mutex};
+use std::thread;
+
+fn main() {
+    let counter = Arc::new(Mutex::new(0));
+    let mut handles = vec![];
+
+    for _ in 0..5 {
+        let counter = Arc::clone(&amp;counter);
+        let handle = thread::spawn(move || {
+            for _ in 0..100 {
+                let mut num = counter.lock().unwrap();
+                *num += 1;
+            }
+        });
+        handles.push(handle);
+    }
+
+    for handle in handles {
+        handle.join().unwrap();
+    }
+
+    println!(&quot;Final counter value: {}&quot;, *counter.lock().unwrap());
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Bucle de Hilos</strong>: Se crean 5 hilos, cada uno incrementando el contador 100 veces.</li>
+<li><strong>Bloqueo y Desbloqueo</strong>: Cada hilo bloquea el <code>Mutex</code>, incrementa el contador y luego desbloquea el <code>Mutex</code>.</li>
+</ol>
+</div><h1>Retroalimentación y Consejos</h1>
+<div class='content'><ul>
+<li><strong>Errores Comunes</strong>: Olvidar clonar el <code>Arc</code> para cada hilo puede resultar en errores de compilación.</li>
+<li><strong>Desbloqueo Automático</strong>: El <code>Mutex</code> se desbloquea automáticamente cuando el guardián (<code>num</code> en este caso) sale del alcance.</li>
+<li><strong>Condiciones de Carrera</strong>: Asegúrate de usar <code>Mutex</code> correctamente para evitar condiciones de carrera.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo manejar el estado compartido en programas concurrentes usando <code>Mutex</code> y <code>Arc</code> en Rust. Estos mecanismos nos permiten coordinar el acceso a datos compartidos de manera segura y eficiente, evitando condiciones de carrera y otros problemas de concurrencia. En el próximo módulo, exploraremos características avanzadas de Rust, como macros y el uso de Rust inseguro.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-message-passing' title="Paso de Mensajes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-macros' title="Macros">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

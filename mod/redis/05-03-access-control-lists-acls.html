@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listas de Control de Acceso (ACLs)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/05-03-access-control-lists-acls" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/05-03-access-control-lists-acls" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/05-03-access-control-lists-acls" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/redis/05-03-access-control-lists-acls" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/05-03-access-control-lists-acls" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-encryption' title="Encriptación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Listas de Control de Acceso (ACLs)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-security-best-practices' title="Mejores Prácticas de Seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las Listas de Control de Acceso (ACLs) en Redis son una característica de seguridad que permite definir permisos detallados para diferentes usuarios. Con ACLs, puedes controlar quién puede acceder a qué comandos y datos en tu instancia de Redis, mejorando así la seguridad y el control sobre tu base de datos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Usuarios</strong>: Redis permite la creación de múltiples usuarios, cada uno con su propio conjunto de permisos.</li>
+<li><strong>Permisos</strong>: Los permisos pueden ser asignados a comandos específicos, patrones de claves y categorías de comandos.</li>
+<li><strong>Autenticación</strong>: Cada usuario tiene una contraseña que se utiliza para autenticarse.</li>
+</ol>
+</div><h1>Configuración Básica de ACLs</h1>
+<div class='content'></div><h2>Creación de Usuarios</h2>
+<div class='content'><p>Para crear un usuario en Redis, utilizamos el comando <code>ACL SETUSER</code>. A continuación, se muestra un ejemplo de cómo crear un usuario con permisos específicos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgbXl1c2VyIG9uID5wYXNzd29yZCB+KiArQGFsbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER myuser on &gt;password ~* +@all</pre></div><div class='content'><p>Explicación:</p>
+<ul>
+<li><code>myuser</code>: Nombre del usuario.</li>
+<li><code>on</code>: Habilita el usuario.</li>
+<li><code>&gt;password</code>: Establece la contraseña del usuario.</li>
+<li><code>~*</code>: Permite el acceso a todas las claves.</li>
+<li><code>+@all</code>: Permite el acceso a todos los comandos.</li>
+</ul>
+</div><h2>Asignación de Permisos</h2>
+<div class='content'><p>Los permisos se pueden asignar de manera granular. Aquí hay algunos ejemplos:</p>
+<ul>
+<li>Permitir solo comandos de lectura:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgcmVhZG9ubHl1c2VyIG9uID5yZWFkb25seXBhc3N3b3JkIH4qICtAcmVhZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER readonlyuser on &gt;readonlypassword ~* +@read</pre></div><div class='content'><ul>
+<li>Permitir acceso solo a claves específicas:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgbGltaXRlZHVzZXIgb24gPmxpbWl0ZWRwYXNzd29yZCB+a2V5cHJlZml4OiogK0BhbGw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER limiteduser on &gt;limitedpassword ~keyprefix:* +@all</pre></div><div class='content'><ul>
+<li>Denegar comandos específicos:</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgcmVzdHJpY3RlZHVzZXIgb24gPnJlc3RyaWN0ZWRwYXNzd29yZCB+KiArQGFsbCAtRkxVU0hEQiAtRkxVU0hBTEw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER restricteduser on &gt;restrictedpassword ~* +@all -FLUSHDB -FLUSHALL</pre></div><div class='content'></div><h2>Listado de Usuarios y Permisos</h2>
+<div class='content'><p>Para listar todos los usuarios y sus permisos, utilizamos el comando <code>ACL LIST</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIExJU1Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL LIST</pre></div><div class='content'><p>Para obtener información detallada sobre un usuario específico, utilizamos <code>ACL GETUSER</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIEdFVFVTRVIgbXl1c2Vy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL GETUSER myuser</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que queremos crear un entorno con tres tipos de usuarios: administrador, lector y escritor.</p>
+</div><h2>Creación de Usuarios</h2>
+<div class='content'><ol>
+<li><strong>Administrador</strong>: Tiene acceso completo a todos los comandos y claves.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgYWRtaW4gb24gPmFkbWlucGFzc3dvcmQgfiogK0BhbGw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER admin on &gt;adminpassword ~* +@all</pre></div><div class='content'><ol start="2">
+<li><strong>Lector</strong>: Solo puede leer datos, no puede modificar ni eliminar.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgcmVhZGVyIG9uID5yZWFkZXJwYXNzd29yZCB+KiArQHJlYWQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER reader on &gt;readerpassword ~* +@read</pre></div><div class='content'><ol start="3">
+<li><strong>Escritor</strong>: Puede leer y escribir datos, pero no puede ejecutar comandos peligrosos como <code>FLUSHDB</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgd3JpdGVyIG9uID53cml0ZXJwYXNzd29yZCB+KiArQHdyaXRlICtAcmVhZCAtRkxVU0hEQiAtRkxVU0hBTEw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER writer on &gt;writerpassword ~* +@write +@read -FLUSHDB -FLUSHALL</pre></div><div class='content'></div><h2>Verificación de Permisos</h2>
+<div class='content'><p>Para verificar que los permisos están configurados correctamente, podemos autenticarnos como cada usuario y probar los comandos permitidos y denegados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QVVUSCBhZG1pbiBhZG1pbnBhc3N3b3JkClNFVCBrZXkxICJ2YWx1ZTEiICAjIERlYmVyw61hIGZ1bmNpb25hcgpGTFVTSERCICAgICAgICAgICAjIERlYmVyw61hIGZ1bmNpb25hcgoKQVVUSCByZWFkZXIgcmVhZGVycGFzc3dvcmQKR0VUIGtleTEgICAgICAgICAgIyBEZWJlcsOtYSBmdW5jaW9uYXIKU0VUIGtleTEgInZhbHVlMiIgIyBEZWJlcsOtYSBmYWxsYXIKCkFVVEggd3JpdGVyIHdyaXRlcnBhc3N3b3JkClNFVCBrZXkxICJ2YWx1ZTIiICMgRGViZXLDrWEgZnVuY2lvbmFyCkZMVVNIREIgICAgICAgICAgICMgRGViZXLDrWEgZmFsbGFy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>AUTH admin adminpassword
+SET key1 &quot;value1&quot;  # Deber&iacute;a funcionar
+FLUSHDB           # Deber&iacute;a funcionar
+
+AUTH reader readerpassword
+GET key1          # Deber&iacute;a funcionar
+SET key1 &quot;value2&quot; # Deber&iacute;a fallar
+
+AUTH writer writerpassword
+SET key1 &quot;value2&quot; # Deber&iacute;a funcionar
+FLUSHDB           # Deber&iacute;a fallar</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de ACLs</h2>
+<div class='content'><ol>
+<li>
+<p>Crea un usuario llamado <code>guest</code> que solo pueda leer datos y acceder a claves que comiencen con <code>public:</code>.</p>
+</li>
+<li>
+<p>Crea un usuario llamado <code>editor</code> que pueda leer y escribir datos, pero no pueda ejecutar comandos de eliminación (<code>DEL</code>).</p>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Usuario <code>guest</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgZ3Vlc3Qgb24gPmd1ZXN0cGFzc3dvcmQgfnB1YmxpYzoqICtAcmVhZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER guest on &gt;guestpassword ~public:* +@read</pre></div><div class='content'><ol start="2">
+<li>Usuario <code>editor</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUNMIFNFVFVTRVIgZWRpdG9yIG9uID5lZGl0b3JwYXNzd29yZCB+KiArQHJlYWQgK0B3cml0ZSAtREVM"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ACL SETUSER editor on &gt;editorpassword ~* +@read +@write -DEL</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las Listas de Control de Acceso (ACLs) en Redis, cómo crear y configurar usuarios con permisos específicos, y cómo verificar que los permisos están funcionando correctamente. Las ACLs son una herramienta poderosa para mejorar la seguridad y el control en tu instancia de Redis, permitiéndote definir quién puede hacer qué en tu base de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-encryption' title="Encriptación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-security-best-practices' title="Mejores Prácticas de Seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

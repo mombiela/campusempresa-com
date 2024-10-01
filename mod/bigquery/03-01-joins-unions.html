@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joins y Uniones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/03-01-joins-unions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/03-01-joins-unions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/03-01-joins-unions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bigquery/03-01-joins-unions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/03-01-joins-unions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-aggregating-data' title="Agregación de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Joins y Uniones</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-subqueries' title="Subconsultas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre las operaciones de Joins y Uniones en SQL, específicamente en el contexto de BigQuery. Estas operaciones son fundamentales para combinar datos de múltiples tablas y obtener información más completa y útil.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Comprender los diferentes tipos de Joins en SQL.</li>
+<li>Aprender a utilizar Joins en BigQuery.</li>
+<li>Entender cómo funcionan las Uniones (Unions) y cuándo utilizarlas.</li>
+<li>Practicar con ejemplos y ejercicios para consolidar el conocimiento.</li>
+</ul>
+</div><h1>1. Introducción a los Joins</h1>
+<div class='content'><p>Los Joins se utilizan para combinar filas de dos o más tablas basadas en una columna relacionada entre ellas. Existen varios tipos de Joins, cada uno con su propósito específico:</p>
+</div><h2>Tipos de Joins</h2>
+<div class='content'><ol>
+<li><strong>INNER JOIN</strong>: Devuelve las filas que tienen coincidencias en ambas tablas.</li>
+<li><strong>LEFT JOIN (o LEFT OUTER JOIN)</strong>: Devuelve todas las filas de la tabla izquierda y las filas coincidentes de la tabla derecha. Si no hay coincidencia, los resultados de la tabla derecha serán NULL.</li>
+<li><strong>RIGHT JOIN (o RIGHT OUTER JOIN)</strong>: Devuelve todas las filas de la tabla derecha y las filas coincidentes de la tabla izquierda. Si no hay coincidencia, los resultados de la tabla izquierda serán NULL.</li>
+<li><strong>FULL JOIN (o FULL OUTER JOIN)</strong>: Devuelve todas las filas cuando hay una coincidencia en una de las tablas. Si no hay coincidencia, los resultados serán NULL en las columnas de la tabla que no tiene coincidencia.</li>
+<li><strong>CROSS JOIN</strong>: Devuelve el producto cartesiano de las dos tablas.</li>
+</ol>
+</div><h2>Sintaxis Básica de un Join</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgdGFibGExLmNvbHVtbmExLCAKICAgIHRhYmxhMi5jb2x1bW5hMgpGUk9NIAogICAgdGFibGExCkpPSU4gCiAgICB0YWJsYTIKT04gCiAgICB0YWJsYTEuY29sdW1uYV9jb211biA9IHRhYmxhMi5jb2x1bW5hX2NvbXVuOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    tabla1.columna1, 
+    tabla2.columna2
+FROM 
+    tabla1
+JOIN 
+    tabla2
+ON 
+    tabla1.columna_comun = tabla2.columna_comun;</pre></div><div class='content'></div><h1>2. Ejemplos Prácticos de Joins en BigQuery</h1>
+<div class='content'></div><h2>INNER JOIN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVzLm5hbWUsIAogICAgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lCkZST00gCiAgICBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AgQVMgZW1wbG95ZWVzCklOTkVSIEpPSU4gCiAgICBgcHJvamVjdC5kYXRhc2V0LmRlcGFydG1lbnRzYCBBUyBkZXBhcnRtZW50cwpPTiAKICAgIGVtcGxveWVlcy5kZXBhcnRtZW50X2lkID0gZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9pZDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employees.name, 
+    departments.department_name
+FROM 
+    `project.dataset.employees` AS employees
+INNER JOIN 
+    `project.dataset.departments` AS departments
+ON 
+    employees.department_id = departments.department_id;</pre></div><div class='content'><p><strong>Explicación</strong>: Este INNER JOIN selecciona los nombres de los empleados y los nombres de los departamentos donde hay una coincidencia en <code>department_id</code>.</p>
+</div><h2>LEFT JOIN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVzLm5hbWUsIAogICAgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lCkZST00gCiAgICBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AgQVMgZW1wbG95ZWVzCkxFRlQgSk9JTiAKICAgIGBwcm9qZWN0LmRhdGFzZXQuZGVwYXJ0bWVudHNgIEFTIGRlcGFydG1lbnRzCk9OIAogICAgZW1wbG95ZWVzLmRlcGFydG1lbnRfaWQgPSBkZXBhcnRtZW50cy5kZXBhcnRtZW50X2lkOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employees.name, 
+    departments.department_name
+FROM 
+    `project.dataset.employees` AS employees
+LEFT JOIN 
+    `project.dataset.departments` AS departments
+ON 
+    employees.department_id = departments.department_id;</pre></div><div class='content'><p><strong>Explicación</strong>: Este LEFT JOIN selecciona todos los nombres de los empleados y los nombres de los departamentos. Si un empleado no tiene un departamento asociado, el campo <code>department_name</code> será NULL.</p>
+</div><h2>RIGHT JOIN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVzLm5hbWUsIAogICAgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lCkZST00gCiAgICBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AgQVMgZW1wbG95ZWVzClJJR0hUIEpPSU4gCiAgICBgcHJvamVjdC5kYXRhc2V0LmRlcGFydG1lbnRzYCBBUyBkZXBhcnRtZW50cwpPTiAKICAgIGVtcGxveWVlcy5kZXBhcnRtZW50X2lkID0gZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9pZDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employees.name, 
+    departments.department_name
+FROM 
+    `project.dataset.employees` AS employees
+RIGHT JOIN 
+    `project.dataset.departments` AS departments
+ON 
+    employees.department_id = departments.department_id;</pre></div><div class='content'><p><strong>Explicación</strong>: Este RIGHT JOIN selecciona todos los nombres de los departamentos y los nombres de los empleados. Si un departamento no tiene empleados asociados, el campo <code>name</code> será NULL.</p>
+</div><h2>FULL JOIN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVzLm5hbWUsIAogICAgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lCkZST00gCiAgICBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AgQVMgZW1wbG95ZWVzCkZVTEwgSk9JTiAKICAgIGBwcm9qZWN0LmRhdGFzZXQuZGVwYXJ0bWVudHNgIEFTIGRlcGFydG1lbnRzCk9OIAogICAgZW1wbG95ZWVzLmRlcGFydG1lbnRfaWQgPSBkZXBhcnRtZW50cy5kZXBhcnRtZW50X2lkOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employees.name, 
+    departments.department_name
+FROM 
+    `project.dataset.employees` AS employees
+FULL JOIN 
+    `project.dataset.departments` AS departments
+ON 
+    employees.department_id = departments.department_id;</pre></div><div class='content'><p><strong>Explicación</strong>: Este FULL JOIN selecciona todos los nombres de los empleados y los nombres de los departamentos, incluyendo aquellos que no tienen coincidencias en la otra tabla.</p>
+</div><h2>CROSS JOIN</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVzLm5hbWUsIAogICAgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lCkZST00gCiAgICBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AgQVMgZW1wbG95ZWVzCkNST1NTIEpPSU4gCiAgICBgcHJvamVjdC5kYXRhc2V0LmRlcGFydG1lbnRzYCBBUyBkZXBhcnRtZW50czs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employees.name, 
+    departments.department_name
+FROM 
+    `project.dataset.employees` AS employees
+CROSS JOIN 
+    `project.dataset.departments` AS departments;</pre></div><div class='content'><p><strong>Explicación</strong>: Este CROSS JOIN devuelve el producto cartesiano de las dos tablas, es decir, cada fila de <code>employees</code> se combina con cada fila de <code>departments</code>.</p>
+</div><h1>3. Uniones (Unions)</h1>
+<div class='content'><p>Las Uniones se utilizan para combinar los resultados de dos o más consultas SELECT en una sola. Las consultas deben tener el mismo número de columnas y tipos de datos compatibles.</p>
+</div><h2>Sintaxis Básica de una Unión</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbmExLCBjb2x1bW5hMiBGUk9NIHRhYmxhMQpVTklPTgpTRUxFQ1QgY29sdW1uYTEsIGNvbHVtbmEyIEZST00gdGFibGEyOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT columna1, columna2 FROM tabla1
+UNION
+SELECT columna1, columna2 FROM tabla2;</pre></div><div class='content'></div><h2>Ejemplo Práctico de Unión</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIG5hbWUgRlJPTSBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AKVU5JT04KU0VMRUNUIG5hbWUgRlJPTSBgcHJvamVjdC5kYXRhc2V0LmNvbnRyYWN0b3JzYDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT name FROM `project.dataset.employees`
+UNION
+SELECT name FROM `project.dataset.contractors`;</pre></div><div class='content'><p><strong>Explicación</strong>: Este UNION selecciona todos los nombres de la tabla <code>employees</code> y la tabla <code>contractors</code>, eliminando duplicados.</p>
+</div><h2>UNION ALL</h2>
+<div class='content'><p>Si deseas incluir duplicados, puedes usar <code>UNION ALL</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIG5hbWUgRlJPTSBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AKVU5JT04gQUxMClNFTEVDVCBuYW1lIEZST00gYHByb2plY3QuZGF0YXNldC5jb250cmFjdG9yc2A7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT name FROM `project.dataset.employees`
+UNION ALL
+SELECT name FROM `project.dataset.contractors`;</pre></div><div class='content'></div><h1>4. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: INNER JOIN</h2>
+<div class='content'><p><strong>Instrucción</strong>: Selecciona los nombres de los empleados y los nombres de los departamentos donde hay una coincidencia en <code>department_id</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVzLm5hbWUsIAogICAgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lCkZST00gCiAgICBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AgQVMgZW1wbG95ZWVzCklOTkVSIEpPSU4gCiAgICBgcHJvamVjdC5kYXRhc2V0LmRlcGFydG1lbnRzYCBBUyBkZXBhcnRtZW50cwpPTiAKICAgIGVtcGxveWVlcy5kZXBhcnRtZW50X2lkID0gZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9pZDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employees.name, 
+    departments.department_name
+FROM 
+    `project.dataset.employees` AS employees
+INNER JOIN 
+    `project.dataset.departments` AS departments
+ON 
+    employees.department_id = departments.department_id;</pre></div><div class='content'></div><h2>Ejercicio 2: LEFT JOIN</h2>
+<div class='content'><p><strong>Instrucción</strong>: Selecciona todos los nombres de los empleados y los nombres de los departamentos, incluyendo aquellos empleados que no tienen un departamento asociado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIAogICAgZW1wbG95ZWVzLm5hbWUsIAogICAgZGVwYXJ0bWVudHMuZGVwYXJ0bWVudF9uYW1lCkZST00gCiAgICBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AgQVMgZW1wbG95ZWVzCkxFRlQgSk9JTiAKICAgIGBwcm9qZWN0LmRhdGFzZXQuZGVwYXJ0bWVudHNgIEFTIGRlcGFydG1lbnRzCk9OIAogICAgZW1wbG95ZWVzLmRlcGFydG1lbnRfaWQgPSBkZXBhcnRtZW50cy5kZXBhcnRtZW50X2lkOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT 
+    employees.name, 
+    departments.department_name
+FROM 
+    `project.dataset.employees` AS employees
+LEFT JOIN 
+    `project.dataset.departments` AS departments
+ON 
+    employees.department_id = departments.department_id;</pre></div><div class='content'></div><h2>Ejercicio 3: UNION</h2>
+<div class='content'><p><strong>Instrucción</strong>: Selecciona todos los nombres de la tabla <code>employees</code> y la tabla <code>contractors</code>, eliminando duplicados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIG5hbWUgRlJPTSBgcHJvamVjdC5kYXRhc2V0LmVtcGxveWVlc2AKVU5JT04KU0VMRUNUIG5hbWUgRlJPTSBgcHJvamVjdC5kYXRhc2V0LmNvbnRyYWN0b3JzYDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT name FROM `project.dataset.employees`
+UNION
+SELECT name FROM `project.dataset.contractors`;</pre></div><div class='content'></div><h1>5. Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los diferentes tipos de Joins y cómo utilizarlos en BigQuery para combinar datos de múltiples tablas. También hemos explorado las Uniones para combinar los resultados de varias consultas SELECT. Estos conceptos son fundamentales para trabajar con datos relacionales y realizar análisis complejos.</p>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente tema, profundizaremos en las subconsultas, que nos permitirán realizar consultas más avanzadas y anidadas dentro de nuestras consultas principales.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-aggregating-data' title="Agregación de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-subqueries' title="Subconsultas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

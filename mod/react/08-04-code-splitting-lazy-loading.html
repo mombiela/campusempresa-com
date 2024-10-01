@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>División de Código y Carga Perezosa</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/react/08-04-code-splitting-lazy-loading" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/react/08-04-code-splitting-lazy-loading" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/react/08-04-code-splitting-lazy-loading" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/react/08-04-code-splitting-lazy-loading" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/react/08-04-code-splitting-lazy-loading" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-usememo-usecallback' title="Hooks useMemo y useCallback">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">División de Código y Carga Perezosa</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-testing' title="Introducción a las Pruebas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En aplicaciones React grandes, es común que el tamaño del paquete JavaScript crezca significativamente, lo que puede afectar el rendimiento de la aplicación, especialmente en dispositivos con recursos limitados o conexiones lentas. La división de código (code splitting) y la carga perezosa (lazy loading) son técnicas que permiten optimizar el rendimiento al cargar solo el código necesario cuando se necesita.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>División de Código (Code Splitting):</strong></p>
+<ul>
+<li>Permite dividir el código en &quot;chunks&quot; más pequeños que se cargan bajo demanda.</li>
+<li>Mejora el tiempo de carga inicial de la aplicación.</li>
+<li>Utiliza herramientas como Webpack para dividir el código automáticamente.</li>
+</ul>
+</li>
+<li>
+<p><strong>Carga Perezosa (Lazy Loading):</strong></p>
+<ul>
+<li>Retrasa la carga de un componente hasta que realmente se necesita.</li>
+<li>Utiliza la función <code>React.lazy</code> y el componente <code>Suspense</code> para implementar la carga perezosa en React.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Configuración de Webpack para División de Código</h2>
+<div class='content'><p>Si estás utilizando Create React App, Webpack ya está configurado para soportar la división de código. Sin embargo, si estás configurando Webpack manualmente, asegúrate de incluir la configuración para la división de código.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKbW9kdWxlLmV4cG9ydHMgPSB7CiAgLy8gLi4ub3RyYXMgY29uZmlndXJhY2lvbmVzCiAgb3B0aW1pemF0aW9uOiB7CiAgICBzcGxpdENodW5rczogewogICAgICBjaHVua3M6ICdhbGwnLAogICAgfSwKICB9LAp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+module.exports = {
+  // ...otras configuraciones
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
+};</pre></div><div class='content'></div><h2>Implementación de Carga Perezosa</h2>
+<div class='content'><p>Vamos a ver cómo implementar la carga perezosa en una aplicación React.</p>
+<ol>
+<li>
+<p><strong>Crear Componentes:</strong></p>
+<p>Supongamos que tenemos dos componentes, <code>Home</code> y <code>About</code>.</p>
+<pre><code class="language-javascript">// Home.js
+import React from 'react';
+
+const Home = () =&gt; {
+  return &lt;h1&gt;Home Page&lt;/h1&gt;;
+};
+
+export default Home;
+</code></pre>
+<pre><code class="language-javascript">// About.js
+import React from 'react';
+
+const About = () =&gt; {
+  return &lt;h1&gt;About Page&lt;/h1&gt;;
+};
+
+export default About;
+</code></pre>
+</li>
+<li>
+<p><strong>Implementar Carga Perezosa:</strong></p>
+<p>Utilizaremos <code>React.lazy</code> para cargar estos componentes de manera perezosa.</p>
+<pre><code class="language-javascript">// App.js
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+const Home = lazy(() =&gt; import('./Home'));
+const About = lazy(() =&gt; import('./About'));
+
+const App = () =&gt; {
+  return (
+    &lt;Router&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        &lt;Switch&gt;
+          &lt;Route exact path=&quot;/&quot; component={Home} /&gt;
+          &lt;Route path=&quot;/about&quot; component={About} /&gt;
+        &lt;/Switch&gt;
+      &lt;/Suspense&gt;
+    &lt;/Router&gt;
+  );
+};
+
+export default App;
+</code></pre>
+<p>En este ejemplo:</p>
+<ul>
+<li><code>React.lazy</code> se utiliza para cargar los componentes <code>Home</code> y <code>About</code> de manera perezosa.</li>
+<li><code>Suspense</code> se utiliza para mostrar un indicador de carga (<code>&lt;div&gt;Loading...&lt;/div&gt;</code>) mientras se carga el componente.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea una nueva aplicación React utilizando Create React App.</li>
+<li>Crea dos componentes adicionales, <code>Contact</code> y <code>Services</code>.</li>
+<li>Implementa la carga perezosa para estos componentes utilizando <code>React.lazy</code> y <code>Suspense</code>.</li>
+<li>Configura las rutas para estos componentes utilizando React Router.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear la aplicación:</strong></p>
+<pre><code class="language-bash">npx create-react-app my-app
+cd my-app
+</code></pre>
+</li>
+<li>
+<p><strong>Crear los componentes:</strong></p>
+<pre><code class="language-javascript">// Contact.js
+import React from 'react';
+
+const Contact = () =&gt; {
+  return &lt;h1&gt;Contact Page&lt;/h1&gt;;
+};
+
+export default Contact;
+</code></pre>
+<pre><code class="language-javascript">// Services.js
+import React from 'react';
+
+const Services = () =&gt; {
+  return &lt;h1&gt;Services Page&lt;/h1&gt;;
+};
+
+export default Services;
+</code></pre>
+</li>
+<li>
+<p><strong>Implementar la carga perezosa:</strong></p>
+<pre><code class="language-javascript">// App.js
+import React, { Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+
+const Home = lazy(() =&gt; import('./Home'));
+const About = lazy(() =&gt; import('./About'));
+const Contact = lazy(() =&gt; import('./Contact'));
+const Services = lazy(() =&gt; import('./Services'));
+
+const App = () =&gt; {
+  return (
+    &lt;Router&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        &lt;Switch&gt;
+          &lt;Route exact path=&quot;/&quot; component={Home} /&gt;
+          &lt;Route path=&quot;/about&quot; component={About} /&gt;
+          &lt;Route path=&quot;/contact&quot; component={Contact} /&gt;
+          &lt;Route path=&quot;/services&quot; component={Services} /&gt;
+        &lt;/Switch&gt;
+      &lt;/Suspense&gt;
+    &lt;/Router&gt;
+  );
+};
+
+export default App;
+</code></pre>
+</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre la división de código y la carga perezosa en React. Estas técnicas son esenciales para optimizar el rendimiento de aplicaciones grandes al cargar solo el código necesario cuando se necesita. Hemos visto cómo configurar Webpack para la división de código y cómo utilizar <code>React.lazy</code> y <code>Suspense</code> para implementar la carga perezosa en una aplicación React.</p>
+<p>En el próximo módulo, exploraremos técnicas avanzadas de optimización del rendimiento en React, incluyendo la memorización y el uso de hooks como <code>useMemo</code> y <code>useCallback</code>.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-usememo-usecallback' title="Hooks useMemo y useCallback">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-introduction-testing' title="Introducción a las Pruebas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

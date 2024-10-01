@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CI/CD con Ansible</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/08-03-ci-cd-with-ansible" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/08-03-ci-cd-with-ansible" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/08-03-ci-cd-with-ansible" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/ansible/08-03-ci-cd-with-ansible" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/08-03-ci-cd-with-ansible" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-ansible-and-kubernetes' title="Ansible y Kubernetes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">CI/CD con Ansible</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-ansible-in-cloud-environments' title="Ansible en Entornos Cloud">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, exploraremos cómo Ansible puede integrarse en un flujo de trabajo de CI/CD (Integración Continua y Entrega Continua). Aprenderemos a automatizar la implementación de aplicaciones y la gestión de infraestructura utilizando Ansible en combinación con herramientas de CI/CD como Jenkins, GitLab CI, y otros.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender los conceptos básicos de CI/CD.</li>
+<li>Integrar Ansible con herramientas de CI/CD.</li>
+<li>Automatizar despliegues y pruebas con Ansible.</li>
+</ul>
+</div><h1>Conceptos Básicos de CI/CD</h1>
+<div class='content'></div><h2>¿Qué es CI/CD?</h2>
+<div class='content'><ul>
+<li><strong>Integración Continua (CI)</strong>: Es una práctica de desarrollo de software donde los desarrolladores integran su código en un repositorio compartido varias veces al día. Cada integración es verificada por una construcción automatizada (incluyendo pruebas) para detectar errores lo antes posible.</li>
+<li><strong>Entrega Continua (CD)</strong>: Es una extensión de CI que asegura que el software puede ser lanzado a producción en cualquier momento. Esto se logra mediante la automatización de la implementación del código en entornos de prueba y producción.</li>
+</ul>
+</div><h2>Beneficios de CI/CD</h2>
+<div class='content'><ul>
+<li><strong>Detección temprana de errores</strong>: Al integrar y probar el código frecuentemente, los errores se detectan y corrigen más rápidamente.</li>
+<li><strong>Despliegues más rápidos y confiables</strong>: La automatización reduce el riesgo de errores humanos y acelera el proceso de despliegue.</li>
+<li><strong>Mejora de la calidad del software</strong>: Las pruebas automatizadas aseguran que el código cumple con los estándares de calidad antes de ser desplegado.</li>
+</ul>
+</div><h1>Integración de Ansible con Herramientas de CI/CD</h1>
+<div class='content'></div><h2>Jenkins</h2>
+<div class='content'><p>Jenkins es una de las herramientas de CI/CD más populares. A continuación, se muestra cómo integrar Ansible con Jenkins para automatizar el despliegue de aplicaciones.</p>
+<h4>Instalación de Jenkins</h4>
+<ol>
+<li>
+<p><strong>Descargar e instalar Jenkins</strong>:</p>
+<pre><code class="language-bash">wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -
+sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list'
+sudo apt update
+sudo apt install jenkins
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Jenkins</strong>:</p>
+<pre><code class="language-bash">sudo systemctl start jenkins
+sudo systemctl enable jenkins
+</code></pre>
+</li>
+<li>
+<p><strong>Acceder a Jenkins</strong>: Abre un navegador y navega a <code>http://localhost:8080</code>. Sigue las instrucciones para completar la configuración inicial.</p>
+</li>
+</ol>
+<h4>Configuración de Jenkins para Ansible</h4>
+<ol>
+<li>
+<p><strong>Instalar el plugin de Ansible</strong>:</p>
+<ul>
+<li>Navega a <code>Manage Jenkins</code> &gt; <code>Manage Plugins</code>.</li>
+<li>Busca <code>Ansible</code> y selecciona <code>Install without restart</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar Ansible en Jenkins</strong>:</p>
+<ul>
+<li>Navega a <code>Manage Jenkins</code> &gt; <code>Global Tool Configuration</code>.</li>
+<li>En la sección <code>Ansible</code>, agrega una nueva instalación de Ansible especificando el nombre y la ruta de instalación.</li>
+</ul>
+</li>
+</ol>
+<h4>Crear un Job de Jenkins para Despliegue con Ansible</h4>
+<ol>
+<li>
+<p><strong>Crear un nuevo Job</strong>:</p>
+<ul>
+<li>Navega a <code>New Item</code>, ingresa un nombre para el Job y selecciona <code>Freestyle project</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el Job</strong>:</p>
+<ul>
+<li>En la sección <code>Source Code Management</code>, configura el repositorio de Git donde se encuentra tu código y tus playbooks de Ansible.</li>
+<li>En la sección <code>Build</code>, agrega un paso de construcción <code>Invoke Ansible Playbook</code>.
+<ul>
+<li>Especifica la ruta del playbook de Ansible.</li>
+<li>Configura cualquier variable o inventario necesario.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Ejecutar el Job</strong>:</p>
+<ul>
+<li>Guarda la configuración y ejecuta el Job para desplegar tu aplicación utilizando Ansible.</li>
+</ul>
+</li>
+</ol>
+</div><h2>GitLab CI</h2>
+<div class='content'><p>GitLab CI es otra herramienta popular de CI/CD que se integra perfectamente con Ansible.</p>
+<h4>Configuración de GitLab CI para Ansible</h4>
+<ol>
+<li>
+<p><strong>Crear un archivo <code>.gitlab-ci.yml</code></strong> en el repositorio de tu proyecto:</p>
+<pre><code class="language-yaml">stages:
+  - deploy
+
+deploy:
+  stage: deploy
+  image: williamyeh/ansible:alpine3
+  script:
+    - ansible-playbook -i inventory playbook.yml
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar el Runner de GitLab</strong>:</p>
+<ul>
+<li>Asegúrate de tener un Runner de GitLab configurado y registrado para tu proyecto.</li>
+</ul>
+</li>
+<li>
+<p><strong>Ejecutar el Pipeline</strong>:</p>
+<ul>
+<li>Cada vez que hagas un push al repositorio, GitLab CI ejecutará el pipeline definido en <code>.gitlab-ci.yml</code>, desplegando tu aplicación con Ansible.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Despliegue Automatizado con Jenkins y Ansible</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar un Job de Jenkins que despliegue una aplicación web utilizando Ansible.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Instalar y configurar Jenkins.</li>
+<li>Crear un playbook de Ansible que despliegue una aplicación web.</li>
+<li>Configurar un Job de Jenkins para ejecutar el playbook de Ansible.</li>
+</ul>
+</li>
+<li><strong>Solución</strong>:
+<ul>
+<li>Sigue los pasos descritos en la sección de Jenkins para configurar el Job y ejecutar el playbook.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejercicio 2: Despliegue Automatizado con GitLab CI y Ansible</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar un pipeline de GitLab CI que despliegue una aplicación web utilizando Ansible.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Crear un archivo <code>.gitlab-ci.yml</code> en el repositorio de tu proyecto.</li>
+<li>Configurar un Runner de GitLab.</li>
+<li>Hacer un push al repositorio y verificar que el pipeline se ejecute correctamente.</li>
+</ul>
+</li>
+<li><strong>Solución</strong>:
+<ul>
+<li>Sigue los pasos descritos en la sección de GitLab CI para configurar el pipeline y ejecutar el playbook.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><p>En este módulo, hemos aprendido cómo integrar Ansible en un flujo de trabajo de CI/CD utilizando herramientas como Jenkins y GitLab CI. Hemos visto cómo configurar estas herramientas para ejecutar playbooks de Ansible y automatizar el despliegue de aplicaciones. Con estos conocimientos, puedes mejorar la eficiencia y la confiabilidad de tus despliegues, asegurando que tu software esté siempre listo para ser lanzado a producción.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-ansible-and-kubernetes' title="Ansible y Kubernetes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-ansible-in-cloud-environments' title="Ansible en Entornos Cloud">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

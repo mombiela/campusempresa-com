@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de una API de Comercio Electrónico</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/12-02-creating-ecommerce-api" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/12-02-creating-ecommerce-api" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/12-02-creating-ecommerce-api" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nodejs/12-02-creating-ecommerce-api" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/12-02-creating-ecommerce-api" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='12-01-building-chat-app' title="Construcción de una Aplicación de Chat">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creación de una API de Comercio Electrónico</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='12-03-developing-blogging-platform' title="Desarrollo de una Plataforma de Blogs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás a construir una API de comercio electrónico utilizando Node.js y Express. Este proyecto te permitirá aplicar muchos de los conceptos que has aprendido a lo largo del curso, como la gestión de rutas, la autenticación, la interacción con bases de datos y más.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Configurar un proyecto de Node.js con Express.</li>
+<li>Implementar operaciones CRUD para productos.</li>
+<li>Gestionar usuarios y autenticación.</li>
+<li>Manejar carritos de compra y pedidos.</li>
+<li>Implementar seguridad básica y validación de datos.</li>
+</ul>
+</div><h1>Estructura del Proyecto</h1>
+<div class='content'><p>Antes de comenzar, es útil tener una estructura clara del proyecto. Aquí hay una posible estructura de directorios para nuestra API de comercio electrónico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZWNvbW1lcmNlLWFwaS8K4pSc4pSA4pSAIGNvbmZpZy8K4pSCICAg4pSU4pSA4pSAIGRiLmpzCuKUnOKUgOKUgCBjb250cm9sbGVycy8K4pSCICAg4pSc4pSA4pSAIGF1dGhDb250cm9sbGVyLmpzCuKUgiAgIOKUnOKUgOKUgCBwcm9kdWN0Q29udHJvbGxlci5qcwrilIIgICDilJzilIDilIAgdXNlckNvbnRyb2xsZXIuanMK4pSCICAg4pSU4pSA4pSAIG9yZGVyQ29udHJvbGxlci5qcwrilJzilIDilIAgbW9kZWxzLwrilIIgICDilJzilIDilIAgUHJvZHVjdC5qcwrilIIgICDilJzilIDilIAgVXNlci5qcwrilIIgICDilJTilIDilIAgT3JkZXIuanMK4pSc4pSA4pSAIHJvdXRlcy8K4pSCICAg4pSc4pSA4pSAIGF1dGhSb3V0ZXMuanMK4pSCICAg4pSc4pSA4pSAIHByb2R1Y3RSb3V0ZXMuanMK4pSCICAg4pSc4pSA4pSAIHVzZXJSb3V0ZXMuanMK4pSCICAg4pSU4pSA4pSAIG9yZGVyUm91dGVzLmpzCuKUnOKUgOKUgCBtaWRkbGV3YXJlLwrilIIgICDilJTilIDilIAgYXV0aE1pZGRsZXdhcmUuanMK4pSc4pSA4pSAIC5lbnYK4pSc4pSA4pSAIGFwcC5qcwrilJTilIDilIAgcGFja2FnZS5qc29u"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ecommerce-api/
+├── config/
+│   └── db.js
+├── controllers/
+│   ├── authController.js
+│   ├── productController.js
+│   ├── userController.js
+│   └── orderController.js
+├── models/
+│   ├── Product.js
+│   ├── User.js
+│   └── Order.js
+├── routes/
+│   ├── authRoutes.js
+│   ├── productRoutes.js
+│   ├── userRoutes.js
+│   └── orderRoutes.js
+├── middleware/
+│   └── authMiddleware.js
+├── .env
+├── app.js
+└── package.json</pre></div><div class='content'></div><h1>Paso 1: Configuración del Proyecto</h1>
+<div class='content'></div><h2>1.1 Inicializar el Proyecto</h2>
+<div class='content'><p>Primero, crea una carpeta para tu proyecto y navega a ella en tu terminal. Luego, inicializa un nuevo proyecto de Node.js:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgZWNvbW1lcmNlLWFwaQpjZCBlY29tbWVyY2UtYXBpCm5wbSBpbml0IC15"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir ecommerce-api
+cd ecommerce-api
+npm init -y</pre></div><div class='content'></div><h2>1.2 Instalar Dependencias</h2>
+<div class='content'><p>Instala las dependencias necesarias para el proyecto:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgZXhwcmVzcyBtb25nb29zZSBkb3RlbnYgYmNyeXB0anMganNvbndlYnRva2Vu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install express mongoose dotenv bcryptjs jsonwebtoken</pre></div><div class='content'></div><h2>1.3 Configurar el Servidor</h2>
+<div class='content'><p>Crea un archivo <code>app.js</code> y configura el servidor básico de Express:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYXBwLmpzCmNvbnN0IGV4cHJlc3MgPSByZXF1aXJlKCdleHByZXNzJyk7CmNvbnN0IG1vbmdvb3NlID0gcmVxdWlyZSgnbW9uZ29vc2UnKTsKY29uc3QgZG90ZW52ID0gcmVxdWlyZSgnZG90ZW52Jyk7CgovLyBDb25maWd1cmFjacOzbiBkZSB2YXJpYWJsZXMgZGUgZW50b3Jubwpkb3RlbnYuY29uZmlnKCk7Cgpjb25zdCBhcHAgPSBleHByZXNzKCk7CgovLyBNaWRkbGV3YXJlIHBhcmEgcGFyc2VhciBKU09OCmFwcC51c2UoZXhwcmVzcy5qc29uKCkpOwoKLy8gQ29uZXhpw7NuIGEgbGEgYmFzZSBkZSBkYXRvcwptb25nb29zZS5jb25uZWN0KHByb2Nlc3MuZW52Lk1PTkdPX1VSSSwgewogIHVzZU5ld1VybFBhcnNlcjogdHJ1ZSwKICB1c2VVbmlmaWVkVG9wb2xvZ3k6IHRydWUsCn0pCi50aGVuKCgpID0+IGNvbnNvbGUubG9nKCdDb25lY3RhZG8gYSBsYSBiYXNlIGRlIGRhdG9zJykpCi5jYXRjaCgoZXJyKSA9PiBjb25zb2xlLmVycm9yKCdFcnJvciBhbCBjb25lY3RhciBhIGxhIGJhc2UgZGUgZGF0b3MnLCBlcnIpKTsKCi8vIFJ1dGFzCmFwcC5nZXQoJy8nLCAocmVxLCByZXMpID0+IHsKICByZXMuc2VuZCgnQVBJIGRlIENvbWVyY2lvIEVsZWN0csOzbmljbycpOwp9KTsKCi8vIEluaWNpYXIgZWwgc2Vydmlkb3IKY29uc3QgUE9SVCA9IHByb2Nlc3MuZW52LlBPUlQgfHwgNTAwMDsKYXBwLmxpc3RlbihQT1JULCAoKSA9PiB7CiAgY29uc29sZS5sb2coYFNlcnZpZG9yIGNvcnJpZW5kbyBlbiBlbCBwdWVydG8gJHtQT1JUfWApOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// app.js
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+// Configuraci&oacute;n de variables de entorno
+dotenv.config();
+
+const app = express();
+
+// Middleware para parsear JSON
+app.use(express.json());
+
+// Conexi&oacute;n a la base de datos
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() =&gt; console.log('Conectado a la base de datos'))
+.catch((err) =&gt; console.error('Error al conectar a la base de datos', err));
+
+// Rutas
+app.get('/', (req, res) =&gt; {
+  res.send('API de Comercio Electr&oacute;nico');
+});
+
+// Iniciar el servidor
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =&gt; {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});</pre></div><div class='content'></div><h2>1.4 Configurar Variables de Entorno</h2>
+<div class='content'><p>Crea un archivo <code>.env</code> en la raíz del proyecto y añade las siguientes variables:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TU9OR09fVVJJPW1vbmdvZGI6Ly9sb2NhbGhvc3Q6MjcwMTcvZWNvbW1lcmNlClBPUlQ9NTAwMApKV1RfU0VDUkVUPXlvdXJfand0X3NlY3JldA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>MONGO_URI=mongodb://localhost:27017/ecommerce
+PORT=5000
+JWT_SECRET=your_jwt_secret</pre></div><div class='content'></div><h1>Paso 2: Modelos de Datos</h1>
+<div class='content'></div><h2>2.1 Modelo de Usuario</h2>
+<div class='content'><p>Crea un archivo <code>User.js</code> en la carpeta <code>models</code> y define el esquema del usuario:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbW9kZWxzL1VzZXIuanMKY29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwpjb25zdCBiY3J5cHQgPSByZXF1aXJlKCdiY3J5cHRqcycpOwoKY29uc3QgdXNlclNjaGVtYSA9IG5ldyBtb25nb29zZS5TY2hlbWEoewogIG5hbWU6IHsKICAgIHR5cGU6IFN0cmluZywKICAgIHJlcXVpcmVkOiB0cnVlLAogIH0sCiAgZW1haWw6IHsKICAgIHR5cGU6IFN0cmluZywKICAgIHJlcXVpcmVkOiB0cnVlLAogICAgdW5pcXVlOiB0cnVlLAogIH0sCiAgcGFzc3dvcmQ6IHsKICAgIHR5cGU6IFN0cmluZywKICAgIHJlcXVpcmVkOiB0cnVlLAogIH0sCiAgaXNBZG1pbjogewogICAgdHlwZTogQm9vbGVhbiwKICAgIGRlZmF1bHQ6IGZhbHNlLAogIH0sCn0sIHsKICB0aW1lc3RhbXBzOiB0cnVlLAp9KTsKCi8vIEVuY3JpcHRhciBsYSBjb250cmFzZcOxYSBhbnRlcyBkZSBndWFyZGFyIGVsIHVzdWFyaW8KdXNlclNjaGVtYS5wcmUoJ3NhdmUnLCBhc3luYyBmdW5jdGlvbiAobmV4dCkgewogIGlmICghdGhpcy5pc01vZGlmaWVkKCdwYXNzd29yZCcpKSB7CiAgICBuZXh0KCk7CiAgfQogIGNvbnN0IHNhbHQgPSBhd2FpdCBiY3J5cHQuZ2VuU2FsdCgxMCk7CiAgdGhpcy5wYXNzd29yZCA9IGF3YWl0IGJjcnlwdC5oYXNoKHRoaXMucGFzc3dvcmQsIHNhbHQpOwp9KTsKCmNvbnN0IFVzZXIgPSBtb25nb29zZS5tb2RlbCgnVXNlcicsIHVzZXJTY2hlbWEpOwoKbW9kdWxlLmV4cG9ydHMgPSBVc2VyOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// models/User.js
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  isAdmin: {
+    type: Boolean,
+    default: false,
+  },
+}, {
+  timestamps: true,
+});
+
+// Encriptar la contrase&ntilde;a antes de guardar el usuario
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;</pre></div><div class='content'></div><h2>2.2 Modelo de Producto</h2>
+<div class='content'><p>Crea un archivo <code>Product.js</code> en la carpeta <code>models</code> y define el esquema del producto:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbW9kZWxzL1Byb2R1Y3QuanMKY29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwoKY29uc3QgcHJvZHVjdFNjaGVtYSA9IG5ldyBtb25nb29zZS5TY2hlbWEoewogIG5hbWU6IHsKICAgIHR5cGU6IFN0cmluZywKICAgIHJlcXVpcmVkOiB0cnVlLAogIH0sCiAgZGVzY3JpcHRpb246IHsKICAgIHR5cGU6IFN0cmluZywKICAgIHJlcXVpcmVkOiB0cnVlLAogIH0sCiAgcHJpY2U6IHsKICAgIHR5cGU6IE51bWJlciwKICAgIHJlcXVpcmVkOiB0cnVlLAogIH0sCiAgY291bnRJblN0b2NrOiB7CiAgICB0eXBlOiBOdW1iZXIsCiAgICByZXF1aXJlZDogdHJ1ZSwKICB9LAogIGltYWdlVXJsOiB7CiAgICB0eXBlOiBTdHJpbmcsCiAgICByZXF1aXJlZDogdHJ1ZSwKICB9LAp9LCB7CiAgdGltZXN0YW1wczogdHJ1ZSwKfSk7Cgpjb25zdCBQcm9kdWN0ID0gbW9uZ29vc2UubW9kZWwoJ1Byb2R1Y3QnLCBwcm9kdWN0U2NoZW1hKTsKCm1vZHVsZS5leHBvcnRzID0gUHJvZHVjdDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// models/Product.js
+const mongoose = require('mongoose');
+
+const productSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: true,
+  },
+  countInStock: {
+    type: Number,
+    required: true,
+  },
+  imageUrl: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: true,
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+module.exports = Product;</pre></div><div class='content'></div><h2>2.3 Modelo de Pedido</h2>
+<div class='content'><p>Crea un archivo <code>Order.js</code> en la carpeta <code>models</code> y define el esquema del pedido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbW9kZWxzL09yZGVyLmpzCmNvbnN0IG1vbmdvb3NlID0gcmVxdWlyZSgnbW9uZ29vc2UnKTsKCmNvbnN0IG9yZGVyU2NoZW1hID0gbmV3IG1vbmdvb3NlLlNjaGVtYSh7CiAgdXNlcjogewogICAgdHlwZTogbW9uZ29vc2UuU2NoZW1hLlR5cGVzLk9iamVjdElkLAogICAgcmVxdWlyZWQ6IHRydWUsCiAgICByZWY6ICdVc2VyJywKICB9LAogIG9yZGVySXRlbXM6IFsKICAgIHsKICAgICAgbmFtZTogeyB0eXBlOiBTdHJpbmcsIHJlcXVpcmVkOiB0cnVlIH0sCiAgICAgIHF0eTogeyB0eXBlOiBOdW1iZXIsIHJlcXVpcmVkOiB0cnVlIH0sCiAgICAgIGltYWdlOiB7IHR5cGU6IFN0cmluZywgcmVxdWlyZWQ6IHRydWUgfSwKICAgICAgcHJpY2U6IHsgdHlwZTogTnVtYmVyLCByZXF1aXJlZDogdHJ1ZSB9LAogICAgICBwcm9kdWN0OiB7CiAgICAgICAgdHlwZTogbW9uZ29vc2UuU2NoZW1hLlR5cGVzLk9iamVjdElkLAogICAgICAgIHJlcXVpcmVkOiB0cnVlLAogICAgICAgIHJlZjogJ1Byb2R1Y3QnLAogICAgICB9LAogICAgfSwKICBdLAogIHNoaXBwaW5nQWRkcmVzczogewogICAgYWRkcmVzczogeyB0eXBlOiBTdHJpbmcsIHJlcXVpcmVkOiB0cnVlIH0sCiAgICBjaXR5OiB7IHR5cGU6IFN0cmluZywgcmVxdWlyZWQ6IHRydWUgfSwKICAgIHBvc3RhbENvZGU6IHsgdHlwZTogU3RyaW5nLCByZXF1aXJlZDogdHJ1ZSB9LAogICAgY291bnRyeTogeyB0eXBlOiBTdHJpbmcsIHJlcXVpcmVkOiB0cnVlIH0sCiAgfSwKICBwYXltZW50TWV0aG9kOiB7CiAgICB0eXBlOiBTdHJpbmcsCiAgICByZXF1aXJlZDogdHJ1ZSwKICB9LAogIHBheW1lbnRSZXN1bHQ6IHsKICAgIGlkOiB7IHR5cGU6IFN0cmluZyB9LAogICAgc3RhdHVzOiB7IHR5cGU6IFN0cmluZyB9LAogICAgdXBkYXRlX3RpbWU6IHsgdHlwZTogU3RyaW5nIH0sCiAgICBlbWFpbF9hZGRyZXNzOiB7IHR5cGU6IFN0cmluZyB9LAogIH0sCiAgdGF4UHJpY2U6IHsKICAgIHR5cGU6IE51bWJlciwKICAgIHJlcXVpcmVkOiB0cnVlLAogICAgZGVmYXVsdDogMC4wLAogIH0sCiAgc2hpcHBpbmdQcmljZTogewogICAgdHlwZTogTnVtYmVyLAogICAgcmVxdWlyZWQ6IHRydWUsCiAgICBkZWZhdWx0OiAwLjAsCiAgfSwKICB0b3RhbFByaWNlOiB7CiAgICB0eXBlOiBOdW1iZXIsCiAgICByZXF1aXJlZDogdHJ1ZSwKICAgIGRlZmF1bHQ6IDAuMCwKICB9LAogIGlzUGFpZDogewogICAgdHlwZTogQm9vbGVhbiwKICAgIHJlcXVpcmVkOiB0cnVlLAogICAgZGVmYXVsdDogZmFsc2UsCiAgfSwKICBwYWlkQXQ6IHsKICAgIHR5cGU6IERhdGUsCiAgfSwKICBpc0RlbGl2ZXJlZDogewogICAgdHlwZTogQm9vbGVhbiwKICAgIHJlcXVpcmVkOiB0cnVlLAogICAgZGVmYXVsdDogZmFsc2UsCiAgfSwKICBkZWxpdmVyZWRBdDogewogICAgdHlwZTogRGF0ZSwKICB9LAp9LCB7CiAgdGltZXN0YW1wczogdHJ1ZSwKfSk7Cgpjb25zdCBPcmRlciA9IG1vbmdvb3NlLm1vZGVsKCdPcmRlcicsIG9yZGVyU2NoZW1hKTsKCm1vZHVsZS5leHBvcnRzID0gT3JkZXI7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// models/Order.js
+const mongoose = require('mongoose');
+
+const orderSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  orderItems: [
+    {
+      name: { type: String, required: true },
+      qty: { type: Number, required: true },
+      image: { type: String, required: true },
+      price: { type: Number, required: true },
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Product',
+      },
+    },
+  ],
+  shippingAddress: {
+    address: { type: String, required: true },
+    city: { type: String, required: true },
+    postalCode: { type: String, required: true },
+    country: { type: String, required: true },
+  },
+  paymentMethod: {
+    type: String,
+    required: true,
+  },
+  paymentResult: {
+    id: { type: String },
+    status: { type: String },
+    update_time: { type: String },
+    email_address: { type: String },
+  },
+  taxPrice: {
+    type: Number,
+    required: true,
+    default: 0.0,
+  },
+  shippingPrice: {
+    type: Number,
+    required: true,
+    default: 0.0,
+  },
+  totalPrice: {
+    type: Number,
+    required: true,
+    default: 0.0,
+  },
+  isPaid: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  paidAt: {
+    type: Date,
+  },
+  isDelivered: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+  deliveredAt: {
+    type: Date,
+  },
+}, {
+  timestamps: true,
+});
+
+const Order = mongoose.model('Order', orderSchema);
+
+module.exports = Order;</pre></div><div class='content'></div><h1>Paso 3: Rutas y Controladores</h1>
+<div class='content'></div><h2>3.1 Rutas de Autenticación</h2>
+<div class='content'><p>Crea un archivo <code>authRoutes.js</code> en la carpeta <code>routes</code> y define las rutas de autenticación:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcm91dGVzL2F1dGhSb3V0ZXMuanMKY29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyByZWdpc3RlclVzZXIsIGxvZ2luVXNlciB9ID0gcmVxdWlyZSgnLi4vY29udHJvbGxlcnMvYXV0aENvbnRyb2xsZXInKTsKY29uc3Qgcm91dGVyID0gZXhwcmVzcy5Sb3V0ZXIoKTsKCnJvdXRlci5wb3N0KCcvcmVnaXN0ZXInLCByZWdpc3RlclVzZXIpOwpyb3V0ZXIucG9zdCgnL2xvZ2luJywgbG9naW5Vc2VyKTsKCm1vZHVsZS5leHBvcnRzID0gcm91dGVyOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// routes/authRoutes.js
+const express = require('express');
+const { registerUser, loginUser } = require('../controllers/authController');
+const router = express.Router();
+
+router.post('/register', registerUser);
+router.post('/login', loginUser);
+
+module.exports = router;</pre></div><div class='content'></div><h2>3.2 Controlador de Autenticación</h2>
+<div class='content'><p>Crea un archivo <code>authController.js</code> en la carpeta <code>controllers</code> y define las funciones de autenticación:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY29udHJvbGxlcnMvYXV0aENvbnRyb2xsZXIuanMKY29uc3QgVXNlciA9IHJlcXVpcmUoJy4uL21vZGVscy9Vc2VyJyk7CmNvbnN0IGJjcnlwdCA9IHJlcXVpcmUoJ2JjcnlwdGpzJyk7CmNvbnN0IGp3dCA9IHJlcXVpcmUoJ2pzb253ZWJ0b2tlbicpOwoKLy8gUmVnaXN0cmFyIHVzdWFyaW8KY29uc3QgcmVnaXN0ZXJVc2VyID0gYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgY29uc3QgeyBuYW1lLCBlbWFpbCwgcGFzc3dvcmQgfSA9IHJlcS5ib2R5OwoKICB0cnkgewogICAgY29uc3QgdXNlckV4aXN0cyA9IGF3YWl0IFVzZXIuZmluZE9uZSh7IGVtYWlsIH0pOwoKICAgIGlmICh1c2VyRXhpc3RzKSB7CiAgICAgIHJldHVybiByZXMuc3RhdHVzKDQwMCkuanNvbih7IG1lc3NhZ2U6ICdFbCB1c3VhcmlvIHlhIGV4aXN0ZScgfSk7CiAgICB9CgogICAgY29uc3QgdXNlciA9IGF3YWl0IFVzZXIuY3JlYXRlKHsKICAgICAgbmFtZSwKICAgICAgZW1haWwsCiAgICAgIHBhc3N3b3JkLAogICAgfSk7CgogICAgaWYgKHVzZXIpIHsKICAgICAgcmVzLnN0YXR1cygyMDEpLmpzb24oewogICAgICAgIF9pZDogdXNlci5faWQsCiAgICAgICAgbmFtZTogdXNlci5uYW1lLAogICAgICAgIGVtYWlsOiB1c2VyLmVtYWlsLAogICAgICAgIHRva2VuOiBnZW5lcmF0ZVRva2VuKHVzZXIuX2lkKSwKICAgICAgfSk7CiAgICB9IGVsc2UgewogICAgICByZXMuc3RhdHVzKDQwMCkuanNvbih7IG1lc3NhZ2U6ICdEYXRvcyBkZSB1c3VhcmlvIG5vIHbDoWxpZG9zJyB9KTsKICAgIH0KICB9IGNhdGNoIChlcnJvcikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBtZXNzYWdlOiAnRXJyb3IgZGVsIHNlcnZpZG9yJyB9KTsKICB9Cn07CgovLyBJbmljaWFyIHNlc2nDs24KY29uc3QgbG9naW5Vc2VyID0gYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgY29uc3QgeyBlbWFpbCwgcGFzc3dvcmQgfSA9IHJlcS5ib2R5OwoKICB0cnkgewogICAgY29uc3QgdXNlciA9IGF3YWl0IFVzZXIuZmluZE9uZSh7IGVtYWlsIH0pOwoKICAgIGlmICh1c2VyICYmIChhd2FpdCBiY3J5cHQuY29tcGFyZShwYXNzd29yZCwgdXNlci5wYXNzd29yZCkpKSB7CiAgICAgIHJlcy5qc29uKHsKICAgICAgICBfaWQ6IHVzZXIuX2lkLAogICAgICAgIG5hbWU6IHVzZXIubmFtZSwKICAgICAgICBlbWFpbDogdXNlci5lbWFpbCwKICAgICAgICB0b2tlbjogZ2VuZXJhdGVUb2tlbih1c2VyLl9pZCksCiAgICAgIH0pOwogICAgfSBlbHNlIHsKICAgICAgcmVzLnN0YXR1cyg0MDEpLmpzb24oeyBtZXNzYWdlOiAnQ3JlZGVuY2lhbGVzIG5vIHbDoWxpZGFzJyB9KTsKICAgIH0KICB9IGNhdGNoIChlcnJvcikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBtZXNzYWdlOiAnRXJyb3IgZGVsIHNlcnZpZG9yJyB9KTsKICB9Cn07CgovLyBHZW5lcmFyIHRva2VuIEpXVApjb25zdCBnZW5lcmF0ZVRva2VuID0gKGlkKSA9PiB7CiAgcmV0dXJuIGp3dC5zaWduKHsgaWQgfSwgcHJvY2Vzcy5lbnYuSldUX1NFQ1JFVCwgewogICAgZXhwaXJlc0luOiAnMzBkJywKICB9KTsKfTsKCm1vZHVsZS5leHBvcnRzID0gewogIHJlZ2lzdGVyVXNlciwKICBsb2dpblVzZXIsCn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// controllers/authController.js
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+// Registrar usuario
+const registerUser = async (req, res) =&gt; {
+  const { name, email, password } = req.body;
+
+  try {
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      return res.status(400).json({ message: 'El usuario ya existe' });
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+    });
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400).json({ message: 'Datos de usuario no v&aacute;lidos' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Iniciar sesi&oacute;n
+const loginUser = async (req, res) =&gt; {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (user &amp;&amp; (await bcrypt.compare(password, user.password))) {
+      res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(401).json({ message: 'Credenciales no v&aacute;lidas' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Generar token JWT
+const generateToken = (id) =&gt; {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: '30d',
+  });
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+};</pre></div><div class='content'></div><h2>3.3 Middleware de Autenticación</h2>
+<div class='content'><p>Crea un archivo <code>authMiddleware.js</code> en la carpeta <code>middleware</code> y define el middleware de autenticación:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWlkZGxld2FyZS9hdXRoTWlkZGxld2FyZS5qcwpjb25zdCBqd3QgPSByZXF1aXJlKCdqc29ud2VidG9rZW4nKTsKY29uc3QgVXNlciA9IHJlcXVpcmUoJy4uL21vZGVscy9Vc2VyJyk7Cgpjb25zdCBwcm90ZWN0ID0gYXN5bmMgKHJlcSwgcmVzLCBuZXh0KSA9PiB7CiAgbGV0IHRva2VuOwoKICBpZiAocmVxLmhlYWRlcnMuYXV0aG9yaXphdGlvbiAmJiByZXEuaGVhZGVycy5hdXRob3JpemF0aW9uLnN0YXJ0c1dpdGgoJ0JlYXJlcicpKSB7CiAgICB0cnkgewogICAgICB0b2tlbiA9IHJlcS5oZWFkZXJzLmF1dGhvcml6YXRpb24uc3BsaXQoJyAnKVsxXTsKICAgICAgY29uc3QgZGVjb2RlZCA9IGp3dC52ZXJpZnkodG9rZW4sIHByb2Nlc3MuZW52LkpXVF9TRUNSRVQpOwogICAgICByZXEudXNlciA9IGF3YWl0IFVzZXIuZmluZEJ5SWQoZGVjb2RlZC5pZCkuc2VsZWN0KCctcGFzc3dvcmQnKTsKICAgICAgbmV4dCgpOwogICAgfSBjYXRjaCAoZXJyb3IpIHsKICAgICAgcmVzLnN0YXR1cyg0MDEpLmpzb24oeyBtZXNzYWdlOiAnTm8gYXV0b3JpemFkbywgdG9rZW4gZmFsbGlkbycgfSk7CiAgICB9CiAgfQoKICBpZiAoIXRva2VuKSB7CiAgICByZXMuc3RhdHVzKDQwMSkuanNvbih7IG1lc3NhZ2U6ICdObyBhdXRvcml6YWRvLCBubyBoYXkgdG9rZW4nIH0pOwogIH0KfTsKCm1vZHVsZS5leHBvcnRzID0geyBwcm90ZWN0IH07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// middleware/authMiddleware.js
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+
+const protect = async (req, res, next) =&gt; {
+  let token;
+
+  if (req.headers.authorization &amp;&amp; req.headers.authorization.startsWith('Bearer')) {
+    try {
+      token = req.headers.authorization.split(' ')[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = await User.findById(decoded.id).select('-password');
+      next();
+    } catch (error) {
+      res.status(401).json({ message: 'No autorizado, token fallido' });
+    }
+  }
+
+  if (!token) {
+    res.status(401).json({ message: 'No autorizado, no hay token' });
+  }
+};
+
+module.exports = { protect };</pre></div><div class='content'></div><h2>3.4 Rutas de Productos</h2>
+<div class='content'><p>Crea un archivo <code>productRoutes.js</code> en la carpeta <code>routes</code> y define las rutas de productos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcm91dGVzL3Byb2R1Y3RSb3V0ZXMuanMKY29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBnZXRQcm9kdWN0cywgZ2V0UHJvZHVjdEJ5SWQsIGNyZWF0ZVByb2R1Y3QsIHVwZGF0ZVByb2R1Y3QsIGRlbGV0ZVByb2R1Y3QgfSA9IHJlcXVpcmUoJy4uL2NvbnRyb2xsZXJzL3Byb2R1Y3RDb250cm9sbGVyJyk7CmNvbnN0IHsgcHJvdGVjdCB9ID0gcmVxdWlyZSgnLi4vbWlkZGxld2FyZS9hdXRoTWlkZGxld2FyZScpOwpjb25zdCByb3V0ZXIgPSBleHByZXNzLlJvdXRlcigpOwoKcm91dGVyLnJvdXRlKCcvJykKICAuZ2V0KGdldFByb2R1Y3RzKQogIC5wb3N0KHByb3RlY3QsIGNyZWF0ZVByb2R1Y3QpOwoKcm91dGVyLnJvdXRlKCcvOmlkJykKICAuZ2V0KGdldFByb2R1Y3RCeUlkKQogIC5wdXQocHJvdGVjdCwgdXBkYXRlUHJvZHVjdCkKICAuZGVsZXRlKHByb3RlY3QsIGRlbGV0ZVByb2R1Y3QpOwoKbW9kdWxlLmV4cG9ydHMgPSByb3V0ZXI7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// routes/productRoutes.js
+const express = require('express');
+const { getProducts, getProductById, createProduct, updateProduct, deleteProduct } = require('../controllers/productController');
+const { protect } = require('../middleware/authMiddleware');
+const router = express.Router();
+
+router.route('/')
+  .get(getProducts)
+  .post(protect, createProduct);
+
+router.route('/:id')
+  .get(getProductById)
+  .put(protect, updateProduct)
+  .delete(protect, deleteProduct);
+
+module.exports = router;</pre></div><div class='content'></div><h2>3.5 Controlador de Productos</h2>
+<div class='content'><p>Crea un archivo <code>productController.js</code> en la carpeta <code>controllers</code> y define las funciones de productos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY29udHJvbGxlcnMvcHJvZHVjdENvbnRyb2xsZXIuanMKY29uc3QgUHJvZHVjdCA9IHJlcXVpcmUoJy4uL21vZGVscy9Qcm9kdWN0Jyk7CgovLyBPYnRlbmVyIHRvZG9zIGxvcyBwcm9kdWN0b3MKY29uc3QgZ2V0UHJvZHVjdHMgPSBhc3luYyAocmVxLCByZXMpID0+IHsKICB0cnkgewogICAgY29uc3QgcHJvZHVjdHMgPSBhd2FpdCBQcm9kdWN0LmZpbmQoe30pOwogICAgcmVzLmpzb24ocHJvZHVjdHMpOwogIH0gY2F0Y2ggKGVycm9yKSB7CiAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IG1lc3NhZ2U6ICdFcnJvciBkZWwgc2Vydmlkb3InIH0pOwogIH0KfTsKCi8vIE9idGVuZXIgcHJvZHVjdG8gcG9yIElECmNvbnN0IGdldFByb2R1Y3RCeUlkID0gYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IHByb2R1Y3QgPSBhd2FpdCBQcm9kdWN0LmZpbmRCeUlkKHJlcS5wYXJhbXMuaWQpOwoKICAgIGlmIChwcm9kdWN0KSB7CiAgICAgIHJlcy5qc29uKHByb2R1Y3QpOwogICAgfSBlbHNlIHsKICAgICAgcmVzLnN0YXR1cyg0MDQpLmpzb24oeyBtZXNzYWdlOiAnUHJvZHVjdG8gbm8gZW5jb250cmFkbycgfSk7CiAgICB9CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgbWVzc2FnZTogJ0Vycm9yIGRlbCBzZXJ2aWRvcicgfSk7CiAgfQp9OwoKLy8gQ3JlYXIgbnVldm8gcHJvZHVjdG8KY29uc3QgY3JlYXRlUHJvZHVjdCA9IGFzeW5jIChyZXEsIHJlcykgPT4gewogIGNvbnN0IHsgbmFtZSwgZGVzY3JpcHRpb24sIHByaWNlLCBjb3VudEluU3RvY2ssIGltYWdlVXJsIH0gPSByZXEuYm9keTsKCiAgdHJ5IHsKICAgIGNvbnN0IHByb2R1Y3QgPSBuZXcgUHJvZHVjdCh7CiAgICAgIG5hbWUsCiAgICAgIGRlc2NyaXB0aW9uLAogICAgICBwcmljZSwKICAgICAgY291bnRJblN0b2NrLAogICAgICBpbWFnZVVybCwKICAgIH0pOwoKICAgIGNvbnN0IGNyZWF0ZWRQcm9kdWN0ID0gYXdhaXQgcHJvZHVjdC5zYXZlKCk7CiAgICByZXMuc3RhdHVzKDIwMSkuanNvbihjcmVhdGVkUHJvZHVjdCk7CiAgfSBjYXRjaCAoZXJyb3IpIHsKICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgbWVzc2FnZTogJ0Vycm9yIGRlbCBzZXJ2aWRvcicgfSk7CiAgfQp9OwoKLy8gQWN0dWFsaXphciBwcm9kdWN0bwpjb25zdCB1cGRhdGVQcm9kdWN0ID0gYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgY29uc3QgeyBuYW1lLCBkZXNjcmlwdGlvbiwgcHJpY2UsIGNvdW50SW5TdG9jaywgaW1hZ2VVcmwgfSA9IHJlcS5ib2R5OwoKICB0cnkgewogICAgY29uc3QgcHJvZHVjdCA9IGF3YWl0IFByb2R1Y3QuZmluZEJ5SWQocmVxLnBhcmFtcy5pZCk7CgogICAgaWYgKHByb2R1Y3QpIHsKICAgICAgcHJvZHVjdC5uYW1lID0gbmFtZTsKICAgICAgcHJvZHVjdC5kZXNjcmlwdGlvbiA9IGRlc2NyaXB0aW9uOwogICAgICBwcm9kdWN0LnByaWNlID0gcHJpY2U7CiAgICAgIHByb2R1Y3QuY291bnRJblN0b2NrID0gY291bnRJblN0b2NrOwogICAgICBwcm9kdWN0LmltYWdlVXJsID0gaW1hZ2VVcmw7CgogICAgICBjb25zdCB1cGRhdGVkUHJvZHVjdCA9IGF3YWl0IHByb2R1Y3Quc2F2ZSgpOwogICAgICByZXMuanNvbih1cGRhdGVkUHJvZHVjdCk7CiAgICB9IGVsc2UgewogICAgICByZXMuc3RhdHVzKDQwNCkuanNvbih7IG1lc3NhZ2U6ICdQcm9kdWN0byBubyBlbmNvbnRyYWRvJyB9KTsKICAgIH0KICB9IGNhdGNoIChlcnJvcikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBtZXNzYWdlOiAnRXJyb3IgZGVsIHNlcnZpZG9yJyB9KTsKICB9Cn07CgovLyBFbGltaW5hciBwcm9kdWN0bwpjb25zdCBkZWxldGVQcm9kdWN0ID0gYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgdHJ5IHsKICAgIGNvbnN0IHByb2R1Y3QgPSBhd2FpdCBQcm9kdWN0LmZpbmRCeUlkKHJlcS5wYXJhbXMuaWQpOwoKICAgIGlmIChwcm9kdWN0KSB7CiAgICAgIGF3YWl0IHByb2R1Y3QucmVtb3ZlKCk7CiAgICAgIHJlcy5qc29uKHsgbWVzc2FnZTogJ1Byb2R1Y3RvIGVsaW1pbmFkbycgfSk7CiAgICB9IGVsc2UgewogICAgICByZXMuc3RhdHVzKDQwNCkuanNvbih7IG1lc3NhZ2U6ICdQcm9kdWN0byBubyBlbmNvbnRyYWRvJyB9KTsKICAgIH0KICB9IGNhdGNoIChlcnJvcikgewogICAgcmVzLnN0YXR1cyg1MDApLmpzb24oeyBtZXNzYWdlOiAnRXJyb3IgZGVsIHNlcnZpZG9yJyB9KTsKICB9Cn07Cgptb2R1bGUuZXhwb3J0cyA9IHsKICBnZXRQcm9kdWN0cywKICBnZXRQcm9kdWN0QnlJZCwKICBjcmVhdGVQcm9kdWN0LAogIHVwZGF0ZVByb2R1Y3QsCiAgZGVsZXRlUHJvZHVjdCwKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// controllers/productController.js
+const Product = require('../models/Product');
+
+// Obtener todos los productos
+const getProducts = async (req, res) =&gt; {
+  try {
+    const products = await Product.find({});
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Obtener producto por ID
+const getProductById = async (req, res) =&gt; {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      res.json(product);
+    } else {
+      res.status(404).json({ message: 'Producto no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Crear nuevo producto
+const createProduct = async (req, res) =&gt; {
+  const { name, description, price, countInStock, imageUrl } = req.body;
+
+  try {
+    const product = new Product({
+      name,
+      description,
+      price,
+      countInStock,
+      imageUrl,
+    });
+
+    const createdProduct = await product.save();
+    res.status(201).json(createdProduct);
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Actualizar producto
+const updateProduct = async (req, res) =&gt; {
+  const { name, description, price, countInStock, imageUrl } = req.body;
+
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      product.name = name;
+      product.description = description;
+      product.price = price;
+      product.countInStock = countInStock;
+      product.imageUrl = imageUrl;
+
+      const updatedProduct = await product.save();
+      res.json(updatedProduct);
+    } else {
+      res.status(404).json({ message: 'Producto no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+// Eliminar producto
+const deleteProduct = async (req, res) =&gt; {
+  try {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+      await product.remove();
+      res.json({ message: 'Producto eliminado' });
+    } else {
+      res.status(404).json({ message: 'Producto no encontrado' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error del servidor' });
+  }
+};
+
+module.exports = {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+};</pre></div><div class='content'></div><h1>Paso 4: Integrar Todo</h1>
+<div class='content'></div><h2>4.1 Integrar Rutas en `app.js`</h2>
+<div class='content'><p>Actualiza <code>app.js</code> para incluir las rutas de autenticación y productos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYXBwLmpzCmNvbnN0IGV4cHJlc3MgPSByZXF1aXJlKCdleHByZXNzJyk7CmNvbnN0IG1vbmdvb3NlID0gcmVxdWlyZSgnbW9uZ29vc2UnKTsKY29uc3QgZG90ZW52ID0gcmVxdWlyZSgnZG90ZW52Jyk7CmNvbnN0IGF1dGhSb3V0ZXMgPSByZXF1aXJlKCcuL3JvdXRlcy9hdXRoUm91dGVzJyk7CmNvbnN0IHByb2R1Y3RSb3V0ZXMgPSByZXF1aXJlKCcuL3JvdXRlcy9wcm9kdWN0Um91dGVzJyk7CgovLyBDb25maWd1cmFjacOzbiBkZSB2YXJpYWJsZXMgZGUgZW50b3Jubwpkb3RlbnYuY29uZmlnKCk7Cgpjb25zdCBhcHAgPSBleHByZXNzKCk7CgovLyBNaWRkbGV3YXJlIHBhcmEgcGFyc2VhciBKU09OCmFwcC51c2UoZXhwcmVzcy5qc29uKCkpOwoKLy8gQ29uZXhpw7NuIGEgbGEgYmFzZSBkZSBkYXRvcwptb25nb29zZS5jb25uZWN0KHByb2Nlc3MuZW52Lk1PTkdPX1VSSSwgewogIHVzZU5ld1VybFBhcnNlcjogdHJ1ZSwKICB1c2VVbmlmaWVkVG9wb2xvZ3k6IHRydWUsCn0pCi50aGVuKCgpID0+IGNvbnNvbGUubG9nKCdDb25lY3RhZG8gYSBsYSBiYXNlIGRlIGRhdG9zJykpCi5jYXRjaCgoZXJyKSA9PiBjb25zb2xlLmVycm9yKCdFcnJvciBhbCBjb25lY3RhciBhIGxhIGJhc2UgZGUgZGF0b3MnLCBlcnIpKTsKCi8vIFJ1dGFzCmFwcC51c2UoJy9hcGkvYXV0aCcsIGF1dGhSb3V0ZXMpOwphcHAudXNlKCcvYXBpL3Byb2R1Y3RzJywgcHJvZHVjdFJvdXRlcyk7CgphcHAuZ2V0KCcvJywgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnNlbmQoJ0FQSSBkZSBDb21lcmNpbyBFbGVjdHLDs25pY28nKTsKfSk7CgovLyBJbmljaWFyIGVsIHNlcnZpZG9yCmNvbnN0IFBPUlQgPSBwcm9jZXNzLmVudi5QT1JUIHx8IDUwMDA7CmFwcC5saXN0ZW4oUE9SVCwgKCkgPT4gewogIGNvbnNvbGUubG9nKGBTZXJ2aWRvciBjb3JyaWVuZG8gZW4gZWwgcHVlcnRvICR7UE9SVH1gKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// app.js
+const express = require('express');
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+const authRoutes = require('./routes/authRoutes');
+const productRoutes = require('./routes/productRoutes');
+
+// Configuraci&oacute;n de variables de entorno
+dotenv.config();
+
+const app = express();
+
+// Middleware para parsear JSON
+app.use(express.json());
+
+// Conexi&oacute;n a la base de datos
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() =&gt; console.log('Conectado a la base de datos'))
+.catch((err) =&gt; console.error('Error al conectar a la base de datos', err));
+
+// Rutas
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+
+app.get('/', (req, res) =&gt; {
+  res.send('API de Comercio Electr&oacute;nico');
+});
+
+// Iniciar el servidor
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () =&gt; {
+  console.log(`Servidor corriendo en el puerto ${PORT}`);
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido a crear una API de comercio electrónico utilizando Node.js y Express. Has configurado el proyecto, definido modelos de datos, implementado rutas y controladores, y protegido las rutas con middleware de autenticación. Este proyecto te proporciona una base sólida para construir aplicaciones más complejas y escalables en el futuro.</p>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><ol>
+<li><strong>Añadir Funcionalidad de Carrito de Compras</strong>: Implementa un modelo y controlador para gestionar el carrito de compras de los usuarios.</li>
+<li><strong>Mejorar la Seguridad</strong>: Añade validación de datos y manejo de errores más robusto en las rutas y controladores.</li>
+<li><strong>Implementar Pagos</strong>: Integra una pasarela de pagos como Stripe para procesar pagos en la API.</li>
+</ol>
+</div><h2>Solución del Ejercicio</h2>
+<div class='content'><p>Para añadir la funcionalidad de carrito de compras, puedes seguir un enfoque similar al utilizado para los productos y pedidos. Define un modelo <code>Cart</code>, crea rutas y controladores para gestionar el carrito, y asegúrate de proteger las rutas con el middleware de autenticación.</p>
+<p>¡Buena suerte y sigue practicando!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='12-01-building-chat-app' title="Construcción de una Aplicación de Chat">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='12-03-developing-blogging-platform' title="Desarrollo de una Plataforma de Blogs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

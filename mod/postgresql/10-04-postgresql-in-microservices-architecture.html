@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostgreSQL en Arquitectura de Microservicios</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/10-04-postgresql-in-microservices-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/10-04-postgresql-in-microservices-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/10-04-postgresql-in-microservices-architecture" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/10-04-postgresql-in-microservices-architecture" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/10-04-postgresql-in-microservices-architecture" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-03-handling-big-data' title="Manejo de Big Data">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">PostgreSQL en Arquitectura de Microservicios</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En esta sección, exploraremos cómo PostgreSQL puede ser utilizado eficazmente en una arquitectura de microservicios. Los microservicios son un estilo de arquitectura que estructura una aplicación como un conjunto de servicios pequeños y autónomos, cada uno ejecutando un proceso único y comunicándose a través de interfaces bien definidas. PostgreSQL, con su robustez y flexibilidad, es una excelente opción para gestionar datos en este tipo de arquitectura.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Microservicios</strong>: Un enfoque de desarrollo de software donde una aplicación se compone de servicios pequeños e independientes.</li>
+<li><strong>Desacoplamiento</strong>: La separación de servicios para que puedan desarrollarse, desplegarse y escalarse de manera independiente.</li>
+<li><strong>Persistencia de Datos</strong>: Cada microservicio puede tener su propia base de datos para mantener la independencia y evitar el acoplamiento.</li>
+<li><strong>Comunicación entre Servicios</strong>: Los microservicios se comunican entre sí a través de APIs, mensajería o eventos.</li>
+</ol>
+</div><h1>Ventajas de Usar PostgreSQL en Microservicios</h1>
+<div class='content'><ul>
+<li><strong>Escalabilidad</strong>: PostgreSQL puede escalar tanto vertical como horizontalmente.</li>
+<li><strong>Flexibilidad</strong>: Soporta múltiples tipos de datos y extensiones, lo que lo hace adaptable a diferentes necesidades de microservicios.</li>
+<li><strong>Transacciones ACID</strong>: Garantiza la integridad de los datos, lo cual es crucial en sistemas distribuidos.</li>
+<li><strong>Soporte para JSON</strong>: Permite almacenar y consultar datos JSON, facilitando la integración con servicios que manejan datos semi-estructurados.</li>
+</ul>
+</div><h1>Desafíos y Soluciones</h1>
+<div class='content'></div><h2>Desafíos</h2>
+<div class='content'><ol>
+<li><strong>Consistencia de Datos</strong>: Mantener la consistencia de datos entre microservicios puede ser complicado.</li>
+<li><strong>Rendimiento</strong>: La comunicación entre microservicios puede introducir latencia.</li>
+<li><strong>Gestión de Esquemas</strong>: La evolución del esquema de la base de datos puede ser difícil de manejar en un entorno de microservicios.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><ol>
+<li><strong>Event Sourcing y CQRS</strong>: Utilizar patrones como Event Sourcing y CQRS (Command Query Responsibility Segregation) para manejar la consistencia de datos.</li>
+<li><strong>Caching</strong>: Implementar mecanismos de caching para reducir la latencia.</li>
+<li><strong>Migraciones de Esquema</strong>: Utilizar herramientas de migración de esquemas como Flyway o Liquibase para gestionar cambios en la base de datos.</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Escenario</h2>
+<div class='content'><p>Supongamos que estamos desarrollando una aplicación de comercio electrónico con los siguientes microservicios:</p>
+<ul>
+<li><strong>Servicio de Usuarios</strong>: Gestiona la información de los usuarios.</li>
+<li><strong>Servicio de Productos</strong>: Gestiona el catálogo de productos.</li>
+<li><strong>Servicio de Pedidos</strong>: Gestiona los pedidos de los clientes.</li>
+</ul>
+<p>Cada servicio tendrá su propia base de datos PostgreSQL.</p>
+</div><h2>Configuración de la Base de Datos</h2>
+<div class='content'><h4>Servicio de Usuarios</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHVzZXJzICgKICAgIHVzZXJfaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgdXNlcm5hbWUgVkFSQ0hBUig1MCkgTk9UIE5VTEwsCiAgICBlbWFpbCBWQVJDSEFSKDEwMCkgTk9UIE5VTEwsCiAgICBjcmVhdGVkX2F0IFRJTUVTVEFNUCBERUZBVUxUIENVUlJFTlRfVElNRVNUQU1QCik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><h4>Servicio de Productos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHByb2R1Y3RzICgKICAgIHByb2R1Y3RfaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgbmFtZSBWQVJDSEFSKDEwMCkgTk9UIE5VTEwsCiAgICBkZXNjcmlwdGlvbiBURVhULAogICAgcHJpY2UgTlVNRVJJQygxMCwgMikgTk9UIE5VTEwsCiAgICBjcmVhdGVkX2F0IFRJTUVTVEFNUCBERUZBVUxUIENVUlJFTlRfVElNRVNUQU1QCik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE products (
+    product_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    price NUMERIC(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><h4>Servicio de Pedidos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIG9yZGVycyAoCiAgICBvcmRlcl9pZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICB1c2VyX2lkIElOVCBOT1QgTlVMTCwKICAgIHRvdGFsX2Ftb3VudCBOVU1FUklDKDEwLCAyKSBOT1QgTlVMTCwKICAgIHN0YXR1cyBWQVJDSEFSKDIwKSBOT1QgTlVMTCwKICAgIGNyZWF0ZWRfYXQgVElNRVNUQU1QIERFRkFVTFQgQ1VSUkVOVF9USU1FU1RBTVAsCiAgICBGT1JFSUdOIEtFWSAodXNlcl9pZCkgUkVGRVJFTkNFUyB1c2Vycyh1c2VyX2lkKQopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    total_amount NUMERIC(10, 2) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);</pre></div><div class='content'></div><h2>Comunicación entre Microservicios</h2>
+<div class='content'><p>Los microservicios pueden comunicarse entre sí utilizando APIs RESTful. Por ejemplo, el Servicio de Pedidos puede llamar al Servicio de Usuarios para obtener información sobre un usuario específico.</p>
+<h4>Ejemplo de Comunicación</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTZXJ2aWNpbyBkZSBQZWRpZG9zIChQeXRob24pCmltcG9ydCByZXF1ZXN0cwoKZGVmIGdldF91c2VyX2luZm8odXNlcl9pZCk6CiAgICByZXNwb25zZSA9IHJlcXVlc3RzLmdldChmJ2h0dHA6Ly91c2VyLXNlcnZpY2UvYXBpL3VzZXJzL3t1c2VyX2lkfScpCiAgICByZXR1cm4gcmVzcG9uc2UuanNvbigpCgp1c2VyX2luZm8gPSBnZXRfdXNlcl9pbmZvKDEpCnByaW50KHVzZXJfaW5mbyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Servicio de Pedidos (Python)
+import requests
+
+def get_user_info(user_id):
+    response = requests.get(f'http://user-service/api/users/{user_id}')
+    return response.json()
+
+user_info = get_user_info(1)
+print(user_info)</pre></div><div class='content'></div><h2>Manejo de Transacciones</h2>
+<div class='content'><p>Para garantizar la consistencia de datos, podemos utilizar transacciones distribuidas o patrones como Sagas.</p>
+<h4>Ejemplo de Transacción Distribuida</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU47CgotLSBTZXJ2aWNpbyBkZSBQZWRpZG9zCklOU0VSVCBJTlRPIG9yZGVycyAodXNlcl9pZCwgdG90YWxfYW1vdW50LCBzdGF0dXMpIFZBTFVFUyAoMSwgMTAwLjAwLCAnUEVORElORycpOwoKLS0gU2VydmljaW8gZGUgUHJvZHVjdG9zIChhY3R1YWxpemFjacOzbiBkZSBpbnZlbnRhcmlvKQpVUERBVEUgcHJvZHVjdHMgU0VUIHN0b2NrID0gc3RvY2sgLSAxIFdIRVJFIHByb2R1Y3RfaWQgPSAxOwoKQ09NTUlUOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN;
+
+-- Servicio de Pedidos
+INSERT INTO orders (user_id, total_amount, status) VALUES (1, 100.00, 'PENDING');
+
+-- Servicio de Productos (actualizaci&oacute;n de inventario)
+UPDATE products SET stock = stock - 1 WHERE product_id = 1;
+
+COMMIT;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>
+<p>Crea una base de datos PostgreSQL para un microservicio de &quot;Carrito de Compras&quot;.</p>
+</li>
+<li>
+<p>Define una tabla <code>cart_items</code> con los siguientes campos:</p>
+<ul>
+<li><code>cart_item_id</code> (PRIMARY KEY)</li>
+<li><code>user_id</code> (INT, NOT NULL)</li>
+<li><code>product_id</code> (INT, NOT NULL)</li>
+<li><code>quantity</code> (INT, NOT NULL)</li>
+<li><code>added_at</code> (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)</li>
+</ul>
+</li>
+<li>
+<p>Inserta algunos datos de ejemplo en la tabla <code>cart_items</code>.</p>
+</li>
+<li>
+<p>Escribe una consulta para obtener todos los artículos en el carrito de un usuario específico.</p>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>Creación de la Tabla</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGNhcnRfaXRlbXMgKAogICAgY2FydF9pdGVtX2lkIFNFUklBTCBQUklNQVJZIEtFWSwKICAgIHVzZXJfaWQgSU5UIE5PVCBOVUxMLAogICAgcHJvZHVjdF9pZCBJTlQgTk9UIE5VTEwsCiAgICBxdWFudGl0eSBJTlQgTk9UIE5VTEwsCiAgICBhZGRlZF9hdCBUSU1FU1RBTVAgREVGQVVMVCBDVVJSRU5UX1RJTUVTVEFNUAopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE cart_items (
+    cart_item_id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><h4>Inserción de Datos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gY2FydF9pdGVtcyAodXNlcl9pZCwgcHJvZHVjdF9pZCwgcXVhbnRpdHkpIFZBTFVFUyAoMSwgMTAxLCAyKTsKSU5TRVJUIElOVE8gY2FydF9pdGVtcyAodXNlcl9pZCwgcHJvZHVjdF9pZCwgcXVhbnRpdHkpIFZBTFVFUyAoMSwgMTAyLCAxKTsKSU5TRVJUIElOVE8gY2FydF9pdGVtcyAodXNlcl9pZCwgcHJvZHVjdF9pZCwgcXVhbnRpdHkpIFZBTFVFUyAoMiwgMTAzLCA1KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO cart_items (user_id, product_id, quantity) VALUES (1, 101, 2);
+INSERT INTO cart_items (user_id, product_id, quantity) VALUES (1, 102, 1);
+INSERT INTO cart_items (user_id, product_id, quantity) VALUES (2, 103, 5);</pre></div><div class='content'><h4>Consulta de Datos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBjYXJ0X2l0ZW1zIFdIRVJFIHVzZXJfaWQgPSAxOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM cart_items WHERE user_id = 1;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo PostgreSQL puede ser utilizado en una arquitectura de microservicios. Hemos discutido las ventajas, desafíos y soluciones, y hemos visto un ejemplo práctico de cómo configurar y utilizar PostgreSQL en este contexto. Con estos conocimientos, estarás mejor preparado para diseñar y desarrollar aplicaciones basadas en microservicios utilizando PostgreSQL como tu sistema de gestión de bases de datos.</p>
+<p>En la siguiente sección, exploraremos estudios de caso y aplicaciones del mundo real para profundizar aún más en el uso de PostgreSQL en diferentes escenarios.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-03-handling-big-data' title="Manejo de Big Data">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

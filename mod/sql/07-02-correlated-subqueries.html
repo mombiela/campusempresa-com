@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subconsultas correlacionadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/07-02-correlated-subqueries" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/07-02-correlated-subqueries" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/07-02-correlated-subqueries" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sql/07-02-correlated-subqueries" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/07-02-correlated-subqueries" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-introduction-subqueries' title="Introducción a subconsultas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Subconsultas correlacionadas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-exists-not-exists' title="EXISTS y NOT EXISTS">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las subconsultas correlacionadas son un tipo especial de subconsulta en SQL donde la subconsulta se refiere a una columna de la tabla principal de la consulta externa. Esto significa que la subconsulta se ejecuta una vez por cada fila procesada por la consulta externa.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Subconsulta</strong>: Una consulta dentro de otra consulta.</li>
+<li><strong>Subconsulta correlacionada</strong>: Una subconsulta que se refiere a una columna de la consulta externa.</li>
+<li><strong>Consulta externa</strong>: La consulta principal que contiene la subconsulta.</li>
+</ul>
+</div><h1>Sintaxis Básica</h1>
+<div class='content'><p>La sintaxis básica de una subconsulta correlacionada es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbjEsIGNvbHVtbjIsIC4uLgpGUk9NIHRhYmxlMSBBUyB0MQpXSEVSRSBjb2x1bW5YIE9QRVJBVE9SIChTRUxFQ1QgY29sdW1uWQogICAgICAgICAgICAgICAgICAgICAgICBGUk9NIHRhYmxlMiBBUyB0MgogICAgICAgICAgICAgICAgICAgICAgICBXSEVSRSB0MS5jb2x1bW5aID0gdDIuY29sdW1uWik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT column1, column2, ...
+FROM table1 AS t1
+WHERE columnX OPERATOR (SELECT columnY
+                        FROM table2 AS t2
+                        WHERE t1.columnZ = t2.columnZ);</pre></div><div class='content'><ul>
+<li><code>OPERATOR</code> puede ser cualquier operador de comparación como <code>=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>&lt;&gt;</code>.</li>
+<li><code>t1</code> y <code>t2</code> son alias para <code>table1</code> y <code>table2</code>, respectivamente.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que tenemos dos tablas: <code>Employees</code> y <code>Departments</code>.</p>
+</div><h2>Tabla `Employees`</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>EmployeeID</th>
+<th>Name</th>
+<th>DepartmentID</th>
+<th>Salary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Alice</td>
+<td>1</td>
+<td>50000</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Bob</td>
+<td>2</td>
+<td>60000</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Charlie</td>
+<td>1</td>
+<td>55000</td>
+</tr>
+<tr>
+<td>4</td>
+<td>David</td>
+<td>3</td>
+<td>70000</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Eve</td>
+<td>2</td>
+<td>65000</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Tabla `Departments`</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>DepartmentID</th>
+<th>DepartmentName</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>HR</td>
+</tr>
+<tr>
+<td>2</td>
+<td>IT</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Finance</td>
+</tr>
+</tbody>
+</table>
+<p>Queremos encontrar los empleados cuyo salario es mayor que el salario promedio de su departamento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIE5hbWUsIFNhbGFyeQpGUk9NIEVtcGxveWVlcyBBUyBlMQpXSEVSRSBTYWxhcnkgPiAoU0VMRUNUIEFWRyhTYWxhcnkpCiAgICAgICAgICAgICAgICBGUk9NIEVtcGxveWVlcyBBUyBlMgogICAgICAgICAgICAgICAgV0hFUkUgZTEuRGVwYXJ0bWVudElEID0gZTIuRGVwYXJ0bWVudElEKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT Name, Salary
+FROM Employees AS e1
+WHERE Salary &gt; (SELECT AVG(Salary)
+                FROM Employees AS e2
+                WHERE e1.DepartmentID = e2.DepartmentID);</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Consulta Externa</strong>:</p>
+<pre><code class="language-sql">SELECT Name, Salary
+FROM Employees AS e1
+WHERE Salary &gt; ...
+</code></pre>
+<ul>
+<li>Selecciona el <code>Name</code> y <code>Salary</code> de la tabla <code>Employees</code> con alias <code>e1</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Subconsulta Correlacionada</strong>:</p>
+<pre><code class="language-sql">(SELECT AVG(Salary)
+ FROM Employees AS e2
+ WHERE e1.DepartmentID = e2.DepartmentID)
+</code></pre>
+<ul>
+<li>Calcula el salario promedio (<code>AVG(Salary)</code>) de la tabla <code>Employees</code> con alias <code>e2</code>.</li>
+<li>La condición <code>WHERE e1.DepartmentID = e2.DepartmentID</code> asegura que el salario promedio se calcula para el mismo departamento del empleado en la consulta externa.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Dada la siguiente tabla <code>Sales</code>:</p>
+<table>
+<thead>
+<tr>
+<th>SaleID</th>
+<th>ProductID</th>
+<th>SalespersonID</th>
+<th>Amount</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>101</td>
+<td>1</td>
+<td>500</td>
+</tr>
+<tr>
+<td>2</td>
+<td>102</td>
+<td>2</td>
+<td>300</td>
+</tr>
+<tr>
+<td>3</td>
+<td>101</td>
+<td>1</td>
+<td>700</td>
+</tr>
+<tr>
+<td>4</td>
+<td>103</td>
+<td>3</td>
+<td>200</td>
+</tr>
+<tr>
+<td>5</td>
+<td>102</td>
+<td>2</td>
+<td>400</td>
+</tr>
+</tbody>
+</table>
+<p>Encuentra los <code>SalespersonID</code> que han realizado ventas mayores que el promedio de ventas de todos los productos.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIFNhbGVzcGVyc29uSUQsIEFtb3VudApGUk9NIFNhbGVzIEFTIHMxCldIRVJFIEFtb3VudCA+IChTRUxFQ1QgQVZHKEFtb3VudCkKICAgICAgICAgICAgICAgIEZST00gU2FsZXMgQVMgczIKICAgICAgICAgICAgICAgIFdIRVJFIHMxLlByb2R1Y3RJRCA9IHMyLlByb2R1Y3RJRCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT SalespersonID, Amount
+FROM Sales AS s1
+WHERE Amount &gt; (SELECT AVG(Amount)
+                FROM Sales AS s2
+                WHERE s1.ProductID = s2.ProductID);</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Consulta Externa</strong>:</p>
+<pre><code class="language-sql">SELECT SalespersonID, Amount
+FROM Sales AS s1
+WHERE Amount &gt; ...
+</code></pre>
+<ul>
+<li>Selecciona el <code>SalespersonID</code> y <code>Amount</code> de la tabla <code>Sales</code> con alias <code>s1</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Subconsulta Correlacionada</strong>:</p>
+<pre><code class="language-sql">(SELECT AVG(Amount)
+ FROM Sales AS s2
+ WHERE s1.ProductID = s2.ProductID)
+</code></pre>
+<ul>
+<li>Calcula el monto promedio (<code>AVG(Amount)</code>) de la tabla <code>Sales</code> con alias <code>s2</code>.</li>
+<li>La condición <code>WHERE s1.ProductID = s2.ProductID</code> asegura que el monto promedio se calcula para el mismo producto de la venta en la consulta externa.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Errores Comunes</h1>
+<div class='content'><ol>
+<li><strong>No correlacionar correctamente la subconsulta</strong>: Asegúrate de que la subconsulta se refiere a la columna correcta de la consulta externa.</li>
+<li><strong>Uso incorrecto de alias</strong>: Utiliza alias claros y consistentes para evitar confusiones.</li>
+<li><strong>Subconsultas que devuelven múltiples filas</strong>: Asegúrate de que la subconsulta correlacionada devuelva un solo valor para cada fila de la consulta externa.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las subconsultas correlacionadas son una herramienta poderosa en SQL que te permite realizar consultas complejas y específicas. Al entender cómo funcionan y cómo se estructuran, puedes aprovechar al máximo su potencial para filtrar y analizar datos de manera eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-introduction-subqueries' title="Introducción a subconsultas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-exists-not-exists' title="EXISTS y NOT EXISTS">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

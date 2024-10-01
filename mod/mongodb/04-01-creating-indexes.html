@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creando Índices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/04-01-creating-indexes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/04-01-creating-indexes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/04-01-creating-indexes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/mongodb/04-01-creating-indexes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/04-01-creating-indexes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-data-types' title="Tipos de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creando Índices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-types-of-indexes' title="Tipos de Índices">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='index'></div><h2>Introducción</h2>
+<div class='index'><p>En MongoDB, los índices son estructuras especiales que almacenan una pequeña porción de los datos de la colección en una forma fácil de recorrer. Los índices mejoran significativamente la velocidad de las operaciones de consulta. Sin índices, MongoDB debe realizar un escaneo de colección, es decir, revisar cada documento en una colección para seleccionar aquellos que coinciden con la consulta. Si bien los índices mejoran el rendimiento de las consultas, también pueden afectar el rendimiento de las escrituras y el uso de almacenamiento.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='index'><ul>
+<li><strong>Índice</strong>: Estructura de datos que mejora la velocidad de las operaciones de consulta.</li>
+<li><strong>Escaneo de colección</strong>: Proceso de revisar cada documento en una colección para encontrar aquellos que coinciden con una consulta.</li>
+<li><strong>Clave de índice</strong>: Campo o campos en los que se basa el índice.</li>
+</ul>
+</div><h2>Tipos de Índices</h2>
+<div class='index'><ol>
+<li><strong>Índice Único</strong>: Garantiza que los valores de los campos indexados sean únicos.</li>
+<li><strong>Índice Compuesto</strong>: Índice en múltiples campos.</li>
+<li><strong>Índice de Texto</strong>: Soporta búsquedas de texto.</li>
+<li><strong>Índice Geoespacial</strong>: Soporta consultas geoespaciales.</li>
+<li><strong>Índice de Hash</strong>: Utiliza una función hash para indexar los valores.</li>
+</ol>
+</div><h2>Creando un Índice Básico</h2>
+<div class='index'><p>Para crear un índice en MongoDB, utilizamos el método <code>createIndex()</code>. A continuación, se muestra cómo crear un índice en un campo específico.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='index'><p>Supongamos que tenemos una colección llamada <code>usuarios</code> con documentos que contienen información sobre los usuarios, incluyendo un campo <code>nombre</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJfaWQiOiBPYmplY3RJZCgiNTA3ZjE5MWU4MTBjMTk3MjlkZTg2MGVhIiksCiAgIm5vbWJyZSI6ICJKdWFuIFDDqXJleiIsCiAgImVkYWQiOiAzMCwKICAiZW1haWwiOiAianVhbi5wZXJlekBleGFtcGxlLmNvbSIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;_id&quot;: ObjectId(&quot;507f191e810c19729de860ea&quot;),
+  &quot;nombre&quot;: &quot;Juan P&eacute;rez&quot;,
+  &quot;edad&quot;: 30,
+  &quot;email&quot;: &quot;juan.perez@example.com&quot;
+}</pre></div><div class='index'><p>Para crear un índice en el campo <code>nombre</code>, utilizamos el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIudXN1YXJpb3MuY3JlYXRlSW5kZXgoeyBub21icmU6IDEgfSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.usuarios.createIndex({ nombre: 1 })</pre></div><div class='index'></div><h2>Explicación del Código</h2>
+<div class='index'><ul>
+<li><code>db.usuarios</code>: Selecciona la colección <code>usuarios</code>.</li>
+<li><code>createIndex()</code>: Método para crear un índice.</li>
+<li><code>{ nombre: 1 }</code>: Especifica el campo <code>nombre</code> y el orden del índice. <code>1</code> indica orden ascendente.</li>
+</ul>
+</div><h2>Índices Compuestos</h2>
+<div class='index'><p>Los índices compuestos son índices en múltiples campos. Son útiles cuando las consultas a menudo filtran por más de un campo.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='index'><p>Supongamos que queremos crear un índice compuesto en los campos <code>nombre</code> y <code>edad</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIudXN1YXJpb3MuY3JlYXRlSW5kZXgoeyBub21icmU6IDEsIGVkYWQ6IC0xIH0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.usuarios.createIndex({ nombre: 1, edad: -1 })</pre></div><div class='index'></div><h2>Explicación del Código</h2>
+<div class='index'><ul>
+<li><code>{ nombre: 1, edad: -1 }</code>: Especifica los campos <code>nombre</code> y <code>edad</code> con <code>1</code> para orden ascendente y <code>-1</code> para orden descendente.</li>
+</ul>
+</div><h2>Índices Únicos</h2>
+<div class='index'><p>Los índices únicos garantizan que los valores de los campos indexados sean únicos en la colección.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='index'><p>Para crear un índice único en el campo <code>email</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIudXN1YXJpb3MuY3JlYXRlSW5kZXgoeyBlbWFpbDogMSB9LCB7IHVuaXF1ZTogdHJ1ZSB9KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.usuarios.createIndex({ email: 1 }, { unique: true })</pre></div><div class='index'></div><h2>Explicación del Código</h2>
+<div class='index'><ul>
+<li><code>{ email: 1 }</code>: Especifica el campo <code>email</code> y el orden del índice.</li>
+<li><code>{ unique: true }</code>: Parámetro adicional que hace que el índice sea único.</li>
+</ul>
+</div><h2>Ejercicio Práctico</h2>
+<div class='index'></div><h2>Ejercicio 1</h2>
+<div class='index'><p>Crea un índice en el campo <code>edad</code> de la colección <code>usuarios</code>.</p>
+</div><h2>Solución</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIudXN1YXJpb3MuY3JlYXRlSW5kZXgoeyBlZGFkOiAxIH0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.usuarios.createIndex({ edad: 1 })</pre></div><div class='index'></div><h2>Ejercicio 2</h2>
+<div class='index'><p>Crea un índice compuesto en los campos <code>nombre</code> y <code>email</code> en orden ascendente.</p>
+</div><h2>Solución</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIudXN1YXJpb3MuY3JlYXRlSW5kZXgoeyBub21icmU6IDEsIGVtYWlsOiAxIH0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.usuarios.createIndex({ nombre: 1, email: 1 })</pre></div><div class='index'></div><h2>Errores Comunes y Consejos</h2>
+<div class='index'><ul>
+<li><strong>No crear índices en campos frecuentemente actualizados</strong>: Los índices pueden ralentizar las operaciones de escritura.</li>
+<li><strong>No abusar de los índices</strong>: Demasiados índices pueden consumir mucho espacio de almacenamiento y afectar el rendimiento.</li>
+<li><strong>No olvidar el orden de los campos en índices compuestos</strong>: El orden de los campos en un índice compuesto es crucial para el rendimiento de las consultas.</li>
+</ul>
+</div><h2>Conclusión</h2>
+<div class='index'><p>En esta sección, hemos aprendido cómo crear índices en MongoDB para mejorar el rendimiento de las consultas. Hemos cubierto los conceptos básicos de los índices, cómo crear índices simples y compuestos, y cómo garantizar la unicidad de los valores en los campos indexados. En la próxima sección, exploraremos los diferentes tipos de índices disponibles en MongoDB y cómo utilizarlos para optimizar aún más nuestras consultas.</p>
+<p>¡Continúa practicando y experimentando con índices para dominar su uso en MongoDB!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-data-types' title="Tipos de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-types-of-indexes' title="Tipos de Índices">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

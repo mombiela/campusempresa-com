@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creando Módulos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/04-02-creating-modules" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/04-02-creating-modules" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/04-02-creating-modules" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/terraform/04-02-creating-modules" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/04-02-creating-modules" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-modules' title="Introducción a los Módulos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creando Módulos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-using-modules' title="Usando Módulos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo crear módulos en Terraform. Los módulos son una forma de organizar y reutilizar el código de Terraform, lo que facilita la gestión de infraestructuras complejas. Vamos a cubrir los siguientes puntos:</p>
+<ol>
+<li>¿Qué es un módulo en Terraform?</li>
+<li>Estructura de un módulo</li>
+<li>Creación de un módulo simple</li>
+<li>Uso de variables y salidas en módulos</li>
+<li>Ejemplo práctico: Módulo de red en AWS</li>
+<li>Ejercicios prácticos</li>
+</ol>
+</div><h1>1. ¿Qué es un módulo en Terraform?</h1>
+<div class='content'><p>Un módulo en Terraform es un conjunto de archivos de configuración que se agrupan en una carpeta. Los módulos permiten reutilizar configuraciones y organizarlas de manera lógica. Cada configuración de Terraform utiliza al menos un módulo, el módulo raíz, que puede llamar a otros módulos.</p>
+<p><strong>Ventajas de usar módulos:</strong></p>
+<ul>
+<li><strong>Reutilización:</strong> Puedes reutilizar configuraciones en diferentes proyectos.</li>
+<li><strong>Organización:</strong> Facilita la organización del código.</li>
+<li><strong>Mantenimiento:</strong> Simplifica el mantenimiento y las actualizaciones.</li>
+</ul>
+</div><h1>2. Estructura de un módulo</h1>
+<div class='content'><p>Un módulo típico de Terraform tiene la siguiente estructura:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlX25hbWUvCuKUnOKUgOKUgCBtYWluLnRmCuKUnOKUgOKUgCB2YXJpYWJsZXMudGYK4pSc4pSA4pSAIG91dHB1dHMudGYK4pSU4pSA4pSAIFJFQURNRS5tZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module_name/
+├── main.tf
+├── variables.tf
+├── outputs.tf
+└── README.md</pre></div><div class='content'><ul>
+<li><strong>main.tf:</strong> Contiene los recursos y la lógica principal del módulo.</li>
+<li><strong>variables.tf:</strong> Define las variables que el módulo acepta como entrada.</li>
+<li><strong>outputs.tf:</strong> Define las salidas que el módulo produce.</li>
+<li><strong>README.md:</strong> Documentación del módulo.</li>
+</ul>
+</div><h1>3. Creación de un módulo simple</h1>
+<div class='content'><p>Vamos a crear un módulo simple que despliegue una instancia de EC2 en AWS.</p>
+</div><h2>Paso 1: Crear la estructura del módulo</h2>
+<div class='content'><p>Crea una carpeta llamada <code>ec2_instance</code> y dentro de ella, crea los archivos <code>main.tf</code>, <code>variables.tf</code> y <code>outputs.tf</code>.</p>
+</div><h2>Paso 2: Definir los recursos en `main.tf`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi50Zgpwcm92aWRlciAiYXdzIiB7CiAgcmVnaW9uID0gdmFyLnJlZ2lvbgp9CgpyZXNvdXJjZSAiYXdzX2luc3RhbmNlIiAiZXhhbXBsZSIgewogIGFtaSAgICAgICAgICAgPSB2YXIuYW1pCiAgaW5zdGFuY2VfdHlwZSA9IHZhci5pbnN0YW5jZV90eXBlCgogIHRhZ3MgPSB7CiAgICBOYW1lID0gdmFyLmluc3RhbmNlX25hbWUKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.tf
+provider &quot;aws&quot; {
+  region = var.region
+}
+
+resource &quot;aws_instance&quot; &quot;example&quot; {
+  ami           = var.ami
+  instance_type = var.instance_type
+
+  tags = {
+    Name = var.instance_name
+  }
+}</pre></div><div class='content'></div><h2>Paso 3: Definir las variables en `variables.tf`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gdmFyaWFibGVzLnRmCnZhcmlhYmxlICJyZWdpb24iIHsKICBkZXNjcmlwdGlvbiA9ICJUaGUgQVdTIHJlZ2lvbiB0byBkZXBsb3kgdGhlIGluc3RhbmNlIgogIHR5cGUgICAgICAgID0gc3RyaW5nCn0KCnZhcmlhYmxlICJhbWkiIHsKICBkZXNjcmlwdGlvbiA9ICJUaGUgQU1JIElEIHRvIHVzZSBmb3IgdGhlIGluc3RhbmNlIgogIHR5cGUgICAgICAgID0gc3RyaW5nCn0KCnZhcmlhYmxlICJpbnN0YW5jZV90eXBlIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIHR5cGUgb2YgaW5zdGFuY2UgdG8gZGVwbG95IgogIHR5cGUgICAgICAgID0gc3RyaW5nCn0KCnZhcmlhYmxlICJpbnN0YW5jZV9uYW1lIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIG5hbWUgdGFnIGZvciB0aGUgaW5zdGFuY2UiCiAgdHlwZSAgICAgICAgPSBzdHJpbmcKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// variables.tf
+variable &quot;region&quot; {
+  description = &quot;The AWS region to deploy the instance&quot;
+  type        = string
+}
+
+variable &quot;ami&quot; {
+  description = &quot;The AMI ID to use for the instance&quot;
+  type        = string
+}
+
+variable &quot;instance_type&quot; {
+  description = &quot;The type of instance to deploy&quot;
+  type        = string
+}
+
+variable &quot;instance_name&quot; {
+  description = &quot;The name tag for the instance&quot;
+  type        = string
+}</pre></div><div class='content'></div><h2>Paso 4: Definir las salidas en `outputs.tf`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gb3V0cHV0cy50ZgpvdXRwdXQgImluc3RhbmNlX2lkIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIElEIG9mIHRoZSBFQzIgaW5zdGFuY2UiCiAgdmFsdWUgICAgICAgPSBhd3NfaW5zdGFuY2UuZXhhbXBsZS5pZAp9CgpvdXRwdXQgInB1YmxpY19pcCIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBwdWJsaWMgSVAgb2YgdGhlIEVDMiBpbnN0YW5jZSIKICB2YWx1ZSAgICAgICA9IGF3c19pbnN0YW5jZS5leGFtcGxlLnB1YmxpY19pcAp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// outputs.tf
+output &quot;instance_id&quot; {
+  description = &quot;The ID of the EC2 instance&quot;
+  value       = aws_instance.example.id
+}
+
+output &quot;public_ip&quot; {
+  description = &quot;The public IP of the EC2 instance&quot;
+  value       = aws_instance.example.public_ip
+}</pre></div><div class='content'></div><h1>4. Uso de variables y salidas en módulos</h1>
+<div class='content'><p>Las variables permiten parametrizar los módulos, haciéndolos más flexibles y reutilizables. Las salidas permiten exportar valores importantes del módulo para que puedan ser utilizados en otras partes de la configuración.</p>
+</div><h2>Ejemplo de uso de variables</h2>
+<div class='content'><p>En el archivo <code>variables.tf</code>, definimos las variables que el módulo acepta. Estas variables se pueden pasar cuando se llama al módulo desde otra configuración.</p>
+</div><h2>Ejemplo de uso de salidas</h2>
+<div class='content'><p>En el archivo <code>outputs.tf</code>, definimos las salidas que el módulo produce. Estas salidas se pueden utilizar en otras configuraciones que llamen al módulo.</p>
+</div><h1>5. Ejemplo práctico: Módulo de red en AWS</h1>
+<div class='content'><p>Vamos a crear un módulo más complejo que configure una red en AWS, incluyendo una VPC, subredes y una gateway de internet.</p>
+</div><h2>Paso 1: Crear la estructura del módulo</h2>
+<div class='content'><p>Crea una carpeta llamada <code>network</code> y dentro de ella, crea los archivos <code>main.tf</code>, <code>variables.tf</code> y <code>outputs.tf</code>.</p>
+</div><h2>Paso 2: Definir los recursos en `main.tf`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi50ZgpyZXNvdXJjZSAiYXdzX3ZwYyIgIm1haW4iIHsKICBjaWRyX2Jsb2NrID0gdmFyLnZwY19jaWRyCn0KCnJlc291cmNlICJhd3Nfc3VibmV0IiAic3VibmV0IiB7CiAgY291bnQgICAgICAgICAgICAgPSBsZW5ndGgodmFyLnN1Ym5ldF9jaWRycykKICB2cGNfaWQgICAgICAgICAgICA9IGF3c192cGMubWFpbi5pZAogIGNpZHJfYmxvY2sgICAgICAgID0gZWxlbWVudCh2YXIuc3VibmV0X2NpZHJzLCBjb3VudC5pbmRleCkKICBhdmFpbGFiaWxpdHlfem9uZSA9IGVsZW1lbnQodmFyLmF2YWlsYWJpbGl0eV96b25lcywgY291bnQuaW5kZXgpCn0KCnJlc291cmNlICJhd3NfaW50ZXJuZXRfZ2F0ZXdheSIgImd3IiB7CiAgdnBjX2lkID0gYXdzX3ZwYy5tYWluLmlkCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.tf
+resource &quot;aws_vpc&quot; &quot;main&quot; {
+  cidr_block = var.vpc_cidr
+}
+
+resource &quot;aws_subnet&quot; &quot;subnet&quot; {
+  count             = length(var.subnet_cidrs)
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = element(var.subnet_cidrs, count.index)
+  availability_zone = element(var.availability_zones, count.index)
+}
+
+resource &quot;aws_internet_gateway&quot; &quot;gw&quot; {
+  vpc_id = aws_vpc.main.id
+}</pre></div><div class='content'></div><h2>Paso 3: Definir las variables en `variables.tf`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gdmFyaWFibGVzLnRmCnZhcmlhYmxlICJ2cGNfY2lkciIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBDSURSIGJsb2NrIGZvciB0aGUgVlBDIgogIHR5cGUgICAgICAgID0gc3RyaW5nCn0KCnZhcmlhYmxlICJzdWJuZXRfY2lkcnMiIHsKICBkZXNjcmlwdGlvbiA9ICJBIGxpc3Qgb2YgQ0lEUiBibG9ja3MgZm9yIHRoZSBzdWJuZXRzIgogIHR5cGUgICAgICAgID0gbGlzdChzdHJpbmcpCn0KCnZhcmlhYmxlICJhdmFpbGFiaWxpdHlfem9uZXMiIHsKICBkZXNjcmlwdGlvbiA9ICJBIGxpc3Qgb2YgYXZhaWxhYmlsaXR5IHpvbmVzIGZvciB0aGUgc3VibmV0cyIKICB0eXBlICAgICAgICA9IGxpc3Qoc3RyaW5nKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// variables.tf
+variable &quot;vpc_cidr&quot; {
+  description = &quot;The CIDR block for the VPC&quot;
+  type        = string
+}
+
+variable &quot;subnet_cidrs&quot; {
+  description = &quot;A list of CIDR blocks for the subnets&quot;
+  type        = list(string)
+}
+
+variable &quot;availability_zones&quot; {
+  description = &quot;A list of availability zones for the subnets&quot;
+  type        = list(string)
+}</pre></div><div class='content'></div><h2>Paso 4: Definir las salidas en `outputs.tf`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gb3V0cHV0cy50ZgpvdXRwdXQgInZwY19pZCIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBJRCBvZiB0aGUgVlBDIgogIHZhbHVlICAgICAgID0gYXdzX3ZwYy5tYWluLmlkCn0KCm91dHB1dCAic3VibmV0X2lkcyIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBJRHMgb2YgdGhlIHN1Ym5ldHMiCiAgdmFsdWUgICAgICAgPSBhd3Nfc3VibmV0LnN1Ym5ldFsqXS5pZAp9CgpvdXRwdXQgImludGVybmV0X2dhdGV3YXlfaWQiIHsKICBkZXNjcmlwdGlvbiA9ICJUaGUgSUQgb2YgdGhlIGludGVybmV0IGdhdGV3YXkiCiAgdmFsdWUgICAgICAgPSBhd3NfaW50ZXJuZXRfZ2F0ZXdheS5ndy5pZAp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// outputs.tf
+output &quot;vpc_id&quot; {
+  description = &quot;The ID of the VPC&quot;
+  value       = aws_vpc.main.id
+}
+
+output &quot;subnet_ids&quot; {
+  description = &quot;The IDs of the subnets&quot;
+  value       = aws_subnet.subnet[*].id
+}
+
+output &quot;internet_gateway_id&quot; {
+  description = &quot;The ID of the internet gateway&quot;
+  value       = aws_internet_gateway.gw.id
+}</pre></div><div class='content'></div><h1>6. Ejercicios prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un módulo de S3</h2>
+<div class='content'><p><strong>Objetivo:</strong> Crear un módulo que despliegue un bucket de S3 en AWS.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Crea una carpeta llamada <code>s3_bucket</code>.</li>
+<li>Dentro de la carpeta, crea los archivos <code>main.tf</code>, <code>variables.tf</code> y <code>outputs.tf</code>.</li>
+<li>Define un recurso <code>aws_s3_bucket</code> en <code>main.tf</code>.</li>
+<li>Define las variables necesarias en <code>variables.tf</code>.</li>
+<li>Define las salidas en <code>outputs.tf</code>.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi50ZgpyZXNvdXJjZSAiYXdzX3MzX2J1Y2tldCIgImJ1Y2tldCIgewogIGJ1Y2tldCA9IHZhci5idWNrZXRfbmFtZQogIGFjbCAgICA9IHZhci5hY2wKfQoKLy8gdmFyaWFibGVzLnRmCnZhcmlhYmxlICJidWNrZXRfbmFtZSIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBuYW1lIG9mIHRoZSBTMyBidWNrZXQiCiAgdHlwZSAgICAgICAgPSBzdHJpbmcKfQoKdmFyaWFibGUgImFjbCIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBBQ0wgZm9yIHRoZSBTMyBidWNrZXQiCiAgdHlwZSAgICAgICAgPSBzdHJpbmcKICBkZWZhdWx0ICAgICA9ICJwcml2YXRlIgp9CgovLyBvdXRwdXRzLnRmCm91dHB1dCAiYnVja2V0X2FybiIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBBUk4gb2YgdGhlIFMzIGJ1Y2tldCIKICB2YWx1ZSAgICAgICA9IGF3c19zM19idWNrZXQuYnVja2V0LmFybgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.tf
+resource &quot;aws_s3_bucket&quot; &quot;bucket&quot; {
+  bucket = var.bucket_name
+  acl    = var.acl
+}
+
+// variables.tf
+variable &quot;bucket_name&quot; {
+  description = &quot;The name of the S3 bucket&quot;
+  type        = string
+}
+
+variable &quot;acl&quot; {
+  description = &quot;The ACL for the S3 bucket&quot;
+  type        = string
+  default     = &quot;private&quot;
+}
+
+// outputs.tf
+output &quot;bucket_arn&quot; {
+  description = &quot;The ARN of the S3 bucket&quot;
+  value       = aws_s3_bucket.bucket.arn
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Usar el módulo de S3</h2>
+<div class='content'><p><strong>Objetivo:</strong> Usar el módulo de S3 creado en el ejercicio anterior en una configuración de Terraform.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Crea una nueva carpeta para la configuración.</li>
+<li>Dentro de la carpeta, crea un archivo <code>main.tf</code>.</li>
+<li>Llama al módulo de S3 y pasa las variables necesarias.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbWFpbi50Zgptb2R1bGUgInMzX2J1Y2tldCIgewogIHNvdXJjZSAgICAgID0gIi4uL3MzX2J1Y2tldCIKICBidWNrZXRfbmFtZSA9ICJteS11bmlxdWUtYnVja2V0LW5hbWUiCiAgYWNsICAgICAgICAgPSAicHVibGljLXJlYWQiCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// main.tf
+module &quot;s3_bucket&quot; {
+  source      = &quot;../s3_bucket&quot;
+  bucket_name = &quot;my-unique-bucket-name&quot;
+  acl         = &quot;public-read&quot;
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo crear y utilizar módulos en Terraform. Los módulos son una herramienta poderosa para organizar y reutilizar configuraciones, lo que facilita la gestión de infraestructuras complejas. Hemos visto cómo definir recursos, variables y salidas en un módulo, y hemos creado un módulo práctico para desplegar una red en AWS. Además, hemos realizado ejercicios prácticos para reforzar los conceptos aprendidos.</p>
+<p>En el próximo tema, exploraremos cómo usar módulos existentes del registro de módulos de Terraform.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-modules' title="Introducción a los Módulos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-using-modules' title="Usando Módulos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

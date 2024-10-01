@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Peticiones y Respuestas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rest_api/03-03-manejo-peticiones-respuestas" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rest_api/03-03-manejo-peticiones-respuestas" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rest_api/03-03-handling-requests-responses" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rest_api/03-03-manejo-peticiones-respuestas" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rest_api/03-03-manejo-peticiones-respuestas" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-creacion-servidor-basico' title="Creación de un servidor básico">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de Peticiones y Respuestas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-autenticacion-autorizacion' title="Autenticación y autorización">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo manejar peticiones y respuestas en una API RESTful. Entenderemos los conceptos clave y veremos ejemplos prácticos para implementar estos manejos en un servidor básico.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Peticiones HTTP</strong>: Las peticiones HTTP son solicitudes enviadas por el cliente al servidor. Contienen:</p>
+<ul>
+<li><strong>Método HTTP</strong>: GET, POST, PUT, DELETE, etc.</li>
+<li><strong>URI</strong>: La dirección del recurso solicitado.</li>
+<li><strong>Headers</strong>: Información adicional sobre la petición.</li>
+<li><strong>Cuerpo</strong>: Datos enviados en la petición (principalmente en POST y PUT).</li>
+</ul>
+</li>
+<li>
+<p><strong>Respuestas HTTP</strong>: Las respuestas HTTP son las respuestas enviadas por el servidor al cliente. Contienen:</p>
+<ul>
+<li><strong>Código de estado</strong>: Indica el resultado de la solicitud (200, 404, 500, etc.).</li>
+<li><strong>Headers</strong>: Información adicional sobre la respuesta.</li>
+<li><strong>Cuerpo</strong>: Datos enviados en la respuesta.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a implementar un servidor básico utilizando Node.js y Express para manejar peticiones y respuestas.</p>
+</div><h2>Configuración del Entorno</h2>
+<div class='content'><p>Primero, asegúrate de tener Node.js y npm instalados. Luego, crea un nuevo proyecto y añade Express:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgYXBpLXNlcnZlcgpjZCBhcGktc2VydmVyCm5wbSBpbml0IC15Cm5wbSBpbnN0YWxsIGV4cHJlc3M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir api-server
+cd api-server
+npm init -y
+npm install express</pre></div><div class='content'></div><h2>Creación del Servidor Básico</h2>
+<div class='content'><p>Crea un archivo <code>server.js</code> y añade el siguiente código:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwpjb25zdCBwb3J0ID0gMzAwMDsKCi8vIE1pZGRsZXdhcmUgcGFyYSBwYXJzZWFyIEpTT04KYXBwLnVzZShleHByZXNzLmpzb24oKSk7CgovLyBSdXRhIEdFVCBwYXJhIG9idGVuZXIgdG9kb3MgbG9zIHJlY3Vyc29zCmFwcC5nZXQoJy9yZXNvdXJjZXMnLCAocmVxLCByZXMpID0+IHsKICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHsgbWVzc2FnZTogJ0xpc3RhIGRlIHJlY3Vyc29zJyB9KTsKfSk7CgovLyBSdXRhIFBPU1QgcGFyYSBjcmVhciB1biBudWV2byByZWN1cnNvCmFwcC5wb3N0KCcvcmVzb3VyY2VzJywgKHJlcSwgcmVzKSA9PiB7CiAgICBjb25zdCBuZXdSZXNvdXJjZSA9IHJlcS5ib2R5OwogICAgcmVzLnN0YXR1cygyMDEpLmpzb24oeyBtZXNzYWdlOiAnUmVjdXJzbyBjcmVhZG8nLCBkYXRhOiBuZXdSZXNvdXJjZSB9KTsKfSk7CgovLyBSdXRhIFBVVCBwYXJhIGFjdHVhbGl6YXIgdW4gcmVjdXJzbyBleGlzdGVudGUKYXBwLnB1dCgnL3Jlc291cmNlcy86aWQnLCAocmVxLCByZXMpID0+IHsKICAgIGNvbnN0IHJlc291cmNlSWQgPSByZXEucGFyYW1zLmlkOwogICAgY29uc3QgdXBkYXRlZFJlc291cmNlID0gcmVxLmJvZHk7CiAgICByZXMuc3RhdHVzKDIwMCkuanNvbih7IG1lc3NhZ2U6IGBSZWN1cnNvICR7cmVzb3VyY2VJZH0gYWN0dWFsaXphZG9gLCBkYXRhOiB1cGRhdGVkUmVzb3VyY2UgfSk7Cn0pOwoKLy8gUnV0YSBERUxFVEUgcGFyYSBlbGltaW5hciB1biByZWN1cnNvCmFwcC5kZWxldGUoJy9yZXNvdXJjZXMvOmlkJywgKHJlcSwgcmVzKSA9PiB7CiAgICBjb25zdCByZXNvdXJjZUlkID0gcmVxLnBhcmFtcy5pZDsKICAgIHJlcy5zdGF0dXMoMjAwKS5qc29uKHsgbWVzc2FnZTogYFJlY3Vyc28gJHtyZXNvdXJjZUlkfSBlbGltaW5hZG9gIH0pOwp9KTsKCmFwcC5saXN0ZW4ocG9ydCwgKCkgPT4gewogICAgY29uc29sZS5sb2coYFNlcnZpZG9yIGVzY3VjaGFuZG8gZW4gaHR0cDovL2xvY2FsaG9zdDoke3BvcnR9YCk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+const port = 3000;
+
+// Middleware para parsear JSON
+app.use(express.json());
+
+// Ruta GET para obtener todos los recursos
+app.get('/resources', (req, res) =&gt; {
+    res.status(200).json({ message: 'Lista de recursos' });
+});
+
+// Ruta POST para crear un nuevo recurso
+app.post('/resources', (req, res) =&gt; {
+    const newResource = req.body;
+    res.status(201).json({ message: 'Recurso creado', data: newResource });
+});
+
+// Ruta PUT para actualizar un recurso existente
+app.put('/resources/:id', (req, res) =&gt; {
+    const resourceId = req.params.id;
+    const updatedResource = req.body;
+    res.status(200).json({ message: `Recurso ${resourceId} actualizado`, data: updatedResource });
+});
+
+// Ruta DELETE para eliminar un recurso
+app.delete('/resources/:id', (req, res) =&gt; {
+    const resourceId = req.params.id;
+    res.status(200).json({ message: `Recurso ${resourceId} eliminado` });
+});
+
+app.listen(port, () =&gt; {
+    console.log(`Servidor escuchando en http://localhost:${port}`);
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Importación y Configuración de Express</strong>:</p>
+<pre><code class="language-javascript">const express = require('express');
+const app = express();
+const port = 3000;
+</code></pre>
+</li>
+<li>
+<p><strong>Middleware para Parsear JSON</strong>:</p>
+<pre><code class="language-javascript">app.use(express.json());
+</code></pre>
+<p>Esto permite que el servidor entienda y procese datos JSON en el cuerpo de las peticiones.</p>
+</li>
+<li>
+<p><strong>Manejo de Peticiones GET</strong>:</p>
+<pre><code class="language-javascript">app.get('/resources', (req, res) =&gt; {
+    res.status(200).json({ message: 'Lista de recursos' });
+});
+</code></pre>
+<p>Esta ruta maneja peticiones GET a <code>/resources</code> y responde con un mensaje y un código de estado 200.</p>
+</li>
+<li>
+<p><strong>Manejo de Peticiones POST</strong>:</p>
+<pre><code class="language-javascript">app.post('/resources', (req, res) =&gt; {
+    const newResource = req.body;
+    res.status(201).json({ message: 'Recurso creado', data: newResource });
+});
+</code></pre>
+<p>Esta ruta maneja peticiones POST a <code>/resources</code>, crea un nuevo recurso con los datos enviados en el cuerpo de la petición y responde con un mensaje y un código de estado 201.</p>
+</li>
+<li>
+<p><strong>Manejo de Peticiones PUT</strong>:</p>
+<pre><code class="language-javascript">app.put('/resources/:id', (req, res) =&gt; {
+    const resourceId = req.params.id;
+    const updatedResource = req.body;
+    res.status(200).json({ message: `Recurso ${resourceId} actualizado`, data: updatedResource });
+});
+</code></pre>
+<p>Esta ruta maneja peticiones PUT a <code>/resources/:id</code>, actualiza el recurso con el ID especificado y responde con un mensaje y un código de estado 200.</p>
+</li>
+<li>
+<p><strong>Manejo de Peticiones DELETE</strong>:</p>
+<pre><code class="language-javascript">app.delete('/resources/:id', (req, res) =&gt; {
+    const resourceId = req.params.id;
+    res.status(200).json({ message: `Recurso ${resourceId} eliminado` });
+});
+</code></pre>
+<p>Esta ruta maneja peticiones DELETE a <code>/resources/:id</code>, elimina el recurso con el ID especificado y responde con un mensaje y un código de estado 200.</p>
+</li>
+</ol>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Ejercicio</strong>:</p>
+<ul>
+<li>Añade una nueva ruta GET a <code>/resources/:id</code> que devuelva un recurso específico basado en el ID proporcionado en la URL.</li>
+</ul>
+</li>
+<li>
+<p><strong>Solución</strong>:</p>
+<pre><code class="language-javascript">app.get('/resources/:id', (req, res) =&gt; {
+    const resourceId = req.params.id;
+    res.status(200).json({ message: `Recurso ${resourceId} obtenido` });
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>Errores Comunes y Consejos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>No Parsear JSON</strong>:</p>
+<ul>
+<li>Error: El servidor no puede leer los datos JSON enviados en el cuerpo de la petición.</li>
+<li>Solución: Asegúrate de usar <code>app.use(express.json());</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>No Manejar Errores</strong>:</p>
+<ul>
+<li>Error: El servidor no responde adecuadamente a errores.</li>
+<li>Solución: Implementa un manejo de errores adecuado para capturar y responder a errores.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Resumen</h2>
+<div class='content'><p>En esta sección, hemos aprendido cómo manejar peticiones y respuestas en una API RESTful utilizando Node.js y Express. Hemos cubierto los conceptos clave de las peticiones y respuestas HTTP y hemos implementado un servidor básico con rutas para manejar GET, POST, PUT y DELETE. Además, hemos visto un ejercicio práctico para reforzar los conceptos aprendidos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-creacion-servidor-basico' title="Creación de un servidor básico">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-autenticacion-autorizacion' title="Autenticación y autorización">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

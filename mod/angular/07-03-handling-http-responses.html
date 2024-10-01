@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Respuestas HTTP</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular/07-03-handling-http-responses" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular/07-03-handling-http-responses" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular/07-03-handling-http-responses" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/angular/07-03-handling-http-responses" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/angular/07-03-handling-http-responses" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-making-http-requests' title="Realizando Solicitudes HTTP">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de Respuestas HTTP</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-using-observables' title="Uso de Observables">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo manejar las respuestas HTTP en Angular utilizando el cliente HTTP. Este es un aspecto crucial para interactuar con APIs y servicios web, ya que nos permite procesar los datos recibidos y manejar errores de manera efectiva.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>HttpClient</strong>: Servicio de Angular que facilita la comunicación con servidores HTTP.</li>
+<li><strong>Observables</strong>: Utilizados por HttpClient para manejar operaciones asíncronas.</li>
+<li><strong>Manejo de Errores</strong>: Técnicas para capturar y gestionar errores en las respuestas HTTP.</li>
+</ol>
+</div><h1>HttpClient y Observables</h1>
+<div class='content'><p>Angular utiliza el servicio <code>HttpClient</code> para realizar solicitudes HTTP. Este servicio devuelve observables, lo que permite manejar las respuestas de manera asíncrona.</p>
+</div><h2>Ejemplo Básico de Solicitud HTTP</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSHR0cENsaWVudCB9IGZyb20gJ0Bhbmd1bGFyL2NvbW1vbi9odHRwJzsKaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgRGF0YVNlcnZpY2UgewogIHByaXZhdGUgYXBpVXJsID0gJ2h0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2RhdGEnOwoKICBjb25zdHJ1Y3Rvcihwcml2YXRlIGh0dHA6IEh0dHBDbGllbnQpIHt9CgogIGdldERhdGEoKSB7CiAgICByZXR1cm4gdGhpcy5odHRwLmdldCh0aGlzLmFwaVVybCk7CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private apiUrl = 'https://api.example.com/data';
+
+  constructor(private http: HttpClient) {}
+
+  getData() {
+    return this.http.get(this.apiUrl);
+  }
+}</pre></div><div class='content'><p>En este ejemplo, <code>getData</code> realiza una solicitud GET a la URL especificada y devuelve un observable.</p>
+</div><h2>Suscripción a Observables</h2>
+<div class='content'><p>Para manejar la respuesta, debemos suscribirnos al observable devuelto por <code>HttpClient</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50LCBPbkluaXQgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgRGF0YVNlcnZpY2UgfSBmcm9tICcuL2RhdGEuc2VydmljZSc7CgpAQ29tcG9uZW50KHsKICBzZWxlY3RvcjogJ2FwcC1kYXRhJywKICB0ZW1wbGF0ZTogYAogICAgPGRpdiAqbmdJZj0iZGF0YSI+CiAgICAgIDxwcmU+e3sgZGF0YSB8IGpzb24gfX08L3ByZT4KICAgIDwvZGl2PgogIGAKfSkKZXhwb3J0IGNsYXNzIERhdGFDb21wb25lbnQgaW1wbGVtZW50cyBPbkluaXQgewogIGRhdGE6IGFueTsKCiAgY29uc3RydWN0b3IocHJpdmF0ZSBkYXRhU2VydmljZTogRGF0YVNlcnZpY2UpIHt9CgogIG5nT25Jbml0KCkgewogICAgdGhpcy5kYXRhU2VydmljZS5nZXREYXRhKCkuc3Vic2NyaWJlKAogICAgICByZXNwb25zZSA9PiB7CiAgICAgICAgdGhpcy5kYXRhID0gcmVzcG9uc2U7CiAgICAgIH0sCiAgICAgIGVycm9yID0+IHsKICAgICAgICBjb25zb2xlLmVycm9yKCdFcnJvciBmZXRjaGluZyBkYXRhJywgZXJyb3IpOwogICAgICB9CiAgICApOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Component, OnInit } from '@angular/core';
+import { DataService } from './data.service';
+
+@Component({
+  selector: 'app-data',
+  template: `
+    &lt;div *ngIf=&quot;data&quot;&gt;
+      &lt;pre&gt;{{ data | json }}&lt;/pre&gt;
+    &lt;/div&gt;
+  `
+})
+export class DataComponent implements OnInit {
+  data: any;
+
+  constructor(private dataService: DataService) {}
+
+  ngOnInit() {
+    this.dataService.getData().subscribe(
+      response =&gt; {
+        this.data = response;
+      },
+      error =&gt; {
+        console.error('Error fetching data', error);
+      }
+    );
+  }
+}</pre></div><div class='content'><p>En este componente, nos suscribimos al observable y manejamos la respuesta y los errores.</p>
+</div><h1>Manejo de Errores</h1>
+<div class='content'><p>Es importante manejar los errores que pueden ocurrir durante las solicitudes HTTP. Angular proporciona operadores como <code>catchError</code> para este propósito.</p>
+</div><h2>Ejemplo de Manejo de Errores</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSHR0cENsaWVudCwgSHR0cEVycm9yUmVzcG9uc2UgfSBmcm9tICdAYW5ndWxhci9jb21tb24vaHR0cCc7CmltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgY2F0Y2hFcnJvciB9IGZyb20gJ3J4anMvb3BlcmF0b3JzJzsKaW1wb3J0IHsgdGhyb3dFcnJvciB9IGZyb20gJ3J4anMnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgRGF0YVNlcnZpY2UgewogIHByaXZhdGUgYXBpVXJsID0gJ2h0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2RhdGEnOwoKICBjb25zdHJ1Y3Rvcihwcml2YXRlIGh0dHA6IEh0dHBDbGllbnQpIHt9CgogIGdldERhdGEoKSB7CiAgICByZXR1cm4gdGhpcy5odHRwLmdldCh0aGlzLmFwaVVybCkucGlwZSgKICAgICAgY2F0Y2hFcnJvcih0aGlzLmhhbmRsZUVycm9yKQogICAgKTsKICB9CgogIHByaXZhdGUgaGFuZGxlRXJyb3IoZXJyb3I6IEh0dHBFcnJvclJlc3BvbnNlKSB7CiAgICBsZXQgZXJyb3JNZXNzYWdlID0gJ1Vua25vd24gZXJyb3IhJzsKICAgIGlmIChlcnJvci5lcnJvciBpbnN0YW5jZW9mIEVycm9yRXZlbnQpIHsKICAgICAgLy8gQ2xpZW50LXNpZGUgZXJyb3IKICAgICAgZXJyb3JNZXNzYWdlID0gYEVycm9yOiAke2Vycm9yLmVycm9yLm1lc3NhZ2V9YDsKICAgIH0gZWxzZSB7CiAgICAgIC8vIFNlcnZlci1zaWRlIGVycm9yCiAgICAgIGVycm9yTWVzc2FnZSA9IGBFcnJvciBDb2RlOiAke2Vycm9yLnN0YXR1c31cbk1lc3NhZ2U6ICR7ZXJyb3IubWVzc2FnZX1gOwogICAgfQogICAgcmV0dXJuIHRocm93RXJyb3IoZXJyb3JNZXNzYWdlKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  private apiUrl = 'https://api.example.com/data';
+
+  constructor(private http: HttpClient) {}
+
+  getData() {
+    return this.http.get(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      // Client-side error
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Server-side error
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    return throwError(errorMessage);
+  }
+}</pre></div><div class='content'><p>En este ejemplo, <code>catchError</code> intercepta cualquier error que ocurra durante la solicitud HTTP y lo maneja mediante el método <code>handleError</code>.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea un servicio <code>PostService</code> que realice una solicitud GET a <code>https://jsonplaceholder.typicode.com/posts</code>.</li>
+<li>En el componente <code>PostComponent</code>, suscríbete al observable devuelto por <code>PostService</code> y muestra los datos en una lista.</li>
+<li>Implementa el manejo de errores para mostrar un mensaje de error en caso de que la solicitud falle.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>PostService</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSHR0cENsaWVudCwgSHR0cEVycm9yUmVzcG9uc2UgfSBmcm9tICdAYW5ndWxhci9jb21tb24vaHR0cCc7CmltcG9ydCB7IEluamVjdGFibGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgY2F0Y2hFcnJvciB9IGZyb20gJ3J4anMvb3BlcmF0b3JzJzsKaW1wb3J0IHsgdGhyb3dFcnJvciB9IGZyb20gJ3J4anMnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgUG9zdFNlcnZpY2UgewogIHByaXZhdGUgYXBpVXJsID0gJ2h0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cyc7CgogIGNvbnN0cnVjdG9yKHByaXZhdGUgaHR0cDogSHR0cENsaWVudCkge30KCiAgZ2V0UG9zdHMoKSB7CiAgICByZXR1cm4gdGhpcy5odHRwLmdldCh0aGlzLmFwaVVybCkucGlwZSgKICAgICAgY2F0Y2hFcnJvcih0aGlzLmhhbmRsZUVycm9yKQogICAgKTsKICB9CgogIHByaXZhdGUgaGFuZGxlRXJyb3IoZXJyb3I6IEh0dHBFcnJvclJlc3BvbnNlKSB7CiAgICBsZXQgZXJyb3JNZXNzYWdlID0gJ1Vua25vd24gZXJyb3IhJzsKICAgIGlmIChlcnJvci5lcnJvciBpbnN0YW5jZW9mIEVycm9yRXZlbnQpIHsKICAgICAgZXJyb3JNZXNzYWdlID0gYEVycm9yOiAke2Vycm9yLmVycm9yLm1lc3NhZ2V9YDsKICAgIH0gZWxzZSB7CiAgICAgIGVycm9yTWVzc2FnZSA9IGBFcnJvciBDb2RlOiAke2Vycm9yLnN0YXR1c31cbk1lc3NhZ2U6ICR7ZXJyb3IubWVzc2FnZX1gOwogICAgfQogICAgcmV0dXJuIHRocm93RXJyb3IoZXJyb3JNZXNzYWdlKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PostService {
+  private apiUrl = 'https://jsonplaceholder.typicode.com/posts';
+
+  constructor(private http: HttpClient) {}
+
+  getPosts() {
+    return this.http.get(this.apiUrl).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Unknown error!';
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
+    }
+    return throwError(errorMessage);
+  }
+}</pre></div><div class='content'><h4>PostComponent</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50LCBPbkluaXQgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgUG9zdFNlcnZpY2UgfSBmcm9tICcuL3Bvc3Quc2VydmljZSc7CgpAQ29tcG9uZW50KHsKICBzZWxlY3RvcjogJ2FwcC1wb3N0JywKICB0ZW1wbGF0ZTogYAogICAgPGRpdiAqbmdJZj0iZXJyb3IiPnt7IGVycm9yIH19PC9kaXY+CiAgICA8dWwgKm5nSWY9InBvc3RzIj4KICAgICAgPGxpICpuZ0Zvcj0ibGV0IHBvc3Qgb2YgcG9zdHMiPnt7IHBvc3QudGl0bGUgfX08L2xpPgogICAgPC91bD4KICBgCn0pCmV4cG9ydCBjbGFzcyBQb3N0Q29tcG9uZW50IGltcGxlbWVudHMgT25Jbml0IHsKICBwb3N0czogYW55OwogIGVycm9yOiBzdHJpbmc7CgogIGNvbnN0cnVjdG9yKHByaXZhdGUgcG9zdFNlcnZpY2U6IFBvc3RTZXJ2aWNlKSB7fQoKICBuZ09uSW5pdCgpIHsKICAgIHRoaXMucG9zdFNlcnZpY2UuZ2V0UG9zdHMoKS5zdWJzY3JpYmUoCiAgICAgIGRhdGEgPT4gewogICAgICAgIHRoaXMucG9zdHMgPSBkYXRhOwogICAgICB9LAogICAgICBlcnJvciA9PiB7CiAgICAgICAgdGhpcy5lcnJvciA9IGVycm9yOwogICAgICB9CiAgICApOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Component, OnInit } from '@angular/core';
+import { PostService } from './post.service';
+
+@Component({
+  selector: 'app-post',
+  template: `
+    &lt;div *ngIf=&quot;error&quot;&gt;{{ error }}&lt;/div&gt;
+    &lt;ul *ngIf=&quot;posts&quot;&gt;
+      &lt;li *ngFor=&quot;let post of posts&quot;&gt;{{ post.title }}&lt;/li&gt;
+    &lt;/ul&gt;
+  `
+})
+export class PostComponent implements OnInit {
+  posts: any;
+  error: string;
+
+  constructor(private postService: PostService) {}
+
+  ngOnInit() {
+    this.postService.getPosts().subscribe(
+      data =&gt; {
+        this.posts = data;
+      },
+      error =&gt; {
+        this.error = error;
+      }
+    );
+  }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido cómo manejar las respuestas HTTP en Angular utilizando el cliente HTTP y observables. También hemos visto cómo implementar el manejo de errores para asegurar que nuestra aplicación pueda gestionar fallos de manera efectiva. Con estos conocimientos, estarás mejor preparado para interactuar con APIs y servicios web en tus aplicaciones Angular.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-making-http-requests' title="Realizando Solicitudes HTTP">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-using-observables' title="Uso de Observables">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

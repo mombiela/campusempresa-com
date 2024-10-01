@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solución de Problemas de Red</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vms/06-05-troubleshooting-network" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vms/06-05-troubleshooting-network" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vms/06-05-troubleshooting-network" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/vms/06-05-troubleshooting-network" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/vms/06-05-troubleshooting-network" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-network-services' title="Servicios y Protocolos de Red">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Solución de Problemas de Red</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-introduction-programming-languages' title="Introducción a los Lenguajes de Programación en OpenVMS">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, abordaremos las técnicas y herramientas necesarias para identificar y resolver problemas de red en un entorno OpenVMS. La capacidad de solucionar problemas de red es crucial para mantener la disponibilidad y el rendimiento del sistema.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Diagnóstico de Conectividad</strong>: Verificar la conexión física y lógica entre los dispositivos de red.</li>
+<li><strong>Herramientas de Diagnóstico</strong>: Utilizar herramientas como <code>PING</code>, <code>TRACEROUTE</code>, y <code>NETSTAT</code> para identificar problemas.</li>
+<li><strong>Logs y Registros</strong>: Revisar los registros del sistema y los logs de red para obtener información sobre errores y eventos.</li>
+<li><strong>Configuración de Red</strong>: Verificar y corregir configuraciones de red incorrectas.</li>
+<li><strong>Problemas Comunes</strong>: Identificar y resolver problemas comunes como conflictos de IP, problemas de DNS, y fallos en la configuración de TCP/IP y DECnet.</li>
+</ol>
+</div><h1>Diagnóstico de Conectividad</h1>
+<div class='content'></div><h2>Verificación de Conexión Física</h2>
+<div class='content'><ol>
+<li><strong>Cables y Conectores</strong>: Asegúrate de que todos los cables y conectores estén correctamente conectados y en buen estado.</li>
+<li><strong>Indicadores de Estado</strong>: Revisa los indicadores LED en los dispositivos de red (routers, switches, NICs) para verificar el estado de la conexión.</li>
+</ol>
+</div><h2>Verificación de Conexión Lógica</h2>
+<div class='content'><ol>
+<li>
+<p><strong>PING</strong>: Utiliza el comando <code>PING</code> para verificar la conectividad entre dispositivos.</p>
+<pre><code class="language-shell">$ PING &lt;dirección_IP&gt;
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: El comando <code>PING</code> envía paquetes ICMP a la dirección IP especificada y espera una respuesta. Si recibe una respuesta, la conexión es exitosa.</li>
+</ul>
+</li>
+<li>
+<p><strong>TRACEROUTE</strong>: Utiliza <code>TRACEROUTE</code> para identificar el camino que siguen los paquetes hasta el destino.</p>
+<pre><code class="language-shell">$ TRACEROUTE &lt;dirección_IP&gt;
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: <code>TRACEROUTE</code> muestra cada salto que un paquete toma para llegar a su destino, lo que ayuda a identificar dónde puede estar ocurriendo un problema.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Herramientas de Diagnóstico</h1>
+<div class='content'></div><h2>NETSTAT</h2>
+<div class='content'><p><code>NETSTAT</code> es una herramienta útil para mostrar estadísticas de red y conexiones activas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JCBORVRTVEFU"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$ NETSTAT</pre></div><div class='content'><ul>
+<li><strong>Explicación</strong>: <code>NETSTAT</code> proporciona información sobre las conexiones de red, tablas de enrutamiento, estadísticas de interfaz, y más.</li>
+</ul>
+</div><h2>Análisis de Logs y Registros</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Logs del Sistema</strong>: Revisa los logs del sistema para identificar mensajes de error relacionados con la red.</p>
+<pre><code class="language-shell">$ TYPE SYS$MANAGER:OPERATOR.LOG
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando muestra el contenido del archivo de log del operador, donde se registran eventos importantes del sistema.</li>
+</ul>
+</li>
+<li>
+<p><strong>Logs de Red</strong>: Revisa los logs específicos de los servicios de red (TCP/IP, DECnet).</p>
+<pre><code class="language-shell">$ TYPE TCPIP$LOG:TCPIP$SERVER.LOG
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando muestra el log del servidor TCP/IP, útil para identificar problemas específicos de TCP/IP.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuración de Red</h1>
+<div class='content'></div><h2>Verificación de Configuración TCP/IP</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configuración de Interfaces</strong>: Verifica la configuración de las interfaces de red.</p>
+<pre><code class="language-shell">$ TCPIP SHOW INTERFACE
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando muestra la configuración actual de las interfaces de red.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuración de Rutas</strong>: Verifica la tabla de enrutamiento.</p>
+<pre><code class="language-shell">$ TCPIP SHOW ROUTE
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando muestra las rutas configuradas en el sistema, lo que ayuda a identificar problemas de enrutamiento.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Verificación de Configuración DECnet</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Estado de DECnet</strong>: Verifica el estado de los nodos DECnet.</p>
+<pre><code class="language-shell">$ MCR NCP SHOW KNOWN NODES
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando muestra los nodos DECnet conocidos y su estado.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuración de Enlaces</strong>: Verifica la configuración de los enlaces DECnet.</p>
+<pre><code class="language-shell">$ MCR NCP SHOW KNOWN LINKS
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando muestra los enlaces DECnet configurados y su estado.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Problemas Comunes y Soluciones</h1>
+<div class='content'></div><h2>Conflictos de IP</h2>
+<div class='content'><ul>
+<li><strong>Síntoma</strong>: Pérdida de conectividad intermitente.</li>
+<li><strong>Solución</strong>: Verifica que no haya dos dispositivos con la misma dirección IP en la red. Utiliza <code>PING</code> y <code>ARP</code> para identificar conflictos.</li>
+</ul>
+</div><h2>Problemas de DNS</h2>
+<div class='content'><ul>
+<li><strong>Síntoma</strong>: Incapacidad para resolver nombres de dominio.</li>
+<li><strong>Solución</strong>: Verifica la configuración del servidor DNS.
+<pre><code class="language-shell">$ TCPIP SHOW NAME_SERVICE
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando muestra la configuración del servicio de nombres (DNS).</li>
+</ul>
+</li>
+</ul>
+</div><h2>Fallos en la Configuración de TCP/IP</h2>
+<div class='content'><ul>
+<li><strong>Síntoma</strong>: Conexión de red no disponible.</li>
+<li><strong>Solución</strong>: Verifica la configuración de TCP/IP y reinicia el servicio si es necesario.
+<pre><code class="language-shell">$ TCPIP RESTART
+</code></pre>
+<ul>
+<li><strong>Explicación</strong>: Este comando reinicia el servicio TCP/IP, lo que puede resolver problemas de configuración.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Diagnóstico de Conectividad</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Verificar la conectividad entre dos nodos en la red.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Utiliza el comando <code>PING</code> para verificar la conectividad.</li>
+<li>Utiliza <code>TRACEROUTE</code> para identificar el camino de los paquetes.</li>
+<li>Revisa los logs del sistema para identificar posibles errores.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>PING</strong>:</p>
+<pre><code class="language-shell">$ PING 192.168.1.10
+</code></pre>
+<ul>
+<li><strong>Resultado Esperado</strong>: Respuestas exitosas indicando que la conexión es correcta.</li>
+</ul>
+</li>
+<li>
+<p><strong>TRACEROUTE</strong>:</p>
+<pre><code class="language-shell">$ TRACEROUTE 192.168.1.10
+</code></pre>
+<ul>
+<li><strong>Resultado Esperado</strong>: Lista de saltos que muestra el camino hasta el destino.</li>
+</ul>
+</li>
+<li>
+<p><strong>Revisión de Logs</strong>:</p>
+<pre><code class="language-shell">$ TYPE SYS$MANAGER:OPERATOR.LOG
+</code></pre>
+<ul>
+<li><strong>Resultado Esperado</strong>: Identificación de cualquier mensaje de error relacionado con la red.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto las técnicas y herramientas esenciales para solucionar problemas de red en OpenVMS. Desde la verificación de la conectividad física y lógica hasta el uso de herramientas de diagnóstico y la revisión de logs, estas habilidades son fundamentales para mantener un entorno de red saludable y eficiente. En el próximo módulo, exploraremos la programación avanzada en OpenVMS, donde aprenderemos a utilizar diversos lenguajes de programación en este sistema operativo.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-network-services' title="Servicios y Protocolos de Red">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-introduction-programming-languages' title="Introducción a los Lenguajes de Programación en OpenVMS">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

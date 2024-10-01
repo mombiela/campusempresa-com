@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a Akka</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/scala/06-05-introduction-to-akka" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/scala/06-05-introduction-to-akka" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/scala/06-05-introduction-to-akka" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/scala/06-05-introduction-to-akka" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/scala/06-05-introduction-to-akka" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-concurrency-in-scala' title="Concurrencia en Scala">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introducción a Akka</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-sbt-scala-build-tool' title="SBT (Herramienta de Construcción de Scala)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Akka es un toolkit y runtime para construir aplicaciones concurrentes, distribuidas y resilientes en la JVM (Java Virtual Machine). Akka se basa en el modelo de actores, que proporciona una abstracción de alto nivel para la concurrencia y la paralelización.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><p>Al final de esta sección, deberías ser capaz de:</p>
+<ul>
+<li>Comprender los conceptos básicos del modelo de actores.</li>
+<li>Crear y gestionar actores en Scala utilizando Akka.</li>
+<li>Enviar y recibir mensajes entre actores.</li>
+<li>Manejar el ciclo de vida de los actores.</li>
+<li>Implementar patrones comunes de concurrencia y paralelización con Akka.</li>
+</ul>
+</div><h1>1. Conceptos Básicos del Modelo de Actores</h1>
+<div class='content'></div><h2>¿Qué es un Actor?</h2>
+<div class='content'><p>Un actor es una entidad que:</p>
+<ul>
+<li>Tiene un estado privado.</li>
+<li>Puede recibir mensajes.</li>
+<li>Puede enviar mensajes a otros actores.</li>
+<li>Puede crear nuevos actores.</li>
+</ul>
+</div><h2>Ventajas del Modelo de Actores</h2>
+<div class='content'><ul>
+<li><strong>Encapsulamiento de Estado</strong>: Cada actor tiene su propio estado privado, lo que evita problemas de concurrencia.</li>
+<li><strong>Escalabilidad</strong>: Los actores pueden ser distribuidos en múltiples nodos.</li>
+<li><strong>Resiliencia</strong>: Los actores pueden supervisar a otros actores y reiniciarlos en caso de fallo.</li>
+</ul>
+</div><h1>2. Configuración del Proyecto</h1>
+<div class='content'><p>Para empezar a trabajar con Akka en Scala, necesitas configurar tu proyecto. Aquí te mostramos cómo hacerlo utilizando SBT (Scala Build Tool).</p>
+</div><h2>build.sbt</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmFtZSA6PSAiQWtrYUludHJvZHVjdGlvbiIKCnZlcnNpb24gOj0gIjAuMSIKCnNjYWxhVmVyc2lvbiA6PSAiMi4xMy42IgoKbGlicmFyeURlcGVuZGVuY2llcyArPSAiY29tLnR5cGVzYWZlLmFra2EiICUlICJha2thLWFjdG9yLXR5cGVkIiAlICIyLjYuMTYi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>name := &quot;AkkaIntroduction&quot;
+
+version := &quot;0.1&quot;
+
+scalaVersion := &quot;2.13.6&quot;
+
+libraryDependencies += &quot;com.typesafe.akka&quot; %% &quot;akka-actor-typed&quot; % &quot;2.6.16&quot;</pre></div><div class='content'></div><h1>3. Creación de Actores</h1>
+<div class='content'></div><h2>Definición de un Actor</h2>
+<div class='content'><p>Para definir un actor en Akka, necesitas extender la clase <code>AbstractBehavior</code> y definir cómo manejar los mensajes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFra2EuYWN0b3IudHlwZWQuQmVoYXZpb3IKaW1wb3J0IGFra2EuYWN0b3IudHlwZWQuc2NhbGFkc2wuQmVoYXZpb3JzCgpvYmplY3QgSGVsbG9Xb3JsZEFjdG9yIHsKICBmaW5hbCBjYXNlIGNsYXNzIEdyZWV0KHdob206IFN0cmluZykKCiAgZGVmIGFwcGx5KCk6IEJlaGF2aW9yW0dyZWV0XSA9IEJlaGF2aW9ycy5yZWNlaXZlIHsgKGNvbnRleHQsIG1lc3NhZ2UpID0+CiAgICBjb250ZXh0LmxvZy5pbmZvKCJIZWxsbywge30hIiwgbWVzc2FnZS53aG9tKQogICAgQmVoYXZpb3JzLnNhbWUKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import akka.actor.typed.Behavior
+import akka.actor.typed.scaladsl.Behaviors
+
+object HelloWorldActor {
+  final case class Greet(whom: String)
+
+  def apply(): Behavior[Greet] = Behaviors.receive { (context, message) =&gt;
+    context.log.info(&quot;Hello, {}!&quot;, message.whom)
+    Behaviors.same
+  }
+}</pre></div><div class='content'></div><h2>Creación y Ejecución de un Actor</h2>
+<div class='content'><p>Para crear y ejecutar un actor, necesitas un <code>ActorSystem</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFra2EuYWN0b3IudHlwZWQuQWN0b3JTeXN0ZW0KCm9iamVjdCBIZWxsb1dvcmxkQXBwIGV4dGVuZHMgQXBwIHsKICB2YWwgc3lzdGVtOiBBY3RvclN5c3RlbVtIZWxsb1dvcmxkQWN0b3IuR3JlZXRdID0gQWN0b3JTeXN0ZW0oSGVsbG9Xb3JsZEFjdG9yKCksICJoZWxsbyIpCgogIHN5c3RlbSAhIEhlbGxvV29ybGRBY3Rvci5HcmVldCgiV29ybGQiKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import akka.actor.typed.ActorSystem
+
+object HelloWorldApp extends App {
+  val system: ActorSystem[HelloWorldActor.Greet] = ActorSystem(HelloWorldActor(), &quot;hello&quot;)
+
+  system ! HelloWorldActor.Greet(&quot;World&quot;)
+}</pre></div><div class='content'></div><h1>4. Comunicación entre Actores</h1>
+<div class='content'></div><h2>Envío de Mensajes</h2>
+<div class='content'><p>Los actores se comunican enviando mensajes. Puedes enviar un mensaje a un actor utilizando el operador <code>!</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGdyZWV0ZXI6IEFjdG9yUmVmW0hlbGxvV29ybGRBY3Rvci5HcmVldF0gPSBzeXN0ZW0KZ3JlZXRlciAhIEhlbGxvV29ybGRBY3Rvci5HcmVldCgiQWtrYSIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val greeter: ActorRef[HelloWorldActor.Greet] = system
+greeter ! HelloWorldActor.Greet(&quot;Akka&quot;)</pre></div><div class='content'></div><h2>Recepción de Mensajes</h2>
+<div class='content'><p>La recepción de mensajes se maneja en el método <code>Behaviors.receive</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGFwcGx5KCk6IEJlaGF2aW9yW0dyZWV0XSA9IEJlaGF2aW9ycy5yZWNlaXZlIHsgKGNvbnRleHQsIG1lc3NhZ2UpID0+CiAgY29udGV4dC5sb2cuaW5mbygiSGVsbG8sIHt9ISIsIG1lc3NhZ2Uud2hvbSkKICBCZWhhdmlvcnMuc2FtZQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def apply(): Behavior[Greet] = Behaviors.receive { (context, message) =&gt;
+  context.log.info(&quot;Hello, {}!&quot;, message.whom)
+  Behaviors.same
+}</pre></div><div class='content'></div><h1>5. Ciclo de Vida de los Actores</h1>
+<div class='content'></div><h2>Creación y Terminación</h2>
+<div class='content'><p>Los actores pueden crear otros actores y también pueden ser terminados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGNoaWxkQWN0b3IgPSBjb250ZXh0LnNwYXduKEhlbGxvV29ybGRBY3RvcigpLCAiY2hpbGRBY3RvciIpCmNvbnRleHQuc3RvcChjaGlsZEFjdG9yKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val childActor = context.spawn(HelloWorldActor(), &quot;childActor&quot;)
+context.stop(childActor)</pre></div><div class='content'></div><h2>Supervisión</h2>
+<div class='content'><p>Los actores pueden supervisar a otros actores y tomar acciones en caso de fallo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHN1cGVydmlzb3IgPSBCZWhhdmlvcnMuc3VwZXJ2aXNlKEhlbGxvV29ybGRBY3RvcigpKS5vbkZhaWx1cmVbRXhjZXB0aW9uXShTdXBlcnZpc29yU3RyYXRlZ3kucmVzdGFydCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val supervisor = Behaviors.supervise(HelloWorldActor()).onFailure[Exception](SupervisorStrategy.restart)</pre></div><div class='content'></div><h1>6. Patrones Comunes</h1>
+<div class='content'></div><h2>Patrón de Mensajería</h2>
+<div class='content'><p>Un patrón común es el uso de mensajes para coordinar tareas entre actores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b2JqZWN0IENvdW50ZXIgewogIHNlYWxlZCB0cmFpdCBDb21tYW5kCiAgY2FzZSBvYmplY3QgSW5jcmVtZW50IGV4dGVuZHMgQ29tbWFuZAogIGNhc2Ugb2JqZWN0IERlY3JlbWVudCBleHRlbmRzIENvbW1hbmQKICBjYXNlIGNsYXNzIEdldENvdW50KHJlcGx5VG86IEFjdG9yUmVmW0NvdW50XSkgZXh0ZW5kcyBDb21tYW5kCiAgY2FzZSBjbGFzcyBDb3VudCh2YWx1ZTogSW50KQoKICBkZWYgYXBwbHkoKTogQmVoYXZpb3JbQ29tbWFuZF0gPSBjb3VudGVyKDApCgogIHByaXZhdGUgZGVmIGNvdW50ZXIoY291bnQ6IEludCk6IEJlaGF2aW9yW0NvbW1hbmRdID0gQmVoYXZpb3JzLnJlY2VpdmVNZXNzYWdlIHsKICAgIGNhc2UgSW5jcmVtZW50ID0+CiAgICAgIGNvdW50ZXIoY291bnQgKyAxKQogICAgY2FzZSBEZWNyZW1lbnQgPT4KICAgICAgY291bnRlcihjb3VudCAtIDEpCiAgICBjYXNlIEdldENvdW50KHJlcGx5VG8pID0+CiAgICAgIHJlcGx5VG8gISBDb3VudChjb3VudCkKICAgICAgQmVoYXZpb3JzLnNhbWUKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>object Counter {
+  sealed trait Command
+  case object Increment extends Command
+  case object Decrement extends Command
+  case class GetCount(replyTo: ActorRef[Count]) extends Command
+  case class Count(value: Int)
+
+  def apply(): Behavior[Command] = counter(0)
+
+  private def counter(count: Int): Behavior[Command] = Behaviors.receiveMessage {
+    case Increment =&gt;
+      counter(count + 1)
+    case Decrement =&gt;
+      counter(count - 1)
+    case GetCount(replyTo) =&gt;
+      replyTo ! Count(count)
+      Behaviors.same
+  }
+}</pre></div><div class='content'></div><h2>Ejemplo de Uso</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGNvdW50ZXI6IEFjdG9yUmVmW0NvdW50ZXIuQ29tbWFuZF0gPSBzeXN0ZW0KY291bnRlciAhIENvdW50ZXIuSW5jcmVtZW50CmNvdW50ZXIgISBDb3VudGVyLkdldENvdW50KHJlcGx5VG8gPSBzeXN0ZW0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val counter: ActorRef[Counter.Command] = system
+counter ! Counter.Increment
+counter ! Counter.GetCount(replyTo = system)</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un sistema de actores que simule un sistema de chat simple. Debe haber un actor <code>ChatRoom</code> que maneje múltiples actores <code>User</code>. Los usuarios pueden enviar mensajes al <code>ChatRoom</code>, y el <code>ChatRoom</code> debe reenviar estos mensajes a todos los usuarios conectados.</p>
+</div><h2>Solución</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b2JqZWN0IENoYXRSb29tIHsKICBzZWFsZWQgdHJhaXQgQ29tbWFuZAogIGNhc2UgY2xhc3MgSm9pbih1c2VyOiBBY3RvclJlZltVc2VyLkNvbW1hbmRdKSBleHRlbmRzIENvbW1hbmQKICBjYXNlIGNsYXNzIExlYXZlKHVzZXI6IEFjdG9yUmVmW1VzZXIuQ29tbWFuZF0pIGV4dGVuZHMgQ29tbWFuZAogIGNhc2UgY2xhc3MgU2VuZE1lc3NhZ2UobWVzc2FnZTogU3RyaW5nKSBleHRlbmRzIENvbW1hbmQKCiAgZGVmIGFwcGx5KCk6IEJlaGF2aW9yW0NvbW1hbmRdID0gQmVoYXZpb3JzLnNldHVwIHsgY29udGV4dCA9PgogICAgdmFyIHVzZXJzID0gU2V0LmVtcHR5W0FjdG9yUmVmW1VzZXIuQ29tbWFuZF1dCgogICAgQmVoYXZpb3JzLnJlY2VpdmVNZXNzYWdlIHsKICAgICAgY2FzZSBKb2luKHVzZXIpID0+CiAgICAgICAgdXNlcnMgKz0gdXNlcgogICAgICAgIEJlaGF2aW9ycy5zYW1lCiAgICAgIGNhc2UgTGVhdmUodXNlcikgPT4KICAgICAgICB1c2VycyAtPSB1c2VyCiAgICAgICAgQmVoYXZpb3JzLnNhbWUKICAgICAgY2FzZSBTZW5kTWVzc2FnZShtZXNzYWdlKSA9PgogICAgICAgIHVzZXJzLmZvcmVhY2goXyAhIFVzZXIuUmVjZWl2ZU1lc3NhZ2UobWVzc2FnZSkpCiAgICAgICAgQmVoYXZpb3JzLnNhbWUKICAgIH0KICB9Cn0KCm9iamVjdCBVc2VyIHsKICBzZWFsZWQgdHJhaXQgQ29tbWFuZAogIGNhc2UgY2xhc3MgUmVjZWl2ZU1lc3NhZ2UobWVzc2FnZTogU3RyaW5nKSBleHRlbmRzIENvbW1hbmQKCiAgZGVmIGFwcGx5KG5hbWU6IFN0cmluZyk6IEJlaGF2aW9yW0NvbW1hbmRdID0gQmVoYXZpb3JzLnJlY2VpdmUgeyAoY29udGV4dCwgbWVzc2FnZSkgPT4KICAgIG1lc3NhZ2UgbWF0Y2ggewogICAgICBjYXNlIFJlY2VpdmVNZXNzYWdlKG1zZykgPT4KICAgICAgICBjb250ZXh0LmxvZy5pbmZvKHMiWyRuYW1lXSByZWNlaXZlZCBtZXNzYWdlOiAkbXNnIikKICAgICAgICBCZWhhdmlvcnMuc2FtZQogICAgfQogIH0KfQoKb2JqZWN0IENoYXRBcHAgZXh0ZW5kcyBBcHAgewogIHZhbCBzeXN0ZW06IEFjdG9yU3lzdGVtW0NoYXRSb29tLkNvbW1hbmRdID0gQWN0b3JTeXN0ZW0oQ2hhdFJvb20oKSwgImNoYXRSb29tIikKCiAgdmFsIHVzZXIxID0gc3lzdGVtLnN5c3RlbUFjdG9yT2YoVXNlcigiQWxpY2UiKSwgInVzZXIxIikKICB2YWwgdXNlcjIgPSBzeXN0ZW0uc3lzdGVtQWN0b3JPZihVc2VyKCJCb2IiKSwgInVzZXIyIikKCiAgc3lzdGVtICEgQ2hhdFJvb20uSm9pbih1c2VyMSkKICBzeXN0ZW0gISBDaGF0Um9vbS5Kb2luKHVzZXIyKQoKICBzeXN0ZW0gISBDaGF0Um9vbS5TZW5kTWVzc2FnZSgiSGVsbG8gZXZlcnlvbmUhIikKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>object ChatRoom {
+  sealed trait Command
+  case class Join(user: ActorRef[User.Command]) extends Command
+  case class Leave(user: ActorRef[User.Command]) extends Command
+  case class SendMessage(message: String) extends Command
+
+  def apply(): Behavior[Command] = Behaviors.setup { context =&gt;
+    var users = Set.empty[ActorRef[User.Command]]
+
+    Behaviors.receiveMessage {
+      case Join(user) =&gt;
+        users += user
+        Behaviors.same
+      case Leave(user) =&gt;
+        users -= user
+        Behaviors.same
+      case SendMessage(message) =&gt;
+        users.foreach(_ ! User.ReceiveMessage(message))
+        Behaviors.same
+    }
+  }
+}
+
+object User {
+  sealed trait Command
+  case class ReceiveMessage(message: String) extends Command
+
+  def apply(name: String): Behavior[Command] = Behaviors.receive { (context, message) =&gt;
+    message match {
+      case ReceiveMessage(msg) =&gt;
+        context.log.info(s&quot;[$name] received message: $msg&quot;)
+        Behaviors.same
+    }
+  }
+}
+
+object ChatApp extends App {
+  val system: ActorSystem[ChatRoom.Command] = ActorSystem(ChatRoom(), &quot;chatRoom&quot;)
+
+  val user1 = system.systemActorOf(User(&quot;Alice&quot;), &quot;user1&quot;)
+  val user2 = system.systemActorOf(User(&quot;Bob&quot;), &quot;user2&quot;)
+
+  system ! ChatRoom.Join(user1)
+  system ! ChatRoom.Join(user2)
+
+  system ! ChatRoom.SendMessage(&quot;Hello everyone!&quot;)
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de Akka y el modelo de actores. Aprendiste a crear y gestionar actores, enviar y recibir mensajes, y manejar el ciclo de vida de los actores. También implementaste un patrón común de mensajería y un ejercicio práctico para reforzar los conceptos aprendidos. Con estos conocimientos, estás preparado para explorar más a fondo las capacidades de Akka y construir aplicaciones concurrentes y distribuidas robustas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-concurrency-in-scala' title="Concurrencia en Scala">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-sbt-scala-build-tool' title="SBT (Herramienta de Construcción de Scala)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

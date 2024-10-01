@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a la mensajería en la nube</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/firebase/06-01-introduction-to-cloud-messaging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/firebase/06-01-introduction-to-cloud-messaging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/firebase/06-01-introduction-to-cloud-messaging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/firebase/06-01-introduction-to-cloud-messaging" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/firebase/06-01-introduction-to-cloud-messaging" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-file-metadata-and-security' title="Metadatos de archivos y seguridad">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introducción a la mensajería en la nube</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-sending-notifications' title="Envío de notificaciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>¿Qué es la mensajería en la nube de Firebase?</h1>
+<div class='content'><p>La mensajería en la nube de Firebase (Firebase Cloud Messaging, FCM) es un servicio que permite enviar notificaciones y mensajes a los dispositivos de los usuarios de manera confiable y gratuita. FCM es una herramienta poderosa para mantener a los usuarios comprometidos y actualizados con la información más reciente de tu aplicación.</p>
+</div><h2>Características clave de FCM:</h2>
+<div class='content'><ul>
+<li><strong>Envío de notificaciones</strong>: Permite enviar notificaciones push a los dispositivos de los usuarios.</li>
+<li><strong>Mensajes de datos</strong>: Permite enviar datos personalizados a la aplicación cliente.</li>
+<li><strong>Mensajes dirigidos</strong>: Permite enviar mensajes a dispositivos específicos, grupos de dispositivos o temas.</li>
+<li><strong>Compatibilidad multiplataforma</strong>: Funciona en iOS, Android y la web.</li>
+</ul>
+</div><h1>Configuración de Firebase Cloud Messaging</h1>
+<div class='content'></div><h2>Paso 1: Configuración del proyecto en Firebase</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un proyecto en Firebase</strong>:</p>
+<ul>
+<li>Ve a la <a href="https://console.firebase.google.com/">consola de Firebase</a>.</li>
+<li>Haz clic en &quot;Agregar proyecto&quot; y sigue las instrucciones para crear un nuevo proyecto.</li>
+</ul>
+</li>
+<li>
+<p><strong>Agregar tu aplicación al proyecto</strong>:</p>
+<ul>
+<li>En la consola de Firebase, selecciona tu proyecto.</li>
+<li>Haz clic en el ícono de Android o iOS para agregar una aplicación.</li>
+<li>Sigue las instrucciones para registrar tu aplicación y descargar el archivo de configuración (<code>google-services.json</code> para Android o <code>GoogleService-Info.plist</code> para iOS).</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 2: Integración del SDK de Firebase en tu aplicación</h2>
+<div class='content'><h4>Android</h4>
+<ol>
+<li>
+<p><strong>Agregar dependencias</strong>:</p>
+<ul>
+<li>
+<p>Abre el archivo <code>build.gradle</code> de nivel de proyecto y agrega el repositorio de Google:</p>
+<pre><code class="language-groovy">buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.gms:google-services:4.3.10'
+    }
+}
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>Abre el archivo <code>build.gradle</code> de nivel de aplicación y agrega las dependencias de Firebase:</p>
+<pre><code class="language-groovy">apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
+
+dependencies {
+    implementation platform('com.google.firebase:firebase-bom:28.4.1')
+    implementation 'com.google.firebase:firebase-messaging'
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Agregar el archivo de configuración</strong>:</p>
+<ul>
+<li>Coloca el archivo <code>google-services.json</code> en el directorio <code>app/</code> de tu proyecto.</li>
+</ul>
+</li>
+<li>
+<p><strong>Inicializar Firebase en tu aplicación</strong>:</p>
+<ul>
+<li>En el archivo <code>MainActivity.java</code> o <code>MainActivity.kt</code>, inicializa Firebase:
+<pre><code class="language-java">import com.google.firebase.FirebaseApp;
+
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        FirebaseApp.initializeApp(this);
+    }
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<h4>iOS</h4>
+<ol>
+<li>
+<p><strong>Agregar dependencias</strong>:</p>
+<ul>
+<li>Abre el archivo <code>Podfile</code> y agrega las dependencias de Firebase:
+<pre><code class="language-ruby">platform :ios, '10.0'
+use_frameworks!
+
+target 'YourApp' do
+  pod 'Firebase/Messaging'
+end
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Agregar el archivo de configuración</strong>:</p>
+<ul>
+<li>Coloca el archivo <code>GoogleService-Info.plist</code> en el directorio raíz de tu proyecto Xcode.</li>
+</ul>
+</li>
+<li>
+<p><strong>Inicializar Firebase en tu aplicación</strong>:</p>
+<ul>
+<li>En el archivo <code>AppDelegate.swift</code>, inicializa Firebase:
+<pre><code class="language-swift">import UIKit
+import Firebase
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+    var window: UIWindow?
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool {
+        FirebaseApp.configure()
+        return true
+    }
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Envío de notificaciones</h1>
+<div class='content'></div><h2>Desde la consola de Firebase</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Acceder a la sección de notificaciones</strong>:</p>
+<ul>
+<li>En la consola de Firebase, selecciona tu proyecto.</li>
+<li>En el menú de la izquierda, selecciona &quot;Cloud Messaging&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear una nueva notificación</strong>:</p>
+<ul>
+<li>Haz clic en &quot;Enviar tu primer mensaje&quot;.</li>
+<li>Completa los campos necesarios, como el título, el texto del mensaje y el público objetivo.</li>
+<li>Haz clic en &quot;Siguiente&quot; y luego en &quot;Revisar&quot; para enviar la notificación.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Desde el servidor</h2>
+<div class='content'><p>Para enviar notificaciones desde tu servidor, puedes usar la API HTTP de FCM. Aquí tienes un ejemplo en Node.js:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZmV0Y2ggPSByZXF1aXJlKCdub2RlLWZldGNoJyk7Cgpjb25zdCBzZXJ2ZXJLZXkgPSAnWU9VUl9TRVJWRVJfS0VZJzsKY29uc3QgZGV2aWNlVG9rZW4gPSAnREVWSUNFX1RPS0VOJzsKCmNvbnN0IG1lc3NhZ2UgPSB7CiAgICB0bzogZGV2aWNlVG9rZW4sCiAgICBub3RpZmljYXRpb246IHsKICAgICAgICB0aXRsZTogJ0hlbGxvLCBXb3JsZCEnLAogICAgICAgIGJvZHk6ICdUaGlzIGlzIGEgdGVzdCBub3RpZmljYXRpb24uJwogICAgfQp9OwoKZmV0Y2goJ2h0dHBzOi8vZmNtLmdvb2dsZWFwaXMuY29tL2ZjbS9zZW5kJywgewogICAgbWV0aG9kOiAnUE9TVCcsCiAgICBoZWFkZXJzOiB7CiAgICAgICAgJ0F1dGhvcml6YXRpb24nOiBga2V5PSR7c2VydmVyS2V5fWAsCiAgICAgICAgJ0NvbnRlbnQtVHlwZSc6ICdhcHBsaWNhdGlvbi9qc29uJwogICAgfSwKICAgIGJvZHk6IEpTT04uc3RyaW5naWZ5KG1lc3NhZ2UpCn0pCi50aGVuKHJlc3BvbnNlID0+IHJlc3BvbnNlLmpzb24oKSkKLnRoZW4oZGF0YSA9PiBjb25zb2xlLmxvZygnU3VjY2VzczonLCBkYXRhKSkKLmNhdGNoKGVycm9yID0+IGNvbnNvbGUuZXJyb3IoJ0Vycm9yOicsIGVycm9yKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fetch = require('node-fetch');
+
+const serverKey = 'YOUR_SERVER_KEY';
+const deviceToken = 'DEVICE_TOKEN';
+
+const message = {
+    to: deviceToken,
+    notification: {
+        title: 'Hello, World!',
+        body: 'This is a test notification.'
+    }
+};
+
+fetch('https://fcm.googleapis.com/fcm/send', {
+    method: 'POST',
+    headers: {
+        'Authorization': `key=${serverKey}`,
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(message)
+})
+.then(response =&gt; response.json())
+.then(data =&gt; console.log('Success:', data))
+.catch(error =&gt; console.error('Error:', error));</pre></div><div class='content'></div><h1>Ejercicio práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Enviar una notificación desde la consola de Firebase</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Enviar una notificación a tu aplicación desde la consola de Firebase.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Configura tu proyecto en Firebase y agrega tu aplicación.</li>
+<li>Integra el SDK de Firebase en tu aplicación.</li>
+<li>Envía una notificación desde la consola de Firebase y verifica que se reciba en tu aplicación.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejercicio 2: Enviar una notificación desde el servidor</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Enviar una notificación a tu aplicación desde un servidor Node.js.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Configura tu proyecto en Firebase y agrega tu aplicación.</li>
+<li>Integra el SDK de Firebase en tu aplicación.</li>
+<li>Usa el código de ejemplo proporcionado para enviar una notificación desde un servidor Node.js y verifica que se reciba en tu aplicación.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido qué es Firebase Cloud Messaging y cómo configurarlo en nuestras aplicaciones. También hemos visto cómo enviar notificaciones tanto desde la consola de Firebase como desde un servidor. En las próximas lecciones, profundizaremos en el manejo de notificaciones y exploraremos características avanzadas de mensajería.</p>
+<p>¡Felicidades por completar esta sección! Ahora estás listo para avanzar al siguiente tema: <strong>Envío de notificaciones</strong>.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-file-metadata-and-security' title="Metadatos de archivos y seguridad">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-sending-notifications' title="Envío de notificaciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

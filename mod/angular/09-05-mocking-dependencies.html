@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Dependencias</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular/09-05-mocking-dependencies" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular/09-05-mocking-dependencies" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular/09-05-mocking-dependencies" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/angular/09-05-mocking-dependencies" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/angular/09-05-mocking-dependencies" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-end-to-end-testing' title="Pruebas de Extremo a Extremo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Simulación de Dependencias</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-angular-universal' title="Angular Universal">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre la simulación de dependencias en Angular, una técnica crucial para realizar pruebas unitarias efectivas. La simulación de dependencias nos permite aislar el código que estamos probando, asegurándonos de que las pruebas sean precisas y confiables.</p>
+</div><h1>¿Qué es la Simulación de Dependencias?</h1>
+<div class='content'><p>La simulación de dependencias (mocking) es el proceso de reemplazar componentes o servicios reales con versiones simuladas (mocks) durante las pruebas. Esto es útil para:</p>
+<ul>
+<li><strong>Aislar el código bajo prueba</strong>: Asegurarse de que las pruebas se centren en la funcionalidad específica sin interferencias externas.</li>
+<li><strong>Controlar el comportamiento de las dependencias</strong>: Simular diferentes escenarios y respuestas de las dependencias.</li>
+<li><strong>Mejorar la velocidad de las pruebas</strong>: Evitar dependencias costosas en términos de tiempo, como llamadas a bases de datos o servicios externos.</li>
+</ul>
+</div><h1>Beneficios de la Simulación de Dependencias</h1>
+<div class='content'><ul>
+<li><strong>Aislamiento</strong>: Permite probar componentes de manera aislada.</li>
+<li><strong>Control</strong>: Facilita la simulación de diferentes condiciones y respuestas.</li>
+<li><strong>Fiabilidad</strong>: Asegura que las pruebas no dependan de factores externos.</li>
+<li><strong>Rapidez</strong>: Las pruebas se ejecutan más rápido al evitar dependencias externas.</li>
+</ul>
+</div><h1>Ejemplo Práctico: Simulación de un Servicio</h1>
+<div class='content'><p>Vamos a ver un ejemplo práctico de cómo simular un servicio en Angular utilizando Jasmine y TestBed.</p>
+</div><h2>Paso 1: Crear el Servicio</h2>
+<div class='content'><p>Primero, creamos un servicio simple que queremos simular.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9zZXJ2aWNlcy9kYXRhLnNlcnZpY2UudHMKaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgRGF0YVNlcnZpY2UgewogIGdldERhdGEoKTogc3RyaW5nIHsKICAgIHJldHVybiAncmVhbCBkYXRhJzsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/services/data.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class DataService {
+  getData(): string {
+    return 'real data';
+  }
+}</pre></div><div class='content'></div><h2>Paso 2: Crear el Componente que Usa el Servicio</h2>
+<div class='content'><p>Creamos un componente que utiliza el servicio <code>DataService</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9jb21wb25lbnRzL2RhdGEuY29tcG9uZW50LnRzCmltcG9ydCB7IENvbXBvbmVudCwgT25Jbml0IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7CmltcG9ydCB7IERhdGFTZXJ2aWNlIH0gZnJvbSAnLi4vc2VydmljZXMvZGF0YS5zZXJ2aWNlJzsKCkBDb21wb25lbnQoewogIHNlbGVjdG9yOiAnYXBwLWRhdGEnLAogIHRlbXBsYXRlOiAnPHA+e3sgZGF0YSB9fTwvcD4nCn0pCmV4cG9ydCBjbGFzcyBEYXRhQ29tcG9uZW50IGltcGxlbWVudHMgT25Jbml0IHsKICBkYXRhOiBzdHJpbmc7CgogIGNvbnN0cnVjdG9yKHByaXZhdGUgZGF0YVNlcnZpY2U6IERhdGFTZXJ2aWNlKSB7fQoKICBuZ09uSW5pdCgpOiB2b2lkIHsKICAgIHRoaXMuZGF0YSA9IHRoaXMuZGF0YVNlcnZpY2UuZ2V0RGF0YSgpOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/components/data.component.ts
+import { Component, OnInit } from '@angular/core';
+import { DataService } from '../services/data.service';
+
+@Component({
+  selector: 'app-data',
+  template: '&lt;p&gt;{{ data }}&lt;/p&gt;'
+})
+export class DataComponent implements OnInit {
+  data: string;
+
+  constructor(private dataService: DataService) {}
+
+  ngOnInit(): void {
+    this.data = this.dataService.getData();
+  }
+}</pre></div><div class='content'></div><h2>Paso 3: Configurar el TestBed y Simular el Servicio</h2>
+<div class='content'><p>Ahora configuramos el TestBed para simular el <code>DataService</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9jb21wb25lbnRzL2RhdGEuY29tcG9uZW50LnNwZWMudHMKaW1wb3J0IHsgQ29tcG9uZW50Rml4dHVyZSwgVGVzdEJlZCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUvdGVzdGluZyc7CmltcG9ydCB7IERhdGFDb21wb25lbnQgfSBmcm9tICcuL2RhdGEuY29tcG9uZW50JzsKaW1wb3J0IHsgRGF0YVNlcnZpY2UgfSBmcm9tICcuLi9zZXJ2aWNlcy9kYXRhLnNlcnZpY2UnOwoKY2xhc3MgTW9ja0RhdGFTZXJ2aWNlIHsKICBnZXREYXRhKCk6IHN0cmluZyB7CiAgICByZXR1cm4gJ21vY2sgZGF0YSc7CiAgfQp9CgpkZXNjcmliZSgnRGF0YUNvbXBvbmVudCcsICgpID0+IHsKICBsZXQgY29tcG9uZW50OiBEYXRhQ29tcG9uZW50OwogIGxldCBmaXh0dXJlOiBDb21wb25lbnRGaXh0dXJlPERhdGFDb21wb25lbnQ+OwogIGxldCBkYXRhU2VydmljZTogRGF0YVNlcnZpY2U7CgogIGJlZm9yZUVhY2goYXN5bmMgKCkgPT4gewogICAgYXdhaXQgVGVzdEJlZC5jb25maWd1cmVUZXN0aW5nTW9kdWxlKHsKICAgICAgZGVjbGFyYXRpb25zOiBbIERhdGFDb21wb25lbnQgXSwKICAgICAgcHJvdmlkZXJzOiBbCiAgICAgICAgeyBwcm92aWRlOiBEYXRhU2VydmljZSwgdXNlQ2xhc3M6IE1vY2tEYXRhU2VydmljZSB9CiAgICAgIF0KICAgIH0pCiAgICAuY29tcGlsZUNvbXBvbmVudHMoKTsKICB9KTsKCiAgYmVmb3JlRWFjaCgoKSA9PiB7CiAgICBmaXh0dXJlID0gVGVzdEJlZC5jcmVhdGVDb21wb25lbnQoRGF0YUNvbXBvbmVudCk7CiAgICBjb21wb25lbnQgPSBmaXh0dXJlLmNvbXBvbmVudEluc3RhbmNlOwogICAgZGF0YVNlcnZpY2UgPSBUZXN0QmVkLmluamVjdChEYXRhU2VydmljZSk7CiAgICBmaXh0dXJlLmRldGVjdENoYW5nZXMoKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBjcmVhdGUnLCAoKSA9PiB7CiAgICBleHBlY3QoY29tcG9uZW50KS50b0JlVHJ1dGh5KCk7CiAgfSk7CgogIGl0KCdzaG91bGQgZGlzcGxheSBtb2NrIGRhdGEnLCAoKSA9PiB7CiAgICBleHBlY3QoY29tcG9uZW50LmRhdGEpLnRvQmUoJ21vY2sgZGF0YScpOwogIH0pOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/components/data.component.spec.ts
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { DataComponent } from './data.component';
+import { DataService } from '../services/data.service';
+
+class MockDataService {
+  getData(): string {
+    return 'mock data';
+  }
+}
+
+describe('DataComponent', () =&gt; {
+  let component: DataComponent;
+  let fixture: ComponentFixture&lt;DataComponent&gt;;
+  let dataService: DataService;
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      declarations: [ DataComponent ],
+      providers: [
+        { provide: DataService, useClass: MockDataService }
+      ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() =&gt; {
+    fixture = TestBed.createComponent(DataComponent);
+    component = fixture.componentInstance;
+    dataService = TestBed.inject(DataService);
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+
+  it('should display mock data', () =&gt; {
+    expect(component.data).toBe('mock data');
+  });
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>MockDataService</strong>: Creamos una clase <code>MockDataService</code> que simula el comportamiento del <code>DataService</code> real.</li>
+<li><strong>TestBed Configuration</strong>: Configuramos el TestBed para usar <code>MockDataService</code> en lugar del <code>DataService</code> real.</li>
+<li><strong>Pruebas</strong>: Verificamos que el componente se crea correctamente y que muestra los datos simulados.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea un servicio <code>UserService</code> que tenga un método <code>getUser()</code> que devuelva un objeto de usuario.</li>
+<li>Crea un componente <code>UserComponent</code> que use <code>UserService</code> para obtener y mostrar el nombre del usuario.</li>
+<li>Escribe pruebas unitarias para <code>UserComponent</code> simulando <code>UserService</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>Paso 1: Crear el Servicio</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9zZXJ2aWNlcy91c2VyLnNlcnZpY2UudHMKaW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgVXNlclNlcnZpY2UgewogIGdldFVzZXIoKSB7CiAgICByZXR1cm4geyBuYW1lOiAnSm9obiBEb2UnIH07CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/services/user.service.ts
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  getUser() {
+    return { name: 'John Doe' };
+  }
+}</pre></div><div class='content'><h4>Paso 2: Crear el Componente</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9jb21wb25lbnRzL3VzZXIuY29tcG9uZW50LnRzCmltcG9ydCB7IENvbXBvbmVudCwgT25Jbml0IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7CmltcG9ydCB7IFVzZXJTZXJ2aWNlIH0gZnJvbSAnLi4vc2VydmljZXMvdXNlci5zZXJ2aWNlJzsKCkBDb21wb25lbnQoewogIHNlbGVjdG9yOiAnYXBwLXVzZXInLAogIHRlbXBsYXRlOiAnPHA+e3sgdXNlci5uYW1lIH19PC9wPicKfSkKZXhwb3J0IGNsYXNzIFVzZXJDb21wb25lbnQgaW1wbGVtZW50cyBPbkluaXQgewogIHVzZXI6IGFueTsKCiAgY29uc3RydWN0b3IocHJpdmF0ZSB1c2VyU2VydmljZTogVXNlclNlcnZpY2UpIHt9CgogIG5nT25Jbml0KCk6IHZvaWQgewogICAgdGhpcy51c2VyID0gdGhpcy51c2VyU2VydmljZS5nZXRVc2VyKCk7CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/components/user.component.ts
+import { Component, OnInit } from '@angular/core';
+import { UserService } from '../services/user.service';
+
+@Component({
+  selector: 'app-user',
+  template: '&lt;p&gt;{{ user.name }}&lt;/p&gt;'
+})
+export class UserComponent implements OnInit {
+  user: any;
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.user = this.userService.getUser();
+  }
+}</pre></div><div class='content'><h4>Paso 3: Configurar el TestBed y Simular el Servicio</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3JjL2FwcC9jb21wb25lbnRzL3VzZXIuY29tcG9uZW50LnNwZWMudHMKaW1wb3J0IHsgQ29tcG9uZW50Rml4dHVyZSwgVGVzdEJlZCB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUvdGVzdGluZyc7CmltcG9ydCB7IFVzZXJDb21wb25lbnQgfSBmcm9tICcuL3VzZXIuY29tcG9uZW50JzsKaW1wb3J0IHsgVXNlclNlcnZpY2UgfSBmcm9tICcuLi9zZXJ2aWNlcy91c2VyLnNlcnZpY2UnOwoKY2xhc3MgTW9ja1VzZXJTZXJ2aWNlIHsKICBnZXRVc2VyKCkgewogICAgcmV0dXJuIHsgbmFtZTogJ01vY2sgVXNlcicgfTsKICB9Cn0KCmRlc2NyaWJlKCdVc2VyQ29tcG9uZW50JywgKCkgPT4gewogIGxldCBjb21wb25lbnQ6IFVzZXJDb21wb25lbnQ7CiAgbGV0IGZpeHR1cmU6IENvbXBvbmVudEZpeHR1cmU8VXNlckNvbXBvbmVudD47CiAgbGV0IHVzZXJTZXJ2aWNlOiBVc2VyU2VydmljZTsKCiAgYmVmb3JlRWFjaChhc3luYyAoKSA9PiB7CiAgICBhd2FpdCBUZXN0QmVkLmNvbmZpZ3VyZVRlc3RpbmdNb2R1bGUoewogICAgICBkZWNsYXJhdGlvbnM6IFsgVXNlckNvbXBvbmVudCBdLAogICAgICBwcm92aWRlcnM6IFsKICAgICAgICB7IHByb3ZpZGU6IFVzZXJTZXJ2aWNlLCB1c2VDbGFzczogTW9ja1VzZXJTZXJ2aWNlIH0KICAgICAgXQogICAgfSkKICAgIC5jb21waWxlQ29tcG9uZW50cygpOwogIH0pOwoKICBiZWZvcmVFYWNoKCgpID0+IHsKICAgIGZpeHR1cmUgPSBUZXN0QmVkLmNyZWF0ZUNvbXBvbmVudChVc2VyQ29tcG9uZW50KTsKICAgIGNvbXBvbmVudCA9IGZpeHR1cmUuY29tcG9uZW50SW5zdGFuY2U7CiAgICB1c2VyU2VydmljZSA9IFRlc3RCZWQuaW5qZWN0KFVzZXJTZXJ2aWNlKTsKICAgIGZpeHR1cmUuZGV0ZWN0Q2hhbmdlcygpOwogIH0pOwoKICBpdCgnc2hvdWxkIGNyZWF0ZScsICgpID0+IHsKICAgIGV4cGVjdChjb21wb25lbnQpLnRvQmVUcnV0aHkoKTsKICB9KTsKCiAgaXQoJ3Nob3VsZCBkaXNwbGF5IG1vY2sgdXNlciBuYW1lJywgKCkgPT4gewogICAgZXhwZWN0KGNvbXBvbmVudC51c2VyLm5hbWUpLnRvQmUoJ01vY2sgVXNlcicpOwogIH0pOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// src/app/components/user.component.spec.ts
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { UserComponent } from './user.component';
+import { UserService } from '../services/user.service';
+
+class MockUserService {
+  getUser() {
+    return { name: 'Mock User' };
+  }
+}
+
+describe('UserComponent', () =&gt; {
+  let component: UserComponent;
+  let fixture: ComponentFixture&lt;UserComponent&gt;;
+  let userService: UserService;
+
+  beforeEach(async () =&gt; {
+    await TestBed.configureTestingModule({
+      declarations: [ UserComponent ],
+      providers: [
+        { provide: UserService, useClass: MockUserService }
+      ]
+    })
+    .compileComponents();
+  });
+
+  beforeEach(() =&gt; {
+    fixture = TestBed.createComponent(UserComponent);
+    component = fixture.componentInstance;
+    userService = TestBed.inject(UserService);
+    fixture.detectChanges();
+  });
+
+  it('should create', () =&gt; {
+    expect(component).toBeTruthy();
+  });
+
+  it('should display mock user name', () =&gt; {
+    expect(component.user.name).toBe('Mock User');
+  });
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La simulación de dependencias es una técnica poderosa para realizar pruebas unitarias efectivas en Angular. Permite aislar el código bajo prueba, controlar el comportamiento de las dependencias y mejorar la velocidad y fiabilidad de las pruebas. Con la práctica, podrás aplicar esta técnica para asegurar la calidad y robustez de tus aplicaciones Angular.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-04-end-to-end-testing' title="Pruebas de Extremo a Extremo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-angular-universal' title="Angular Universal">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

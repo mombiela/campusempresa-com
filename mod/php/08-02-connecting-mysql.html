@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectando a una Base de Datos MySQL</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/08-02-connecting-mysql" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/08-02-connecting-mysql" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/08-02-connecting-mysql" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/php/08-02-connecting-mysql" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/php/08-02-connecting-mysql" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-databases' title="Introducción a las Bases de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Conectando a una Base de Datos MySQL</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-crud-operations' title="Realizando Operaciones CRUD">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo conectar tu aplicación PHP a una base de datos MySQL. Este es un paso crucial para cualquier aplicación web que necesite almacenar y recuperar datos de manera persistente. Vamos a cubrir los siguientes puntos:</p>
+<ol>
+<li><strong>Configuración de MySQL</strong></li>
+<li><strong>Conexión a MySQL usando <code>mysqli</code></strong></li>
+<li><strong>Conexión a MySQL usando PDO</strong></li>
+<li><strong>Manejo de Errores de Conexión</strong></li>
+<li><strong>Ejercicios Prácticos</strong></li>
+</ol>
+</div><h1>1. Configuración de MySQL</h1>
+<div class='content'><p>Antes de conectar PHP a MySQL, asegúrate de que MySQL esté instalado y en funcionamiento en tu sistema. También necesitarás las credenciales de acceso a la base de datos (nombre de usuario, contraseña, nombre de la base de datos y host).</p>
+</div><h2>Ejemplo de Configuración</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SG9zdDogbG9jYWxob3N0ClVzdWFyaW86IHJvb3QKQ29udHJhc2XDsWE6IHBhc3N3b3JkCkJhc2UgZGUgRGF0b3M6IG15X2RhdGFiYXNl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Host: localhost
+Usuario: root
+Contrase&ntilde;a: password
+Base de Datos: my_database</pre></div><div class='content'></div><h1>2. Conexión a MySQL usando `mysqli`</h1>
+<div class='content'><p><code>mysqli</code> es una extensión de PHP que permite interactuar con bases de datos MySQL. Aquí te mostramos cómo establecer una conexión básica.</p>
+</div><h2>Ejemplo de Conexión con `mysqli`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJHNlcnZlcm5hbWUgPSAibG9jYWxob3N0IjsKJHVzZXJuYW1lID0gInJvb3QiOwokcGFzc3dvcmQgPSAicGFzc3dvcmQiOwokZGJuYW1lID0gIm15X2RhdGFiYXNlIjsKCi8vIENyZWFyIGNvbmV4acOzbgokY29ubiA9IG5ldyBteXNxbGkoJHNlcnZlcm5hbWUsICR1c2VybmFtZSwgJHBhc3N3b3JkLCAkZGJuYW1lKTsKCi8vIFZlcmlmaWNhciBjb25leGnDs24KaWYgKCRjb25uLT5jb25uZWN0X2Vycm9yKSB7CiAgICBkaWUoIkNvbmV4acOzbiBmYWxsaWRhOiAiIC4gJGNvbm4tPmNvbm5lY3RfZXJyb3IpOwp9CmVjaG8gIkNvbmV4acOzbiBleGl0b3NhIjsKPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;password&quot;;
+$dbname = &quot;my_database&quot;;
+
+// Crear conexi&oacute;n
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Verificar conexi&oacute;n
+if ($conn-&gt;connect_error) {
+    die(&quot;Conexi&oacute;n fallida: &quot; . $conn-&gt;connect_error);
+}
+echo &quot;Conexi&oacute;n exitosa&quot;;
+?&gt;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Variables de Conexión</strong>: Definimos las variables <code>$servername</code>, <code>$username</code>, <code>$password</code> y <code>$dbname</code> con los detalles de la base de datos.</li>
+<li><strong>Crear Conexión</strong>: Usamos <code>new mysqli()</code> para crear una nueva conexión.</li>
+<li><strong>Verificar Conexión</strong>: Comprobamos si hay errores en la conexión usando <code>$conn-&gt;connect_error</code>.</li>
+</ol>
+</div><h1>3. Conexión a MySQL usando PDO</h1>
+<div class='content'><p>PDO (PHP Data Objects) es una extensión que define una interfaz ligera y consistente para acceder a bases de datos en PHP.</p>
+</div><h2>Ejemplo de Conexión con PDO</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGRzbiA9ICdteXNxbDpob3N0PWxvY2FsaG9zdDtkYm5hbWU9bXlfZGF0YWJhc2UnOwokdXNlcm5hbWUgPSAncm9vdCc7CiRwYXNzd29yZCA9ICdwYXNzd29yZCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgJHVzZXJuYW1lLCAkcGFzc3dvcmQpOwogICAgJHBkby0+c2V0QXR0cmlidXRlKFBETzo6QVRUUl9FUlJNT0RFLCBQRE86OkVSUk1PREVfRVhDRVBUSU9OKTsKICAgIGVjaG8gIkNvbmV4acOzbiBleGl0b3NhIjsKfSBjYXRjaCAoUERPRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICJDb25leGnDs24gZmFsbGlkYTogIiAuICRlLT5nZXRNZXNzYWdlKCk7Cn0KPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$dsn = 'mysql:host=localhost;dbname=my_database';
+$username = 'root';
+$password = 'password';
+
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo &quot;Conexi&oacute;n exitosa&quot;;
+} catch (PDOException $e) {
+    echo &quot;Conexi&oacute;n fallida: &quot; . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>DSN (Data Source Name)</strong>: Definimos el DSN con el host y el nombre de la base de datos.</li>
+<li><strong>Crear Conexión</strong>: Usamos <code>new PDO()</code> para crear una nueva conexión.</li>
+<li><strong>Atributos de Error</strong>: Configuramos el modo de error de PDO a <code>PDO::ERRMODE_EXCEPTION</code> para manejar errores de manera más efectiva.</li>
+<li><strong>Manejo de Excepciones</strong>: Usamos un bloque <code>try-catch</code> para capturar y manejar cualquier excepción que ocurra durante la conexión.</li>
+</ol>
+</div><h1>4. Manejo de Errores de Conexión</h1>
+<div class='content'><p>Es importante manejar los errores de conexión adecuadamente para que tu aplicación pueda responder de manera apropiada.</p>
+</div><h2>Ejemplo de Manejo de Errores con `mysqli`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJHNlcnZlcm5hbWUgPSAibG9jYWxob3N0IjsKJHVzZXJuYW1lID0gInJvb3QiOwokcGFzc3dvcmQgPSAicGFzc3dvcmQiOwokZGJuYW1lID0gIm15X2RhdGFiYXNlIjsKCiRjb25uID0gbmV3IG15c3FsaSgkc2VydmVybmFtZSwgJHVzZXJuYW1lLCAkcGFzc3dvcmQsICRkYm5hbWUpOwoKaWYgKCRjb25uLT5jb25uZWN0X2Vycm9yKSB7CiAgICBkaWUoIkNvbmV4acOzbiBmYWxsaWRhOiAiIC4gJGNvbm4tPmNvbm5lY3RfZXJyb3IpOwp9CmVjaG8gIkNvbmV4acOzbiBleGl0b3NhIjsKPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;password&quot;;
+$dbname = &quot;my_database&quot;;
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn-&gt;connect_error) {
+    die(&quot;Conexi&oacute;n fallida: &quot; . $conn-&gt;connect_error);
+}
+echo &quot;Conexi&oacute;n exitosa&quot;;
+?&gt;</pre></div><div class='content'></div><h2>Ejemplo de Manejo de Errores con PDO</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGRzbiA9ICdteXNxbDpob3N0PWxvY2FsaG9zdDtkYm5hbWU9bXlfZGF0YWJhc2UnOwokdXNlcm5hbWUgPSAncm9vdCc7CiRwYXNzd29yZCA9ICdwYXNzd29yZCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgJHVzZXJuYW1lLCAkcGFzc3dvcmQpOwogICAgJHBkby0+c2V0QXR0cmlidXRlKFBETzo6QVRUUl9FUlJNT0RFLCBQRE86OkVSUk1PREVfRVhDRVBUSU9OKTsKICAgIGVjaG8gIkNvbmV4acOzbiBleGl0b3NhIjsKfSBjYXRjaCAoUERPRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICJDb25leGnDs24gZmFsbGlkYTogIiAuICRlLT5nZXRNZXNzYWdlKCk7Cn0KPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$dsn = 'mysql:host=localhost;dbname=my_database';
+$username = 'root';
+$password = 'password';
+
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo &quot;Conexi&oacute;n exitosa&quot;;
+} catch (PDOException $e) {
+    echo &quot;Conexi&oacute;n fallida: &quot; . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h1>5. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Conexión Básica con `mysqli`</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Escribe un script PHP que se conecte a una base de datos MySQL usando <code>mysqli</code> y verifique la conexión.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJHNlcnZlcm5hbWUgPSAibG9jYWxob3N0IjsKJHVzZXJuYW1lID0gInJvb3QiOwokcGFzc3dvcmQgPSAicGFzc3dvcmQiOwokZGJuYW1lID0gIm15X2RhdGFiYXNlIjsKCiRjb25uID0gbmV3IG15c3FsaSgkc2VydmVybmFtZSwgJHVzZXJuYW1lLCAkcGFzc3dvcmQsICRkYm5hbWUpOwoKaWYgKCRjb25uLT5jb25uZWN0X2Vycm9yKSB7CiAgICBkaWUoIkNvbmV4acOzbiBmYWxsaWRhOiAiIC4gJGNvbm4tPmNvbm5lY3RfZXJyb3IpOwp9CmVjaG8gIkNvbmV4acOzbiBleGl0b3NhIjsKPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;password&quot;;
+$dbname = &quot;my_database&quot;;
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn-&gt;connect_error) {
+    die(&quot;Conexi&oacute;n fallida: &quot; . $conn-&gt;connect_error);
+}
+echo &quot;Conexi&oacute;n exitosa&quot;;
+?&gt;</pre></div><div class='content'></div><h2>Ejercicio 2: Conexión Básica con PDO</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Escribe un script PHP que se conecte a una base de datos MySQL usando PDO y verifique la conexión.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGRzbiA9ICdteXNxbDpob3N0PWxvY2FsaG9zdDtkYm5hbWU9bXlfZGF0YWJhc2UnOwokdXNlcm5hbWUgPSAncm9vdCc7CiRwYXNzd29yZCA9ICdwYXNzd29yZCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgJHVzZXJuYW1lLCAkcGFzc3dvcmQpOwogICAgJHBkby0+c2V0QXR0cmlidXRlKFBETzo6QVRUUl9FUlJNT0RFLCBQRE86OkVSUk1PREVfRVhDRVBUSU9OKTsKICAgIGVjaG8gIkNvbmV4acOzbiBleGl0b3NhIjsKfSBjYXRjaCAoUERPRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICJDb25leGnDs24gZmFsbGlkYTogIiAuICRlLT5nZXRNZXNzYWdlKCk7Cn0KPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$dsn = 'mysql:host=localhost;dbname=my_database';
+$username = 'root';
+$password = 'password';
+
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo &quot;Conexi&oacute;n exitosa&quot;;
+} catch (PDOException $e) {
+    echo &quot;Conexi&oacute;n fallida: &quot; . $e-&gt;getMessage();
+}
+?&gt;</pre></div><div class='content'></div><h2>Ejercicio 3: Manejo de Errores</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Modifica los scripts anteriores para que manejen los errores de conexión de manera más detallada, mostrando un mensaje de error personalizado.</p>
+<p><strong>Solución</strong>:</p>
+<p><strong>Con <code>mysqli</code></strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJHNlcnZlcm5hbWUgPSAibG9jYWxob3N0IjsKJHVzZXJuYW1lID0gInJvb3QiOwokcGFzc3dvcmQgPSAicGFzc3dvcmQiOwokZGJuYW1lID0gIm15X2RhdGFiYXNlIjsKCiRjb25uID0gbmV3IG15c3FsaSgkc2VydmVybmFtZSwgJHVzZXJuYW1lLCAkcGFzc3dvcmQsICRkYm5hbWUpOwoKaWYgKCRjb25uLT5jb25uZWN0X2Vycm9yKSB7CiAgICBkaWUoIkNvbmV4acOzbiBmYWxsaWRhOiAiIC4gJGNvbm4tPmNvbm5lY3RfZXJyb3IgLiAiLiBQb3IgZmF2b3IsIHZlcmlmaWNhIHR1cyBjcmVkZW5jaWFsZXMuIik7Cn0KZWNobyAiQ29uZXhpw7NuIGV4aXRvc2EiOwo/Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$servername = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;password&quot;;
+$dbname = &quot;my_database&quot;;
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn-&gt;connect_error) {
+    die(&quot;Conexi&oacute;n fallida: &quot; . $conn-&gt;connect_error . &quot;. Por favor, verifica tus credenciales.&quot;);
+}
+echo &quot;Conexi&oacute;n exitosa&quot;;
+?&gt;</pre></div><div class='content'><p><strong>Con PDO</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGRzbiA9ICdteXNxbDpob3N0PWxvY2FsaG9zdDtkYm5hbWU9bXlfZGF0YWJhc2UnOwokdXNlcm5hbWUgPSAncm9vdCc7CiRwYXNzd29yZCA9ICdwYXNzd29yZCc7Cgp0cnkgewogICAgJHBkbyA9IG5ldyBQRE8oJGRzbiwgJHVzZXJuYW1lLCAkcGFzc3dvcmQpOwogICAgJHBkby0+c2V0QXR0cmlidXRlKFBETzo6QVRUUl9FUlJNT0RFLCBQRE86OkVSUk1PREVfRVhDRVBUSU9OKTsKICAgIGVjaG8gIkNvbmV4acOzbiBleGl0b3NhIjsKfSBjYXRjaCAoUERPRXhjZXB0aW9uICRlKSB7CiAgICBlY2hvICJDb25leGnDs24gZmFsbGlkYTogIiAuICRlLT5nZXRNZXNzYWdlKCkgLiAiLiBQb3IgZmF2b3IsIHZlcmlmaWNhIHR1cyBjcmVkZW5jaWFsZXMuIjsKfQo/Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$dsn = 'mysql:host=localhost;dbname=my_database';
+$username = 'root';
+$password = 'password';
+
+try {
+    $pdo = new PDO($dsn, $username, $password);
+    $pdo-&gt;setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo &quot;Conexi&oacute;n exitosa&quot;;
+} catch (PDOException $e) {
+    echo &quot;Conexi&oacute;n fallida: &quot; . $e-&gt;getMessage() . &quot;. Por favor, verifica tus credenciales.&quot;;
+}
+?&gt;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo conectar tu aplicación PHP a una base de datos MySQL usando tanto <code>mysqli</code> como PDO. También has visto cómo manejar errores de conexión de manera efectiva. Estos conocimientos son fundamentales para cualquier desarrollador PHP que trabaje con bases de datos. En el próximo tema, exploraremos cómo realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en una base de datos MySQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-databases' title="Introducción a las Bases de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-crud-operations' title="Realizando Operaciones CRUD">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

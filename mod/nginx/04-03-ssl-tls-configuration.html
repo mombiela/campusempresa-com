@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración SSL/TLS</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/04-03-ssl-tls-configuration" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/04-03-ssl-tls-configuration" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/04-03-ssl-tls-configuration" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/04-03-ssl-tls-configuration" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/04-03-ssl-tls-configuration" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-rate-limiting' title="Limitación de Tasa">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Configuración SSL/TLS</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-caching' title="Caché">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo configurar SSL/TLS en NGINX para asegurar la comunicación entre el servidor y los clientes. SSL (Secure Sockets Layer) y TLS (Transport Layer Security) son protocolos que proporcionan seguridad en la transmisión de datos a través de redes.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Certificado SSL/TLS</strong>: Un archivo que contiene la clave pública y la identidad del servidor.</li>
+<li><strong>Clave Privada</strong>: Un archivo que debe mantenerse seguro y nunca compartirse. Se utiliza para descifrar los datos cifrados con la clave pública.</li>
+<li><strong>Certificado Intermedio</strong>: Certificados adicionales que forman una cadena de confianza entre el certificado del servidor y una autoridad de certificación (CA) raíz.</li>
+</ol>
+</div><h1>Pasos para Configurar SSL/TLS en NGINX</h1>
+<div class='content'></div><h2>1. Obtener Certificados SSL/TLS</h2>
+<div class='content'><p>Puedes obtener certificados SSL/TLS de una autoridad de certificación (CA) como Let's Encrypt, Comodo, o DigiCert. Para este ejemplo, usaremos Let's Encrypt.</p>
+<h4>Usando Certbot para Obtener Certificados</h4>
+<p>Certbot es una herramienta fácil de usar para obtener certificados SSL/TLS de Let's Encrypt.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCBjZXJ0Ym90IHB5dGhvbjMtY2VydGJvdC1uZ2lueApzdWRvIGNlcnRib3QgLS1uZ2lueA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
+sudo apt-get install certbot python3-certbot-nginx
+sudo certbot --nginx</pre></div><div class='content'><p>Certbot configurará automáticamente NGINX para usar los certificados obtenidos.</p>
+</div><h2>2. Configuración Manual de SSL/TLS en NGINX</h2>
+<div class='content'><p>Si prefieres configurar SSL/TLS manualmente, sigue estos pasos:</p>
+<h4>a. Instalar OpenSSL</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCBvcGVuc3Ns"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
+sudo apt-get install openssl</pre></div><div class='content'><h4>b. Generar una Clave Privada y una Solicitud de Firma de Certificado (CSR)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbnNzbCByZXEgLW5ldyAtbmV3a2V5IHJzYToyMDQ4IC1ub2RlcyAta2V5b3V0IC9ldGMvbmdpbngvc3NsL25naW54LmtleSAtb3V0IC9ldGMvbmdpbngvc3NsL25naW54LmNzcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>openssl req -new -newkey rsa:2048 -nodes -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.csr</pre></div><div class='content'><h4>c. Enviar el CSR a una CA</h4>
+<p>Envía el archivo CSR a una CA para obtener el certificado SSL/TLS.</p>
+<h4>d. Configurar NGINX para Usar SSL/TLS</h4>
+<p>Edita el archivo de configuración de NGINX para incluir las directivas SSL/TLS.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tIHd3dy5leGFtcGxlLmNvbTsKICAgIHJldHVybiAzMDEgaHR0cHM6Ly8kaG9zdCRyZXF1ZXN0X3VyaTsKfQoKc2VydmVyIHsKICAgIGxpc3RlbiA0NDMgc3NsOwogICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb20gd3d3LmV4YW1wbGUuY29tOwoKICAgIHNzbF9jZXJ0aWZpY2F0ZSAvZXRjL25naW54L3NzbC9uZ2lueC5jcnQ7CiAgICBzc2xfY2VydGlmaWNhdGVfa2V5IC9ldGMvbmdpbngvc3NsL25naW54LmtleTsKCiAgICBzc2xfcHJvdG9jb2xzIFRMU3YxLjIgVExTdjEuMzsKICAgIHNzbF9jaXBoZXJzIEhJR0g6IWFOVUxMOiFNRDU7CgogICAgbG9jYXRpb24gLyB7CiAgICAgICAgcm9vdCAvdmFyL3d3dy9odG1sOwogICAgICAgIGluZGV4IGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name example.com www.example.com;
+
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    location / {
+        root /var/www/html;
+        index index.html index.htm;
+    }
+}</pre></div><div class='content'></div><h2>3. Reiniciar NGINX</h2>
+<div class='content'><p>Después de configurar SSL/TLS, reinicia NGINX para aplicar los cambios.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgcmVzdGFydCBuZ2lueA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl restart nginx</pre></div><div class='content'></div><h1>Ejemplo Completo de Configuración</h1>
+<div class='content'><p>Aquí tienes un ejemplo completo de un archivo de configuración de NGINX con SSL/TLS habilitado:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tIHd3dy5leGFtcGxlLmNvbTsKICAgIHJldHVybiAzMDEgaHR0cHM6Ly8kaG9zdCRyZXF1ZXN0X3VyaTsKfQoKc2VydmVyIHsKICAgIGxpc3RlbiA0NDMgc3NsOwogICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb20gd3d3LmV4YW1wbGUuY29tOwoKICAgIHNzbF9jZXJ0aWZpY2F0ZSAvZXRjL25naW54L3NzbC9uZ2lueC5jcnQ7CiAgICBzc2xfY2VydGlmaWNhdGVfa2V5IC9ldGMvbmdpbngvc3NsL25naW54LmtleTsKCiAgICBzc2xfcHJvdG9jb2xzIFRMU3YxLjIgVExTdjEuMzsKICAgIHNzbF9jaXBoZXJzIEhJR0g6IWFOVUxMOiFNRDU7CgogICAgbG9jYXRpb24gLyB7CiAgICAgICAgcm9vdCAvdmFyL3d3dy9odG1sOwogICAgICAgIGluZGV4IGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgfQoKICAgIGVycm9yX3BhZ2UgNDA0IC80MDQuaHRtbDsKICAgIGxvY2F0aW9uID0gLzQwNC5odG1sIHsKICAgICAgICBpbnRlcm5hbDsKICAgIH0KCiAgICBlcnJvcl9wYWdlIDUwMCA1MDIgNTAzIDUwNCAvNTB4Lmh0bWw7CiAgICBsb2NhdGlvbiA9IC81MHguaHRtbCB7CiAgICAgICAgaW50ZXJuYWw7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com www.example.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name example.com www.example.com;
+
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    location / {
+        root /var/www/html;
+        index index.html index.htm;
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        internal;
+    }
+
+    error_page 500 502 503 504 /50x.html;
+    location = /50x.html {
+        internal;
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar SSL/TLS en un Servidor NGINX</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar SSL/TLS en un servidor NGINX utilizando Certbot.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Instala Certbot y el plugin de NGINX.</li>
+<li>Obtén un certificado SSL/TLS para tu dominio.</li>
+<li>Verifica que NGINX esté configurado correctamente y que el sitio sea accesible a través de HTTPS.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar Certbot y el plugin de NGINX</strong>:</p>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install certbot python3-certbot-nginx
+</code></pre>
+</li>
+<li>
+<p><strong>Obtener un certificado SSL/TLS</strong>:</p>
+<pre><code class="language-bash">sudo certbot --nginx
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar la configuración</strong>:</p>
+<ul>
+<li>Abre tu navegador y visita <code>https://example.com</code>.</li>
+<li>Verifica que el sitio cargue correctamente y que el certificado SSL/TLS esté activo.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar SSL/TLS en NGINX para asegurar la comunicación entre el servidor y los clientes. Hemos cubierto tanto la configuración automática usando Certbot como la configuración manual. Asegurarse de que las comunicaciones sean seguras es crucial para proteger la información sensible y mantener la confianza de los usuarios.</p>
+<p>En el próximo tema, exploraremos cómo implementar prácticas básicas de seguridad en NGINX para fortalecer aún más la seguridad de nuestro servidor.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-rate-limiting' title="Limitación de Tasa">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-caching' title="Caché">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

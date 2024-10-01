@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goroutines</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/05-01-goroutines" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/05-01-goroutines" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/05-01-goroutines" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/go/05-01-goroutines" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/go/05-01-goroutines" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-panic-and-recover' title="Panic y Recover">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Goroutines</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-channels' title="Canales">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las goroutines son una característica fundamental de Go que permite la concurrencia de manera eficiente y sencilla. En este tema, aprenderás qué son las goroutines, cómo utilizarlas y cómo manejarlas adecuadamente.</p>
+</div><h1>¿Qué es una Goroutine?</h1>
+<div class='content'><p>Una goroutine es una función que se ejecuta de manera concurrente con otras goroutines en el mismo espacio de direcciones. Las goroutines son ligeras y gestionadas por el runtime de Go, lo que las hace más eficientes en términos de memoria y rendimiento en comparación con los hilos del sistema operativo.</p>
+</div><h2>Características de las Goroutines</h2>
+<div class='content'><ul>
+<li><strong>Ligereza</strong>: Las goroutines son mucho más ligeras que los hilos del sistema operativo.</li>
+<li><strong>Gestión Automática</strong>: El runtime de Go gestiona la creación y destrucción de goroutines.</li>
+<li><strong>Concurrencia</strong>: Permiten la ejecución concurrente de funciones, mejorando el rendimiento de las aplicaciones.</li>
+</ul>
+</div><h1>Sintaxis Básica</h1>
+<div class='content'><p>Para iniciar una goroutine, simplemente anteponemos la palabra clave <code>go</code> a la llamada de una función.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJ0aW1lIgopCgpmdW5jIHNheUhlbGxvKCkgewogICAgZm10LlByaW50bG4oIkhlbGxvLCBXb3JsZCEiKQp9CgpmdW5jIG1haW4oKSB7CiAgICBnbyBzYXlIZWxsbygpIC8vIEluaWNpYSB1bmEgZ29yb3V0aW5lCiAgICB0aW1lLlNsZWVwKDEgKiB0aW1lLlNlY29uZCkgLy8gRXNwZXJhIHBhcmEgcXVlIGxhIGdvcm91dGluZSB0ZXJtaW5lCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func sayHello() {
+    fmt.Println(&quot;Hello, World!&quot;)
+}
+
+func main() {
+    go sayHello() // Inicia una goroutine
+    time.Sleep(1 * time.Second) // Espera para que la goroutine termine
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Definición de la Función</strong>: La función <code>sayHello</code> imprime &quot;Hello, World!&quot;.</li>
+<li><strong>Iniciar la Goroutine</strong>: En <code>main</code>, la función <code>sayHello</code> se llama con la palabra clave <code>go</code>, iniciando una goroutine.</li>
+<li><strong>Esperar la Finalización</strong>: <code>time.Sleep(1 * time.Second)</code> se usa para dar tiempo a la goroutine para que termine su ejecución antes de que el programa principal finalice.</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un ejemplo más complejo donde varias goroutines se ejecutan simultáneamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJ0aW1lIgopCgpmdW5jIHByaW50TnVtYmVycygpIHsKICAgIGZvciBpIDo9IDE7IGkgPD0gNTsgaSsrIHsKICAgICAgICBmbXQuUHJpbnRsbihpKQogICAgICAgIHRpbWUuU2xlZXAoNTAwICogdGltZS5NaWxsaXNlY29uZCkKICAgIH0KfQoKZnVuYyBwcmludExldHRlcnMoKSB7CiAgICBmb3IgaSA6PSAnQSc7IGkgPD0gJ0UnOyBpKysgewogICAgICAgIGZtdC5QcmludGYoIiVjXG4iLCBpKQogICAgICAgIHRpbWUuU2xlZXAoNzAwICogdGltZS5NaWxsaXNlY29uZCkKICAgIH0KfQoKZnVuYyBtYWluKCkgewogICAgZ28gcHJpbnROdW1iZXJzKCkKICAgIGdvIHByaW50TGV0dGVycygpCiAgICB0aW1lLlNsZWVwKDQgKiB0aW1lLlNlY29uZCkgLy8gRXNwZXJhIHBhcmEgcXVlIGFtYmFzIGdvcm91dGluZXMgdGVybWluZW4KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func printNumbers() {
+    for i := 1; i &lt;= 5; i++ {
+        fmt.Println(i)
+        time.Sleep(500 * time.Millisecond)
+    }
+}
+
+func printLetters() {
+    for i := 'A'; i &lt;= 'E'; i++ {
+        fmt.Printf(&quot;%c\n&quot;, i)
+        time.Sleep(700 * time.Millisecond)
+    }
+}
+
+func main() {
+    go printNumbers()
+    go printLetters()
+    time.Sleep(4 * time.Second) // Espera para que ambas goroutines terminen
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Funciones Concurrentes</strong>: <code>printNumbers</code> imprime números del 1 al 5, y <code>printLetters</code> imprime letras de la A a la E.</li>
+<li><strong>Iniciar Goroutines</strong>: Ambas funciones se inician como goroutines en <code>main</code>.</li>
+<li><strong>Sincronización</strong>: <code>time.Sleep(4 * time.Second)</code> asegura que el programa principal espere lo suficiente para que ambas goroutines terminen.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Contador Concurrente</h2>
+<div class='content'><p>Escribe un programa que inicie dos goroutines. Una goroutine debe contar de 1 a 5 y la otra debe contar de 6 a 10. Ambas deben imprimir sus números con un retraso de 1 segundo entre cada número.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJ0aW1lIgopCgpmdW5jIGNvdW50KHN0YXJ0LCBlbmQgaW50KSB7CiAgICBmb3IgaSA6PSBzdGFydDsgaSA8PSBlbmQ7IGkrKyB7CiAgICAgICAgZm10LlByaW50bG4oaSkKICAgICAgICB0aW1lLlNsZWVwKDEgKiB0aW1lLlNlY29uZCkKICAgIH0KfQoKZnVuYyBtYWluKCkgewogICAgZ28gY291bnQoMSwgNSkKICAgIGdvIGNvdW50KDYsIDEwKQogICAgdGltZS5TbGVlcCg2ICogdGltZS5TZWNvbmQpIC8vIEVzcGVyYSBwYXJhIHF1ZSBhbWJhcyBnb3JvdXRpbmVzIHRlcm1pbmVuCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func count(start, end int) {
+    for i := start; i &lt;= end; i++ {
+        fmt.Println(i)
+        time.Sleep(1 * time.Second)
+    }
+}
+
+func main() {
+    go count(1, 5)
+    go count(6, 10)
+    time.Sleep(6 * time.Second) // Espera para que ambas goroutines terminen
+}</pre></div><div class='content'></div><h2>Retroalimentación y Consejos</h2>
+<div class='content'><ul>
+<li><strong>Error Común</strong>: No esperar lo suficiente para que las goroutines terminen. Usa <code>time.Sleep</code> o canales para sincronizar.</li>
+<li><strong>Consejo</strong>: Usa canales para una mejor sincronización y comunicación entre goroutines, lo cual aprenderemos en el siguiente tema.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido qué son las goroutines, cómo iniciarlas y cómo manejarlas adecuadamente. Las goroutines son una herramienta poderosa para la concurrencia en Go, permitiendo la ejecución eficiente de múltiples tareas simultáneamente. En el próximo tema, exploraremos los canales, que son esenciales para la comunicación y sincronización entre goroutines.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-panic-and-recover' title="Panic y Recover">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-channels' title="Canales">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

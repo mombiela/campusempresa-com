@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conectividad con Bases de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/csharp/05-03-database-connectivity" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/csharp/05-03-database-connectivity" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/csharp/05-03-database-connectivity" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/csharp/05-03-database-connectivity" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/csharp/05-03-database-connectivity" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-serialization' title="Serialización">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Conectividad con Bases de Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-entity-framework' title="Entity Framework">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo conectar aplicaciones C# a bases de datos, realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) y manejar conexiones de manera eficiente. Utilizaremos ADO.NET, una tecnología que proporciona acceso a datos desde bases de datos relacionales.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li>Introducción a ADO.NET</li>
+<li>Configuración del Entorno</li>
+<li>Conexión a una Base de Datos</li>
+<li>Operaciones CRUD</li>
+<li>Ejercicios Prácticos</li>
+</ol>
+</div><h1>1. Introducción a ADO.NET</h1>
+<div class='content'><p>ADO.NET es un conjunto de componentes que permiten a los desarrolladores interactuar con bases de datos. Proporciona una manera eficiente de acceder y manipular datos en aplicaciones .NET.</p>
+</div><h2>Conceptos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Connection</strong>: Representa una conexión a una base de datos.</li>
+<li><strong>Command</strong>: Representa una instrucción SQL que se ejecuta en una base de datos.</li>
+<li><strong>DataReader</strong>: Proporciona una manera de leer datos de una base de datos de manera eficiente.</li>
+<li><strong>DataSet</strong>: Representa un conjunto de datos en memoria que puede incluir múltiples tablas.</li>
+</ul>
+</div><h1>2. Configuración del Entorno</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener instalado:</p>
+<ul>
+<li>Visual Studio</li>
+<li>SQL Server (o cualquier otra base de datos relacional)</li>
+</ul>
+</div><h1>3. Conexión a una Base de Datos</h1>
+<div class='content'></div><h2>Paso 1: Crear una Base de Datos</h2>
+<div class='content'><p>Para este ejemplo, utilizaremos SQL Server. Crea una base de datos llamada <code>SampleDB</code> y una tabla llamada <code>Users</code> con la siguiente estructura:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIFVzZXJzICgKICAgIElkIElOVCBQUklNQVJZIEtFWSBJREVOVElUWSwKICAgIE5hbWUgTlZBUkNIQVIoNTApLAogICAgRW1haWwgTlZBUkNIQVIoNTApCik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE Users (
+    Id INT PRIMARY KEY IDENTITY,
+    Name NVARCHAR(50),
+    Email NVARCHAR(50)
+);</pre></div><div class='content'></div><h2>Paso 2: Configurar la Cadena de Conexión</h2>
+<div class='content'><p>La cadena de conexión es una cadena que contiene la información necesaria para conectarse a la base de datos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RyaW5nIGNvbm5lY3Rpb25TdHJpbmcgPSAiU2VydmVyPXlvdXJfc2VydmVyX25hbWU7RGF0YWJhc2U9U2FtcGxlREI7VXNlciBJZD15b3VyX3VzZXJuYW1lO1Bhc3N3b3JkPXlvdXJfcGFzc3dvcmQ7Ijs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;</pre></div><div class='content'></div><h2>Paso 3: Establecer la Conexión</h2>
+<div class='content'><p>Utilizaremos la clase <code>SqlConnection</code> para establecer una conexión con la base de datos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgdHJ5CiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIGNvbm5lY3Rpb24uT3BlbigpOwogICAgICAgICAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoIkNvbmV4acOzbiBlc3RhYmxlY2lkYSBleGl0b3NhbWVudGUuIik7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgY2F0Y2ggKEV4Y2VwdGlvbiBleCkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoIkVycm9yIGFsIGNvbmVjdGFyIGEgbGEgYmFzZSBkZSBkYXRvczogIiArIGV4Lk1lc3NhZ2UpOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            try
+            {
+                connection.Open();
+                Console.WriteLine(&quot;Conexi&oacute;n establecida exitosamente.&quot;);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(&quot;Error al conectar a la base de datos: &quot; + ex.Message);
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>4. Operaciones CRUD</h1>
+<div class='content'></div><h2>Crear (Insertar)</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJJTlNFUlQgSU5UTyBVc2VycyAoTmFtZSwgRW1haWwpIFZBTFVFUyAoQE5hbWUsIEBFbWFpbCkiOwogICAgICAgICAgICAKICAgICAgICAgICAgdXNpbmcgKFNxbENvbW1hbmQgY29tbWFuZCA9IG5ldyBTcWxDb21tYW5kKHF1ZXJ5LCBjb25uZWN0aW9uKSkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgY29tbWFuZC5QYXJhbWV0ZXJzLkFkZFdpdGhWYWx1ZSgiQE5hbWUiLCAiSm9obiBEb2UiKTsKICAgICAgICAgICAgICAgIGNvbW1hbmQuUGFyYW1ldGVycy5BZGRXaXRoVmFsdWUoIkBFbWFpbCIsICJqb2huLmRvZUBleGFtcGxlLmNvbSIpOwogICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICBpbnQgcmVzdWx0ID0gY29tbWFuZC5FeGVjdXRlTm9uUXVlcnkoKTsKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgaWYgKHJlc3VsdCA+IDApCiAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoIlVzdWFyaW8gaW5zZXJ0YWRvIGV4aXRvc2FtZW50ZS4iKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;INSERT INTO Users (Name, Email) VALUES (@Name, @Email)&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue(&quot;@Name&quot;, &quot;John Doe&quot;);
+                command.Parameters.AddWithValue(&quot;@Email&quot;, &quot;john.doe@example.com&quot;);
+                
+                int result = command.ExecuteNonQuery();
+                
+                if (result &gt; 0)
+                {
+                    Console.WriteLine(&quot;Usuario insertado exitosamente.&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Leer (Seleccionar)</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJTRUxFQ1QgKiBGUk9NIFVzZXJzIjsKICAgICAgICAgICAgCiAgICAgICAgICAgIHVzaW5nIChTcWxDb21tYW5kIGNvbW1hbmQgPSBuZXcgU3FsQ29tbWFuZChxdWVyeSwgY29ubmVjdGlvbikpCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIHVzaW5nIChTcWxEYXRhUmVhZGVyIHJlYWRlciA9IGNvbW1hbmQuRXhlY3V0ZVJlYWRlcigpKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIHdoaWxlIChyZWFkZXIuUmVhZCgpKQogICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoJCJJRDoge3JlYWRlclsiSWQiXX0sIE5hbWU6IHtyZWFkZXJbIk5hbWUiXX0sIEVtYWlsOiB7cmVhZGVyWyJFbWFpbCJdfSIpOwogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;SELECT * FROM Users&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($&quot;ID: {reader[&quot;Id&quot;]}, Name: {reader[&quot;Name&quot;]}, Email: {reader[&quot;Email&quot;]}&quot;);
+                    }
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Actualizar</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJVUERBVEUgVXNlcnMgU0VUIEVtYWlsID0gQEVtYWlsIFdIRVJFIE5hbWUgPSBATmFtZSI7CiAgICAgICAgICAgIAogICAgICAgICAgICB1c2luZyAoU3FsQ29tbWFuZCBjb21tYW5kID0gbmV3IFNxbENvbW1hbmQocXVlcnksIGNvbm5lY3Rpb24pKQogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICBjb21tYW5kLlBhcmFtZXRlcnMuQWRkV2l0aFZhbHVlKCJATmFtZSIsICJKb2huIERvZSIpOwogICAgICAgICAgICAgICAgY29tbWFuZC5QYXJhbWV0ZXJzLkFkZFdpdGhWYWx1ZSgiQEVtYWlsIiwgImpvaG4ubmV3ZW1haWxAZXhhbXBsZS5jb20iKTsKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgaW50IHJlc3VsdCA9IGNvbW1hbmQuRXhlY3V0ZU5vblF1ZXJ5KCk7CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIGlmIChyZXN1bHQgPiAwKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCJVc3VhcmlvIGFjdHVhbGl6YWRvIGV4aXRvc2FtZW50ZS4iKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;UPDATE Users SET Email = @Email WHERE Name = @Name&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue(&quot;@Name&quot;, &quot;John Doe&quot;);
+                command.Parameters.AddWithValue(&quot;@Email&quot;, &quot;john.newemail@example.com&quot;);
+                
+                int result = command.ExecuteNonQuery();
+                
+                if (result &gt; 0)
+                {
+                    Console.WriteLine(&quot;Usuario actualizado exitosamente.&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Eliminar</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJERUxFVEUgRlJPTSBVc2VycyBXSEVSRSBOYW1lID0gQE5hbWUiOwogICAgICAgICAgICAKICAgICAgICAgICAgdXNpbmcgKFNxbENvbW1hbmQgY29tbWFuZCA9IG5ldyBTcWxDb21tYW5kKHF1ZXJ5LCBjb25uZWN0aW9uKSkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgY29tbWFuZC5QYXJhbWV0ZXJzLkFkZFdpdGhWYWx1ZSgiQE5hbWUiLCAiSm9obiBEb2UiKTsKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgaW50IHJlc3VsdCA9IGNvbW1hbmQuRXhlY3V0ZU5vblF1ZXJ5KCk7CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIGlmIChyZXN1bHQgPiAwKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCJVc3VhcmlvIGVsaW1pbmFkbyBleGl0b3NhbWVudGUuIik7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;DELETE FROM Users WHERE Name = @Name&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue(&quot;@Name&quot;, &quot;John Doe&quot;);
+                
+                int result = command.ExecuteNonQuery();
+                
+                if (result &gt; 0)
+                {
+                    Console.WriteLine(&quot;Usuario eliminado exitosamente.&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>5. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Insertar un Nuevo Usuario</h2>
+<div class='content'><p>Escribe un programa que inserte un nuevo usuario en la tabla <code>Users</code>.</p>
+</div><h2>Ejercicio 2: Leer y Mostrar Todos los Usuarios</h2>
+<div class='content'><p>Escribe un programa que lea y muestre todos los usuarios de la tabla <code>Users</code>.</p>
+</div><h2>Ejercicio 3: Actualizar el Email de un Usuario</h2>
+<div class='content'><p>Escribe un programa que actualice el email de un usuario específico.</p>
+</div><h2>Ejercicio 4: Eliminar un Usuario</h2>
+<div class='content'><p>Escribe un programa que elimine un usuario específico de la tabla <code>Users</code>.</p>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Ejercicio 1: Insertar un Nuevo Usuario</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJJTlNFUlQgSU5UTyBVc2VycyAoTmFtZSwgRW1haWwpIFZBTFVFUyAoQE5hbWUsIEBFbWFpbCkiOwogICAgICAgICAgICAKICAgICAgICAgICAgdXNpbmcgKFNxbENvbW1hbmQgY29tbWFuZCA9IG5ldyBTcWxDb21tYW5kKHF1ZXJ5LCBjb25uZWN0aW9uKSkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgY29tbWFuZC5QYXJhbWV0ZXJzLkFkZFdpdGhWYWx1ZSgiQE5hbWUiLCAiSmFuZSBEb2UiKTsKICAgICAgICAgICAgICAgIGNvbW1hbmQuUGFyYW1ldGVycy5BZGRXaXRoVmFsdWUoIkBFbWFpbCIsICJqYW5lLmRvZUBleGFtcGxlLmNvbSIpOwogICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICBpbnQgcmVzdWx0ID0gY29tbWFuZC5FeGVjdXRlTm9uUXVlcnkoKTsKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgaWYgKHJlc3VsdCA+IDApCiAgICAgICAgICAgICAgICB7CiAgICAgICAgICAgICAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoIlVzdWFyaW8gaW5zZXJ0YWRvIGV4aXRvc2FtZW50ZS4iKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;INSERT INTO Users (Name, Email) VALUES (@Name, @Email)&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue(&quot;@Name&quot;, &quot;Jane Doe&quot;);
+                command.Parameters.AddWithValue(&quot;@Email&quot;, &quot;jane.doe@example.com&quot;);
+                
+                int result = command.ExecuteNonQuery();
+                
+                if (result &gt; 0)
+                {
+                    Console.WriteLine(&quot;Usuario insertado exitosamente.&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'><h4>Ejercicio 2: Leer y Mostrar Todos los Usuarios</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJTRUxFQ1QgKiBGUk9NIFVzZXJzIjsKICAgICAgICAgICAgCiAgICAgICAgICAgIHVzaW5nIChTcWxDb21tYW5kIGNvbW1hbmQgPSBuZXcgU3FsQ29tbWFuZChxdWVyeSwgY29ubmVjdGlvbikpCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIHVzaW5nIChTcWxEYXRhUmVhZGVyIHJlYWRlciA9IGNvbW1hbmQuRXhlY3V0ZVJlYWRlcigpKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIHdoaWxlIChyZWFkZXIuUmVhZCgpKQogICAgICAgICAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgICAgICAgICAgQ29uc29sZS5Xcml0ZUxpbmUoJCJJRDoge3JlYWRlclsiSWQiXX0sIE5hbWU6IHtyZWFkZXJbIk5hbWUiXX0sIEVtYWlsOiB7cmVhZGVyWyJFbWFpbCJdfSIpOwogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;SELECT * FROM Users&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($&quot;ID: {reader[&quot;Id&quot;]}, Name: {reader[&quot;Name&quot;]}, Email: {reader[&quot;Email&quot;]}&quot;);
+                    }
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'><h4>Ejercicio 3: Actualizar el Email de un Usuario</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJVUERBVEUgVXNlcnMgU0VUIEVtYWlsID0gQEVtYWlsIFdIRVJFIE5hbWUgPSBATmFtZSI7CiAgICAgICAgICAgIAogICAgICAgICAgICB1c2luZyAoU3FsQ29tbWFuZCBjb21tYW5kID0gbmV3IFNxbENvbW1hbmQocXVlcnksIGNvbm5lY3Rpb24pKQogICAgICAgICAgICB7CiAgICAgICAgICAgICAgICBjb21tYW5kLlBhcmFtZXRlcnMuQWRkV2l0aFZhbHVlKCJATmFtZSIsICJKYW5lIERvZSIpOwogICAgICAgICAgICAgICAgY29tbWFuZC5QYXJhbWV0ZXJzLkFkZFdpdGhWYWx1ZSgiQEVtYWlsIiwgImphbmUubmV3ZW1haWxAZXhhbXBsZS5jb20iKTsKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgaW50IHJlc3VsdCA9IGNvbW1hbmQuRXhlY3V0ZU5vblF1ZXJ5KCk7CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIGlmIChyZXN1bHQgPiAwKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCJVc3VhcmlvIGFjdHVhbGl6YWRvIGV4aXRvc2FtZW50ZS4iKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;UPDATE Users SET Email = @Email WHERE Name = @Name&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue(&quot;@Name&quot;, &quot;Jane Doe&quot;);
+                command.Parameters.AddWithValue(&quot;@Email&quot;, &quot;jane.newemail@example.com&quot;);
+                
+                int result = command.ExecuteNonQuery();
+                
+                if (result &gt; 0)
+                {
+                    Console.WriteLine(&quot;Usuario actualizado exitosamente.&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'><h4>Ejercicio 4: Eliminar un Usuario</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXNpbmcgU3lzdGVtOwp1c2luZyBTeXN0ZW0uRGF0YS5TcWxDbGllbnQ7CgpjbGFzcyBQcm9ncmFtCnsKICAgIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHN0cmluZyBjb25uZWN0aW9uU3RyaW5nID0gIlNlcnZlcj15b3VyX3NlcnZlcl9uYW1lO0RhdGFiYXNlPVNhbXBsZURCO1VzZXIgSWQ9eW91cl91c2VybmFtZTtQYXNzd29yZD15b3VyX3Bhc3N3b3JkOyI7CiAgICAgICAgCiAgICAgICAgdXNpbmcgKFNxbENvbm5lY3Rpb24gY29ubmVjdGlvbiA9IG5ldyBTcWxDb25uZWN0aW9uKGNvbm5lY3Rpb25TdHJpbmcpKQogICAgICAgIHsKICAgICAgICAgICAgY29ubmVjdGlvbi5PcGVuKCk7CiAgICAgICAgICAgIHN0cmluZyBxdWVyeSA9ICJERUxFVEUgRlJPTSBVc2VycyBXSEVSRSBOYW1lID0gQE5hbWUiOwogICAgICAgICAgICAKICAgICAgICAgICAgdXNpbmcgKFNxbENvbW1hbmQgY29tbWFuZCA9IG5ldyBTcWxDb21tYW5kKHF1ZXJ5LCBjb25uZWN0aW9uKSkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgY29tbWFuZC5QYXJhbWV0ZXJzLkFkZFdpdGhWYWx1ZSgiQE5hbWUiLCAiSmFuZSBEb2UiKTsKICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgaW50IHJlc3VsdCA9IGNvbW1hbmQuRXhlY3V0ZU5vblF1ZXJ5KCk7CiAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgIGlmIChyZXN1bHQgPiAwKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIENvbnNvbGUuV3JpdGVMaW5lKCJVc3VhcmlvIGVsaW1pbmFkbyBleGl0b3NhbWVudGUuIik7CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = &quot;Server=your_server_name;Database=SampleDB;User Id=your_username;Password=your_password;&quot;;
+        
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+            string query = &quot;DELETE FROM Users WHERE Name = @Name&quot;;
+            
+            using (SqlCommand command = new SqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue(&quot;@Name&quot;, &quot;Jane Doe&quot;);
+                
+                int result = command.ExecuteNonQuery();
+                
+                if (result &gt; 0)
+                {
+                    Console.WriteLine(&quot;Usuario eliminado exitosamente.&quot;);
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo conectar una aplicación C# a una base de datos utilizando ADO.NET. Hemos cubierto cómo realizar operaciones CRUD básicas y hemos proporcionado ejercicios prácticos para reforzar los conceptos aprendidos. Con esta base, estarás preparado para manejar datos en tus aplicaciones de manera eficiente y segura.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-serialization' title="Serialización">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-entity-framework' title="Entity Framework">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

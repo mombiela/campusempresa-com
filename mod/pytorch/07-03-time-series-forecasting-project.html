@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto de Pronóstico de Series Temporales</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/07-03-time-series-forecasting-project" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/07-03-time-series-forecasting-project" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/07-03-time-series-forecasting-project" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/pytorch/07-03-time-series-forecasting-project" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/07-03-time-series-forecasting-project" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-nlp-project' title="Proyecto de Procesamiento de Lenguaje Natural">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Proyecto de Pronóstico de Series Temporales</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-custom-project' title="Proyecto Personalizado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aplicaremos los conocimientos adquiridos en los módulos anteriores para abordar un problema de pronóstico de series temporales utilizando PyTorch. Este proyecto te permitirá consolidar tus habilidades en el manejo de datos, construcción de modelos y entrenamiento de redes neuronales recurrentes (RNNs).</p>
+</div><h1>Objetivos del Proyecto</h1>
+<div class='content'><ol>
+<li><strong>Comprender los conceptos básicos del pronóstico de series temporales.</strong></li>
+<li><strong>Preprocesar y preparar los datos de series temporales para el modelado.</strong></li>
+<li><strong>Construir y entrenar una RNN para el pronóstico de series temporales.</strong></li>
+<li><strong>Evaluar el rendimiento del modelo y realizar ajustes para mejorar la precisión.</strong></li>
+</ol>
+</div><h1>1. Introducción al Pronóstico de Series Temporales</h1>
+<div class='content'></div><h2>¿Qué es una Serie Temporal?</h2>
+<div class='content'><p>Una serie temporal es una secuencia de datos puntos, típicamente consistentes en mediciones sucesivas hechas a intervalos de tiempo uniformes. Ejemplos comunes incluyen datos de ventas mensuales, temperaturas diarias, y precios de acciones.</p>
+</div><h2>Características de las Series Temporales</h2>
+<div class='content'><ul>
+<li><strong>Tendencia:</strong> Componente a largo plazo que muestra un aumento o disminución general.</li>
+<li><strong>Estacionalidad:</strong> Patrones que se repiten a intervalos regulares.</li>
+<li><strong>Ciclo:</strong> Fluctuaciones que ocurren a intervalos irregulares.</li>
+<li><strong>Ruido:</strong> Variaciones aleatorias que no siguen un patrón específico.</li>
+</ul>
+</div><h1>2. Preprocesamiento de Datos</h1>
+<div class='content'></div><h2>Carga de Datos</h2>
+<div class='content'><p>Para este proyecto, utilizaremos un conjunto de datos de ejemplo que contiene las temperaturas diarias de una ciudad durante varios años.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBhbmRhcyBhcyBwZAoKIyBDYXJnYXIgZWwgY29uanVudG8gZGUgZGF0b3MKZGF0YSA9IHBkLnJlYWRfY3N2KCdkYWlseV90ZW1wZXJhdHVyZXMuY3N2JywgcGFyc2VfZGF0ZXM9WydkYXRlJ10sIGluZGV4X2NvbD0nZGF0ZScpCnByaW50KGRhdGEuaGVhZCgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pandas as pd
+
+# Cargar el conjunto de datos
+data = pd.read_csv('daily_temperatures.csv', parse_dates=['date'], index_col='date')
+print(data.head())</pre></div><div class='content'></div><h2>Normalización de Datos</h2>
+<div class='content'><p>La normalización es crucial para mejorar la convergencia del modelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLnByZXByb2Nlc3NpbmcgaW1wb3J0IE1pbk1heFNjYWxlcgoKIyBOb3JtYWxpemFyIGxvcyBkYXRvcwpzY2FsZXIgPSBNaW5NYXhTY2FsZXIoZmVhdHVyZV9yYW5nZT0oMCwgMSkpCmRhdGFbJ3RlbXBlcmF0dXJlJ10gPSBzY2FsZXIuZml0X3RyYW5zZm9ybShkYXRhWyd0ZW1wZXJhdHVyZSddLnZhbHVlcy5yZXNoYXBlKC0xLCAxKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.preprocessing import MinMaxScaler
+
+# Normalizar los datos
+scaler = MinMaxScaler(feature_range=(0, 1))
+data['temperature'] = scaler.fit_transform(data['temperature'].values.reshape(-1, 1))</pre></div><div class='content'></div><h2>Creación de Secuencias de Entrenamiento</h2>
+<div class='content'><p>Convertimos la serie temporal en secuencias de entrada y salida para el modelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgpkZWYgY3JlYXRlX3NlcXVlbmNlcyhkYXRhLCBzZXFfbGVuZ3RoKToKICAgIHhzLCB5cyA9IFtdLCBbXQogICAgZm9yIGkgaW4gcmFuZ2UobGVuKGRhdGEpIC0gc2VxX2xlbmd0aCk6CiAgICAgICAgeCA9IGRhdGFbaTppK3NlcV9sZW5ndGhdCiAgICAgICAgeSA9IGRhdGFbaStzZXFfbGVuZ3RoXQogICAgICAgIHhzLmFwcGVuZCh4KQogICAgICAgIHlzLmFwcGVuZCh5KQogICAgcmV0dXJuIG5wLmFycmF5KHhzKSwgbnAuYXJyYXkoeXMpCgpzZXFfbGVuZ3RoID0gMzAgICMgVXNhbW9zIDMwIGTDrWFzIGRlIGRhdG9zIHBhcmEgcHJlZGVjaXIgZWwgc2lndWllbnRlIGTDrWEKWCwgeSA9IGNyZWF0ZV9zZXF1ZW5jZXMoZGF0YVsndGVtcGVyYXR1cmUnXS52YWx1ZXMsIHNlcV9sZW5ndGgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+def create_sequences(data, seq_length):
+    xs, ys = [], []
+    for i in range(len(data) - seq_length):
+        x = data[i:i+seq_length]
+        y = data[i+seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+seq_length = 30  # Usamos 30 d&iacute;as de datos para predecir el siguiente d&iacute;a
+X, y = create_sequences(data['temperature'].values, seq_length)</pre></div><div class='content'></div><h1>3. Construcción y Entrenamiento del Modelo</h1>
+<div class='content'></div><h2>Definición del Modelo</h2>
+<div class='content'><p>Utilizaremos una RNN simple con LSTM para el pronóstico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCmNsYXNzIExTVE1Nb2RlbChubi5Nb2R1bGUpOgogICAgZGVmIF9faW5pdF9fKHNlbGYsIGlucHV0X3NpemUsIGhpZGRlbl9sYXllcl9zaXplLCBvdXRwdXRfc2l6ZSk6CiAgICAgICAgc3VwZXIoTFNUTU1vZGVsLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5oaWRkZW5fbGF5ZXJfc2l6ZSA9IGhpZGRlbl9sYXllcl9zaXplCiAgICAgICAgc2VsZi5sc3RtID0gbm4uTFNUTShpbnB1dF9zaXplLCBoaWRkZW5fbGF5ZXJfc2l6ZSkKICAgICAgICBzZWxmLmxpbmVhciA9IG5uLkxpbmVhcihoaWRkZW5fbGF5ZXJfc2l6ZSwgb3V0cHV0X3NpemUpCiAgICAgICAgc2VsZi5oaWRkZW5fY2VsbCA9ICh0b3JjaC56ZXJvcygxLDEsc2VsZi5oaWRkZW5fbGF5ZXJfc2l6ZSksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICB0b3JjaC56ZXJvcygxLDEsc2VsZi5oaWRkZW5fbGF5ZXJfc2l6ZSkpCgogICAgZGVmIGZvcndhcmQoc2VsZiwgaW5wdXRfc2VxKToKICAgICAgICBsc3RtX291dCwgc2VsZi5oaWRkZW5fY2VsbCA9IHNlbGYubHN0bShpbnB1dF9zZXEudmlldyhsZW4oaW5wdXRfc2VxKSAsMSwgLTEpLCBzZWxmLmhpZGRlbl9jZWxsKQogICAgICAgIHByZWRpY3Rpb25zID0gc2VsZi5saW5lYXIobHN0bV9vdXQudmlldyhsZW4oaW5wdXRfc2VxKSwgLTEpKQogICAgICAgIHJldHVybiBwcmVkaWN0aW9uc1stMV0KCiMgUGFyw6FtZXRyb3MgZGVsIG1vZGVsbwppbnB1dF9zaXplID0gMQpoaWRkZW5fbGF5ZXJfc2l6ZSA9IDEwMApvdXRwdXRfc2l6ZSA9IDEKCm1vZGVsID0gTFNUTU1vZGVsKGlucHV0X3NpemUsIGhpZGRlbl9sYXllcl9zaXplLCBvdXRwdXRfc2l6ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+class LSTMModel(nn.Module):
+    def __init__(self, input_size, hidden_layer_size, output_size):
+        super(LSTMModel, self).__init__()
+        self.hidden_layer_size = hidden_layer_size
+        self.lstm = nn.LSTM(input_size, hidden_layer_size)
+        self.linear = nn.Linear(hidden_layer_size, output_size)
+        self.hidden_cell = (torch.zeros(1,1,self.hidden_layer_size),
+                            torch.zeros(1,1,self.hidden_layer_size))
+
+    def forward(self, input_seq):
+        lstm_out, self.hidden_cell = self.lstm(input_seq.view(len(input_seq) ,1, -1), self.hidden_cell)
+        predictions = self.linear(lstm_out.view(len(input_seq), -1))
+        return predictions[-1]
+
+# Par&aacute;metros del modelo
+input_size = 1
+hidden_layer_size = 100
+output_size = 1
+
+model = LSTMModel(input_size, hidden_layer_size, output_size)</pre></div><div class='content'></div><h2>Entrenamiento del Modelo</h2>
+<div class='content'><p>Definimos la función de pérdida y el optimizador, y entrenamos el modelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9zc19mdW5jdGlvbiA9IG5uLk1TRUxvc3MoKQpvcHRpbWl6ZXIgPSBvcHRpbS5BZGFtKG1vZGVsLnBhcmFtZXRlcnMoKSwgbHI9MC4wMDEpCgplcG9jaHMgPSAxMDAKZm9yIGkgaW4gcmFuZ2UoZXBvY2hzKToKICAgIGZvciBzZXEsIGxhYmVscyBpbiB6aXAoWCwgeSk6CiAgICAgICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICAgICAgbW9kZWwuaGlkZGVuX2NlbGwgPSAodG9yY2guemVyb3MoMSwgMSwgbW9kZWwuaGlkZGVuX2xheWVyX3NpemUpLAogICAgICAgICAgICAgICAgICAgICAgICB0b3JjaC56ZXJvcygxLCAxLCBtb2RlbC5oaWRkZW5fbGF5ZXJfc2l6ZSkpCgogICAgICAgIHlfcHJlZCA9IG1vZGVsKHRvcmNoLkZsb2F0VGVuc29yKHNlcSkpCiAgICAgICAgc2luZ2xlX2xvc3MgPSBsb3NzX2Z1bmN0aW9uKHlfcHJlZCwgdG9yY2guRmxvYXRUZW5zb3IoW2xhYmVsc10pKQogICAgICAgIHNpbmdsZV9sb3NzLmJhY2t3YXJkKCkKICAgICAgICBvcHRpbWl6ZXIuc3RlcCgpCgogICAgaWYgaSUxMCA9PSAxOgogICAgICAgIHByaW50KGYnZXBvY2g6IHtpOjN9IGxvc3M6IHtzaW5nbGVfbG9zcy5pdGVtKCk6MTAuOGZ9Jyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>loss_function = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=0.001)
+
+epochs = 100
+for i in range(epochs):
+    for seq, labels in zip(X, y):
+        optimizer.zero_grad()
+        model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
+                        torch.zeros(1, 1, model.hidden_layer_size))
+
+        y_pred = model(torch.FloatTensor(seq))
+        single_loss = loss_function(y_pred, torch.FloatTensor([labels]))
+        single_loss.backward()
+        optimizer.step()
+
+    if i%10 == 1:
+        print(f'epoch: {i:3} loss: {single_loss.item():10.8f}')</pre></div><div class='content'></div><h1>4. Evaluación del Modelo</h1>
+<div class='content'></div><h2>Predicción y Visualización</h2>
+<div class='content'><p>Evaluamos el modelo utilizando un conjunto de datos de prueba y visualizamos los resultados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG1hdHBsb3RsaWIucHlwbG90IGFzIHBsdAoKIyBHZW5lcmFyIHByZWRpY2Npb25lcwptb2RlbC5ldmFsKCkKdGVzdF9pbnB1dHMgPSBkYXRhWyd0ZW1wZXJhdHVyZSddLnZhbHVlc1stc2VxX2xlbmd0aDpdLnRvbGlzdCgpCgpmb3IgaSBpbiByYW5nZSgzMCk6ICAjIFByZWRlY2lyIGxvcyBwcsOzeGltb3MgMzAgZMOtYXMKICAgIHNlcSA9IHRvcmNoLkZsb2F0VGVuc29yKHRlc3RfaW5wdXRzWy1zZXFfbGVuZ3RoOl0pCiAgICB3aXRoIHRvcmNoLm5vX2dyYWQoKToKICAgICAgICBtb2RlbC5oaWRkZW5fY2VsbCA9ICh0b3JjaC56ZXJvcygxLCAxLCBtb2RlbC5oaWRkZW5fbGF5ZXJfc2l6ZSksCiAgICAgICAgICAgICAgICAgICAgICAgIHRvcmNoLnplcm9zKDEsIDEsIG1vZGVsLmhpZGRlbl9sYXllcl9zaXplKSkKICAgICAgICB0ZXN0X2lucHV0cy5hcHBlbmQobW9kZWwoc2VxKS5pdGVtKCkpCgojIEludmVydGlyIGxhIG5vcm1hbGl6YWNpw7NuCmFjdHVhbF9wcmVkaWN0aW9ucyA9IHNjYWxlci5pbnZlcnNlX3RyYW5zZm9ybShucC5hcnJheSh0ZXN0X2lucHV0c1tzZXFfbGVuZ3RoOl0pLnJlc2hhcGUoLTEsIDEpKQoKIyBWaXN1YWxpemFyIGxvcyByZXN1bHRhZG9zCnBsdC5wbG90KGRhdGEuaW5kZXhbLTYwOl0sIHNjYWxlci5pbnZlcnNlX3RyYW5zZm9ybShkYXRhWyd0ZW1wZXJhdHVyZSddLnZhbHVlc1stNjA6XS5yZXNoYXBlKC0xLCAxKSksIGxhYmVsPSdBY3R1YWwnKQpwbHQucGxvdChwZC5kYXRlX3JhbmdlKHN0YXJ0PWRhdGEuaW5kZXhbLTFdLCBwZXJpb2RzPTMxLCBjbG9zZWQ9J3JpZ2h0JyksIGFjdHVhbF9wcmVkaWN0aW9ucywgbGFiZWw9J1ByZWRpY3RlZCcpCnBsdC5sZWdlbmQoKQpwbHQuc2hvdygp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import matplotlib.pyplot as plt
+
+# Generar predicciones
+model.eval()
+test_inputs = data['temperature'].values[-seq_length:].tolist()
+
+for i in range(30):  # Predecir los pr&oacute;ximos 30 d&iacute;as
+    seq = torch.FloatTensor(test_inputs[-seq_length:])
+    with torch.no_grad():
+        model.hidden_cell = (torch.zeros(1, 1, model.hidden_layer_size),
+                        torch.zeros(1, 1, model.hidden_layer_size))
+        test_inputs.append(model(seq).item())
+
+# Invertir la normalizaci&oacute;n
+actual_predictions = scaler.inverse_transform(np.array(test_inputs[seq_length:]).reshape(-1, 1))
+
+# Visualizar los resultados
+plt.plot(data.index[-60:], scaler.inverse_transform(data['temperature'].values[-60:].reshape(-1, 1)), label='Actual')
+plt.plot(pd.date_range(start=data.index[-1], periods=31, closed='right'), actual_predictions, label='Predicted')
+plt.legend()
+plt.show()</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este proyecto, hemos cubierto los pasos esenciales para el pronóstico de series temporales utilizando PyTorch. Desde la carga y preprocesamiento de datos hasta la construcción, entrenamiento y evaluación de un modelo LSTM, hemos aplicado técnicas clave para abordar problemas de series temporales. Este proyecto no solo refuerza los conceptos aprendidos en módulos anteriores, sino que también proporciona una base sólida para abordar problemas más complejos en el futuro.</p>
+</div><h2>Resumen de Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Series Temporales:</strong> Comprensión de sus componentes y características.</li>
+<li><strong>Preprocesamiento:</strong> Normalización y creación de secuencias de datos.</li>
+<li><strong>Modelado:</strong> Construcción y entrenamiento de una RNN con LSTM.</li>
+<li><strong>Evaluación:</strong> Predicción y visualización de resultados.</li>
+</ul>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><ul>
+<li>Experimentar con diferentes arquitecturas de RNN y parámetros de hiperajuste.</li>
+<li>Implementar técnicas avanzadas de preprocesamiento y manejo de datos faltantes.</li>
+<li>Explorar otros tipos de series temporales y problemas de pronóstico.</li>
+</ul>
+<p>¡Felicidades por completar este proyecto! Ahora estás mejor preparado para enfrentar desafíos de pronóstico de series temporales en el mundo real.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-nlp-project' title="Proyecto de Procesamiento de Lenguaje Natural">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-custom-project' title="Proyecto Personalizado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

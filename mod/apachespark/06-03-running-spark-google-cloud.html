@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejecutando Spark en Google Cloud</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/06-03-running-spark-google-cloud" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/06-03-running-spark-google-cloud" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/06-03-running-spark-google-cloud" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/apachespark/06-03-running-spark-google-cloud" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/06-03-running-spark-google-cloud" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-running-spark-azure' title="Ejecutando Spark en Azure">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ejecutando Spark en Google Cloud</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-spark-kubernetes' title="Spark con Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás cómo configurar y ejecutar Apache Spark en Google Cloud Platform (GCP). Google Cloud ofrece una infraestructura robusta y escalable que es ideal para ejecutar aplicaciones de procesamiento de datos a gran escala como Apache Spark.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Configurar un entorno de Google Cloud para ejecutar Spark.</li>
+<li>Desplegar un clúster de Spark en Google Cloud Dataproc.</li>
+<li>Ejecutar trabajos de Spark en Google Cloud.</li>
+<li>Optimizar y gestionar el clúster de Spark en GCP.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Cuenta activa en Google Cloud Platform.</li>
+<li>Conocimientos básicos de Apache Spark.</li>
+<li>Familiaridad con la línea de comandos y Google Cloud SDK.</li>
+</ul>
+</div><h1>Contenido</h1>
+<div class='content'></div><h2>1. Configuración del Entorno de Google Cloud</h2>
+<div class='content'><h4>1.1 Crear una Cuenta en Google Cloud</h4>
+<p>Si aún no tienes una cuenta en Google Cloud, puedes registrarte en <a href="https://cloud.google.com/">Google Cloud</a>. Google ofrece un crédito gratuito para nuevos usuarios que puedes utilizar para experimentar con sus servicios.</p>
+<h4>1.2 Instalar Google Cloud SDK</h4>
+<p>El Google Cloud SDK es una herramienta que te permite interactuar con los servicios de Google Cloud desde la línea de comandos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZXNjYXJnYXIgZSBpbnN0YWxhciBHb29nbGUgQ2xvdWQgU0RLCmN1cmwgaHR0cHM6Ly9zZGsuY2xvdWQuZ29vZ2xlLmNvbSB8IGJhc2gKCiMgUmVpbmljaWFyIGxhIHRlcm1pbmFsIG8gZWplY3V0YXIgZWwgc2lndWllbnRlIGNvbWFuZG8gcGFyYSBpbmljaWFsaXphciBlbCBTREsKZXhlYyAtbCAkU0hFTEwKCiMgSW5pY2lhbGl6YXIgZWwgU0RLCmdjbG91ZCBpbml0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Descargar e instalar Google Cloud SDK
+curl https://sdk.cloud.google.com | bash
+
+# Reiniciar la terminal o ejecutar el siguiente comando para inicializar el SDK
+exec -l $SHELL
+
+# Inicializar el SDK
+gcloud init</pre></div><div class='content'><h4>1.3 Configurar el Proyecto de Google Cloud</h4>
+<p>Después de instalar el SDK, necesitas configurar un proyecto en Google Cloud.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1biBudWV2byBwcm95ZWN0bwpnY2xvdWQgcHJvamVjdHMgY3JlYXRlIG15LXNwYXJrLXByb2plY3QgLS1zZXQtYXMtZGVmYXVsdAoKIyBFc3RhYmxlY2VyIGVsIHByb3llY3RvIGFjdHVhbApnY2xvdWQgY29uZmlnIHNldCBwcm9qZWN0IG15LXNwYXJrLXByb2plY3Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear un nuevo proyecto
+gcloud projects create my-spark-project --set-as-default
+
+# Establecer el proyecto actual
+gcloud config set project my-spark-project</pre></div><div class='content'></div><h2>2. Desplegar un Clúster de Spark en Google Cloud Dataproc</h2>
+<div class='content'><p>Google Cloud Dataproc es un servicio gestionado que facilita la creación y gestión de clústeres de Apache Spark y Hadoop.</p>
+<h4>2.1 Crear un Clúster de Dataproc</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1biBjbMO6c3RlciBkZSBEYXRhcHJvYwpnY2xvdWQgZGF0YXByb2MgY2x1c3RlcnMgY3JlYXRlIG15LXNwYXJrLWNsdXN0ZXIgXAogICAgLS1yZWdpb249dXMtY2VudHJhbDEgXAogICAgLS16b25lPXVzLWNlbnRyYWwxLWEgXAogICAgLS1tYXN0ZXItbWFjaGluZS10eXBlPW4xLXN0YW5kYXJkLTQgXAogICAgLS13b3JrZXItbWFjaGluZS10eXBlPW4xLXN0YW5kYXJkLTQgXAogICAgLS1udW0td29ya2Vycz0yIFwKICAgIC0taW1hZ2UtdmVyc2lvbj0xLjUtZGViaWFuMTA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear un cl&uacute;ster de Dataproc
+gcloud dataproc clusters create my-spark-cluster \
+    --region=us-central1 \
+    --zone=us-central1-a \
+    --master-machine-type=n1-standard-4 \
+    --worker-machine-type=n1-standard-4 \
+    --num-workers=2 \
+    --image-version=1.5-debian10</pre></div><div class='content'><h4>2.2 Verificar el Clúster</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMaXN0YXIgY2zDunN0ZXJlcyBkZSBEYXRhcHJvYwpnY2xvdWQgZGF0YXByb2MgY2x1c3RlcnMgbGlzdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Listar cl&uacute;steres de Dataproc
+gcloud dataproc clusters list</pre></div><div class='content'></div><h2>3. Ejecutar Trabajos de Spark en Google Cloud</h2>
+<div class='content'><h4>3.1 Subir Datos a Google Cloud Storage</h4>
+<p>Antes de ejecutar un trabajo de Spark, necesitas subir tus datos a Google Cloud Storage (GCS).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1biBidWNrZXQgZW4gR0NTCmdzdXRpbCBtYiBnczovL215LXNwYXJrLWJ1Y2tldAoKIyBTdWJpciBkYXRvcyBhbCBidWNrZXQKZ3N1dGlsIGNwIGxvY2FsLWRhdGEtZmlsZS5jc3YgZ3M6Ly9teS1zcGFyay1idWNrZXQv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear un bucket en GCS
+gsutil mb gs://my-spark-bucket
+
+# Subir datos al bucket
+gsutil cp local-data-file.csv gs://my-spark-bucket/</pre></div><div class='content'><h4>3.2 Ejecutar un Trabajo de Spark</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFbnZpYXIgdW4gdHJhYmFqbyBkZSBTcGFyayBhbCBjbMO6c3RlciBkZSBEYXRhcHJvYwpnY2xvdWQgZGF0YXByb2Mgam9icyBzdWJtaXQgc3BhcmsgXAogICAgLS1jbHVzdGVyPW15LXNwYXJrLWNsdXN0ZXIgXAogICAgLS1yZWdpb249dXMtY2VudHJhbDEgXAogICAgLS1jbGFzcz1vcmcuYXBhY2hlLnNwYXJrLmV4YW1wbGVzLlNwYXJrUGkgXAogICAgLS1qYXJzPWZpbGU6Ly8vdXNyL2xpYi9zcGFyay9leGFtcGxlcy9qYXJzL3NwYXJrLWV4YW1wbGVzLmphciBcCiAgICAtLSAxMDAw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Enviar un trabajo de Spark al cl&uacute;ster de Dataproc
+gcloud dataproc jobs submit spark \
+    --cluster=my-spark-cluster \
+    --region=us-central1 \
+    --class=org.apache.spark.examples.SparkPi \
+    --jars=file:///usr/lib/spark/examples/jars/spark-examples.jar \
+    -- 1000</pre></div><div class='content'></div><h2>4. Optimización y Gestión del Clúster de Spark</h2>
+<div class='content'><h4>4.1 Escalar el Clúster</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBw7FhZGlyIG3DoXMgbm9kb3MgYWwgY2zDunN0ZXIKZ2Nsb3VkIGRhdGFwcm9jIGNsdXN0ZXJzIHVwZGF0ZSBteS1zcGFyay1jbHVzdGVyIFwKICAgIC0tbnVtLXdvcmtlcnM9NA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># A&ntilde;adir m&aacute;s nodos al cl&uacute;ster
+gcloud dataproc clusters update my-spark-cluster \
+    --num-workers=4</pre></div><div class='content'><h4>4.2 Monitorear el Clúster</h4>
+<p>Google Cloud proporciona herramientas de monitoreo como Stackdriver para supervisar el rendimiento del clúster.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBY2NlZGVyIGEgbGEgY29uc29sYSBkZSBtb25pdG9yZW8KZ2Nsb3VkIGNvbnNvbGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Acceder a la consola de monitoreo
+gcloud console</pre></div><div class='content'></div><h2>5. Ejercicio Práctico</h2>
+<div class='content'><h4>Ejercicio: Procesar un Conjunto de Datos en GCP</h4>
+<ol>
+<li><strong>Subir Datos</strong>: Sube un archivo CSV a Google Cloud Storage.</li>
+<li><strong>Crear Clúster</strong>: Despliega un clúster de Dataproc.</li>
+<li><strong>Escribir un Script de Spark</strong>: Escribe un script de Spark que procese el archivo CSV.</li>
+<li><strong>Ejecutar el Trabajo</strong>: Ejecuta el trabajo de Spark en el clúster de Dataproc.</li>
+<li><strong>Escalar el Clúster</strong>: Escala el clúster para mejorar el rendimiento.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTY3JpcHQgZGUgU3BhcmsgcGFyYSBwcm9jZXNhciB1biBhcmNoaXZvIENTVgpmcm9tIHB5c3Bhcmsuc3FsIGltcG9ydCBTcGFya1Nlc3Npb24KCiMgQ3JlYXIgdW5hIHNlc2nDs24gZGUgU3BhcmsKc3BhcmsgPSBTcGFya1Nlc3Npb24uYnVpbGRlci5hcHBOYW1lKCJHQ1AgRXhhbXBsZSIpLmdldE9yQ3JlYXRlKCkKCiMgQ2FyZ2FyIGVsIGFyY2hpdm8gQ1NWIGRlc2RlIEdDUwpkZiA9IHNwYXJrLnJlYWQuY3N2KCJnczovL215LXNwYXJrLWJ1Y2tldC9sb2NhbC1kYXRhLWZpbGUuY3N2IiwgaGVhZGVyPVRydWUsIGluZmVyU2NoZW1hPVRydWUpCgojIFJlYWxpemFyIGFsZ3VuYXMgdHJhbnNmb3JtYWNpb25lcwpkZl9maWx0ZXJlZCA9IGRmLmZpbHRlcihkZlsnY29sdW1uX25hbWUnXSA+IDEwMCkKCiMgR3VhcmRhciBlbCByZXN1bHRhZG8gZW4gR0NTCmRmX2ZpbHRlcmVkLndyaXRlLmNzdigiZ3M6Ly9teS1zcGFyay1idWNrZXQvb3V0cHV0LWRhdGEtZmlsZS5jc3YiKQoKIyBGaW5hbGl6YXIgbGEgc2VzacOzbiBkZSBTcGFyawpzcGFyay5zdG9wKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Script de Spark para procesar un archivo CSV
+from pyspark.sql import SparkSession
+
+# Crear una sesi&oacute;n de Spark
+spark = SparkSession.builder.appName(&quot;GCP Example&quot;).getOrCreate()
+
+# Cargar el archivo CSV desde GCS
+df = spark.read.csv(&quot;gs://my-spark-bucket/local-data-file.csv&quot;, header=True, inferSchema=True)
+
+# Realizar algunas transformaciones
+df_filtered = df.filter(df['column_name'] &gt; 100)
+
+# Guardar el resultado en GCS
+df_filtered.write.csv(&quot;gs://my-spark-bucket/output-data-file.csv&quot;)
+
+# Finalizar la sesi&oacute;n de Spark
+spark.stop()</pre></div><div class='content'></div><h2>Conclusión</h2>
+<div class='content'><p>En este módulo, has aprendido cómo configurar y ejecutar Apache Spark en Google Cloud Platform utilizando Google Cloud Dataproc. Ahora deberías ser capaz de desplegar un clúster de Spark, ejecutar trabajos de Spark y gestionar el clúster en GCP. En el siguiente módulo, exploraremos cómo ejecutar Spark en Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-running-spark-azure' title="Ejecutando Spark en Azure">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-spark-kubernetes' title="Spark con Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

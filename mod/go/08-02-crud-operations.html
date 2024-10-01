@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operaciones CRUD</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/08-02-crud-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/08-02-crud-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/08-02-crud-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/go/08-02-crud-operations" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/go/08-02-crud-operations" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-connecting-to-a-database' title="Conectando a una Base de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Operaciones CRUD</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-using-orm' title="Usando ORM">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) en una base de datos utilizando Go. Estas operaciones son fundamentales para cualquier aplicación que maneje datos persistentes.</p>
+</div><h1>Objetivos del Tema</h1>
+<div class='content'><ul>
+<li>Entender qué son las operaciones CRUD.</li>
+<li>Aprender a realizar operaciones CRUD en una base de datos usando Go.</li>
+<li>Practicar con ejemplos prácticos y ejercicios.</li>
+</ul>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>¿Qué son las Operaciones CRUD?</h2>
+<div class='content'><p>CRUD es un acrónimo que representa las cuatro operaciones básicas que se pueden realizar en una base de datos:</p>
+<ul>
+<li><strong>Crear (Create)</strong>: Insertar nuevos registros en la base de datos.</li>
+<li><strong>Leer (Read)</strong>: Consultar y recuperar datos de la base de datos.</li>
+<li><strong>Actualizar (Update)</strong>: Modificar registros existentes en la base de datos.</li>
+<li><strong>Eliminar (Delete)</strong>: Borrar registros de la base de datos.</li>
+</ul>
+</div><h2>Configuración Inicial</h2>
+<div class='content'><p>Antes de comenzar con las operaciones CRUD, asegúrate de tener configurado tu entorno de desarrollo y una base de datos a la que puedas conectarte. Para este ejemplo, utilizaremos una base de datos SQLite.</p>
+<h4>Instalación de SQLite</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFbiBzaXN0ZW1hcyBiYXNhZG9zIGVuIERlYmlhbi9VYnVudHUKc3VkbyBhcHQtZ2V0IGluc3RhbGwgc3FsaXRlMwoKIyBFbiBzaXN0ZW1hcyBiYXNhZG9zIGVuIFJlZCBIYXQvRmVkb3JhCnN1ZG8gZG5mIGluc3RhbGwgc3FsaXRlCgojIEVuIG1hY09TCmJyZXcgaW5zdGFsbCBzcWxpdGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># En sistemas basados en Debian/Ubuntu
+sudo apt-get install sqlite3
+
+# En sistemas basados en Red Hat/Fedora
+sudo dnf install sqlite
+
+# En macOS
+brew install sqlite</pre></div><div class='content'><h4>Instalación del Driver SQLite para Go</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z28gZ2V0IGdpdGh1Yi5jb20vbWF0dG4vZ28tc3FsaXRlMw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>go get github.com/mattn/go-sqlite3</pre></div><div class='content'></div><h2>Conexión a la Base de Datos</h2>
+<div class='content'><p>Primero, necesitamos establecer una conexión con la base de datos. Aquí hay un ejemplo de cómo hacerlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImRhdGFiYXNlL3NxbCIKICAgICJsb2ciCiAgICBfICJnaXRodWIuY29tL21hdHRuL2dvLXNxbGl0ZTMiCikKCmZ1bmMgbWFpbigpIHsKICAgIGRiLCBlcnIgOj0gc3FsLk9wZW4oInNxbGl0ZTMiLCAiLi90ZXN0LmRiIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBkZWZlciBkYi5DbG9zZSgpCgogICAgLy8gVmVyaWZpY2FyIGxhIGNvbmV4acOzbgogICAgZXJyID0gZGIuUGluZygpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQoKICAgIGxvZy5QcmludGxuKCJDb25leGnDs24gZXhpdG9zYSBhIGxhIGJhc2UgZGUgZGF0b3MiKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;log&quot;
+    _ &quot;github.com/mattn/go-sqlite3&quot;
+)
+
+func main() {
+    db, err := sql.Open(&quot;sqlite3&quot;, &quot;./test.db&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    // Verificar la conexi&oacute;n
+    err = db.Ping()
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    log.Println(&quot;Conexi&oacute;n exitosa a la base de datos&quot;)
+}</pre></div><div class='content'></div><h1>Crear (Create)</h1>
+<div class='content'><p>Para insertar un nuevo registro en la base de datos, utilizamos la instrucción <code>INSERT INTO</code>.</p>
+</div><h2>Ejemplo de Crear</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuYyBjcmVhdGVSZWNvcmQoZGIgKnNxbC5EQikgewogICAgcXVlcnkgOj0gYElOU0VSVCBJTlRPIHVzZXJzIChuYW1lLCBhZ2UpIFZBTFVFUyAoPywgPylgCiAgICBfLCBlcnIgOj0gZGIuRXhlYyhxdWVyeSwgIkpvaG4gRG9lIiwgMzApCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQogICAgbG9nLlByaW50bG4oIlJlZ2lzdHJvIGNyZWFkbyBleGl0b3NhbWVudGUiKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>func createRecord(db *sql.DB) {
+    query := `INSERT INTO users (name, age) VALUES (?, ?)`
+    _, err := db.Exec(query, &quot;John Doe&quot;, 30)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(&quot;Registro creado exitosamente&quot;)
+}</pre></div><div class='content'></div><h1>Leer (Read)</h1>
+<div class='content'><p>Para consultar y recuperar datos de la base de datos, utilizamos la instrucción <code>SELECT</code>.</p>
+</div><h2>Ejemplo de Leer</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuYyByZWFkUmVjb3JkcyhkYiAqc3FsLkRCKSB7CiAgICBxdWVyeSA6PSBgU0VMRUNUIGlkLCBuYW1lLCBhZ2UgRlJPTSB1c2Vyc2AKICAgIHJvd3MsIGVyciA6PSBkYi5RdWVyeShxdWVyeSkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBkZWZlciByb3dzLkNsb3NlKCkKCiAgICBmb3Igcm93cy5OZXh0KCkgewogICAgICAgIHZhciBpZCBpbnQKICAgICAgICB2YXIgbmFtZSBzdHJpbmcKICAgICAgICB2YXIgYWdlIGludAogICAgICAgIGVyciA9IHJvd3MuU2NhbigmaWQsICZuYW1lLCAmYWdlKQogICAgICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgICAgIH0KICAgICAgICBsb2cuUHJpbnRmKCJJRDogJWQsIE5hbWU6ICVzLCBBZ2U6ICVkXG4iLCBpZCwgbmFtZSwgYWdlKQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>func readRecords(db *sql.DB) {
+    query := `SELECT id, name, age FROM users`
+    rows, err := db.Query(query)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var id int
+        var name string
+        var age int
+        err = rows.Scan(&amp;id, &amp;name, &amp;age)
+        if err != nil {
+            log.Fatal(err)
+        }
+        log.Printf(&quot;ID: %d, Name: %s, Age: %d\n&quot;, id, name, age)
+    }
+}</pre></div><div class='content'></div><h1>Actualizar (Update)</h1>
+<div class='content'><p>Para modificar registros existentes en la base de datos, utilizamos la instrucción <code>UPDATE</code>.</p>
+</div><h2>Ejemplo de Actualizar</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuYyB1cGRhdGVSZWNvcmQoZGIgKnNxbC5EQikgewogICAgcXVlcnkgOj0gYFVQREFURSB1c2VycyBTRVQgYWdlID0gPyBXSEVSRSBuYW1lID0gP2AKICAgIF8sIGVyciA6PSBkYi5FeGVjKHF1ZXJ5LCAzMSwgIkpvaG4gRG9lIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBsb2cuUHJpbnRsbigiUmVnaXN0cm8gYWN0dWFsaXphZG8gZXhpdG9zYW1lbnRlIikKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>func updateRecord(db *sql.DB) {
+    query := `UPDATE users SET age = ? WHERE name = ?`
+    _, err := db.Exec(query, 31, &quot;John Doe&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(&quot;Registro actualizado exitosamente&quot;)
+}</pre></div><div class='content'></div><h1>Eliminar (Delete)</h1>
+<div class='content'><p>Para borrar registros de la base de datos, utilizamos la instrucción <code>DELETE</code>.</p>
+</div><h2>Ejemplo de Eliminar</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuYyBkZWxldGVSZWNvcmQoZGIgKnNxbC5EQikgewogICAgcXVlcnkgOj0gYERFTEVURSBGUk9NIHVzZXJzIFdIRVJFIG5hbWUgPSA/YAogICAgXywgZXJyIDo9IGRiLkV4ZWMocXVlcnksICJKb2huIERvZSIpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQogICAgbG9nLlByaW50bG4oIlJlZ2lzdHJvIGVsaW1pbmFkbyBleGl0b3NhbWVudGUiKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>func deleteRecord(db *sql.DB) {
+    query := `DELETE FROM users WHERE name = ?`
+    _, err := db.Exec(query, &quot;John Doe&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(&quot;Registro eliminado exitosamente&quot;)
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea una base de datos SQLite llamada <code>test.db</code>.</li>
+<li>Crea una tabla llamada <code>users</code> con las columnas <code>id</code>, <code>name</code> y <code>age</code>.</li>
+<li>Implementa las funciones <code>createRecord</code>, <code>readRecords</code>, <code>updateRecord</code> y <code>deleteRecord</code> en un programa Go.</li>
+<li>Inserta varios registros en la tabla <code>users</code>.</li>
+<li>Lee y muestra todos los registros.</li>
+<li>Actualiza uno de los registros.</li>
+<li>Elimina uno de los registros.</li>
+</ol>
+</div><h2>Solución</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImRhdGFiYXNlL3NxbCIKICAgICJsb2ciCiAgICBfICJnaXRodWIuY29tL21hdHRuL2dvLXNxbGl0ZTMiCikKCmZ1bmMgbWFpbigpIHsKICAgIGRiLCBlcnIgOj0gc3FsLk9wZW4oInNxbGl0ZTMiLCAiLi90ZXN0LmRiIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBkZWZlciBkYi5DbG9zZSgpCgogICAgY3JlYXRlVGFibGUoZGIpCiAgICBjcmVhdGVSZWNvcmQoZGIpCiAgICByZWFkUmVjb3JkcyhkYikKICAgIHVwZGF0ZVJlY29yZChkYikKICAgIHJlYWRSZWNvcmRzKGRiKQogICAgZGVsZXRlUmVjb3JkKGRiKQogICAgcmVhZFJlY29yZHMoZGIpCn0KCmZ1bmMgY3JlYXRlVGFibGUoZGIgKnNxbC5EQikgewogICAgcXVlcnkgOj0gYAogICAgQ1JFQVRFIFRBQkxFIElGIE5PVCBFWElTVFMgdXNlcnMgKAogICAgICAgIGlkIElOVEVHRVIgUFJJTUFSWSBLRVkgQVVUT0lOQ1JFTUVOVCwKICAgICAgICBuYW1lIFRFWFQsCiAgICAgICAgYWdlIElOVEVHRVIKICAgICk7YAogICAgXywgZXJyIDo9IGRiLkV4ZWMocXVlcnkpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQogICAgbG9nLlByaW50bG4oIlRhYmxhIGNyZWFkYSBleGl0b3NhbWVudGUiKQp9CgpmdW5jIGNyZWF0ZVJlY29yZChkYiAqc3FsLkRCKSB7CiAgICBxdWVyeSA6PSBgSU5TRVJUIElOVE8gdXNlcnMgKG5hbWUsIGFnZSkgVkFMVUVTICg/LCA/KWAKICAgIF8sIGVyciA6PSBkYi5FeGVjKHF1ZXJ5LCAiSm9obiBEb2UiLCAzMCkKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBsb2cuUHJpbnRsbigiUmVnaXN0cm8gY3JlYWRvIGV4aXRvc2FtZW50ZSIpCn0KCmZ1bmMgcmVhZFJlY29yZHMoZGIgKnNxbC5EQikgewogICAgcXVlcnkgOj0gYFNFTEVDVCBpZCwgbmFtZSwgYWdlIEZST00gdXNlcnNgCiAgICByb3dzLCBlcnIgOj0gZGIuUXVlcnkocXVlcnkpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQogICAgZGVmZXIgcm93cy5DbG9zZSgpCgogICAgZm9yIHJvd3MuTmV4dCgpIHsKICAgICAgICB2YXIgaWQgaW50CiAgICAgICAgdmFyIG5hbWUgc3RyaW5nCiAgICAgICAgdmFyIGFnZSBpbnQKICAgICAgICBlcnIgPSByb3dzLlNjYW4oJmlkLCAmbmFtZSwgJmFnZSkKICAgICAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICAgICAgbG9nLkZhdGFsKGVycikKICAgICAgICB9CiAgICAgICAgbG9nLlByaW50ZigiSUQ6ICVkLCBOYW1lOiAlcywgQWdlOiAlZFxuIiwgaWQsIG5hbWUsIGFnZSkKICAgIH0KfQoKZnVuYyB1cGRhdGVSZWNvcmQoZGIgKnNxbC5EQikgewogICAgcXVlcnkgOj0gYFVQREFURSB1c2VycyBTRVQgYWdlID0gPyBXSEVSRSBuYW1lID0gP2AKICAgIF8sIGVyciA6PSBkYi5FeGVjKHF1ZXJ5LCAzMSwgIkpvaG4gRG9lIikKICAgIGlmIGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9CiAgICBsb2cuUHJpbnRsbigiUmVnaXN0cm8gYWN0dWFsaXphZG8gZXhpdG9zYW1lbnRlIikKfQoKZnVuYyBkZWxldGVSZWNvcmQoZGIgKnNxbC5EQikgewogICAgcXVlcnkgOj0gYERFTEVURSBGUk9NIHVzZXJzIFdIRVJFIG5hbWUgPSA/YAogICAgXywgZXJyIDo9IGRiLkV4ZWMocXVlcnksICJKb2huIERvZSIpCiAgICBpZiBlcnIgIT0gbmlsIHsKICAgICAgICBsb2cuRmF0YWwoZXJyKQogICAgfQogICAgbG9nLlByaW50bG4oIlJlZ2lzdHJvIGVsaW1pbmFkbyBleGl0b3NhbWVudGUiKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;database/sql&quot;
+    &quot;log&quot;
+    _ &quot;github.com/mattn/go-sqlite3&quot;
+)
+
+func main() {
+    db, err := sql.Open(&quot;sqlite3&quot;, &quot;./test.db&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer db.Close()
+
+    createTable(db)
+    createRecord(db)
+    readRecords(db)
+    updateRecord(db)
+    readRecords(db)
+    deleteRecord(db)
+    readRecords(db)
+}
+
+func createTable(db *sql.DB) {
+    query := `
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        age INTEGER
+    );`
+    _, err := db.Exec(query)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(&quot;Tabla creada exitosamente&quot;)
+}
+
+func createRecord(db *sql.DB) {
+    query := `INSERT INTO users (name, age) VALUES (?, ?)`
+    _, err := db.Exec(query, &quot;John Doe&quot;, 30)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(&quot;Registro creado exitosamente&quot;)
+}
+
+func readRecords(db *sql.DB) {
+    query := `SELECT id, name, age FROM users`
+    rows, err := db.Query(query)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer rows.Close()
+
+    for rows.Next() {
+        var id int
+        var name string
+        var age int
+        err = rows.Scan(&amp;id, &amp;name, &amp;age)
+        if err != nil {
+            log.Fatal(err)
+        }
+        log.Printf(&quot;ID: %d, Name: %s, Age: %d\n&quot;, id, name, age)
+    }
+}
+
+func updateRecord(db *sql.DB) {
+    query := `UPDATE users SET age = ? WHERE name = ?`
+    _, err := db.Exec(query, 31, &quot;John Doe&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(&quot;Registro actualizado exitosamente&quot;)
+}
+
+func deleteRecord(db *sql.DB) {
+    query := `DELETE FROM users WHERE name = ?`
+    _, err := db.Exec(query, &quot;John Doe&quot;)
+    if err != nil {
+        log.Fatal(err)
+    }
+    log.Println(&quot;Registro eliminado exitosamente&quot;)
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo realizar operaciones CRUD en una base de datos utilizando Go. Estas operaciones son esenciales para cualquier aplicación que maneje datos persistentes. Asegúrate de practicar estos conceptos y experimentar con diferentes tipos de bases de datos para fortalecer tu comprensión.</p>
+<p>En el próximo módulo, exploraremos cómo usar ORM (Object-Relational Mapping) para simplificar las interacciones con la base de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-connecting-to-a-database' title="Conectando a una Base de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-using-orm' title="Usando ORM">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

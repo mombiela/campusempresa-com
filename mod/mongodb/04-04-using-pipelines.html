@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usando Pipelines</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/04-04-using-pipelines" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/04-04-using-pipelines" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/04-04-using-pipelines" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/mongodb/04-04-using-pipelines" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/04-04-using-pipelines" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-aggregation-framework' title="Marco de Agregación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Usando Pipelines</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-replication' title="Replicación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre el uso de pipelines en MongoDB, una característica poderosa del marco de agregación que permite procesar y transformar datos de manera eficiente. Los pipelines son secuencias de etapas que procesan documentos de una colección, permitiendo realizar operaciones complejas en los datos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Pipeline</strong>: Una secuencia de etapas que procesan documentos.</li>
+<li><strong>Etapa</strong>: Cada paso en el pipeline que realiza una operación específica.</li>
+<li><strong>Operadores de Agregación</strong>: Funciones que se utilizan dentro de las etapas para transformar los datos.</li>
+</ol>
+</div><h1>Estructura de un Pipeline</h1>
+<div class='content'><p>Un pipeline en MongoDB se define como una lista de etapas, donde cada etapa es un documento que especifica una operación. La estructura básica es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WwogIHsgPGV0YXBhMT46IHsgPGVzcGVjaWZpY2FjacOzbjE+IH0gfSwKICB7IDxldGFwYTI+OiB7IDxlc3BlY2lmaWNhY2nDs24yPiB9IH0sCiAgLi4uCl0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[
+  { &lt;etapa1&gt;: { &lt;especificaci&oacute;n1&gt; } },
+  { &lt;etapa2&gt;: { &lt;especificaci&oacute;n2&gt; } },
+  ...
+]</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que tenemos una colección <code>orders</code> con documentos que representan pedidos de una tienda en línea. Cada documento tiene la siguiente estructura:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJfaWQiOiBPYmplY3RJZCgiLi4uIiksCiAgImN1c3RvbWVySWQiOiAiMTIzNDUiLAogICJpdGVtcyI6IFsKICAgIHsgInByb2R1Y3RJZCI6ICJBMSIsICJxdWFudGl0eSI6IDIsICJwcmljZSI6IDEwIH0sCiAgICB7ICJwcm9kdWN0SWQiOiAiQjIiLCAicXVhbnRpdHkiOiAxLCAicHJpY2UiOiAyMCB9CiAgXSwKICAidG90YWwiOiA0MCwKICAiZGF0ZSI6IElTT0RhdGUoIjIwMjMtMTAtMDFUMDA6MDA6MDBaIikKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;_id&quot;: ObjectId(&quot;...&quot;),
+  &quot;customerId&quot;: &quot;12345&quot;,
+  &quot;items&quot;: [
+    { &quot;productId&quot;: &quot;A1&quot;, &quot;quantity&quot;: 2, &quot;price&quot;: 10 },
+    { &quot;productId&quot;: &quot;B2&quot;, &quot;quantity&quot;: 1, &quot;price&quot;: 20 }
+  ],
+  &quot;total&quot;: 40,
+  &quot;date&quot;: ISODate(&quot;2023-10-01T00:00:00Z&quot;)
+}</pre></div><div class='content'><p>Queremos calcular el total de ventas por cada cliente. Para ello, utilizaremos un pipeline con las siguientes etapas:</p>
+<ol>
+<li><strong>Descomponer los elementos del pedido</strong>: Usamos <code>$unwind</code> para descomponer el array <code>items</code>.</li>
+<li><strong>Agrupar por cliente</strong>: Usamos <code>$group</code> para agrupar los documentos por <code>customerId</code> y sumar los totales.</li>
+<li><strong>Proyectar el resultado</strong>: Usamos <code>$project</code> para formatear el resultado final.</li>
+</ol>
+</div><h2>Código del Pipeline</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIub3JkZXJzLmFnZ3JlZ2F0ZShbCiAgeyAkdW53aW5kOiAiJGl0ZW1zIiB9LAogIHsKICAgICRncm91cDogewogICAgICBfaWQ6ICIkY3VzdG9tZXJJZCIsCiAgICAgIHRvdGFsU2FsZXM6IHsgJHN1bTogeyAkbXVsdGlwbHk6IFsiJGl0ZW1zLnF1YW50aXR5IiwgIiRpdGVtcy5wcmljZSJdIH0gfQogICAgfQogIH0sCiAgewogICAgJHByb2plY3Q6IHsKICAgICAgX2lkOiAwLAogICAgICBjdXN0b21lcklkOiAiJF9pZCIsCiAgICAgIHRvdGFsU2FsZXM6IDEKICAgIH0KICB9Cl0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.orders.aggregate([
+  { $unwind: &quot;$items&quot; },
+  {
+    $group: {
+      _id: &quot;$customerId&quot;,
+      totalSales: { $sum: { $multiply: [&quot;$items.quantity&quot;, &quot;$items.price&quot;] } }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      customerId: &quot;$_id&quot;,
+      totalSales: 1
+    }
+  }
+])</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>$unwind</strong>: Descompone el array <code>items</code> en documentos individuales.</p>
+<pre><code class="language-javascript">{ $unwind: &quot;$items&quot; }
+</code></pre>
+<p>Esto convierte cada documento con un array <code>items</code> en múltiples documentos, uno por cada elemento del array.</p>
+</li>
+<li>
+<p><strong>$group</strong>: Agrupa los documentos por <code>customerId</code> y calcula el total de ventas.</p>
+<pre><code class="language-javascript">{
+  $group: {
+    _id: &quot;$customerId&quot;,
+    totalSales: { $sum: { $multiply: [&quot;$items.quantity&quot;, &quot;$items.price&quot;] } }
+  }
+}
+</code></pre>
+<p>Aquí, <code>_id</code> es el campo por el cual agrupamos (en este caso, <code>customerId</code>). <code>totalSales</code> es el campo calculado que suma el producto de <code>quantity</code> y <code>price</code> para cada item.</p>
+</li>
+<li>
+<p><strong>$project</strong>: Formatea el resultado final.</p>
+<pre><code class="language-javascript">{
+  $project: {
+    _id: 0,
+    customerId: &quot;$_id&quot;,
+    totalSales: 1
+  }
+}
+</code></pre>
+<p>Esto proyecta los campos deseados en el resultado final, eliminando el campo <code>_id</code> y renombrando <code>customerId</code>.</p>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Dada una colección <code>employees</code> con la siguiente estructura:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJfaWQiOiBPYmplY3RJZCgiLi4uIiksCiAgIm5hbWUiOiAiSm9obiBEb2UiLAogICJkZXBhcnRtZW50IjogIlNhbGVzIiwKICAic2FsYXJ5IjogNTAwMDAsCiAgImpvaW5EYXRlIjogSVNPRGF0ZSgiMjAyMC0wMS0xNVQwMDowMDowMFoiKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;_id&quot;: ObjectId(&quot;...&quot;),
+  &quot;name&quot;: &quot;John Doe&quot;,
+  &quot;department&quot;: &quot;Sales&quot;,
+  &quot;salary&quot;: 50000,
+  &quot;joinDate&quot;: ISODate(&quot;2020-01-15T00:00:00Z&quot;)
+}</pre></div><div class='content'><p>Crea un pipeline que calcule el salario promedio por departamento.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuZW1wbG95ZWVzLmFnZ3JlZ2F0ZShbCiAgewogICAgJGdyb3VwOiB7CiAgICAgIF9pZDogIiRkZXBhcnRtZW50IiwKICAgICAgYXZlcmFnZVNhbGFyeTogeyAkYXZnOiAiJHNhbGFyeSIgfQogICAgfQogIH0sCiAgewogICAgJHByb2plY3Q6IHsKICAgICAgX2lkOiAwLAogICAgICBkZXBhcnRtZW50OiAiJF9pZCIsCiAgICAgIGF2ZXJhZ2VTYWxhcnk6IDEKICAgIH0KICB9Cl0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.employees.aggregate([
+  {
+    $group: {
+      _id: &quot;$department&quot;,
+      averageSalary: { $avg: &quot;$salary&quot; }
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      department: &quot;$_id&quot;,
+      averageSalary: 1
+    }
+  }
+])</pre></div><div class='content'></div><h2>Explicación de la Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>$group</strong>: Agrupa los documentos por <code>department</code> y calcula el salario promedio.</p>
+<pre><code class="language-javascript">{
+  $group: {
+    _id: &quot;$department&quot;,
+    averageSalary: { $avg: &quot;$salary&quot; }
+  }
+}
+</code></pre>
+<p>Aquí, <code>_id</code> es el campo por el cual agrupamos (en este caso, <code>department</code>). <code>averageSalary</code> es el campo calculado que obtiene el promedio de <code>salary</code>.</p>
+</li>
+<li>
+<p><strong>$project</strong>: Formatea el resultado final.</p>
+<pre><code class="language-javascript">{
+  $project: {
+    _id: 0,
+    department: &quot;$_id&quot;,
+    averageSalary: 1
+  }
+}
+</code></pre>
+<p>Esto proyecta los campos deseados en el resultado final, eliminando el campo <code>_id</code> y renombrando <code>department</code>.</p>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo usar pipelines en MongoDB para procesar y transformar datos de manera eficiente. Hemos visto cómo descomponer arrays, agrupar documentos y proyectar resultados. Los pipelines son una herramienta poderosa que permite realizar operaciones complejas en los datos de manera eficiente y flexible. En el siguiente módulo, exploraremos características avanzadas de MongoDB, como la replicación y la fragmentación.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-aggregation-framework' title="Marco de Agregación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-replication' title="Replicación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

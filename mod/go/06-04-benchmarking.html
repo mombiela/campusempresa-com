@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benchmarking</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/06-04-benchmarking" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/06-04-benchmarking" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/06-04-benchmarking" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/go/06-04-benchmarking" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/go/06-04-benchmarking" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-testing' title="Pruebas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Benchmarking</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-building-a-simple-web-server' title="Construcción de un Servidor Web Simple">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El benchmarking es una técnica crucial en el desarrollo de software que permite medir y comparar el rendimiento de diferentes partes de un programa. En Go, el paquete <code>testing</code> proporciona soporte integrado para la creación de benchmarks. Este módulo te enseñará cómo escribir y ejecutar benchmarks en Go para identificar y optimizar las partes críticas de tu código.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li>Introducción al Benchmarking</li>
+<li>Escribiendo Benchmarks en Go</li>
+<li>Ejecutando Benchmarks</li>
+<li>Analizando Resultados de Benchmarks</li>
+<li>Ejemplos Prácticos</li>
+<li>Ejercicios</li>
+</ol>
+</div><h1>1. Introducción al Benchmarking</h1>
+<div class='content'><p>El benchmarking se utiliza para medir el rendimiento de una función o un bloque de código específico. Esto es especialmente útil para:</p>
+<ul>
+<li>Identificar cuellos de botella en el rendimiento.</li>
+<li>Comparar diferentes implementaciones de una función.</li>
+<li>Validar mejoras de rendimiento después de optimizaciones.</li>
+</ul>
+</div><h1>2. Escribiendo Benchmarks en Go</h1>
+<div class='content'><p>En Go, los benchmarks se escriben como funciones que comienzan con <code>Benchmark</code> y toman un argumento de tipo <code>*testing.B</code>. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrSGVsbG9Xb3JsZChiICp0ZXN0aW5nLkIpIHsKICAgIGZvciBpIDo9IDA7IGkgPCBiLk47IGkrKyB7CiAgICAgICAgSGVsbG9Xb3JsZCgpCiAgICB9Cn0KCmZ1bmMgSGVsbG9Xb3JsZCgpIHN0cmluZyB7CiAgICByZXR1cm4gIkhlbGxvLCBXb3JsZCEiCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkHelloWorld(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        HelloWorld()
+    }
+}
+
+func HelloWorld() string {
+    return &quot;Hello, World!&quot;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>BenchmarkHelloWorld</code> es la función de benchmark.</li>
+<li><code>b *testing.B</code> es el argumento que proporciona el marco de pruebas de Go.</li>
+<li><code>b.N</code> es el número de iteraciones que el benchmark debe ejecutar. Este valor es ajustado automáticamente por el marco de pruebas para obtener resultados precisos.</li>
+</ul>
+</div><h1>3. Ejecutando Benchmarks</h1>
+<div class='content'><p>Para ejecutar benchmarks, usa el comando <code>go test</code> con la bandera <code>-bench</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z28gdGVzdCAtYmVuY2g9Lg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>go test -bench=.</pre></div><div class='content'><p>Este comando ejecutará todos los benchmarks en el paquete actual.</p>
+</div><h1>4. Analizando Resultados de Benchmarks</h1>
+<div class='content'><p>Los resultados de los benchmarks se presentan en términos de tiempo por operación. Aquí hay un ejemplo de salida:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z29vczogZGFyd2luCmdvYXJjaDogYW1kNjQKcGtnOiBleGFtcGxlCkJlbmNobWFya0hlbGxvV29ybGQtOCAgIAkyMDAwMDAwMDAwCSAgICAgICAgIDAuMjkgbnMvb3AKUEFTUwpvayAgCWV4YW1wbGUJMC41ODJz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>goos: darwin
+goarch: amd64
+pkg: example
+BenchmarkHelloWorld-8   	2000000000	         0.29 ns/op
+PASS
+ok  	example	0.582s</pre></div><div class='content'></div><h2>Explicación de la Salida</h2>
+<div class='content'><ul>
+<li><code>BenchmarkHelloWorld-8</code> indica el nombre del benchmark y el número de CPU utilizados.</li>
+<li><code>2000000000</code> es el número de iteraciones.</li>
+<li><code>0.29 ns/op</code> es el tiempo promedio por operación.</li>
+</ul>
+</div><h1>5. Ejemplos Prácticos</h1>
+<div class='content'></div><h2>Benchmarking una Función de Suma</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrU3VtKGIgKnRlc3RpbmcuQikgewogICAgZm9yIGkgOj0gMDsgaSA8IGIuTjsgaSsrIHsKICAgICAgICBTdW0oMSwgMikKICAgIH0KfQoKZnVuYyBTdW0oYSwgYiBpbnQpIGludCB7CiAgICByZXR1cm4gYSArIGIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkSum(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        Sum(1, 2)
+    }
+}
+
+func Sum(a, b int) int {
+    return a + b
+}</pre></div><div class='content'></div><h2>Benchmarking una Función de Concatenación de Cadenas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrQ29uY2F0KGIgKnRlc3RpbmcuQikgewogICAgZm9yIGkgOj0gMDsgaSA8IGIuTjsgaSsrIHsKICAgICAgICBDb25jYXQoIkhlbGxvIiwgIldvcmxkIikKICAgIH0KfQoKZnVuYyBDb25jYXQoYSwgYiBzdHJpbmcpIHN0cmluZyB7CiAgICByZXR1cm4gYSArIGIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkConcat(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        Concat(&quot;Hello&quot;, &quot;World&quot;)
+    }
+}
+
+func Concat(a, b string) string {
+    return a + b
+}</pre></div><div class='content'></div><h1>6. Ejercicios</h1>
+<div class='content'></div><h2>Ejercicio 1: Benchmarking una Función de Multiplicación</h2>
+<div class='content'><p>Escribe un benchmark para una función que multiplica dos números enteros.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrTXVsdGlwbHkoYiAqdGVzdGluZy5CKSB7CiAgICBmb3IgaSA6PSAwOyBpIDwgYi5OOyBpKysgewogICAgICAgIE11bHRpcGx5KDIsIDMpCiAgICB9Cn0KCmZ1bmMgTXVsdGlwbHkoYSwgYiBpbnQpIGludCB7CiAgICByZXR1cm4gYSAqIGIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkMultiply(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        Multiply(2, 3)
+    }
+}
+
+func Multiply(a, b int) int {
+    return a * b
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Benchmarking una Función de Búsqueda en un Slice</h2>
+<div class='content'><p>Escribe un benchmark para una función que busca un elemento en un slice de enteros.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrU2VhcmNoKGIgKnRlc3RpbmcuQikgewogICAgc2xpY2UgOj0gW11pbnR7MSwgMiwgMywgNCwgNSwgNiwgNywgOCwgOSwgMTB9CiAgICBmb3IgaSA6PSAwOyBpIDwgYi5OOyBpKysgewogICAgICAgIFNlYXJjaChzbGljZSwgNSkKICAgIH0KfQoKZnVuYyBTZWFyY2goc2xpY2UgW11pbnQsIHRhcmdldCBpbnQpIGJvb2wgewogICAgZm9yIF8sIHYgOj0gcmFuZ2Ugc2xpY2UgewogICAgICAgIGlmIHYgPT0gdGFyZ2V0IHsKICAgICAgICAgICAgcmV0dXJuIHRydWUKICAgICAgICB9CiAgICB9CiAgICByZXR1cm4gZmFsc2UKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkSearch(b *testing.B) {
+    slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    for i := 0; i &lt; b.N; i++ {
+        Search(slice, 5)
+    }
+}
+
+func Search(slice []int, target int) bool {
+    for _, v := range slice {
+        if v == target {
+            return true
+        }
+    }
+    return false
+}</pre></div><div class='content'></div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrTXVsdGlwbHkoYiAqdGVzdGluZy5CKSB7CiAgICBmb3IgaSA6PSAwOyBpIDwgYi5OOyBpKysgewogICAgICAgIE11bHRpcGx5KDIsIDMpCiAgICB9Cn0KCmZ1bmMgTXVsdGlwbHkoYSwgYiBpbnQpIGludCB7CiAgICByZXR1cm4gYSAqIGIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkMultiply(b *testing.B) {
+    for i := 0; i &lt; b.N; i++ {
+        Multiply(2, 3)
+    }
+}
+
+func Multiply(a, b int) int {
+    return a * b
+}</pre></div><div class='content'><h4>Solución al Ejercicio 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgInRlc3RpbmciCikKCmZ1bmMgQmVuY2htYXJrU2VhcmNoKGIgKnRlc3RpbmcuQikgewogICAgc2xpY2UgOj0gW11pbnR7MSwgMiwgMywgNCwgNSwgNiwgNywgOCwgOSwgMTB9CiAgICBmb3IgaSA6PSAwOyBpIDwgYi5OOyBpKysgewogICAgICAgIFNlYXJjaChzbGljZSwgNSkKICAgIH0KfQoKZnVuYyBTZWFyY2goc2xpY2UgW11pbnQsIHRhcmdldCBpbnQpIGJvb2wgewogICAgZm9yIF8sIHYgOj0gcmFuZ2Ugc2xpY2UgewogICAgICAgIGlmIHYgPT0gdGFyZ2V0IHsKICAgICAgICAgICAgcmV0dXJuIHRydWUKICAgICAgICB9CiAgICB9CiAgICByZXR1cm4gZmFsc2UKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;testing&quot;
+)
+
+func BenchmarkSearch(b *testing.B) {
+    slice := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+    for i := 0; i &lt; b.N; i++ {
+        Search(slice, 5)
+    }
+}
+
+func Search(slice []int, target int) bool {
+    for _, v := range slice {
+        if v == target {
+            return true
+        }
+    }
+    return false
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido cómo escribir y ejecutar benchmarks en Go. El benchmarking es una herramienta poderosa para identificar y optimizar las partes críticas de tu código. Asegúrate de utilizar esta técnica para mejorar el rendimiento de tus aplicaciones y validar las optimizaciones que realices. En el próximo módulo, exploraremos el desarrollo web con Go, comenzando con la construcción de un servidor web simple.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-testing' title="Pruebas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-building-a-simple-web-server' title="Construcción de un Servidor Web Simple">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

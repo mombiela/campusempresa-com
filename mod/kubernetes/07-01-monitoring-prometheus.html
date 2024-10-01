@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoreo con Prometheus</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/07-01-monitoring-prometheus" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/07-01-monitoring-prometheus" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/07-01-monitoring-prometheus" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/07-01-monitoring-prometheus" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/07-01-monitoring-prometheus" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-crds' title="Definiciones de Recursos Personalizados (CRDs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Monitoreo con Prometheus</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-logging-efk' title="Registro con Elasticsearch, Fluentd y Kibana (EFK)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Prometheus es una herramienta de monitoreo y alerta de código abierto diseñada originalmente por SoundCloud. Es especialmente popular en el ecosistema de Kubernetes debido a su capacidad para recopilar métricas de aplicaciones y servicios, y su integración con Kubernetes. En esta sección, aprenderás cómo configurar y utilizar Prometheus para monitorear un clúster de Kubernetes.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><p>Antes de sumergirnos en la configuración de Prometheus, es importante entender algunos conceptos clave:</p>
+<ul>
+<li><strong>Métricas</strong>: Datos cuantitativos que describen el estado y el rendimiento de un sistema.</li>
+<li><strong>Scraping</strong>: El proceso de recopilar métricas de los endpoints de los servicios.</li>
+<li><strong>Alertas</strong>: Notificaciones generadas cuando las métricas cumplen ciertas condiciones predefinidas.</li>
+<li><strong>Exportadores</strong>: Componentes que exponen métricas en un formato que Prometheus puede recopilar.</li>
+</ul>
+</div><h1>Instalación de Prometheus en Kubernetes</h1>
+<div class='content'></div><h2>Paso 1: Configuración del Namespace</h2>
+<div class='content'><p>Primero, crearemos un namespace dedicado para Prometheus:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBjcmVhdGUgbmFtZXNwYWNlIG1vbml0b3Jpbmc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl create namespace monitoring</pre></div><div class='content'></div><h2>Paso 2: Despliegue de Prometheus usando Helm</h2>
+<div class='content'><p>Helm es una herramienta de gestión de paquetes para Kubernetes que facilita la instalación de aplicaciones complejas. Vamos a usar Helm para instalar Prometheus.</p>
+<ol>
+<li>
+<p><strong>Instalar Helm</strong> (si no lo tienes instalado):</p>
+<pre><code class="language-bash">curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+</code></pre>
+</li>
+<li>
+<p><strong>Agregar el repositorio de Prometheus</strong>:</p>
+<pre><code class="language-bash">helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+</code></pre>
+</li>
+<li>
+<p><strong>Instalar Prometheus</strong>:</p>
+<pre><code class="language-bash">helm install prometheus prometheus-community/prometheus --namespace monitoring
+</code></pre>
+</li>
+</ol>
+</div><h2>Paso 3: Verificar la Instalación</h2>
+<div class='content'><p>Para verificar que Prometheus se ha instalado correctamente, puedes listar los pods en el namespace <code>monitoring</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgcG9kcyAtbiBtb25pdG9yaW5n"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get pods -n monitoring</pre></div><div class='content'><p>Deberías ver varios pods en ejecución, incluyendo <code>prometheus-server</code>.</p>
+</div><h1>Acceso a la Interfaz de Prometheus</h1>
+<div class='content'><p>Para acceder a la interfaz web de Prometheus, puedes usar un port-forward:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBwb3J0LWZvcndhcmQgLW4gbW9uaXRvcmluZyBkZXBsb3kvcHJvbWV0aGV1cy1zZXJ2ZXIgOTA5MDo5MDkw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl port-forward -n monitoring deploy/prometheus-server 9090:9090</pre></div><div class='content'><p>Luego, abre tu navegador y navega a <code>http://localhost:9090</code>.</p>
+</div><h1>Configuración de Scraping</h1>
+<div class='content'><p>Prometheus recopila métricas mediante el scraping de endpoints HTTP. La configuración de scraping se define en el archivo <code>prometheus.yml</code>. Aquí hay un ejemplo básico de configuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2NyYXBlX2NvbmZpZ3M6CiAgLSBqb2JfbmFtZTogJ2t1YmVybmV0ZXMtbm9kZXMnCiAgICBrdWJlcm5ldGVzX3NkX2NvbmZpZ3M6CiAgICAgIC0gcm9sZTogbm9kZQogICAgcmVsYWJlbF9jb25maWdzOgogICAgICAtIGFjdGlvbjogbGFiZWxtYXAKICAgICAgICByZWdleDogX19tZXRhX2t1YmVybmV0ZXNfbm9kZV9sYWJlbF8oLispCiAgICAgIC0gdGFyZ2V0X2xhYmVsOiBfX2FkZHJlc3NfXwogICAgICAgIHJlcGxhY2VtZW50OiBrdWJlcm5ldGVzLmRlZmF1bHQuc3ZjOjQ0MwogICAgICAgIGFjdGlvbjogcmVwbGFjZQogICAgICAtIHNvdXJjZV9sYWJlbHM6IFtfX21ldGFfa3ViZXJuZXRlc19ub2RlX25hbWVdCiAgICAgICAgcmVnZXg6ICguKykKICAgICAgICB0YXJnZXRfbGFiZWw6IF9fbWV0cmljc19wYXRoX18KICAgICAgICByZXBsYWNlbWVudDogL2FwaS92MS9ub2Rlcy8kezF9L3Byb3h5L21ldHJpY3M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>scrape_configs:
+  - job_name: 'kubernetes-nodes'
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - action: labelmap
+        regex: __meta_kubernetes_node_label_(.+)
+      - target_label: __address__
+        replacement: kubernetes.default.svc:443
+        action: replace
+      - source_labels: [__meta_kubernetes_node_name]
+        regex: (.+)
+        target_label: __metrics_path__
+        replacement: /api/v1/nodes/${1}/proxy/metrics</pre></div><div class='content'><p>Este ejemplo configura Prometheus para recopilar métricas de los nodos de Kubernetes.</p>
+</div><h1>Alertas con Prometheus</h1>
+<div class='content'><p>Prometheus incluye un componente llamado Alertmanager que gestiona las alertas. Aquí hay un ejemplo de configuración de alertas:</p>
+</div><h2>Paso 1: Configuración de Alertmanager</h2>
+<div class='content'><p>Crea un archivo <code>alertmanager.yml</code> con la siguiente configuración básica:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xvYmFsOgogIHJlc29sdmVfdGltZW91dDogNW0KCnJvdXRlOgogIGdyb3VwX2J5OiBbJ2FsZXJ0bmFtZSddCiAgZ3JvdXBfd2FpdDogMzBzCiAgZ3JvdXBfaW50ZXJ2YWw6IDVtCiAgcmVwZWF0X2ludGVydmFsOiAzaAogIHJlY2VpdmVyOiAnc2xhY2stbm90aWZpY2F0aW9ucycKCnJlY2VpdmVyczoKICAtIG5hbWU6ICdzbGFjay1ub3RpZmljYXRpb25zJwogICAgc2xhY2tfY29uZmlnczoKICAgICAgLSBhcGlfdXJsOiAnaHR0cHM6Ly9ob29rcy5zbGFjay5jb20vc2VydmljZXMvVDAwMDAwMDAwL0IwMDAwMDAwMC9YWFhYWFhYWFhYWFhYWFhYWFhYWFhYWFgnCiAgICAgICAgY2hhbm5lbDogJyNhbGVydHMn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>global:
+  resolve_timeout: 5m
+
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 3h
+  receiver: 'slack-notifications'
+
+receivers:
+  - name: 'slack-notifications'
+    slack_configs:
+      - api_url: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
+        channel: '#alerts'</pre></div><div class='content'></div><h2>Paso 2: Configuración de Reglas de Alerta</h2>
+<div class='content'><p>Crea un archivo <code>alert-rules.yml</code> con una regla de alerta básica:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3JvdXBzOgogIC0gbmFtZTogZXhhbXBsZQogICAgcnVsZXM6CiAgICAgIC0gYWxlcnQ6IEhpZ2hNZW1vcnlVc2FnZQogICAgICAgIGV4cHI6IG5vZGVfbWVtb3J5X0FjdGl2ZV9ieXRlcyAvIG5vZGVfbWVtb3J5X01lbVRvdGFsX2J5dGVzICogMTAwID4gODAKICAgICAgICBmb3I6IDVtCiAgICAgICAgbGFiZWxzOgogICAgICAgICAgc2V2ZXJpdHk6IHdhcm5pbmcKICAgICAgICBhbm5vdGF0aW9uczoKICAgICAgICAgIHN1bW1hcnk6ICJIaWdoIG1lbW9yeSB1c2FnZSBkZXRlY3RlZCIKICAgICAgICAgIGRlc2NyaXB0aW9uOiAiTWVtb3J5IHVzYWdlIGlzIGFib3ZlIDgwJSBmb3IgbW9yZSB0aGFuIDUgbWludXRlcy4i"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>groups:
+  - name: example
+    rules:
+      - alert: HighMemoryUsage
+        expr: node_memory_Active_bytes / node_memory_MemTotal_bytes * 100 &gt; 80
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: &quot;High memory usage detected&quot;
+          description: &quot;Memory usage is above 80% for more than 5 minutes.&quot;</pre></div><div class='content'></div><h2>Paso 3: Aplicar la Configuración</h2>
+<div class='content'><p>Actualiza el archivo <code>prometheus.yml</code> para incluir la configuración de Alertmanager y las reglas de alerta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YWxlcnRpbmc6CiAgYWxlcnRtYW5hZ2VyczoKICAgIC0gc3RhdGljX2NvbmZpZ3M6CiAgICAgICAgLSB0YXJnZXRzOgogICAgICAgICAgLSBhbGVydG1hbmFnZXIubW9uaXRvcmluZy5zdmM6OTA5MwoKcnVsZV9maWxlczoKICAtICJhbGVydC1ydWxlcy55bWwi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - alertmanager.monitoring.svc:9093
+
+rule_files:
+  - &quot;alert-rules.yml&quot;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar un Exportador de Node</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar el Exportador de Node</strong>:</p>
+<pre><code class="language-bash">helm install node-exporter prometheus-community/prometheus-node-exporter --namespace monitoring
+</code></pre>
+</li>
+<li>
+<p><strong>Actualizar la Configuración de Scraping</strong>:</p>
+<p>Añade la siguiente configuración a <code>prometheus.yml</code>:</p>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'node-exporter'
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_label_app]
+        action: keep
+        regex: node-exporter
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar la Configuración</strong>:</p>
+<p>Accede a la interfaz de Prometheus y verifica que las métricas del exportador de node están siendo recopiladas.</p>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><p>Si has seguido los pasos correctamente, deberías ver las métricas del exportador de node en la interfaz de Prometheus bajo el job <code>node-exporter</code>.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de Prometheus y cómo configurarlo para monitorear un clúster de Kubernetes. También hemos visto cómo configurar alertas y cómo instalar y configurar un exportador de node. Con esta base, estarás bien preparado para profundizar en el monitoreo avanzado y la creación de alertas personalizadas en tu entorno de Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-crds' title="Definiciones de Recursos Personalizados (CRDs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-logging-efk' title="Registro con Elasticsearch, Fluentd y Kibana (EFK)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

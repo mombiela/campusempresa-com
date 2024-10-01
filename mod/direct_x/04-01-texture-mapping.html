@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapeo de Texturas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/04-01-texture-mapping" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/04-01-texture-mapping" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/04-01-texture-mapping" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/direct_x/04-01-texture-mapping" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/04-01-texture-mapping" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-compiling-using-shaders' title="Compilando y Usando Shaders">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mapeo de Texturas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-lighting-and-materials' title="Iluminación y Materiales">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El mapeo de texturas es una técnica fundamental en gráficos 3D que permite aplicar imágenes (texturas) a superficies de modelos 3D para darles un aspecto más detallado y realista. En este tema, aprenderemos cómo implementar el mapeo de texturas en DirectX.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Textura</strong>: Una imagen que se aplica a la superficie de un modelo 3D.</li>
+<li><strong>Coordenadas UV</strong>: Coordenadas que mapean puntos en la textura a puntos en la superficie del modelo.</li>
+<li><strong>Sampler</strong>: Un objeto que define cómo se accede a la textura y cómo se filtran los valores de la textura.</li>
+</ol>
+</div><h1>Pasos para Implementar el Mapeo de Texturas</h1>
+<div class='content'></div><h2>1. Cargar la Textura</h2>
+<div class='content'><p>Primero, necesitamos cargar la textura desde un archivo. DirectX proporciona varias formas de hacerlo, pero una de las más comunes es usar la biblioteca DirectXTK (DirectX Tool Kit).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgIkREU1RleHR1cmVMb2FkZXIuaCIKCi8vIENhcmdhciBsYSB0ZXh0dXJhCk1pY3Jvc29mdDo6V1JMOjpDb21QdHI8SUQzRDExU2hhZGVyUmVzb3VyY2VWaWV3PiB0ZXh0dXJlVmlldzsKSFJFU1VMVCBociA9IERpcmVjdFg6OkNyZWF0ZUREU1RleHR1cmVGcm9tRmlsZShkZXZpY2UsIEwidGV4dHVyZS5kZHMiLCBudWxscHRyLCB0ZXh0dXJlVmlldy5HZXRBZGRyZXNzT2YoKSk7CmlmIChGQUlMRUQoaHIpKSB7CiAgICAvLyBNYW5lamFyIGVsIGVycm9yCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &quot;DDSTextureLoader.h&quot;
+
+// Cargar la textura
+Microsoft::WRL::ComPtr&lt;ID3D11ShaderResourceView&gt; textureView;
+HRESULT hr = DirectX::CreateDDSTextureFromFile(device, L&quot;texture.dds&quot;, nullptr, textureView.GetAddressOf());
+if (FAILED(hr)) {
+    // Manejar el error
+}</pre></div><div class='content'></div><h2>2. Configurar el Sampler</h2>
+<div class='content'><p>El sampler define cómo se accede a la textura. Debemos crear un objeto <code>ID3D11SamplerState</code> y configurarlo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RDNEMTFfU0FNUExFUl9ERVNDIHNhbXBsZXJEZXNjID0ge307CnNhbXBsZXJEZXNjLkZpbHRlciA9IEQzRDExX0ZJTFRFUl9NSU5fTUFHX01JUF9MSU5FQVI7CnNhbXBsZXJEZXNjLkFkZHJlc3NVID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkFkZHJlc3NWID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkFkZHJlc3NXID0gRDNEMTFfVEVYVFVSRV9BRERSRVNTX1dSQVA7CnNhbXBsZXJEZXNjLkNvbXBhcmlzb25GdW5jID0gRDNEMTFfQ09NUEFSSVNPTl9ORVZFUjsKc2FtcGxlckRlc2MuTWluTE9EID0gMDsKc2FtcGxlckRlc2MuTWF4TE9EID0gRDNEMTFfRkxPQVQzMl9NQVg7CgpNaWNyb3NvZnQ6OldSTDo6Q29tUHRyPElEM0QxMVNhbXBsZXJTdGF0ZT4gc2FtcGxlclN0YXRlOwpociA9IGRldmljZS0+Q3JlYXRlU2FtcGxlclN0YXRlKCZzYW1wbGVyRGVzYywgc2FtcGxlclN0YXRlLkdldEFkZHJlc3NPZigpKTsKaWYgKEZBSUxFRChocikpIHsKICAgIC8vIE1hbmVqYXIgZWwgZXJyb3IKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>D3D11_SAMPLER_DESC samplerDesc = {};
+samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+samplerDesc.MinLOD = 0;
+samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+Microsoft::WRL::ComPtr&lt;ID3D11SamplerState&gt; samplerState;
+hr = device-&gt;CreateSamplerState(&amp;samplerDesc, samplerState.GetAddressOf());
+if (FAILED(hr)) {
+    // Manejar el error
+}</pre></div><div class='content'></div><h2>3. Configurar el Shader</h2>
+<div class='content'><p>Debemos modificar nuestros shaders para aceptar y usar la textura. Aquí hay un ejemplo de un vertex shader y un pixel shader que usan una textura.</p>
+<p><strong>Vertex Shader (HLSL)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFZTX0lOUFVUIHsKICAgIGZsb2F0MyBQb3MgOiBQT1NJVElPTjsKICAgIGZsb2F0MiBUZXggOiBURVhDT09SRDA7Cn07CgpzdHJ1Y3QgUFNfSU5QVVQgewogICAgZmxvYXQ0IFBvcyA6IFNWX1BPU0lUSU9OOwogICAgZmxvYXQyIFRleCA6IFRFWENPT1JEMDsKfTsKClBTX0lOUFVUIFZTKFZTX0lOUFVUIGlucHV0KSB7CiAgICBQU19JTlBVVCBvdXRwdXQ7CiAgICBvdXRwdXQuUG9zID0gbXVsKHdvcmxkVmlld1Byb2osIGZsb2F0NChpbnB1dC5Qb3MsIDEuMGYpKTsKICAgIG91dHB1dC5UZXggPSBpbnB1dC5UZXg7CiAgICByZXR1cm4gb3V0cHV0Owp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct VS_INPUT {
+    float3 Pos : POSITION;
+    float2 Tex : TEXCOORD0;
+};
+
+struct PS_INPUT {
+    float4 Pos : SV_POSITION;
+    float2 Tex : TEXCOORD0;
+};
+
+PS_INPUT VS(VS_INPUT input) {
+    PS_INPUT output;
+    output.Pos = mul(worldViewProj, float4(input.Pos, 1.0f));
+    output.Tex = input.Tex;
+    return output;
+}</pre></div><div class='content'><p><strong>Pixel Shader (HLSL)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VGV4dHVyZTJEIHRleHR1cmUwIDogcmVnaXN0ZXIodDApOwpTYW1wbGVyU3RhdGUgc2FtcGxlcjAgOiByZWdpc3RlcihzMCk7CgpzdHJ1Y3QgUFNfSU5QVVQgewogICAgZmxvYXQ0IFBvcyA6IFNWX1BPU0lUSU9OOwogICAgZmxvYXQyIFRleCA6IFRFWENPT1JEMDsKfTsKCmZsb2F0NCBQUyhQU19JTlBVVCBpbnB1dCkgOiBTVl9UYXJnZXQgewogICAgcmV0dXJuIHRleHR1cmUwLlNhbXBsZShzYW1wbGVyMCwgaW5wdXQuVGV4KTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Texture2D texture0 : register(t0);
+SamplerState sampler0 : register(s0);
+
+struct PS_INPUT {
+    float4 Pos : SV_POSITION;
+    float2 Tex : TEXCOORD0;
+};
+
+float4 PS(PS_INPUT input) : SV_Target {
+    return texture0.Sample(sampler0, input.Tex);
+}</pre></div><div class='content'></div><h2>4. Renderizar con la Textura</h2>
+<div class='content'><p>Finalmente, debemos asegurarnos de que la textura y el sampler estén vinculados al pipeline de renderizado antes de dibujar.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29udGV4dC0+UFNTZXRTaGFkZXJSZXNvdXJjZXMoMCwgMSwgdGV4dHVyZVZpZXcuR2V0QWRkcmVzc09mKCkpOwpjb250ZXh0LT5QU1NldFNhbXBsZXJzKDAsIDEsIHNhbXBsZXJTdGF0ZS5HZXRBZGRyZXNzT2YoKSk7CgovLyBEaWJ1amFyIGVsIG1vZGVsbwpjb250ZXh0LT5EcmF3SW5kZXhlZChpbmRleENvdW50LCAwLCAwKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>context-&gt;PSSetShaderResources(0, 1, textureView.GetAddressOf());
+context-&gt;PSSetSamplers(0, 1, samplerState.GetAddressOf());
+
+// Dibujar el modelo
+context-&gt;DrawIndexed(indexCount, 0, 0);</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Aplicar una Textura a un Cubo</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Aplicar una textura a un cubo 3D y renderizarlo.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Cargar una textura desde un archivo.</li>
+<li>Configurar un sampler.</li>
+<li>Modificar los shaders para usar la textura.</li>
+<li>Renderizar el cubo con la textura aplicada.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li><strong>Cargar la Textura</strong>: Usa el código proporcionado anteriormente para cargar una textura.</li>
+<li><strong>Configurar el Sampler</strong>: Usa el código proporcionado anteriormente para configurar un sampler.</li>
+<li><strong>Modificar los Shaders</strong>: Usa los ejemplos de shaders proporcionados anteriormente.</li>
+<li><strong>Renderizar el Cubo</strong>: Asegúrate de que las coordenadas UV estén correctamente configuradas en el modelo del cubo.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQXN1bWllbmRvIHF1ZSB5YSB0aWVuZXMgdW4gY3VibyBjb24gY29vcmRlbmFkYXMgVVYgY29uZmlndXJhZGFzCmNvbnRleHQtPlBTU2V0U2hhZGVyUmVzb3VyY2VzKDAsIDEsIHRleHR1cmVWaWV3LkdldEFkZHJlc3NPZigpKTsKY29udGV4dC0+UFNTZXRTYW1wbGVycygwLCAxLCBzYW1wbGVyU3RhdGUuR2V0QWRkcmVzc09mKCkpOwoKLy8gRGlidWphciBlbCBjdWJvCmNvbnRleHQtPkRyYXdJbmRleGVkKGN1YmVJbmRleENvdW50LCAwLCAwKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Asumiendo que ya tienes un cubo con coordenadas UV configuradas
+context-&gt;PSSetShaderResources(0, 1, textureView.GetAddressOf());
+context-&gt;PSSetSamplers(0, 1, samplerState.GetAddressOf());
+
+// Dibujar el cubo
+context-&gt;DrawIndexed(cubeIndexCount, 0, 0);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo aplicar texturas a modelos 3D en DirectX. Hemos cubierto los conceptos clave del mapeo de texturas, cómo cargar texturas, configurar samplers, modificar shaders y renderizar modelos con texturas aplicadas. En el próximo tema, exploraremos técnicas avanzadas de iluminación para mejorar aún más el realismo de nuestras escenas 3D.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-compiling-using-shaders' title="Compilando y Usando Shaders">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-lighting-and-materials' title="Iluminación y Materiales">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

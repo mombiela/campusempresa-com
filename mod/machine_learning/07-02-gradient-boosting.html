@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Boosting</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/07-02-gradient-boosting" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/07-02-gradient-boosting" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/07-02-gradient-boosting" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/machine_learning/07-02-gradient-boosting" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/machine_learning/07-02-gradient-boosting" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-ensemble-learning' title="Ensemble Learning">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Gradient Boosting</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-deep-learning' title="Redes neuronales profundas (Deep Learning)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Gradient Boosting es una técnica de aprendizaje automático que se utiliza para problemas tanto de regresión como de clasificación. Se basa en la idea de construir un modelo fuerte a partir de una combinación de modelos débiles, generalmente árboles de decisión. La técnica se llama &quot;boosting&quot; porque los modelos débiles se combinan de manera secuencial, cada uno corrigiendo los errores del anterior.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Modelos débiles</strong>: Generalmente, se utilizan árboles de decisión pequeños (con poca profundidad) como modelos débiles.</li>
+<li><strong>Secuencialidad</strong>: Los modelos se entrenan de manera secuencial, cada uno intentando corregir los errores del modelo anterior.</li>
+<li><strong>Función de pérdida</strong>: Se utiliza una función de pérdida para medir el error del modelo y guiar el proceso de entrenamiento.</li>
+<li><strong>Gradiente</strong>: El gradiente de la función de pérdida se utiliza para ajustar los modelos débiles y minimizar el error.</li>
+</ol>
+</div><h1>Algoritmo de Gradient Boosting</h1>
+<div class='content'><p>El algoritmo de Gradient Boosting puede desglosarse en los siguientes pasos:</p>
+<ol>
+<li><strong>Inicialización</strong>: Comienza con un modelo inicial, generalmente una predicción constante.</li>
+<li><strong>Iteración</strong>: En cada iteración, se ajusta un nuevo modelo débil para corregir los errores del modelo compuesto hasta el momento.</li>
+<li><strong>Actualización</strong>: Se actualiza el modelo compuesto sumando el nuevo modelo ajustado, ponderado por un factor de aprendizaje.</li>
+<li><strong>Repetición</strong>: Se repiten los pasos 2 y 3 hasta alcanzar un número predefinido de iteraciones o hasta que el error se reduzca a un nivel satisfactorio.</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>A continuación, se presenta un ejemplo práctico de cómo implementar Gradient Boosting utilizando la biblioteca <code>scikit-learn</code> en Python.</p>
+</div><h2>Paso 1: Importar las Bibliotecas Necesarias</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCBwYW5kYXMgYXMgcGQKZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgdHJhaW5fdGVzdF9zcGxpdApmcm9tIHNrbGVhcm4uZW5zZW1ibGUgaW1wb3J0IEdyYWRpZW50Qm9vc3RpbmdSZWdyZXNzb3IKZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IG1lYW5fc3F1YXJlZF9lcnJvcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.metrics import mean_squared_error</pre></div><div class='content'></div><h2>Paso 2: Cargar y Preparar los Datos</h2>
+<div class='content'><p>Para este ejemplo, utilizaremos el conjunto de datos de precios de viviendas de Boston.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBsb2FkX2Jvc3Rvbgpib3N0b24gPSBsb2FkX2Jvc3RvbigpClggPSBwZC5EYXRhRnJhbWUoYm9zdG9uLmRhdGEsIGNvbHVtbnM9Ym9zdG9uLmZlYXR1cmVfbmFtZXMpCnkgPSBwZC5TZXJpZXMoYm9zdG9uLnRhcmdldCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.datasets import load_boston
+boston = load_boston()
+X = pd.DataFrame(boston.data, columns=boston.feature_names)
+y = pd.Series(boston.target)</pre></div><div class='content'></div><h2>Paso 3: Dividir los Datos en Conjuntos de Entrenamiento y Prueba</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjIsIHJhbmRvbV9zdGF0ZT00Mik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)</pre></div><div class='content'></div><h2>Paso 4: Entrenar el Modelo de Gradient Boosting</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2JfbW9kZWwgPSBHcmFkaWVudEJvb3N0aW5nUmVncmVzc29yKG5fZXN0aW1hdG9ycz0xMDAsIGxlYXJuaW5nX3JhdGU9MC4xLCBtYXhfZGVwdGg9MywgcmFuZG9tX3N0YXRlPTQyKQpnYl9tb2RlbC5maXQoWF90cmFpbiwgeV90cmFpbik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gb_model = GradientBoostingRegressor(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42)
+gb_model.fit(X_train, y_train)</pre></div><div class='content'></div><h2>Paso 5: Evaluar el Modelo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eV9wcmVkID0gZ2JfbW9kZWwucHJlZGljdChYX3Rlc3QpCm1zZSA9IG1lYW5fc3F1YXJlZF9lcnJvcih5X3Rlc3QsIHlfcHJlZCkKcHJpbnQoZiJNZWFuIFNxdWFyZWQgRXJyb3I6IHttc2V9Iik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>y_pred = gb_model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+print(f&quot;Mean Squared Error: {mse}&quot;)</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Gradient Boosting para Clasificación</h2>
+<div class='content'><p>Utiliza el conjunto de datos <code>Iris</code> para implementar un modelo de Gradient Boosting para clasificación.</p>
+<ol>
+<li><strong>Carga el conjunto de datos Iris</strong>.</li>
+<li><strong>Divide los datos en conjuntos de entrenamiento y prueba</strong>.</li>
+<li><strong>Entrena un modelo de Gradient Boosting Classifier</strong>.</li>
+<li><strong>Evalúa el modelo utilizando la precisión como métrica</strong>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBsb2FkX2lyaXMKZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBHcmFkaWVudEJvb3N0aW5nQ2xhc3NpZmllcgpmcm9tIHNrbGVhcm4ubWV0cmljcyBpbXBvcnQgYWNjdXJhY3lfc2NvcmUKCiMgQ2FyZ2FyIGRhdG9zCmlyaXMgPSBsb2FkX2lyaXMoKQpYID0gcGQuRGF0YUZyYW1lKGlyaXMuZGF0YSwgY29sdW1ucz1pcmlzLmZlYXR1cmVfbmFtZXMpCnkgPSBwZC5TZXJpZXMoaXJpcy50YXJnZXQpCgojIERpdmlkaXIgZGF0b3MKWF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjIsIHJhbmRvbV9zdGF0ZT00MikKCiMgRW50cmVuYXIgbW9kZWxvCmdiX2NsZiA9IEdyYWRpZW50Qm9vc3RpbmdDbGFzc2lmaWVyKG5fZXN0aW1hdG9ycz0xMDAsIGxlYXJuaW5nX3JhdGU9MC4xLCBtYXhfZGVwdGg9MywgcmFuZG9tX3N0YXRlPTQyKQpnYl9jbGYuZml0KFhfdHJhaW4sIHlfdHJhaW4pCgojIEV2YWx1YXIgbW9kZWxvCnlfcHJlZCA9IGdiX2NsZi5wcmVkaWN0KFhfdGVzdCkKYWNjdXJhY3kgPSBhY2N1cmFjeV9zY29yZSh5X3Rlc3QsIHlfcHJlZCkKcHJpbnQoZiJBY2N1cmFjeToge2FjY3VyYWN5fSIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.datasets import load_iris
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.metrics import accuracy_score
+
+# Cargar datos
+iris = load_iris()
+X = pd.DataFrame(iris.data, columns=iris.feature_names)
+y = pd.Series(iris.target)
+
+# Dividir datos
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Entrenar modelo
+gb_clf = GradientBoostingClassifier(n_estimators=100, learning_rate=0.1, max_depth=3, random_state=42)
+gb_clf.fit(X_train, y_train)
+
+# Evaluar modelo
+y_pred = gb_clf.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print(f&quot;Accuracy: {accuracy}&quot;)</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ol>
+<li><strong>Overfitting</strong>: Gradient Boosting puede sobreajustarse fácilmente a los datos de entrenamiento. Utiliza técnicas como la validación cruzada y ajusta los hiperparámetros (número de estimadores, profundidad máxima, tasa de aprendizaje) para evitarlo.</li>
+<li><strong>Tasa de aprendizaje</strong>: Una tasa de aprendizaje demasiado alta puede llevar a un modelo que no generaliza bien. Es recomendable comenzar con una tasa de aprendizaje baja y ajustar según sea necesario.</li>
+<li><strong>Número de estimadores</strong>: Un número muy alto de estimadores puede llevar a un modelo muy complejo y sobreajustado. Comienza con un número moderado y ajusta según los resultados de validación.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Gradient Boosting es una técnica poderosa y flexible para problemas de regresión y clasificación. Al combinar múltiples modelos débiles de manera secuencial, puede lograr un rendimiento superior en comparación con modelos individuales. Sin embargo, es crucial ajustar cuidadosamente los hiperparámetros para evitar el sobreajuste y garantizar que el modelo generalice bien a datos nuevos.</p>
+<p>En el próximo tema, exploraremos <strong>Redes Neuronales Profundas (Deep Learning)</strong>, una técnica avanzada que ha revolucionado el campo del aprendizaje automático en los últimos años.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-ensemble-learning' title="Ensemble Learning">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-deep-learning' title="Redes neuronales profundas (Deep Learning)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

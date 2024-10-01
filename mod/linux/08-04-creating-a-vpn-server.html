@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de un Servidor VPN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/linux/08-04-creating-a-vpn-server" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/linux/08-04-creacio-d-un-servidor-vpn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/linux/08-04-creating-a-vpn-server" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/linux/08-04-creating-a-vpn-server" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/linux/08-04-creating-a-vpn-server" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-building-a-home-media-server' title="Construcción de un Servidor de Medios para el Hogar">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creación de un Servidor VPN</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-deploying-a-kubernetes-cluster' title="Despliegue de un Clúster de Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, aprenderás a configurar un servidor VPN en un sistema Linux. Una VPN (Red Privada Virtual) permite crear una conexión segura y cifrada a través de una red menos segura, como Internet. Esto es útil para proteger la privacidad y la seguridad de los datos.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Comprender qué es una VPN y sus beneficios.</li>
+<li>Instalar y configurar OpenVPN en un servidor Linux.</li>
+<li>Generar certificados y claves para la autenticación.</li>
+<li>Configurar clientes para conectarse al servidor VPN.</li>
+<li>Probar y verificar la conexión VPN.</li>
+</ul>
+</div><h1>¿Qué es una VPN?</h1>
+<div class='content'><p>Una VPN, o Red Privada Virtual, es una tecnología que permite crear una conexión segura y cifrada a través de una red pública, como Internet. Las VPNs son utilizadas para:</p>
+<ul>
+<li>Proteger la privacidad y la seguridad de los datos.</li>
+<li>Acceder a recursos de red de manera remota.</li>
+<li>Evitar restricciones geográficas y censura.</li>
+</ul>
+</div><h1>Instalación de OpenVPN</h1>
+<div class='content'><p>OpenVPN es una solución de VPN de código abierto que es ampliamente utilizada debido a su flexibilidad y seguridad.</p>
+</div><h2>Paso 1: Actualizar el Sistema</h2>
+<div class='content'><p>Antes de instalar OpenVPN, asegúrate de que tu sistema esté actualizado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgdXBkYXRlCnN1ZG8gYXB0IHVwZ3JhZGUgLXk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt update
+sudo apt upgrade -y</pre></div><div class='content'></div><h2>Paso 2: Instalar OpenVPN y Easy-RSA</h2>
+<div class='content'><p>Easy-RSA es una utilidad para la gestión de certificados y claves.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgaW5zdGFsbCBvcGVudnBuIGVhc3ktcnNhIC15"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt install openvpn easy-rsa -y</pre></div><div class='content'></div><h2>Paso 3: Configurar Easy-RSA</h2>
+<div class='content'><p>Crea un directorio para Easy-RSA y copia los archivos de configuración.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWFrZS1jYWRpciB+L29wZW52cG4tY2EKY2Qgfi9vcGVudnBuLWNh"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>make-cadir ~/openvpn-ca
+cd ~/openvpn-ca</pre></div><div class='content'><p>Edita el archivo <code>vars</code> para configurar los parámetros de tu CA (Autoridad de Certificación).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmFubyB2YXJz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>nano vars</pre></div><div class='content'><p>Modifica las siguientes líneas según tu información:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2V0X3ZhciBFQVNZUlNBX1JFUV9DT1VOVFJZICAgICJVUyIKc2V0X3ZhciBFQVNZUlNBX1JFUV9QUk9WSU5DRSAgICJDYWxpZm9ybmlhIgpzZXRfdmFyIEVBU1lSU0FfUkVRX0NJVFkgICAgICAgIlNhbiBGcmFuY2lzY28iCnNldF92YXIgRUFTWVJTQV9SRVFfT1JHICAgICAgICAiTXlPcmciCnNldF92YXIgRUFTWVJTQV9SRVFfRU1BSUwgICAgICAiZW1haWxAZXhhbXBsZS5jb20iCnNldF92YXIgRUFTWVJTQV9SRVFfT1UgICAgICAgICAiTXlPcmdVbml0Ig=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>set_var EASYRSA_REQ_COUNTRY    &quot;US&quot;
+set_var EASYRSA_REQ_PROVINCE   &quot;California&quot;
+set_var EASYRSA_REQ_CITY       &quot;San Francisco&quot;
+set_var EASYRSA_REQ_ORG        &quot;MyOrg&quot;
+set_var EASYRSA_REQ_EMAIL      &quot;email@example.com&quot;
+set_var EASYRSA_REQ_OU         &quot;MyOrgUnit&quot;</pre></div><div class='content'></div><h2>Paso 4: Generar la CA y los Certificados</h2>
+<div class='content'><p>Inicializa el directorio de la CA y genera la CA.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9lYXN5cnNhIGluaXQtcGtpCi4vZWFzeXJzYSBidWlsZC1jYQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./easyrsa init-pki
+./easyrsa build-ca</pre></div><div class='content'><p>Genera el certificado y la clave del servidor.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9lYXN5cnNhIGdlbi1yZXEgc2VydmVyIG5vcGFzcwouL2Vhc3lyc2Egc2lnbi1yZXEgc2VydmVyIHNlcnZlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./easyrsa gen-req server nopass
+./easyrsa sign-req server server</pre></div><div class='content'><p>Genera los certificados y claves del cliente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9lYXN5cnNhIGdlbi1yZXEgY2xpZW50MSBub3Bhc3MKLi9lYXN5cnNhIHNpZ24tcmVxIGNsaWVudCBjbGllbnQx"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./easyrsa gen-req client1 nopass
+./easyrsa sign-req client client1</pre></div><div class='content'><p>Genera los parámetros Diffie-Hellman.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9lYXN5cnNhIGdlbi1kaA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./easyrsa gen-dh</pre></div><div class='content'></div><h2>Paso 5: Configurar OpenVPN</h2>
+<div class='content'><p>Copia los archivos generados a la configuración de OpenVPN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBjcCBwa2kvY2EuY3J0IHBraS9wcml2YXRlL3NlcnZlci5rZXkgcGtpL2lzc3VlZC9zZXJ2ZXIuY3J0IHBraS9kaC5wZW0gL2V0Yy9vcGVudnBuLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo cp pki/ca.crt pki/private/server.key pki/issued/server.crt pki/dh.pem /etc/openvpn/</pre></div><div class='content'><p>Crea un archivo de configuración para OpenVPN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBuYW5vIC9ldGMvb3BlbnZwbi9zZXJ2ZXIuY29uZg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo nano /etc/openvpn/server.conf</pre></div><div class='content'><p>Añade la siguiente configuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cG9ydCAxMTk0CnByb3RvIHVkcApkZXYgdHVuCmNhIGNhLmNydApjZXJ0IHNlcnZlci5jcnQKa2V5IHNlcnZlci5rZXkKZGggZGgucGVtCnNlcnZlciAxMC44LjAuMCAyNTUuMjU1LjI1NS4wCmlmY29uZmlnLXBvb2wtcGVyc2lzdCBpcHAudHh0CnB1c2ggInJlZGlyZWN0LWdhdGV3YXkgZGVmMSBieXBhc3MtZGhjcCIKcHVzaCAiZGhjcC1vcHRpb24gRE5TIDguOC44LjgiCmtlZXBhbGl2ZSAxMCAxMjAKY2lwaGVyIEFFUy0yNTYtQ0JDCnVzZXIgbm9ib2R5Cmdyb3VwIG5vZ3JvdXAKcGVyc2lzdC1rZXkKcGVyc2lzdC10dW4Kc3RhdHVzIG9wZW52cG4tc3RhdHVzLmxvZwpsb2ctYXBwZW5kIC92YXIvbG9nL29wZW52cG4ubG9nCnZlcmIgMw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>port 1194
+proto udp
+dev tun
+ca ca.crt
+cert server.crt
+key server.key
+dh dh.pem
+server 10.8.0.0 255.255.255.0
+ifconfig-pool-persist ipp.txt
+push &quot;redirect-gateway def1 bypass-dhcp&quot;
+push &quot;dhcp-option DNS 8.8.8.8&quot;
+keepalive 10 120
+cipher AES-256-CBC
+user nobody
+group nogroup
+persist-key
+persist-tun
+status openvpn-status.log
+log-append /var/log/openvpn.log
+verb 3</pre></div><div class='content'></div><h2>Paso 6: Habilitar el Reenvío de IP</h2>
+<div class='content'><p>Habilita el reenvío de IP en el kernel.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBuYW5vIC9ldGMvc3lzY3RsLmNvbmY="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo nano /etc/sysctl.conf</pre></div><div class='content'><p>Descomenta la línea:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmV0LmlwdjQuaXBfZm9yd2FyZD0x"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>net.ipv4.ip_forward=1</pre></div><div class='content'><p>Aplica los cambios.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXNjdGwgLXA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo sysctl -p</pre></div><div class='content'></div><h2>Paso 7: Configurar el Firewall</h2>
+<div class='content'><p>Configura el firewall para permitir el tráfico VPN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyB1ZncgYWxsb3cgMTE5NC91ZHAKc3VkbyB1ZncgYWxsb3cgT3BlblNTSApzdWRvIHVmdyBlbmFibGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo ufw allow 1194/udp
+sudo ufw allow OpenSSH
+sudo ufw enable</pre></div><div class='content'></div><h2>Paso 8: Iniciar el Servidor OpenVPN</h2>
+<div class='content'><p>Inicia y habilita el servicio OpenVPN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RhcnQgb3BlbnZwbkBzZXJ2ZXIKc3VkbyBzeXN0ZW1jdGwgZW5hYmxlIG9wZW52cG5Ac2VydmVy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl start openvpn@server
+sudo systemctl enable openvpn@server</pre></div><div class='content'></div><h1>Configuración del Cliente</h1>
+<div class='content'></div><h2>Paso 1: Instalar OpenVPN en el Cliente</h2>
+<div class='content'><p>Instala OpenVPN en el cliente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgaW5zdGFsbCBvcGVudnBuIC15"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt install openvpn -y</pre></div><div class='content'></div><h2>Paso 2: Configurar el Cliente</h2>
+<div class='content'><p>Copia los archivos necesarios al cliente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2NwIHVzZXJAc2VydmVyX2lwOi9ldGMvb3BlbnZwbi9jYS5jcnQgL2V0Yy9vcGVudnBuLwpzY3AgdXNlckBzZXJ2ZXJfaXA6L2V0Yy9vcGVudnBuL2NsaWVudDEuY3J0IC9ldGMvb3BlbnZwbi8Kc2NwIHVzZXJAc2VydmVyX2lwOi9ldGMvb3BlbnZwbi9jbGllbnQxLmtleSAvZXRjL29wZW52cG4v"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>scp user@server_ip:/etc/openvpn/ca.crt /etc/openvpn/
+scp user@server_ip:/etc/openvpn/client1.crt /etc/openvpn/
+scp user@server_ip:/etc/openvpn/client1.key /etc/openvpn/</pre></div><div class='content'><p>Crea un archivo de configuración para el cliente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBuYW5vIC9ldGMvb3BlbnZwbi9jbGllbnQuY29uZg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo nano /etc/openvpn/client.conf</pre></div><div class='content'><p>Añade la siguiente configuración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xpZW50CmRldiB0dW4KcHJvdG8gdWRwCnJlbW90ZSBzZXJ2ZXJfaXAgMTE5NApyZXNvbHYtcmV0cnkgaW5maW5pdGUKbm9iaW5kCnBlcnNpc3Qta2V5CnBlcnNpc3QtdHVuCmNhIGNhLmNydApjZXJ0IGNsaWVudDEuY3J0CmtleSBjbGllbnQxLmtleQpjaXBoZXIgQUVTLTI1Ni1DQkMKdmVyYiAz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>client
+dev tun
+proto udp
+remote server_ip 1194
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+ca ca.crt
+cert client1.crt
+key client1.key
+cipher AES-256-CBC
+verb 3</pre></div><div class='content'></div><h2>Paso 3: Conectar al Servidor VPN</h2>
+<div class='content'><p>Inicia la conexión VPN en el cliente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBvcGVudnBuIC0tY29uZmlnIC9ldGMvb3BlbnZwbi9jbGllbnQuY29uZg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo openvpn --config /etc/openvpn/client.conf</pre></div><div class='content'></div><h1>Verificación de la Conexión</h1>
+<div class='content'><p>Para verificar que la conexión VPN está funcionando correctamente, puedes comprobar tu dirección IP pública antes y después de conectarte a la VPN. Utiliza un servicio como <code>https://whatismyipaddress.com/</code> para verificar tu IP.</p>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, has aprendido a configurar un servidor VPN utilizando OpenVPN en un sistema Linux. Has cubierto la instalación y configuración de OpenVPN, la generación de certificados y claves, la configuración del firewall y la habilitación del reenvío de IP. También has aprendido a configurar un cliente para conectarse al servidor VPN y a verificar la conexión.</p>
+<p>Con esta configuración, puedes asegurar tus conexiones a través de redes públicas y proteger tu privacidad y seguridad en línea.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-building-a-home-media-server' title="Construcción de un Servidor de Medios para el Hogar">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-deploying-a-kubernetes-cluster' title="Despliegue de un Clúster de Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

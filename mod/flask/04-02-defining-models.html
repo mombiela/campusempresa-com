@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definiendo Modelos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/04-02-defining-models" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/04-02-defining-models" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/04-02-defining-models" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flask/04-02-defining-models" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/04-02-defining-models" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-intro-flask-sqlalchemy' title="Introducción a Flask-SQLAlchemy">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Definiendo Modelos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-crud-operations' title="Realizando Operaciones CRUD">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo definir modelos en Flask utilizando Flask-SQLAlchemy. Los modelos son una representación de las tablas de la base de datos en forma de clases de Python. Cada clase representa una tabla y cada atributo de la clase representa una columna en la tabla.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Modelos</strong>: Clases que representan tablas en la base de datos.</li>
+<li><strong>Columnas</strong>: Atributos de la clase que representan columnas en la tabla.</li>
+<li><strong>Tipos de Datos</strong>: Especifican el tipo de datos que cada columna puede almacenar.</li>
+<li><strong>Relaciones</strong>: Definen cómo los modelos se relacionan entre sí.</li>
+</ol>
+</div><h1>Configuración Inicial</h1>
+<div class='content'><p>Antes de definir modelos, asegúrate de tener Flask-SQLAlchemy instalado y configurado en tu proyecto. Si no lo has hecho, sigue estos pasos:</p>
+<ol>
+<li>
+<p><strong>Instalación</strong>:</p>
+<pre><code class="language-bash">pip install flask-sqlalchemy
+</code></pre>
+</li>
+<li>
+<p><strong>Configuración</strong>:</p>
+<pre><code class="language-python">from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mydatabase.db'
+db = SQLAlchemy(app)
+</code></pre>
+</li>
+</ol>
+</div><h1>Definiendo un Modelo Básico</h1>
+<div class='content'><p>Vamos a definir un modelo básico para una tabla <code>User</code> que tiene las columnas <code>id</code>, <code>username</code>, y <code>email</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFza19zcWxhbGNoZW15IGltcG9ydCBTUUxBbGNoZW15CgpkYiA9IFNRTEFsY2hlbXkoKQoKY2xhc3MgVXNlcihkYi5Nb2RlbCk6CiAgICBpZCA9IGRiLkNvbHVtbihkYi5JbnRlZ2VyLCBwcmltYXJ5X2tleT1UcnVlKQogICAgdXNlcm5hbWUgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDgwKSwgdW5pcXVlPVRydWUsIG51bGxhYmxlPUZhbHNlKQogICAgZW1haWwgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDEyMCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKCiAgICBkZWYgX19yZXByX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGYnPFVzZXIge3NlbGYudXNlcm5hbWV9Pic="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+
+    def __repr__(self):
+        return f'&lt;User {self.username}&gt;'</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong><code>db.Model</code></strong>: Todas las clases de modelo deben heredar de <code>db.Model</code>.</li>
+<li><strong><code>db.Column</code></strong>: Define una columna en la tabla.
+<ul>
+<li><strong><code>db.Integer</code></strong>: Tipo de dato entero.</li>
+<li><strong><code>primary_key=True</code></strong>: Define la columna como clave primaria.</li>
+<li><strong><code>db.String(80)</code></strong>: Tipo de dato cadena con un máximo de 80 caracteres.</li>
+<li><strong><code>unique=True</code></strong>: Asegura que los valores en esta columna sean únicos.</li>
+<li><strong><code>nullable=False</code></strong>: Asegura que la columna no pueda ser nula.</li>
+</ul>
+</li>
+<li><strong><code>__repr__</code></strong>: Método especial que define cómo se representa el objeto cuando se imprime.</li>
+</ul>
+</div><h1>Tipos de Datos Comunes</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Tipo de Dato</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>db.Integer</code></td>
+<td>Entero</td>
+</tr>
+<tr>
+<td><code>db.String(size)</code></td>
+<td>Cadena de texto con longitud máxima <code>size</code></td>
+</tr>
+<tr>
+<td><code>db.Text</code></td>
+<td>Cadena de texto sin longitud máxima</td>
+</tr>
+<tr>
+<td><code>db.Float</code></td>
+<td>Número de punto flotante</td>
+</tr>
+<tr>
+<td><code>db.Boolean</code></td>
+<td>Valor booleano (<code>True</code> o <code>False</code>)</td>
+</tr>
+<tr>
+<td><code>db.DateTime</code></td>
+<td>Fecha y hora</td>
+</tr>
+<tr>
+<td><code>db.Date</code></td>
+<td>Fecha</td>
+</tr>
+<tr>
+<td><code>db.Time</code></td>
+<td>Hora</td>
+</tr>
+<tr>
+<td><code>db.LargeBinary</code></td>
+<td>Datos binarios grandes</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Relaciones entre Modelos</h1>
+<div class='content'><p>Las relaciones permiten definir cómo los modelos se relacionan entre sí. Flask-SQLAlchemy soporta varios tipos de relaciones, como <code>One-to-Many</code>, <code>Many-to-One</code>, y <code>Many-to-Many</code>.</p>
+</div><h2>Ejemplo de Relación One-to-Many</h2>
+<div class='content'><p>Vamos a definir una relación <code>One-to-Many</code> entre <code>User</code> y <code>Post</code>. Un usuario puede tener múltiples publicaciones.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUG9zdChkYi5Nb2RlbCk6CiAgICBpZCA9IGRiLkNvbHVtbihkYi5JbnRlZ2VyLCBwcmltYXJ5X2tleT1UcnVlKQogICAgdGl0bGUgPSBkYi5Db2x1bW4oZGIuU3RyaW5nKDEyMCksIG51bGxhYmxlPUZhbHNlKQogICAgY29udGVudCA9IGRiLkNvbHVtbihkYi5UZXh0LCBudWxsYWJsZT1GYWxzZSkKICAgIHVzZXJfaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgZGIuRm9yZWlnbktleSgndXNlci5pZCcpLCBudWxsYWJsZT1GYWxzZSkKCiAgICB1c2VyID0gZGIucmVsYXRpb25zaGlwKCdVc2VyJywgYmFja19wb3B1bGF0ZXM9J3Bvc3RzJykKCmNsYXNzIFVzZXIoZGIuTW9kZWwpOgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHVzZXJuYW1lID0gZGIuQ29sdW1uKGRiLlN0cmluZyg4MCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKICAgIGVtYWlsID0gZGIuQ29sdW1uKGRiLlN0cmluZygxMjApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBwb3N0cyA9IGRiLnJlbGF0aW9uc2hpcCgnUG9zdCcsIGJhY2tfcG9wdWxhdGVzPSd1c2VyJykKCiAgICBkZWYgX19yZXByX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGYnPFVzZXIge3NlbGYudXNlcm5hbWV9Pic="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+    user = db.relationship('User', back_populates='posts')
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    posts = db.relationship('Post', back_populates='user')
+
+    def __repr__(self):
+        return f'&lt;User {self.username}&gt;'</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong><code>db.ForeignKey('user.id')</code></strong>: Define una clave foránea que referencia la columna <code>id</code> de la tabla <code>user</code>.</li>
+<li><strong><code>db.relationship('User', back_populates='posts')</code></strong>: Define la relación en el modelo <code>Post</code>.</li>
+<li><strong><code>back_populates='posts'</code></strong>: Define la relación inversa en el modelo <code>User</code>.</li>
+</ul>
+</div><h1>Creación de la Base de Datos</h1>
+<div class='content'><p>Para crear las tablas en la base de datos, utiliza el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGIuY3JlYXRlX2FsbCgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>db.create_all()</pre></div><div class='content'><p>Este comando crea todas las tablas definidas en los modelos.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Define un modelo <code>Comment</code> que tenga las siguientes columnas:</p>
+<ul>
+<li><code>id</code>: Entero, clave primaria.</li>
+<li><code>content</code>: Texto, no nulo.</li>
+<li><code>post_id</code>: Entero, clave foránea que referencia la columna <code>id</code> de la tabla <code>Post</code>.</li>
+</ul>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQ29tbWVudChkYi5Nb2RlbCk6CiAgICBpZCA9IGRiLkNvbHVtbihkYi5JbnRlZ2VyLCBwcmltYXJ5X2tleT1UcnVlKQogICAgY29udGVudCA9IGRiLkNvbHVtbihkYi5UZXh0LCBudWxsYWJsZT1GYWxzZSkKICAgIHBvc3RfaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgZGIuRm9yZWlnbktleSgncG9zdC5pZCcpLCBudWxsYWJsZT1GYWxzZSkKCiAgICBwb3N0ID0gZGIucmVsYXRpb25zaGlwKCdQb3N0JywgYmFja19wb3B1bGF0ZXM9J2NvbW1lbnRzJykKCmNsYXNzIFBvc3QoZGIuTW9kZWwpOgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHRpdGxlID0gZGIuQ29sdW1uKGRiLlN0cmluZygxMjApLCBudWxsYWJsZT1GYWxzZSkKICAgIGNvbnRlbnQgPSBkYi5Db2x1bW4oZGIuVGV4dCwgbnVsbGFibGU9RmFsc2UpCiAgICB1c2VyX2lkID0gZGIuQ29sdW1uKGRiLkludGVnZXIsIGRiLkZvcmVpZ25LZXkoJ3VzZXIuaWQnKSwgbnVsbGFibGU9RmFsc2UpCiAgICBjb21tZW50cyA9IGRiLnJlbGF0aW9uc2hpcCgnQ29tbWVudCcsIGJhY2tfcG9wdWxhdGVzPSdwb3N0JykKCiAgICB1c2VyID0gZGIucmVsYXRpb25zaGlwKCdVc2VyJywgYmFja19wb3B1bGF0ZXM9J3Bvc3RzJykKCmNsYXNzIFVzZXIoZGIuTW9kZWwpOgogICAgaWQgPSBkYi5Db2x1bW4oZGIuSW50ZWdlciwgcHJpbWFyeV9rZXk9VHJ1ZSkKICAgIHVzZXJuYW1lID0gZGIuQ29sdW1uKGRiLlN0cmluZyg4MCksIHVuaXF1ZT1UcnVlLCBudWxsYWJsZT1GYWxzZSkKICAgIGVtYWlsID0gZGIuQ29sdW1uKGRiLlN0cmluZygxMjApLCB1bmlxdWU9VHJ1ZSwgbnVsbGFibGU9RmFsc2UpCiAgICBwb3N0cyA9IGRiLnJlbGF0aW9uc2hpcCgnUG9zdCcsIGJhY2tfcG9wdWxhdGVzPSd1c2VyJykKCiAgICBkZWYgX19yZXByX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGYnPFVzZXIge3NlbGYudXNlcm5hbWV9Pic="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Comment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+
+    post = db.relationship('Post', back_populates='comments')
+
+class Post(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(120), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    comments = db.relationship('Comment', back_populates='post')
+
+    user = db.relationship('User', back_populates='posts')
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    posts = db.relationship('Post', back_populates='user')
+
+    def __repr__(self):
+        return f'&lt;User {self.username}&gt;'</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong><code>Comment</code></strong>: Define el modelo <code>Comment</code> con una relación <code>Many-to-One</code> con <code>Post</code>.</li>
+<li><strong><code>post_id</code></strong>: Clave foránea que referencia la columna <code>id</code> de la tabla <code>Post</code>.</li>
+<li><strong><code>db.relationship('Post', back_populates='comments')</code></strong>: Define la relación en el modelo <code>Comment</code>.</li>
+<li><strong><code>comments = db.relationship('Comment', back_populates='post')</code></strong>: Define la relación inversa en el modelo <code>Post</code>.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo definir modelos en Flask utilizando Flask-SQLAlchemy. Hemos cubierto los conceptos básicos de los modelos, tipos de datos comunes y cómo definir relaciones entre modelos. En la siguiente sección, exploraremos cómo realizar operaciones CRUD utilizando estos modelos.</p>
+<p>¡Continúa practicando y experimentando con diferentes tipos de modelos y relaciones para fortalecer tu comprensión!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-intro-flask-sqlalchemy' title="Introducción a Flask-SQLAlchemy">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-crud-operations' title="Realizando Operaciones CRUD">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

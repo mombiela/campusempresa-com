@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Recursos en la Nube con PowerShell</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/powershell/08-04-managing-cloud-resources" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/powershell/08-04-managing-cloud-resources" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/powershell/08-04-managing-cloud-resources" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/powershell/08-04-managing-cloud-resources" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/powershell/08-04-managing-cloud-resources" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-infrastructure-as-code' title="Infraestructura como Código (IaC)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Gestión de Recursos en la Nube con PowerShell</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-powershell-docker' title="PowerShell y Docker">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo utilizar PowerShell para gestionar recursos en la nube, específicamente en plataformas como Azure y AWS. La automatización de tareas en la nube con PowerShell puede mejorar la eficiencia y reducir errores humanos.</p>
+</div><h1>Contenidos</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-la-gestión-de-recursos-en-la-nube">Introducción a la Gestión de Recursos en la Nube</a></li>
+<li><a href="#configuración-del-entorno">Configuración del Entorno</a></li>
+<li><a href="#gestión-de-recursos-en-azure">Gestión de Recursos en Azure</a></li>
+<li><a href="#gestión-de-recursos-en-aws">Gestión de Recursos en AWS</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción a la Gestión de Recursos en la Nube</h1>
+<div class='content'><p>La gestión de recursos en la nube implica la creación, configuración, monitoreo y eliminación de recursos como máquinas virtuales, bases de datos, redes y almacenamiento. PowerShell proporciona cmdlets específicos para interactuar con servicios en la nube, permitiendo la automatización de estas tareas.</p>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'></div><h2>Instalación de Módulos</h2>
+<div class='content'><p>Para gestionar recursos en Azure y AWS, necesitas instalar los módulos correspondientes de PowerShell.</p>
+<h4>Azure</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW5zdGFsbC1Nb2R1bGUgLU5hbWUgQXogLUFsbG93Q2xvYmJlciAtU2NvcGUgQ3VycmVudFVzZXI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Install-Module -Name Az -AllowClobber -Scope CurrentUser</pre></div><div class='content'><h4>AWS</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW5zdGFsbC1Nb2R1bGUgLU5hbWUgQVdTUG93ZXJTaGVsbC5OZXRDb3JlIC1BbGxvd0Nsb2JiZXIgLVNjb3BlIEN1cnJlbnRVc2Vy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Install-Module -Name AWSPowerShell.NetCore -AllowClobber -Scope CurrentUser</pre></div><div class='content'></div><h2>Autenticación</h2>
+<div class='content'><h4>Azure</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q29ubmVjdC1BekFjY291bnQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Connect-AzAccount</pre></div><div class='content'><h4>AWS</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW5pdGlhbGl6ZS1BV1NEZWZhdWx0Q29uZmlndXJhdGlvbiAtQWNjZXNzS2V5IFlPVVJfQUNDRVNTX0tFWSAtU2VjcmV0S2V5IFlPVVJfU0VDUkVUX0tFWSAtUmVnaW9uIFlPVVJfUkVHSU9O"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Initialize-AWSDefaultConfiguration -AccessKey YOUR_ACCESS_KEY -SecretKey YOUR_SECRET_KEY -Region YOUR_REGION</pre></div><div class='content'></div><h1>Gestión de Recursos en Azure</h1>
+<div class='content'></div><h2>Creación de un Grupo de Recursos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TmV3LUF6UmVzb3VyY2VHcm91cCAtTmFtZSAiTXlSZXNvdXJjZUdyb3VwIiAtTG9jYXRpb24gIkVhc3RVUyI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>New-AzResourceGroup -Name &quot;MyResourceGroup&quot; -Location &quot;EastUS&quot;</pre></div><div class='content'></div><h2>Creación de una Máquina Virtual</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHZtTmFtZSA9ICJNeVZNIgokcmVzb3VyY2VHcm91cCA9ICJNeVJlc291cmNlR3JvdXAiCiRsb2NhdGlvbiA9ICJFYXN0VVMiCiR2bVNpemUgPSAiU3RhbmRhcmRfRFMxX3YyIgokYWRtaW5Vc2VybmFtZSA9ICJhenVyZXVzZXIiCiRhZG1pblBhc3N3b3JkID0gQ29udmVydFRvLVNlY3VyZVN0cmluZyAiUEBzc3cwcmQhIiAtQXNQbGFpblRleHQgLUZvcmNlCgpOZXctQXpWTSAtUmVzb3VyY2VHcm91cE5hbWUgJHJlc291cmNlR3JvdXAgLU5hbWUgJHZtTmFtZSAtTG9jYXRpb24gJGxvY2F0aW9uIC1TaXplICR2bVNpemUgLUNyZWRlbnRpYWwgKE5ldy1PYmplY3QgU3lzdGVtLk1hbmFnZW1lbnQuQXV0b21hdGlvbi5QU0NyZWRlbnRpYWwoJGFkbWluVXNlcm5hbWUsICRhZG1pblBhc3N3b3JkKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$vmName = &quot;MyVM&quot;
+$resourceGroup = &quot;MyResourceGroup&quot;
+$location = &quot;EastUS&quot;
+$vmSize = &quot;Standard_DS1_v2&quot;
+$adminUsername = &quot;azureuser&quot;
+$adminPassword = ConvertTo-SecureString &quot;P@ssw0rd!&quot; -AsPlainText -Force
+
+New-AzVM -ResourceGroupName $resourceGroup -Name $vmName -Location $location -Size $vmSize -Credential (New-Object System.Management.Automation.PSCredential($adminUsername, $adminPassword))</pre></div><div class='content'></div><h2>Listado de Recursos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R2V0LUF6UmVzb3VyY2UgLVJlc291cmNlR3JvdXBOYW1lICJNeVJlc291cmNlR3JvdXAi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Get-AzResource -ResourceGroupName &quot;MyResourceGroup&quot;</pre></div><div class='content'></div><h2>Eliminación de Recursos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UmVtb3ZlLUF6UmVzb3VyY2VHcm91cCAtTmFtZSAiTXlSZXNvdXJjZUdyb3VwIiAtRm9yY2U="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Remove-AzResourceGroup -Name &quot;MyResourceGroup&quot; -Force</pre></div><div class='content'></div><h1>Gestión de Recursos en AWS</h1>
+<div class='content'></div><h2>Creación de una Instancia EC2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JGluc3RhbmNlUGFyYW1zID0gQHsKICAgIEltYWdlSWQgPSAiYW1pLTBhYmNkZWYxMjM0NTY3ODkwIgogICAgSW5zdGFuY2VUeXBlID0gInQyLm1pY3JvIgogICAgS2V5TmFtZSA9ICJNeUtleVBhaXIiCiAgICBNaW5Db3VudCA9IDEKICAgIE1heENvdW50ID0gMQp9CgpOZXctRUMySW5zdGFuY2UgQGluc3RhbmNlUGFyYW1z"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$instanceParams = @{
+    ImageId = &quot;ami-0abcdef1234567890&quot;
+    InstanceType = &quot;t2.micro&quot;
+    KeyName = &quot;MyKeyPair&quot;
+    MinCount = 1
+    MaxCount = 1
+}
+
+New-EC2Instance @instanceParams</pre></div><div class='content'></div><h2>Listado de Instancias EC2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R2V0LUVDMkluc3RhbmNl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Get-EC2Instance</pre></div><div class='content'></div><h2>Eliminación de una Instancia EC2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UmVtb3ZlLUVDMkluc3RhbmNlIC1JbnN0YW5jZUlkICJpLTBhYmNkZWYxMjM0NTY3ODkwIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Remove-EC2Instance -InstanceId &quot;i-0abcdef1234567890&quot;</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear y Listar Recursos en Azure</h2>
+<div class='content'><ol>
+<li><strong>Crear un Grupo de Recursos</strong>: Usa <code>New-AzResourceGroup</code> para crear un grupo de recursos llamado &quot;TestResourceGroup&quot; en la región &quot;WestEurope&quot;.</li>
+<li><strong>Crear una Máquina Virtual</strong>: Usa <code>New-AzVM</code> para crear una máquina virtual en &quot;TestResourceGroup&quot;.</li>
+<li><strong>Listar Recursos</strong>: Usa <code>Get-AzResource</code> para listar todos los recursos en &quot;TestResourceGroup&quot;.</li>
+</ol>
+</div><h2>Ejercicio 2: Crear y Listar Recursos en AWS</h2>
+<div class='content'><ol>
+<li><strong>Crear una Instancia EC2</strong>: Usa <code>New-EC2Instance</code> para crear una instancia EC2 con el tipo &quot;t2.micro&quot;.</li>
+<li><strong>Listar Instancias EC2</strong>: Usa <code>Get-EC2Instance</code> para listar todas las instancias EC2.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1biBHcnVwbyBkZSBSZWN1cnNvcwpOZXctQXpSZXNvdXJjZUdyb3VwIC1OYW1lICJUZXN0UmVzb3VyY2VHcm91cCIgLUxvY2F0aW9uICJXZXN0RXVyb3BlIgoKIyBDcmVhciB1bmEgTcOhcXVpbmEgVmlydHVhbAokdm1OYW1lID0gIlRlc3RWTSIKJHJlc291cmNlR3JvdXAgPSAiVGVzdFJlc291cmNlR3JvdXAiCiRsb2NhdGlvbiA9ICJXZXN0RXVyb3BlIgokdm1TaXplID0gIlN0YW5kYXJkX0RTMV92MiIKJGFkbWluVXNlcm5hbWUgPSAiYXp1cmV1c2VyIgokYWRtaW5QYXNzd29yZCA9IENvbnZlcnRUby1TZWN1cmVTdHJpbmcgIlBAc3N3MHJkISIgLUFzUGxhaW5UZXh0IC1Gb3JjZQoKTmV3LUF6Vk0gLVJlc291cmNlR3JvdXBOYW1lICRyZXNvdXJjZUdyb3VwIC1OYW1lICR2bU5hbWUgLUxvY2F0aW9uICRsb2NhdGlvbiAtU2l6ZSAkdm1TaXplIC1DcmVkZW50aWFsIChOZXctT2JqZWN0IFN5c3RlbS5NYW5hZ2VtZW50LkF1dG9tYXRpb24uUFNDcmVkZW50aWFsKCRhZG1pblVzZXJuYW1lLCAkYWRtaW5QYXNzd29yZCkpCgojIExpc3RhciBSZWN1cnNvcwpHZXQtQXpSZXNvdXJjZSAtUmVzb3VyY2VHcm91cE5hbWUgIlRlc3RSZXNvdXJjZUdyb3VwIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear un Grupo de Recursos
+New-AzResourceGroup -Name &quot;TestResourceGroup&quot; -Location &quot;WestEurope&quot;
+
+# Crear una M&aacute;quina Virtual
+$vmName = &quot;TestVM&quot;
+$resourceGroup = &quot;TestResourceGroup&quot;
+$location = &quot;WestEurope&quot;
+$vmSize = &quot;Standard_DS1_v2&quot;
+$adminUsername = &quot;azureuser&quot;
+$adminPassword = ConvertTo-SecureString &quot;P@ssw0rd!&quot; -AsPlainText -Force
+
+New-AzVM -ResourceGroupName $resourceGroup -Name $vmName -Location $location -Size $vmSize -Credential (New-Object System.Management.Automation.PSCredential($adminUsername, $adminPassword))
+
+# Listar Recursos
+Get-AzResource -ResourceGroupName &quot;TestResourceGroup&quot;</pre></div><div class='content'><h4>Solución al Ejercicio 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1bmEgSW5zdGFuY2lhIEVDMgokaW5zdGFuY2VQYXJhbXMgPSBAewogICAgSW1hZ2VJZCA9ICJhbWktMGFiY2RlZjEyMzQ1Njc4OTAiCiAgICBJbnN0YW5jZVR5cGUgPSAidDIubWljcm8iCiAgICBLZXlOYW1lID0gIk15S2V5UGFpciIKICAgIE1pbkNvdW50ID0gMQogICAgTWF4Q291bnQgPSAxCn0KCk5ldy1FQzJJbnN0YW5jZSBAaW5zdGFuY2VQYXJhbXMKCiMgTGlzdGFyIEluc3RhbmNpYXMgRUMyCkdldC1FQzJJbnN0YW5jZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear una Instancia EC2
+$instanceParams = @{
+    ImageId = &quot;ami-0abcdef1234567890&quot;
+    InstanceType = &quot;t2.micro&quot;
+    KeyName = &quot;MyKeyPair&quot;
+    MinCount = 1
+    MaxCount = 1
+}
+
+New-EC2Instance @instanceParams
+
+# Listar Instancias EC2
+Get-EC2Instance</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo utilizar PowerShell para gestionar recursos en la nube en plataformas como Azure y AWS. La capacidad de automatizar la creación, configuración y eliminación de recursos en la nube puede mejorar significativamente la eficiencia operativa y reducir errores. Asegúrate de practicar los ejercicios proporcionados para consolidar tu comprensión y habilidades en la gestión de recursos en la nube con PowerShell.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-infrastructure-as-code' title="Infraestructura como Código (IaC)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-05-powershell-docker' title="PowerShell y Docker">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

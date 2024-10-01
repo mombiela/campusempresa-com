@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizando el Rendimiento de Jenkins</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/09-03-optimizing-jenkins-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/09-03-optimizing-jenkins-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/09-03-optimizing-jenkins-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/jenkins/09-03-optimizing-jenkins-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/jenkins/09-03-optimizing-jenkins-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-common-jenkins-issues-and-solutions' title="Problemas Comunes de Jenkins y Soluciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimizando el Rendimiento de Jenkins</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-jenkins-community-and-resources' title="Comunidad y Recursos de Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Optimizar el rendimiento de Jenkins es crucial para asegurar que tus pipelines de CI/CD se ejecuten de manera eficiente y sin interrupciones. En esta sección, exploraremos diversas estrategias y técnicas para mejorar el rendimiento de Jenkins.</p>
+</div><h1>1. Monitoreo y Análisis de Rendimiento</h1>
+<div class='content'></div><h2>Herramientas de Monitoreo</h2>
+<div class='content'><ul>
+<li><strong>Jenkins Monitoring Plugin</strong>: Proporciona métricas sobre el rendimiento de Jenkins.</li>
+<li><strong>Prometheus y Grafana</strong>: Para una solución más robusta, puedes integrar Jenkins con Prometheus para la recolección de métricas y Grafana para la visualización.</li>
+</ul>
+</div><h2>Métricas Clave</h2>
+<div class='content'><ul>
+<li><strong>Uso de CPU y Memoria</strong>: Monitorea el uso de recursos del servidor Jenkins.</li>
+<li><strong>Tiempo de Ejecución de Jobs</strong>: Analiza los tiempos de ejecución de los trabajos para identificar cuellos de botella.</li>
+<li><strong>Número de Jobs en Cola</strong>: Un alto número de trabajos en cola puede indicar problemas de capacidad.</li>
+</ul>
+</div><h1>2. Configuración del Sistema</h1>
+<div class='content'></div><h2>Asignación de Recursos</h2>
+<div class='content'><ul>
+<li><strong>Aumentar la Memoria JVM</strong>: Ajusta los parámetros de la JVM para asignar más memoria a Jenkins.
+<pre><code class="language-bash">JAVA_ARGS=&quot;-Xms1024m -Xmx4096m&quot;
+</code></pre>
+</li>
+<li><strong>Uso de SSDs</strong>: Utiliza discos SSD para mejorar la velocidad de lectura/escritura.</li>
+</ul>
+</div><h2>Configuración del Garbage Collector</h2>
+<div class='content'><ul>
+<li><strong>G1 Garbage Collector</strong>: Configura Jenkins para usar el G1 Garbage Collector, que es más eficiente para aplicaciones con grandes montones de memoria.
+<pre><code class="language-bash">JAVA_ARGS=&quot;-XX:+UseG1GC&quot;
+</code></pre>
+</li>
+</ul>
+</div><h1>3. Optimización de Jobs y Pipelines</h1>
+<div class='content'></div><h2>Paralelización de Jobs</h2>
+<div class='content'><ul>
+<li><strong>Ejecución Paralela</strong>: Configura tus pipelines para ejecutar etapas en paralelo cuando sea posible.
+<pre><code class="language-groovy">stage('Parallel Stage') {
+    parallel {
+        stage('Job 1') {
+            steps {
+                // Steps for Job 1
+            }
+        }
+        stage('Job 2') {
+            steps {
+                // Steps for Job 2
+            }
+        }
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>Uso de Agentes</h2>
+<div class='content'><ul>
+<li><strong>Distribución de Carga</strong>: Configura múltiples agentes para distribuir la carga de trabajo.</li>
+<li><strong>Nodos Específicos</strong>: Asigna trabajos a nodos específicos para optimizar el uso de recursos.
+<pre><code class="language-groovy">agent {
+    label 'linux'
+}
+</code></pre>
+</li>
+</ul>
+</div><h1>4. Gestión de Plugins</h1>
+<div class='content'></div><h2>Revisión de Plugins</h2>
+<div class='content'><ul>
+<li><strong>Desinstalar Plugins Innecesarios</strong>: Revisa y desinstala plugins que no estés utilizando.</li>
+<li><strong>Actualizar Plugins</strong>: Mantén los plugins actualizados para aprovechar mejoras de rendimiento y correcciones de errores.</li>
+</ul>
+</div><h2>Plugins de Rendimiento</h2>
+<div class='content'><ul>
+<li><strong>Throttle Concurrent Builds Plugin</strong>: Limita el número de construcciones concurrentes para evitar la sobrecarga del sistema.</li>
+<li><strong>Pipeline Stage View Plugin</strong>: Proporciona una vista detallada de las etapas de la pipeline, ayudando a identificar cuellos de botella.</li>
+</ul>
+</div><h1>5. Mantenimiento Regular</h1>
+<div class='content'></div><h2>Limpieza de Workspace</h2>
+<div class='content'><ul>
+<li><strong>Limpieza Automática</strong>: Configura Jenkins para limpiar automáticamente los workspaces después de la ejecución de los trabajos.
+<pre><code class="language-groovy">post {
+    always {
+        cleanWs()
+    }
+}
+</code></pre>
+</li>
+</ul>
+</div><h2>Respaldo y Restauración</h2>
+<div class='content'><ul>
+<li><strong>Respaldo Regular</strong>: Realiza respaldos regulares de la configuración y los datos de Jenkins.</li>
+<li><strong>Restauración Rápida</strong>: Asegúrate de tener un plan de restauración rápido en caso de fallos.</li>
+</ul>
+</div><h1>6. Escalabilidad</h1>
+<div class='content'></div><h2>Jenkins en Clúster</h2>
+<div class='content'><ul>
+<li><strong>Master-Slave Architecture</strong>: Utiliza una arquitectura maestro-esclavo para distribuir la carga de trabajo.</li>
+<li><strong>Kubernetes</strong>: Implementa Jenkins en un clúster de Kubernetes para una escalabilidad dinámica.</li>
+</ul>
+</div><h2>Balanceo de Carga</h2>
+<div class='content'><ul>
+<li><strong>HAProxy</strong>: Utiliza HAProxy para balancear la carga entre múltiples instancias de Jenkins.</li>
+<li><strong>Nginx</strong>: Configura Nginx como un balanceador de carga para distribuir el tráfico de manera eficiente.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Optimizar el rendimiento de Jenkins es un proceso continuo que requiere monitoreo constante y ajustes periódicos. Al implementar las estrategias y técnicas descritas en esta sección, podrás mejorar significativamente la eficiencia y la fiabilidad de tus pipelines de CI/CD.</p>
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li><strong>Monitoreo y Análisis</strong>: Utiliza herramientas como Prometheus y Grafana para monitorear el rendimiento.</li>
+<li><strong>Configuración del Sistema</strong>: Ajusta la memoria JVM y utiliza discos SSD.</li>
+<li><strong>Optimización de Jobs y Pipelines</strong>: Paraleliza trabajos y distribuye la carga entre múltiples agentes.</li>
+<li><strong>Gestión de Plugins</strong>: Revisa, actualiza y desinstala plugins innecesarios.</li>
+<li><strong>Mantenimiento Regular</strong>: Limpia workspaces y realiza respaldos regulares.</li>
+<li><strong>Escalabilidad</strong>: Implementa una arquitectura maestro-esclavo y utiliza balanceadores de carga.</li>
+</ul>
+<p>Con estos conocimientos, estarás mejor preparado para mantener tu instancia de Jenkins funcionando de manera óptima, permitiendo que tus equipos de desarrollo y operaciones trabajen de manera más eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-common-jenkins-issues-and-solutions' title="Problemas Comunes de Jenkins y Soluciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-jenkins-community-and-resources' title="Comunidad y Recursos de Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

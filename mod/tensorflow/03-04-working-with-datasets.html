@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trabajando con Conjuntos de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/03-04-working-with-datasets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/03-04-working-with-datasets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/03-04-working-with-datasets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/03-04-working-with-datasets" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/03-04-working-with-datasets" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-data-augmentation' title="Aumento de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Trabajando con Conjuntos de Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-to-neural-networks' title="Introducción a Redes Neuronales">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo trabajar con conjuntos de datos en TensorFlow. Este es un aspecto crucial para cualquier proyecto de aprendizaje automático, ya que la calidad y la preparación de los datos pueden influir significativamente en el rendimiento del modelo.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-los-conjuntos-de-datos">Introducción a los Conjuntos de Datos</a></li>
+<li><a href="#uso-de-tf.data.dataset">Uso de <code>tf.data.Dataset</code></a></li>
+<li><a href="#creación-de-conjuntos-de-datos-desde-arrays">Creación de Conjuntos de Datos desde Arrays</a></li>
+<li><a href="#cargando-datos-desde-archivos">Cargando Datos desde Archivos</a></li>
+<li><a href="#transformaciones-comunes">Transformaciones Comunes</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción a los Conjuntos de Datos</h1>
+<div class='content'><p>TensorFlow proporciona la API <code>tf.data</code> para construir pipelines de datos eficientes y escalables. Esta API permite cargar, transformar y preprocesar datos de manera eficiente, lo cual es esencial para entrenar modelos de aprendizaje automático.</p>
+</div><h1>Uso de `tf.data.Dataset`</h1>
+<div class='content'><p>La clase <code>tf.data.Dataset</code> es el núcleo de la API <code>tf.data</code>. Permite crear y manipular conjuntos de datos de manera eficiente.</p>
+</div><h2>Ejemplo Básico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQ3JlYXIgdW4gZGF0YXNldCBzaW1wbGUgZGUgbsO6bWVyb3MgZGVsIDAgYWwgOQpkYXRhc2V0ID0gdGYuZGF0YS5EYXRhc2V0LmZyb21fdGVuc29yX3NsaWNlcyh0Zi5yYW5nZSgxMCkpCgojIEl0ZXJhciBzb2JyZSBlbCBkYXRhc2V0CmZvciBlbGVtZW50IGluIGRhdGFzZXQ6CiAgICBwcmludChlbGVtZW50Lm51bXB5KCkp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Crear un dataset simple de n&uacute;meros del 0 al 9
+dataset = tf.data.Dataset.from_tensor_slices(tf.range(10))
+
+# Iterar sobre el dataset
+for element in dataset:
+    print(element.numpy())</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ol>
+<li><strong>Importar TensorFlow</strong>: Importamos la biblioteca TensorFlow.</li>
+<li><strong>Crear un Dataset</strong>: Utilizamos <code>tf.data.Dataset.from_tensor_slices</code> para crear un dataset a partir de un tensor.</li>
+<li><strong>Iterar sobre el Dataset</strong>: Usamos un bucle <code>for</code> para iterar sobre los elementos del dataset y los imprimimos.</li>
+</ol>
+</div><h1>Creación de Conjuntos de Datos desde Arrays</h1>
+<div class='content'><p>Podemos crear conjuntos de datos directamente desde arrays de NumPy o listas de Python.</p>
+</div><h2>Ejemplo con Arrays de NumPy</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIENyZWFyIGFycmF5cyBkZSBOdW1QeQpkYXRhID0gbnAuYXJyYXkoWzEsIDIsIDMsIDQsIDVdKQpsYWJlbHMgPSBucC5hcnJheShbMCwgMCwgMSwgMSwgMV0pCgojIENyZWFyIHVuIGRhdGFzZXQgYSBwYXJ0aXIgZGUgYXJyYXlzIGRlIE51bVB5CmRhdGFzZXQgPSB0Zi5kYXRhLkRhdGFzZXQuZnJvbV90ZW5zb3Jfc2xpY2VzKChkYXRhLCBsYWJlbHMpKQoKIyBJdGVyYXIgc29icmUgZWwgZGF0YXNldApmb3IgZWxlbWVudCBpbiBkYXRhc2V0OgogICAgcHJpbnQoZWxlbWVudCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Crear arrays de NumPy
+data = np.array([1, 2, 3, 4, 5])
+labels = np.array([0, 0, 1, 1, 1])
+
+# Crear un dataset a partir de arrays de NumPy
+dataset = tf.data.Dataset.from_tensor_slices((data, labels))
+
+# Iterar sobre el dataset
+for element in dataset:
+    print(element)</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ol>
+<li><strong>Crear Arrays de NumPy</strong>: Creamos dos arrays de NumPy, uno para los datos y otro para las etiquetas.</li>
+<li><strong>Crear un Dataset</strong>: Utilizamos <code>tf.data.Dataset.from_tensor_slices</code> para crear un dataset a partir de los arrays.</li>
+<li><strong>Iterar sobre el Dataset</strong>: Iteramos sobre el dataset y imprimimos los elementos.</li>
+</ol>
+</div><h1>Cargando Datos desde Archivos</h1>
+<div class='content'><p>Podemos cargar datos desde archivos CSV, imágenes, texto, etc. Aquí veremos un ejemplo de cómo cargar datos desde un archivo CSV.</p>
+</div><h2>Ejemplo con CSV</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRGVmaW5pciBsYSBmdW5jacOzbiBkZSBwYXJzZW8KZGVmIHBhcnNlX2NzdihsaW5lKToKICAgIGV4YW1wbGVfZGVmYXVsdHMgPSBbdGYuZmxvYXQzMiwgdGYuZmxvYXQzMiwgdGYuZmxvYXQzMiwgdGYuZmxvYXQzMiwgdGYuaW50MzJdICAjIERlZmluaXIgdGlwb3MgZGUgZGF0b3MKICAgIHBhcnNlZF9saW5lID0gdGYuaW8uZGVjb2RlX2NzdihsaW5lLCBleGFtcGxlX2RlZmF1bHRzKQogICAgZmVhdHVyZXMgPSB0Zi5zdGFjayhwYXJzZWRfbGluZVs6LTFdKQogICAgbGFiZWwgPSBwYXJzZWRfbGluZVstMV0KICAgIHJldHVybiBmZWF0dXJlcywgbGFiZWwKCiMgQ3JlYXIgdW4gZGF0YXNldCBhIHBhcnRpciBkZSB1biBhcmNoaXZvIENTVgpkYXRhc2V0ID0gdGYuZGF0YS5UZXh0TGluZURhdGFzZXQoInBhdGgvdG8veW91ci9maWxlLmNzdiIpLnNraXAoMSkgICMgU2FsdGFyIGxhIGNhYmVjZXJhCmRhdGFzZXQgPSBkYXRhc2V0Lm1hcChwYXJzZV9jc3YpCgojIEl0ZXJhciBzb2JyZSBlbCBkYXRhc2V0CmZvciBmZWF0dXJlcywgbGFiZWwgaW4gZGF0YXNldDoKICAgIHByaW50KCJGZWF0dXJlczoiLCBmZWF0dXJlcy5udW1weSgpLCAiTGFiZWw6IiwgbGFiZWwubnVtcHkoKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Definir la funci&oacute;n de parseo
+def parse_csv(line):
+    example_defaults = [tf.float32, tf.float32, tf.float32, tf.float32, tf.int32]  # Definir tipos de datos
+    parsed_line = tf.io.decode_csv(line, example_defaults)
+    features = tf.stack(parsed_line[:-1])
+    label = parsed_line[-1]
+    return features, label
+
+# Crear un dataset a partir de un archivo CSV
+dataset = tf.data.TextLineDataset(&quot;path/to/your/file.csv&quot;).skip(1)  # Saltar la cabecera
+dataset = dataset.map(parse_csv)
+
+# Iterar sobre el dataset
+for features, label in dataset:
+    print(&quot;Features:&quot;, features.numpy(), &quot;Label:&quot;, label.numpy())</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ol>
+<li><strong>Definir la Función de Parseo</strong>: Creamos una función <code>parse_csv</code> que define cómo parsear cada línea del archivo CSV.</li>
+<li><strong>Crear un Dataset</strong>: Utilizamos <code>tf.data.TextLineDataset</code> para crear un dataset a partir del archivo CSV y saltamos la cabecera con <code>.skip(1)</code>.</li>
+<li><strong>Mapear la Función de Parseo</strong>: Aplicamos la función de parseo a cada línea del dataset con <code>.map(parse_csv)</code>.</li>
+<li><strong>Iterar sobre el Dataset</strong>: Iteramos sobre el dataset y imprimimos las características y etiquetas.</li>
+</ol>
+</div><h1>Transformaciones Comunes</h1>
+<div class='content'><p>La API <code>tf.data</code> proporciona varias transformaciones útiles para manipular datasets.</p>
+</div><h2>Ejemplo de Transformaciones</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQ3JlYXIgdW4gZGF0YXNldCBzaW1wbGUKZGF0YXNldCA9IHRmLmRhdGEuRGF0YXNldC5mcm9tX3RlbnNvcl9zbGljZXModGYucmFuZ2UoMTApKQoKIyBBcGxpY2FyIHRyYW5zZm9ybWFjaW9uZXMKZGF0YXNldCA9IGRhdGFzZXQubWFwKGxhbWJkYSB4OiB4ICogMikgICMgTXVsdGlwbGljYXIgY2FkYSBlbGVtZW50byBwb3IgMgpkYXRhc2V0ID0gZGF0YXNldC5iYXRjaCgzKSAgIyBBZ3J1cGFyIGVuIGxvdGVzIGRlIDMgZWxlbWVudG9zCmRhdGFzZXQgPSBkYXRhc2V0LnNodWZmbGUoYnVmZmVyX3NpemU9MTApICAjIEJhcmFqYXIgZWwgZGF0YXNldAoKIyBJdGVyYXIgc29icmUgZWwgZGF0YXNldCB0cmFuc2Zvcm1hZG8KZm9yIGJhdGNoIGluIGRhdGFzZXQ6CiAgICBwcmludChiYXRjaC5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Crear un dataset simple
+dataset = tf.data.Dataset.from_tensor_slices(tf.range(10))
+
+# Aplicar transformaciones
+dataset = dataset.map(lambda x: x * 2)  # Multiplicar cada elemento por 2
+dataset = dataset.batch(3)  # Agrupar en lotes de 3 elementos
+dataset = dataset.shuffle(buffer_size=10)  # Barajar el dataset
+
+# Iterar sobre el dataset transformado
+for batch in dataset:
+    print(batch.numpy())</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ol>
+<li><strong>Mapear</strong>: Utilizamos <code>.map</code> para aplicar una función a cada elemento del dataset.</li>
+<li><strong>Agrupar en Lotes</strong>: Utilizamos <code>.batch</code> para agrupar los elementos en lotes.</li>
+<li><strong>Barajar</strong>: Utilizamos <code>.shuffle</code> para barajar los elementos del dataset.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un dataset a partir de un archivo CSV que contenga datos de flores (por ejemplo, el dataset de Iris). Aplica las siguientes transformaciones:</p>
+<ol>
+<li>Parsear el archivo CSV.</li>
+<li>Normalizar las características.</li>
+<li>Agrupar los datos en lotes de 32 elementos.</li>
+<li>Barajar el dataset.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRGVmaW5pciBsYSBmdW5jacOzbiBkZSBwYXJzZW8KZGVmIHBhcnNlX2NzdihsaW5lKToKICAgIGV4YW1wbGVfZGVmYXVsdHMgPSBbdGYuZmxvYXQzMiwgdGYuZmxvYXQzMiwgdGYuZmxvYXQzMiwgdGYuZmxvYXQzMiwgdGYuaW50MzJdCiAgICBwYXJzZWRfbGluZSA9IHRmLmlvLmRlY29kZV9jc3YobGluZSwgZXhhbXBsZV9kZWZhdWx0cykKICAgIGZlYXR1cmVzID0gdGYuc3RhY2socGFyc2VkX2xpbmVbOi0xXSkKICAgIGxhYmVsID0gcGFyc2VkX2xpbmVbLTFdCiAgICByZXR1cm4gZmVhdHVyZXMsIGxhYmVsCgojIE5vcm1hbGl6YXIgbGFzIGNhcmFjdGVyw61zdGljYXMKZGVmIG5vcm1hbGl6ZShmZWF0dXJlcywgbGFiZWwpOgogICAgZmVhdHVyZXMgPSAoZmVhdHVyZXMgLSB0Zi5yZWR1Y2VfbWVhbihmZWF0dXJlcykpIC8gdGYubWF0aC5yZWR1Y2Vfc3RkKGZlYXR1cmVzKQogICAgcmV0dXJuIGZlYXR1cmVzLCBsYWJlbAoKIyBDcmVhciB1biBkYXRhc2V0IGEgcGFydGlyIGRlIHVuIGFyY2hpdm8gQ1NWCmRhdGFzZXQgPSB0Zi5kYXRhLlRleHRMaW5lRGF0YXNldCgicGF0aC90by9pcmlzLmNzdiIpLnNraXAoMSkKZGF0YXNldCA9IGRhdGFzZXQubWFwKHBhcnNlX2NzdikKZGF0YXNldCA9IGRhdGFzZXQubWFwKG5vcm1hbGl6ZSkKZGF0YXNldCA9IGRhdGFzZXQuYmF0Y2goMzIpCmRhdGFzZXQgPSBkYXRhc2V0LnNodWZmbGUoYnVmZmVyX3NpemU9MTUwKQoKIyBJdGVyYXIgc29icmUgZWwgZGF0YXNldCB0cmFuc2Zvcm1hZG8KZm9yIGJhdGNoIGluIGRhdGFzZXQ6CiAgICBmZWF0dXJlcywgbGFiZWxzID0gYmF0Y2gKICAgIHByaW50KCJGZWF0dXJlczoiLCBmZWF0dXJlcy5udW1weSgpLCAiTGFiZWxzOiIsIGxhYmVscy5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Definir la funci&oacute;n de parseo
+def parse_csv(line):
+    example_defaults = [tf.float32, tf.float32, tf.float32, tf.float32, tf.int32]
+    parsed_line = tf.io.decode_csv(line, example_defaults)
+    features = tf.stack(parsed_line[:-1])
+    label = parsed_line[-1]
+    return features, label
+
+# Normalizar las caracter&iacute;sticas
+def normalize(features, label):
+    features = (features - tf.reduce_mean(features)) / tf.math.reduce_std(features)
+    return features, label
+
+# Crear un dataset a partir de un archivo CSV
+dataset = tf.data.TextLineDataset(&quot;path/to/iris.csv&quot;).skip(1)
+dataset = dataset.map(parse_csv)
+dataset = dataset.map(normalize)
+dataset = dataset.batch(32)
+dataset = dataset.shuffle(buffer_size=150)
+
+# Iterar sobre el dataset transformado
+for batch in dataset:
+    features, labels = batch
+    print(&quot;Features:&quot;, features.numpy(), &quot;Labels:&quot;, labels.numpy())</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ol>
+<li><strong>Parsear el Archivo CSV</strong>: Utilizamos <code>tf.data.TextLineDataset</code> y <code>tf.io.decode_csv</code> para parsear el archivo CSV.</li>
+<li><strong>Normalizar las Características</strong>: Aplicamos una función de normalización a las características.</li>
+<li><strong>Agrupar en Lotes</strong>: Utilizamos <code>.batch</code> para agrupar los datos en lotes de 32 elementos.</li>
+<li><strong>Barajar el Dataset</strong>: Utilizamos <code>.shuffle</code> para barajar los datos.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo trabajar con conjuntos de datos en TensorFlow utilizando la API <code>tf.data</code>. Hemos visto cómo crear datasets desde arrays y archivos, aplicar transformaciones comunes y realizar un ejercicio práctico para consolidar los conocimientos. En el próximo módulo, profundizaremos en la construcción de redes neuronales utilizando TensorFlow.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-data-augmentation' title="Aumento de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-to-neural-networks' title="Introducción a Redes Neuronales">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

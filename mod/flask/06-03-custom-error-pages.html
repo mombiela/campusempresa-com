@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Páginas de Error Personalizadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/06-03-custom-error-pages" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/06-03-custom-error-pages" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/06-03-custom-error-pages" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flask/06-03-custom-error-pages" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/06-03-custom-error-pages" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-error-handling' title="Manejo de Errores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Páginas de Error Personalizadas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-logging-debugging' title="Registro y Depuración">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo crear y manejar páginas de error personalizadas en Flask. Las páginas de error personalizadas no solo mejoran la experiencia del usuario, sino que también pueden proporcionar información útil sobre lo que salió mal y cómo solucionarlo.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Errores HTTP Comunes</strong>: Los errores más comunes que puedes personalizar son:</p>
+<ul>
+<li>404 Not Found</li>
+<li>500 Internal Server Error</li>
+<li>403 Forbidden</li>
+<li>401 Unauthorized</li>
+</ul>
+</li>
+<li>
+<p><strong>Manejo de Errores en Flask</strong>: Flask proporciona una forma sencilla de manejar errores mediante el uso de decoradores.</p>
+</li>
+<li>
+<p><strong>Plantillas de Error</strong>: Utilizar Jinja2 para crear plantillas de error personalizadas.</p>
+</li>
+</ol>
+</div><h1>Paso a Paso para Crear Páginas de Error Personalizadas</h1>
+<div class='content'></div><h2>1. Configuración Básica</h2>
+<div class='content'><p>Primero, asegúrate de tener una aplicación Flask básica configurada. Si no la tienes, sigue estos pasos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlbmRlcl90ZW1wbGF0ZQoKYXBwID0gRmxhc2soX19uYW1lX18pCgpAYXBwLnJvdXRlKCcvJykKZGVmIGhvbWUoKToKICAgIHJldHVybiAiQmllbnZlbmlkbyBhIGxhIHDDoWdpbmEgcHJpbmNpcGFsIgoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return &quot;Bienvenido a la p&aacute;gina principal&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>2. Creación de Plantillas de Error</h2>
+<div class='content'><p>Crea una carpeta llamada <code>templates</code> en el directorio raíz de tu proyecto. Dentro de esta carpeta, crea archivos HTML para cada página de error que desees personalizar.</p>
+<h4>404.html</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+NDA0IE5vdCBGb3VuZDwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDE+NDA0IE5vdCBGb3VuZDwvaDE+CiAgICA8cD5MbyBzZW50aW1vcywgbGEgcMOhZ2luYSBxdWUgZXN0w6FzIGJ1c2NhbmRvIG5vIGV4aXN0ZS48L3A+CjwvYm9keT4KPC9odG1sPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;404 Not Found&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;404 Not Found&lt;/h1&gt;
+    &lt;p&gt;Lo sentimos, la p&aacute;gina que est&aacute;s buscando no existe.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><h4>500.html</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+NTAwIEludGVybmFsIFNlcnZlciBFcnJvcjwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDE+NTAwIEludGVybmFsIFNlcnZlciBFcnJvcjwvaDE+CiAgICA8cD5BbGdvIHNhbGnDsyBtYWwgZW4gZWwgc2Vydmlkb3IuIFBvciBmYXZvciwgaW50w6ludGFsbyBkZSBudWV2byBtw6FzIHRhcmRlLjwvcD4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;500 Internal Server Error&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;500 Internal Server Error&lt;/h1&gt;
+    &lt;p&gt;Algo sali&oacute; mal en el servidor. Por favor, int&eacute;ntalo de nuevo m&aacute;s tarde.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>3. Manejo de Errores en Flask</h2>
+<div class='content'><p>Utiliza el decorador <code>@app.errorhandler</code> para manejar los errores y renderizar las plantillas personalizadas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5lcnJvcmhhbmRsZXIoNDA0KQpkZWYgcGFnZV9ub3RfZm91bmQoZSk6CiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCc0MDQuaHRtbCcpLCA0MDQKCkBhcHAuZXJyb3JoYW5kbGVyKDUwMCkKZGVmIGludGVybmFsX3NlcnZlcl9lcnJvcihlKToKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJzUwMC5odG1sJyksIDUwMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500</pre></div><div class='content'></div><h2>4. Prueba de las Páginas de Error</h2>
+<div class='content'><p>Para probar las páginas de error, puedes intentar acceder a una URL que no exista para ver la página 404, o forzar un error en el servidor para ver la página 500.</p>
+<h4>Forzando un Error 404</h4>
+<p>Accede a una URL inexistente, por ejemplo: <code>http://127.0.0.1:5000/nonexistent</code></p>
+<h4>Forzando un Error 500</h4>
+<p>Puedes forzar un error 500 levantando una excepción en una ruta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2NhdXNlLWVycm9yJykKZGVmIGNhdXNlX2Vycm9yKCk6CiAgICByYWlzZSBFeGNlcHRpb24oIkZvcnphbmRvIHVuIGVycm9yIDUwMCIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/cause-error')
+def cause_error():
+    raise Exception(&quot;Forzando un error 500&quot;)</pre></div><div class='content'><p>Luego, accede a <code>http://127.0.0.1:5000/cause-error</code>.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear una Página de Error 403 Personalizada</h2>
+<div class='content'><ol>
+<li>Crea una plantilla <code>403.html</code> en la carpeta <code>templates</code> con el siguiente contenido:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+NDAzIEZvcmJpZGRlbjwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDE+NDAzIEZvcmJpZGRlbjwvaDE+CiAgICA8cD5ObyB0aWVuZXMgcGVybWlzbyBwYXJhIGFjY2VkZXIgYSBlc3RhIHDDoWdpbmEuPC9wPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;403 Forbidden&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;403 Forbidden&lt;/h1&gt;
+    &lt;p&gt;No tienes permiso para acceder a esta p&aacute;gina.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><ol start="2">
+<li>Añade un manejador de errores para el código 403 en tu aplicación Flask:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5lcnJvcmhhbmRsZXIoNDAzKQpkZWYgZm9yYmlkZGVuKGUpOgogICAgcmV0dXJuIHJlbmRlcl90ZW1wbGF0ZSgnNDAzLmh0bWwnKSwgNDAz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.errorhandler(403)
+def forbidden(e):
+    return render_template('403.html'), 403</pre></div><div class='content'><ol start="3">
+<li>Prueba la página de error 403 levantando una excepción <code>Forbidden</code> en una ruta:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB3ZXJremV1Zy5leGNlcHRpb25zIGltcG9ydCBGb3JiaWRkZW4KCkBhcHAucm91dGUoJy9mb3JiaWRkZW4nKQpkZWYgY2F1c2VfZm9yYmlkZGVuKCk6CiAgICByYWlzZSBGb3JiaWRkZW4oIkZvcnphbmRvIHVuIGVycm9yIDQwMyIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from werkzeug.exceptions import Forbidden
+
+@app.route('/forbidden')
+def cause_forbidden():
+    raise Forbidden(&quot;Forzando un error 403&quot;)</pre></div><div class='content'><p>Luego, accede a <code>http://127.0.0.1:5000/forbidden</code>.</p>
+</div><h2>Solución</h2>
+<div class='content'><p>Si has seguido los pasos correctamente, deberías ver la página de error 403 personalizada cuando accedas a la ruta <code>/forbidden</code>.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo crear y manejar páginas de error personalizadas en Flask. Esto no solo mejora la experiencia del usuario, sino que también proporciona una forma más profesional de manejar errores en tu aplicación web. En el siguiente tema, exploraremos el registro y la depuración en Flask para ayudarte a identificar y solucionar problemas de manera más eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-error-handling' title="Manejo de Errores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-logging-debugging' title="Registro y Depuración">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendizaje por Refuerzo con PyTorch</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/06-02-reinforcement-learning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/06-02-reinforcement-learning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/06-02-reinforcement-learning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/pytorch/06-02-reinforcement-learning" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/06-02-reinforcement-learning" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-gans' title="Redes Generativas Antagónicas (GANs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Aprendizaje por Refuerzo con PyTorch</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-deploying-models' title="Despliegue de Modelos PyTorch">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El aprendizaje por refuerzo (RL, por sus siglas en inglés) es un área del aprendizaje automático donde un agente aprende a tomar decisiones mediante la interacción con un entorno. En este módulo, exploraremos cómo implementar algoritmos de aprendizaje por refuerzo utilizando PyTorch.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-al-aprendizaje-por-refuerzo">Introducción al Aprendizaje por Refuerzo</a></li>
+<li><a href="#configuración-del-entorno">Configuración del Entorno</a></li>
+<li><a href="#implementación-de-un-agente-rl">Implementación de un Agente RL</a></li>
+<li><a href="#entrenamiento-del-agente">Entrenamiento del Agente</a></li>
+<li><a href="#evaluación-del-agente">Evaluación del Agente</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción al Aprendizaje por Refuerzo</h1>
+<div class='content'><p>El aprendizaje por refuerzo se basa en la idea de que un agente aprende a tomar acciones en un entorno para maximizar una recompensa acumulada. Los componentes clave son:</p>
+<ul>
+<li><strong>Agente</strong>: El aprendiz o tomador de decisiones.</li>
+<li><strong>Entorno</strong>: Todo lo que el agente interactúa con.</li>
+<li><strong>Acción</strong>: Lo que el agente puede hacer.</li>
+<li><strong>Estado</strong>: La situación actual del entorno.</li>
+<li><strong>Recompensa</strong>: La retroalimentación del entorno como resultado de una acción.</li>
+</ul>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Política (π)</strong>: Estrategia que el agente sigue para decidir qué acción tomar en un estado dado.</li>
+<li><strong>Función de Valor (V)</strong>: Valor esperado de las recompensas acumuladas a partir de un estado.</li>
+<li><strong>Función Q (Q)</strong>: Valor esperado de las recompensas acumuladas a partir de un estado y una acción.</li>
+</ul>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener PyTorch y las bibliotecas necesarias instaladas. Puedes instalar las dependencias con:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgdG9yY2ggZ3ltIG51bXB5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install torch gym numpy</pre></div><div class='content'></div><h1>Implementación de un Agente RL</h1>
+<div class='content'><p>Vamos a implementar un agente utilizando el algoritmo Q-Learning, uno de los algoritmos más simples y populares en RL.</p>
+</div><h2>Paso 1: Importar Bibliotecas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGd5bQppbXBvcnQgdG9yY2gKaW1wb3J0IHRvcmNoLm5uIGFzIG5uCmltcG9ydCB0b3JjaC5vcHRpbSBhcyBvcHRpbQppbXBvcnQgbnVtcHkgYXMgbnA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import gym
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import numpy as np</pre></div><div class='content'></div><h2>Paso 2: Definir la Red Neuronal</h2>
+<div class='content'><p>Definimos una red neuronal simple para aproximar la función Q.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUU5ldHdvcmsobm4uTW9kdWxlKToKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBzdGF0ZV9zaXplLCBhY3Rpb25fc2l6ZSk6CiAgICAgICAgc3VwZXIoUU5ldHdvcmssIHNlbGYpLl9faW5pdF9fKCkKICAgICAgICBzZWxmLmZjMSA9IG5uLkxpbmVhcihzdGF0ZV9zaXplLCA2NCkKICAgICAgICBzZWxmLmZjMiA9IG5uLkxpbmVhcig2NCwgNjQpCiAgICAgICAgc2VsZi5mYzMgPSBubi5MaW5lYXIoNjQsIGFjdGlvbl9zaXplKQogICAgCiAgICBkZWYgZm9yd2FyZChzZWxmLCB4KToKICAgICAgICB4ID0gdG9yY2gucmVsdShzZWxmLmZjMSh4KSkKICAgICAgICB4ID0gdG9yY2gucmVsdShzZWxmLmZjMih4KSkKICAgICAgICB4ID0gc2VsZi5mYzMoeCkKICAgICAgICByZXR1cm4geA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class QNetwork(nn.Module):
+    def __init__(self, state_size, action_size):
+        super(QNetwork, self).__init__()
+        self.fc1 = nn.Linear(state_size, 64)
+        self.fc2 = nn.Linear(64, 64)
+        self.fc3 = nn.Linear(64, action_size)
+    
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = torch.relu(self.fc2(x))
+        x = self.fc3(x)
+        return x</pre></div><div class='content'></div><h2>Paso 3: Definir el Agente</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQWdlbnQ6CiAgICBkZWYgX19pbml0X18oc2VsZiwgc3RhdGVfc2l6ZSwgYWN0aW9uX3NpemUsIGxyPTAuMDAxLCBnYW1tYT0wLjk5LCBlcHNpbG9uPTEuMCwgZXBzaWxvbl9kZWNheT0wLjk5NSwgZXBzaWxvbl9taW49MC4wMSk6CiAgICAgICAgc2VsZi5zdGF0ZV9zaXplID0gc3RhdGVfc2l6ZQogICAgICAgIHNlbGYuYWN0aW9uX3NpemUgPSBhY3Rpb25fc2l6ZQogICAgICAgIHNlbGYuZ2FtbWEgPSBnYW1tYQogICAgICAgIHNlbGYuZXBzaWxvbiA9IGVwc2lsb24KICAgICAgICBzZWxmLmVwc2lsb25fZGVjYXkgPSBlcHNpbG9uX2RlY2F5CiAgICAgICAgc2VsZi5lcHNpbG9uX21pbiA9IGVwc2lsb25fbWluCiAgICAgICAgc2VsZi5xbmV0d29yayA9IFFOZXR3b3JrKHN0YXRlX3NpemUsIGFjdGlvbl9zaXplKQogICAgICAgIHNlbGYub3B0aW1pemVyID0gb3B0aW0uQWRhbShzZWxmLnFuZXR3b3JrLnBhcmFtZXRlcnMoKSwgbHI9bHIpCiAgICAgICAgc2VsZi5jcml0ZXJpb24gPSBubi5NU0VMb3NzKCkKICAgIAogICAgZGVmIGFjdChzZWxmLCBzdGF0ZSk6CiAgICAgICAgaWYgbnAucmFuZG9tLnJhbmQoKSA8PSBzZWxmLmVwc2lsb246CiAgICAgICAgICAgIHJldHVybiBucC5yYW5kb20uY2hvaWNlKHNlbGYuYWN0aW9uX3NpemUpCiAgICAgICAgc3RhdGUgPSB0b3JjaC5GbG9hdFRlbnNvcihzdGF0ZSkudW5zcXVlZXplKDApCiAgICAgICAgd2l0aCB0b3JjaC5ub19ncmFkKCk6CiAgICAgICAgICAgIHFfdmFsdWVzID0gc2VsZi5xbmV0d29yayhzdGF0ZSkKICAgICAgICByZXR1cm4gbnAuYXJnbWF4KHFfdmFsdWVzLm51bXB5KCkpCiAgICAKICAgIGRlZiBsZWFybihzZWxmLCBzdGF0ZSwgYWN0aW9uLCByZXdhcmQsIG5leHRfc3RhdGUsIGRvbmUpOgogICAgICAgIHN0YXRlID0gdG9yY2guRmxvYXRUZW5zb3Ioc3RhdGUpLnVuc3F1ZWV6ZSgwKQogICAgICAgIG5leHRfc3RhdGUgPSB0b3JjaC5GbG9hdFRlbnNvcihuZXh0X3N0YXRlKS51bnNxdWVlemUoMCkKICAgICAgICByZXdhcmQgPSB0b3JjaC5GbG9hdFRlbnNvcihbcmV3YXJkXSkKICAgICAgICBhY3Rpb24gPSB0b3JjaC5Mb25nVGVuc29yKFthY3Rpb25dKQogICAgICAgIGRvbmUgPSB0b3JjaC5GbG9hdFRlbnNvcihbZG9uZV0pCiAgICAgICAgCiAgICAgICAgcV92YWx1ZXMgPSBzZWxmLnFuZXR3b3JrKHN0YXRlKQogICAgICAgIG5leHRfcV92YWx1ZXMgPSBzZWxmLnFuZXR3b3JrKG5leHRfc3RhdGUpCiAgICAgICAgCiAgICAgICAgcV92YWx1ZSA9IHFfdmFsdWVzLmdhdGhlcigxLCBhY3Rpb24udW5zcXVlZXplKDEpKS5zcXVlZXplKDEpCiAgICAgICAgbmV4dF9xX3ZhbHVlID0gcmV3YXJkICsgKDEgLSBkb25lKSAqIHNlbGYuZ2FtbWEgKiBuZXh0X3FfdmFsdWVzLm1heCgxKVswXQogICAgICAgIAogICAgICAgIGxvc3MgPSBzZWxmLmNyaXRlcmlvbihxX3ZhbHVlLCBuZXh0X3FfdmFsdWUuZGV0YWNoKCkpCiAgICAgICAgc2VsZi5vcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgICAgICBsb3NzLmJhY2t3YXJkKCkKICAgICAgICBzZWxmLm9wdGltaXplci5zdGVwKCkKICAgICAgICAKICAgICAgICBpZiBzZWxmLmVwc2lsb24gPiBzZWxmLmVwc2lsb25fbWluOgogICAgICAgICAgICBzZWxmLmVwc2lsb24gKj0gc2VsZi5lcHNpbG9uX2RlY2F5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Agent:
+    def __init__(self, state_size, action_size, lr=0.001, gamma=0.99, epsilon=1.0, epsilon_decay=0.995, epsilon_min=0.01):
+        self.state_size = state_size
+        self.action_size = action_size
+        self.gamma = gamma
+        self.epsilon = epsilon
+        self.epsilon_decay = epsilon_decay
+        self.epsilon_min = epsilon_min
+        self.qnetwork = QNetwork(state_size, action_size)
+        self.optimizer = optim.Adam(self.qnetwork.parameters(), lr=lr)
+        self.criterion = nn.MSELoss()
+    
+    def act(self, state):
+        if np.random.rand() &lt;= self.epsilon:
+            return np.random.choice(self.action_size)
+        state = torch.FloatTensor(state).unsqueeze(0)
+        with torch.no_grad():
+            q_values = self.qnetwork(state)
+        return np.argmax(q_values.numpy())
+    
+    def learn(self, state, action, reward, next_state, done):
+        state = torch.FloatTensor(state).unsqueeze(0)
+        next_state = torch.FloatTensor(next_state).unsqueeze(0)
+        reward = torch.FloatTensor([reward])
+        action = torch.LongTensor([action])
+        done = torch.FloatTensor([done])
+        
+        q_values = self.qnetwork(state)
+        next_q_values = self.qnetwork(next_state)
+        
+        q_value = q_values.gather(1, action.unsqueeze(1)).squeeze(1)
+        next_q_value = reward + (1 - done) * self.gamma * next_q_values.max(1)[0]
+        
+        loss = self.criterion(q_value, next_q_value.detach())
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+        
+        if self.epsilon &gt; self.epsilon_min:
+            self.epsilon *= self.epsilon_decay</pre></div><div class='content'></div><h1>Entrenamiento del Agente</h1>
+<div class='content'></div><h2>Paso 4: Entrenar el Agente</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZW52ID0gZ3ltLm1ha2UoJ0NhcnRQb2xlLXYxJykKc3RhdGVfc2l6ZSA9IGVudi5vYnNlcnZhdGlvbl9zcGFjZS5zaGFwZVswXQphY3Rpb25fc2l6ZSA9IGVudi5hY3Rpb25fc3BhY2UubgphZ2VudCA9IEFnZW50KHN0YXRlX3NpemUsIGFjdGlvbl9zaXplKQoKZXBpc29kZXMgPSAxMDAwCmZvciBlIGluIHJhbmdlKGVwaXNvZGVzKToKICAgIHN0YXRlID0gZW52LnJlc2V0KCkKICAgIHRvdGFsX3Jld2FyZCA9IDAKICAgIGRvbmUgPSBGYWxzZQogICAgd2hpbGUgbm90IGRvbmU6CiAgICAgICAgYWN0aW9uID0gYWdlbnQuYWN0KHN0YXRlKQogICAgICAgIG5leHRfc3RhdGUsIHJld2FyZCwgZG9uZSwgXyA9IGVudi5zdGVwKGFjdGlvbikKICAgICAgICBhZ2VudC5sZWFybihzdGF0ZSwgYWN0aW9uLCByZXdhcmQsIG5leHRfc3RhdGUsIGRvbmUpCiAgICAgICAgc3RhdGUgPSBuZXh0X3N0YXRlCiAgICAgICAgdG90YWxfcmV3YXJkICs9IHJld2FyZAogICAgcHJpbnQoZiJFcGlzb2RlIHtlKzF9L3tlcGlzb2Rlc30sIFRvdGFsIFJld2FyZDoge3RvdGFsX3Jld2FyZH0iKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>env = gym.make('CartPole-v1')
+state_size = env.observation_space.shape[0]
+action_size = env.action_space.n
+agent = Agent(state_size, action_size)
+
+episodes = 1000
+for e in range(episodes):
+    state = env.reset()
+    total_reward = 0
+    done = False
+    while not done:
+        action = agent.act(state)
+        next_state, reward, done, _ = env.step(action)
+        agent.learn(state, action, reward, next_state, done)
+        state = next_state
+        total_reward += reward
+    print(f&quot;Episode {e+1}/{episodes}, Total Reward: {total_reward}&quot;)</pre></div><div class='content'></div><h1>Evaluación del Agente</h1>
+<div class='content'></div><h2>Paso 5: Evaluar el Agente</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dG90YWxfcmV3YXJkcyA9IFtdCmZvciBlIGluIHJhbmdlKDEwMCk6CiAgICBzdGF0ZSA9IGVudi5yZXNldCgpCiAgICB0b3RhbF9yZXdhcmQgPSAwCiAgICBkb25lID0gRmFsc2UKICAgIHdoaWxlIG5vdCBkb25lOgogICAgICAgIGFjdGlvbiA9IGFnZW50LmFjdChzdGF0ZSkKICAgICAgICBzdGF0ZSwgcmV3YXJkLCBkb25lLCBfID0gZW52LnN0ZXAoYWN0aW9uKQogICAgICAgIHRvdGFsX3Jld2FyZCArPSByZXdhcmQKICAgIHRvdGFsX3Jld2FyZHMuYXBwZW5kKHRvdGFsX3Jld2FyZCkKcHJpbnQoZiJBdmVyYWdlIFJld2FyZCBvdmVyIDEwMCBlcGlzb2Rlczoge25wLm1lYW4odG90YWxfcmV3YXJkcyl9Iik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>total_rewards = []
+for e in range(100):
+    state = env.reset()
+    total_reward = 0
+    done = False
+    while not done:
+        action = agent.act(state)
+        state, reward, done, _ = env.step(action)
+        total_reward += reward
+    total_rewards.append(total_reward)
+print(f&quot;Average Reward over 100 episodes: {np.mean(total_rewards)}&quot;)</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Modificar la Red Neuronal</h2>
+<div class='content'><p>Modifica la arquitectura de la red neuronal para mejorar el rendimiento del agente. Prueba diferentes números de capas y neuronas.</p>
+</div><h2>Ejercicio 2: Implementar DQN</h2>
+<div class='content'><p>Implementa el algoritmo Deep Q-Network (DQN) utilizando una red neuronal con experiencia de repetición (experience replay).</p>
+</div><h2>Ejercicio 3: Entrenar en un Entorno Diferente</h2>
+<div class='content'><p>Entrena el agente en un entorno diferente de OpenAI Gym, como <code>MountainCar-v0</code>.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos cubierto los conceptos básicos del aprendizaje por refuerzo y cómo implementar un agente simple utilizando PyTorch. Hemos visto cómo definir una red neuronal, entrenar al agente y evaluar su rendimiento. Los ejercicios prácticos proporcionan una oportunidad para profundizar en el tema y experimentar con diferentes enfoques.</p>
+<p>En el siguiente módulo, exploraremos cómo desplegar modelos PyTorch en producción.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-gans' title="Redes Generativas Antagónicas (GANs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-deploying-models' title="Despliegue de Modelos PyTorch">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usando Axios para Solicitudes HTTP</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/05-02-using-axios-http-requests" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/05-02-using-axios-http-requests" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/05-02-using-axios-http-requests" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/reactnative/05-02-using-axios-http-requests" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/05-02-using-axios-http-requests" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-fetching-data-fetch-api' title="Obteniendo Datos con Fetch API">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Usando Axios para Solicitudes HTTP</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-handling-network-errors' title="Manejo de Errores de Red">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En esta lección, aprenderemos a utilizar Axios, una biblioteca popular para realizar solicitudes HTTP en aplicaciones React Native. Axios es conocido por su simplicidad y facilidad de uso, y ofrece una API más limpia y poderosa en comparación con la API Fetch nativa.</p>
+</div><h2>Objetivos de Aprendizaje</h2>
+<div class='content'><ul>
+<li>Comprender qué es Axios y por qué es útil.</li>
+<li>Aprender a instalar y configurar Axios en un proyecto React Native.</li>
+<li>Realizar solicitudes HTTP GET y POST utilizando Axios.</li>
+<li>Manejar respuestas y errores de solicitudes HTTP.</li>
+<li>Implementar ejemplos prácticos para reforzar los conceptos.</li>
+</ul>
+</div><h1>¿Qué es Axios?</h1>
+<div class='content'><p>Axios es una biblioteca basada en promesas para realizar solicitudes HTTP. Es compatible con navegadores y Node.js, y ofrece una API simple y limpia para manejar solicitudes y respuestas HTTP.</p>
+</div><h2>Ventajas de Axios</h2>
+<div class='content'><ul>
+<li><strong>Basado en Promesas</strong>: Facilita el manejo de operaciones asíncronas.</li>
+<li><strong>Intercepción de Solicitudes y Respuestas</strong>: Permite modificar solicitudes o respuestas antes de que sean manejadas.</li>
+<li><strong>Transformación de Datos</strong>: Permite transformar datos de solicitudes y respuestas.</li>
+<li><strong>Cancelación de Solicitudes</strong>: Soporta la cancelación de solicitudes.</li>
+<li><strong>Compatibilidad con JSON</strong>: Automáticamente convierte datos JSON.</li>
+</ul>
+</div><h1>Instalación de Axios</h1>
+<div class='content'><p>Para instalar Axios en tu proyecto React Native, puedes usar npm o yarn:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgYXhpb3M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install axios</pre></div><div class='content'><p>o</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eWFybiBhZGQgYXhpb3M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>yarn add axios</pre></div><div class='content'></div><h1>Realizando Solicitudes HTTP con Axios</h1>
+<div class='content'></div><h2>Solicitud GET</h2>
+<div class='content'><p>Una solicitud GET se utiliza para obtener datos de un servidor. Aquí hay un ejemplo básico de cómo realizar una solicitud GET con Axios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGF4aW9zIGZyb20gJ2F4aW9zJzsKaW1wb3J0IFJlYWN0LCB7IHVzZUVmZmVjdCwgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFZpZXcsIFRleHQsIFN0eWxlU2hlZXQgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgQXBwID0gKCkgPT4gewogIGNvbnN0IFtkYXRhLCBzZXREYXRhXSA9IHVzZVN0YXRlKG51bGwpOwogIGNvbnN0IFtlcnJvciwgc2V0RXJyb3JdID0gdXNlU3RhdGUobnVsbCk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBheGlvcy5nZXQoJ2h0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cy8xJykKICAgICAgLnRoZW4ocmVzcG9uc2UgPT4gewogICAgICAgIHNldERhdGEocmVzcG9uc2UuZGF0YSk7CiAgICAgIH0pCiAgICAgIC5jYXRjaChlcnJvciA9PiB7CiAgICAgICAgc2V0RXJyb3IoZXJyb3IpOwogICAgICB9KTsKICB9LCBbXSk7CgogIGlmIChlcnJvcikgewogICAgcmV0dXJuICgKICAgICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5jb250YWluZXJ9PgogICAgICAgIDxUZXh0IHN0eWxlPXtzdHlsZXMuZXJyb3JUZXh0fT5FcnJvcjoge2Vycm9yLm1lc3NhZ2V9PC9UZXh0PgogICAgICA8L1ZpZXc+CiAgICApOwogIH0KCiAgaWYgKCFkYXRhKSB7CiAgICByZXR1cm4gKAogICAgICA8VmlldyBzdHlsZT17c3R5bGVzLmNvbnRhaW5lcn0+CiAgICAgICAgPFRleHQgc3R5bGU9e3N0eWxlcy5sb2FkaW5nVGV4dH0+TG9hZGluZy4uLjwvVGV4dD4KICAgICAgPC9WaWV3PgogICAgKTsKICB9CgogIHJldHVybiAoCiAgICA8VmlldyBzdHlsZT17c3R5bGVzLmNvbnRhaW5lcn0+CiAgICAgIDxUZXh0IHN0eWxlPXtzdHlsZXMudGl0bGV9PntkYXRhLnRpdGxlfTwvVGV4dD4KICAgICAgPFRleHQgc3R5bGU9e3N0eWxlcy5ib2R5fT57ZGF0YS5ib2R5fTwvVGV4dD4KICAgIDwvVmlldz4KICApOwp9OwoKY29uc3Qgc3R5bGVzID0gU3R5bGVTaGVldC5jcmVhdGUoewogIGNvbnRhaW5lcjogewogICAgZmxleDogMSwKICAgIGp1c3RpZnlDb250ZW50OiAnY2VudGVyJywKICAgIGFsaWduSXRlbXM6ICdjZW50ZXInLAogICAgcGFkZGluZzogMTYsCiAgfSwKICB0aXRsZTogewogICAgZm9udFNpemU6IDI0LAogICAgZm9udFdlaWdodDogJ2JvbGQnLAogIH0sCiAgYm9keTogewogICAgZm9udFNpemU6IDE2LAogIH0sCiAgbG9hZGluZ1RleHQ6IHsKICAgIGZvbnRTaXplOiAxOCwKICB9LAogIGVycm9yVGV4dDogewogICAgZm9udFNpemU6IDE4LAogICAgY29sb3I6ICdyZWQnLAogIH0sCn0pOwoKZXhwb3J0IGRlZmF1bHQgQXBwOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+
+const App = () =&gt; {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() =&gt; {
+    axios.get('https://jsonplaceholder.typicode.com/posts/1')
+      .then(response =&gt; {
+        setData(response.data);
+      })
+      .catch(error =&gt; {
+        setError(error);
+      });
+  }, []);
+
+  if (error) {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.errorText}&gt;Error: {error.message}&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  if (!data) {
+    return (
+      &lt;View style={styles.container}&gt;
+        &lt;Text style={styles.loadingText}&gt;Loading...&lt;/Text&gt;
+      &lt;/View&gt;
+    );
+  }
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;Text style={styles.title}&gt;{data.title}&lt;/Text&gt;
+      &lt;Text style={styles.body}&gt;{data.body}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  body: {
+    fontSize: 16,
+  },
+  loadingText: {
+    fontSize: 18,
+  },
+  errorText: {
+    fontSize: 18,
+    color: 'red',
+  },
+});
+
+export default App;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importaciones</strong>: Importamos <code>axios</code> y los componentes necesarios de React y React Native.</li>
+<li><strong>Estado</strong>: Utilizamos <code>useState</code> para manejar el estado de los datos y los errores.</li>
+<li><strong>Efecto</strong>: Utilizamos <code>useEffect</code> para realizar la solicitud GET cuando el componente se monta.</li>
+<li><strong>Solicitud GET</strong>: Realizamos la solicitud GET a <code>https://jsonplaceholder.typicode.com/posts/1</code>.</li>
+<li><strong>Manejo de Respuesta</strong>: Si la solicitud es exitosa, actualizamos el estado con los datos recibidos.</li>
+<li><strong>Manejo de Errores</strong>: Si ocurre un error, actualizamos el estado con el error.</li>
+<li><strong>Renderizado Condicional</strong>: Mostramos un mensaje de carga, los datos o un mensaje de error según el estado.</li>
+</ol>
+</div><h2>Solicitud POST</h2>
+<div class='content'><p>Una solicitud POST se utiliza para enviar datos a un servidor. Aquí hay un ejemplo básico de cómo realizar una solicitud POST con Axios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGF4aW9zIGZyb20gJ2F4aW9zJzsKaW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0LCBUZXh0SW5wdXQsIEJ1dHRvbiwgU3R5bGVTaGVldCB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7Cgpjb25zdCBBcHAgPSAoKSA9PiB7CiAgY29uc3QgW3RpdGxlLCBzZXRUaXRsZV0gPSB1c2VTdGF0ZSgnJyk7CiAgY29uc3QgW2JvZHksIHNldEJvZHldID0gdXNlU3RhdGUoJycpOwogIGNvbnN0IFtyZXNwb25zZSwgc2V0UmVzcG9uc2VdID0gdXNlU3RhdGUobnVsbCk7CiAgY29uc3QgW2Vycm9yLCBzZXRFcnJvcl0gPSB1c2VTdGF0ZShudWxsKTsKCiAgY29uc3QgaGFuZGxlU3VibWl0ID0gKCkgPT4gewogICAgYXhpb3MucG9zdCgnaHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3RzJywgewogICAgICB0aXRsZTogdGl0bGUsCiAgICAgIGJvZHk6IGJvZHksCiAgICB9KQogICAgLnRoZW4ocmVzcG9uc2UgPT4gewogICAgICBzZXRSZXNwb25zZShyZXNwb25zZS5kYXRhKTsKICAgIH0pCiAgICAuY2F0Y2goZXJyb3IgPT4gewogICAgICBzZXRFcnJvcihlcnJvcik7CiAgICB9KTsKICB9OwoKICByZXR1cm4gKAogICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5jb250YWluZXJ9PgogICAgICA8VGV4dElucHV0CiAgICAgICAgc3R5bGU9e3N0eWxlcy5pbnB1dH0KICAgICAgICBwbGFjZWhvbGRlcj0iVGl0bGUiCiAgICAgICAgdmFsdWU9e3RpdGxlfQogICAgICAgIG9uQ2hhbmdlVGV4dD17c2V0VGl0bGV9CiAgICAgIC8+CiAgICAgIDxUZXh0SW5wdXQKICAgICAgICBzdHlsZT17c3R5bGVzLmlucHV0fQogICAgICAgIHBsYWNlaG9sZGVyPSJCb2R5IgogICAgICAgIHZhbHVlPXtib2R5fQogICAgICAgIG9uQ2hhbmdlVGV4dD17c2V0Qm9keX0KICAgICAgLz4KICAgICAgPEJ1dHRvbiB0aXRsZT0iU3VibWl0IiBvblByZXNzPXtoYW5kbGVTdWJtaXR9IC8+CiAgICAgIHtyZXNwb25zZSAmJiAoCiAgICAgICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5yZXNwb25zZUNvbnRhaW5lcn0+CiAgICAgICAgICA8VGV4dCBzdHlsZT17c3R5bGVzLnJlc3BvbnNlVGV4dH0+UmVzcG9uc2U6IHtKU09OLnN0cmluZ2lmeShyZXNwb25zZSl9PC9UZXh0PgogICAgICAgIDwvVmlldz4KICAgICAgKX0KICAgICAge2Vycm9yICYmICgKICAgICAgICA8VmlldyBzdHlsZT17c3R5bGVzLmVycm9yQ29udGFpbmVyfT4KICAgICAgICAgIDxUZXh0IHN0eWxlPXtzdHlsZXMuZXJyb3JUZXh0fT5FcnJvcjoge2Vycm9yLm1lc3NhZ2V9PC9UZXh0PgogICAgICAgIDwvVmlldz4KICAgICAgKX0KICAgIDwvVmlldz4KICApOwp9OwoKY29uc3Qgc3R5bGVzID0gU3R5bGVTaGVldC5jcmVhdGUoewogIGNvbnRhaW5lcjogewogICAgZmxleDogMSwKICAgIGp1c3RpZnlDb250ZW50OiAnY2VudGVyJywKICAgIHBhZGRpbmc6IDE2LAogIH0sCiAgaW5wdXQ6IHsKICAgIGhlaWdodDogNDAsCiAgICBib3JkZXJDb2xvcjogJ2dyYXknLAogICAgYm9yZGVyV2lkdGg6IDEsCiAgICBtYXJnaW5Cb3R0b206IDEyLAogICAgcGFkZGluZ0hvcml6b250YWw6IDgsCiAgfSwKICByZXNwb25zZUNvbnRhaW5lcjogewogICAgbWFyZ2luVG9wOiAxNiwKICB9LAogIHJlc3BvbnNlVGV4dDogewogICAgZm9udFNpemU6IDE2LAogIH0sCiAgZXJyb3JDb250YWluZXI6IHsKICAgIG1hcmdpblRvcDogMTYsCiAgfSwKICBlcnJvclRleHQ6IHsKICAgIGZvbnRTaXplOiAxNiwKICAgIGNvbG9yOiAncmVkJywKICB9LAp9KTsKCmV4cG9ydCBkZWZhdWx0IEFwcDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import axios from 'axios';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+const App = () =&gt; {
+  const [title, setTitle] = useState('');
+  const [body, setBody] = useState('');
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = () =&gt; {
+    axios.post('https://jsonplaceholder.typicode.com/posts', {
+      title: title,
+      body: body,
+    })
+    .then(response =&gt; {
+      setResponse(response.data);
+    })
+    .catch(error =&gt; {
+      setError(error);
+    });
+  };
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;TextInput
+        style={styles.input}
+        placeholder=&quot;Title&quot;
+        value={title}
+        onChangeText={setTitle}
+      /&gt;
+      &lt;TextInput
+        style={styles.input}
+        placeholder=&quot;Body&quot;
+        value={body}
+        onChangeText={setBody}
+      /&gt;
+      &lt;Button title=&quot;Submit&quot; onPress={handleSubmit} /&gt;
+      {response &amp;&amp; (
+        &lt;View style={styles.responseContainer}&gt;
+          &lt;Text style={styles.responseText}&gt;Response: {JSON.stringify(response)}&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+      {error &amp;&amp; (
+        &lt;View style={styles.errorContainer}&gt;
+          &lt;Text style={styles.errorText}&gt;Error: {error.message}&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
+  responseContainer: {
+    marginTop: 16,
+  },
+  responseText: {
+    fontSize: 16,
+  },
+  errorContainer: {
+    marginTop: 16,
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
+  },
+});
+
+export default App;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importaciones</strong>: Importamos <code>axios</code> y los componentes necesarios de React y React Native.</li>
+<li><strong>Estado</strong>: Utilizamos <code>useState</code> para manejar el estado del título, el cuerpo, la respuesta y los errores.</li>
+<li><strong>Manejo de Entrada</strong>: Utilizamos <code>TextInput</code> para capturar el título y el cuerpo del usuario.</li>
+<li><strong>Solicitud POST</strong>: Realizamos la solicitud POST a <code>https://jsonplaceholder.typicode.com/posts</code> con los datos del título y el cuerpo.</li>
+<li><strong>Manejo de Respuesta</strong>: Si la solicitud es exitosa, actualizamos el estado con la respuesta recibida.</li>
+<li><strong>Manejo de Errores</strong>: Si ocurre un error, actualizamos el estado con el error.</li>
+<li><strong>Renderizado Condicional</strong>: Mostramos la respuesta o un mensaje de error según el estado.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una aplicación React Native que realice una solicitud GET a la API de GitHub para obtener información sobre un usuario específico. La aplicación debe permitir al usuario ingresar un nombre de usuario de GitHub y mostrar la información del usuario (nombre, biografía, número de repositorios, etc.).</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGF4aW9zIGZyb20gJ2F4aW9zJzsKaW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0LCBUZXh0SW5wdXQsIEJ1dHRvbiwgU3R5bGVTaGVldCB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7Cgpjb25zdCBBcHAgPSAoKSA9PiB7CiAgY29uc3QgW3VzZXJuYW1lLCBzZXRVc2VybmFtZV0gPSB1c2VTdGF0ZSgnJyk7CiAgY29uc3QgW3VzZXJEYXRhLCBzZXRVc2VyRGF0YV0gPSB1c2VTdGF0ZShudWxsKTsKICBjb25zdCBbZXJyb3IsIHNldEVycm9yXSA9IHVzZVN0YXRlKG51bGwpOwoKICBjb25zdCBoYW5kbGVTZWFyY2ggPSAoKSA9PiB7CiAgICBheGlvcy5nZXQoYGh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvJHt1c2VybmFtZX1gKQogICAgICAudGhlbihyZXNwb25zZSA9PiB7CiAgICAgICAgc2V0VXNlckRhdGEocmVzcG9uc2UuZGF0YSk7CiAgICAgICAgc2V0RXJyb3IobnVsbCk7CiAgICAgIH0pCiAgICAgIC5jYXRjaChlcnJvciA9PiB7CiAgICAgICAgc2V0RXJyb3IoZXJyb3IpOwogICAgICAgIHNldFVzZXJEYXRhKG51bGwpOwogICAgICB9KTsKICB9OwoKICByZXR1cm4gKAogICAgPFZpZXcgc3R5bGU9e3N0eWxlcy5jb250YWluZXJ9PgogICAgICA8VGV4dElucHV0CiAgICAgICAgc3R5bGU9e3N0eWxlcy5pbnB1dH0KICAgICAgICBwbGFjZWhvbGRlcj0iR2l0SHViIFVzZXJuYW1lIgogICAgICAgIHZhbHVlPXt1c2VybmFtZX0KICAgICAgICBvbkNoYW5nZVRleHQ9e3NldFVzZXJuYW1lfQogICAgICAvPgogICAgICA8QnV0dG9uIHRpdGxlPSJTZWFyY2giIG9uUHJlc3M9e2hhbmRsZVNlYXJjaH0gLz4KICAgICAge3VzZXJEYXRhICYmICgKICAgICAgICA8VmlldyBzdHlsZT17c3R5bGVzLnVzZXJEYXRhQ29udGFpbmVyfT4KICAgICAgICAgIDxUZXh0IHN0eWxlPXtzdHlsZXMudXNlckRhdGFUZXh0fT5OYW1lOiB7dXNlckRhdGEubmFtZX08L1RleHQ+CiAgICAgICAgICA8VGV4dCBzdHlsZT17c3R5bGVzLnVzZXJEYXRhVGV4dH0+QmlvOiB7dXNlckRhdGEuYmlvfTwvVGV4dD4KICAgICAgICAgIDxUZXh0IHN0eWxlPXtzdHlsZXMudXNlckRhdGFUZXh0fT5QdWJsaWMgUmVwb3M6IHt1c2VyRGF0YS5wdWJsaWNfcmVwb3N9PC9UZXh0PgogICAgICAgIDwvVmlldz4KICAgICAgKX0KICAgICAge2Vycm9yICYmICgKICAgICAgICA8VmlldyBzdHlsZT17c3R5bGVzLmVycm9yQ29udGFpbmVyfT4KICAgICAgICAgIDxUZXh0IHN0eWxlPXtzdHlsZXMuZXJyb3JUZXh0fT5FcnJvcjoge2Vycm9yLm1lc3NhZ2V9PC9UZXh0PgogICAgICAgIDwvVmlldz4KICAgICAgKX0KICAgIDwvVmlldz4KICApOwp9OwoKY29uc3Qgc3R5bGVzID0gU3R5bGVTaGVldC5jcmVhdGUoewogIGNvbnRhaW5lcjogewogICAgZmxleDogMSwKICAgIGp1c3RpZnlDb250ZW50OiAnY2VudGVyJywKICAgIHBhZGRpbmc6IDE2LAogIH0sCiAgaW5wdXQ6IHsKICAgIGhlaWdodDogNDAsCiAgICBib3JkZXJDb2xvcjogJ2dyYXknLAogICAgYm9yZGVyV2lkdGg6IDEsCiAgICBtYXJnaW5Cb3R0b206IDEyLAogICAgcGFkZGluZ0hvcml6b250YWw6IDgsCiAgfSwKICB1c2VyRGF0YUNvbnRhaW5lcjogewogICAgbWFyZ2luVG9wOiAxNiwKICB9LAogIHVzZXJEYXRhVGV4dDogewogICAgZm9udFNpemU6IDE2LAogIH0sCiAgZXJyb3JDb250YWluZXI6IHsKICAgIG1hcmdpblRvcDogMTYsCiAgfSwKICBlcnJvclRleHQ6IHsKICAgIGZvbnRTaXplOiAxNiwKICAgIGNvbG9yOiAncmVkJywKICB9LAp9KTsKCmV4cG9ydCBkZWZhdWx0IEFwcDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import axios from 'axios';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+
+const App = () =&gt; {
+  const [username, setUsername] = useState('');
+  const [userData, setUserData] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleSearch = () =&gt; {
+    axios.get(`https://api.github.com/users/${username}`)
+      .then(response =&gt; {
+        setUserData(response.data);
+        setError(null);
+      })
+      .catch(error =&gt; {
+        setError(error);
+        setUserData(null);
+      });
+  };
+
+  return (
+    &lt;View style={styles.container}&gt;
+      &lt;TextInput
+        style={styles.input}
+        placeholder=&quot;GitHub Username&quot;
+        value={username}
+        onChangeText={setUsername}
+      /&gt;
+      &lt;Button title=&quot;Search&quot; onPress={handleSearch} /&gt;
+      {userData &amp;&amp; (
+        &lt;View style={styles.userDataContainer}&gt;
+          &lt;Text style={styles.userDataText}&gt;Name: {userData.name}&lt;/Text&gt;
+          &lt;Text style={styles.userDataText}&gt;Bio: {userData.bio}&lt;/Text&gt;
+          &lt;Text style={styles.userDataText}&gt;Public Repos: {userData.public_repos}&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+      {error &amp;&amp; (
+        &lt;View style={styles.errorContainer}&gt;
+          &lt;Text style={styles.errorText}&gt;Error: {error.message}&lt;/Text&gt;
+        &lt;/View&gt;
+      )}
+    &lt;/View&gt;
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 8,
+  },
+  userDataContainer: {
+    marginTop: 16,
+  },
+  userDataText: {
+    fontSize: 16,
+  },
+  errorContainer: {
+    marginTop: 16,
+  },
+  errorText: {
+    fontSize: 16,
+    color: 'red',
+  },
+});
+
+export default App;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importaciones</strong>: Importamos <code>axios</code> y los componentes necesarios de React y React Native.</li>
+<li><strong>Estado</strong>: Utilizamos <code>useState</code> para manejar el estado del nombre de usuario, los datos del usuario y los errores.</li>
+<li><strong>Manejo de Entrada</strong>: Utilizamos <code>TextInput</code> para capturar el nombre de usuario de GitHub.</li>
+<li><strong>Solicitud GET</strong>: Realizamos la solicitud GET a <code>https://api.github.com/users/${username}</code> con el nombre de usuario ingresado.</li>
+<li><strong>Manejo de Respuesta</strong>: Si la solicitud es exitosa, actualizamos el estado con los datos del usuario.</li>
+<li><strong>Manejo de Errores</strong>: Si ocurre un error, actualizamos el estado con el error.</li>
+<li><strong>Renderizado Condicional</strong>: Mostramos los datos del usuario o un mensaje de error según el estado.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido a utilizar Axios para realizar solicitudes HTTP en aplicaciones React Native. Hemos cubierto cómo realizar solicitudes GET y POST, manejar respuestas y errores, y hemos implementado ejemplos prácticos para reforzar los conceptos. Con esta base, estarás mejor preparado para manejar la comunicación con servidores en tus aplicaciones React Native.</p>
+<p>En la próxima lección, aprenderemos sobre el manejo de errores de red para hacer nuestras aplicaciones más robustas y resilientes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-fetching-data-fetch-api' title="Obteniendo Datos con Fetch API">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-handling-network-errors' title="Manejo de Errores de Red">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformadores de Mónadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/haskell/05-03-monad-transformers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/haskell/05-03-monad-transformers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/haskell/05-03-monad-transformers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/haskell/05-03-monad-transformers" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/haskell/05-03-monad-transformers" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-applicative-functors' title="Funtores Aplicativos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Transformadores de Mónadas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-functor-foldable' title="Functor y Foldable">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los transformadores de mónadas son una herramienta poderosa en Haskell que permite combinar múltiples efectos monádicos en una sola estructura. Esto es especialmente útil cuando necesitas trabajar con varias mónadas a la vez, como <code>Maybe</code>, <code>Either</code>, <code>IO</code>, etc. Los transformadores de mónadas te permiten &quot;apilar&quot; estas mónadas de manera que puedas manejar múltiples efectos de manera limpia y eficiente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Mónadas</strong>: Estructuras que representan cálculos que pueden encadenarse.</li>
+<li><strong>Transformadores de Mónadas</strong>: Extensiones de mónadas que permiten combinar múltiples efectos monádicos.</li>
+<li><strong>Apilamiento de Mónadas</strong>: El proceso de combinar varias mónadas usando transformadores.</li>
+</ol>
+</div><h1>Ejemplo Básico</h1>
+<div class='content'><p>Para ilustrar cómo funcionan los transformadores de mónadas, consideremos un ejemplo simple donde combinamos <code>Maybe</code> y <code>IO</code>.</p>
+</div><h2>Sin Transformadores de Mónadas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFN5c3RlbS5JTwoKbWF5YmVSZWFkRmlsZSA6OiBGaWxlUGF0aCAtPiBJTyAoTWF5YmUgU3RyaW5nKQptYXliZVJlYWRGaWxlIHBhdGggPSBkbwogICAgZXhpc3RzIDwtIGRvZXNGaWxlRXhpc3QgcGF0aAogICAgaWYgZXhpc3RzCiAgICAgICAgdGhlbiBkbwogICAgICAgICAgICBjb250ZW50IDwtIHJlYWRGaWxlIHBhdGgKICAgICAgICAgICAgcmV0dXJuIChKdXN0IGNvbnRlbnQpCiAgICAgICAgZWxzZSByZXR1cm4gTm90aGluZw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import System.IO
+
+maybeReadFile :: FilePath -&gt; IO (Maybe String)
+maybeReadFile path = do
+    exists &lt;- doesFileExist path
+    if exists
+        then do
+            content &lt;- readFile path
+            return (Just content)
+        else return Nothing</pre></div><div class='content'><p>En este ejemplo, <code>maybeReadFile</code> intenta leer un archivo y devuelve <code>Nothing</code> si el archivo no existe. Sin embargo, el código puede volverse complicado rápidamente si necesitamos manejar más efectos.</p>
+</div><h2>Con Transformadores de Mónadas</h2>
+<div class='content'><p>Usando el transformador <code>MaybeT</code>, podemos simplificar el manejo de <code>Maybe</code> dentro de <code>IO</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IENvbnRyb2wuTW9uYWQuVHJhbnMuTWF5YmUKaW1wb3J0IENvbnRyb2wuTW9uYWQuSU8uQ2xhc3MKaW1wb3J0IFN5c3RlbS5JTwoKbWF5YmVSZWFkRmlsZVQgOjogRmlsZVBhdGggLT4gTWF5YmVUIElPIFN0cmluZwptYXliZVJlYWRGaWxlVCBwYXRoID0gZG8KICAgIGV4aXN0cyA8LSBsaWZ0SU8gJCBkb2VzRmlsZUV4aXN0IHBhdGgKICAgIGlmIGV4aXN0cwogICAgICAgIHRoZW4gbGlmdElPICQgcmVhZEZpbGUgcGF0aAogICAgICAgIGVsc2UgTWF5YmVUICQgcmV0dXJuIE5vdGhpbmc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Control.Monad.Trans.Maybe
+import Control.Monad.IO.Class
+import System.IO
+
+maybeReadFileT :: FilePath -&gt; MaybeT IO String
+maybeReadFileT path = do
+    exists &lt;- liftIO $ doesFileExist path
+    if exists
+        then liftIO $ readFile path
+        else MaybeT $ return Nothing</pre></div><div class='content'><p>Aquí, <code>MaybeT IO</code> es una mónada que combina los efectos de <code>Maybe</code> y <code>IO</code>. La función <code>liftIO</code> se utiliza para levantar una acción de <code>IO</code> dentro de la mónada combinada.</p>
+</div><h1>Desglosando el Código</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Importaciones</strong>:</p>
+<ul>
+<li><code>Control.Monad.Trans.Maybe</code>: Proporciona el transformador <code>MaybeT</code>.</li>
+<li><code>Control.Monad.IO.Class</code>: Proporciona la función <code>liftIO</code> para levantar acciones de <code>IO</code>.</li>
+<li><code>System.IO</code>: Proporciona funciones de entrada/salida.</li>
+</ul>
+</li>
+<li>
+<p><strong>maybeReadFileT</strong>:</p>
+<ul>
+<li><code>MaybeT IO String</code>: Tipo de la función que combina <code>Maybe</code> y <code>IO</code>.</li>
+<li><code>liftIO $ doesFileExist path</code>: Levanta la acción <code>doesFileExist</code> de <code>IO</code> a <code>MaybeT IO</code>.</li>
+<li><code>MaybeT $ return Nothing</code>: Devuelve <code>Nothing</code> en la mónada combinada.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Escribe una función <code>maybeReadFileAndPrint</code> que use <code>MaybeT</code> para leer un archivo y luego imprimir su contenido si existe, o imprimir un mensaje de error si no existe.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IENvbnRyb2wuTW9uYWQuVHJhbnMuTWF5YmUKaW1wb3J0IENvbnRyb2wuTW9uYWQuSU8uQ2xhc3MKaW1wb3J0IFN5c3RlbS5JTwoKbWF5YmVSZWFkRmlsZUFuZFByaW50IDo6IEZpbGVQYXRoIC0+IE1heWJlVCBJTyAoKQptYXliZVJlYWRGaWxlQW5kUHJpbnQgcGF0aCA9IGRvCiAgICBjb250ZW50IDwtIG1heWJlUmVhZEZpbGVUIHBhdGgKICAgIGxpZnRJTyAkIHB1dFN0ckxuIGNvbnRlbnQKCm1haW4gOjogSU8gKCkKbWFpbiA9IGRvCiAgICBydW5NYXliZVQgKG1heWJlUmVhZEZpbGVBbmRQcmludCAidGVzdC50eHQiKSA+Pj0gXHJlc3VsdCAtPgogICAgICAgIGNhc2UgcmVzdWx0IG9mCiAgICAgICAgICAgIE5vdGhpbmcgLT4gcHV0U3RyTG4gIkZpbGUgZG9lcyBub3QgZXhpc3QuIgogICAgICAgICAgICBKdXN0IF8gIC0+IHJldHVybiAoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Control.Monad.Trans.Maybe
+import Control.Monad.IO.Class
+import System.IO
+
+maybeReadFileAndPrint :: FilePath -&gt; MaybeT IO ()
+maybeReadFileAndPrint path = do
+    content &lt;- maybeReadFileT path
+    liftIO $ putStrLn content
+
+main :: IO ()
+main = do
+    runMaybeT (maybeReadFileAndPrint &quot;test.txt&quot;) &gt;&gt;= \result -&gt;
+        case result of
+            Nothing -&gt; putStrLn &quot;File does not exist.&quot;
+            Just _  -&gt; return ()</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IENvbnRyb2wuTW9uYWQuVHJhbnMuTWF5YmUKaW1wb3J0IENvbnRyb2wuTW9uYWQuSU8uQ2xhc3MKaW1wb3J0IFN5c3RlbS5JTwoKbWF5YmVSZWFkRmlsZUFuZFByaW50IDo6IEZpbGVQYXRoIC0+IE1heWJlVCBJTyAoKQptYXliZVJlYWRGaWxlQW5kUHJpbnQgcGF0aCA9IGRvCiAgICBjb250ZW50IDwtIG1heWJlUmVhZEZpbGVUIHBhdGgKICAgIGxpZnRJTyAkIHB1dFN0ckxuIGNvbnRlbnQKCm1haW4gOjogSU8gKCkKbWFpbiA9IGRvCiAgICBydW5NYXliZVQgKG1heWJlUmVhZEZpbGVBbmRQcmludCAidGVzdC50eHQiKSA+Pj0gXHJlc3VsdCAtPgogICAgICAgIGNhc2UgcmVzdWx0IG9mCiAgICAgICAgICAgIE5vdGhpbmcgLT4gcHV0U3RyTG4gIkZpbGUgZG9lcyBub3QgZXhpc3QuIgogICAgICAgICAgICBKdXN0IF8gIC0+IHJldHVybiAoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Control.Monad.Trans.Maybe
+import Control.Monad.IO.Class
+import System.IO
+
+maybeReadFileAndPrint :: FilePath -&gt; MaybeT IO ()
+maybeReadFileAndPrint path = do
+    content &lt;- maybeReadFileT path
+    liftIO $ putStrLn content
+
+main :: IO ()
+main = do
+    runMaybeT (maybeReadFileAndPrint &quot;test.txt&quot;) &gt;&gt;= \result -&gt;
+        case result of
+            Nothing -&gt; putStrLn &quot;File does not exist.&quot;
+            Just _  -&gt; return ()</pre></div><div class='content'></div><h1>Retroalimentación y Consejos</h1>
+<div class='content'><ul>
+<li><strong>Error Común</strong>: Olvidar usar <code>liftIO</code> para levantar acciones de <code>IO</code> dentro de <code>MaybeT</code>.</li>
+<li><strong>Consejo</strong>: Siempre verifica el tipo de la función para asegurarte de que estás trabajando en la mónada correcta.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los transformadores de mónadas son una herramienta esencial para manejar múltiples efectos monádicos en Haskell. En este módulo, aprendimos cómo usar <code>MaybeT</code> para combinar <code>Maybe</code> y <code>IO</code>, simplificando el manejo de efectos combinados. Con esta base, puedes explorar otros transformadores de mónadas como <code>ExceptT</code>, <code>StateT</code>, y más, para manejar diferentes combinaciones de efectos en tus programas Haskell.</p>
+<p>En el próximo módulo, profundizaremos en el manejo de entrada y salida en Haskell, comenzando con operaciones básicas de I/O.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-applicative-functors' title="Funtores Aplicativos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-functor-foldable' title="Functor y Foldable">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

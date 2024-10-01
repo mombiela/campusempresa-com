@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/04-04-indexes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/04-04-indexes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/04-04-indexes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/04-04-indexes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/04-04-indexes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-primary-and-foreign-keys' title="Claves Primarias y Foráneas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Índices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-views' title="Vistas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='index'></div><h2>Introducción</h2>
+<div class='index'><p>Los índices son estructuras de datos que mejoran la velocidad de las operaciones de consulta en una base de datos. Al igual que un índice en un libro, un índice en una base de datos permite acceder rápidamente a las filas de una tabla sin tener que escanear toda la tabla. En PostgreSQL, los índices son una herramienta poderosa para optimizar el rendimiento de las consultas.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='index'><ol>
+<li><strong>Índice</strong>: Estructura de datos que mejora la velocidad de las operaciones de consulta.</li>
+<li><strong>B-Tree</strong>: Tipo de índice más común en PostgreSQL, adecuado para la mayoría de las consultas.</li>
+<li><strong>Hash</strong>: Índice utilizado para igualdad de valores.</li>
+<li><strong>GIN (Generalized Inverted Index)</strong>: Índice utilizado para búsquedas de texto completo y tipos de datos complejos.</li>
+<li><strong>GiST (Generalized Search Tree)</strong>: Índice utilizado para datos geoespaciales y otros tipos de datos complejos.</li>
+<li><strong>SP-GiST (Space-Partitioned Generalized Search Tree)</strong>: Índice utilizado para datos que pueden ser particionados espacialmente.</li>
+<li><strong>BRIN (Block Range INdex)</strong>: Índice utilizado para grandes tablas donde los datos están ordenados físicamente.</li>
+</ol>
+</div><h2>Creación de Índices</h2>
+<div class='index'></div><h2>Sintaxis Básica</h2>
+<div class='index'><p>Para crear un índice en PostgreSQL, se utiliza la instrucción <code>CREATE INDEX</code>. La sintaxis básica es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIG5vbWJyZV9kZWxfaW5kaWNlCk9OIG5vbWJyZV9kZV9sYV90YWJsYSAoY29sdW1uYTEsIGNvbHVtbmEyLCAuLi4pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX nombre_del_indice
+ON nombre_de_la_tabla (columna1, columna2, ...);</pre></div><div class='index'></div><h2>Ejemplo Práctico</h2>
+<div class='index'><p>Supongamos que tenemos una tabla llamada <code>empleados</code> con las siguientes columnas: <code>id</code>, <code>nombre</code>, <code>apellido</code>, <code>edad</code>, y <code>departamento_id</code>. Queremos crear un índice en la columna <code>apellido</code> para acelerar las consultas que buscan empleados por su apellido.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9hcGVsbGlkbwpPTiBlbXBsZWFkb3MgKGFwZWxsaWRvKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_apellido
+ON empleados (apellido);</pre></div><div class='index'></div><h2>Índices Únicos</h2>
+<div class='index'><p>Un índice único garantiza que los valores en la columna o columnas indexadas sean únicos. Esto es útil para columnas que deben tener valores únicos, como una dirección de correo electrónico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFVOSVFVRSBJTkRFWCBpZHhfZW1haWwKT04gZW1wbGVhZG9zIChlbWFpbCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE UNIQUE INDEX idx_email
+ON empleados (email);</pre></div><div class='index'></div><h2>Índices Compuestos</h2>
+<div class='index'><p>Un índice compuesto incluye más de una columna. Esto puede ser útil para consultas que filtran por múltiples columnas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9ub21icmVfYXBlbGxpZG8KT04gZW1wbGVhZG9zIChub21icmUsIGFwZWxsaWRvKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_nombre_apellido
+ON empleados (nombre, apellido);</pre></div><div class='index'></div><h2>Tipos de Índices</h2>
+<div class='index'></div><h2>B-Tree</h2>
+<div class='index'><p>El tipo de índice predeterminado en PostgreSQL es el B-Tree. Es adecuado para la mayoría de las consultas, incluidas las que utilizan operadores de comparación (<code>=</code>, <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9lZGFkCk9OIGVtcGxlYWRvcyBVU0lORyBidHJlZSAoZWRhZCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_edad
+ON empleados USING btree (edad);</pre></div><div class='index'></div><h2>Hash</h2>
+<div class='index'><p>Los índices hash son útiles para consultas que utilizan el operador de igualdad (<code>=</code>). Sin embargo, no son tan comunes como los índices B-Tree.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXBhcnRhbWVudG9faWQKT04gZW1wbGVhZG9zIFVTSU5HIGhhc2ggKGRlcGFydGFtZW50b19pZCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_departamento_id
+ON empleados USING hash (departamento_id);</pre></div><div class='index'></div><h2>GIN</h2>
+<div class='index'><p>Los índices GIN son útiles para búsquedas de texto completo y tipos de datos complejos como arrays y JSONB.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF91c3Vhcmlvc19pbnRlcmVzZXMKT04gdXN1YXJpb3MgVVNJTkcgZ2luIChpbnRlcmVzZXMpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_usuarios_intereses
+ON usuarios USING gin (intereses);</pre></div><div class='index'></div><h2>GiST</h2>
+<div class='index'><p>Los índices GiST son útiles para datos geoespaciales y otros tipos de datos complejos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF91YmljYWNpb24KT04gdWJpY2FjaW9uZXMgVVNJTkcgZ2lzdCAoY29vcmRlbmFkYXMpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_ubicacion
+ON ubicaciones USING gist (coordenadas);</pre></div><div class='index'></div><h2>BRIN</h2>
+<div class='index'><p>Los índices BRIN son útiles para grandes tablas donde los datos están ordenados físicamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9mZWNoYQpPTiByZWdpc3Ryb3MgVVNJTkcgYnJpbiAoZmVjaGEpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_fecha
+ON registros USING brin (fecha);</pre></div><div class='index'></div><h2>Mantenimiento de Índices</h2>
+<div class='index'></div><h2>Reindexación</h2>
+<div class='index'><p>Con el tiempo, los índices pueden volverse fragmentados y menos eficientes. PostgreSQL proporciona la instrucción <code>REINDEX</code> para reconstruir un índice.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UkVJTkRFWCBJTkRFWCBpZHhfYXBlbGxpZG87"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>REINDEX INDEX idx_apellido;</pre></div><div class='index'></div><h2>Eliminación de Índices</h2>
+<div class='index'><p>Si un índice ya no es necesario, se puede eliminar utilizando la instrucción <code>DROP INDEX</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RFJPUCBJTkRFWCBpZHhfYXBlbGxpZG87"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DROP INDEX idx_apellido;</pre></div><div class='index'></div><h2>Ejercicios Prácticos</h2>
+<div class='index'></div><h2>Ejercicio 1: Creación de Índices</h2>
+<div class='index'><ol>
+<li>Crea una tabla llamada <code>productos</code> con las siguientes columnas: <code>id</code>, <code>nombre</code>, <code>precio</code>, <code>categoria_id</code>.</li>
+<li>Crea un índice en la columna <code>nombre</code>.</li>
+<li>Crea un índice único en la columna <code>id</code>.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXIgbGEgdGFibGEgcHJvZHVjdG9zCkNSRUFURSBUQUJMRSBwcm9kdWN0b3MgKAogICAgaWQgU0VSSUFMIFBSSU1BUlkgS0VZLAogICAgbm9tYnJlIFZBUkNIQVIoMTAwKSwKICAgIHByZWNpbyBOVU1FUklDLAogICAgY2F0ZWdvcmlhX2lkIElOVEVHRVIKKTsKCi0tIENyZWFyIHVuIMOtbmRpY2UgZW4gbGEgY29sdW1uYSBub21icmUKQ1JFQVRFIElOREVYIGlkeF9ub21icmUKT04gcHJvZHVjdG9zIChub21icmUpOwoKLS0gQ3JlYXIgdW4gw61uZGljZSDDum5pY28gZW4gbGEgY29sdW1uYSBpZApDUkVBVEUgVU5JUVVFIElOREVYIGlkeF9pZApPTiBwcm9kdWN0b3MgKGlkKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Crear la tabla productos
+CREATE TABLE productos (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    precio NUMERIC,
+    categoria_id INTEGER
+);
+
+-- Crear un &iacute;ndice en la columna nombre
+CREATE INDEX idx_nombre
+ON productos (nombre);
+
+-- Crear un &iacute;ndice &uacute;nico en la columna id
+CREATE UNIQUE INDEX idx_id
+ON productos (id);</pre></div><div class='index'></div><h2>Ejercicio 2: Índices Compuestos</h2>
+<div class='index'><ol>
+<li>Crea un índice compuesto en las columnas <code>nombre</code> y <code>precio</code> de la tabla <code>productos</code>.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9ub21icmVfcHJlY2lvCk9OIHByb2R1Y3RvcyAobm9tYnJlLCBwcmVjaW8pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_nombre_precio
+ON productos (nombre, precio);</pre></div><div class='index'></div><h2>Conclusión</h2>
+<div class='index'><p>Los índices son una herramienta esencial para optimizar el rendimiento de las consultas en PostgreSQL. Al comprender los diferentes tipos de índices y cómo utilizarlos, puedes mejorar significativamente la eficiencia de tus bases de datos. En el próximo módulo, exploraremos características avanzadas de PostgreSQL, como vistas y triggers, que te permitirán aprovechar al máximo esta potente base de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-primary-and-foreign-keys' title="Claves Primarias y Foráneas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-views' title="Vistas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

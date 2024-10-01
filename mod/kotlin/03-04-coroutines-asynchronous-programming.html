@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrutinas y Programación Asíncrona</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kotlin/03-04-coroutines-asynchronous-programming" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kotlin/03-04-coroutines-asynchronous-programming" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kotlin/03-04-coroutines-asynchronous-programming" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kotlin/03-04-coroutines-asynchronous-programming" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kotlin/03-04-coroutines-asynchronous-programming" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-higher-order-functions-functional-programming' title="Funciones de Orden Superior y Programación Funcional">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Corrutinas y Programación Asíncrona</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-dsl-domain-specific-language' title="DSL (Lenguaje Específico de Dominio) en Kotlin">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, exploraremos las corrutinas en Kotlin, una característica poderosa para manejar la programación asíncrona de manera eficiente y sencilla. Las corrutinas permiten escribir código asíncrono de manera secuencial, lo que facilita la lectura y el mantenimiento del código.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Corrutinas</strong>: Son una forma de realizar tareas asíncronas sin bloquear el hilo principal.</li>
+<li><strong>Scope (Alcance)</strong>: Define el contexto en el que se ejecutan las corrutinas.</li>
+<li><strong>Dispatcher (Despachador)</strong>: Determina en qué hilo o hilos se ejecutará la corrutina.</li>
+<li><strong>Job</strong>: Representa una unidad de trabajo que se puede cancelar.</li>
+<li><strong>Deferred</strong>: Es un Job que puede devolver un resultado.</li>
+</ol>
+</div><h1>Configuración Inicial</h1>
+<div class='content'><p>Para usar corrutinas en Kotlin, necesitas agregar la dependencia de corrutinas en tu archivo <code>build.gradle</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wbGVtZW50YXRpb24gJ29yZy5qZXRicmFpbnMua290bGlueDprb3RsaW54LWNvcm91dGluZXMtY29yZToxLjUuMic="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2'</pre></div><div class='content'></div><h1>Ejemplo Básico de Corrutina</h1>
+<div class='content'></div><h2>Lanzar una Corrutina</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgbGF1bmNoIHsKICAgICAgICBkZWxheSgxMDAwTCkKICAgICAgICBwcmludGxuKCJDb3JydXRpbmEhIikKICAgIH0KICAgIHByaW50bG4oIkhvbGEsIikKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    launch {
+        delay(1000L)
+        println(&quot;Corrutina!&quot;)
+    }
+    println(&quot;Hola,&quot;)
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>runBlocking</code>: Bloquea el hilo principal hasta que todas las corrutinas dentro de él se completen.</li>
+<li><code>launch</code>: Inicia una nueva corrutina sin bloquear el hilo actual.</li>
+<li><code>delay</code>: Suspende la corrutina durante el tiempo especificado sin bloquear el hilo.</li>
+</ul>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio 1:</strong></p>
+<p>Escribe un programa que lance dos corrutinas. La primera debe imprimir &quot;Primera Corrutina&quot; después de 1 segundo y la segunda debe imprimir &quot;Segunda Corrutina&quot; después de 2 segundos.</p>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgbGF1bmNoIHsKICAgICAgICBkZWxheSgxMDAwTCkKICAgICAgICBwcmludGxuKCJQcmltZXJhIENvcnJ1dGluYSIpCiAgICB9CiAgICBsYXVuY2ggewogICAgICAgIGRlbGF5KDIwMDBMKQogICAgICAgIHByaW50bG4oIlNlZ3VuZGEgQ29ycnV0aW5hIikKICAgIH0KICAgIHByaW50bG4oIkluaWNpbyIpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    launch {
+        delay(1000L)
+        println(&quot;Primera Corrutina&quot;)
+    }
+    launch {
+        delay(2000L)
+        println(&quot;Segunda Corrutina&quot;)
+    }
+    println(&quot;Inicio&quot;)
+}</pre></div><div class='content'></div><h1>Scope y Dispatcher</h1>
+<div class='content'></div><h2>Scope</h2>
+<div class='content'><p>El scope define el contexto de la corrutina. Los scopes más comunes son <code>GlobalScope</code>, <code>CoroutineScope</code> y <code>runBlocking</code>.</p>
+</div><h2>Dispatcher</h2>
+<div class='content'><p>El dispatcher determina en qué hilo se ejecutará la corrutina. Los dispatchers más comunes son:</p>
+<ul>
+<li><code>Dispatchers.Default</code>: Utiliza un pool de hilos compartido.</li>
+<li><code>Dispatchers.IO</code>: Optimizado para operaciones de entrada/salida.</li>
+<li><code>Dispatchers.Main</code>: Utilizado para operaciones en el hilo principal (UI).</li>
+</ul>
+</div><h2>Ejemplo con Dispatcher</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgbGF1bmNoKERpc3BhdGNoZXJzLkRlZmF1bHQpIHsKICAgICAgICBwcmludGxuKCJEZWZhdWx0IERpc3BhdGNoZXI6ICR7VGhyZWFkLmN1cnJlbnRUaHJlYWQoKS5uYW1lfSIpCiAgICB9CiAgICBsYXVuY2goRGlzcGF0Y2hlcnMuSU8pIHsKICAgICAgICBwcmludGxuKCJJTyBEaXNwYXRjaGVyOiAke1RocmVhZC5jdXJyZW50VGhyZWFkKCkubmFtZX0iKQogICAgfQogICAgbGF1bmNoKERpc3BhdGNoZXJzLk1haW4pIHsKICAgICAgICBwcmludGxuKCJNYWluIERpc3BhdGNoZXI6ICR7VGhyZWFkLmN1cnJlbnRUaHJlYWQoKS5uYW1lfSIpCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    launch(Dispatchers.Default) {
+        println(&quot;Default Dispatcher: ${Thread.currentThread().name}&quot;)
+    }
+    launch(Dispatchers.IO) {
+        println(&quot;IO Dispatcher: ${Thread.currentThread().name}&quot;)
+    }
+    launch(Dispatchers.Main) {
+        println(&quot;Main Dispatcher: ${Thread.currentThread().name}&quot;)
+    }
+}</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio 2:</strong></p>
+<p>Modifica el programa anterior para que cada corrutina imprima un mensaje diferente y se ejecute en un dispatcher diferente.</p>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgbGF1bmNoKERpc3BhdGNoZXJzLkRlZmF1bHQpIHsKICAgICAgICBwcmludGxuKCJFamVjdXRhbmRvIGVuIERlZmF1bHQgRGlzcGF0Y2hlcjogJHtUaHJlYWQuY3VycmVudFRocmVhZCgpLm5hbWV9IikKICAgIH0KICAgIGxhdW5jaChEaXNwYXRjaGVycy5JTykgewogICAgICAgIHByaW50bG4oIkVqZWN1dGFuZG8gZW4gSU8gRGlzcGF0Y2hlcjogJHtUaHJlYWQuY3VycmVudFRocmVhZCgpLm5hbWV9IikKICAgIH0KICAgIGxhdW5jaChEaXNwYXRjaGVycy5NYWluKSB7CiAgICAgICAgcHJpbnRsbigiRWplY3V0YW5kbyBlbiBNYWluIERpc3BhdGNoZXI6ICR7VGhyZWFkLmN1cnJlbnRUaHJlYWQoKS5uYW1lfSIpCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    launch(Dispatchers.Default) {
+        println(&quot;Ejecutando en Default Dispatcher: ${Thread.currentThread().name}&quot;)
+    }
+    launch(Dispatchers.IO) {
+        println(&quot;Ejecutando en IO Dispatcher: ${Thread.currentThread().name}&quot;)
+    }
+    launch(Dispatchers.Main) {
+        println(&quot;Ejecutando en Main Dispatcher: ${Thread.currentThread().name}&quot;)
+    }
+}</pre></div><div class='content'></div><h1>Job y Deferred</h1>
+<div class='content'></div><h2>Job</h2>
+<div class='content'><p>Un <code>Job</code> representa una unidad de trabajo que puede ser cancelada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgdmFsIGpvYiA9IGxhdW5jaCB7CiAgICAgICAgcmVwZWF0KDEwMDApIHsgaSAtPgogICAgICAgICAgICBwcmludGxuKCJKb2I6ICRpIikKICAgICAgICAgICAgZGVsYXkoNTAwTCkKICAgICAgICB9CiAgICB9CiAgICBkZWxheSgxMzAwTCkKICAgIHByaW50bG4oIkNhbmNlbGFuZG8gZWwgam9iIikKICAgIGpvYi5jYW5jZWxBbmRKb2luKCkKICAgIHByaW50bG4oIkpvYiBjYW5jZWxhZG8iKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    val job = launch {
+        repeat(1000) { i -&gt;
+            println(&quot;Job: $i&quot;)
+            delay(500L)
+        }
+    }
+    delay(1300L)
+    println(&quot;Cancelando el job&quot;)
+    job.cancelAndJoin()
+    println(&quot;Job cancelado&quot;)
+}</pre></div><div class='content'></div><h2>Deferred</h2>
+<div class='content'><p>Un <code>Deferred</code> es un <code>Job</code> que puede devolver un resultado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgdmFsIGRlZmVycmVkID0gYXN5bmMgewogICAgICAgIGRlbGF5KDEwMDBMKQogICAgICAgICJSZXN1bHRhZG8iCiAgICB9CiAgICBwcmludGxuKCJFc3BlcmFuZG8gZWwgcmVzdWx0YWRvLi4uIikKICAgIHZhbCByZXN1bHQgPSBkZWZlcnJlZC5hd2FpdCgpCiAgICBwcmludGxuKCJSZXN1bHRhZG86ICRyZXN1bHQiKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    val deferred = async {
+        delay(1000L)
+        &quot;Resultado&quot;
+    }
+    println(&quot;Esperando el resultado...&quot;)
+    val result = deferred.await()
+    println(&quot;Resultado: $result&quot;)
+}</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio 3:</strong></p>
+<p>Escribe un programa que lance un <code>Job</code> que imprima números del 1 al 5 con un retraso de 1 segundo entre cada número. Después de 3 segundos, cancela el <code>Job</code>.</p>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGtvdGxpbnguY29yb3V0aW5lcy4qCgpmdW4gbWFpbigpID0gcnVuQmxvY2tpbmcgewogICAgdmFsIGpvYiA9IGxhdW5jaCB7CiAgICAgICAgcmVwZWF0KDUpIHsgaSAtPgogICAgICAgICAgICBwcmludGxuKCJOw7ptZXJvOiAke2kgKyAxfSIpCiAgICAgICAgICAgIGRlbGF5KDEwMDBMKQogICAgICAgIH0KICAgIH0KICAgIGRlbGF5KDMwMDBMKQogICAgcHJpbnRsbigiQ2FuY2VsYW5kbyBlbCBqb2IiKQogICAgam9iLmNhbmNlbEFuZEpvaW4oKQogICAgcHJpbnRsbigiSm9iIGNhbmNlbGFkbyIpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import kotlinx.coroutines.*
+
+fun main() = runBlocking {
+    val job = launch {
+        repeat(5) { i -&gt;
+            println(&quot;N&uacute;mero: ${i + 1}&quot;)
+            delay(1000L)
+        }
+    }
+    delay(3000L)
+    println(&quot;Cancelando el job&quot;)
+    job.cancelAndJoin()
+    println(&quot;Job cancelado&quot;)
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido los conceptos básicos de las corrutinas en Kotlin, incluyendo cómo lanzarlas, los diferentes scopes y dispatchers, y cómo manejar <code>Job</code> y <code>Deferred</code>. Las corrutinas son una herramienta poderosa para manejar la programación asíncrona de manera eficiente y legible. En el próximo módulo, exploraremos cómo aplicar estos conceptos en el desarrollo de aplicaciones Android con Kotlin.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-higher-order-functions-functional-programming' title="Funciones de Orden Superior y Programación Funcional">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-dsl-domain-specific-language' title="DSL (Lenguaje Específico de Dominio) en Kotlin">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de Flask para Producción</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/08-01-configuring-production" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/08-01-configuring-production" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/08-01-configuring-production" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flask/08-01-configuring-production" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/08-01-configuring-production" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-authentication-apis' title="Autenticación para APIs">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Configuración de Flask para Producción</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-deploying-heroku' title="Despliegue en Heroku">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo configurar una aplicación Flask para su despliegue en un entorno de producción. A diferencia del entorno de desarrollo, el entorno de producción requiere configuraciones adicionales para garantizar la seguridad, el rendimiento y la estabilidad de la aplicación.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Entender las diferencias entre los entornos de desarrollo y producción.</li>
+<li>Configurar variables de entorno y archivos de configuración.</li>
+<li>Implementar servidores WSGI para servir aplicaciones Flask.</li>
+<li>Configurar el manejo de errores y el registro de logs.</li>
+</ul>
+</div><h1>1. Diferencias entre Desarrollo y Producción</h1>
+<div class='content'></div><h2>Entorno de Desarrollo</h2>
+<div class='content'><ul>
+<li><strong>Depuración Activa</strong>: La depuración está habilitada para facilitar la identificación de errores.</li>
+<li><strong>Recarga Automática</strong>: Los cambios en el código se reflejan inmediatamente sin necesidad de reiniciar el servidor.</li>
+<li><strong>Seguridad Relajada</strong>: Menos restricciones de seguridad para facilitar el desarrollo.</li>
+</ul>
+</div><h2>Entorno de Producción</h2>
+<div class='content'><ul>
+<li><strong>Depuración Deshabilitada</strong>: La depuración está deshabilitada para evitar la exposición de información sensible.</li>
+<li><strong>Rendimiento Optimizado</strong>: Configuraciones optimizadas para manejar múltiples solicitudes simultáneamente.</li>
+<li><strong>Seguridad Mejorada</strong>: Configuraciones de seguridad estrictas para proteger la aplicación y los datos de los usuarios.</li>
+</ul>
+</div><h1>2. Configuración de Variables de Entorno</h1>
+<div class='content'><p>Las variables de entorno son esenciales para mantener la configuración sensible fuera del código fuente. Flask puede leer estas variables para configurar la aplicación.</p>
+</div><h2>Ejemplo de Variables de Entorno</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXhwb3J0IEZMQVNLX0VOVj1wcm9kdWN0aW9uCmV4cG9ydCBTRUNSRVRfS0VZPSd5b3VyLXNlY3JldC1rZXknCmV4cG9ydCBEQVRBQkFTRV9VUkw9J3Bvc3RncmVzcWw6Ly91c2VyOnBhc3N3b3JkQGxvY2FsaG9zdC9kYm5hbWUn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>export FLASK_ENV=production
+export SECRET_KEY='your-secret-key'
+export DATABASE_URL='postgresql://user:password@localhost/dbname'</pre></div><div class='content'></div><h2>Configuración en Flask</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9zCmZyb20gZmxhc2sgaW1wb3J0IEZsYXNrCgphcHAgPSBGbGFzayhfX25hbWVfXykKYXBwLmNvbmZpZ1snRU5WJ10gPSBvcy5nZXRlbnYoJ0ZMQVNLX0VOVicsICdwcm9kdWN0aW9uJykKYXBwLmNvbmZpZ1snU0VDUkVUX0tFWSddID0gb3MuZ2V0ZW52KCdTRUNSRVRfS0VZJywgJ2RlZmF1bHQtc2VjcmV0LWtleScpCmFwcC5jb25maWdbJ1NRTEFMQ0hFTVlfREFUQUJBU0VfVVJJJ10gPSBvcy5nZXRlbnYoJ0RBVEFCQVNFX1VSTCcsICdzcWxpdGU6Ly8vZGVmYXVsdC5kYicp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import os
+from flask import Flask
+
+app = Flask(__name__)
+app.config['ENV'] = os.getenv('FLASK_ENV', 'production')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default-secret-key')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///default.db')</pre></div><div class='content'></div><h1>3. Uso de Servidores WSGI</h1>
+<div class='content'><p>Flask incluye un servidor de desarrollo que no es adecuado para producción. En producción, se recomienda usar un servidor WSGI como Gunicorn o uWSGI.</p>
+</div><h2>Instalación de Gunicorn</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgZ3VuaWNvcm4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install gunicorn</pre></div><div class='content'></div><h2>Ejecutar la Aplicación con Gunicorn</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3VuaWNvcm4gLXcgNCAtYiAwLjAuMC4wOjgwMDAgbXlhcHA6YXBw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gunicorn -w 4 -b 0.0.0.0:8000 myapp:app</pre></div><div class='content'><ul>
+<li><code>-w 4</code>: Número de trabajadores.</li>
+<li><code>-b 0.0.0.0:8000</code>: Dirección y puerto de enlace.</li>
+</ul>
+</div><h1>4. Configuración de Manejo de Errores</h1>
+<div class='content'><p>En producción, es crucial manejar los errores de manera adecuada para no exponer información sensible.</p>
+</div><h2>Ejemplo de Manejo de Errores</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlbmRlcl90ZW1wbGF0ZQoKYXBwID0gRmxhc2soX19uYW1lX18pCgpAYXBwLmVycm9yaGFuZGxlcig0MDQpCmRlZiBub3RfZm91bmRfZXJyb3IoZXJyb3IpOgogICAgcmV0dXJuIHJlbmRlcl90ZW1wbGF0ZSgnNDA0Lmh0bWwnKSwgNDA0CgpAYXBwLmVycm9yaGFuZGxlcig1MDApCmRlZiBpbnRlcm5hbF9lcnJvcihlcnJvcik6CiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCc1MDAuaHRtbCcpLCA1MDA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.errorhandler(404)
+def not_found_error(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_error(error):
+    return render_template('500.html'), 500</pre></div><div class='content'></div><h1>5. Registro de Logs</h1>
+<div class='content'><p>El registro de logs es vital para monitorear la aplicación y diagnosticar problemas.</p>
+</div><h2>Configuración de Logs</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGxvZ2dpbmcKZnJvbSBsb2dnaW5nLmhhbmRsZXJzIGltcG9ydCBSb3RhdGluZ0ZpbGVIYW5kbGVyCgppZiBub3QgYXBwLmRlYnVnOgogICAgZmlsZV9oYW5kbGVyID0gUm90YXRpbmdGaWxlSGFuZGxlcignbG9ncy9teWFwcC5sb2cnLCBtYXhCeXRlcz0xMDI0MCwgYmFja3VwQ291bnQ9MTApCiAgICBmaWxlX2hhbmRsZXIuc2V0Rm9ybWF0dGVyKGxvZ2dpbmcuRm9ybWF0dGVyKAogICAgICAgICclKGFzY3RpbWUpcyAlKGxldmVsbmFtZSlzOiAlKG1lc3NhZ2UpcyBbaW4gJShwYXRobmFtZSlzOiUobGluZW5vKWRdJwogICAgKSkKICAgIGZpbGVfaGFuZGxlci5zZXRMZXZlbChsb2dnaW5nLklORk8pCiAgICBhcHAubG9nZ2VyLmFkZEhhbmRsZXIoZmlsZV9oYW5kbGVyKQoKICAgIGFwcC5sb2dnZXIuc2V0TGV2ZWwobG9nZ2luZy5JTkZPKQogICAgYXBwLmxvZ2dlci5pbmZvKCdNeUFwcCBzdGFydHVwJyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import logging
+from logging.handlers import RotatingFileHandler
+
+if not app.debug:
+    file_handler = RotatingFileHandler('logs/myapp.log', maxBytes=10240, backupCount=10)
+    file_handler.setFormatter(logging.Formatter(
+        '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    ))
+    file_handler.setLevel(logging.INFO)
+    app.logger.addHandler(file_handler)
+
+    app.logger.setLevel(logging.INFO)
+    app.logger.info('MyApp startup')</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto los pasos esenciales para configurar una aplicación Flask para su despliegue en un entorno de producción. Hemos aprendido sobre la importancia de las variables de entorno, el uso de servidores WSGI como Gunicorn, el manejo adecuado de errores y la configuración de registros de logs. Estos pasos son fundamentales para asegurar que tu aplicación sea segura, eficiente y estable en un entorno de producción.</p>
+<p>En el próximo tema, abordaremos el despliegue de una aplicación Flask en Heroku, un popular servicio de plataforma como servicio (PaaS).</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-authentication-apis' title="Autenticación para APIs">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-deploying-heroku' title="Despliegue en Heroku">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

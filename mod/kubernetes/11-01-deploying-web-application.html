@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despliegue de una Aplicación Web</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/11-01-deploying-web-application" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/11-01-deploying-web-application" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/11-01-deploying-web-application" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/11-01-deploying-web-application" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/11-01-deploying-web-application" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-04-minikube' title="Minikube">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Despliegue de una Aplicación Web</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-02-cicd-kubernetes' title="CI/CD con Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo desplegar una aplicación web en un clúster de Kubernetes. Cubriremos los siguientes puntos:</p>
+<ol>
+<li><strong>Preparación del Entorno</strong></li>
+<li><strong>Creación del Dockerfile</strong></li>
+<li><strong>Construcción y Publicación de la Imagen Docker</strong></li>
+<li><strong>Creación de Manifiestos de Kubernetes</strong></li>
+<li><strong>Despliegue de la Aplicación</strong></li>
+<li><strong>Verificación del Despliegue</strong></li>
+<li><strong>Exposición de la Aplicación al Exterior</strong></li>
+</ol>
+</div><h1>1. Preparación del Entorno</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener instalado y configurado lo siguiente:</p>
+<ul>
+<li>Docker</li>
+<li>Kubernetes (minikube o un clúster real)</li>
+<li>kubectl</li>
+</ul>
+</div><h1>2. Creación del Dockerfile</h1>
+<div class='content'><p>Primero, necesitamos crear un Dockerfile para nuestra aplicación web. Supongamos que tenemos una aplicación web simple escrita en Node.js. Aquí está un ejemplo de Dockerfile:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2EgdW5hIGltYWdlbiBiYXNlIGRlIE5vZGUuanMKRlJPTSBub2RlOjE0CgojIEVzdGFibGVjZSBlbCBkaXJlY3RvcmlvIGRlIHRyYWJham8KV09SS0RJUiAvYXBwCgojIENvcGlhIGVsIHBhY2thZ2UuanNvbiB5IHBhY2thZ2UtbG9jay5qc29uCkNPUFkgcGFja2FnZSouanNvbiAuLwoKIyBJbnN0YWxhIGxhcyBkZXBlbmRlbmNpYXMKUlVOIG5wbSBpbnN0YWxsCgojIENvcGlhIGVsIHJlc3RvIGRlIGxhIGFwbGljYWNpw7NuCkNPUFkgLiAuCgojIEV4cG9uZSBlbCBwdWVydG8gZW4gZWwgcXVlIGxhIGFwbGljYWNpw7NuIGNvcnJlcsOhCkVYUE9TRSAzMDAwCgojIENvbWFuZG8gcGFyYSBjb3JyZXIgbGEgYXBsaWNhY2nDs24KQ01EIFsibm9kZSIsICJhcHAuanMiXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Usa una imagen base de Node.js
+FROM node:14
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Copia el package.json y package-lock.json
+COPY package*.json ./
+
+# Instala las dependencias
+RUN npm install
+
+# Copia el resto de la aplicaci&oacute;n
+COPY . .
+
+# Expone el puerto en el que la aplicaci&oacute;n correr&aacute;
+EXPOSE 3000
+
+# Comando para correr la aplicaci&oacute;n
+CMD [&quot;node&quot;, &quot;app.js&quot;]</pre></div><div class='content'></div><h1>3. Construcción y Publicación de la Imagen Docker</h1>
+<div class='content'><p>Construye la imagen Docker y publícala en un registro de contenedores (Docker Hub, Google Container Registry, etc.).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb25zdHJ1eWUgbGEgaW1hZ2VuCmRvY2tlciBidWlsZCAtdCA8dHUtdXN1YXJpbz4vbWktYXBsaWNhY2lvbi13ZWI6MS4wIC4KCiMgSW5pY2lhIHNlc2nDs24gZW4gRG9ja2VyIEh1Ygpkb2NrZXIgbG9naW4KCiMgUHVibGljYSBsYSBpbWFnZW4KZG9ja2VyIHB1c2ggPHR1LXVzdWFyaW8+L21pLWFwbGljYWNpb24td2ViOjEuMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Construye la imagen
+docker build -t &lt;tu-usuario&gt;/mi-aplicacion-web:1.0 .
+
+# Inicia sesi&oacute;n en Docker Hub
+docker login
+
+# Publica la imagen
+docker push &lt;tu-usuario&gt;/mi-aplicacion-web:1.0</pre></div><div class='content'></div><h1>4. Creación de Manifiestos de Kubernetes</h1>
+<div class='content'><p>Necesitamos crear los manifiestos de Kubernetes para desplegar nuestra aplicación. Crearemos un Deployment y un Service.</p>
+</div><h2>deployment.yaml</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG1pLWFwbGljYWNpb24td2ViCnNwZWM6CiAgcmVwbGljYXM6IDMKICBzZWxlY3RvcjoKICAgIG1hdGNoTGFiZWxzOgogICAgICBhcHA6IG1pLWFwbGljYWNpb24td2ViCiAgdGVtcGxhdGU6CiAgICBtZXRhZGF0YToKICAgICAgbGFiZWxzOgogICAgICAgIGFwcDogbWktYXBsaWNhY2lvbi13ZWIKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogbWktYXBsaWNhY2lvbi13ZWIKICAgICAgICBpbWFnZTogPHR1LXVzdWFyaW8+L21pLWFwbGljYWNpb24td2ViOjEuMAogICAgICAgIHBvcnRzOgogICAgICAgIC0gY29udGFpbmVyUG9ydDogMzAwMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mi-aplicacion-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: mi-aplicacion-web
+  template:
+    metadata:
+      labels:
+        app: mi-aplicacion-web
+    spec:
+      containers:
+      - name: mi-aplicacion-web
+        image: &lt;tu-usuario&gt;/mi-aplicacion-web:1.0
+        ports:
+        - containerPort: 3000</pre></div><div class='content'></div><h2>service.yaml</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBtaS1hcGxpY2FjaW9uLXdlYgpzcGVjOgogIHNlbGVjdG9yOgogICAgYXBwOiBtaS1hcGxpY2FjaW9uLXdlYgogIHBvcnRzOgogICAgLSBwcm90b2NvbDogVENQCiAgICAgIHBvcnQ6IDgwCiAgICAgIHRhcmdldFBvcnQ6IDMwMDAKICB0eXBlOiBMb2FkQmFsYW5jZXI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: mi-aplicacion-web
+spec:
+  selector:
+    app: mi-aplicacion-web
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer</pre></div><div class='content'></div><h1>5. Despliegue de la Aplicación</h1>
+<div class='content'><p>Aplica los manifiestos de Kubernetes para desplegar la aplicación.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBkZXBsb3ltZW50LnlhbWwKa3ViZWN0bCBhcHBseSAtZiBzZXJ2aWNlLnlhbWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml</pre></div><div class='content'></div><h1>6. Verificación del Despliegue</h1>
+<div class='content'><p>Verifica que los pods estén corriendo correctamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgcG9kcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get pods</pre></div><div class='content'><p>Verifica que el servicio esté creado y tenga una IP asignada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgc2VydmljZXM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get services</pre></div><div class='content'></div><h1>7. Exposición de la Aplicación al Exterior</h1>
+<div class='content'><p>Si estás usando minikube, puedes exponer el servicio usando el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWluaWt1YmUgc2VydmljZSBtaS1hcGxpY2FjaW9uLXdlYg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>minikube service mi-aplicacion-web</pre></div><div class='content'><p>Esto abrirá tu navegador web y te llevará a la URL donde tu aplicación está corriendo.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto cómo desplegar una aplicación web en Kubernetes. Aprendimos a crear un Dockerfile, construir y publicar una imagen Docker, crear manifiestos de Kubernetes, desplegar la aplicación y verificar el despliegue. Ahora deberías tener una comprensión básica de cómo desplegar aplicaciones web en Kubernetes.</p>
+<p>En el siguiente tema, exploraremos cómo integrar CI/CD con Kubernetes para automatizar el despliegue de aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-04-minikube' title="Minikube">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-02-cicd-kubernetes' title="CI/CD con Kubernetes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

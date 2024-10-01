@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovisionamiento de Recursos Azure</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/05-03-provisioning-azure-resources" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/05-03-provisioning-azure-resources" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/05-03-provisioning-azure-resources" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/terraform/05-03-provisioning-azure-resources" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/05-03-provisioning-azure-resources" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-provisioning-aws-resources' title="Aprovisionamiento de Recursos AWS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Aprovisionamiento de Recursos Azure</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-provisioning-gcp-resources' title="Aprovisionamiento de Recursos GCP">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo usar Terraform para aprovisionar recursos en Microsoft Azure. Azure es una de las principales plataformas de nube pública, y Terraform facilita la gestión de su infraestructura de manera declarativa. Exploraremos los conceptos básicos, configuraciones y ejemplos prácticos para que puedas comenzar a aprovisionar recursos en Azure con Terraform.</p>
+</div><h1>Contenidos</h1>
+<div class='content'><ol>
+<li><a href="#configuración-inicial">Configuración Inicial</a></li>
+<li><a href="#proveedores-de-azure">Proveedores de Azure</a></li>
+<li><a href="#creación-de-recursos-básicos">Creación de Recursos Básicos</a></li>
+<li><a href="#variables-y-salidas">Variables y Salidas</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#solución-del-ejercicio">Solución del Ejercicio</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Configuración Inicial</h1>
+<div class='content'><p>Antes de comenzar a aprovisionar recursos en Azure, necesitamos asegurarnos de que tenemos las herramientas necesarias instaladas y configuradas.</p>
+</div><h2>Requisitos Previos</h2>
+<div class='content'><ul>
+<li><strong>Cuenta de Azure</strong>: Necesitarás una cuenta de Azure activa.</li>
+<li><strong>Terraform</strong>: Asegúrate de tener Terraform instalado en tu máquina. Puedes seguir las instrucciones del <a href="01-02-installing-terraform">Módulo 1: Instalando Terraform</a>.</li>
+</ul>
+</div><h2>Autenticación en Azure</h2>
+<div class='content'><p>Para que Terraform pueda interactuar con Azure, necesitamos autenticarnos. La forma más común es usar el CLI de Azure (Azure CLI).</p>
+<ol>
+<li>
+<p><strong>Instalar Azure CLI</strong>:</p>
+<pre><code class="language-sh">curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar sesión en Azure</strong>:</p>
+<pre><code class="language-sh">az login
+</code></pre>
+<p>Esto abrirá una ventana del navegador para que inicies sesión con tu cuenta de Azure.</p>
+</li>
+</ol>
+</div><h1>Proveedores de Azure</h1>
+<div class='content'><p>Terraform utiliza proveedores para interactuar con diferentes servicios en la nube. Para trabajar con Azure, utilizaremos el proveedor <code>azurerm</code>.</p>
+</div><h2>Configuración del Proveedor</h2>
+<div class='content'><p>En tu archivo de configuración de Terraform (<code>main.tf</code>), define el proveedor de Azure:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF6dXJlcm0iIHsKICBmZWF0dXJlcyB7fQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;azurerm&quot; {
+  features {}
+}</pre></div><div class='content'><p>El bloque <code>features {}</code> es obligatorio, aunque puede estar vacío.</p>
+</div><h1>Creación de Recursos Básicos</h1>
+<div class='content'><p>Vamos a crear un recurso básico en Azure: un grupo de recursos (Resource Group). Un grupo de recursos es un contenedor que contiene recursos relacionados para una solución de Azure.</p>
+</div><h2>Ejemplo de Configuración</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF6dXJlcm0iIHsKICBmZWF0dXJlcyB7fQp9CgpyZXNvdXJjZSAiYXp1cmVybV9yZXNvdXJjZV9ncm91cCIgImV4YW1wbGUiIHsKICBuYW1lICAgICA9ICJleGFtcGxlLXJlc291cmNlcyIKICBsb2NhdGlvbiA9ICJXZXN0IEV1cm9wZSIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;azurerm&quot; {
+  features {}
+}
+
+resource &quot;azurerm_resource_group&quot; &quot;example&quot; {
+  name     = &quot;example-resources&quot;
+  location = &quot;West Europe&quot;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>provider &quot;azurerm&quot;</strong>: Configura el proveedor de Azure.</li>
+<li><strong>resource &quot;azurerm_resource_group&quot; &quot;example&quot;</strong>: Define un recurso de tipo <code>azurerm_resource_group</code> con el nombre <code>example</code>.
+<ul>
+<li><strong>name</strong>: Nombre del grupo de recursos.</li>
+<li><strong>location</strong>: Ubicación del grupo de recursos.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Variables y Salidas</h1>
+<div class='content'><p>Para hacer nuestra configuración más flexible, podemos usar variables y salidas.</p>
+</div><h2>Definición de Variables</h2>
+<div class='content'><p>Crea un archivo <code>variables.tf</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyaWFibGUgInJlc291cmNlX2dyb3VwX25hbWUiIHsKICBkZXNjcmlwdGlvbiA9ICJUaGUgbmFtZSBvZiB0aGUgcmVzb3VyY2UgZ3JvdXAiCiAgdHlwZSAgICAgICAgPSBzdHJpbmcKICBkZWZhdWx0ICAgICA9ICJleGFtcGxlLXJlc291cmNlcyIKfQoKdmFyaWFibGUgImxvY2F0aW9uIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIGxvY2F0aW9uIG9mIHRoZSByZXNvdXJjZSBncm91cCIKICB0eXBlICAgICAgICA9IHN0cmluZwogIGRlZmF1bHQgICAgID0gIldlc3QgRXVyb3BlIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>variable &quot;resource_group_name&quot; {
+  description = &quot;The name of the resource group&quot;
+  type        = string
+  default     = &quot;example-resources&quot;
+}
+
+variable &quot;location&quot; {
+  description = &quot;The location of the resource group&quot;
+  type        = string
+  default     = &quot;West Europe&quot;
+}</pre></div><div class='content'></div><h2>Uso de Variables</h2>
+<div class='content'><p>Actualiza <code>main.tf</code> para usar las variables:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF6dXJlcm0iIHsKICBmZWF0dXJlcyB7fQp9CgpyZXNvdXJjZSAiYXp1cmVybV9yZXNvdXJjZV9ncm91cCIgImV4YW1wbGUiIHsKICBuYW1lICAgICA9IHZhci5yZXNvdXJjZV9ncm91cF9uYW1lCiAgbG9jYXRpb24gPSB2YXIubG9jYXRpb24KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;azurerm&quot; {
+  features {}
+}
+
+resource &quot;azurerm_resource_group&quot; &quot;example&quot; {
+  name     = var.resource_group_name
+  location = var.location
+}</pre></div><div class='content'></div><h2>Definición de Salidas</h2>
+<div class='content'><p>Crea un archivo <code>outputs.tf</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3V0cHV0ICJyZXNvdXJjZV9ncm91cF9uYW1lIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIG5hbWUgb2YgdGhlIHJlc291cmNlIGdyb3VwIgogIHZhbHVlICAgICAgID0gYXp1cmVybV9yZXNvdXJjZV9ncm91cC5leGFtcGxlLm5hbWUKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>output &quot;resource_group_name&quot; {
+  description = &quot;The name of the resource group&quot;
+  value       = azurerm_resource_group.example.name
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Objetivo</h2>
+<div class='content'><p>Crear una red virtual (Virtual Network) y una subred (Subnet) en Azure utilizando Terraform.</p>
+</div><h2>Instrucciones</h2>
+<div class='content'><ol>
+<li>Define las variables necesarias para la red virtual y la subred.</li>
+<li>Configura el proveedor de Azure.</li>
+<li>Crea los recursos de la red virtual y la subred.</li>
+<li>Define las salidas para mostrar los nombres de la red virtual y la subred.</li>
+</ol>
+</div><h1>Solución del Ejercicio</h1>
+<div class='content'></div><h2>Definición de Variables</h2>
+<div class='content'><p><code>variables.tf</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyaWFibGUgInJlc291cmNlX2dyb3VwX25hbWUiIHsKICBkZXNjcmlwdGlvbiA9ICJUaGUgbmFtZSBvZiB0aGUgcmVzb3VyY2UgZ3JvdXAiCiAgdHlwZSAgICAgICAgPSBzdHJpbmcKICBkZWZhdWx0ICAgICA9ICJleGFtcGxlLXJlc291cmNlcyIKfQoKdmFyaWFibGUgImxvY2F0aW9uIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIGxvY2F0aW9uIG9mIHRoZSByZXNvdXJjZSBncm91cCIKICB0eXBlICAgICAgICA9IHN0cmluZwogIGRlZmF1bHQgICAgID0gIldlc3QgRXVyb3BlIgp9Cgp2YXJpYWJsZSAidm5ldF9uYW1lIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIG5hbWUgb2YgdGhlIHZpcnR1YWwgbmV0d29yayIKICB0eXBlICAgICAgICA9IHN0cmluZwogIGRlZmF1bHQgICAgID0gImV4YW1wbGUtdm5ldCIKfQoKdmFyaWFibGUgInN1Ym5ldF9uYW1lIiB7CiAgZGVzY3JpcHRpb24gPSAiVGhlIG5hbWUgb2YgdGhlIHN1Ym5ldCIKICB0eXBlICAgICAgICA9IHN0cmluZwogIGRlZmF1bHQgICAgID0gImV4YW1wbGUtc3VibmV0Igp9Cgp2YXJpYWJsZSAiYWRkcmVzc19zcGFjZSIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBhZGRyZXNzIHNwYWNlIG9mIHRoZSB2aXJ0dWFsIG5ldHdvcmsiCiAgdHlwZSAgICAgICAgPSBsaXN0KHN0cmluZykKICBkZWZhdWx0ICAgICA9IFsiMTAuMC4wLjAvMTYiXQp9Cgp2YXJpYWJsZSAic3VibmV0X3ByZWZpeCIgewogIGRlc2NyaXB0aW9uID0gIlRoZSBhZGRyZXNzIHByZWZpeCBvZiB0aGUgc3VibmV0IgogIHR5cGUgICAgICAgID0gc3RyaW5nCiAgZGVmYXVsdCAgICAgPSAiMTAuMC4xLjAvMjQiCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>variable &quot;resource_group_name&quot; {
+  description = &quot;The name of the resource group&quot;
+  type        = string
+  default     = &quot;example-resources&quot;
+}
+
+variable &quot;location&quot; {
+  description = &quot;The location of the resource group&quot;
+  type        = string
+  default     = &quot;West Europe&quot;
+}
+
+variable &quot;vnet_name&quot; {
+  description = &quot;The name of the virtual network&quot;
+  type        = string
+  default     = &quot;example-vnet&quot;
+}
+
+variable &quot;subnet_name&quot; {
+  description = &quot;The name of the subnet&quot;
+  type        = string
+  default     = &quot;example-subnet&quot;
+}
+
+variable &quot;address_space&quot; {
+  description = &quot;The address space of the virtual network&quot;
+  type        = list(string)
+  default     = [&quot;10.0.0.0/16&quot;]
+}
+
+variable &quot;subnet_prefix&quot; {
+  description = &quot;The address prefix of the subnet&quot;
+  type        = string
+  default     = &quot;10.0.1.0/24&quot;
+}</pre></div><div class='content'></div><h2>Configuración del Proveedor y Recursos</h2>
+<div class='content'><p><code>main.tf</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF6dXJlcm0iIHsKICBmZWF0dXJlcyB7fQp9CgpyZXNvdXJjZSAiYXp1cmVybV9yZXNvdXJjZV9ncm91cCIgImV4YW1wbGUiIHsKICBuYW1lICAgICA9IHZhci5yZXNvdXJjZV9ncm91cF9uYW1lCiAgbG9jYXRpb24gPSB2YXIubG9jYXRpb24KfQoKcmVzb3VyY2UgImF6dXJlcm1fdmlydHVhbF9uZXR3b3JrIiAiZXhhbXBsZSIgewogIG5hbWUgICAgICAgICAgICAgICAgPSB2YXIudm5ldF9uYW1lCiAgYWRkcmVzc19zcGFjZSAgICAgICA9IHZhci5hZGRyZXNzX3NwYWNlCiAgbG9jYXRpb24gICAgICAgICAgICA9IGF6dXJlcm1fcmVzb3VyY2VfZ3JvdXAuZXhhbXBsZS5sb2NhdGlvbgogIHJlc291cmNlX2dyb3VwX25hbWUgPSBhenVyZXJtX3Jlc291cmNlX2dyb3VwLmV4YW1wbGUubmFtZQp9CgpyZXNvdXJjZSAiYXp1cmVybV9zdWJuZXQiICJleGFtcGxlIiB7CiAgbmFtZSAgICAgICAgICAgICAgICAgPSB2YXIuc3VibmV0X25hbWUKICByZXNvdXJjZV9ncm91cF9uYW1lICA9IGF6dXJlcm1fcmVzb3VyY2VfZ3JvdXAuZXhhbXBsZS5uYW1lCiAgdmlydHVhbF9uZXR3b3JrX25hbWUgPSBhenVyZXJtX3ZpcnR1YWxfbmV0d29yay5leGFtcGxlLm5hbWUKICBhZGRyZXNzX3ByZWZpeGVzICAgICA9IFt2YXIuc3VibmV0X3ByZWZpeF0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;azurerm&quot; {
+  features {}
+}
+
+resource &quot;azurerm_resource_group&quot; &quot;example&quot; {
+  name     = var.resource_group_name
+  location = var.location
+}
+
+resource &quot;azurerm_virtual_network&quot; &quot;example&quot; {
+  name                = var.vnet_name
+  address_space       = var.address_space
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+}
+
+resource &quot;azurerm_subnet&quot; &quot;example&quot; {
+  name                 = var.subnet_name
+  resource_group_name  = azurerm_resource_group.example.name
+  virtual_network_name = azurerm_virtual_network.example.name
+  address_prefixes     = [var.subnet_prefix]
+}</pre></div><div class='content'></div><h2>Definición de Salidas</h2>
+<div class='content'><p><code>outputs.tf</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3V0cHV0ICJ2bmV0X25hbWUiIHsKICBkZXNjcmlwdGlvbiA9ICJUaGUgbmFtZSBvZiB0aGUgdmlydHVhbCBuZXR3b3JrIgogIHZhbHVlICAgICAgID0gYXp1cmVybV92aXJ0dWFsX25ldHdvcmsuZXhhbXBsZS5uYW1lCn0KCm91dHB1dCAic3VibmV0X25hbWUiIHsKICBkZXNjcmlwdGlvbiA9ICJUaGUgbmFtZSBvZiB0aGUgc3VibmV0IgogIHZhbHVlICAgICAgID0gYXp1cmVybV9zdWJuZXQuZXhhbXBsZS5uYW1lCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>output &quot;vnet_name&quot; {
+  description = &quot;The name of the virtual network&quot;
+  value       = azurerm_virtual_network.example.name
+}
+
+output &quot;subnet_name&quot; {
+  description = &quot;The name of the subnet&quot;
+  value       = azurerm_subnet.example.name
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido cómo aprovisionar recursos en Azure utilizando Terraform. Hemos cubierto la configuración inicial, la definición del proveedor de Azure, la creación de recursos básicos, y el uso de variables y salidas. Además, hemos realizado un ejercicio práctico para reforzar los conceptos aprendidos.</p>
+<p>En el siguiente tema, exploraremos cómo aprovisionar recursos en Google Cloud Platform (GCP) utilizando Terraform. ¡Sigue adelante y sigue aprendiendo!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-provisioning-aws-resources' title="Aprovisionamiento de Recursos AWS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-provisioning-gcp-resources' title="Aprovisionamiento de Recursos GCP">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

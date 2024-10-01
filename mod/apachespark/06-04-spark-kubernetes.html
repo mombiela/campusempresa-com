@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spark con Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/06-04-spark-kubernetes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/06-04-spark-kubernetes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/06-04-spark-kubernetes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/apachespark/06-04-spark-kubernetes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/06-04-spark-kubernetes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-running-spark-google-cloud' title="Ejecutando Spark en Google Cloud">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Spark con Kubernetes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-real-time-data-processing' title="Procesamiento de Datos en Tiempo Real">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo ejecutar Apache Spark en Kubernetes, una plataforma de orquestación de contenedores que facilita la gestión y el despliegue de aplicaciones en contenedores. Kubernetes es una opción popular para ejecutar aplicaciones distribuidas debido a su capacidad para escalar y gestionar recursos de manera eficiente.</p>
+</div><h1>¿Por qué usar Kubernetes con Spark?</h1>
+<div class='content'><ul>
+<li><strong>Escalabilidad</strong>: Kubernetes permite escalar aplicaciones fácilmente, lo que es ideal para manejar grandes volúmenes de datos con Spark.</li>
+<li><strong>Gestión de Recursos</strong>: Kubernetes gestiona los recursos de manera eficiente, asegurando que las aplicaciones tengan los recursos necesarios para funcionar correctamente.</li>
+<li><strong>Despliegue Simplificado</strong>: Kubernetes facilita el despliegue y la gestión de aplicaciones en contenedores, reduciendo la complejidad operativa.</li>
+<li><strong>Alta Disponibilidad</strong>: Kubernetes proporciona mecanismos para asegurar la alta disponibilidad de las aplicaciones, lo que es crucial para aplicaciones críticas.</li>
+</ul>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'></div><h2>Prerrequisitos</h2>
+<div class='content'><p>Antes de comenzar, asegúrate de tener los siguientes componentes instalados:</p>
+<ul>
+<li><strong>Docker</strong>: Para crear y gestionar contenedores.</li>
+<li><strong>Kubernetes</strong>: Para orquestar los contenedores.</li>
+<li><strong>kubectl</strong>: La herramienta de línea de comandos para interactuar con Kubernetes.</li>
+<li><strong>Helm</strong>: Un gestor de paquetes para Kubernetes.</li>
+</ul>
+</div><h2>Paso 1: Configurar un Cluster de Kubernetes</h2>
+<div class='content'><p>Puedes configurar un cluster de Kubernetes localmente usando Minikube o en la nube usando servicios como Google Kubernetes Engine (GKE), Amazon EKS o Azure AKS. Aquí usaremos Minikube para simplicidad.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbnN0YWxhciBNaW5pa3ViZQpjdXJsIC1MbyBtaW5pa3ViZSBodHRwczovL3N0b3JhZ2UuZ29vZ2xlYXBpcy5jb20vbWluaWt1YmUvcmVsZWFzZXMvbGF0ZXN0L21pbmlrdWJlLWxpbnV4LWFtZDY0CmNobW9kICt4IG1pbmlrdWJlCnN1ZG8gbXYgbWluaWt1YmUgL3Vzci9sb2NhbC9iaW4vCgojIEluaWNpYXIgTWluaWt1YmUKbWluaWt1YmUgc3RhcnQgLS1kcml2ZXI9ZG9ja2Vy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Instalar Minikube
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube
+sudo mv minikube /usr/local/bin/
+
+# Iniciar Minikube
+minikube start --driver=docker</pre></div><div class='content'></div><h2>Paso 2: Instalar Helm</h2>
+<div class='content'><p>Helm facilita la instalación de aplicaciones en Kubernetes. Vamos a usar Helm para instalar Spark.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZXNjYXJnYXIgZSBpbnN0YWxhciBIZWxtCmN1cmwgaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL2hlbG0vaGVsbS9tYWluL3NjcmlwdHMvZ2V0LWhlbG0tMyB8IGJhc2gKCiMgQcOxYWRpciBlbCByZXBvc2l0b3JpbyBkZSBIZWxtIHBhcmEgU3BhcmsKaGVsbSByZXBvIGFkZCBiaXRuYW1pIGh0dHBzOi8vY2hhcnRzLmJpdG5hbWkuY29tL2JpdG5hbWkKaGVsbSByZXBvIHVwZGF0ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Descargar e instalar Helm
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# A&ntilde;adir el repositorio de Helm para Spark
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update</pre></div><div class='content'></div><h2>Paso 3: Desplegar Spark en Kubernetes</h2>
+<div class='content'><p>Usaremos un chart de Helm para desplegar Spark en nuestro cluster de Kubernetes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZXNwbGVnYXIgU3BhcmsgdXNhbmRvIEhlbG0KaGVsbSBpbnN0YWxsIG15LXNwYXJrIGJpdG5hbWkvc3Bhcms="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Desplegar Spark usando Helm
+helm install my-spark bitnami/spark</pre></div><div class='content'><p>Este comando desplegará Spark en tu cluster de Kubernetes. Puedes verificar el estado del despliegue usando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgcG9kcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get pods</pre></div><div class='content'></div><h1>Ejecutar Aplicaciones Spark en Kubernetes</h1>
+<div class='content'></div><h2>Paso 1: Crear una Aplicación Spark</h2>
+<div class='content'><p>Vamos a crear una aplicación Spark simple que cuenta las palabras en un archivo de texto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCgojIENyZWFyIHVuYSBzZXNpw7NuIGRlIFNwYXJrCnNwYXJrID0gU3BhcmtTZXNzaW9uLmJ1aWxkZXIuYXBwTmFtZSgiV29yZENvdW50IikuZ2V0T3JDcmVhdGUoKQoKIyBMZWVyIGVsIGFyY2hpdm8gZGUgdGV4dG8KdGV4dF9maWxlID0gc3BhcmsucmVhZC50ZXh0KCJoZGZzOi8vcGF0aC90by90ZXh0ZmlsZS50eHQiKQoKIyBDb250YXIgbGFzIHBhbGFicmFzCndvcmRfY291bnRzID0gdGV4dF9maWxlLnJkZC5mbGF0TWFwKGxhbWJkYSBsaW5lOiBsaW5lLnZhbHVlLnNwbGl0KCIgIikpIFwKICAgICAgICAgICAgICAgICAgICAgICAgICAgLm1hcChsYW1iZGEgd29yZDogKHdvcmQsIDEpKSBcCiAgICAgICAgICAgICAgICAgICAgICAgICAgIC5yZWR1Y2VCeUtleShsYW1iZGEgYSwgYjogYSArIGIpCgojIE1vc3RyYXIgbG9zIHJlc3VsdGFkb3MKd29yZF9jb3VudHMuc2hvdygpCgojIERldGVuZXIgbGEgc2VzacOzbiBkZSBTcGFyawpzcGFyay5zdG9wKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+
+# Crear una sesi&oacute;n de Spark
+spark = SparkSession.builder.appName(&quot;WordCount&quot;).getOrCreate()
+
+# Leer el archivo de texto
+text_file = spark.read.text(&quot;hdfs://path/to/textfile.txt&quot;)
+
+# Contar las palabras
+word_counts = text_file.rdd.flatMap(lambda line: line.value.split(&quot; &quot;)) \
+                           .map(lambda word: (word, 1)) \
+                           .reduceByKey(lambda a, b: a + b)
+
+# Mostrar los resultados
+word_counts.show()
+
+# Detener la sesi&oacute;n de Spark
+spark.stop()</pre></div><div class='content'></div><h2>Paso 2: Crear un Dockerfile</h2>
+<div class='content'><p>Para ejecutar esta aplicación en Kubernetes, necesitamos crear una imagen de Docker.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBVc2FyIHVuYSBpbWFnZW4gYmFzZSBkZSBTcGFyawpGUk9NIGJpdG5hbWkvc3Bhcms6bGF0ZXN0CgojIENvcGlhciBlbCBzY3JpcHQgZGUgbGEgYXBsaWNhY2nDs24KQ09QWSB3b3JkY291bnQucHkgL29wdC9zcGFyay1hcHBzL3dvcmRjb3VudC5weQoKIyBFc3RhYmxlY2VyIGVsIGNvbWFuZG8gZGUgZW50cmFkYQpFTlRSWVBPSU5UIFsiL29wdC9iaXRuYW1pL3NwYXJrL2Jpbi9zcGFyay1zdWJtaXQiLCAiL29wdC9zcGFyay1hcHBzL3dvcmRjb3VudC5weSJd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Usar una imagen base de Spark
+FROM bitnami/spark:latest
+
+# Copiar el script de la aplicaci&oacute;n
+COPY wordcount.py /opt/spark-apps/wordcount.py
+
+# Establecer el comando de entrada
+ENTRYPOINT [&quot;/opt/bitnami/spark/bin/spark-submit&quot;, &quot;/opt/spark-apps/wordcount.py&quot;]</pre></div><div class='content'></div><h2>Paso 3: Construir y Subir la Imagen de Docker</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb25zdHJ1aXIgbGEgaW1hZ2VuIGRlIERvY2tlcgpkb2NrZXIgYnVpbGQgLXQgbXktc3BhcmstYXBwIC4KCiMgU3ViaXIgbGEgaW1hZ2VuIGEgdW4gcmVnaXN0cm8gZGUgRG9ja2VyIChEb2NrZXIgSHViLCBFQ1IsIGV0Yy4pCmRvY2tlciB0YWcgbXktc3BhcmstYXBwOmxhdGVzdCA8eW91ci1kb2NrZXItcmVwbz4vbXktc3BhcmstYXBwOmxhdGVzdApkb2NrZXIgcHVzaCA8eW91ci1kb2NrZXItcmVwbz4vbXktc3BhcmstYXBwOmxhdGVzdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Construir la imagen de Docker
+docker build -t my-spark-app .
+
+# Subir la imagen a un registro de Docker (Docker Hub, ECR, etc.)
+docker tag my-spark-app:latest &lt;your-docker-repo&gt;/my-spark-app:latest
+docker push &lt;your-docker-repo&gt;/my-spark-app:latest</pre></div><div class='content'></div><h2>Paso 4: Desplegar la Aplicación en Kubernetes</h2>
+<div class='content'><p>Crear un archivo de configuración de Kubernetes para desplegar la aplicación.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYmF0Y2gvdjEKa2luZDogSm9iCm1ldGFkYXRhOgogIG5hbWU6IHNwYXJrLXdvcmRjb3VudApzcGVjOgogIHRlbXBsYXRlOgogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBzcGFyay13b3JkY291bnQKICAgICAgICBpbWFnZTogPHlvdXItZG9ja2VyLXJlcG8+L215LXNwYXJrLWFwcDpsYXRlc3QKICAgICAgcmVzdGFydFBvbGljeTogT25GYWlsdXJl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: batch/v1
+kind: Job
+metadata:
+  name: spark-wordcount
+spec:
+  template:
+    spec:
+      containers:
+      - name: spark-wordcount
+        image: &lt;your-docker-repo&gt;/my-spark-app:latest
+      restartPolicy: OnFailure</pre></div><div class='content'><p>Desplegar la aplicación usando <code>kubectl</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBzcGFyay13b3JkY291bnQueWFtbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f spark-wordcount.yaml</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido cómo ejecutar Apache Spark en Kubernetes. Hemos cubierto la configuración del entorno, el despliegue de Spark usando Helm y la ejecución de una aplicación Spark en Kubernetes. Esta combinación de Spark y Kubernetes proporciona una plataforma poderosa y escalable para el procesamiento de grandes volúmenes de datos.</p>
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li><strong>Kubernetes</strong>: Plataforma de orquestación de contenedores que facilita la gestión y el despliegue de aplicaciones.</li>
+<li><strong>Helm</strong>: Gestor de paquetes para Kubernetes que simplifica el despliegue de aplicaciones.</li>
+<li><strong>Spark en Kubernetes</strong>: Proporciona escalabilidad, gestión eficiente de recursos y alta disponibilidad.</li>
+</ul>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente módulo, exploraremos cómo ejecutar Spark en diferentes proveedores de nube como AWS, Azure y Google Cloud.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-running-spark-google-cloud' title="Ejecutando Spark en Google Cloud">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-real-time-data-processing' title="Procesamiento de Datos en Tiempo Real">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

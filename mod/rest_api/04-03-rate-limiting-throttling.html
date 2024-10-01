@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rate Limiting y Throttling</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rest_api/04-03-rate-limiting-throttling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rest_api/04-03-rate-limiting-throttling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rest_api/04-03-rate-limiting-throttling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rest_api/04-03-rate-limiting-throttling" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rest_api/04-03-rate-limiting-throttling" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-seguridad-apis-restful' title="Seguridad en APIs RESTful">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Rate Limiting y Throttling</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-cors-politicas-seguridad' title="CORS y políticas de seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, aprenderemos sobre dos conceptos cruciales para la gestión y protección de APIs RESTful: <strong>Rate Limiting</strong> y <strong>Throttling</strong>. Estos mecanismos ayudan a controlar el tráfico hacia tu API, asegurando que los recursos no se sobrecarguen y que los usuarios tengan una experiencia consistente.</p>
+</div><h1>¿Qué es Rate Limiting?</h1>
+<div class='content'><p><strong>Rate Limiting</strong> es una técnica utilizada para restringir el número de solicitudes que un cliente puede hacer a una API en un período de tiempo específico. Esto es esencial para:</p>
+<ul>
+<li><strong>Proteger los recursos del servidor</strong>: Evita que un solo cliente consuma todos los recursos disponibles.</li>
+<li><strong>Mejorar la calidad del servicio</strong>: Asegura que todos los usuarios tengan acceso equitativo a la API.</li>
+<li><strong>Prevenir abusos</strong>: Evita ataques de denegación de servicio (DoS) y otros comportamientos maliciosos.</li>
+</ul>
+</div><h2>Ejemplo de Rate Limiting</h2>
+<div class='content'><p>Imagina que tienes una API que permite a los usuarios consultar el clima. Podrías implementar un límite de 100 solicitudes por hora por usuario. Esto significa que cada usuario puede hacer hasta 100 solicitudes en una hora. Si un usuario intenta hacer más de 100 solicitudes, recibirá una respuesta de error.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJlcnJvciI6ICJSYXRlIGxpbWl0IGV4Y2VlZGVkIiwKICAibWVzc2FnZSI6ICJZb3UgaGF2ZSBleGNlZWRlZCB0aGUgcmF0ZSBsaW1pdCBvZiAxMDAgcmVxdWVzdHMgcGVyIGhvdXIuIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;error&quot;: &quot;Rate limit exceeded&quot;,
+  &quot;message&quot;: &quot;You have exceeded the rate limit of 100 requests per hour.&quot;
+}</pre></div><div class='content'></div><h2>Implementación de Rate Limiting</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo de cómo implementar Rate Limiting en una API utilizando Node.js y Express:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgcmF0ZUxpbWl0ID0gcmVxdWlyZSgnZXhwcmVzcy1yYXRlLWxpbWl0Jyk7Cgpjb25zdCBhcHAgPSBleHByZXNzKCk7CgovLyBEZWZpbmlyIGVsIGzDrW1pdGUgZGUgc29saWNpdHVkZXMKY29uc3QgbGltaXRlciA9IHJhdGVMaW1pdCh7CiAgd2luZG93TXM6IDYwICogNjAgKiAxMDAwLCAvLyAxIGhvcmEKICBtYXg6IDEwMCwgLy8gTGltaXRlIGRlIDEwMCBzb2xpY2l0dWRlcyBwb3IgSVAKICBtZXNzYWdlOiB7CiAgICBlcnJvcjogIlJhdGUgbGltaXQgZXhjZWVkZWQiLAogICAgbWVzc2FnZTogIllvdSBoYXZlIGV4Y2VlZGVkIHRoZSByYXRlIGxpbWl0IG9mIDEwMCByZXF1ZXN0cyBwZXIgaG91ci4iCiAgfQp9KTsKCi8vIEFwbGljYXIgZWwgbGltaXRhZG9yIGEgdG9kYXMgbGFzIHNvbGljaXR1ZGVzCmFwcC51c2UobGltaXRlcik7CgphcHAuZ2V0KCcvd2VhdGhlcicsIChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKCdXZWF0aGVyIGRhdGEnKTsKfSk7CgphcHAubGlzdGVuKDMwMDAsICgpID0+IHsKICBjb25zb2xlLmxvZygnU2VydmVyIHJ1bm5pbmcgb24gcG9ydCAzMDAwJyk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const rateLimit = require('express-rate-limit');
+
+const app = express();
+
+// Definir el l&iacute;mite de solicitudes
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 100, // Limite de 100 solicitudes por IP
+  message: {
+    error: &quot;Rate limit exceeded&quot;,
+    message: &quot;You have exceeded the rate limit of 100 requests per hour.&quot;
+  }
+});
+
+// Aplicar el limitador a todas las solicitudes
+app.use(limiter);
+
+app.get('/weather', (req, res) =&gt; {
+  res.send('Weather data');
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</pre></div><div class='content'></div><h1>¿Qué es Throttling?</h1>
+<div class='content'><p><strong>Throttling</strong> es una técnica similar a Rate Limiting, pero en lugar de rechazar las solicitudes que exceden el límite, las ralentiza. Esto puede ser útil para:</p>
+<ul>
+<li><strong>Gestionar la carga del servidor</strong>: Distribuye las solicitudes en el tiempo para evitar picos de carga.</li>
+<li><strong>Mejorar la experiencia del usuario</strong>: En lugar de recibir un error, el usuario experimenta una respuesta más lenta.</li>
+</ul>
+</div><h2>Ejemplo de Throttling</h2>
+<div class='content'><p>Continuando con el ejemplo de la API del clima, podrías implementar un sistema que permita a los usuarios hacer hasta 5 solicitudes por segundo. Si un usuario intenta hacer más de 5 solicitudes en un segundo, las solicitudes adicionales se ralentizarán.</p>
+</div><h2>Implementación de Throttling</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo de cómo implementar Throttling en una API utilizando Node.js y Express:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3Qgc2xvd0Rvd24gPSByZXF1aXJlKCdleHByZXNzLXNsb3ctZG93bicpOwoKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gRGVmaW5pciBlbCBsaW1pdGFkb3IgZGUgdmVsb2NpZGFkCmNvbnN0IHNwZWVkTGltaXRlciA9IHNsb3dEb3duKHsKICB3aW5kb3dNczogMTAwMCwgLy8gMSBzZWd1bmRvCiAgZGVsYXlBZnRlcjogNSwgLy8gUGVybWl0aXIgNSBzb2xpY2l0dWRlcyBwb3Igc2VndW5kbwogIGRlbGF5TXM6IDUwMCAvLyBSYWxlbnRpemFyIGxhcyBzb2xpY2l0dWRlcyBhZGljaW9uYWxlcyBlbiA1MDBtcwp9KTsKCi8vIEFwbGljYXIgZWwgbGltaXRhZG9yIGRlIHZlbG9jaWRhZCBhIHRvZGFzIGxhcyBzb2xpY2l0dWRlcwphcHAudXNlKHNwZWVkTGltaXRlcik7CgphcHAuZ2V0KCcvd2VhdGhlcicsIChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKCdXZWF0aGVyIGRhdGEnKTsKfSk7CgphcHAubGlzdGVuKDMwMDAsICgpID0+IHsKICBjb25zb2xlLmxvZygnU2VydmVyIHJ1bm5pbmcgb24gcG9ydCAzMDAwJyk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const slowDown = require('express-slow-down');
+
+const app = express();
+
+// Definir el limitador de velocidad
+const speedLimiter = slowDown({
+  windowMs: 1000, // 1 segundo
+  delayAfter: 5, // Permitir 5 solicitudes por segundo
+  delayMs: 500 // Ralentizar las solicitudes adicionales en 500ms
+});
+
+// Aplicar el limitador de velocidad a todas las solicitudes
+app.use(speedLimiter);
+
+app.get('/weather', (req, res) =&gt; {
+  res.send('Weather data');
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</pre></div><div class='content'></div><h1>Comparación entre Rate Limiting y Throttling</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>Rate Limiting</th>
+<th>Throttling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Propósito</strong></td>
+<td>Limitar el número de solicitudes</td>
+<td>Ralentizar las solicitudes adicionales</td>
+</tr>
+<tr>
+<td><strong>Respuesta</strong></td>
+<td>Error cuando se excede el límite</td>
+<td>Respuesta más lenta cuando se excede el límite</td>
+</tr>
+<tr>
+<td><strong>Uso común</strong></td>
+<td>Prevenir abusos y proteger recursos</td>
+<td>Gestionar la carga del servidor</td>
+</tr>
+<tr>
+<td><strong>Implementación</strong></td>
+<td>Rechazar solicitudes adicionales</td>
+<td>Ralentizar solicitudes adicionales</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Rate Limiting</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar Rate Limiting en una API que permite a los usuarios consultar información de productos.</li>
+<li><strong>Requisitos</strong>:
+<ul>
+<li>Limitar a 50 solicitudes por hora por usuario.</li>
+<li>Devolver un mensaje de error cuando se exceda el límite.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgcmF0ZUxpbWl0ID0gcmVxdWlyZSgnZXhwcmVzcy1yYXRlLWxpbWl0Jyk7Cgpjb25zdCBhcHAgPSBleHByZXNzKCk7CgovLyBEZWZpbmlyIGVsIGzDrW1pdGUgZGUgc29saWNpdHVkZXMKY29uc3QgbGltaXRlciA9IHJhdGVMaW1pdCh7CiAgd2luZG93TXM6IDYwICogNjAgKiAxMDAwLCAvLyAxIGhvcmEKICBtYXg6IDUwLCAvLyBMaW1pdGUgZGUgNTAgc29saWNpdHVkZXMgcG9yIElQCiAgbWVzc2FnZTogewogICAgZXJyb3I6ICJSYXRlIGxpbWl0IGV4Y2VlZGVkIiwKICAgIG1lc3NhZ2U6ICJZb3UgaGF2ZSBleGNlZWRlZCB0aGUgcmF0ZSBsaW1pdCBvZiA1MCByZXF1ZXN0cyBwZXIgaG91ci4iCiAgfQp9KTsKCi8vIEFwbGljYXIgZWwgbGltaXRhZG9yIGEgdG9kYXMgbGFzIHNvbGljaXR1ZGVzCmFwcC51c2UobGltaXRlcik7CgphcHAuZ2V0KCcvcHJvZHVjdHMnLCAocmVxLCByZXMpID0+IHsKICByZXMuc2VuZCgnUHJvZHVjdCBkYXRhJyk7Cn0pOwoKYXBwLmxpc3RlbigzMDAwLCAoKSA9PiB7CiAgY29uc29sZS5sb2coJ1NlcnZlciBydW5uaW5nIG9uIHBvcnQgMzAwMCcpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const rateLimit = require('express-rate-limit');
+
+const app = express();
+
+// Definir el l&iacute;mite de solicitudes
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hora
+  max: 50, // Limite de 50 solicitudes por IP
+  message: {
+    error: &quot;Rate limit exceeded&quot;,
+    message: &quot;You have exceeded the rate limit of 50 requests per hour.&quot;
+  }
+});
+
+// Aplicar el limitador a todas las solicitudes
+app.use(limiter);
+
+app.get('/products', (req, res) =&gt; {
+  res.send('Product data');
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</pre></div><div class='content'></div><h2>Ejercicio 2: Implementar Throttling</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar Throttling en una API que permite a los usuarios consultar información de usuarios.</li>
+<li><strong>Requisitos</strong>:
+<ul>
+<li>Permitir hasta 10 solicitudes por segundo.</li>
+<li>Ralentizar las solicitudes adicionales en 200ms.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3Qgc2xvd0Rvd24gPSByZXF1aXJlKCdleHByZXNzLXNsb3ctZG93bicpOwoKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gRGVmaW5pciBlbCBsaW1pdGFkb3IgZGUgdmVsb2NpZGFkCmNvbnN0IHNwZWVkTGltaXRlciA9IHNsb3dEb3duKHsKICB3aW5kb3dNczogMTAwMCwgLy8gMSBzZWd1bmRvCiAgZGVsYXlBZnRlcjogMTAsIC8vIFBlcm1pdGlyIDEwIHNvbGljaXR1ZGVzIHBvciBzZWd1bmRvCiAgZGVsYXlNczogMjAwIC8vIFJhbGVudGl6YXIgbGFzIHNvbGljaXR1ZGVzIGFkaWNpb25hbGVzIGVuIDIwMG1zCn0pOwoKLy8gQXBsaWNhciBlbCBsaW1pdGFkb3IgZGUgdmVsb2NpZGFkIGEgdG9kYXMgbGFzIHNvbGljaXR1ZGVzCmFwcC51c2Uoc3BlZWRMaW1pdGVyKTsKCmFwcC5nZXQoJy91c2VycycsIChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKCdVc2VyIGRhdGEnKTsKfSk7CgphcHAubGlzdGVuKDMwMDAsICgpID0+IHsKICBjb25zb2xlLmxvZygnU2VydmVyIHJ1bm5pbmcgb24gcG9ydCAzMDAwJyk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const slowDown = require('express-slow-down');
+
+const app = express();
+
+// Definir el limitador de velocidad
+const speedLimiter = slowDown({
+  windowMs: 1000, // 1 segundo
+  delayAfter: 10, // Permitir 10 solicitudes por segundo
+  delayMs: 200 // Ralentizar las solicitudes adicionales en 200ms
+});
+
+// Aplicar el limitador de velocidad a todas las solicitudes
+app.use(speedLimiter);
+
+app.get('/users', (req, res) =&gt; {
+  res.send('User data');
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server running on port 3000');
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los conceptos de Rate Limiting y Throttling, sus diferencias y cómo implementarlos en una API utilizando Node.js y Express. Estos mecanismos son esenciales para proteger tus recursos y asegurar una experiencia de usuario consistente. Asegúrate de ajustar los límites y las políticas de acuerdo con las necesidades específicas de tu API y tus usuarios.</p>
+<p>En la siguiente sección, exploraremos <strong>CORS y políticas de seguridad</strong>, donde aprenderemos cómo manejar la seguridad de las APIs RESTful en un entorno de producción.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-seguridad-apis-restful' title="Seguridad en APIs RESTful">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-cors-politicas-seguridad' title="CORS y políticas de seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Triggers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/10-02-triggers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/10-02-triggers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/10-02-triggers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sql/10-02-triggers" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/10-02-triggers" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-stored-procedures' title="Procedimientos almacenados">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Triggers</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-views' title="Vistas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a los Triggers</h1>
+<div class='content'><p>Los triggers (disparadores) son un tipo especial de procedimiento almacenado que se ejecuta automáticamente en respuesta a ciertos eventos en una tabla o vista. Los triggers pueden ser utilizados para mantener la integridad de los datos, auditar cambios, y realizar tareas automáticas en la base de datos.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Evento</strong>: Un evento es una acción que puede activar un trigger, como una inserción, actualización o eliminación de datos en una tabla.</li>
+<li><strong>Condición</strong>: La condición especifica cuándo debe ejecutarse el trigger. Puede ser antes o después del evento.</li>
+<li><strong>Acción</strong>: La acción es el código SQL que se ejecuta cuando se activa el trigger.</li>
+</ul>
+</div><h2>Tipos de Triggers</h2>
+<div class='content'><ol>
+<li><strong>BEFORE Trigger</strong>: Se ejecuta antes de que se realice el evento.</li>
+<li><strong>AFTER Trigger</strong>: Se ejecuta después de que se realice el evento.</li>
+<li><strong>INSTEAD OF Trigger</strong>: Se utiliza principalmente con vistas y se ejecuta en lugar del evento.</li>
+</ol>
+</div><h1>Creación de Triggers</h1>
+<div class='content'></div><h2>Sintaxis Básica</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRSSUdHRVIgdHJpZ2dlcl9uYW1lCntCRUZPUkUgfCBBRlRFUiB8IElOU1RFQUQgT0Z9IHtJTlNFUlQgfCBVUERBVEUgfCBERUxFVEV9Ck9OIHRhYmxlX25hbWUKRk9SIEVBQ0ggUk9XCkJFR0lOCiAgICAtLSBDw7NkaWdvIFNRTCBhIGVqZWN1dGFyCkVORDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TRIGGER trigger_name
+{BEFORE | AFTER | INSTEAD OF} {INSERT | UPDATE | DELETE}
+ON table_name
+FOR EACH ROW
+BEGIN
+    -- C&oacute;digo SQL a ejecutar
+END;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos una tabla <code>empleados</code> y queremos crear un trigger que registre cualquier inserción en una tabla de auditoría llamada <code>auditoria_empleados</code>.</p>
+<h4>Tabla <code>empleados</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGVtcGxlYWRvcyAoCiAgICBpZCBJTlQgUFJJTUFSWSBLRVksCiAgICBub21icmUgVkFSQ0hBUigxMDApLAogICAgcHVlc3RvIFZBUkNIQVIoMTAwKSwKICAgIHNhbGFyaW8gREVDSU1BTCgxMCwgMikKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE empleados (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    puesto VARCHAR(100),
+    salario DECIMAL(10, 2)
+);</pre></div><div class='content'><h4>Tabla <code>auditoria_empleados</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGF1ZGl0b3JpYV9lbXBsZWFkb3MgKAogICAgaWQgSU5UIFBSSU1BUlkgS0VZIEFVVE9fSU5DUkVNRU5ULAogICAgZW1wbGVhZG9faWQgSU5ULAogICAgYWNjaW9uIFZBUkNIQVIoNTApLAogICAgZmVjaGEgVElNRVNUQU1QIERFRkFVTFQgQ1VSUkVOVF9USU1FU1RBTVAKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE auditoria_empleados (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    empleado_id INT,
+    accion VARCHAR(50),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><h4>Crear el Trigger</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRSSUdHRVIgYWZ0ZXJfaW5zZXJ0X2VtcGxlYWRvcwpBRlRFUiBJTlNFUlQgT04gZW1wbGVhZG9zCkZPUiBFQUNIIFJPVwpCRUdJTgogICAgSU5TRVJUIElOVE8gYXVkaXRvcmlhX2VtcGxlYWRvcyAoZW1wbGVhZG9faWQsIGFjY2lvbikKICAgIFZBTFVFUyAoTkVXLmlkLCAnSU5TRVJUJyk7CkVORDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TRIGGER after_insert_empleados
+AFTER INSERT ON empleados
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_empleados (empleado_id, accion)
+    VALUES (NEW.id, 'INSERT');
+END;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>AFTER INSERT</strong>: El trigger se ejecutará después de una inserción en la tabla <code>empleados</code>.</li>
+<li><strong>FOR EACH ROW</strong>: El trigger se ejecutará para cada fila afectada por el evento.</li>
+<li><strong>NEW.id</strong>: Hace referencia al valor del campo <code>id</code> de la nueva fila insertada en <code>empleados</code>.</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Trigger de Actualización</h2>
+<div class='content'><p>Crea un trigger que registre cualquier actualización en la tabla <code>empleados</code> en la tabla <code>auditoria_empleados</code>.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRSSUdHRVIgYWZ0ZXJfdXBkYXRlX2VtcGxlYWRvcwpBRlRFUiBVUERBVEUgT04gZW1wbGVhZG9zCkZPUiBFQUNIIFJPVwpCRUdJTgogICAgSU5TRVJUIElOVE8gYXVkaXRvcmlhX2VtcGxlYWRvcyAoZW1wbGVhZG9faWQsIGFjY2lvbikKICAgIFZBTFVFUyAoTkVXLmlkLCAnVVBEQVRFJyk7CkVORDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TRIGGER after_update_empleados
+AFTER UPDATE ON empleados
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_empleados (empleado_id, accion)
+    VALUES (NEW.id, 'UPDATE');
+END;</pre></div><div class='content'></div><h2>Ejercicio 2: Trigger de Eliminación</h2>
+<div class='content'><p>Crea un trigger que registre cualquier eliminación en la tabla <code>empleados</code> en la tabla <code>auditoria_empleados</code>.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRSSUdHRVIgYWZ0ZXJfZGVsZXRlX2VtcGxlYWRvcwpBRlRFUiBERUxFVEUgT04gZW1wbGVhZG9zCkZPUiBFQUNIIFJPVwpCRUdJTgogICAgSU5TRVJUIElOVE8gYXVkaXRvcmlhX2VtcGxlYWRvcyAoZW1wbGVhZG9faWQsIGFjY2lvbikKICAgIFZBTFVFUyAoT0xELmlkLCAnREVMRVRFJyk7CkVORDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TRIGGER after_delete_empleados
+AFTER DELETE ON empleados
+FOR EACH ROW
+BEGIN
+    INSERT INTO auditoria_empleados (empleado_id, accion)
+    VALUES (OLD.id, 'DELETE');
+END;</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ul>
+<li><strong>Recursión Infinita</strong>: Evita que los triggers llamen a otros triggers que a su vez llamen al trigger original, creando un bucle infinito.</li>
+<li><strong>Performance</strong>: Los triggers pueden afectar el rendimiento de la base de datos si no se usan con cuidado. Asegúrate de que el código dentro del trigger sea eficiente.</li>
+<li><strong>Depuración</strong>: Depurar triggers puede ser complicado. Utiliza tablas de auditoría o registros de logs para rastrear la ejecución de los triggers.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los triggers son una herramienta poderosa para automatizar tareas y mantener la integridad de los datos en una base de datos SQL. En este módulo, hemos aprendido cómo crear y utilizar triggers para responder a eventos de inserción, actualización y eliminación. Con esta base, puedes explorar más usos avanzados de los triggers en tus proyectos de bases de datos.</p>
+<p>En el próximo tema, exploraremos las <strong>Vistas</strong>, otra característica avanzada de SQL que te permitirá simplificar y optimizar tus consultas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-01-stored-procedures' title="Procedimientos almacenados">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-03-views' title="Vistas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

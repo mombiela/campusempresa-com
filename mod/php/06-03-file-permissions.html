@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Permisos de Archivos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/06-03-file-permissions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/06-03-file-permissions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/06-03-file-permissions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/php/06-03-file-permissions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/php/06-03-file-permissions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-file-handling-functions' title="Funciones de Manejo de Archivos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Permisos de Archivos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-directory-functions' title="Funciones de Directorio">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En PHP, trabajar con archivos no solo implica leer y escribir datos, sino también gestionar los permisos de los archivos. Los permisos de archivos determinan quién puede leer, escribir o ejecutar un archivo. Comprender y manejar estos permisos es crucial para la seguridad y el correcto funcionamiento de tus aplicaciones.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Tipos de Permisos</h2>
+<div class='content'><p>Los permisos de archivos en sistemas Unix/Linux se dividen en tres categorías:</p>
+<ol>
+<li><strong>Lectura (r)</strong>: Permite ver el contenido del archivo.</li>
+<li><strong>Escritura (w)</strong>: Permite modificar el contenido del archivo.</li>
+<li><strong>Ejecución (x)</strong>: Permite ejecutar el archivo como un programa.</li>
+</ol>
+</div><h2>Clases de Usuarios</h2>
+<div class='content'><p>Los permisos se aplican a tres clases de usuarios:</p>
+<ol>
+<li><strong>Propietario (u)</strong>: El usuario que posee el archivo.</li>
+<li><strong>Grupo (g)</strong>: Un grupo de usuarios que tienen permisos específicos sobre el archivo.</li>
+<li><strong>Otros (o)</strong>: Todos los demás usuarios.</li>
+</ol>
+</div><h2>Representación de Permisos</h2>
+<div class='content'><p>Los permisos se representan mediante una combinación de letras y números. Por ejemplo, <code>rwxr-xr--</code> o <code>755</code>.</p>
+<ul>
+<li><strong>rwxr-xr--</strong>: El propietario tiene permisos de lectura, escritura y ejecución; el grupo tiene permisos de lectura y ejecución; otros tienen permisos de lectura.</li>
+<li><strong>755</strong>: Es la representación numérica de <code>rwxr-xr-x</code>.</li>
+</ul>
+</div><h1>Comandos PHP para Manejar Permisos</h1>
+<div class='content'></div><h2>`chmod()`</h2>
+<div class='content'><p>La función <code>chmod()</code> se utiliza para cambiar los permisos de un archivo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGZpbGUgPSAnZXhhbXBsZS50eHQnOwoKLy8gQ2FtYmlhciBwZXJtaXNvcyBhIDA3NTUKaWYgKGNobW9kKCRmaWxlLCAwNzU1KSkgewogICAgZWNobyAiUGVybWlzb3MgY2FtYmlhZG9zIGNvcnJlY3RhbWVudGUuIjsKfSBlbHNlIHsKICAgIGVjaG8gIkVycm9yIGFsIGNhbWJpYXIgcGVybWlzb3MuIjsKfQo/Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$file = 'example.txt';
+
+// Cambiar permisos a 0755
+if (chmod($file, 0755)) {
+    echo &quot;Permisos cambiados correctamente.&quot;;
+} else {
+    echo &quot;Error al cambiar permisos.&quot;;
+}
+?&gt;</pre></div><div class='content'></div><h2>`fileperms()`</h2>
+<div class='content'><p>La función <code>fileperms()</code> se utiliza para obtener los permisos de un archivo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGZpbGUgPSAnZXhhbXBsZS50eHQnOwoKJHBlcm1zID0gZmlsZXBlcm1zKCRmaWxlKTsKCi8vIENvbnZlcnRpciBwZXJtaXNvcyBhIGZvcm1hdG8gbGVnaWJsZQplY2hvIHN1YnN0cihzcHJpbnRmKCclbycsICRwZXJtcyksIC00KTsKPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$file = 'example.txt';
+
+$perms = fileperms($file);
+
+// Convertir permisos a formato legible
+echo substr(sprintf('%o', $perms), -4);
+?&gt;</pre></div><div class='content'></div><h2>`chown()`</h2>
+<div class='content'><p>La función <code>chown()</code> se utiliza para cambiar el propietario de un archivo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGZpbGUgPSAnZXhhbXBsZS50eHQnOwokdXNlciA9ICduZXdvd25lcic7CgppZiAoY2hvd24oJGZpbGUsICR1c2VyKSkgewogICAgZWNobyAiUHJvcGlldGFyaW8gY2FtYmlhZG8gY29ycmVjdGFtZW50ZS4iOwp9IGVsc2UgewogICAgZWNobyAiRXJyb3IgYWwgY2FtYmlhciBwcm9waWV0YXJpby4iOwp9Cj8+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$file = 'example.txt';
+$user = 'newowner';
+
+if (chown($file, $user)) {
+    echo &quot;Propietario cambiado correctamente.&quot;;
+} else {
+    echo &quot;Error al cambiar propietario.&quot;;
+}
+?&gt;</pre></div><div class='content'></div><h2>`chgrp()`</h2>
+<div class='content'><p>La función <code>chgrp()</code> se utiliza para cambiar el grupo de un archivo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGZpbGUgPSAnZXhhbXBsZS50eHQnOwokZ3JvdXAgPSAnbmV3Z3JvdXAnOwoKaWYgKGNoZ3JwKCRmaWxlLCAkZ3JvdXApKSB7CiAgICBlY2hvICJHcnVwbyBjYW1iaWFkbyBjb3JyZWN0YW1lbnRlLiI7Cn0gZWxzZSB7CiAgICBlY2hvICJFcnJvciBhbCBjYW1iaWFyIGdydXBvLiI7Cn0KPz4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$file = 'example.txt';
+$group = 'newgroup';
+
+if (chgrp($file, $group)) {
+    echo &quot;Grupo cambiado correctamente.&quot;;
+} else {
+    echo &quot;Error al cambiar grupo.&quot;;
+}
+?&gt;</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un script que crea un archivo, cambia sus permisos y luego verifica los permisos actuales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGZpbGUgPSAnZXhhbXBsZS50eHQnOwoKLy8gQ3JlYXIgdW4gYXJjaGl2bwpmaWxlX3B1dF9jb250ZW50cygkZmlsZSwgJ0NvbnRlbmlkbyBkZSBlamVtcGxvJyk7CgovLyBDYW1iaWFyIHBlcm1pc29zIGEgMDY0NApjaG1vZCgkZmlsZSwgMDY0NCk7CgovLyBPYnRlbmVyIHkgbW9zdHJhciBwZXJtaXNvcyBhY3R1YWxlcwokcGVybXMgPSBmaWxlcGVybXMoJGZpbGUpOwplY2hvICJQZXJtaXNvcyBhY3R1YWxlczogIiAuIHN1YnN0cihzcHJpbnRmKCclbycsICRwZXJtcyksIC00KSAuICJcbiI7CgovLyBDYW1iaWFyIHByb3BpZXRhcmlvIChyZXF1aWVyZSBwZXJtaXNvcyBkZSBzdXBlcnVzdWFyaW8pCiR1c2VyID0gJ25ld293bmVyJzsKY2hvd24oJGZpbGUsICR1c2VyKTsKCi8vIENhbWJpYXIgZ3J1cG8gKHJlcXVpZXJlIHBlcm1pc29zIGRlIHN1cGVydXN1YXJpbykKJGdyb3VwID0gJ25ld2dyb3VwJzsKY2hncnAoJGZpbGUsICRncm91cCk7Cj8+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$file = 'example.txt';
+
+// Crear un archivo
+file_put_contents($file, 'Contenido de ejemplo');
+
+// Cambiar permisos a 0644
+chmod($file, 0644);
+
+// Obtener y mostrar permisos actuales
+$perms = fileperms($file);
+echo &quot;Permisos actuales: &quot; . substr(sprintf('%o', $perms), -4) . &quot;\n&quot;;
+
+// Cambiar propietario (requiere permisos de superusuario)
+$user = 'newowner';
+chown($file, $user);
+
+// Cambiar grupo (requiere permisos de superusuario)
+$group = 'newgroup';
+chgrp($file, $group);
+?&gt;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea un archivo llamado <code>testfile.txt</code> y escribe &quot;Hola Mundo&quot; en él.</li>
+<li>Cambia los permisos del archivo a <code>0755</code>.</li>
+<li>Verifica y muestra los permisos actuales del archivo.</li>
+<li>Cambia el propietario del archivo a un usuario llamado <code>usuario1</code>.</li>
+<li>Cambia el grupo del archivo a un grupo llamado <code>grupo1</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKJGZpbGUgPSAndGVzdGZpbGUudHh0JzsKCi8vIENyZWFyIHVuIGFyY2hpdm8KZmlsZV9wdXRfY29udGVudHMoJGZpbGUsICdIb2xhIE11bmRvJyk7CgovLyBDYW1iaWFyIHBlcm1pc29zIGEgMDc1NQpjaG1vZCgkZmlsZSwgMDc1NSk7CgovLyBPYnRlbmVyIHkgbW9zdHJhciBwZXJtaXNvcyBhY3R1YWxlcwokcGVybXMgPSBmaWxlcGVybXMoJGZpbGUpOwplY2hvICJQZXJtaXNvcyBhY3R1YWxlczogIiAuIHN1YnN0cihzcHJpbnRmKCclbycsICRwZXJtcyksIC00KSAuICJcbiI7CgovLyBDYW1iaWFyIHByb3BpZXRhcmlvIChyZXF1aWVyZSBwZXJtaXNvcyBkZSBzdXBlcnVzdWFyaW8pCiR1c2VyID0gJ3VzdWFyaW8xJzsKY2hvd24oJGZpbGUsICR1c2VyKTsKCi8vIENhbWJpYXIgZ3J1cG8gKHJlcXVpZXJlIHBlcm1pc29zIGRlIHN1cGVydXN1YXJpbykKJGdyb3VwID0gJ2dydXBvMSc7CmNoZ3JwKCRmaWxlLCAkZ3JvdXApOwo/Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+$file = 'testfile.txt';
+
+// Crear un archivo
+file_put_contents($file, 'Hola Mundo');
+
+// Cambiar permisos a 0755
+chmod($file, 0755);
+
+// Obtener y mostrar permisos actuales
+$perms = fileperms($file);
+echo &quot;Permisos actuales: &quot; . substr(sprintf('%o', $perms), -4) . &quot;\n&quot;;
+
+// Cambiar propietario (requiere permisos de superusuario)
+$user = 'usuario1';
+chown($file, $user);
+
+// Cambiar grupo (requiere permisos de superusuario)
+$group = 'grupo1';
+chgrp($file, $group);
+?&gt;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Manejar los permisos de archivos en PHP es esencial para garantizar la seguridad y el correcto funcionamiento de tus aplicaciones. Con las funciones <code>chmod()</code>, <code>fileperms()</code>, <code>chown()</code>, y <code>chgrp()</code>, puedes controlar quién tiene acceso a tus archivos y qué pueden hacer con ellos. Asegúrate de entender y aplicar correctamente estos conceptos para evitar problemas de seguridad y permisos en tus proyectos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-file-handling-functions' title="Funciones de Manejo de Archivos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-directory-functions' title="Funciones de Directorio">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

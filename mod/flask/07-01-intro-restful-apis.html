@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a las APIs RESTful</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/07-01-intro-restful-apis" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/07-01-intro-restful-apis" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/07-01-intro-restful-apis" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flask/07-01-intro-restful-apis" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/07-01-intro-restful-apis" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-logging-debugging' title="Registro y Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introducción a las APIs RESTful</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-creating-restful-endpoints' title="Creación de Endpoints RESTful">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos sobre las APIs RESTful y cómo implementarlas utilizando Flask. Las APIs RESTful son una forma popular de construir servicios web que permiten la comunicación entre diferentes sistemas a través de HTTP. REST (Representational State Transfer) es un estilo arquitectónico que utiliza métodos HTTP estándar y se basa en recursos identificados por URLs.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>REST (Representational State Transfer)</strong>:</p>
+<ul>
+<li>Es un estilo arquitectónico para diseñar servicios web.</li>
+<li>Utiliza métodos HTTP estándar como GET, POST, PUT, DELETE.</li>
+<li>Los recursos se identifican mediante URLs.</li>
+</ul>
+</li>
+<li>
+<p><strong>Recursos</strong>:</p>
+<ul>
+<li>Son entidades que se pueden acceder y manipular a través de la API.</li>
+<li>Cada recurso tiene una URL única.</li>
+</ul>
+</li>
+<li>
+<p><strong>Métodos HTTP</strong>:</p>
+<ul>
+<li><strong>GET</strong>: Recupera información de un recurso.</li>
+<li><strong>POST</strong>: Crea un nuevo recurso.</li>
+<li><strong>PUT</strong>: Actualiza un recurso existente.</li>
+<li><strong>DELETE</strong>: Elimina un recurso.</li>
+</ul>
+</li>
+<li>
+<p><strong>JSON (JavaScript Object Notation)</strong>:</p>
+<ul>
+<li>Es un formato ligero de intercambio de datos.</li>
+<li>Es fácil de leer y escribir para los humanos y fácil de parsear y generar para las máquinas.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuración Inicial</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener Flask instalado en tu entorno de desarrollo. Si no lo tienes, puedes instalarlo usando pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2s="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask</pre></div><div class='content'></div><h1>Creando una API RESTful Básica</h1>
+<div class='content'><p>Vamos a crear una API RESTful básica que maneje un recurso llamado <code>books</code>. Esta API permitirá realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre los libros.</p>
+</div><h2>Paso 1: Configuración del Proyecto</h2>
+<div class='content'><p>Crea un nuevo directorio para tu proyecto y dentro de él, crea un archivo llamado <code>app.py</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlfZmxhc2tfYXBpLwogICAg4pSU4pSA4pSAIGFwcC5weQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>my_flask_api/
+    └── app.py</pre></div><div class='content'></div><h2>Paso 2: Configuración de Flask</h2>
+<div class='content'><p>En <code>app.py</code>, configura una aplicación Flask básica:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIGpzb25pZnksIHJlcXVlc3QKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKIyBEYXRvcyBkZSBlamVtcGxvCmJvb2tzID0gWwogICAgeydpZCc6IDEsICd0aXRsZSc6ICcxOTg0JywgJ2F1dGhvcic6ICdHZW9yZ2UgT3J3ZWxsJ30sCiAgICB7J2lkJzogMiwgJ3RpdGxlJzogJ1RvIEtpbGwgYSBNb2NraW5nYmlyZCcsICdhdXRob3InOiAnSGFycGVyIExlZSd9Cl0KCkBhcHAucm91dGUoJy8nKQpkZWYgaG9tZSgpOgogICAgcmV0dXJuICJXZWxjb21lIHRvIHRoZSBCb29rIEFQSSEiCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Datos de ejemplo
+books = [
+    {'id': 1, 'title': '1984', 'author': 'George Orwell'},
+    {'id': 2, 'title': 'To Kill a Mockingbird', 'author': 'Harper Lee'}
+]
+
+@app.route('/')
+def home():
+    return &quot;Welcome to the Book API!&quot;
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Paso 3: Definiendo Endpoints RESTful</h2>
+<div class='content'><h4>Obtener Todos los Libros (GET)</h4>
+<p>Añade un endpoint para obtener todos los libros:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzJywgbWV0aG9kcz1bJ0dFVCddKQpkZWYgZ2V0X2Jvb2tzKCk6CiAgICByZXR1cm4ganNvbmlmeShib29rcyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books', methods=['GET'])
+def get_books():
+    return jsonify(books)</pre></div><div class='content'><h4>Obtener un Libro por ID (GET)</h4>
+<p>Añade un endpoint para obtener un libro específico por su ID:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzLzxpbnQ6Ym9va19pZD4nLCBtZXRob2RzPVsnR0VUJ10pCmRlZiBnZXRfYm9vayhib29rX2lkKToKICAgIGJvb2sgPSBuZXh0KChib29rIGZvciBib29rIGluIGJvb2tzIGlmIGJvb2tbJ2lkJ10gPT0gYm9va19pZCksIE5vbmUpCiAgICBpZiBib29rIGlzIG5vdCBOb25lOgogICAgICAgIHJldHVybiBqc29uaWZ5KGJvb2spCiAgICBlbHNlOgogICAgICAgIHJldHVybiBqc29uaWZ5KHsnZXJyb3InOiAnQm9vayBub3QgZm91bmQnfSksIDQwNA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books/&lt;int:book_id&gt;', methods=['GET'])
+def get_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book is not None:
+        return jsonify(book)
+    else:
+        return jsonify({'error': 'Book not found'}), 404</pre></div><div class='content'><h4>Crear un Nuevo Libro (POST)</h4>
+<p>Añade un endpoint para crear un nuevo libro:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIGNyZWF0ZV9ib29rKCk6CiAgICBuZXdfYm9vayA9IHJlcXVlc3QuZ2V0X2pzb24oKQogICAgbmV3X2Jvb2tbJ2lkJ10gPSBsZW4oYm9va3MpICsgMQogICAgYm9va3MuYXBwZW5kKG5ld19ib29rKQogICAgcmV0dXJuIGpzb25pZnkobmV3X2Jvb2spLCAyMDE="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books', methods=['POST'])
+def create_book():
+    new_book = request.get_json()
+    new_book['id'] = len(books) + 1
+    books.append(new_book)
+    return jsonify(new_book), 201</pre></div><div class='content'><h4>Actualizar un Libro (PUT)</h4>
+<p>Añade un endpoint para actualizar un libro existente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzLzxpbnQ6Ym9va19pZD4nLCBtZXRob2RzPVsnUFVUJ10pCmRlZiB1cGRhdGVfYm9vayhib29rX2lkKToKICAgIGJvb2sgPSBuZXh0KChib29rIGZvciBib29rIGluIGJvb2tzIGlmIGJvb2tbJ2lkJ10gPT0gYm9va19pZCksIE5vbmUpCiAgICBpZiBib29rIGlzIG5vdCBOb25lOgogICAgICAgIHVwZGF0ZWRfZGF0YSA9IHJlcXVlc3QuZ2V0X2pzb24oKQogICAgICAgIGJvb2sudXBkYXRlKHVwZGF0ZWRfZGF0YSkKICAgICAgICByZXR1cm4ganNvbmlmeShib29rKQogICAgZWxzZToKICAgICAgICByZXR1cm4ganNvbmlmeSh7J2Vycm9yJzogJ0Jvb2sgbm90IGZvdW5kJ30pLCA0MDQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books/&lt;int:book_id&gt;', methods=['PUT'])
+def update_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book is not None:
+        updated_data = request.get_json()
+        book.update(updated_data)
+        return jsonify(book)
+    else:
+        return jsonify({'error': 'Book not found'}), 404</pre></div><div class='content'><h4>Eliminar un Libro (DELETE)</h4>
+<p>Añade un endpoint para eliminar un libro:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL2Jvb2tzLzxpbnQ6Ym9va19pZD4nLCBtZXRob2RzPVsnREVMRVRFJ10pCmRlZiBkZWxldGVfYm9vayhib29rX2lkKToKICAgIGdsb2JhbCBib29rcwogICAgYm9va3MgPSBbYm9vayBmb3IgYm9vayBpbiBib29rcyBpZiBib29rWydpZCddICE9IGJvb2tfaWRdCiAgICByZXR1cm4gJycsIDIwNA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/books/&lt;int:book_id&gt;', methods=['DELETE'])
+def delete_book(book_id):
+    global books
+    books = [book for book in books if book['id'] != book_id]
+    return '', 204</pre></div><div class='content'></div><h2>Código Completo</h2>
+<div class='content'><p>Aquí está el código completo de <code>app.py</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIGpzb25pZnksIHJlcXVlc3QKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKIyBEYXRvcyBkZSBlamVtcGxvCmJvb2tzID0gWwogICAgeydpZCc6IDEsICd0aXRsZSc6ICcxOTg0JywgJ2F1dGhvcic6ICdHZW9yZ2UgT3J3ZWxsJ30sCiAgICB7J2lkJzogMiwgJ3RpdGxlJzogJ1RvIEtpbGwgYSBNb2NraW5nYmlyZCcsICdhdXRob3InOiAnSGFycGVyIExlZSd9Cl0KCkBhcHAucm91dGUoJy8nKQpkZWYgaG9tZSgpOgogICAgcmV0dXJuICJXZWxjb21lIHRvIHRoZSBCb29rIEFQSSEiCgpAYXBwLnJvdXRlKCcvYm9va3MnLCBtZXRob2RzPVsnR0VUJ10pCmRlZiBnZXRfYm9va3MoKToKICAgIHJldHVybiBqc29uaWZ5KGJvb2tzKQoKQGFwcC5yb3V0ZSgnL2Jvb2tzLzxpbnQ6Ym9va19pZD4nLCBtZXRob2RzPVsnR0VUJ10pCmRlZiBnZXRfYm9vayhib29rX2lkKToKICAgIGJvb2sgPSBuZXh0KChib29rIGZvciBib29rIGluIGJvb2tzIGlmIGJvb2tbJ2lkJ10gPT0gYm9va19pZCksIE5vbmUpCiAgICBpZiBib29rIGlzIG5vdCBOb25lOgogICAgICAgIHJldHVybiBqc29uaWZ5KGJvb2spCiAgICBlbHNlOgogICAgICAgIHJldHVybiBqc29uaWZ5KHsnZXJyb3InOiAnQm9vayBub3QgZm91bmQnfSksIDQwNAoKQGFwcC5yb3V0ZSgnL2Jvb2tzJywgbWV0aG9kcz1bJ1BPU1QnXSkKZGVmIGNyZWF0ZV9ib29rKCk6CiAgICBuZXdfYm9vayA9IHJlcXVlc3QuZ2V0X2pzb24oKQogICAgbmV3X2Jvb2tbJ2lkJ10gPSBsZW4oYm9va3MpICsgMQogICAgYm9va3MuYXBwZW5kKG5ld19ib29rKQogICAgcmV0dXJuIGpzb25pZnkobmV3X2Jvb2spLCAyMDEKCkBhcHAucm91dGUoJy9ib29rcy88aW50OmJvb2tfaWQ+JywgbWV0aG9kcz1bJ1BVVCddKQpkZWYgdXBkYXRlX2Jvb2soYm9va19pZCk6CiAgICBib29rID0gbmV4dCgoYm9vayBmb3IgYm9vayBpbiBib29rcyBpZiBib29rWydpZCddID09IGJvb2tfaWQpLCBOb25lKQogICAgaWYgYm9vayBpcyBub3QgTm9uZToKICAgICAgICB1cGRhdGVkX2RhdGEgPSByZXF1ZXN0LmdldF9qc29uKCkKICAgICAgICBib29rLnVwZGF0ZSh1cGRhdGVkX2RhdGEpCiAgICAgICAgcmV0dXJuIGpzb25pZnkoYm9vaykKICAgIGVsc2U6CiAgICAgICAgcmV0dXJuIGpzb25pZnkoeydlcnJvcic6ICdCb29rIG5vdCBmb3VuZCd9KSwgNDA0CgpAYXBwLnJvdXRlKCcvYm9va3MvPGludDpib29rX2lkPicsIG1ldGhvZHM9WydERUxFVEUnXSkKZGVmIGRlbGV0ZV9ib29rKGJvb2tfaWQpOgogICAgZ2xvYmFsIGJvb2tzCiAgICBib29rcyA9IFtib29rIGZvciBib29rIGluIGJvb2tzIGlmIGJvb2tbJ2lkJ10gIT0gYm9va19pZF0KICAgIHJldHVybiAnJywgMjA0CgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, jsonify, request
+
+app = Flask(__name__)
+
+# Datos de ejemplo
+books = [
+    {'id': 1, 'title': '1984', 'author': 'George Orwell'},
+    {'id': 2, 'title': 'To Kill a Mockingbird', 'author': 'Harper Lee'}
+]
+
+@app.route('/')
+def home():
+    return &quot;Welcome to the Book API!&quot;
+
+@app.route('/books', methods=['GET'])
+def get_books():
+    return jsonify(books)
+
+@app.route('/books/&lt;int:book_id&gt;', methods=['GET'])
+def get_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book is not None:
+        return jsonify(book)
+    else:
+        return jsonify({'error': 'Book not found'}), 404
+
+@app.route('/books', methods=['POST'])
+def create_book():
+    new_book = request.get_json()
+    new_book['id'] = len(books) + 1
+    books.append(new_book)
+    return jsonify(new_book), 201
+
+@app.route('/books/&lt;int:book_id&gt;', methods=['PUT'])
+def update_book(book_id):
+    book = next((book for book in books if book['id'] == book_id), None)
+    if book is not None:
+        updated_data = request.get_json()
+        book.update(updated_data)
+        return jsonify(book)
+    else:
+        return jsonify({'error': 'Book not found'}), 404
+
+@app.route('/books/&lt;int:book_id&gt;', methods=['DELETE'])
+def delete_book(book_id):
+    global books
+    books = [book for book in books if book['id'] != book_id]
+    return '', 204
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Añadir un Campo Nuevo</strong>:</p>
+<ul>
+<li>Añade un campo <code>genre</code> a cada libro y actualiza los endpoints para manejar este nuevo campo.</li>
+</ul>
+</li>
+<li>
+<p><strong>Manejo de Errores</strong>:</p>
+<ul>
+<li>Mejora el manejo de errores para los endpoints de actualización y eliminación, asegurándote de que se devuelvan mensajes de error claros cuando un libro no se encuentra.</li>
+</ul>
+</li>
+<li>
+<p><strong>Autenticación Básica</strong>:</p>
+<ul>
+<li>Implementa una autenticación básica para proteger los endpoints de creación, actualización y eliminación de libros.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido los conceptos básicos de las APIs RESTful y cómo implementarlas utilizando Flask. Hemos creado una API básica que permite realizar operaciones CRUD sobre un recurso de libros. En las próximas lecciones, profundizaremos en temas más avanzados como la autenticación y la gestión de datos JSON.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-logging-debugging' title="Registro y Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-creating-restful-endpoints' title="Creación de Endpoints RESTful">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

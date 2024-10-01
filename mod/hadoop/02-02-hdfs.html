@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HDFS (Sistema de Archivos Distribuido de Hadoop)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/02-02-hdfs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/02-02-hdfs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/02-02-hdfs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/hadoop/02-02-hdfs" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/02-02-hdfs" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-hadoop-core-components' title="Componentes Principales de Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">HDFS (Sistema de Archivos Distribuido de Hadoop)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-mapreduce-framework' title="Marco de Trabajo MapReduce">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>El Sistema de Archivos Distribuido de Hadoop (HDFS) es uno de los componentes fundamentales del ecosistema Hadoop. Diseñado para almacenar grandes volúmenes de datos de manera distribuida, HDFS permite el almacenamiento y acceso eficiente a datos en un clúster de servidores. En esta sección, exploraremos la arquitectura de HDFS, sus características clave y cómo interactuar con él mediante comandos.</p>
+</div><h1>Arquitectura de HDFS</h1>
+<div class='content'></div><h2>Componentes Principales</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Namenode</strong>:</p>
+<ul>
+<li>Actúa como el maestro del sistema de archivos.</li>
+<li>Mantiene el árbol de directorios del sistema de archivos y los metadatos de todos los archivos y directorios.</li>
+<li>Gestiona el espacio de nombres del sistema de archivos y regula el acceso a los archivos por parte de los clientes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Datanode</strong>:</p>
+<ul>
+<li>Actúa como el trabajador del sistema de archivos.</li>
+<li>Almacena los bloques de datos reales.</li>
+<li>Se comunica regularmente con el Namenode para enviar informes de estado y recibir instrucciones.</li>
+</ul>
+</li>
+<li>
+<p><strong>Secondary Namenode</strong>:</p>
+<ul>
+<li>No es un respaldo del Namenode.</li>
+<li>Ayuda a reducir la carga del Namenode al tomar instantáneas periódicas del espacio de nombres y los registros de transacciones.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Diagrama de Arquitectura</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ky0tLS0tLS0tLS0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLS0tLS0tLS0tLS0tKwp8ICAgICAgQ2xpZW50ICAgICAgIHwgICAgICAgfCAgICAgIENsaWVudCAgICAgICB8CistLS0tLS0tLSstLS0tLS0tLS0tKyAgICAgICArLS0tLS0tLS0rLS0tLS0tLS0tLSsKICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgIHwKICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgIHwKICAgICAgICAgdiAgICAgICAgICAgICAgICAgICAgICAgICAgIHYKKy0tLS0tLS0tKy0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLSstLS0tLS0tLS0tKwp8ICAgICAgTmFtZW5vZGUgICAgIHwgICAgICAgfCAgU2Vjb25kYXJ5IE5hbWVub2RlfAorLS0tLS0tLS0rLS0tLS0tLS0tLSsgICAgICAgKy0tLS0tLS0tKy0tLS0tLS0tLS0rCiAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgIHYgICAgICAgICAgICAgICAgICAgICAgICAgICB2CistLS0tLS0tLSstLS0tLS0tLS0tKyAgICAgICArLS0tLS0tLS0rLS0tLS0tLS0tLSsKfCAgICAgIERhdGFub2RlICAgICB8ICAgICAgIHwgICAgICBEYXRhbm9kZSAgICAgfAorLS0tLS0tLS0rLS0tLS0tLS0tLSsgICAgICAgKy0tLS0tLS0tKy0tLS0tLS0tLS0rCiAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgIHYgICAgICAgICAgICAgICAgICAgICAgICAgICB2CistLS0tLS0tLSstLS0tLS0tLS0tKyAgICAgICArLS0tLS0tLS0rLS0tLS0tLS0tLSsKfCAgICAgIERhdGFub2RlICAgICB8ICAgICAgIHwgICAgICBEYXRhbm9kZSAgICAgfAorLS0tLS0tLS0tLS0tLS0tLS0tLSsgICAgICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0r"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>+-------------------+       +-------------------+
+|      Client       |       |      Client       |
++--------+----------+       +--------+----------+
+         |                           |
+         |                           |
+         v                           v
++--------+----------+       +--------+----------+
+|      Namenode     |       |  Secondary Namenode|
++--------+----------+       +--------+----------+
+         |                           |
+         |                           |
+         v                           v
++--------+----------+       +--------+----------+
+|      Datanode     |       |      Datanode     |
++--------+----------+       +--------+----------+
+         |                           |
+         |                           |
+         v                           v
++--------+----------+       +--------+----------+
+|      Datanode     |       |      Datanode     |
++-------------------+       +-------------------+</pre></div><div class='content'></div><h2>Características Clave de HDFS</h2>
+<div class='content'><ul>
+<li><strong>Alta Tolerancia a Fallos</strong>: HDFS replica los datos en múltiples nodos para asegurar la disponibilidad y la integridad de los datos en caso de fallos de hardware.</li>
+<li><strong>Escalabilidad</strong>: Diseñado para escalar horizontalmente, HDFS puede manejar petabytes de datos distribuidos en miles de nodos.</li>
+<li><strong>Acceso a Datos de Alta Velocidad</strong>: Optimizado para leer y escribir grandes volúmenes de datos de manera eficiente.</li>
+<li><strong>Portabilidad</strong>: HDFS está diseñado para ejecutarse en hardware de bajo costo, lo que lo hace accesible y económico.</li>
+</ul>
+</div><h1>Comandos de HDFS</h1>
+<div class='content'></div><h2>Comandos Básicos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Listar Archivos y Directorios</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -ls /ruta/del/directorio
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">hdfs dfs -ls /user/hadoop
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un Directorio</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -mkdir /ruta/del/nuevo/directorio
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">hdfs dfs -mkdir /user/hadoop/nuevo_directorio
+</code></pre>
+</li>
+<li>
+<p><strong>Copiar un Archivo desde el Sistema de Archivos Local a HDFS</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -put /ruta/local/del/archivo /ruta/hdfs/del/archivo
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">hdfs dfs -put /home/user/archivo.txt /user/hadoop/archivo.txt
+</code></pre>
+</li>
+<li>
+<p><strong>Copiar un Archivo desde HDFS al Sistema de Archivos Local</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -get /ruta/hdfs/del/archivo /ruta/local/del/archivo
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">hdfs dfs -get /user/hadoop/archivo.txt /home/user/archivo.txt
+</code></pre>
+</li>
+<li>
+<p><strong>Eliminar un Archivo o Directorio</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -rm /ruta/del/archivo
+hdfs dfs -rm -r /ruta/del/directorio
+</code></pre>
+<p>Ejemplo:</p>
+<pre><code class="language-bash">hdfs dfs -rm /user/hadoop/archivo.txt
+hdfs dfs -rm -r /user/hadoop/nuevo_directorio
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Objetivo</strong>: Familiarizarse con los comandos básicos de HDFS.</p>
+<ol>
+<li>
+<p><strong>Crear un directorio en HDFS</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -mkdir /user/estudiante/ejercicio
+</code></pre>
+</li>
+<li>
+<p><strong>Copiar un archivo desde el sistema de archivos local a HDFS</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -put /home/estudiante/ejemplo.txt /user/estudiante/ejercicio/ejemplo.txt
+</code></pre>
+</li>
+<li>
+<p><strong>Listar los archivos en el directorio de HDFS</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -ls /user/estudiante/ejercicio
+</code></pre>
+</li>
+<li>
+<p><strong>Copiar el archivo de HDFS al sistema de archivos local</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -get /user/estudiante/ejercicio/ejemplo.txt /home/estudiante/ejemplo_copia.txt
+</code></pre>
+</li>
+<li>
+<p><strong>Eliminar el archivo y el directorio en HDFS</strong>:</p>
+<pre><code class="language-bash">hdfs dfs -rm /user/estudiante/ejercicio/ejemplo.txt
+hdfs dfs -rm -r /user/estudiante/ejercicio
+</code></pre>
+</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><ol>
+<li>
+<p>Crear un directorio en HDFS:</p>
+<pre><code class="language-bash">hdfs dfs -mkdir /user/estudiante/ejercicio
+</code></pre>
+</li>
+<li>
+<p>Copiar un archivo desde el sistema de archivos local a HDFS:</p>
+<pre><code class="language-bash">hdfs dfs -put /home/estudiante/ejemplo.txt /user/estudiante/ejercicio/ejemplo.txt
+</code></pre>
+</li>
+<li>
+<p>Listar los archivos en el directorio de HDFS:</p>
+<pre><code class="language-bash">hdfs dfs -ls /user/estudiante/ejercicio
+</code></pre>
+</li>
+<li>
+<p>Copiar el archivo de HDFS al sistema de archivos local:</p>
+<pre><code class="language-bash">hdfs dfs -get /user/estudiante/ejercicio/ejemplo.txt /home/estudiante/ejemplo_copia.txt
+</code></pre>
+</li>
+<li>
+<p>Eliminar el archivo y el directorio en HDFS:</p>
+<pre><code class="language-bash">hdfs dfs -rm /user/estudiante/ejercicio/ejemplo.txt
+hdfs dfs -rm -r /user/estudiante/ejercicio
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los fundamentos del Sistema de Archivos Distribuido de Hadoop (HDFS), incluyendo su arquitectura, componentes principales y comandos básicos. HDFS es una pieza clave del ecosistema Hadoop, proporcionando un almacenamiento distribuido y tolerante a fallos para grandes volúmenes de datos. Con los conocimientos adquiridos, ahora estás preparado para explorar más a fondo cómo HDFS interactúa con otros componentes de Hadoop y cómo se puede utilizar para gestionar y procesar datos a gran escala.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-hadoop-core-components' title="Componentes Principales de Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-mapreduce-framework' title="Marco de Trabajo MapReduce">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

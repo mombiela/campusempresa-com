@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DaemonSets</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/06-02-daemonsets" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/06-02-daemonsets" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/06-02-daemonsets" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/06-02-daemonsets" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/06-02-daemonsets" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-statefulsets' title="StatefulSets">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">DaemonSets</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-jobs-cronjobs' title="Trabajos y CronJobs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En Kubernetes, un DaemonSet asegura que todos (o algunos) nodos ejecuten una copia de un pod. A medida que se añaden nodos al clúster, los pods se añaden a ellos. A medida que se eliminan nodos del clúster, esos pods se eliminan. El uso principal de un DaemonSet es para ejecutar demonios en cada nodo, como herramientas de monitoreo, registro o almacenamiento.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Pod</strong>: La unidad más pequeña y simple en el modelo de objetos de Kubernetes.</li>
+<li><strong>Nodo</strong>: Una máquina, física o virtual, en el clúster de Kubernetes.</li>
+<li><strong>DaemonSet</strong>: Un controlador que asegura que un pod específico se ejecute en todos los nodos seleccionados.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Crear un DaemonSet</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo de un archivo de configuración YAML para un DaemonSet que ejecuta un contenedor de Nginx en cada nodo del clúster.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEYWVtb25TZXQKbWV0YWRhdGE6CiAgbmFtZTogbmdpbngtZGFlbW9uc2V0CiAgbGFiZWxzOgogICAgYXBwOiBuZ2lueApzcGVjOgogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGFwcDogbmdpbngKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBuZ2lueAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBuZ2lueAogICAgICAgIGltYWdlOiBuZ2lueDpsYXRlc3QKICAgICAgICBwb3J0czoKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDgw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nginx-daemonset
+  labels:
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80</pre></div><div class='content'></div><h2>Desglose del YAML</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API que se está utilizando. En este caso, <code>apps/v1</code>.</li>
+<li><strong>kind</strong>: El tipo de objeto que se está creando. Aquí es <code>DaemonSet</code>.</li>
+<li><strong>metadata</strong>: Información sobre el DaemonSet, como el nombre y las etiquetas.</li>
+<li><strong>spec</strong>: La especificación del DaemonSet.
+<ul>
+<li><strong>selector</strong>: Define cómo seleccionar los pods que pertenecen a este DaemonSet.</li>
+<li><strong>template</strong>: La plantilla para los pods que se crearán.
+<ul>
+<li><strong>metadata</strong>: Etiquetas para los pods.</li>
+<li><strong>spec</strong>: La especificación de los contenedores dentro del pod.
+<ul>
+<li><strong>containers</strong>: Lista de contenedores que se ejecutarán en cada pod.
+<ul>
+<li><strong>name</strong>: Nombre del contenedor.</li>
+<li><strong>image</strong>: Imagen del contenedor.</li>
+<li><strong>ports</strong>: Puertos expuestos por el contenedor.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h2>Aplicar el DaemonSet</h2>
+<div class='content'><p>Para aplicar este DaemonSet, guarda el archivo YAML como <code>nginx-daemonset.yaml</code> y ejecuta el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBuZ2lueC1kYWVtb25zZXQueWFtbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f nginx-daemonset.yaml</pre></div><div class='content'></div><h2>Verificar el DaemonSet</h2>
+<div class='content'><p>Para verificar que el DaemonSet se ha creado y está funcionando correctamente, puedes usar el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgZGFlbW9uc2V0cw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get daemonsets</pre></div><div class='content'><p>Esto mostrará una lista de todos los DaemonSets en el clúster.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un DaemonSet para Fluentd</h2>
+<div class='content'><p>Crea un DaemonSet que ejecute Fluentd en cada nodo del clúster. Fluentd es una herramienta de registro que se utiliza comúnmente para recopilar y enviar registros a diferentes destinos.</p>
+<h4>Archivo YAML</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEYWVtb25TZXQKbWV0YWRhdGE6CiAgbmFtZTogZmx1ZW50ZC1kYWVtb25zZXQKICBsYWJlbHM6CiAgICBhcHA6IGZsdWVudGQKc3BlYzoKICBzZWxlY3RvcjoKICAgIG1hdGNoTGFiZWxzOgogICAgICBhcHA6IGZsdWVudGQKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBmbHVlbnRkCiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IGZsdWVudGQKICAgICAgICBpbWFnZTogZmx1ZW50L2ZsdWVudGQ6bGF0ZXN0CiAgICAgICAgcG9ydHM6CiAgICAgICAgLSBjb250YWluZXJQb3J0OiAyNDIyNA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-daemonset
+  labels:
+    app: fluentd
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: fluent/fluentd:latest
+        ports:
+        - containerPort: 24224</pre></div><div class='content'><h4>Pasos</h4>
+<ol>
+<li>Guarda el archivo YAML como <code>fluentd-daemonset.yaml</code>.</li>
+<li>Aplica el DaemonSet usando el comando <code>kubectl apply -f fluentd-daemonset.yaml</code>.</li>
+<li>Verifica que el DaemonSet se ha creado correctamente usando <code>kubectl get daemonsets</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBmbHVlbnRkLWRhZW1vbnNldC55YW1sCmt1YmVjdGwgZ2V0IGRhZW1vbnNldHM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f fluentd-daemonset.yaml
+kubectl get daemonsets</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ul>
+<li><strong>Error en la especificación del selector</strong>: Asegúrate de que el <code>selector</code> en la especificación del DaemonSet coincida con las etiquetas en la plantilla del pod.</li>
+<li><strong>Imagen del contenedor incorrecta</strong>: Verifica que la imagen del contenedor especificada en el YAML esté disponible y sea correcta.</li>
+<li><strong>Permisos insuficientes</strong>: Asegúrate de que tienes los permisos necesarios para crear y gestionar DaemonSets en el clúster.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los DaemonSets son una herramienta poderosa en Kubernetes para asegurar que ciertos pods se ejecuten en todos o en un subconjunto de nodos del clúster. Son especialmente útiles para tareas de monitoreo, registro y otras operaciones de mantenimiento. En este módulo, hemos aprendido cómo crear y gestionar DaemonSets, así como algunos errores comunes y cómo evitarlos. En el próximo tema, exploraremos los Trabajos y CronJobs en Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-statefulsets' title="StatefulSets">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-jobs-cronjobs' title="Trabajos y CronJobs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

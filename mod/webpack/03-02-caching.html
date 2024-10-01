@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caché</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/webpack/03-02-caching" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/webpack/03-02-caching" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/webpack/03-02-caching" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/webpack/03-02-caching" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/webpack/03-02-caching" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-code-splitting' title="División de Código">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Caché</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-tree-shaking' title="Tree Shaking">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El caché es una técnica esencial para mejorar el rendimiento de las aplicaciones web. En el contexto de Webpack, el caché se utiliza para almacenar los módulos compilados y otros recursos, de manera que no sea necesario recompilarlos cada vez que se realiza una nueva construcción. Esto puede acelerar significativamente el tiempo de construcción y mejorar la experiencia del desarrollador.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Caché de Módulos</strong>: Almacena los módulos compilados para evitar recompilaciones innecesarias.</li>
+<li><strong>Hashing</strong>: Genera identificadores únicos para los archivos, permitiendo a los navegadores almacenar en caché los archivos sin riesgo de servir versiones obsoletas.</li>
+<li><strong>Cache-Control Headers</strong>: Configura las cabeceras HTTP para controlar cómo los navegadores y proxies almacenan en caché los recursos.</li>
+</ol>
+</div><h1>Configuración de Caché en Webpack</h1>
+<div class='content'></div><h2>1. Caché de Módulos</h2>
+<div class='content'><p>Webpack permite habilitar el caché de módulos para mejorar el rendimiento de la construcción. Esto se puede hacer mediante la configuración <code>cache</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKbW9kdWxlLmV4cG9ydHMgPSB7CiAgLy8gT3RyYXMgY29uZmlndXJhY2lvbmVzLi4uCiAgY2FjaGU6IHsKICAgIHR5cGU6ICdmaWxlc3lzdGVtJywgLy8gVXRpbGl6YSBlbCBzaXN0ZW1hIGRlIGFyY2hpdm9zIHBhcmEgYWxtYWNlbmFyIGVsIGNhY2jDqQogIH0sCn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+module.exports = {
+  // Otras configuraciones...
+  cache: {
+    type: 'filesystem', // Utiliza el sistema de archivos para almacenar el cach&eacute;
+  },
+};</pre></div><div class='content'></div><h2>2. Hashing</h2>
+<div class='content'><p>El uso de hashes en los nombres de los archivos de salida es crucial para el almacenamiento en caché efectivo. Webpack permite configurar esto mediante la propiedad <code>output.filename</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKY29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIC8vIE90cmFzIGNvbmZpZ3VyYWNpb25lcy4uLgogIG91dHB1dDogewogICAgZmlsZW5hbWU6ICdbbmFtZV0uW2NvbnRlbnRoYXNoXS5qcycsIC8vIFV0aWxpemEgY29udGVudGhhc2ggcGFyYSBnZW5lcmFyIHVuIGhhc2ggYmFzYWRvIGVuIGVsIGNvbnRlbmlkbyBkZWwgYXJjaGl2bwogICAgcGF0aDogcGF0aC5yZXNvbHZlKF9fZGlybmFtZSwgJ2Rpc3QnKSwKICAgIGNsZWFuOiB0cnVlLCAvLyBMaW1waWEgbGEgY2FycGV0YSBkZSBzYWxpZGEgYW50ZXMgZGUgY2FkYSBjb25zdHJ1Y2Npw7NuCiAgfSwKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+const path = require('path');
+
+module.exports = {
+  // Otras configuraciones...
+  output: {
+    filename: '[name].[contenthash].js', // Utiliza contenthash para generar un hash basado en el contenido del archivo
+    path: path.resolve(__dirname, 'dist'),
+    clean: true, // Limpia la carpeta de salida antes de cada construcci&oacute;n
+  },
+};</pre></div><div class='content'></div><h2>3. Cache-Control Headers</h2>
+<div class='content'><p>Para controlar cómo los navegadores almacenan en caché los recursos, puedes configurar las cabeceras HTTP en tu servidor web. Aquí hay un ejemplo de configuración para un servidor Express:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwpjb25zdCBwYXRoID0gcmVxdWlyZSgncGF0aCcpOwoKYXBwLnVzZShleHByZXNzLnN0YXRpYyhwYXRoLmpvaW4oX19kaXJuYW1lLCAnZGlzdCcpLCB7CiAgbWF4QWdlOiAnMXknLCAvLyBBbG1hY2VuYSBlbiBjYWNow6kgbG9zIGFyY2hpdm9zIHBvciB1biBhw7FvCiAgZXRhZzogZmFsc2UsIC8vIERlc2FjdGl2YSBFVGFnCn0pKTsKCmFwcC5saXN0ZW4oMzAwMCwgKCkgPT4gewogIGNvbnNvbGUubG9nKCdTZXJ2aWRvciBjb3JyaWVuZG8gZW4gaHR0cDovL2xvY2FsaG9zdDozMDAwJyk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'dist'), {
+  maxAge: '1y', // Almacena en cach&eacute; los archivos por un a&ntilde;o
+  etag: false, // Desactiva ETag
+}));
+
+app.listen(3000, () =&gt; {
+  console.log('Servidor corriendo en http://localhost:3000');
+});</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un proyecto simple que utilice el caché de Webpack.</p>
+</div><h2>Paso 1: Configuración del Proyecto</h2>
+<div class='content'><ol>
+<li>Crea una carpeta para tu proyecto y navega a ella.</li>
+<li>Inicializa un nuevo proyecto npm:
+<pre><code class="language-bash">npm init -y
+</code></pre>
+</li>
+<li>Instala Webpack y Webpack CLI:
+<pre><code class="language-bash">npm install webpack webpack-cli --save-dev
+</code></pre>
+</li>
+</ol>
+</div><h2>Paso 2: Estructura del Proyecto</h2>
+<div class='content'><p>Crea la siguiente estructura de carpetas y archivos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("L215LXdlYnBhY2stY2FjaGUtcHJvamVjdAogIC9zcmMKICAgIGluZGV4LmpzCiAgL2Rpc3QKICBwYWNrYWdlLmpzb24KICB3ZWJwYWNrLmNvbmZpZy5qcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>/my-webpack-cache-project
+  /src
+    index.js
+  /dist
+  package.json
+  webpack.config.js</pre></div><div class='content'></div><h2>Paso 3: Configuración de Webpack</h2>
+<div class='content'><p>Edita <code>webpack.config.js</code> para incluir la configuración de caché y hashing:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIGVudHJ5OiAnLi9zcmMvaW5kZXguanMnLAogIG91dHB1dDogewogICAgZmlsZW5hbWU6ICdbbmFtZV0uW2NvbnRlbnRoYXNoXS5qcycsCiAgICBwYXRoOiBwYXRoLnJlc29sdmUoX19kaXJuYW1lLCAnZGlzdCcpLAogICAgY2xlYW46IHRydWUsCiAgfSwKICBjYWNoZTogewogICAgdHlwZTogJ2ZpbGVzeXN0ZW0nLAogIH0sCiAgbW9kZTogJ3Byb2R1Y3Rpb24nLAp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
+  cache: {
+    type: 'filesystem',
+  },
+  mode: 'production',
+};</pre></div><div class='content'></div><h2>Paso 4: Archivo de Entrada</h2>
+<div class='content'><p>Edita <code>src/index.js</code> para incluir un simple mensaje de consola:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc29sZS5sb2coJ0hlbGxvLCBXZWJwYWNrIHdpdGggQ2FjaGluZyEnKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>console.log('Hello, Webpack with Caching!');</pre></div><div class='content'></div><h2>Paso 5: Construcción del Proyecto</h2>
+<div class='content'><p>Construye el proyecto utilizando Webpack:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnB4IHdlYnBhY2s="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npx webpack</pre></div><div class='content'></div><h2>Paso 6: Servir los Archivos</h2>
+<div class='content'><p>Utiliza un servidor estático para servir los archivos en la carpeta <code>dist</code>. Puedes usar <code>http-server</code> para esto:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnB4IGh0dHAtc2VydmVyIC4vZGlzdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npx http-server ./dist</pre></div><div class='content'><p>Navega a <code>http://localhost:8080</code> y verifica que el archivo JavaScript se carga correctamente.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Caché de Módulos</h2>
+<div class='content'><ol>
+<li>Modifica el archivo <code>webpack.config.js</code> para habilitar el caché de módulos.</li>
+<li>Realiza una construcción inicial y observa el tiempo de construcción.</li>
+<li>Realiza una segunda construcción sin cambiar ningún archivo y compara el tiempo de construcción con la primera.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gd2VicGFjay5jb25maWcuanMKY29uc3QgcGF0aCA9IHJlcXVpcmUoJ3BhdGgnKTsKCm1vZHVsZS5leHBvcnRzID0gewogIGVudHJ5OiAnLi9zcmMvaW5kZXguanMnLAogIG91dHB1dDogewogICAgZmlsZW5hbWU6ICdbbmFtZV0uW2NvbnRlbnRoYXNoXS5qcycsCiAgICBwYXRoOiBwYXRoLnJlc29sdmUoX19kaXJuYW1lLCAnZGlzdCcpLAogICAgY2xlYW46IHRydWUsCiAgfSwKICBjYWNoZTogewogICAgdHlwZTogJ2ZpbGVzeXN0ZW0nLAogIH0sCiAgbW9kZTogJ3Byb2R1Y3Rpb24nLAp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// webpack.config.js
+const path = require('path');
+
+module.exports = {
+  entry: './src/index.js',
+  output: {
+    filename: '[name].[contenthash].js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
+  cache: {
+    type: 'filesystem',
+  },
+  mode: 'production',
+};</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El uso del caché en Webpack es una técnica poderosa para mejorar el rendimiento de las construcciones y la experiencia del desarrollador. Al habilitar el caché de módulos y utilizar hashes en los nombres de los archivos de salida, puedes asegurarte de que los navegadores almacenen en caché los recursos de manera efectiva, reduciendo el tiempo de carga y mejorando la experiencia del usuario final.</p>
+<p>En el siguiente tema, exploraremos el concepto de <strong>Tree Shaking</strong>, una técnica para eliminar código muerto y optimizar aún más nuestras construcciones de Webpack.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-code-splitting' title="División de Código">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-tree-shaking' title="Tree Shaking">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

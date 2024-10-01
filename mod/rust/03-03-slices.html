@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/03-03-slices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/03-03-slices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/03-03-slices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rust/03-03-slices" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/03-03-slices" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-references-borrowing' title="Referencias y Préstamo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Slices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-defining-structs' title="Definiendo Structs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En Rust, los slices son una vista de una secuencia de elementos en una colección, como un array o un vector. Los slices permiten acceder a una porción de una colección sin necesidad de copiar los datos. Son útiles cuando necesitas trabajar con subpartes de una colección de manera eficiente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Slice</strong>: Una referencia a una porción continua de una colección.</li>
+<li><strong>Inmutabilidad</strong>: Los slices son inmutables por defecto, pero también pueden ser mutables.</li>
+<li><strong>Rango</strong>: Los slices se definen usando rangos, que especifican el inicio y el final de la porción.</li>
+</ul>
+</div><h1>Sintaxis de Slices</h1>
+<div class='content'></div><h2>Creación de un Slice</h2>
+<div class='content'><p>Para crear un slice, necesitas una colección y un rango. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBhcnIgPSBbMSwgMiwgMywgNCwgNV07CiAgICBsZXQgc2xpY2UgPSAmYXJyWzEuLjRdOyAvLyBTbGljZSBkZSBsb3MgZWxlbWVudG9zIDIsIDMgeSA0CiAgICBwcmludGxuISgiezo/fSIsIHNsaWNlKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let arr = [1, 2, 3, 4, 5];
+    let slice = &amp;arr[1..4]; // Slice de los elementos 2, 3 y 4
+    println!(&quot;{:?}&quot;, slice);
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Declaración del Array</strong>: <code>let arr = [1, 2, 3, 4, 5];</code>
+<ul>
+<li>Aquí, <code>arr</code> es un array de 5 elementos.</li>
+</ul>
+</li>
+<li><strong>Creación del Slice</strong>: <code>let slice = &amp;arr[1..4];</code>
+<ul>
+<li><code>&amp;arr[1..4]</code> crea un slice que incluye los elementos desde el índice 1 hasta el índice 3 (el índice final es exclusivo).</li>
+</ul>
+</li>
+<li><strong>Impresión del Slice</strong>: <code>println!(&quot;{:?}&quot;, slice);</code>
+<ul>
+<li><code>{:?}</code> se usa para imprimir el slice en formato de depuración.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Slices Mutables</h2>
+<div class='content'><p>También puedes crear slices mutables si necesitas modificar la colección subyacente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzEsIDIsIDMsIDQsIDVdOwogICAgbGV0IHNsaWNlID0gJm11dCBhcnJbMS4uNF07IC8vIFNsaWNlIG11dGFibGUgZGUgbG9zIGVsZW1lbnRvcyAyLCAzIHkgNAogICAgc2xpY2VbMF0gPSAxMDsgLy8gTW9kaWZpY2EgZWwgcHJpbWVyIGVsZW1lbnRvIGRlbCBzbGljZQogICAgcHJpbnRsbiEoIns6P30iLCBzbGljZSk7CiAgICBwcmludGxuISgiezo/fSIsIGFycik7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut arr = [1, 2, 3, 4, 5];
+    let slice = &amp;mut arr[1..4]; // Slice mutable de los elementos 2, 3 y 4
+    slice[0] = 10; // Modifica el primer elemento del slice
+    println!(&quot;{:?}&quot;, slice);
+    println!(&quot;{:?}&quot;, arr);
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Declaración del Array Mutable</strong>: <code>let mut arr = [1, 2, 3, 4, 5];</code>
+<ul>
+<li><code>arr</code> es un array mutable.</li>
+</ul>
+</li>
+<li><strong>Creación del Slice Mutable</strong>: <code>let slice = &amp;mut arr[1..4];</code>
+<ul>
+<li><code>&amp;mut arr[1..4]</code> crea un slice mutable.</li>
+</ul>
+</li>
+<li><strong>Modificación del Slice</strong>: <code>slice[0] = 10;</code>
+<ul>
+<li>Cambia el primer elemento del slice a 10.</li>
+</ul>
+</li>
+<li><strong>Impresión del Slice y del Array</strong>: <code>println!(&quot;{:?}&quot;, slice);</code> y <code>println!(&quot;{:?}&quot;, arr);</code>
+<ul>
+<li>Muestra el slice modificado y el array original para ver los cambios.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Slice</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Dado un array de enteros, crea un slice que contenga los elementos del segundo al cuarto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBhcnIgPSBbMTAsIDIwLCAzMCwgNDAsIDUwXTsKICAgIC8vIFR1IGPDs2RpZ28gYXF1w60KICAgIHByaW50bG4hKCJ7Oj99Iiwgc2xpY2UpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let arr = [10, 20, 30, 40, 50];
+    // Tu c&oacute;digo aqu&iacute;
+    println!(&quot;{:?}&quot;, slice);
+}</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBhcnIgPSBbMTAsIDIwLCAzMCwgNDAsIDUwXTsKICAgIGxldCBzbGljZSA9ICZhcnJbMS4uNF07CiAgICBwcmludGxuISgiezo/fSIsIHNsaWNlKTsgLy8gRGViZXLDrWEgaW1wcmltaXIgWzIwLCAzMCwgNDBdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let arr = [10, 20, 30, 40, 50];
+    let slice = &amp;arr[1..4];
+    println!(&quot;{:?}&quot;, slice); // Deber&iacute;a imprimir [20, 30, 40]
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Modificar un Slice Mutable</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Dado un array mutable de enteros, crea un slice mutable y modifica el segundo elemento del slice.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzUsIDEwLCAxNSwgMjAsIDI1XTsKICAgIC8vIFR1IGPDs2RpZ28gYXF1w60KICAgIHByaW50bG4hKCJ7Oj99Iiwgc2xpY2UpOwogICAgcHJpbnRsbiEoIns6P30iLCBhcnIpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut arr = [5, 10, 15, 20, 25];
+    // Tu c&oacute;digo aqu&iacute;
+    println!(&quot;{:?}&quot;, slice);
+    println!(&quot;{:?}&quot;, arr);
+}</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCBtdXQgYXJyID0gWzUsIDEwLCAxNSwgMjAsIDI1XTsKICAgIGxldCBzbGljZSA9ICZtdXQgYXJyWzEuLjRdOwogICAgc2xpY2VbMV0gPSAxMDA7CiAgICBwcmludGxuISgiezo/fSIsIHNsaWNlKTsgLy8gRGViZXLDrWEgaW1wcmltaXIgWzEwLCAxMDAsIDIwXQogICAgcHJpbnRsbiEoIns6P30iLCBhcnIpOyAgIC8vIERlYmVyw61hIGltcHJpbWlyIFs1LCAxMCwgMTAwLCAyMCwgMjVdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let mut arr = [5, 10, 15, 20, 25];
+    let slice = &amp;mut arr[1..4];
+    slice[1] = 100;
+    println!(&quot;{:?}&quot;, slice); // Deber&iacute;a imprimir [10, 100, 20]
+    println!(&quot;{:?}&quot;, arr);   // Deber&iacute;a imprimir [5, 10, 100, 20, 25]
+}</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ul>
+<li><strong>Índices Fuera de Rango</strong>: Asegúrate de que los índices del slice estén dentro del rango de la colección original. De lo contrario, el programa se bloqueará.</li>
+<li><strong>Inmutabilidad vs. Mutabilidad</strong>: No intentes modificar un slice inmutable. Usa <code>&amp;mut</code> para crear un slice mutable si necesitas cambiar los datos.</li>
+<li><strong>Rangos Exclusivos</strong>: Recuerda que el índice final en un rango es exclusivo. Por ejemplo, <code>&amp;arr[1..4]</code> incluye los elementos en los índices 1, 2 y 3, pero no el 4.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los slices son una herramienta poderosa en Rust para trabajar con subpartes de colecciones de manera eficiente y segura. Entender cómo crear y usar slices, tanto inmutables como mutables, es fundamental para escribir código Rust efectivo y seguro. En el próximo módulo, exploraremos cómo definir y usar structs para organizar datos de manera más compleja.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-references-borrowing' title="Referencias y Préstamo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-defining-structs' title="Definiendo Structs">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

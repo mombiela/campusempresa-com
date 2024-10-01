@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flujos de Archivos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/java/07-03-file-streams" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/java/07-03-file-streams" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/java/07-03-file-streams" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/java/07-03-file-streams" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/java/07-03-file-streams" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-writing-files' title="Escritura de Archivos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Flujos de Archivos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-bufferedreader-and-bufferedwriter' title="BufferedReader y BufferedWriter">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre los flujos de archivos en Java, que son fundamentales para la lectura y escritura de datos en archivos. Los flujos de archivos permiten manejar la entrada y salida de datos de manera eficiente y son una parte esencial de la programación en Java.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Flujos de Entrada y Salida</strong>: Los flujos de entrada (Input Streams) se utilizan para leer datos de una fuente, mientras que los flujos de salida (Output Streams) se utilizan para escribir datos a un destino.</li>
+<li><strong>Clases Principales</strong>:
+<ul>
+<li><code>FileInputStream</code> y <code>FileOutputStream</code>: Para leer y escribir bytes desde y hacia archivos.</li>
+<li><code>BufferedInputStream</code> y <code>BufferedOutputStream</code>: Para mejorar la eficiencia de lectura y escritura mediante el uso de un búfer.</li>
+<li><code>DataInputStream</code> y <code>DataOutputStream</code>: Para leer y escribir datos primitivos de Java de manera portátil.</li>
+<li><code>ObjectInputStream</code> y <code>ObjectOutputStream</code>: Para leer y escribir objetos.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Flujos de Entrada y Salida de Bytes</h1>
+<div class='content'></div><h2>FileInputStream y FileOutputStream</h2>
+<div class='content'><p>Estas clases se utilizan para leer y escribir bytes desde y hacia archivos.</p>
+<h4>Ejemplo de FileInputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRmlsZUlucHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBGaWxlSW5wdXRTdHJlYW1FeGFtcGxlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICB0cnkgKEZpbGVJbnB1dFN0cmVhbSBmaXMgPSBuZXcgRmlsZUlucHV0U3RyZWFtKCJleGFtcGxlLnR4dCIpKSB7CiAgICAgICAgICAgIGludCBjb250ZW50OwogICAgICAgICAgICB3aGlsZSAoKGNvbnRlbnQgPSBmaXMucmVhZCgpKSAhPSAtMSkgewogICAgICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludCgoY2hhcikgY29udGVudCk7CiAgICAgICAgICAgIH0KICAgICAgICB9IGNhdGNoIChJT0V4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.FileInputStream;
+import java.io.IOException;
+
+public class FileInputStreamExample {
+    public static void main(String[] args) {
+        try (FileInputStream fis = new FileInputStream(&quot;example.txt&quot;)) {
+            int content;
+            while ((content = fis.read()) != -1) {
+                System.out.print((char) content);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>FileInputStream</code> se abre para leer el archivo &quot;example.txt&quot;.</li>
+<li>Se lee el contenido del archivo byte por byte hasta el final del archivo (<code>-1</code>).</li>
+<li>Cada byte se convierte en un carácter y se imprime en la consola.</li>
+</ul>
+<h4>Ejemplo de FileOutputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRmlsZU91dHB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CgpwdWJsaWMgY2xhc3MgRmlsZU91dHB1dFN0cmVhbUV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIFN0cmluZyBkYXRhID0gIkhlbGxvLCBXb3JsZCEiOwogICAgICAgIHRyeSAoRmlsZU91dHB1dFN0cmVhbSBmb3MgPSBuZXcgRmlsZU91dHB1dFN0cmVhbSgiZXhhbXBsZS50eHQiKSkgewogICAgICAgICAgICBmb3Mud3JpdGUoZGF0YS5nZXRCeXRlcygpKTsKICAgICAgICB9IGNhdGNoIChJT0V4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class FileOutputStreamExample {
+    public static void main(String[] args) {
+        String data = &quot;Hello, World!&quot;;
+        try (FileOutputStream fos = new FileOutputStream(&quot;example.txt&quot;)) {
+            fos.write(data.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>FileOutputStream</code> se abre para escribir en el archivo &quot;example.txt&quot;.</li>
+<li>La cadena &quot;Hello, World!&quot; se convierte en un arreglo de bytes y se escribe en el archivo.</li>
+</ul>
+</div><h2>BufferedInputStream y BufferedOutputStream</h2>
+<div class='content'><p>Estas clases mejoran la eficiencia de lectura y escritura mediante el uso de un búfer.</p>
+<h4>Ejemplo de BufferedInputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uQnVmZmVyZWRJbnB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uRmlsZUlucHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBCdWZmZXJlZElucHV0U3RyZWFtRXhhbXBsZSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgdHJ5IChCdWZmZXJlZElucHV0U3RyZWFtIGJpcyA9IG5ldyBCdWZmZXJlZElucHV0U3RyZWFtKG5ldyBGaWxlSW5wdXRTdHJlYW0oImV4YW1wbGUudHh0IikpKSB7CiAgICAgICAgICAgIGludCBjb250ZW50OwogICAgICAgICAgICB3aGlsZSAoKGNvbnRlbnQgPSBiaXMucmVhZCgpKSAhPSAtMSkgewogICAgICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludCgoY2hhcikgY29udGVudCk7CiAgICAgICAgICAgIH0KICAgICAgICB9IGNhdGNoIChJT0V4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class BufferedInputStreamExample {
+    public static void main(String[] args) {
+        try (BufferedInputStream bis = new BufferedInputStream(new FileInputStream(&quot;example.txt&quot;))) {
+            int content;
+            while ((content = bis.read()) != -1) {
+                System.out.print((char) content);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>BufferedInputStream</code> se utiliza para leer el archivo &quot;example.txt&quot; con un búfer.</li>
+<li>La lectura se realiza de manera más eficiente que con <code>FileInputStream</code> solo.</li>
+</ul>
+<h4>Ejemplo de BufferedOutputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uQnVmZmVyZWRPdXRwdXRTdHJlYW07CmltcG9ydCBqYXZhLmlvLkZpbGVPdXRwdXRTdHJlYW07CmltcG9ydCBqYXZhLmlvLklPRXhjZXB0aW9uOwoKcHVibGljIGNsYXNzIEJ1ZmZlcmVkT3V0cHV0U3RyZWFtRXhhbXBsZSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU3RyaW5nIGRhdGEgPSAiSGVsbG8sIEJ1ZmZlcmVkIFdvcmxkISI7CiAgICAgICAgdHJ5IChCdWZmZXJlZE91dHB1dFN0cmVhbSBib3MgPSBuZXcgQnVmZmVyZWRPdXRwdXRTdHJlYW0obmV3IEZpbGVPdXRwdXRTdHJlYW0oImV4YW1wbGUudHh0IikpKSB7CiAgICAgICAgICAgIGJvcy53cml0ZShkYXRhLmdldEJ5dGVzKCkpOwogICAgICAgIH0gY2F0Y2ggKElPRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class BufferedOutputStreamExample {
+    public static void main(String[] args) {
+        String data = &quot;Hello, Buffered World!&quot;;
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(&quot;example.txt&quot;))) {
+            bos.write(data.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>BufferedOutputStream</code> se utiliza para escribir en el archivo &quot;example.txt&quot; con un búfer.</li>
+<li>La escritura se realiza de manera más eficiente que con <code>FileOutputStream</code> solo.</li>
+</ul>
+</div><h1>Flujos de Entrada y Salida de Datos Primitivos</h1>
+<div class='content'></div><h2>DataInputStream y DataOutputStream</h2>
+<div class='content'><p>Estas clases se utilizan para leer y escribir datos primitivos de Java de manera portátil.</p>
+<h4>Ejemplo de DataOutputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRGF0YU91dHB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uRmlsZU91dHB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CgpwdWJsaWMgY2xhc3MgRGF0YU91dHB1dFN0cmVhbUV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSAoRGF0YU91dHB1dFN0cmVhbSBkb3MgPSBuZXcgRGF0YU91dHB1dFN0cmVhbShuZXcgRmlsZU91dHB1dFN0cmVhbSgiZGF0YS5iaW4iKSkpIHsKICAgICAgICAgICAgZG9zLndyaXRlSW50KDEyMyk7CiAgICAgICAgICAgIGRvcy53cml0ZURvdWJsZSg0NS42Nyk7CiAgICAgICAgICAgIGRvcy53cml0ZUJvb2xlYW4odHJ1ZSk7CiAgICAgICAgfSBjYXRjaCAoSU9FeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class DataOutputStreamExample {
+    public static void main(String[] args) {
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(&quot;data.bin&quot;))) {
+            dos.writeInt(123);
+            dos.writeDouble(45.67);
+            dos.writeBoolean(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>DataOutputStream</code> se utiliza para escribir datos primitivos en el archivo &quot;data.bin&quot;.</li>
+<li>Se escriben un entero, un doble y un booleano en el archivo.</li>
+</ul>
+<h4>Ejemplo de DataInputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRGF0YUlucHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5GaWxlSW5wdXRTdHJlYW07CmltcG9ydCBqYXZhLmlvLklPRXhjZXB0aW9uOwoKcHVibGljIGNsYXNzIERhdGFJbnB1dFN0cmVhbUV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSAoRGF0YUlucHV0U3RyZWFtIGRpcyA9IG5ldyBEYXRhSW5wdXRTdHJlYW0obmV3IEZpbGVJbnB1dFN0cmVhbSgiZGF0YS5iaW4iKSkpIHsKICAgICAgICAgICAgaW50IGludFZhbHVlID0gZGlzLnJlYWRJbnQoKTsKICAgICAgICAgICAgZG91YmxlIGRvdWJsZVZhbHVlID0gZGlzLnJlYWREb3VibGUoKTsKICAgICAgICAgICAgYm9vbGVhbiBib29sZWFuVmFsdWUgPSBkaXMucmVhZEJvb2xlYW4oKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJJbnQ6ICIgKyBpbnRWYWx1ZSk7CiAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiRG91YmxlOiAiICsgZG91YmxlVmFsdWUpOwogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIkJvb2xlYW46ICIgKyBib29sZWFuVmFsdWUpOwogICAgICAgIH0gY2F0Y2ggKElPRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+
+public class DataInputStreamExample {
+    public static void main(String[] args) {
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(&quot;data.bin&quot;))) {
+            int intValue = dis.readInt();
+            double doubleValue = dis.readDouble();
+            boolean booleanValue = dis.readBoolean();
+            System.out.println(&quot;Int: &quot; + intValue);
+            System.out.println(&quot;Double: &quot; + doubleValue);
+            System.out.println(&quot;Boolean: &quot; + booleanValue);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>DataInputStream</code> se utiliza para leer datos primitivos del archivo &quot;data.bin&quot;.</li>
+<li>Se leen un entero, un doble y un booleano del archivo y se imprimen en la consola.</li>
+</ul>
+</div><h1>Flujos de Entrada y Salida de Objetos</h1>
+<div class='content'></div><h2>ObjectInputStream y ObjectOutputStream</h2>
+<div class='content'><p>Estas clases se utilizan para leer y escribir objetos.</p>
+<h4>Ejemplo de ObjectOutputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRmlsZU91dHB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CmltcG9ydCBqYXZhLmlvLk9iamVjdE91dHB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uU2VyaWFsaXphYmxlOwoKY2xhc3MgUGVyc29uIGltcGxlbWVudHMgU2VyaWFsaXphYmxlIHsKICAgIHByaXZhdGUgc3RhdGljIGZpbmFsIGxvbmcgc2VyaWFsVmVyc2lvblVJRCA9IDFMOwogICAgU3RyaW5nIG5hbWU7CiAgICBpbnQgYWdlOwoKICAgIFBlcnNvbihTdHJpbmcgbmFtZSwgaW50IGFnZSkgewogICAgICAgIHRoaXMubmFtZSA9IG5hbWU7CiAgICAgICAgdGhpcy5hZ2UgPSBhZ2U7CiAgICB9Cn0KCnB1YmxpYyBjbGFzcyBPYmplY3RPdXRwdXRTdHJlYW1FeGFtcGxlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICBQZXJzb24gcGVyc29uID0gbmV3IFBlcnNvbigiSm9obiBEb2UiLCAzMCk7CiAgICAgICAgdHJ5IChPYmplY3RPdXRwdXRTdHJlYW0gb29zID0gbmV3IE9iamVjdE91dHB1dFN0cmVhbShuZXcgRmlsZU91dHB1dFN0cmVhbSgicGVyc29uLnNlciIpKSkgewogICAgICAgICAgICBvb3Mud3JpdGVPYmplY3QocGVyc29uKTsKICAgICAgICB9IGNhdGNoIChJT0V4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+class Person implements Serializable {
+    private static final long serialVersionUID = 1L;
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+public class ObjectOutputStreamExample {
+    public static void main(String[] args) {
+        Person person = new Person(&quot;John Doe&quot;, 30);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;person.ser&quot;))) {
+            oos.writeObject(person);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>ObjectOutputStream</code> se utiliza para escribir un objeto <code>Person</code> en el archivo &quot;person.ser&quot;.</li>
+<li>La clase <code>Person</code> implementa <code>Serializable</code> para permitir la serialización.</li>
+</ul>
+<h4>Ejemplo de ObjectInputStream</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRmlsZUlucHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKaW1wb3J0IGphdmEuaW8uT2JqZWN0SW5wdXRTdHJlYW07CgpwdWJsaWMgY2xhc3MgT2JqZWN0SW5wdXRTdHJlYW1FeGFtcGxlIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICB0cnkgKE9iamVjdElucHV0U3RyZWFtIG9pcyA9IG5ldyBPYmplY3RJbnB1dFN0cmVhbShuZXcgRmlsZUlucHV0U3RyZWFtKCJwZXJzb24uc2VyIikpKSB7CiAgICAgICAgICAgIFBlcnNvbiBwZXJzb24gPSAoUGVyc29uKSBvaXMucmVhZE9iamVjdCgpOwogICAgICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIk5hbWU6ICIgKyBwZXJzb24ubmFtZSk7CiAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiQWdlOiAiICsgcGVyc29uLmFnZSk7CiAgICAgICAgfSBjYXRjaCAoSU9FeGNlcHRpb24gfCBDbGFzc05vdEZvdW5kRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgZS5wcmludFN0YWNrVHJhY2UoKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+public class ObjectInputStreamExample {
+    public static void main(String[] args) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(&quot;person.ser&quot;))) {
+            Person person = (Person) ois.readObject();
+            System.out.println(&quot;Name: &quot; + person.name);
+            System.out.println(&quot;Age: &quot; + person.age);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>:</p>
+<ul>
+<li><code>ObjectInputStream</code> se utiliza para leer un objeto <code>Person</code> del archivo &quot;person.ser&quot;.</li>
+<li>El objeto se deserializa y se imprimen sus atributos.</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Leer y Escribir un Archivo de Texto</h2>
+<div class='content'><p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Escribe un programa que lea el contenido de un archivo de texto llamado &quot;input.txt&quot;.</li>
+<li>Escribe el contenido leído en un nuevo archivo llamado &quot;output.txt&quot;.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRmlsZUlucHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5GaWxlT3V0cHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBGaWxlQ29weUV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIHRyeSAoRmlsZUlucHV0U3RyZWFtIGZpcyA9IG5ldyBGaWxlSW5wdXRTdHJlYW0oImlucHV0LnR4dCIpOwogICAgICAgICAgICAgRmlsZU91dHB1dFN0cmVhbSBmb3MgPSBuZXcgRmlsZU91dHB1dFN0cmVhbSgib3V0cHV0LnR4dCIpKSB7CiAgICAgICAgICAgIGludCBjb250ZW50OwogICAgICAgICAgICB3aGlsZSAoKGNvbnRlbnQgPSBmaXMucmVhZCgpKSAhPSAtMSkgewogICAgICAgICAgICAgICAgZm9zLndyaXRlKGNvbnRlbnQpOwogICAgICAgICAgICB9CiAgICAgICAgfSBjYXRjaCAoSU9FeGNlcHRpb24gZSkgewogICAgICAgICAgICBlLnByaW50U3RhY2tUcmFjZSgpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+public class FileCopyExample {
+    public static void main(String[] args) {
+        try (FileInputStream fis = new FileInputStream(&quot;input.txt&quot;);
+             FileOutputStream fos = new FileOutputStream(&quot;output.txt&quot;)) {
+            int content;
+            while ((content = fis.read()) != -1) {
+                fos.write(content);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Serializar y Deserializar un Objeto</h2>
+<div class='content'><p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Crea una clase <code>Student</code> que implemente <code>Serializable</code> con atributos <code>name</code> y <code>grade</code>.</li>
+<li>Escribe un programa que serialice un objeto <code>Student</code> en un archivo llamado &quot;student.ser&quot;.</li>
+<li>Escribe otro programa que deserialice el objeto <code>Student</code> del archivo &quot;student.ser&quot; y muestre sus atributos.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uRmlsZU91dHB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uRmlsZUlucHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKaW1wb3J0IGphdmEuaW8uT2JqZWN0T3V0cHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5PYmplY3RJbnB1dFN0cmVhbTsKaW1wb3J0IGphdmEuaW8uU2VyaWFsaXphYmxlOwoKY2xhc3MgU3R1ZGVudCBpbXBsZW1lbnRzIFNlcmlhbGl6YWJsZSB7CiAgICBwcml2YXRlIHN0YXRpYyBmaW5hbCBsb25nIHNlcmlhbFZlcnNpb25VSUQgPSAxTDsKICAgIFN0cmluZyBuYW1lOwogICAgaW50IGdyYWRlOwoKICAgIFN0dWRlbnQoU3RyaW5nIG5hbWUsIGludCBncmFkZSkgewogICAgICAgIHRoaXMubmFtZSA9IG5hbWU7CiAgICAgICAgdGhpcy5ncmFkZSA9IGdyYWRlOwogICAgfQp9CgpwdWJsaWMgY2xhc3MgU2VyaWFsaXplU3R1ZGVudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU3R1ZGVudCBzdHVkZW50ID0gbmV3IFN0dWRlbnQoIkFsaWNlIiwgOTApOwogICAgICAgIHRyeSAoT2JqZWN0T3V0cHV0U3RyZWFtIG9vcyA9IG5ldyBPYmplY3RPdXRwdXRTdHJlYW0obmV3IEZpbGVPdXRwdXRTdHJlYW0oInN0dWRlbnQuc2VyIikpKSB7CiAgICAgICAgICAgIG9vcy53cml0ZU9iamVjdChzdHVkZW50KTsKICAgICAgICB9IGNhdGNoIChJT0V4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9CgpwdWJsaWMgY2xhc3MgRGVzZXJpYWxpemVTdHVkZW50IHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICB0cnkgKE9iamVjdElucHV0U3RyZWFtIG9pcyA9IG5ldyBPYmplY3RJbnB1dFN0cmVhbShuZXcgRmlsZUlucHV0U3RyZWFtKCJzdHVkZW50LnNlciIpKSkgewogICAgICAgICAgICBTdHVkZW50IHN0dWRlbnQgPSAoU3R1ZGVudCkgb2lzLnJlYWRPYmplY3QoKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJOYW1lOiAiICsgc3R1ZGVudC5uYW1lKTsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJHcmFkZTogIiArIHN0dWRlbnQuZ3JhZGUpOwogICAgICAgIH0gY2F0Y2ggKElPRXhjZXB0aW9uIHwgQ2xhc3NOb3RGb3VuZEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgIGUucHJpbnRTdGFja1RyYWNlKCk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+
+class Student implements Serializable {
+    private static final long serialVersionUID = 1L;
+    String name;
+    int grade;
+
+    Student(String name, int grade) {
+        this.name = name;
+        this.grade = grade;
+    }
+}
+
+public class SerializeStudent {
+    public static void main(String[] args) {
+        Student student = new Student(&quot;Alice&quot;, 90);
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;student.ser&quot;))) {
+            oos.writeObject(student);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+public class DeserializeStudent {
+    public static void main(String[] args) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(&quot;student.ser&quot;))) {
+            Student student = (Student) ois.readObject();
+            System.out.println(&quot;Name: &quot; + student.name);
+            System.out.println(&quot;Grade: &quot; + student.grade);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los flujos de archivos en Java, incluyendo cómo leer y escribir bytes, datos primitivos y objetos. Estos conceptos son fundamentales para manejar la entrada y salida de datos en aplicaciones Java. En la próxima sección, exploraremos el uso de <code>BufferedReader</code> y <code>BufferedWriter</code> para mejorar la eficiencia de la lectura y escritura de archivos de texto.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-writing-files' title="Escritura de Archivos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-bufferedreader-and-bufferedwriter' title="BufferedReader y BufferedWriter">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

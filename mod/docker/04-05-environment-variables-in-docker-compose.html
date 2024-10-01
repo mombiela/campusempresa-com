@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variables de Entorno en Docker Compose</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/04-05-environment-variables-in-docker-compose" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/04-05-environment-variables-in-docker-compose" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/04-05-environment-variables-in-docker-compose" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/docker/04-05-environment-variables-in-docker-compose" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/04-05-environment-variables-in-docker-compose" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-multi-container-applications' title="Aplicaciones Multi-Contenedor">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Variables de Entorno en Docker Compose</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-docker-networking-deep-dive' title="Profundización en Redes Docker">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las variables de entorno son una forma poderosa de configurar y gestionar aplicaciones en Docker Compose. Permiten parametrizar configuraciones y hacer que las aplicaciones sean más flexibles y fáciles de mantener. En esta sección, aprenderás cómo utilizar variables de entorno en Docker Compose para mejorar la configuración de tus servicios.</p>
+</div><h1>¿Qué son las Variables de Entorno?</h1>
+<div class='content'><p>Las variables de entorno son pares clave-valor que se pueden utilizar para configurar el comportamiento de las aplicaciones. En Docker Compose, se pueden definir variables de entorno para:</p>
+<ul>
+<li>Configurar servicios.</li>
+<li>Pasar información sensible como contraseñas y tokens.</li>
+<li>Parametrizar configuraciones que pueden cambiar entre entornos (desarrollo, prueba, producción).</li>
+</ul>
+</div><h1>Definiendo Variables de Entorno en Docker Compose</h1>
+<div class='content'></div><h2>1. Usando el archivo `.env`</h2>
+<div class='content'><p>Docker Compose permite definir variables de entorno en un archivo <code>.env</code> en el mismo directorio donde se encuentra el archivo <code>docker-compose.yml</code>. Estas variables se pueden referenciar en el archivo <code>docker-compose.yml</code> utilizando la sintaxis <code>${VARIABLE_NAME}</code>.</p>
+<p><strong>Ejemplo de archivo <code>.env</code>:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TVlTUUxfUk9PVF9QQVNTV09SRD1teS1zZWNyZXQtcHcKTVlTUUxfREFUQUJBU0U9bXlkYXRhYmFzZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>MYSQL_ROOT_PASSWORD=my-secret-pw
+MYSQL_DATABASE=mydatabase</pre></div><div class='content'><p><strong>Ejemplo de archivo <code>docker-compose.yml</code>:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMuOCcKCnNlcnZpY2VzOgogIGRiOgogICAgaW1hZ2U6IG15c3FsOjUuNwogICAgZW52aXJvbm1lbnQ6CiAgICAgIC0gTVlTUUxfUk9PVF9QQVNTV09SRD0ke01ZU1FMX1JPT1RfUEFTU1dPUkR9CiAgICAgIC0gTVlTUUxfREFUQUJBU0U9JHtNWVNRTF9EQVRBQkFTRX0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3.8'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}</pre></div><div class='content'></div><h2>2. Definiendo Variables Directamente en el `docker-compose.yml`</h2>
+<div class='content'><p>También puedes definir variables de entorno directamente en el archivo <code>docker-compose.yml</code> bajo la sección <code>environment</code>.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMuOCcKCnNlcnZpY2VzOgogIHdlYjoKICAgIGltYWdlOiBteS13ZWItYXBwCiAgICBlbnZpcm9ubWVudDoKICAgICAgLSBBUFBfRU5WPXByb2R1Y3Rpb24KICAgICAgLSBBUFBfREVCVUc9ZmFsc2U="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3.8'
+
+services:
+  web:
+    image: my-web-app
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false</pre></div><div class='content'></div><h2>3. Usando Variables de Entorno del Sistema</h2>
+<div class='content'><p>Docker Compose también puede utilizar variables de entorno definidas en el sistema operativo. Estas variables se pueden referenciar en el archivo <code>docker-compose.yml</code> de la misma manera que las variables definidas en el archivo <code>.env</code>.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMuOCcKCnNlcnZpY2VzOgogIGFwaToKICAgIGltYWdlOiBteS1hcGkKICAgIGVudmlyb25tZW50OgogICAgICAtIEFQSV9LRVk9JHtBUElfS0VZfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3.8'
+
+services:
+  api:
+    image: my-api
+    environment:
+      - API_KEY=${API_KEY}</pre></div><div class='content'><p>En este caso, la variable <code>API_KEY</code> debe estar definida en el entorno del sistema antes de ejecutar Docker Compose.</p>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un ejemplo práctico para ilustrar cómo utilizar variables de entorno en Docker Compose.</p>
+</div><h2>Paso 1: Crear el archivo `.env`</h2>
+<div class='content'><p>Crea un archivo <code>.env</code> con el siguiente contenido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVEdSRVNfVVNFUj1hZG1pbgpQT1NUR1JFU19QQVNTV09SRD1hZG1pbjEyMwpQT1NUR1JFU19EQj1teWFwcA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POSTGRES_USER=admin
+POSTGRES_PASSWORD=admin123
+POSTGRES_DB=myapp</pre></div><div class='content'></div><h2>Paso 2: Crear el archivo `docker-compose.yml`</h2>
+<div class='content'><p>Crea un archivo <code>docker-compose.yml</code> con el siguiente contenido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMuOCcKCnNlcnZpY2VzOgogIGRiOgogICAgaW1hZ2U6IHBvc3RncmVzOjEzCiAgICBlbnZpcm9ubWVudDoKICAgICAgLSBQT1NUR1JFU19VU0VSPSR7UE9TVEdSRVNfVVNFUn0KICAgICAgLSBQT1NUR1JFU19QQVNTV09SRD0ke1BPU1RHUkVTX1BBU1NXT1JEfQogICAgICAtIFBPU1RHUkVTX0RCPSR7UE9TVEdSRVNfREJ9CiAgICB2b2x1bWVzOgogICAgICAtIGRiX2RhdGE6L3Zhci9saWIvcG9zdGdyZXNxbC9kYXRhCgogIGFwcDoKICAgIGltYWdlOiBteWFwcDpsYXRlc3QKICAgIGVudmlyb25tZW50OgogICAgICAtIERBVEFCQVNFX1VSTD1wb3N0Z3JlczovLyR7UE9TVEdSRVNfVVNFUn06JHtQT1NUR1JFU19QQVNTV09SRH1AZGI6NTQzMi8ke1BPU1RHUkVTX0RCfQogICAgZGVwZW5kc19vbjoKICAgICAgLSBkYgoKdm9sdW1lczoKICBkYl9kYXRhOg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  app:
+    image: myapp:latest
+    environment:
+      - DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+    depends_on:
+      - db
+
+volumes:
+  db_data:</pre></div><div class='content'></div><h2>Paso 3: Ejecutar Docker Compose</h2>
+<div class='content'><p>Ejecuta el siguiente comando para iniciar los servicios definidos en el archivo <code>docker-compose.yml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXAgLWQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up -d</pre></div><div class='content'><p>Este comando iniciará los servicios <code>db</code> y <code>app</code>, utilizando las variables de entorno definidas en el archivo <code>.env</code>.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>
+<p>Crea un archivo <code>.env</code> con las siguientes variables:</p>
+<pre><code class="language-plaintext">REDIS_PASSWORD=supersecret
+REDIS_PORT=6379
+</code></pre>
+</li>
+<li>
+<p>Crea un archivo <code>docker-compose.yml</code> que defina un servicio <code>redis</code> utilizando las variables de entorno del archivo <code>.env</code>.</p>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><p><strong>Archivo <code>.env</code>:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UkVESVNfUEFTU1dPUkQ9c3VwZXJzZWNyZXQKUkVESVNfUE9SVD02Mzc5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>REDIS_PASSWORD=supersecret
+REDIS_PORT=6379</pre></div><div class='content'><p><strong>Archivo <code>docker-compose.yml</code>:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMuOCcKCnNlcnZpY2VzOgogIHJlZGlzOgogICAgaW1hZ2U6IHJlZGlzOjYuMgogICAgY29tbWFuZDogcmVkaXMtc2VydmVyIC0tcmVxdWlyZXBhc3MgJHtSRURJU19QQVNTV09SRH0KICAgIGVudmlyb25tZW50OgogICAgICAtIFJFRElTX1BBU1NXT1JEPSR7UkVESVNfUEFTU1dPUkR9CiAgICAgIC0gUkVESVNfUE9SVD0ke1JFRElTX1BPUlR9CiAgICBwb3J0czoKICAgICAgLSAiJHtSRURJU19QT1JUfToke1JFRElTX1BPUlR9Ig=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3.8'
+
+services:
+  redis:
+    image: redis:6.2
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT}
+    ports:
+      - &quot;${REDIS_PORT}:${REDIS_PORT}&quot;</pre></div><div class='content'></div><h2>Retroalimentación</h2>
+<div class='content'><ul>
+<li><strong>Error Común:</strong> Olvidar definir las variables de entorno en el archivo <code>.env</code> o en el sistema operativo. Asegúrate de que todas las variables referenciadas en el archivo <code>docker-compose.yml</code> estén definidas.</li>
+<li><strong>Consejo:</strong> Utiliza variables de entorno para manejar configuraciones sensibles y específicas del entorno, como contraseñas y claves API, para mantener tu configuración segura y flexible.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las variables de entorno en Docker Compose son una herramienta esencial para gestionar configuraciones de manera flexible y segura. Al utilizar archivos <code>.env</code>, variables definidas directamente en el <code>docker-compose.yml</code> o variables del sistema, puedes parametrizar tus servicios y hacer que tus aplicaciones sean más fáciles de mantener y desplegar en diferentes entornos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-multi-container-applications' title="Aplicaciones Multi-Contenedor">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-docker-networking-deep-dive' title="Profundización en Redes Docker">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

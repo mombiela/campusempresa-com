@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carga y Preprocesamiento de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/03-01-data-loading-preprocessing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/03-01-data-loading-preprocessing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/03-01-data-loading-preprocessing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/pytorch/03-01-data-loading-preprocessing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/03-01-data-loading-preprocessing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-loss-functions-optimization' title="Funciones de Pérdida y Optimización">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Carga y Preprocesamiento de Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-training-loop' title="Bucle de Entrenamiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo cargar y preprocesar datos en PyTorch, una habilidad esencial para preparar nuestros datos antes de entrenar modelos de aprendizaje profundo. Este proceso incluye la lectura de datos desde diversas fuentes, su transformación y la creación de conjuntos de datos y cargadores de datos (DataLoaders) en PyTorch.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-la-carga-de-datos">Introducción a la Carga de Datos</a></li>
+<li><a href="#transformaciones-de-datos">Transformaciones de Datos</a></li>
+<li><a href="#creación-de-conjuntos-de-datos-personalizados">Creación de Conjuntos de Datos Personalizados</a></li>
+<li><a href="#uso-de-dataloaders">Uso de DataLoaders</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción a la Carga de Datos</h1>
+<div class='content'><p>PyTorch proporciona varias utilidades para cargar y preprocesar datos. La clase <code>Dataset</code> y el módulo <code>DataLoader</code> son fundamentales para manejar datos de manera eficiente.</p>
+</div><h2>Dataset</h2>
+<div class='content'><p>La clase <code>Dataset</code> es una abstracción que representa un conjunto de datos. PyTorch proporciona algunas implementaciones listas para usar, como <code>torchvision.datasets</code> para datos de imágenes.</p>
+</div><h2>DataLoader</h2>
+<div class='content'><p>El <code>DataLoader</code> es una clase que permite iterar sobre un <code>Dataset</code> de manera eficiente, manejando el batching, el shuffling y la carga en paralelo.</p>
+</div><h1>Transformaciones de Datos</h1>
+<div class='content'><p>Las transformaciones son operaciones que se aplican a los datos antes de ser utilizados en el entrenamiento. PyTorch proporciona el módulo <code>torchvision.transforms</code> para realizar transformaciones comunes en imágenes.</p>
+</div><h2>Ejemplo de Transformaciones</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNodmlzaW9uLnRyYW5zZm9ybXMgYXMgdHJhbnNmb3JtcwoKdHJhbnNmb3JtID0gdHJhbnNmb3Jtcy5Db21wb3NlKFsKICAgIHRyYW5zZm9ybXMuUmVzaXplKCgxMjgsIDEyOCkpLAogICAgdHJhbnNmb3Jtcy5Ub1RlbnNvcigpLAogICAgdHJhbnNmb3Jtcy5Ob3JtYWxpemUoKDAuNSwpLCAoMC41LCkpCl0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torchvision.transforms as transforms
+
+transform = transforms.Compose([
+    transforms.Resize((128, 128)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,), (0.5,))
+])</pre></div><div class='content'><p>En este ejemplo, las transformaciones incluyen:</p>
+<ul>
+<li><code>Resize</code>: Cambia el tamaño de la imagen a 128x128 píxeles.</li>
+<li><code>ToTensor</code>: Convierte la imagen a un tensor.</li>
+<li><code>Normalize</code>: Normaliza los valores de los píxeles.</li>
+</ul>
+</div><h1>Creación de Conjuntos de Datos Personalizados</h1>
+<div class='content'><p>A veces, necesitamos crear nuestros propios conjuntos de datos personalizados. Para ello, debemos heredar de la clase <code>Dataset</code> y sobrescribir los métodos <code>__len__</code> y <code>__getitem__</code>.</p>
+</div><h2>Ejemplo de Dataset Personalizado</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmZyb20gdG9yY2gudXRpbHMuZGF0YSBpbXBvcnQgRGF0YXNldApmcm9tIFBJTCBpbXBvcnQgSW1hZ2UKaW1wb3J0IG9zCgpjbGFzcyBDdXN0b21EYXRhc2V0KERhdGFzZXQpOgogICAgZGVmIF9faW5pdF9fKHNlbGYsIGltYWdlX2RpciwgdHJhbnNmb3JtPU5vbmUpOgogICAgICAgIHNlbGYuaW1hZ2VfZGlyID0gaW1hZ2VfZGlyCiAgICAgICAgc2VsZi50cmFuc2Zvcm0gPSB0cmFuc2Zvcm0KICAgICAgICBzZWxmLmltYWdlX25hbWVzID0gb3MubGlzdGRpcihpbWFnZV9kaXIpCgogICAgZGVmIF9fbGVuX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGxlbihzZWxmLmltYWdlX25hbWVzKQoKICAgIGRlZiBfX2dldGl0ZW1fXyhzZWxmLCBpZHgpOgogICAgICAgIGltZ19uYW1lID0gb3MucGF0aC5qb2luKHNlbGYuaW1hZ2VfZGlyLCBzZWxmLmltYWdlX25hbWVzW2lkeF0pCiAgICAgICAgaW1hZ2UgPSBJbWFnZS5vcGVuKGltZ19uYW1lKQogICAgICAgIGlmIHNlbGYudHJhbnNmb3JtOgogICAgICAgICAgICBpbWFnZSA9IHNlbGYudHJhbnNmb3JtKGltYWdlKQogICAgICAgIHJldHVybiBpbWFnZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+from torch.utils.data import Dataset
+from PIL import Image
+import os
+
+class CustomDataset(Dataset):
+    def __init__(self, image_dir, transform=None):
+        self.image_dir = image_dir
+        self.transform = transform
+        self.image_names = os.listdir(image_dir)
+
+    def __len__(self):
+        return len(self.image_names)
+
+    def __getitem__(self, idx):
+        img_name = os.path.join(self.image_dir, self.image_names[idx])
+        image = Image.open(img_name)
+        if self.transform:
+            image = self.transform(image)
+        return image</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>__init__</code>: Inicializa el dataset con la ruta de las imágenes y las transformaciones.</li>
+<li><code>__len__</code>: Devuelve el número de imágenes en el dataset.</li>
+<li><code>__getitem__</code>: Carga y devuelve una imagen transformada.</li>
+</ul>
+</div><h1>Uso de DataLoaders</h1>
+<div class='content'><p>El <code>DataLoader</code> facilita la iteración sobre el dataset, manejando el batching y el shuffling.</p>
+</div><h2>Ejemplo de DataLoader</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0b3JjaC51dGlscy5kYXRhIGltcG9ydCBEYXRhTG9hZGVyCgpkYXRhc2V0ID0gQ3VzdG9tRGF0YXNldChpbWFnZV9kaXI9J3BhdGgvdG8vaW1hZ2VzJywgdHJhbnNmb3JtPXRyYW5zZm9ybSkKZGF0YWxvYWRlciA9IERhdGFMb2FkZXIoZGF0YXNldCwgYmF0Y2hfc2l6ZT0zMiwgc2h1ZmZsZT1UcnVlLCBudW1fd29ya2Vycz00KQoKZm9yIGJhdGNoIGluIGRhdGFsb2FkZXI6CiAgICAjIFByb2Nlc2FyIGVsIGJhdGNoCiAgICBwYXNz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from torch.utils.data import DataLoader
+
+dataset = CustomDataset(image_dir='path/to/images', transform=transform)
+dataloader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=4)
+
+for batch in dataloader:
+    # Procesar el batch
+    pass</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>batch_size</code>: Número de muestras por batch.</li>
+<li><code>shuffle</code>: Si se deben mezclar los datos.</li>
+<li><code>num_workers</code>: Número de subprocesos para cargar los datos.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un dataset personalizado para un conjunto de imágenes y utiliza un <code>DataLoader</code> para iterar sobre él. Aplica las siguientes transformaciones: redimensionar a 64x64 píxeles, convertir a tensor y normalizar.</p>
+</div><h2>Solución</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNodmlzaW9uLnRyYW5zZm9ybXMgYXMgdHJhbnNmb3Jtcwpmcm9tIHRvcmNoLnV0aWxzLmRhdGEgaW1wb3J0IERhdGFMb2FkZXIKZnJvbSBQSUwgaW1wb3J0IEltYWdlCmltcG9ydCBvcwoKIyBEZWZpbmlyIHRyYW5zZm9ybWFjaW9uZXMKdHJhbnNmb3JtID0gdHJhbnNmb3Jtcy5Db21wb3NlKFsKICAgIHRyYW5zZm9ybXMuUmVzaXplKCg2NCwgNjQpKSwKICAgIHRyYW5zZm9ybXMuVG9UZW5zb3IoKSwKICAgIHRyYW5zZm9ybXMuTm9ybWFsaXplKCgwLjUsKSwgKDAuNSwpKQpdKQoKIyBEZWZpbmlyIGRhdGFzZXQgcGVyc29uYWxpemFkbwpjbGFzcyBDdXN0b21EYXRhc2V0KERhdGFzZXQpOgogICAgZGVmIF9faW5pdF9fKHNlbGYsIGltYWdlX2RpciwgdHJhbnNmb3JtPU5vbmUpOgogICAgICAgIHNlbGYuaW1hZ2VfZGlyID0gaW1hZ2VfZGlyCiAgICAgICAgc2VsZi50cmFuc2Zvcm0gPSB0cmFuc2Zvcm0KICAgICAgICBzZWxmLmltYWdlX25hbWVzID0gb3MubGlzdGRpcihpbWFnZV9kaXIpCgogICAgZGVmIF9fbGVuX18oc2VsZik6CiAgICAgICAgcmV0dXJuIGxlbihzZWxmLmltYWdlX25hbWVzKQoKICAgIGRlZiBfX2dldGl0ZW1fXyhzZWxmLCBpZHgpOgogICAgICAgIGltZ19uYW1lID0gb3MucGF0aC5qb2luKHNlbGYuaW1hZ2VfZGlyLCBzZWxmLmltYWdlX25hbWVzW2lkeF0pCiAgICAgICAgaW1hZ2UgPSBJbWFnZS5vcGVuKGltZ19uYW1lKQogICAgICAgIGlmIHNlbGYudHJhbnNmb3JtOgogICAgICAgICAgICBpbWFnZSA9IHNlbGYudHJhbnNmb3JtKGltYWdlKQogICAgICAgIHJldHVybiBpbWFnZQoKIyBDcmVhciBkYXRhc2V0IHkgZGF0YWxvYWRlcgpkYXRhc2V0ID0gQ3VzdG9tRGF0YXNldChpbWFnZV9kaXI9J3BhdGgvdG8vaW1hZ2VzJywgdHJhbnNmb3JtPXRyYW5zZm9ybSkKZGF0YWxvYWRlciA9IERhdGFMb2FkZXIoZGF0YXNldCwgYmF0Y2hfc2l6ZT0zMiwgc2h1ZmZsZT1UcnVlLCBudW1fd29ya2Vycz00KQoKIyBJdGVyYXIgc29icmUgZWwgZGF0YWxvYWRlcgpmb3IgYmF0Y2ggaW4gZGF0YWxvYWRlcjoKICAgIHByaW50KGJhdGNoLnNpemUoKSkgICMgSW1wcmltaXIgZWwgdGFtYcOxbyBkZWwgYmF0Y2g="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torchvision.transforms as transforms
+from torch.utils.data import DataLoader
+from PIL import Image
+import os
+
+# Definir transformaciones
+transform = transforms.Compose([
+    transforms.Resize((64, 64)),
+    transforms.ToTensor(),
+    transforms.Normalize((0.5,), (0.5,))
+])
+
+# Definir dataset personalizado
+class CustomDataset(Dataset):
+    def __init__(self, image_dir, transform=None):
+        self.image_dir = image_dir
+        self.transform = transform
+        self.image_names = os.listdir(image_dir)
+
+    def __len__(self):
+        return len(self.image_names)
+
+    def __getitem__(self, idx):
+        img_name = os.path.join(self.image_dir, self.image_names[idx])
+        image = Image.open(img_name)
+        if self.transform:
+            image = self.transform(image)
+        return image
+
+# Crear dataset y dataloader
+dataset = CustomDataset(image_dir='path/to/images', transform=transform)
+dataloader = DataLoader(dataset, batch_size=32, shuffle=True, num_workers=4)
+
+# Iterar sobre el dataloader
+for batch in dataloader:
+    print(batch.size())  # Imprimir el tama&ntilde;o del batch</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo cargar y preprocesar datos en PyTorch utilizando <code>Dataset</code> y <code>DataLoader</code>. También hemos visto cómo aplicar transformaciones a los datos y crear conjuntos de datos personalizados. Estos conceptos son fundamentales para preparar los datos antes de entrenar modelos de aprendizaje profundo. En el próximo módulo, exploraremos el bucle de entrenamiento y cómo validar y probar nuestros modelos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-loss-functions-optimization' title="Funciones de Pérdida y Optimización">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-training-loop' title="Bucle de Entrenamiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

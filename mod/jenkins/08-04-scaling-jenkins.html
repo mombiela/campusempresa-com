@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escalando Jenkins</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/08-04-scaling-jenkins" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/08-04-scaling-jenkins" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/08-04-scaling-jenkins" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/jenkins/08-04-scaling-jenkins" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/jenkins/08-04-scaling-jenkins" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-jenkins-as-code-with-jenkinsfile' title="Jenkins como Código con Jenkinsfile">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Escalando Jenkins</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-jenkins-best-practices' title="Mejores Prácticas de Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos cómo escalar Jenkins para manejar cargas de trabajo más grandes y complejas. A medida que los proyectos crecen, es crucial que Jenkins pueda gestionar múltiples trabajos simultáneamente sin comprometer el rendimiento. Veremos diferentes estrategias y configuraciones para escalar Jenkins de manera efectiva.</p>
+</div><h1>1. Introducción a la Escalabilidad en Jenkins</h1>
+<div class='content'></div><h2>¿Por qué es importante escalar Jenkins?</h2>
+<div class='content'><ul>
+<li><strong>Manejo de múltiples trabajos simultáneos</strong>: A medida que los equipos crecen, la cantidad de trabajos que Jenkins necesita ejecutar aumenta.</li>
+<li><strong>Reducción de tiempos de espera</strong>: Escalar Jenkins ayuda a reducir los tiempos de espera para la ejecución de trabajos.</li>
+<li><strong>Mejora del rendimiento</strong>: Un Jenkins escalado puede manejar más cargas de trabajo sin degradar el rendimiento.</li>
+</ul>
+</div><h1>2. Estrategias para Escalar Jenkins</h1>
+<div class='content'></div><h2>2.1. Uso de Nodos de Jenkins</h2>
+<div class='content'><h4>¿Qué son los Nodos de Jenkins?</h4>
+<ul>
+<li><strong>Nodos</strong>: Máquinas adicionales que Jenkins puede utilizar para ejecutar trabajos.</li>
+<li><strong>Master</strong>: El servidor principal de Jenkins que coordina los trabajos y distribuye las tareas a los nodos.</li>
+</ul>
+<h4>Configuración de Nodos</h4>
+<ol>
+<li>
+<p><strong>Agregar un Nodo</strong>:</p>
+<ul>
+<li>Navega a <strong>Administrar Jenkins</strong> &gt; <strong>Administrar Nodos y Nubes</strong>.</li>
+<li>Haz clic en <strong>Nuevo Nodo</strong>.</li>
+<li>Proporciona un nombre y selecciona <strong>Permanent Agent</strong>.</li>
+<li>Configura los detalles del nodo, como la ruta de trabajo y las credenciales.</li>
+</ul>
+</li>
+<li>
+<p><strong>Conectar el Nodo</strong>:</p>
+<ul>
+<li>Una vez configurado, Jenkins proporcionará un script de conexión.</li>
+<li>Ejecuta el script en la máquina que deseas agregar como nodo.</li>
+</ul>
+</li>
+</ol>
+<h4>Ejemplo de Configuración de Nodo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("amF2YSAtamFyIGFnZW50LmphciAtam5scFVybCBodHRwOi8veW91ci1qZW5raW5zLXNlcnZlci9jb21wdXRlci95b3VyLW5vZGUvc2xhdmUtYWdlbnQuam5scCAtc2VjcmV0IHlvdXItc2VjcmV0LWtleSAtd29ya0RpciAiL3BhdGgvdG8vYWdlbnQvd29ya2RpciI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>java -jar agent.jar -jnlpUrl http://your-jenkins-server/computer/your-node/slave-agent.jnlp -secret your-secret-key -workDir &quot;/path/to/agent/workdir&quot;</pre></div><div class='content'></div><h2>2.2. Uso de Jenkins en la Nube</h2>
+<div class='content'><h4>Integración con Proveedores de Nube</h4>
+<ul>
+<li><strong>Amazon Web Services (AWS)</strong>: Utiliza instancias EC2 para escalar dinámicamente.</li>
+<li><strong>Google Cloud Platform (GCP)</strong>: Utiliza instancias de Compute Engine.</li>
+<li><strong>Microsoft Azure</strong>: Utiliza máquinas virtuales de Azure.</li>
+</ul>
+<h4>Configuración de Nodos en la Nube</h4>
+<ol>
+<li>
+<p><strong>Instalar el Plugin de Nube</strong>:</p>
+<ul>
+<li>Navega a <strong>Administrar Jenkins</strong> &gt; <strong>Administrar Plugins</strong>.</li>
+<li>Busca e instala el plugin correspondiente a tu proveedor de nube (por ejemplo, <strong>Amazon EC2 Plugin</strong>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el Proveedor de Nube</strong>:</p>
+<ul>
+<li>Navega a <strong>Administrar Jenkins</strong> &gt; <strong>Configurar el Sistema</strong>.</li>
+<li>Agrega una nueva configuración de nube y proporciona las credenciales y detalles necesarios.</li>
+</ul>
+</li>
+</ol>
+</div><h2>2.3. Uso de Contenedores</h2>
+<div class='content'><h4>Jenkins y Docker</h4>
+<ul>
+<li><strong>Docker</strong>: Utiliza contenedores Docker para ejecutar trabajos de Jenkins de manera aislada y escalable.</li>
+<li><strong>Docker Swarm/Kubernetes</strong>: Orquesta múltiples contenedores para escalar Jenkins.</li>
+</ul>
+<h4>Configuración de Jenkins con Docker</h4>
+<ol>
+<li>
+<p><strong>Instalar el Plugin de Docker</strong>:</p>
+<ul>
+<li>Navega a <strong>Administrar Jenkins</strong> &gt; <strong>Administrar Plugins</strong>.</li>
+<li>Busca e instala el <strong>Docker Plugin</strong>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar Docker como Nube</strong>:</p>
+<ul>
+<li>Navega a <strong>Administrar Jenkins</strong> &gt; <strong>Configurar el Sistema</strong>.</li>
+<li>Agrega una nueva configuración de nube Docker y proporciona los detalles del servidor Docker.</li>
+</ul>
+</li>
+</ol>
+<h4>Ejemplo de Configuración de Docker</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgewogICAgICAgIGRvY2tlciB7CiAgICAgICAgICAgIGltYWdlICdtYXZlbjozLjYuMy1qZGstOCcKICAgICAgICAgICAgYXJncyAnLXYgL3Jvb3QvLm0yOi9yb290Ly5tMicKICAgICAgICB9CiAgICB9CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgc2ggJ212biBjbGVhbiBpbnN0YWxsJwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent {
+        docker {
+            image 'maven:3.6.3-jdk-8'
+            args '-v /root/.m2:/root/.m2'
+        }
+    }
+    stages {
+        stage('Build') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>3. Monitoreo y Optimización</h1>
+<div class='content'></div><h2>Monitoreo del Rendimiento</h2>
+<div class='content'><ul>
+<li><strong>Herramientas de Monitoreo</strong>: Utiliza herramientas como <strong>Prometheus</strong> y <strong>Grafana</strong> para monitorear el rendimiento de Jenkins.</li>
+<li><strong>Logs y Métricas</strong>: Revisa los logs y métricas de Jenkins para identificar cuellos de botella y problemas de rendimiento.</li>
+</ul>
+</div><h2>Optimización de Jenkins</h2>
+<div class='content'><ul>
+<li><strong>Ajuste de Parámetros</strong>: Ajusta parámetros como el tamaño del heap de Java y el número de ejecutores.</li>
+<li><strong>Limpieza Regular</strong>: Realiza limpiezas regulares de trabajos antiguos y artefactos para liberar recursos.</li>
+</ul>
+</div><h1>4. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio: Configurar un Nodo de Jenkins</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar un nodo adicional en Jenkins para distribuir la carga de trabajo.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Agrega un nuevo nodo en Jenkins siguiendo los pasos mencionados anteriormente.</li>
+<li>Conecta el nodo utilizando el script proporcionado por Jenkins.</li>
+<li>Configura un trabajo para que se ejecute en el nuevo nodo.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución:</h2>
+<div class='content'><ol>
+<li>Navega a <strong>Administrar Jenkins</strong> &gt; <strong>Administrar Nodos y Nubes</strong>.</li>
+<li>Haz clic en <strong>Nuevo Nodo</strong> y proporciona un nombre.</li>
+<li>Selecciona <strong>Permanent Agent</strong> y configura los detalles del nodo.</li>
+<li>Ejecuta el script de conexión en la máquina del nodo.</li>
+<li>Configura un trabajo en Jenkins y selecciona el nuevo nodo como el agente de ejecución.</li>
+</ol>
+</div><h1>5. Conclusión</h1>
+<div class='content'><p>Escalar Jenkins es esencial para manejar cargas de trabajo crecientes y mejorar el rendimiento. Al utilizar nodos adicionales, integrar Jenkins con proveedores de nube y utilizar contenedores Docker, puedes escalar tu infraestructura de Jenkins de manera efectiva. Monitorear y optimizar regularmente Jenkins también es crucial para mantener un rendimiento óptimo.</p>
+<p>En el próximo módulo, exploraremos las mejores prácticas y la solución de problemas comunes en Jenkins para asegurar que tu entorno de Jenkins funcione de manera eficiente y sin problemas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-jenkins-as-code-with-jenkinsfile' title="Jenkins como Código con Jenkinsfile">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-jenkins-best-practices' title="Mejores Prácticas de Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

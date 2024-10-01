@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización y Función de Pérdida</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/deep_learning/02-04-optimizacion-funcion-de-perdida" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/deep_learning/02-04-optimizacion-funcion-de-perdida" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/deep_learning/02-04-optimization-loss-function" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/deep_learning/02-04-optimizacion-funcion-de-perdida" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/deep_learning/02-04-optimizacion-funcion-de-perdida" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-propagacion-hacia-adelante-atras' title="Propagación hacia adelante y hacia atrás">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimización y Función de Pérdida</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-introduccion-cnn' title="Introducción a las CNN">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos dos conceptos fundamentales en el entrenamiento de redes neuronales: la función de pérdida y los algoritmos de optimización. Estos conceptos son cruciales para ajustar los parámetros de una red neuronal y mejorar su rendimiento en tareas específicas.</p>
+</div><h1>1. Función de Pérdida</h1>
+<div class='content'><p>La función de pérdida, también conocida como función de costo o función objetivo, mide cuán bien o mal se está desempeñando un modelo en una tarea específica. La idea es minimizar esta función durante el entrenamiento para mejorar la precisión del modelo.</p>
+</div><h2>Tipos de Funciones de Pérdida</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Error Cuadrático Medio (MSE)</strong></p>
+<ul>
+<li>Utilizado principalmente en problemas de regresión.</li>
+<li>Fórmula:
+\[
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+\]
+donde \( y_i \) es el valor real y \( \hat{y}_i \) es el valor predicho.</li>
+</ul>
+</li>
+<li>
+<p><strong>Entropía Cruzada (Cross-Entropy)</strong></p>
+<ul>
+<li>Utilizado principalmente en problemas de clasificación.</li>
+<li>Fórmula para clasificación binaria:
+\[
+\text{Cross-Entropy} = - \frac{1}{n} \sum_{i=1}^{n} [y_i \log(\hat{y}_i) + (1 - y_i) \log(1 - \hat{y}_i)]
+\]</li>
+<li>Fórmula para clasificación multiclase:
+\[
+\text{Cross-Entropy} = - \sum_{i=1}^{n} \sum_{c=1}^{C} y_{i,c} \log(\hat{y}_{i,c})
+\]
+donde \( C \) es el número de clases.</li>
+</ul>
+</li>
+<li>
+<p><strong>Hinge Loss</strong></p>
+<ul>
+<li>Utilizado en máquinas de soporte vectorial (SVM).</li>
+<li>Fórmula:
+\[
+\text{Hinge Loss} = \sum_{i=1}^{n} \max(0, 1 - y_i \cdot \hat{y}_i)
+\]</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo de Implementación en Python</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIEZ1bmNpw7NuIGRlIHDDqXJkaWRhIE1TRQpkZWYgbXNlX2xvc3MoeV90cnVlLCB5X3ByZWQpOgogICAgcmV0dXJuIG5wLm1lYW4oKHlfdHJ1ZSAtIHlfcHJlZCkgKiogMikKCiMgRnVuY2nDs24gZGUgcMOpcmRpZGEgQ3Jvc3MtRW50cm9weSBwYXJhIGNsYXNpZmljYWNpw7NuIGJpbmFyaWEKZGVmIGJpbmFyeV9jcm9zc19lbnRyb3B5X2xvc3MoeV90cnVlLCB5X3ByZWQpOgogICAgZXBzaWxvbiA9IDFlLTE1ICAjIFBhcmEgZXZpdGFyIGxvZygwKQogICAgeV9wcmVkID0gbnAuY2xpcCh5X3ByZWQsIGVwc2lsb24sIDEgLSBlcHNpbG9uKQogICAgcmV0dXJuIC1ucC5tZWFuKHlfdHJ1ZSAqIG5wLmxvZyh5X3ByZWQpICsgKDEgLSB5X3RydWUpICogbnAubG9nKHlfcHJlZCkpCgojIEVqZW1wbG8gZGUgdXNvCnlfdHJ1ZSA9IG5wLmFycmF5KFsxLCAwLCAxLCAxXSkKeV9wcmVkID0gbnAuYXJyYXkoWzAuOSwgMC4xLCAwLjgsIDAuN10pCgpwcmludCgiTVNFIExvc3M6IiwgbXNlX2xvc3MoeV90cnVlLCB5X3ByZWQpKQpwcmludCgiQmluYXJ5IENyb3NzLUVudHJvcHkgTG9zczoiLCBiaW5hcnlfY3Jvc3NfZW50cm9weV9sb3NzKHlfdHJ1ZSwgeV9wcmVkKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Funci&oacute;n de p&eacute;rdida MSE
+def mse_loss(y_true, y_pred):
+    return np.mean((y_true - y_pred) ** 2)
+
+# Funci&oacute;n de p&eacute;rdida Cross-Entropy para clasificaci&oacute;n binaria
+def binary_cross_entropy_loss(y_true, y_pred):
+    epsilon = 1e-15  # Para evitar log(0)
+    y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
+    return -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(y_pred))
+
+# Ejemplo de uso
+y_true = np.array([1, 0, 1, 1])
+y_pred = np.array([0.9, 0.1, 0.8, 0.7])
+
+print(&quot;MSE Loss:&quot;, mse_loss(y_true, y_pred))
+print(&quot;Binary Cross-Entropy Loss:&quot;, binary_cross_entropy_loss(y_true, y_pred))</pre></div><div class='content'></div><h1>2. Algoritmos de Optimización</h1>
+<div class='content'><p>Los algoritmos de optimización se utilizan para ajustar los pesos de la red neuronal con el objetivo de minimizar la función de pérdida.</p>
+</div><h2>Tipos de Algoritmos de Optimización</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Gradiente Descendente (Gradient Descent)</strong></p>
+<ul>
+<li>Actualiza los pesos en la dirección del gradiente negativo de la función de pérdida.</li>
+<li>Fórmula de actualización:
+\[
+w = w - \eta \nabla L(w)
+\]
+donde \( \eta \) es la tasa de aprendizaje y \( \nabla L(w) \) es el gradiente de la función de pérdida respecto a los pesos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Gradiente Descendente Estocástico (SGD)</strong></p>
+<ul>
+<li>Actualiza los pesos utilizando un solo ejemplo de entrenamiento a la vez.</li>
+<li>Fórmula de actualización:
+\[
+w = w - \eta \nabla L(w; x_i, y_i)
+\]</li>
+</ul>
+</li>
+<li>
+<p><strong>Adam (Adaptive Moment Estimation)</strong></p>
+<ul>
+<li>Combina las ventajas de AdaGrad y RMSProp.</li>
+<li>Fórmulas de actualización:
+\[
+m_t = \beta_1 m_{t-1} + (1 - \beta_1) \nabla L(w)
+\]
+\[
+v_t = \beta_2 v_{t-1} + (1 - \beta_2) (\nabla L(w))^2
+\]
+\[
+\hat{m}_t = \frac{m_t}{1 - \beta_1^t}
+\]
+\[
+\hat{v}_t = \frac{v_t}{1 - \beta_2^t}
+\]
+\[
+w = w - \eta \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \epsilon}
+\]</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo de Implementación en Python</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIEdyYWRpZW50ZSBEZXNjZW5kZW50ZQpkZWYgZ3JhZGllbnRfZGVzY2VudF91cGRhdGUodywgZ3JhZCwgbGVhcm5pbmdfcmF0ZSk6CiAgICByZXR1cm4gdyAtIGxlYXJuaW5nX3JhdGUgKiBncmFkCgojIEVqZW1wbG8gZGUgdXNvCncgPSBucC5hcnJheShbMC41LCAtMC41XSkKZ3JhZCA9IG5wLmFycmF5KFswLjEsIC0wLjJdKQpsZWFybmluZ19yYXRlID0gMC4wMQoKd191cGRhdGVkID0gZ3JhZGllbnRfZGVzY2VudF91cGRhdGUodywgZ3JhZCwgbGVhcm5pbmdfcmF0ZSkKcHJpbnQoIlVwZGF0ZWQgd2VpZ2h0czoiLCB3X3VwZGF0ZWQp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Gradiente Descendente
+def gradient_descent_update(w, grad, learning_rate):
+    return w - learning_rate * grad
+
+# Ejemplo de uso
+w = np.array([0.5, -0.5])
+grad = np.array([0.1, -0.2])
+learning_rate = 0.01
+
+w_updated = gradient_descent_update(w, grad, learning_rate)
+print(&quot;Updated weights:&quot;, w_updated)</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar la función de pérdida MSE y el algoritmo de optimización SGD</h2>
+<div class='content'><ol>
+<li>Implementa la función de pérdida MSE.</li>
+<li>Implementa el algoritmo de optimización SGD.</li>
+<li>Utiliza un conjunto de datos sintético para entrenar un modelo simple.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIEZ1bmNpw7NuIGRlIHDDqXJkaWRhIE1TRQpkZWYgbXNlX2xvc3MoeV90cnVlLCB5X3ByZWQpOgogICAgcmV0dXJuIG5wLm1lYW4oKHlfdHJ1ZSAtIHlfcHJlZCkgKiogMikKCiMgQWxnb3JpdG1vIGRlIG9wdGltaXphY2nDs24gU0dECmRlZiBzZ2RfdXBkYXRlKHcsIGdyYWQsIGxlYXJuaW5nX3JhdGUpOgogICAgcmV0dXJuIHcgLSBsZWFybmluZ19yYXRlICogZ3JhZAoKIyBEYXRvcyBzaW50w6l0aWNvcwpYID0gbnAuYXJyYXkoW1sxLCAyXSwgWzIsIDNdLCBbMywgNF0sIFs0LCA1XV0pCnkgPSBucC5hcnJheShbMywgNSwgNywgOV0pCgojIEluaWNpYWxpemFjacOzbiBkZSBwZXNvcwp3ID0gbnAucmFuZG9tLnJhbmRuKDIpCmxlYXJuaW5nX3JhdGUgPSAwLjAxCmVwb2NocyA9IDEwMDAKCiMgRW50cmVuYW1pZW50bwpmb3IgZXBvY2ggaW4gcmFuZ2UoZXBvY2hzKToKICAgIHlfcHJlZCA9IG5wLmRvdChYLCB3KQogICAgbG9zcyA9IG1zZV9sb3NzKHksIHlfcHJlZCkKICAgIGdyYWQgPSBucC5kb3QoWC5ULCAoeV9wcmVkIC0geSkpIC8gbGVuKHkpCiAgICB3ID0gc2dkX3VwZGF0ZSh3LCBncmFkLCBsZWFybmluZ19yYXRlKQogICAgaWYgZXBvY2ggJSAxMDAgPT0gMDoKICAgICAgICBwcmludChmIkVwb2NoIHtlcG9jaH0sIExvc3M6IHtsb3NzfSIpCgpwcmludCgiUGVzb3MgZmluYWxlczoiLCB3KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Funci&oacute;n de p&eacute;rdida MSE
+def mse_loss(y_true, y_pred):
+    return np.mean((y_true - y_pred) ** 2)
+
+# Algoritmo de optimizaci&oacute;n SGD
+def sgd_update(w, grad, learning_rate):
+    return w - learning_rate * grad
+
+# Datos sint&eacute;ticos
+X = np.array([[1, 2], [2, 3], [3, 4], [4, 5]])
+y = np.array([3, 5, 7, 9])
+
+# Inicializaci&oacute;n de pesos
+w = np.random.randn(2)
+learning_rate = 0.01
+epochs = 1000
+
+# Entrenamiento
+for epoch in range(epochs):
+    y_pred = np.dot(X, w)
+    loss = mse_loss(y, y_pred)
+    grad = np.dot(X.T, (y_pred - y)) / len(y)
+    w = sgd_update(w, grad, learning_rate)
+    if epoch % 100 == 0:
+        print(f&quot;Epoch {epoch}, Loss: {loss}&quot;)
+
+print(&quot;Pesos finales:&quot;, w)</pre></div><div class='content'></div><h2>Retroalimentación sobre Errores Comunes</h2>
+<div class='content'><ul>
+<li><strong>Tasa de aprendizaje inadecuada</strong>: Si la tasa de aprendizaje es demasiado alta, el modelo puede no converger. Si es demasiado baja, el entrenamiento puede ser muy lento.</li>
+<li><strong>No normalizar los datos</strong>: Los datos no normalizados pueden causar que el entrenamiento sea ineficiente o que no converja.</li>
+<li><strong>No verificar el gradiente</strong>: Asegúrate de que el gradiente esté calculado correctamente para evitar actualizaciones incorrectas de los pesos.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos de función de pérdida y algoritmos de optimización, que son esenciales para el entrenamiento de redes neuronales. Entender cómo funcionan estos componentes y cómo implementarlos te permitirá construir modelos más eficientes y precisos. En el siguiente módulo, profundizaremos en las Redes Neuronales Convolucionales (CNN) y sus aplicaciones en el reconocimiento de imágenes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-propagacion-hacia-adelante-atras' title="Propagación hacia adelante y hacia atrás">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-introduccion-cnn' title="Introducción a las CNN">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

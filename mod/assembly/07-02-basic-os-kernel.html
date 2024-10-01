@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creando un Núcleo Básico de Sistema Operativo</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/assembly/07-02-basic-os-kernel" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/assembly/07-02-basic-os-kernel" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/assembly/07-02-basic-os-kernel" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/assembly/07-02-basic-os-kernel" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/assembly/07-02-basic-os-kernel" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-simple-bootloader' title="Escribiendo un Cargador de Arranque Simple">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creando un Núcleo Básico de Sistema Operativo</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-interfacing-hardware' title="Interfaz con Hardware">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos a crear un núcleo básico de sistema operativo (OS kernel) utilizando el lenguaje ensamblador. Este es un proyecto avanzado que consolidará muchos de los conceptos aprendidos en los módulos anteriores. A lo largo de este tema, cubriremos los siguientes puntos:</p>
+<ol>
+<li><strong>Introducción a los Núcleos de Sistemas Operativos</strong></li>
+<li><strong>Configuración del Entorno de Desarrollo</strong></li>
+<li><strong>Escribiendo el Código del Núcleo</strong></li>
+<li><strong>Compilación y Pruebas</strong></li>
+<li><strong>Ejercicios Prácticos</strong></li>
+</ol>
+</div><h1>1. Introducción a los Núcleos de Sistemas Operativos</h1>
+<div class='content'><p>Un núcleo de sistema operativo es el componente central de un sistema operativo. Gestiona las operaciones del hardware y permite que el software se ejecute en el hardware. Los núcleos pueden ser de diferentes tipos, como monolíticos, microkernels, etc. En este tema, nos enfocaremos en crear un núcleo monolítico básico.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Modo Real vs. Modo Protegido</strong>: Los procesadores x86 tienen dos modos de operación principales. El modo real es el modo de operación original de los procesadores x86, mientras que el modo protegido permite características avanzadas como la protección de memoria.</li>
+<li><strong>Interrupciones</strong>: Mecanismos que permiten que el hardware y el software interactúen de manera eficiente.</li>
+<li><strong>Segmentación y Paginación</strong>: Técnicas para gestionar la memoria.</li>
+</ul>
+</div><h1>2. Configuración del Entorno de Desarrollo</h1>
+<div class='content'><p>Antes de comenzar a escribir el código del núcleo, necesitamos configurar nuestro entorno de desarrollo.</p>
+</div><h2>Herramientas Necesarias</h2>
+<div class='content'><ul>
+<li><strong>NASM (Netwide Assembler)</strong>: Un ensamblador para la arquitectura x86.</li>
+<li><strong>QEMU</strong>: Un emulador y virtualizador de hardware.</li>
+<li><strong>GNU Make</strong>: Una herramienta para automatizar la compilación.</li>
+</ul>
+</div><h2>Instalación de Herramientas</h2>
+<div class='content'><h4>NASM</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IGluc3RhbGwgbmFzbQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get install nasm</pre></div><div class='content'><h4>QEMU</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IGluc3RhbGwgcWVtdQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get install qemu</pre></div><div class='content'><h4>GNU Make</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IGluc3RhbGwgbWFrZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get install make</pre></div><div class='content'></div><h1>3. Escribiendo el Código del Núcleo</h1>
+<div class='content'></div><h2>Estructura del Proyecto</h2>
+<div class='content'><p>Organizaremos nuestro proyecto en los siguientes archivos y directorios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a2VybmVsLwrilJzilIDilIAgYm9vdC8K4pSCICAg4pSU4pSA4pSAIGJvb3QuYXNtCuKUnOKUgOKUgCBrZXJuZWwvCuKUgiAgIOKUlOKUgOKUgCBrZXJuZWwuYXNtCuKUlOKUgOKUgCBNYWtlZmlsZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kernel/
+├── boot/
+│   └── boot.asm
+├── kernel/
+│   └── kernel.asm
+└── Makefile</pre></div><div class='content'></div><h2>Código del Bootloader (boot.asm)</h2>
+<div class='content'><p>El bootloader es el primer código que se ejecuta cuando se arranca el sistema. Su tarea principal es cargar el núcleo en memoria y transferirle el control.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("W0JJVFMgMTZdCltPUkcgMHg3QzAwXQoKc3RhcnQ6CiAgICA7IENvbmZpZ3VyYXIgZWwgc2VnbWVudG8gZGUgZGF0b3MKICAgIG1vdiBheCwgMHgwN0MwCiAgICBtb3YgZHMsIGF4CiAgICBtb3YgZXMsIGF4CgogICAgOyBMaW1waWFyIGxhIHBhbnRhbGxhCiAgICBjYWxsIGNsZWFyX3NjcmVlbgoKICAgIDsgQ2FyZ2FyIGVsIG7DumNsZW8KICAgIGNhbGwgbG9hZF9rZXJuZWwKCiAgICA7IFNhbHRhciBhbCBuw7pjbGVvCiAgICBqbXAgMHgxMDAwOjB4MDAwMAoKY2xlYXJfc2NyZWVuOgogICAgOyBDw7NkaWdvIHBhcmEgbGltcGlhciBsYSBwYW50YWxsYQogICAgcmV0Cgpsb2FkX2tlcm5lbDoKICAgIDsgQ8OzZGlnbyBwYXJhIGNhcmdhciBlbCBuw7pjbGVvCiAgICByZXQKCnRpbWVzIDUxMC0oJC0kJCkgZGIgMApkdyAweEFBNTU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[BITS 16]
+[ORG 0x7C00]
+
+start:
+    ; Configurar el segmento de datos
+    mov ax, 0x07C0
+    mov ds, ax
+    mov es, ax
+
+    ; Limpiar la pantalla
+    call clear_screen
+
+    ; Cargar el n&uacute;cleo
+    call load_kernel
+
+    ; Saltar al n&uacute;cleo
+    jmp 0x1000:0x0000
+
+clear_screen:
+    ; C&oacute;digo para limpiar la pantalla
+    ret
+
+load_kernel:
+    ; C&oacute;digo para cargar el n&uacute;cleo
+    ret
+
+times 510-($-$$) db 0
+dw 0xAA55</pre></div><div class='content'></div><h2>Código del Núcleo (kernel.asm)</h2>
+<div class='content'><p>El núcleo es el código que se ejecuta después de que el bootloader transfiere el control.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("W0JJVFMgMTZdCltPUkcgMHgxMDAwXQoKc3RhcnQ6CiAgICA7IENvbmZpZ3VyYXIgZWwgc2VnbWVudG8gZGUgZGF0b3MKICAgIG1vdiBheCwgMHgxMDAwCiAgICBtb3YgZHMsIGF4CiAgICBtb3YgZXMsIGF4CgogICAgOyBNb3N0cmFyIHVuIG1lbnNhamUgZW4gbGEgcGFudGFsbGEKICAgIGNhbGwgcHJpbnRfbWVzc2FnZQoKICAgIDsgQnVjbGUgaW5maW5pdG8KICAgIGNsaQogICAgaGx0CgpwcmludF9tZXNzYWdlOgogICAgbW92IHNpLCBtZXNzYWdlCiAgICBjYWxsIHByaW50X3N0cmluZwogICAgcmV0CgpwcmludF9zdHJpbmc6CiAgICA7IEPDs2RpZ28gcGFyYSBpbXByaW1pciB1bmEgY2FkZW5hCiAgICByZXQKCm1lc3NhZ2UgZGIgJ0hlbGxvLCBLZXJuZWwhJywgMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[BITS 16]
+[ORG 0x1000]
+
+start:
+    ; Configurar el segmento de datos
+    mov ax, 0x1000
+    mov ds, ax
+    mov es, ax
+
+    ; Mostrar un mensaje en la pantalla
+    call print_message
+
+    ; Bucle infinito
+    cli
+    hlt
+
+print_message:
+    mov si, message
+    call print_string
+    ret
+
+print_string:
+    ; C&oacute;digo para imprimir una cadena
+    ret
+
+message db 'Hello, Kernel!', 0</pre></div><div class='content'></div><h1>4. Compilación y Pruebas</h1>
+<div class='content'></div><h2>Makefile</h2>
+<div class='content'><p>El Makefile automatiza el proceso de compilación.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YWxsOiBvcy1pbWFnZQoKb3MtaW1hZ2U6IGJvb3QvYm9vdC5iaW4ga2VybmVsL2tlcm5lbC5iaW4KICAgIGNhdCAkXiA+IG9zLWltYWdlCgpib290L2Jvb3QuYmluOiBib290L2Jvb3QuYXNtCiAgICBuYXNtIC1mIGJpbiAkPCAtbyAkQAoKa2VybmVsL2tlcm5lbC5iaW46IGtlcm5lbC9rZXJuZWwuYXNtCiAgICBuYXNtIC1mIGJpbiAkPCAtbyAkQAoKY2xlYW46CiAgICBybSAtZiBib290L2Jvb3QuYmluIGtlcm5lbC9rZXJuZWwuYmluIG9zLWltYWdl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>all: os-image
+
+os-image: boot/boot.bin kernel/kernel.bin
+    cat $^ &gt; os-image
+
+boot/boot.bin: boot/boot.asm
+    nasm -f bin $&lt; -o $@
+
+kernel/kernel.bin: kernel/kernel.asm
+    nasm -f bin $&lt; -o $@
+
+clean:
+    rm -f boot/boot.bin kernel/kernel.bin os-image</pre></div><div class='content'></div><h2>Compilación</h2>
+<div class='content'><p>Para compilar el proyecto, ejecuta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWFrZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>make</pre></div><div class='content'></div><h2>Ejecución en QEMU</h2>
+<div class='content'><p>Para ejecutar el núcleo en QEMU, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cWVtdS1zeXN0ZW0teDg2XzY0IC1kcml2ZSBmb3JtYXQ9cmF3LGZpbGU9b3MtaW1hZ2U="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>qemu-system-x86_64 -drive format=raw,file=os-image</pre></div><div class='content'></div><h1>5. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Modificar el Mensaje del Núcleo</h2>
+<div class='content'><p><strong>Tarea</strong>: Modifica el mensaje que se muestra en la pantalla al arrancar el núcleo.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWVzc2FnZSBkYiAnV2VsY29tZSB0byBNeSBPUyBLZXJuZWwhJywgMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>message db 'Welcome to My OS Kernel!', 0</pre></div><div class='content'></div><h2>Ejercicio 2: Implementar una Función de Limpieza de Pantalla</h2>
+<div class='content'><p><strong>Tarea</strong>: Completa la función <code>clear_screen</code> en el bootloader para limpiar la pantalla.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xlYXJfc2NyZWVuOgogICAgbW92IGF4LCAweEI4MDAKICAgIG1vdiBlcywgYXgKICAgIHhvciBkaSwgZGkKICAgIG1vdiBjeCwgMjAwMAogICAgbW92IGF4LCAweDA3MjAKICAgIHJlcCBzdG9zdwogICAgcmV0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>clear_screen:
+    mov ax, 0xB800
+    mov es, ax
+    xor di, di
+    mov cx, 2000
+    mov ax, 0x0720
+    rep stosw
+    ret</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido a crear un núcleo básico de sistema operativo utilizando el lenguaje ensamblador. Hemos cubierto desde la configuración del entorno de desarrollo hasta la escritura y compilación del código del núcleo. Los ejercicios prácticos proporcionan una oportunidad para aplicar y reforzar los conceptos aprendidos. En el siguiente tema, exploraremos cómo interactuar con el hardware desde el núcleo.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-simple-bootloader' title="Escribiendo un Cargador de Arranque Simple">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-interfacing-hardware' title="Interfaz con Hardware">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

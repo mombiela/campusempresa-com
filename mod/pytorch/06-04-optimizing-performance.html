@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización del Rendimiento</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/06-04-optimizing-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/06-04-optimizing-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/06-04-optimizing-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/pytorch/06-04-optimizing-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/06-04-optimizing-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-deploying-models' title="Despliegue de Modelos PyTorch">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimización del Rendimiento</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-image-classification-project' title="Proyecto de Clasificación de Imágenes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo optimizar el rendimiento de nuestros modelos en PyTorch. La optimización del rendimiento es crucial para reducir los tiempos de entrenamiento y mejorar la eficiencia de los modelos, especialmente cuando se trabaja con grandes conjuntos de datos y arquitecturas complejas.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-la-optimización-del-rendimiento">Introducción a la Optimización del Rendimiento</a></li>
+<li><a href="#uso-de-gpu-para-aceleración">Uso de GPU para Aceleración</a></li>
+<li><a href="#optimización-de-código-pytorch">Optimización de Código PyTorch</a></li>
+<li><a href="#técnicas-de-regularización">Técnicas de Regularización</a></li>
+<li><a href="#prácticas-de-mejores-rendimientos">Prácticas de Mejores Rendimientos</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+</ol>
+</div><h1>Introducción a la Optimización del Rendimiento</h1>
+<div class='content'><p>Optimizar el rendimiento de un modelo implica varias estrategias y técnicas que pueden aplicarse en diferentes etapas del desarrollo del modelo. Estas técnicas pueden incluir el uso de hardware especializado, la optimización del código y la implementación de técnicas de regularización.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Aceleración por Hardware</strong>: Uso de GPU y TPU para acelerar el entrenamiento.</li>
+<li><strong>Optimización de Código</strong>: Mejora del código para hacerlo más eficiente.</li>
+<li><strong>Regularización</strong>: Técnicas para evitar el sobreajuste y mejorar la generalización.</li>
+</ul>
+</div><h1>Uso de GPU para Aceleración</h1>
+<div class='content'><p>Las GPUs (Unidades de Procesamiento Gráfico) son extremadamente eficientes para realizar operaciones de cálculo intensivo, como las que se encuentran en el entrenamiento de redes neuronales.</p>
+</div><h2>Configuración de GPU en PyTorch</h2>
+<div class='content'><p>Para utilizar una GPU en PyTorch, primero debemos asegurarnos de que tenemos una GPU compatible y que los controladores necesarios están instalados. Luego, podemos mover nuestros tensores y modelos a la GPU.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCgojIFZlcmlmaWNhciBzaSBoYXkgdW5hIEdQVSBkaXNwb25pYmxlCmRldmljZSA9IHRvcmNoLmRldmljZSgiY3VkYSIgaWYgdG9yY2guY3VkYS5pc19hdmFpbGFibGUoKSBlbHNlICJjcHUiKQoKIyBDcmVhciB1biB0ZW5zb3IgeSBtb3ZlcmxvIGEgbGEgR1BVCnRlbnNvciA9IHRvcmNoLnJhbmRuKDMsIDMpLnRvKGRldmljZSkKcHJpbnQodGVuc29yKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+
+# Verificar si hay una GPU disponible
+device = torch.device(&quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;)
+
+# Crear un tensor y moverlo a la GPU
+tensor = torch.randn(3, 3).to(device)
+print(tensor)</pre></div><div class='content'></div><h2>Ejemplo Práctico: Entrenamiento en GPU</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCiMgRGVmaW5pciB1biBtb2RlbG8gc2ltcGxlCmNsYXNzIFNpbXBsZU1vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoU2ltcGxlTW9kZWwsIHNlbGYpLl9faW5pdF9fKCkKICAgICAgICBzZWxmLmZjID0gbm4uTGluZWFyKDEwLCAxKQoKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIHJldHVybiBzZWxmLmZjKHgpCgojIENyZWFyIGVsIG1vZGVsbyB5IG1vdmVybG8gYSBsYSBHUFUKbW9kZWwgPSBTaW1wbGVNb2RlbCgpLnRvKGRldmljZSkKCiMgRGVmaW5pciB1bmEgZnVuY2nDs24gZGUgcMOpcmRpZGEgeSB1biBvcHRpbWl6YWRvcgpjcml0ZXJpb24gPSBubi5NU0VMb3NzKCkKb3B0aW1pemVyID0gb3B0aW0uU0dEKG1vZGVsLnBhcmFtZXRlcnMoKSwgbHI9MC4wMSkKCiMgRGF0b3MgZGUgZWplbXBsbwppbnB1dHMgPSB0b3JjaC5yYW5kbig1LCAxMCkudG8oZGV2aWNlKQp0YXJnZXRzID0gdG9yY2gucmFuZG4oNSwgMSkudG8oZGV2aWNlKQoKIyBFbnRyZW5hbWllbnRvCm1vZGVsLnRyYWluKCkKZm9yIGVwb2NoIGluIHJhbmdlKDEwMCk6CiAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgIG91dHB1dHMgPSBtb2RlbChpbnB1dHMpCiAgICBsb3NzID0gY3JpdGVyaW9uKG91dHB1dHMsIHRhcmdldHMpCiAgICBsb3NzLmJhY2t3YXJkKCkKICAgIG9wdGltaXplci5zdGVwKCkKICAgIGlmIGVwb2NoICUgMTAgPT0gMDoKICAgICAgICBwcmludChmJ0Vwb2NoIHtlcG9jaH0sIExvc3M6IHtsb3NzLml0ZW0oKX0nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Definir un modelo simple
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc = nn.Linear(10, 1)
+
+    def forward(self, x):
+        return self.fc(x)
+
+# Crear el modelo y moverlo a la GPU
+model = SimpleModel().to(device)
+
+# Definir una funci&oacute;n de p&eacute;rdida y un optimizador
+criterion = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+# Datos de ejemplo
+inputs = torch.randn(5, 10).to(device)
+targets = torch.randn(5, 1).to(device)
+
+# Entrenamiento
+model.train()
+for epoch in range(100):
+    optimizer.zero_grad()
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    loss.backward()
+    optimizer.step()
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch}, Loss: {loss.item()}')</pre></div><div class='content'></div><h1>Optimización de Código PyTorch</h1>
+<div class='content'><p>Optimizar el código PyTorch puede implicar varias técnicas, desde la simplificación de operaciones hasta el uso de bibliotecas especializadas.</p>
+</div><h2>Técnicas de Optimización</h2>
+<div class='content'><ol>
+<li><strong>Uso de Operaciones en Lote</strong>: Procesar datos en lotes en lugar de uno por uno.</li>
+<li><strong>Evitar Bucles Innecesarios</strong>: Utilizar operaciones vectorizadas.</li>
+<li><strong>Uso de <code>torch.no_grad()</code></strong>: Desactivar el cálculo de gradientes cuando no sea necesario.</li>
+</ol>
+</div><h2>Ejemplo: Uso de `torch.no_grad()`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuZXZhbCgpCndpdGggdG9yY2gubm9fZ3JhZCgpOgogICAgb3V0cHV0cyA9IG1vZGVsKGlucHV0cykKICAgIGxvc3MgPSBjcml0ZXJpb24ob3V0cHV0cywgdGFyZ2V0cykKcHJpbnQoZidMb3NzOiB7bG9zcy5pdGVtKCl9Jyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.eval()
+with torch.no_grad():
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+print(f'Loss: {loss.item()}')</pre></div><div class='content'></div><h1>Técnicas de Regularización</h1>
+<div class='content'><p>La regularización es crucial para mejorar la generalización de los modelos y evitar el sobreajuste.</p>
+</div><h2>Tipos de Regularización</h2>
+<div class='content'><ol>
+<li><strong>Dropout</strong>: Apagar aleatoriamente neuronas durante el entrenamiento.</li>
+<li><strong>L2 Regularization (Weight Decay)</strong>: Añadir una penalización a los pesos grandes.</li>
+</ol>
+</div><h2>Ejemplo: Implementación de Dropout</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgRHJvcG91dE1vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoRHJvcG91dE1vZGVsLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5mYzEgPSBubi5MaW5lYXIoMTAsIDUwKQogICAgICAgIHNlbGYuZHJvcG91dCA9IG5uLkRyb3BvdXQocD0wLjUpCiAgICAgICAgc2VsZi5mYzIgPSBubi5MaW5lYXIoNTAsIDEpCgogICAgZGVmIGZvcndhcmQoc2VsZiwgeCk6CiAgICAgICAgeCA9IHRvcmNoLnJlbHUoc2VsZi5mYzEoeCkpCiAgICAgICAgeCA9IHNlbGYuZHJvcG91dCh4KQogICAgICAgIHJldHVybiBzZWxmLmZjMih4KQoKbW9kZWwgPSBEcm9wb3V0TW9kZWwoKS50byhkZXZpY2Up"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class DropoutModel(nn.Module):
+    def __init__(self):
+        super(DropoutModel, self).__init__()
+        self.fc1 = nn.Linear(10, 50)
+        self.dropout = nn.Dropout(p=0.5)
+        self.fc2 = nn.Linear(50, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.dropout(x)
+        return self.fc2(x)
+
+model = DropoutModel().to(device)</pre></div><div class='content'></div><h1>Prácticas de Mejores Rendimientos</h1>
+<div class='content'></div><h2>Consejos Adicionales</h2>
+<div class='content'><ul>
+<li><strong>Perfilado de Código</strong>: Utilizar herramientas como <code>torch.utils.bottleneck</code> para identificar cuellos de botella.</li>
+<li><strong>Ajuste de Hiperparámetros</strong>: Experimentar con diferentes configuraciones de hiperparámetros.</li>
+<li><strong>Uso de Bibliotecas Especializadas</strong>: Considerar el uso de bibliotecas como <code>apex</code> de NVIDIA para optimizaciones adicionales.</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Entrenamiento en GPU</h2>
+<div class='content'><p><strong>Objetivo</strong>: Mover un modelo y datos a la GPU y entrenarlo.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Definir un modelo simple.</li>
+<li>Mover el modelo y los datos a la GPU.</li>
+<li>Entrenar el modelo en la GPU.</li>
+</ol>
+<p><strong>Código Inicial</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCiMgRGVmaW5pciB1biBtb2RlbG8gc2ltcGxlCmNsYXNzIFNpbXBsZU1vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoU2ltcGxlTW9kZWwsIHNlbGYpLl9faW5pdF9fKCkKICAgICAgICBzZWxmLmZjID0gbm4uTGluZWFyKDEwLCAxKQoKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIHJldHVybiBzZWxmLmZjKHgpCgojIENyZWFyIGVsIG1vZGVsbwptb2RlbCA9IFNpbXBsZU1vZGVsKCkKCiMgRGVmaW5pciB1bmEgZnVuY2nDs24gZGUgcMOpcmRpZGEgeSB1biBvcHRpbWl6YWRvcgpjcml0ZXJpb24gPSBubi5NU0VMb3NzKCkKb3B0aW1pemVyID0gb3B0aW0uU0dEKG1vZGVsLnBhcmFtZXRlcnMoKSwgbHI9MC4wMSkKCiMgRGF0b3MgZGUgZWplbXBsbwppbnB1dHMgPSB0b3JjaC5yYW5kbig1LCAxMCkKdGFyZ2V0cyA9IHRvcmNoLnJhbmRuKDUsIDEpCgojIFRPRE86IE1vdmVyIGVsIG1vZGVsbyB5IGxvcyBkYXRvcyBhIGxhIEdQVQoKIyBFbnRyZW5hbWllbnRvCm1vZGVsLnRyYWluKCkKZm9yIGVwb2NoIGluIHJhbmdlKDEwMCk6CiAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgIG91dHB1dHMgPSBtb2RlbChpbnB1dHMpCiAgICBsb3NzID0gY3JpdGVyaW9uKG91dHB1dHMsIHRhcmdldHMpCiAgICBsb3NzLmJhY2t3YXJkKCkKICAgIG9wdGltaXplci5zdGVwKCkKICAgIGlmIGVwb2NoICUgMTAgPT0gMDoKICAgICAgICBwcmludChmJ0Vwb2NoIHtlcG9jaH0sIExvc3M6IHtsb3NzLml0ZW0oKX0nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Definir un modelo simple
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc = nn.Linear(10, 1)
+
+    def forward(self, x):
+        return self.fc(x)
+
+# Crear el modelo
+model = SimpleModel()
+
+# Definir una funci&oacute;n de p&eacute;rdida y un optimizador
+criterion = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+# Datos de ejemplo
+inputs = torch.randn(5, 10)
+targets = torch.randn(5, 1)
+
+# TODO: Mover el modelo y los datos a la GPU
+
+# Entrenamiento
+model.train()
+for epoch in range(100):
+    optimizer.zero_grad()
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    loss.backward()
+    optimizer.step()
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch}, Loss: {loss.item()}')</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCiMgVmVyaWZpY2FyIHNpIGhheSB1bmEgR1BVIGRpc3BvbmlibGUKZGV2aWNlID0gdG9yY2guZGV2aWNlKCJjdWRhIiBpZiB0b3JjaC5jdWRhLmlzX2F2YWlsYWJsZSgpIGVsc2UgImNwdSIpCgojIERlZmluaXIgdW4gbW9kZWxvIHNpbXBsZQpjbGFzcyBTaW1wbGVNb2RlbChubi5Nb2R1bGUpOgogICAgZGVmIF9faW5pdF9fKHNlbGYpOgogICAgICAgIHN1cGVyKFNpbXBsZU1vZGVsLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5mYyA9IG5uLkxpbmVhcigxMCwgMSkKCiAgICBkZWYgZm9yd2FyZChzZWxmLCB4KToKICAgICAgICByZXR1cm4gc2VsZi5mYyh4KQoKIyBDcmVhciBlbCBtb2RlbG8geSBtb3ZlcmxvIGEgbGEgR1BVCm1vZGVsID0gU2ltcGxlTW9kZWwoKS50byhkZXZpY2UpCgojIERlZmluaXIgdW5hIGZ1bmNpw7NuIGRlIHDDqXJkaWRhIHkgdW4gb3B0aW1pemFkb3IKY3JpdGVyaW9uID0gbm4uTVNFTG9zcygpCm9wdGltaXplciA9IG9wdGltLlNHRChtb2RlbC5wYXJhbWV0ZXJzKCksIGxyPTAuMDEpCgojIERhdG9zIGRlIGVqZW1wbG8KaW5wdXRzID0gdG9yY2gucmFuZG4oNSwgMTApLnRvKGRldmljZSkKdGFyZ2V0cyA9IHRvcmNoLnJhbmRuKDUsIDEpLnRvKGRldmljZSkKCiMgRW50cmVuYW1pZW50bwptb2RlbC50cmFpbigpCmZvciBlcG9jaCBpbiByYW5nZSgxMDApOgogICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICBvdXRwdXRzID0gbW9kZWwoaW5wdXRzKQogICAgbG9zcyA9IGNyaXRlcmlvbihvdXRwdXRzLCB0YXJnZXRzKQogICAgbG9zcy5iYWNrd2FyZCgpCiAgICBvcHRpbWl6ZXIuc3RlcCgpCiAgICBpZiBlcG9jaCAlIDEwID09IDA6CiAgICAgICAgcHJpbnQoZidFcG9jaCB7ZXBvY2h9LCBMb3NzOiB7bG9zcy5pdGVtKCl9Jyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Verificar si hay una GPU disponible
+device = torch.device(&quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;)
+
+# Definir un modelo simple
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc = nn.Linear(10, 1)
+
+    def forward(self, x):
+        return self.fc(x)
+
+# Crear el modelo y moverlo a la GPU
+model = SimpleModel().to(device)
+
+# Definir una funci&oacute;n de p&eacute;rdida y un optimizador
+criterion = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+# Datos de ejemplo
+inputs = torch.randn(5, 10).to(device)
+targets = torch.randn(5, 1).to(device)
+
+# Entrenamiento
+model.train()
+for epoch in range(100):
+    optimizer.zero_grad()
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    loss.backward()
+    optimizer.step()
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch}, Loss: {loss.item()}')</pre></div><div class='content'></div><h2>Ejercicio 2: Implementación de Dropout</h2>
+<div class='content'><p><strong>Objetivo</strong>: Añadir una capa de Dropout a un modelo existente.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Definir un modelo con una capa de Dropout.</li>
+<li>Entrenar el modelo y observar el efecto del Dropout.</li>
+</ol>
+<p><strong>Código Inicial</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCiMgRGVmaW5pciB1biBtb2RlbG8gc2ltcGxlCmNsYXNzIFNpbXBsZU1vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoU2ltcGxlTW9kZWwsIHNlbGYpLl9faW5pdF9fKCkKICAgICAgICBzZWxmLmZjMSA9IG5uLkxpbmVhcigxMCwgNTApCiAgICAgICAgc2VsZi5mYzIgPSBubi5MaW5lYXIoNTAsIDEpCgogICAgZGVmIGZvcndhcmQoc2VsZiwgeCk6CiAgICAgICAgeCA9IHRvcmNoLnJlbHUoc2VsZi5mYzEoeCkpCiAgICAgICAgcmV0dXJuIHNlbGYuZmMyKHgpCgojIENyZWFyIGVsIG1vZGVsbwptb2RlbCA9IFNpbXBsZU1vZGVsKCkKCiMgRGVmaW5pciB1bmEgZnVuY2nDs24gZGUgcMOpcmRpZGEgeSB1biBvcHRpbWl6YWRvcgpjcml0ZXJpb24gPSBubi5NU0VMb3NzKCkKb3B0aW1pemVyID0gb3B0aW0uU0dEKG1vZGVsLnBhcmFtZXRlcnMoKSwgbHI9MC4wMSkKCiMgRGF0b3MgZGUgZWplbXBsbwppbnB1dHMgPSB0b3JjaC5yYW5kbig1LCAxMCkKdGFyZ2V0cyA9IHRvcmNoLnJhbmRuKDUsIDEpCgojIEVudHJlbmFtaWVudG8KbW9kZWwudHJhaW4oKQpmb3IgZXBvY2ggaW4gcmFuZ2UoMTAwKToKICAgIG9wdGltaXplci56ZXJvX2dyYWQoKQogICAgb3V0cHV0cyA9IG1vZGVsKGlucHV0cykKICAgIGxvc3MgPSBjcml0ZXJpb24ob3V0cHV0cywgdGFyZ2V0cykKICAgIGxvc3MuYmFja3dhcmQoKQogICAgb3B0aW1pemVyLnN0ZXAoKQogICAgaWYgZXBvY2ggJSAxMCA9PSAwOgogICAgICAgIHByaW50KGYnRXBvY2gge2Vwb2NofSwgTG9zczoge2xvc3MuaXRlbSgpfScp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Definir un modelo simple
+class SimpleModel(nn.Module):
+    def __init__(self):
+        super(SimpleModel, self).__init__()
+        self.fc1 = nn.Linear(10, 50)
+        self.fc2 = nn.Linear(50, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        return self.fc2(x)
+
+# Crear el modelo
+model = SimpleModel()
+
+# Definir una funci&oacute;n de p&eacute;rdida y un optimizador
+criterion = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+# Datos de ejemplo
+inputs = torch.randn(5, 10)
+targets = torch.randn(5, 1)
+
+# Entrenamiento
+model.train()
+for epoch in range(100):
+    optimizer.zero_grad()
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    loss.backward()
+    optimizer.step()
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch}, Loss: {loss.item()}')</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KCiMgRGVmaW5pciB1biBtb2RlbG8gY29uIERyb3BvdXQKY2xhc3MgRHJvcG91dE1vZGVsKG5uLk1vZHVsZSk6CiAgICBkZWYgX19pbml0X18oc2VsZik6CiAgICAgICAgc3VwZXIoRHJvcG91dE1vZGVsLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5mYzEgPSBubi5MaW5lYXIoMTAsIDUwKQogICAgICAgIHNlbGYuZHJvcG91dCA9IG5uLkRyb3BvdXQocD0wLjUpCiAgICAgICAgc2VsZi5mYzIgPSBubi5MaW5lYXIoNTAsIDEpCgogICAgZGVmIGZvcndhcmQoc2VsZiwgeCk6CiAgICAgICAgeCA9IHRvcmNoLnJlbHUoc2VsZi5mYzEoeCkpCiAgICAgICAgeCA9IHNlbGYuZHJvcG91dCh4KQogICAgICAgIHJldHVybiBzZWxmLmZjMih4KQoKIyBDcmVhciBlbCBtb2RlbG8KbW9kZWwgPSBEcm9wb3V0TW9kZWwoKQoKIyBEZWZpbmlyIHVuYSBmdW5jacOzbiBkZSBww6lyZGlkYSB5IHVuIG9wdGltaXphZG9yCmNyaXRlcmlvbiA9IG5uLk1TRUxvc3MoKQpvcHRpbWl6ZXIgPSBvcHRpbS5TR0QobW9kZWwucGFyYW1ldGVycygpLCBscj0wLjAxKQoKIyBEYXRvcyBkZSBlamVtcGxvCmlucHV0cyA9IHRvcmNoLnJhbmRuKDUsIDEwKQp0YXJnZXRzID0gdG9yY2gucmFuZG4oNSwgMSkKCiMgRW50cmVuYW1pZW50bwptb2RlbC50cmFpbigpCmZvciBlcG9jaCBpbiByYW5nZSgxMDApOgogICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICBvdXRwdXRzID0gbW9kZWwoaW5wdXRzKQogICAgbG9zcyA9IGNyaXRlcmlvbihvdXRwdXRzLCB0YXJnZXRzKQogICAgbG9zcy5iYWNrd2FyZCgpCiAgICBvcHRpbWl6ZXIuc3RlcCgpCiAgICBpZiBlcG9jaCAlIDEwID09IDA6CiAgICAgICAgcHJpbnQoZidFcG9jaCB7ZXBvY2h9LCBMb3NzOiB7bG9zcy5pdGVtKCl9Jyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+
+# Definir un modelo con Dropout
+class DropoutModel(nn.Module):
+    def __init__(self):
+        super(DropoutModel, self).__init__()
+        self.fc1 = nn.Linear(10, 50)
+        self.dropout = nn.Dropout(p=0.5)
+        self.fc2 = nn.Linear(50, 1)
+
+    def forward(self, x):
+        x = torch.relu(self.fc1(x))
+        x = self.dropout(x)
+        return self.fc2(x)
+
+# Crear el modelo
+model = DropoutModel()
+
+# Definir una funci&oacute;n de p&eacute;rdida y un optimizador
+criterion = nn.MSELoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)
+
+# Datos de ejemplo
+inputs = torch.randn(5, 10)
+targets = torch.randn(5, 1)
+
+# Entrenamiento
+model.train()
+for epoch in range(100):
+    optimizer.zero_grad()
+    outputs = model(inputs)
+    loss = criterion(outputs, targets)
+    loss.backward()
+    optimizer.step()
+    if epoch % 10 == 0:
+        print(f'Epoch {epoch}, Loss: {loss.item()}')</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos explorado diversas técnicas para optimizar el rendimiento de los modelos en PyTorch. Desde el uso de GPUs para acelerar el entrenamiento hasta la implementación de técnicas de regularización como Dropout, estas estrategias son esenciales para mejorar la eficiencia y la generalización de los modelos. Asegúrate de aplicar estas técnicas en tus proyectos para obtener el máximo rendimiento de tus modelos.</p>
+<p>En el próximo módulo, nos adentraremos en estudios de caso y proyectos prácticos para aplicar todo lo aprendido en situaciones del mundo real. ¡Sigue adelante y sigue aprendiendo!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-deploying-models' title="Despliegue de Modelos PyTorch">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-image-classification-project' title="Proyecto de Clasificación de Imágenes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

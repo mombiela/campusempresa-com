@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malloc y Free</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/c/08-02-malloc-and-free" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/c/08-02-malloc-and-free" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/c/08-02-malloc-and-free" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/c/08-02-malloc-and-free" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/c/08-02-malloc-and-free" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-memory-management-functions' title="Funciones de Gestión de Memoria">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Malloc y Free</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-calloc-and-realloc' title="Calloc y Realloc">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre dos funciones cruciales para la gestión dinámica de memoria en C: <code>malloc</code> y <code>free</code>. Estas funciones nos permiten asignar y liberar memoria en tiempo de ejecución, lo cual es esencial para crear programas eficientes y flexibles.</p>
+</div><h1>1. Introducción a `malloc`</h1>
+<div class='content'><p>La función <code>malloc</code> (memory allocation) se utiliza para asignar un bloque de memoria en el heap. La memoria asignada no está inicializada, lo que significa que puede contener cualquier valor residual.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCogbWFsbG9jKHNpemVfdCBzaXplKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void* malloc(size_t size);</pre></div><div class='content'><ul>
+<li><code>size</code>: La cantidad de bytes que se desea asignar.</li>
+<li>Retorna: Un puntero al primer byte del bloque de memoria asignado, o <code>NULL</code> si la asignación falla.</li>
+</ul>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KCmludCBtYWluKCkgewogICAgaW50ICpwdHI7CiAgICBpbnQgbiwgaTsKCiAgICAvLyBOw7ptZXJvIGRlIGVsZW1lbnRvcwogICAgbiA9IDU7CiAgICBwcmludGYoIk7Dum1lcm8gZGUgZWxlbWVudG9zOiAlZFxuIiwgbik7CgogICAgLy8gQXNpZ25hY2nDs24gZGUgbWVtb3JpYSBwYXJhIG4gZW50ZXJvcwogICAgcHRyID0gKGludCopbWFsbG9jKG4gKiBzaXplb2YoaW50KSk7CgogICAgLy8gVmVyaWZpY2FyIHNpIGxhIG1lbW9yaWEgaGEgc2lkbyBhc2lnbmFkYSBjb24gw6l4aXRvCiAgICBpZiAocHRyID09IE5VTEwpIHsKICAgICAgICBwcmludGYoIkVycm9yOiBObyBzZSBwdWRvIGFzaWduYXIgbWVtb3JpYS5cbiIpOwogICAgICAgIGV4aXQoMSk7CiAgICB9CgogICAgLy8gSW5pY2lhbGl6YXIgeSBtb3N0cmFyIGxvcyB2YWxvcmVzCiAgICBmb3IgKGkgPSAwOyBpIDwgbjsgKytpKSB7CiAgICAgICAgcHRyW2ldID0gaSArIDE7CiAgICAgICAgcHJpbnRmKCIlZCAiLCBwdHJbaV0pOwogICAgfQoKICAgIC8vIExpYmVyYXIgbGEgbWVtb3JpYSBhc2lnbmFkYQogICAgZnJlZShwdHIpOwoKICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int *ptr;
+    int n, i;
+
+    // N&uacute;mero de elementos
+    n = 5;
+    printf(&quot;N&uacute;mero de elementos: %d\n&quot;, n);
+
+    // Asignaci&oacute;n de memoria para n enteros
+    ptr = (int*)malloc(n * sizeof(int));
+
+    // Verificar si la memoria ha sido asignada con &eacute;xito
+    if (ptr == NULL) {
+        printf(&quot;Error: No se pudo asignar memoria.\n&quot;);
+        exit(1);
+    }
+
+    // Inicializar y mostrar los valores
+    for (i = 0; i &lt; n; ++i) {
+        ptr[i] = i + 1;
+        printf(&quot;%d &quot;, ptr[i]);
+    }
+
+    // Liberar la memoria asignada
+    free(ptr);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Declaración de Variables</strong>:</p>
+<ul>
+<li><code>int *ptr;</code>: Un puntero a entero que almacenará la dirección del bloque de memoria asignado.</li>
+<li><code>int n, i;</code>: Variables para el número de elementos y el índice del bucle.</li>
+</ul>
+</li>
+<li>
+<p><strong>Asignación de Memoria</strong>:</p>
+<ul>
+<li><code>ptr = (int*)malloc(n * sizeof(int));</code>: Asigna memoria para <code>n</code> enteros. <code>sizeof(int)</code> devuelve el tamaño en bytes de un entero.</li>
+</ul>
+</li>
+<li>
+<p><strong>Verificación de Asignación</strong>:</p>
+<ul>
+<li><code>if (ptr == NULL)</code>: Verifica si <code>malloc</code> devolvió <code>NULL</code>, lo que indica que la asignación de memoria falló.</li>
+</ul>
+</li>
+<li>
+<p><strong>Inicialización y Uso de la Memoria</strong>:</p>
+<ul>
+<li>Un bucle <code>for</code> inicializa y muestra los valores almacenados en la memoria asignada.</li>
+</ul>
+</li>
+<li>
+<p><strong>Liberación de Memoria</strong>:</p>
+<ul>
+<li><code>free(ptr);</code>: Libera la memoria asignada para evitar fugas de memoria.</li>
+</ul>
+</li>
+</ol>
+</div><h1>2. Introducción a `free`</h1>
+<div class='content'><p>La función <code>free</code> se utiliza para liberar un bloque de memoria previamente asignado por <code>malloc</code>, <code>calloc</code> o <code>realloc</code>. Es crucial liberar la memoria cuando ya no se necesita para evitar fugas de memoria.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBmcmVlKHZvaWQqIHB0cik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void free(void* ptr);</pre></div><div class='content'><ul>
+<li><code>ptr</code>: Un puntero al bloque de memoria que se desea liberar.</li>
+</ul>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>El ejemplo anterior ya incluye el uso de <code>free</code>. Aquí hay un desglose más detallado:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KCmludCBtYWluKCkgewogICAgaW50ICpwdHI7CiAgICBpbnQgbiA9IDU7CgogICAgLy8gQXNpZ25hY2nDs24gZGUgbWVtb3JpYQogICAgcHRyID0gKGludCopbWFsbG9jKG4gKiBzaXplb2YoaW50KSk7CgogICAgaWYgKHB0ciA9PSBOVUxMKSB7CiAgICAgICAgcHJpbnRmKCJFcnJvcjogTm8gc2UgcHVkbyBhc2lnbmFyIG1lbW9yaWEuXG4iKTsKICAgICAgICBleGl0KDEpOwogICAgfQoKICAgIC8vIFVzbyBkZSBsYSBtZW1vcmlhIGFzaWduYWRhCiAgICBmb3IgKGludCBpID0gMDsgaSA8IG47ICsraSkgewogICAgICAgIHB0cltpXSA9IGkgKyAxOwogICAgfQoKICAgIC8vIExpYmVyYWNpw7NuIGRlIG1lbW9yaWEKICAgIGZyZWUocHRyKTsKCiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int *ptr;
+    int n = 5;
+
+    // Asignaci&oacute;n de memoria
+    ptr = (int*)malloc(n * sizeof(int));
+
+    if (ptr == NULL) {
+        printf(&quot;Error: No se pudo asignar memoria.\n&quot;);
+        exit(1);
+    }
+
+    // Uso de la memoria asignada
+    for (int i = 0; i &lt; n; ++i) {
+        ptr[i] = i + 1;
+    }
+
+    // Liberaci&oacute;n de memoria
+    free(ptr);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Asignación de Memoria</strong>:</p>
+<ul>
+<li><code>ptr = (int*)malloc(n * sizeof(int));</code>: Asigna memoria para <code>n</code> enteros.</li>
+</ul>
+</li>
+<li>
+<p><strong>Uso de la Memoria</strong>:</p>
+<ul>
+<li>Un bucle <code>for</code> inicializa los valores en la memoria asignada.</li>
+</ul>
+</li>
+<li>
+<p><strong>Liberación de Memoria</strong>:</p>
+<ul>
+<li><code>free(ptr);</code>: Libera la memoria asignada.</li>
+</ul>
+</li>
+</ol>
+</div><h1>3. Errores Comunes y Consejos</h1>
+<div class='content'></div><h2>Errores Comunes</h2>
+<div class='content'><ol>
+<li>
+<p><strong>No Verificar la Asignación de Memoria</strong>:</p>
+<ul>
+<li>No verificar si <code>malloc</code> devolvió <code>NULL</code> puede llevar a errores de segmentación.</li>
+</ul>
+</li>
+<li>
+<p><strong>Doble Liberación de Memoria</strong>:</p>
+<ul>
+<li>Llamar a <code>free</code> más de una vez en el mismo puntero puede causar comportamiento indefinido.</li>
+</ul>
+</li>
+<li>
+<p><strong>Uso de Memoria Después de Liberarla</strong>:</p>
+<ul>
+<li>Intentar acceder a la memoria después de haberla liberado puede causar errores de segmentación.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Consejos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Inicializar Punteros a <code>NULL</code></strong>:</p>
+<ul>
+<li>Inicializar punteros a <code>NULL</code> y verificar antes de liberar puede prevenir errores de doble liberación.</li>
+</ul>
+</li>
+<li>
+<p><strong>Documentar la Gestión de Memoria</strong>:</p>
+<ul>
+<li>Mantener un registro claro de cuándo y dónde se asigna y libera memoria ayuda a evitar fugas de memoria.</li>
+</ul>
+</li>
+</ol>
+</div><h1>4. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Escribe un programa en C que:</p>
+<ol>
+<li>Asigne memoria para un arreglo de <code>n</code> enteros.</li>
+<li>Inicialice el arreglo con los primeros <code>n</code> números pares.</li>
+<li>Imprima los valores del arreglo.</li>
+<li>Libere la memoria asignada.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxzdGRsaWIuaD4KCmludCBtYWluKCkgewogICAgaW50ICphcnI7CiAgICBpbnQgbjsKCiAgICAvLyBTb2xpY2l0YXIgZWwgbsO6bWVybyBkZSBlbGVtZW50b3MKICAgIHByaW50ZigiSW5ncmVzZSBlbCBuw7ptZXJvIGRlIGVsZW1lbnRvczogIik7CiAgICBzY2FuZigiJWQiLCAmbik7CgogICAgLy8gQXNpZ25hciBtZW1vcmlhIHBhcmEgbiBlbnRlcm9zCiAgICBhcnIgPSAoaW50KiltYWxsb2MobiAqIHNpemVvZihpbnQpKTsKCiAgICAvLyBWZXJpZmljYXIgc2kgbGEgbWVtb3JpYSBoYSBzaWRvIGFzaWduYWRhIGNvbiDDqXhpdG8KICAgIGlmIChhcnIgPT0gTlVMTCkgewogICAgICAgIHByaW50ZigiRXJyb3I6IE5vIHNlIHB1ZG8gYXNpZ25hciBtZW1vcmlhLlxuIik7CiAgICAgICAgZXhpdCgxKTsKICAgIH0KCiAgICAvLyBJbmljaWFsaXphciBlbCBhcnJlZ2xvIGNvbiBsb3MgcHJpbWVyb3MgbiBuw7ptZXJvcyBwYXJlcwogICAgZm9yIChpbnQgaSA9IDA7IGkgPCBuOyArK2kpIHsKICAgICAgICBhcnJbaV0gPSAyICogaTsKICAgIH0KCiAgICAvLyBJbXByaW1pciBsb3MgdmFsb3JlcyBkZWwgYXJyZWdsbwogICAgcHJpbnRmKCJMb3MgcHJpbWVyb3MgJWQgbsO6bWVyb3MgcGFyZXMgc29uOiAiLCBuKTsKICAgIGZvciAoaW50IGkgPSAwOyBpIDwgbjsgKytpKSB7CiAgICAgICAgcHJpbnRmKCIlZCAiLCBhcnJbaV0pOwogICAgfQogICAgcHJpbnRmKCJcbiIpOwoKICAgIC8vIExpYmVyYXIgbGEgbWVtb3JpYSBhc2lnbmFkYQogICAgZnJlZShhcnIpOwoKICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+
+int main() {
+    int *arr;
+    int n;
+
+    // Solicitar el n&uacute;mero de elementos
+    printf(&quot;Ingrese el n&uacute;mero de elementos: &quot;);
+    scanf(&quot;%d&quot;, &amp;n);
+
+    // Asignar memoria para n enteros
+    arr = (int*)malloc(n * sizeof(int));
+
+    // Verificar si la memoria ha sido asignada con &eacute;xito
+    if (arr == NULL) {
+        printf(&quot;Error: No se pudo asignar memoria.\n&quot;);
+        exit(1);
+    }
+
+    // Inicializar el arreglo con los primeros n n&uacute;meros pares
+    for (int i = 0; i &lt; n; ++i) {
+        arr[i] = 2 * i;
+    }
+
+    // Imprimir los valores del arreglo
+    printf(&quot;Los primeros %d n&uacute;meros pares son: &quot;, n);
+    for (int i = 0; i &lt; n; ++i) {
+        printf(&quot;%d &quot;, arr[i]);
+    }
+    printf(&quot;\n&quot;);
+
+    // Liberar la memoria asignada
+    free(arr);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Entrada del Usuario</strong>:</p>
+<ul>
+<li><code>scanf(&quot;%d&quot;, &amp;n);</code>: Solicita al usuario el número de elementos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Asignación de Memoria</strong>:</p>
+<ul>
+<li><code>arr = (int*)malloc(n * sizeof(int));</code>: Asigna memoria para <code>n</code> enteros.</li>
+</ul>
+</li>
+<li>
+<p><strong>Inicialización del Arreglo</strong>:</p>
+<ul>
+<li>Un bucle <code>for</code> inicializa el arreglo con los primeros <code>n</code> números pares.</li>
+</ul>
+</li>
+<li>
+<p><strong>Impresión del Arreglo</strong>:</p>
+<ul>
+<li>Otro bucle <code>for</code> imprime los valores del arreglo.</li>
+</ul>
+</li>
+<li>
+<p><strong>Liberación de Memoria</strong>:</p>
+<ul>
+<li><code>free(arr);</code>: Libera la memoria asignada.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido cómo utilizar <code>malloc</code> para asignar memoria dinámicamente y <code>free</code> para liberar esa memoria cuando ya no se necesita. Estos conceptos son fundamentales para la gestión eficiente de recursos en C. Asegúrate de practicar estos conceptos con diferentes ejemplos y ejercicios para consolidar tu comprensión.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-memory-management-functions' title="Funciones de Gestión de Memoria">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-calloc-and-realloc' title="Calloc y Realloc">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

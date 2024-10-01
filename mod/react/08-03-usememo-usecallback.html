@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hooks useMemo y useCallback</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/react/08-03-usememo-usecallback" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/react/08-03-usememo-usecallback" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/react/08-03-usememo-usecallback" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/react/08-03-usememo-usecallback" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/react/08-03-usememo-usecallback" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-memoization-react-memo' title="Memorización con React.memo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Hooks useMemo y useCallback</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-code-splitting-lazy-loading' title="División de Código y Carga Perezosa">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos dos hooks avanzados de React: <code>useMemo</code> y <code>useCallback</code>. Ambos hooks son utilizados para optimizar el rendimiento de las aplicaciones de React al evitar cálculos innecesarios y la recreación de funciones.</p>
+</div><h1>1. Introducción a useMemo</h1>
+<div class='content'><p>El hook <code>useMemo</code> se utiliza para memorizar valores calculados. Esto es útil cuando tienes cálculos costosos que no deberían ejecutarse en cada renderizado a menos que sus dependencias hayan cambiado.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbWVtb2l6ZWRWYWx1ZSA9IHVzZU1lbW8oKCkgPT4gY29tcHV0ZUV4cGVuc2l2ZVZhbHVlKGEsIGIpLCBbYSwgYl0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const memoizedValue = useMemo(() =&gt; computeExpensiveValue(a, b), [a, b]);</pre></div><div class='content'><ul>
+<li><code>computeExpensiveValue</code> es una función que realiza un cálculo costoso.</li>
+<li><code>[a, b]</code> es la lista de dependencias. <code>useMemo</code> solo volverá a calcular el valor si alguna de estas dependencias cambia.</li>
+</ul>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos una función que realiza un cálculo costoso:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gY29tcHV0ZUV4cGVuc2l2ZVZhbHVlKGEsIGIpIHsKICBjb25zb2xlLmxvZygnQ2FsY3VsYW5kbyB2YWxvci4uLicpOwogIHJldHVybiBhICsgYjsKfQoKZnVuY3Rpb24gTXlDb21wb25lbnQoeyBhLCBiIH0pIHsKICBjb25zdCBtZW1vaXplZFZhbHVlID0gdXNlTWVtbygoKSA9PiBjb21wdXRlRXhwZW5zaXZlVmFsdWUoYSwgYiksIFthLCBiXSk7CgogIHJldHVybiAoCiAgICA8ZGl2PgogICAgICA8cD5WYWxvciBjYWxjdWxhZG86IHttZW1vaXplZFZhbHVlfTwvcD4KICAgIDwvZGl2PgogICk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function computeExpensiveValue(a, b) {
+  console.log('Calculando valor...');
+  return a + b;
+}
+
+function MyComponent({ a, b }) {
+  const memoizedValue = useMemo(() =&gt; computeExpensiveValue(a, b), [a, b]);
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;Valor calculado: {memoizedValue}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}</pre></div><div class='content'><p>En este ejemplo, <code>computeExpensiveValue</code> solo se ejecutará cuando <code>a</code> o <code>b</code> cambien, optimizando así el rendimiento.</p>
+</div><h1>2. Introducción a useCallback</h1>
+<div class='content'><p>El hook <code>useCallback</code> se utiliza para memorizar funciones. Esto es útil cuando pasas funciones a componentes hijos que dependen de props o state, evitando que se creen nuevas instancias de la función en cada renderizado.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbWVtb2l6ZWRDYWxsYmFjayA9IHVzZUNhbGxiYWNrKCgpID0+IHsKICBkb1NvbWV0aGluZyhhLCBiKTsKfSwgW2EsIGJdKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const memoizedCallback = useCallback(() =&gt; {
+  doSomething(a, b);
+}, [a, b]);</pre></div><div class='content'><ul>
+<li><code>doSomething</code> es la función que deseas memorizar.</li>
+<li><code>[a, b]</code> es la lista de dependencias. <code>useCallback</code> solo volverá a crear la función si alguna de estas dependencias cambia.</li>
+</ul>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos un componente que pasa una función a un componente hijo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gTXlDb21wb25lbnQoeyBhLCBiIH0pIHsKICBjb25zdCBoYW5kbGVDbGljayA9IHVzZUNhbGxiYWNrKCgpID0+IHsKICAgIGNvbnNvbGUubG9nKCdDbGlja2VkIScsIGEsIGIpOwogIH0sIFthLCBiXSk7CgogIHJldHVybiAoCiAgICA8ZGl2PgogICAgICA8Q2hpbGRDb21wb25lbnQgb25DbGljaz17aGFuZGxlQ2xpY2t9IC8+CiAgICA8L2Rpdj4KICApOwp9CgpmdW5jdGlvbiBDaGlsZENvbXBvbmVudCh7IG9uQ2xpY2sgfSkgewogIHJldHVybiA8YnV0dG9uIG9uQ2xpY2s9e29uQ2xpY2t9PkNsaWNrIG1lPC9idXR0b24+Owp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function MyComponent({ a, b }) {
+  const handleClick = useCallback(() =&gt; {
+    console.log('Clicked!', a, b);
+  }, [a, b]);
+
+  return (
+    &lt;div&gt;
+      &lt;ChildComponent onClick={handleClick} /&gt;
+    &lt;/div&gt;
+  );
+}
+
+function ChildComponent({ onClick }) {
+  return &lt;button onClick={onClick}&gt;Click me&lt;/button&gt;;
+}</pre></div><div class='content'><p>En este ejemplo, <code>handleClick</code> solo se recreará cuando <code>a</code> o <code>b</code> cambien, evitando renderizados innecesarios del <code>ChildComponent</code>.</p>
+</div><h1>3. Comparación entre useMemo y useCallback</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Hook</th>
+<th>Propósito</th>
+<th>Retorno</th>
+<th>Uso Común</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>useMemo</code></td>
+<td>Memorizar valores calculados</td>
+<td>Valor memoizado</td>
+<td>Cálculos costosos, valores derivados</td>
+</tr>
+<tr>
+<td><code>useCallback</code></td>
+<td>Memorizar funciones</td>
+<td>Función memoizada</td>
+<td>Pasar funciones a componentes hijos, handlers</td>
+</tr>
+</tbody>
+</table>
+</div><h1>4. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un componente que tenga un input y un botón. El botón debe mostrar el número de veces que ha sido clicado. Usa <code>useMemo</code> para memorizar el valor calculado de la longitud del texto del input y <code>useCallback</code> para memorizar la función que maneja el clic del botón.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VNZW1vLCB1c2VDYWxsYmFjayB9IGZyb20gJ3JlYWN0JzsKCmZ1bmN0aW9uIEFwcCgpIHsKICBjb25zdCBbdGV4dCwgc2V0VGV4dF0gPSB1c2VTdGF0ZSgnJyk7CiAgY29uc3QgW2NvdW50LCBzZXRDb3VudF0gPSB1c2VTdGF0ZSgwKTsKCiAgY29uc3QgdGV4dExlbmd0aCA9IHVzZU1lbW8oKCkgPT4gewogICAgY29uc29sZS5sb2coJ0NhbGN1bGFuZG8gbG9uZ2l0dWQgZGVsIHRleHRvLi4uJyk7CiAgICByZXR1cm4gdGV4dC5sZW5ndGg7CiAgfSwgW3RleHRdKTsKCiAgY29uc3QgaGFuZGxlQ2xpY2sgPSB1c2VDYWxsYmFjaygoKSA9PiB7CiAgICBzZXRDb3VudChjb3VudCArIDEpOwogIH0sIFtjb3VudF0pOwoKICByZXR1cm4gKAogICAgPGRpdj4KICAgICAgPGlucHV0CiAgICAgICAgdHlwZT0idGV4dCIKICAgICAgICB2YWx1ZT17dGV4dH0KICAgICAgICBvbkNoYW5nZT17KGUpID0+IHNldFRleHQoZS50YXJnZXQudmFsdWUpfQogICAgICAvPgogICAgICA8cD5Mb25naXR1ZCBkZWwgdGV4dG86IHt0ZXh0TGVuZ3RofTwvcD4KICAgICAgPGJ1dHRvbiBvbkNsaWNrPXtoYW5kbGVDbGlja30+Q2xpY2tlYWRvIHtjb3VudH0gdmVjZXM8L2J1dHRvbj4KICAgIDwvZGl2PgogICk7Cn0KCmV4cG9ydCBkZWZhdWx0IEFwcDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState, useMemo, useCallback } from 'react';
+
+function App() {
+  const [text, setText] = useState('');
+  const [count, setCount] = useState(0);
+
+  const textLength = useMemo(() =&gt; {
+    console.log('Calculando longitud del texto...');
+    return text.length;
+  }, [text]);
+
+  const handleClick = useCallback(() =&gt; {
+    setCount(count + 1);
+  }, [count]);
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type=&quot;text&quot;
+        value={text}
+        onChange={(e) =&gt; setText(e.target.value)}
+      /&gt;
+      &lt;p&gt;Longitud del texto: {textLength}&lt;/p&gt;
+      &lt;button onClick={handleClick}&gt;Clickeado {count} veces&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+export default App;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>textLength</code> se memoriza usando <code>useMemo</code> y solo se recalcula cuando <code>text</code> cambia.</li>
+<li><code>handleClick</code> se memoriza usando <code>useCallback</code> y solo se recrea cuando <code>count</code> cambia.</li>
+</ul>
+</div><h1>5. Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido cómo <code>useMemo</code> y <code>useCallback</code> pueden ser utilizados para optimizar el rendimiento de nuestras aplicaciones de React. Estos hooks son especialmente útiles cuando se trabaja con cálculos costosos o cuando se pasan funciones a componentes hijos. Asegúrate de usarlos adecuadamente para evitar renderizados innecesarios y mejorar la eficiencia de tu aplicación.</p>
+<p>En el próximo tema, exploraremos técnicas adicionales de optimización del rendimiento en React.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-memoization-react-memo' title="Memorización con React.memo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-code-splitting-lazy-loading' title="División de Código y Carga Perezosa">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

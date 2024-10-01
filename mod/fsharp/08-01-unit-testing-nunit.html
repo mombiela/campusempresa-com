@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas Unitarias con NUnit</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fsharp/08-01-unit-testing-nunit" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fsharp/08-01-unit-testing-nunit" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fsharp/08-01-unit-testing-nunit" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/fsharp/08-01-unit-testing-nunit" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/fsharp/08-01-unit-testing-nunit" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-using-linq' title="Usando LINQ en F#">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Pruebas Unitarias con NUnit</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-property-based-testing-fscheck' title="Pruebas Basadas en Propiedades con FsCheck">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las pruebas unitarias son una parte esencial del desarrollo de software, ya que permiten verificar que las unidades individuales de código (como funciones y métodos) funcionan correctamente. NUnit es una de las bibliotecas más populares para realizar pruebas unitarias en .NET, y es totalmente compatible con F#. En esta sección, aprenderás cómo configurar y utilizar NUnit para escribir y ejecutar pruebas unitarias en F#.</p>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'><p>Antes de comenzar a escribir pruebas unitarias, necesitas configurar tu entorno de desarrollo para utilizar NUnit.</p>
+</div><h2>Instalación de NUnit</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instala NUnit y NUnit3TestAdapter</strong>:</p>
+<ul>
+<li>
+<p>Abre tu proyecto en Visual Studio o tu editor de código preferido.</p>
+</li>
+<li>
+<p>Abre la consola del administrador de paquetes (Package Manager Console) y ejecuta los siguientes comandos:</p>
+<pre><code class="language-shell">Install-Package NUnit
+Install-Package NUnit3TestAdapter
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Configura tu proyecto de pruebas</strong>:</p>
+<ul>
+<li>Crea un nuevo proyecto de pruebas en tu solución. En Visual Studio, selecciona <code>Archivo &gt; Nuevo &gt; Proyecto</code> y elige <code>Proyecto de Pruebas Unitarias (.NET Core)</code>.</li>
+<li>Asegúrate de que tu proyecto de pruebas tenga referencias a NUnit y NUnit3TestAdapter.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Escribiendo Pruebas Unitarias</h1>
+<div class='content'></div><h2>Estructura Básica de una Prueba Unitaria</h2>
+<div class='content'><p>Una prueba unitaria en NUnit generalmente sigue esta estructura:</p>
+<ol>
+<li><strong>Atributos de Prueba</strong>: Indican que un método es una prueba.</li>
+<li><strong>Método de Prueba</strong>: Contiene el código que se va a probar y las aserciones para verificar los resultados.</li>
+</ol>
+</div><h2>Ejemplo de Prueba Unitaria</h2>
+<div class='content'><p>Vamos a escribir una prueba unitaria simple para una función que suma dos números.</p>
+<h4>Código a Probar</h4>
+<p>Primero, crea una función en tu proyecto principal que necesite ser probada:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlIE1hdGhGdW5jdGlvbnMgPQogICAgbGV0IGFkZCB4IHkgPSB4ICsgeQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module MathFunctions =
+    let add x y = x + y</pre></div><div class='content'><h4>Prueba Unitaria</h4>
+<p>Ahora, crea una prueba unitaria para esta función en tu proyecto de pruebas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBOVW5pdC5GcmFtZXdvcmsKb3BlbiBNYXRoRnVuY3Rpb25zCgpbPFRlc3RGaXh0dXJlPl0KdHlwZSBNYXRoRnVuY3Rpb25zVGVzdHMoKSA9CgogICAgWzxUZXN0Pl0KICAgIG1lbWJlciB0aGlzLmBgQWRkIHNob3VsZCByZXR1cm4gdGhlIHN1bSBvZiB0d28gbnVtYmVyc2BgKCkgPQogICAgICAgIGxldCByZXN1bHQgPSBhZGQgMiAzCiAgICAgICAgQXNzZXJ0LkFyZUVxdWFsKDUsIHJlc3VsdCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open NUnit.Framework
+open MathFunctions
+
+[&lt;TestFixture&gt;]
+type MathFunctionsTests() =
+
+    [&lt;Test&gt;]
+    member this.``Add should return the sum of two numbers``() =
+        let result = add 2 3
+        Assert.AreEqual(5, result)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>[&lt;TestFixture&gt;]</code>: Indica que la clase contiene pruebas unitarias.</li>
+<li><code>[&lt;Test&gt;]</code>: Marca el método como una prueba unitaria.</li>
+<li><code>Assert.AreEqual(expected, actual)</code>: Verifica que el resultado de la función <code>add</code> sea igual a 5.</li>
+</ul>
+</div><h1>Ejecutando Pruebas Unitarias</h1>
+<div class='content'></div><h2>Usando Visual Studio</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Explorador de Pruebas</strong>:</p>
+<ul>
+<li>Abre el <code>Explorador de Pruebas</code> (<code>Test &gt; Windows &gt; Test Explorer</code>).</li>
+<li>Visual Studio detectará automáticamente las pruebas y las mostrará en el Explorador de Pruebas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Ejecutar Pruebas</strong>:</p>
+<ul>
+<li>Selecciona las pruebas que deseas ejecutar y haz clic en <code>Run All</code> o <code>Run Selected</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Usando la Línea de Comandos</h2>
+<div class='content'><p>Si prefieres usar la línea de comandos, puedes ejecutar las pruebas con <code>dotnet test</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG90bmV0IHRlc3Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dotnet test</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Prueba de Multiplicación</h2>
+<div class='content'><p>Escribe una función <code>multiply</code> que multiplique dos números y una prueba unitaria para verificar su funcionamiento.</p>
+<h4>Solución</h4>
+<p><strong>Código a Probar</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlIE1hdGhGdW5jdGlvbnMgPQogICAgbGV0IG11bHRpcGx5IHggeSA9IHggKiB5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module MathFunctions =
+    let multiply x y = x * y</pre></div><div class='content'><p><strong>Prueba Unitaria</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBOVW5pdC5GcmFtZXdvcmsKb3BlbiBNYXRoRnVuY3Rpb25zCgpbPFRlc3RGaXh0dXJlPl0KdHlwZSBNYXRoRnVuY3Rpb25zVGVzdHMoKSA9CgogICAgWzxUZXN0Pl0KICAgIG1lbWJlciB0aGlzLmBgTXVsdGlwbHkgc2hvdWxkIHJldHVybiB0aGUgcHJvZHVjdCBvZiB0d28gbnVtYmVyc2BgKCkgPQogICAgICAgIGxldCByZXN1bHQgPSBtdWx0aXBseSAyIDMKICAgICAgICBBc3NlcnQuQXJlRXF1YWwoNiwgcmVzdWx0KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open NUnit.Framework
+open MathFunctions
+
+[&lt;TestFixture&gt;]
+type MathFunctionsTests() =
+
+    [&lt;Test&gt;]
+    member this.``Multiply should return the product of two numbers``() =
+        let result = multiply 2 3
+        Assert.AreEqual(6, result)</pre></div><div class='content'></div><h2>Ejercicio 2: Prueba de División</h2>
+<div class='content'><p>Escribe una función <code>divide</code> que divida dos números y una prueba unitaria para verificar su funcionamiento. Asegúrate de manejar la división por cero.</p>
+<h4>Solución</h4>
+<p><strong>Código a Probar</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlIE1hdGhGdW5jdGlvbnMgPQogICAgbGV0IGRpdmlkZSB4IHkgPQogICAgICAgIGlmIHkgPSAwIHRoZW4KICAgICAgICAgICAgZmFpbHdpdGggIkNhbm5vdCBkaXZpZGUgYnkgemVybyIKICAgICAgICBlbHNlCiAgICAgICAgICAgIHggLyB5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module MathFunctions =
+    let divide x y =
+        if y = 0 then
+            failwith &quot;Cannot divide by zero&quot;
+        else
+            x / y</pre></div><div class='content'><p><strong>Prueba Unitaria</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBOVW5pdC5GcmFtZXdvcmsKb3BlbiBNYXRoRnVuY3Rpb25zCgpbPFRlc3RGaXh0dXJlPl0KdHlwZSBNYXRoRnVuY3Rpb25zVGVzdHMoKSA9CgogICAgWzxUZXN0Pl0KICAgIG1lbWJlciB0aGlzLmBgRGl2aWRlIHNob3VsZCByZXR1cm4gdGhlIHF1b3RpZW50IG9mIHR3byBudW1iZXJzYGAoKSA9CiAgICAgICAgbGV0IHJlc3VsdCA9IGRpdmlkZSA2IDMKICAgICAgICBBc3NlcnQuQXJlRXF1YWwoMiwgcmVzdWx0KQoKICAgIFs8VGVzdD5dCiAgICBtZW1iZXIgdGhpcy5gYERpdmlkZSBzaG91bGQgdGhyb3cgYW4gZXhjZXB0aW9uIHdoZW4gZGl2aWRpbmcgYnkgemVyb2BgKCkgPQogICAgICAgIEFzc2VydC5UaHJvd3M8U3lzdGVtLkV4Y2VwdGlvbj4oZnVuICgpIC0+IGRpdmlkZSA2IDAgfD4gaWdub3JlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open NUnit.Framework
+open MathFunctions
+
+[&lt;TestFixture&gt;]
+type MathFunctionsTests() =
+
+    [&lt;Test&gt;]
+    member this.``Divide should return the quotient of two numbers``() =
+        let result = divide 6 3
+        Assert.AreEqual(2, result)
+
+    [&lt;Test&gt;]
+    member this.``Divide should throw an exception when dividing by zero``() =
+        Assert.Throws&lt;System.Exception&gt;(fun () -&gt; divide 6 0 |&gt; ignore)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo configurar NUnit para realizar pruebas unitarias en F#, cómo escribir y ejecutar pruebas unitarias básicas, y cómo manejar excepciones en tus pruebas. Las pruebas unitarias son una herramienta poderosa para asegurar la calidad y la fiabilidad de tu código. En la siguiente sección, exploraremos pruebas basadas en propiedades con FsCheck para llevar tus pruebas al siguiente nivel.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-using-linq' title="Usando LINQ en F#">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-property-based-testing-fscheck' title="Pruebas Basadas en Propiedades con FsCheck">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

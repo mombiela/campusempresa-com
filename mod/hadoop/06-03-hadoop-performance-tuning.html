@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuste de Rendimiento de Hadoop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/06-03-hadoop-performance-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/06-03-hadoop-performance-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/06-03-hadoop-performance-tuning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/hadoop/06-03-hadoop-performance-tuning" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/06-03-hadoop-performance-tuning" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-hadoop-cluster-management' title="Gestión de Clústeres Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ajuste de Rendimiento de Hadoop</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-hadoop-data-serialization' title="Serialización de Datos en Hadoop">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El ajuste de rendimiento en Hadoop es crucial para garantizar que las aplicaciones y los clústeres funcionen de manera eficiente y efectiva. En este módulo, exploraremos diversas técnicas y estrategias para optimizar el rendimiento de Hadoop.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-al-ajuste-de-rendimiento">Introducción al Ajuste de Rendimiento</a></li>
+<li><a href="#optimización-de-hdfs">Optimización de HDFS</a></li>
+<li><a href="#optimización-de-mapreduce">Optimización de MapReduce</a></li>
+<li><a href="#ajuste-de-parámetros-de-yarn">Ajuste de Parámetros de YARN</a></li>
+<li><a href="#monitoreo-y-herramientas-de-diagnóstico">Monitoreo y Herramientas de Diagnóstico</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción al Ajuste de Rendimiento</h1>
+<div class='content'><p>El ajuste de rendimiento en Hadoop implica la configuración y optimización de varios componentes del ecosistema para mejorar la eficiencia y reducir los tiempos de procesamiento. Los principales objetivos son:</p>
+<ul>
+<li>Maximizar el uso de recursos (CPU, memoria, disco, red).</li>
+<li>Minimizar los tiempos de espera y latencia.</li>
+<li>Asegurar la escalabilidad y la capacidad de manejar grandes volúmenes de datos.</li>
+</ul>
+</div><h1>Optimización de HDFS</h1>
+<div class='content'></div><h2>1. Configuración de Bloques</h2>
+<div class='content'><ul>
+<li><strong>Tamaño de Bloque</strong>: El tamaño de bloque predeterminado en HDFS es de 128 MB. Ajustar el tamaño de bloque puede mejorar el rendimiento dependiendo del tamaño de los archivos y la carga de trabajo.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;dfs.blocksize&lt;/name&gt;
+  &lt;value&gt;134217728&lt;/value&gt; &lt;!-- 128 MB --&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Replicación de Datos</h2>
+<div class='content'><ul>
+<li><strong>Factor de Replicación</strong>: El factor de replicación predeterminado es 3. Ajustar este valor puede afectar tanto la tolerancia a fallos como el rendimiento.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;dfs.replication&lt;/name&gt;
+  &lt;value&gt;3&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+</ul>
+</div><h2>3. Balanceo de Carga</h2>
+<div class='content'><ul>
+<li><strong>Rebalanceo de Datos</strong>: Utilizar el comando <code>hdfs balancer</code> para redistribuir los datos de manera uniforme entre los nodos.
+<pre><code class="language-bash">hdfs balancer -threshold 10
+</code></pre>
+</li>
+</ul>
+</div><h1>Optimización de MapReduce</h1>
+<div class='content'></div><h2>1. Configuración de Parámetros</h2>
+<div class='content'><ul>
+<li><strong>Número de Mappers y Reducers</strong>: Ajustar el número de mappers y reducers puede mejorar el rendimiento.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;mapreduce.job.maps&lt;/name&gt;
+  &lt;value&gt;10&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.job.reduces&lt;/name&gt;
+  &lt;value&gt;5&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Compresión de Datos</h2>
+<div class='content'><ul>
+<li><strong>Compresión de Salida</strong>: Utilizar compresión para reducir el tamaño de los datos y mejorar la velocidad de procesamiento.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;mapreduce.output.fileoutputformat.compress&lt;/name&gt;
+  &lt;value&gt;true&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.output.fileoutputformat.compress.codec&lt;/name&gt;
+  &lt;value&gt;org.apache.hadoop.io.compress.GzipCodec&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+</ul>
+</div><h2>3. Configuración de Memoria</h2>
+<div class='content'><ul>
+<li><strong>Memoria para Mappers y Reducers</strong>: Ajustar la cantidad de memoria asignada a los mappers y reducers.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;mapreduce.map.memory.mb&lt;/name&gt;
+  &lt;value&gt;2048&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;mapreduce.reduce.memory.mb&lt;/name&gt;
+  &lt;value&gt;4096&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+</ul>
+</div><h1>Ajuste de Parámetros de YARN</h1>
+<div class='content'></div><h2>1. Configuración de Recursos</h2>
+<div class='content'><ul>
+<li><strong>Memoria y CPU para Contenedores</strong>: Ajustar la cantidad de memoria y CPU asignada a los contenedores de YARN.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;yarn.nodemanager.resource.memory-mb&lt;/name&gt;
+  &lt;value&gt;8192&lt;/value&gt;
+&lt;/property&gt;
+&lt;property&gt;
+  &lt;name&gt;yarn.nodemanager.resource.cpu-vcores&lt;/name&gt;
+  &lt;value&gt;4&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+</ul>
+</div><h2>2. Configuración de Planificación</h2>
+<div class='content'><ul>
+<li><strong>Planificador de Recursos</strong>: Configurar el planificador de recursos (FIFO, Fair Scheduler, Capacity Scheduler) para optimizar la asignación de recursos.
+<pre><code class="language-xml">&lt;property&gt;
+  &lt;name&gt;yarn.scheduler.capacity.maximum-am-resource-percent&lt;/name&gt;
+  &lt;value&gt;0.2&lt;/value&gt;
+&lt;/property&gt;
+</code></pre>
+</li>
+</ul>
+</div><h1>Monitoreo y Herramientas de Diagnóstico</h1>
+<div class='content'></div><h2>1. Herramientas de Monitoreo</h2>
+<div class='content'><ul>
+<li><strong>Ambari</strong>: Herramienta de gestión y monitoreo de clústeres Hadoop.</li>
+<li><strong>Ganglia</strong>: Sistema de monitoreo distribuido para sistemas de alto rendimiento.</li>
+<li><strong>Nagios</strong>: Herramienta de monitoreo de sistemas y redes.</li>
+</ul>
+</div><h2>2. Análisis de Logs</h2>
+<div class='content'><ul>
+<li><strong>Logs de YARN</strong>: Revisar los logs de YARN para identificar cuellos de botella y problemas de rendimiento.
+<pre><code class="language-bash">yarn logs -applicationId &lt;application_id&gt;
+</code></pre>
+</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Ajuste de Tamaño de Bloque en HDFS</h2>
+<div class='content'><ol>
+<li>Modifica el tamaño de bloque en HDFS a 256 MB.</li>
+<li>Carga un archivo grande en HDFS y verifica el número de bloques creados.</li>
+</ol>
+</div><h2>Ejercicio 2: Configuración de Parámetros de MapReduce</h2>
+<div class='content'><ol>
+<li>Ajusta el número de mappers y reducers para un trabajo MapReduce específico.</li>
+<li>Ejecuta el trabajo y compara los tiempos de ejecución antes y después del ajuste.</li>
+</ol>
+</div><h2>Ejercicio 3: Monitoreo con Ambari</h2>
+<div class='content'><ol>
+<li>Instala y configura Ambari en tu clúster Hadoop.</li>
+<li>Monitorea el uso de recursos y ajusta los parámetros de YARN según sea necesario.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El ajuste de rendimiento en Hadoop es un proceso continuo que requiere monitoreo constante y ajustes basados en la carga de trabajo y los recursos disponibles. Al optimizar HDFS, MapReduce y YARN, puedes mejorar significativamente la eficiencia y el rendimiento de tus aplicaciones Hadoop. Asegúrate de utilizar herramientas de monitoreo y análisis de logs para identificar y resolver problemas de rendimiento de manera proactiva.</p>
+<hr />
+<p>Con esto concluye el tema de ajuste de rendimiento en Hadoop. En el siguiente módulo, exploraremos las aplicaciones del mundo real y estudios de caso para entender cómo se implementa Hadoop en diferentes escenarios.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-hadoop-cluster-management' title="Gestión de Clústeres Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-hadoop-data-serialization' title="Serialización de Datos en Hadoop">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

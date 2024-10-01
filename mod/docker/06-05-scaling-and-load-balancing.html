@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Escalado y Balanceo de Carga</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/06-05-scaling-and-load-balancing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/06-05-scaling-and-load-balancing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/06-05-scaling-and-load-balancing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/docker/06-05-scaling-and-load-balancing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/06-05-scaling-and-load-balancing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-deploying-docker-containers-in-kubernetes' title="Desplegando Contenedores Docker en Kubernetes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Escalado y Balanceo de Carga</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-docker-machine' title="Docker Machine">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, aprenderemos sobre el escalado y el balanceo de carga en Docker. Estos conceptos son cruciales para garantizar que nuestras aplicaciones puedan manejar un aumento en la carga de trabajo y distribuir el tráfico de manera eficiente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Escalado</h2>
+<div class='content'><p>El escalado se refiere al proceso de aumentar o disminuir la capacidad de una aplicación. Hay dos tipos principales de escalado:</p>
+<ol>
+<li><strong>Escalado Vertical</strong>: Aumentar los recursos (CPU, memoria) de un solo contenedor.</li>
+<li><strong>Escalado Horizontal</strong>: Aumentar el número de instancias de un contenedor.</li>
+</ol>
+</div><h2>Balanceo de Carga</h2>
+<div class='content'><p>El balanceo de carga distribuye el tráfico de red entre varias instancias de una aplicación para asegurar que ninguna instancia se sobrecargue.</p>
+</div><h1>Escalado Horizontal con Docker</h1>
+<div class='content'></div><h2>Comandos Básicos</h2>
+<div class='content'><p>Para escalar una aplicación en Docker, utilizamos el comando <code>docker service scale</code>. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgY3JlYXRlIC0tbmFtZSB3ZWJhcHAgLS1yZXBsaWNhcyAxIC1wIDgwOjgwIG5naW54"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service create --name webapp --replicas 1 -p 80:80 nginx</pre></div><div class='content'><p>Este comando crea un servicio llamado <code>webapp</code> con una réplica. Para escalar este servicio a 3 réplicas, usamos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2Ugc2NhbGUgd2ViYXBwPTM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service scale webapp=3</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos una aplicación web simple que queremos escalar. Primero, creamos un archivo <code>docker-compose.yml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIHdlYjoKICAgIGltYWdlOiBuZ2lueAogICAgcG9ydHM6CiAgICAgIC0gIjgwOjgwIgogICAgZGVwbG95OgogICAgICByZXBsaWNhczogMQogICAgICByZXNvdXJjZXM6CiAgICAgICAgbGltaXRzOgogICAgICAgICAgY3B1czogIjAuNSIKICAgICAgICAgIG1lbW9yeTogIjUxMk0iCiAgICAgIHJlc3RhcnRfcG9saWN5OgogICAgICAgIGNvbmRpdGlvbjogb24tZmFpbHVyZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  web:
+    image: nginx
+    ports:
+      - &quot;80:80&quot;
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: &quot;0.5&quot;
+          memory: &quot;512M&quot;
+      restart_policy:
+        condition: on-failure</pre></div><div class='content'><p>Para escalar esta aplicación a 3 réplicas, ejecutamos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHN0YWNrIGRlcGxveSAtYyBkb2NrZXItY29tcG9zZS55bWwgd2ViYXBwCmRvY2tlciBzZXJ2aWNlIHNjYWxlIHdlYmFwcF93ZWI9Mw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker stack deploy -c docker-compose.yml webapp
+docker service scale webapp_web=3</pre></div><div class='content'></div><h1>Balanceo de Carga con Docker</h1>
+<div class='content'><p>Docker Swarm incluye un balanceador de carga interno que distribuye el tráfico entre las réplicas de un servicio.</p>
+</div><h2>Configuración de Balanceo de Carga</h2>
+<div class='content'><p>El balanceo de carga se configura automáticamente cuando se crean múltiples réplicas de un servicio. Docker Swarm se encarga de distribuir el tráfico entrante entre las réplicas.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Continuando con el ejemplo anterior, cuando escalamos el servicio <code>webapp_web</code> a 3 réplicas, Docker Swarm automáticamente balancea el tráfico entre estas réplicas.</p>
+<p>Podemos verificar el estado de las réplicas con:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyIHNlcnZpY2UgcHMgd2ViYXBwX3dlYg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker service ps webapp_web</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Escalado y Balanceo de Carga</h2>
+<div class='content'><ol>
+<li><strong>Crear un archivo <code>docker-compose.yml</code></strong> para una aplicación web simple utilizando Nginx.</li>
+<li><strong>Desplegar la aplicación</strong> utilizando Docker Swarm.</li>
+<li><strong>Escalar la aplicación</strong> a 5 réplicas.</li>
+<li><strong>Verificar el balanceo de carga</strong> accediendo a la aplicación desde un navegador y observando cómo se distribuye el tráfico.</li>
+</ol>
+<h4>Solución</h4>
+<ol>
+<li>
+<p>Crear el archivo <code>docker-compose.yml</code>:</p>
+<pre><code class="language-yaml">version: '3'
+services:
+  web:
+    image: nginx
+    ports:
+      - &quot;80:80&quot;
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: &quot;0.5&quot;
+          memory: &quot;512M&quot;
+      restart_policy:
+        condition: on-failure
+</code></pre>
+</li>
+<li>
+<p>Desplegar la aplicación:</p>
+<pre><code class="language-bash">docker stack deploy -c docker-compose.yml webapp
+</code></pre>
+</li>
+<li>
+<p>Escalar la aplicación a 5 réplicas:</p>
+<pre><code class="language-bash">docker service scale webapp_web=5
+</code></pre>
+</li>
+<li>
+<p>Verificar el balanceo de carga accediendo a <code>http://localhost</code> en un navegador y refrescando la página varias veces. Puedes usar herramientas como <code>curl</code> para observar cómo se distribuye el tráfico:</p>
+<pre><code class="language-bash">for i in {1..10}; do curl -s http://localhost | grep &quot;Welcome&quot;; done
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre el escalado y el balanceo de carga en Docker. Estos conceptos son esenciales para manejar aplicaciones en producción, asegurando que puedan escalar según la demanda y distribuir el tráfico de manera eficiente. En el siguiente módulo, profundizaremos en el ecosistema y las herramientas de Docker, explorando cómo Docker se integra con otras tecnologías y herramientas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-deploying-docker-containers-in-kubernetes' title="Desplegando Contenedores Docker en Kubernetes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-docker-machine' title="Docker Machine">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

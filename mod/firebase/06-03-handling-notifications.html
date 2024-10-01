@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de notificaciones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/firebase/06-03-handling-notifications" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/firebase/06-03-handling-notifications" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/firebase/06-03-handling-notifications" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/firebase/06-03-handling-notifications" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/firebase/06-03-handling-notifications" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-sending-notifications' title="Envío de notificaciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de notificaciones</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-advanced-messaging-features' title="Características avanzadas de mensajería">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo manejar las notificaciones en una aplicación utilizando Firebase Cloud Messaging (FCM). Veremos cómo recibir y mostrar notificaciones, así como cómo personalizarlas para mejorar la experiencia del usuario.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#recepción-de-notificaciones">Recepción de notificaciones</a></li>
+<li><a href="#manejo-de-notificaciones-en-primer-plano">Manejo de notificaciones en primer plano</a></li>
+<li><a href="#manejo-de-notificaciones-en-segundo-plano">Manejo de notificaciones en segundo plano</a></li>
+<li><a href="#personalización-de-notificaciones">Personalización de notificaciones</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio práctico</a></li>
+</ol>
+</div><h1>Recepción de notificaciones</h1>
+<div class='content'><p>Para manejar notificaciones en tu aplicación, primero necesitas configurar un servicio que escuche los mensajes entrantes. En Android, esto se hace extendiendo <code>FirebaseMessagingService</code>.</p>
+</div><h2>Ejemplo de código</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIE15RmlyZWJhc2VNZXNzYWdpbmdTZXJ2aWNlIGV4dGVuZHMgRmlyZWJhc2VNZXNzYWdpbmdTZXJ2aWNlIHsKCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyB2b2lkIG9uTWVzc2FnZVJlY2VpdmVkKFJlbW90ZU1lc3NhZ2UgcmVtb3RlTWVzc2FnZSkgewogICAgICAgIC8vIFRPRE86IE1hbmVqYXIgZWwgbWVuc2FqZSByZWNpYmlkbwogICAgICAgIExvZy5kKFRBRywgIkZyb206ICIgKyByZW1vdGVNZXNzYWdlLmdldEZyb20oKSk7CgogICAgICAgIC8vIFZlcmlmaWNhIHNpIGVsIG1lbnNhamUgY29udGllbmUgZGF0b3MKICAgICAgICBpZiAocmVtb3RlTWVzc2FnZS5nZXREYXRhKCkuc2l6ZSgpID4gMCkgewogICAgICAgICAgICBMb2cuZChUQUcsICJNZXNzYWdlIGRhdGEgcGF5bG9hZDogIiArIHJlbW90ZU1lc3NhZ2UuZ2V0RGF0YSgpKTsKICAgICAgICB9CgogICAgICAgIC8vIFZlcmlmaWNhIHNpIGVsIG1lbnNhamUgY29udGllbmUgdW5hIG5vdGlmaWNhY2nDs24KICAgICAgICBpZiAocmVtb3RlTWVzc2FnZS5nZXROb3RpZmljYXRpb24oKSAhPSBudWxsKSB7CiAgICAgICAgICAgIExvZy5kKFRBRywgIk1lc3NhZ2UgTm90aWZpY2F0aW9uIEJvZHk6ICIgKyByZW1vdGVNZXNzYWdlLmdldE5vdGlmaWNhdGlvbigpLmdldEJvZHkoKSk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        // TODO: Manejar el mensaje recibido
+        Log.d(TAG, &quot;From: &quot; + remoteMessage.getFrom());
+
+        // Verifica si el mensaje contiene datos
+        if (remoteMessage.getData().size() &gt; 0) {
+            Log.d(TAG, &quot;Message data payload: &quot; + remoteMessage.getData());
+        }
+
+        // Verifica si el mensaje contiene una notificaci&oacute;n
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, &quot;Message Notification Body: &quot; + remoteMessage.getNotification().getBody());
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>onMessageReceived(RemoteMessage remoteMessage)</code>: Este método se llama cuando se recibe un mensaje. Aquí puedes manejar tanto los datos como la notificación que contiene el mensaje.</li>
+<li><code>remoteMessage.getData()</code>: Obtiene los datos del mensaje.</li>
+<li><code>remoteMessage.getNotification()</code>: Obtiene la notificación del mensaje.</li>
+</ul>
+</div><h1>Manejo de notificaciones en primer plano</h1>
+<div class='content'><p>Cuando la aplicación está en primer plano, puedes mostrar una notificación personalizada utilizando <code>NotificationManager</code>.</p>
+</div><h2>Ejemplo de código</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJpdmF0ZSB2b2lkIHNlbmROb3RpZmljYXRpb24oU3RyaW5nIG1lc3NhZ2VCb2R5KSB7CiAgICBJbnRlbnQgaW50ZW50ID0gbmV3IEludGVudCh0aGlzLCBNYWluQWN0aXZpdHkuY2xhc3MpOwogICAgaW50ZW50LmFkZEZsYWdzKEludGVudC5GTEFHX0FDVElWSVRZX0NMRUFSX1RPUCk7CiAgICBQZW5kaW5nSW50ZW50IHBlbmRpbmdJbnRlbnQgPSBQZW5kaW5nSW50ZW50LmdldEFjdGl2aXR5KHRoaXMsIDAsIGludGVudCwgUGVuZGluZ0ludGVudC5GTEFHX09ORV9TSE9UKTsKCiAgICBTdHJpbmcgY2hhbm5lbElkID0gZ2V0U3RyaW5nKFIuc3RyaW5nLmRlZmF1bHRfbm90aWZpY2F0aW9uX2NoYW5uZWxfaWQpOwogICAgTm90aWZpY2F0aW9uQ29tcGF0LkJ1aWxkZXIgbm90aWZpY2F0aW9uQnVpbGRlciA9CiAgICAgICAgICAgIG5ldyBOb3RpZmljYXRpb25Db21wYXQuQnVpbGRlcih0aGlzLCBjaGFubmVsSWQpCiAgICAgICAgICAgICAgICAgICAgLnNldFNtYWxsSWNvbihSLmRyYXdhYmxlLmljX3N0YXRfaWNfbm90aWZpY2F0aW9uKQogICAgICAgICAgICAgICAgICAgIC5zZXRDb250ZW50VGl0bGUoZ2V0U3RyaW5nKFIuc3RyaW5nLmZjbV9tZXNzYWdlKSkKICAgICAgICAgICAgICAgICAgICAuc2V0Q29udGVudFRleHQobWVzc2FnZUJvZHkpCiAgICAgICAgICAgICAgICAgICAgLnNldEF1dG9DYW5jZWwodHJ1ZSkKICAgICAgICAgICAgICAgICAgICAuc2V0Q29udGVudEludGVudChwZW5kaW5nSW50ZW50KTsKCiAgICBOb3RpZmljYXRpb25NYW5hZ2VyIG5vdGlmaWNhdGlvbk1hbmFnZXIgPQogICAgICAgICAgICAoTm90aWZpY2F0aW9uTWFuYWdlcikgZ2V0U3lzdGVtU2VydmljZShDb250ZXh0Lk5PVElGSUNBVElPTl9TRVJWSUNFKTsKCiAgICBub3RpZmljYXRpb25NYW5hZ2VyLm5vdGlmeSgwLCBub3RpZmljYXRpb25CdWlsZGVyLmJ1aWxkKCkpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>private void sendNotification(String messageBody) {
+    Intent intent = new Intent(this, MainActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+    String channelId = getString(R.string.default_notification_channel_id);
+    NotificationCompat.Builder notificationBuilder =
+            new NotificationCompat.Builder(this, channelId)
+                    .setSmallIcon(R.drawable.ic_stat_ic_notification)
+                    .setContentTitle(getString(R.string.fcm_message))
+                    .setContentText(messageBody)
+                    .setAutoCancel(true)
+                    .setContentIntent(pendingIntent);
+
+    NotificationManager notificationManager =
+            (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+    notificationManager.notify(0, notificationBuilder.build());
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>Intent</code>: Define la actividad que se abrirá cuando el usuario toque la notificación.</li>
+<li><code>PendingIntent</code>: Es un contenedor para el <code>Intent</code> que se ejecutará en el futuro.</li>
+<li><code>NotificationCompat.Builder</code>: Construye la notificación.</li>
+<li><code>NotificationManager</code>: Muestra la notificación.</li>
+</ul>
+</div><h1>Manejo de notificaciones en segundo plano</h1>
+<div class='content'><p>Cuando la aplicación está en segundo plano, FCM maneja automáticamente la visualización de la notificación. Sin embargo, puedes personalizar el comportamiento extendiendo <code>FirebaseMessagingService</code>.</p>
+</div><h2>Ejemplo de código</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE92ZXJyaWRlCnB1YmxpYyB2b2lkIG9uTWVzc2FnZVJlY2VpdmVkKFJlbW90ZU1lc3NhZ2UgcmVtb3RlTWVzc2FnZSkgewogICAgaWYgKHJlbW90ZU1lc3NhZ2UuZ2V0Tm90aWZpY2F0aW9uKCkgIT0gbnVsbCkgewogICAgICAgIHNlbmROb3RpZmljYXRpb24ocmVtb3RlTWVzc2FnZS5nZXROb3RpZmljYXRpb24oKS5nZXRCb2R5KCkpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Override
+public void onMessageReceived(RemoteMessage remoteMessage) {
+    if (remoteMessage.getNotification() != null) {
+        sendNotification(remoteMessage.getNotification().getBody());
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>sendNotification(String messageBody)</code>: Llama al método para mostrar la notificación personalizada.</li>
+</ul>
+</div><h1>Personalización de notificaciones</h1>
+<div class='content'><p>Puedes personalizar las notificaciones para incluir imágenes, acciones y más.</p>
+</div><h2>Ejemplo de código</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Tm90aWZpY2F0aW9uQ29tcGF0LkJ1aWxkZXIgbm90aWZpY2F0aW9uQnVpbGRlciA9CiAgICAgICAgbmV3IE5vdGlmaWNhdGlvbkNvbXBhdC5CdWlsZGVyKHRoaXMsIGNoYW5uZWxJZCkKICAgICAgICAgICAgICAgIC5zZXRTbWFsbEljb24oUi5kcmF3YWJsZS5pY19zdGF0X2ljX25vdGlmaWNhdGlvbikKICAgICAgICAgICAgICAgIC5zZXRDb250ZW50VGl0bGUoZ2V0U3RyaW5nKFIuc3RyaW5nLmZjbV9tZXNzYWdlKSkKICAgICAgICAgICAgICAgIC5zZXRDb250ZW50VGV4dChtZXNzYWdlQm9keSkKICAgICAgICAgICAgICAgIC5zZXRTdHlsZShuZXcgTm90aWZpY2F0aW9uQ29tcGF0LkJpZ1BpY3R1cmVTdHlsZSgpCiAgICAgICAgICAgICAgICAgICAgICAgIC5iaWdQaWN0dXJlKGltYWdlQml0bWFwKSkKICAgICAgICAgICAgICAgIC5hZGRBY3Rpb24oUi5kcmF3YWJsZS5pY19hY3Rpb24sIGdldFN0cmluZyhSLnN0cmluZy5hY3Rpb25fdGV4dCksIHBlbmRpbmdJbnRlbnQpCiAgICAgICAgICAgICAgICAuc2V0QXV0b0NhbmNlbCh0cnVlKQogICAgICAgICAgICAgICAgLnNldENvbnRlbnRJbnRlbnQocGVuZGluZ0ludGVudCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NotificationCompat.Builder notificationBuilder =
+        new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_stat_ic_notification)
+                .setContentTitle(getString(R.string.fcm_message))
+                .setContentText(messageBody)
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(imageBitmap))
+                .addAction(R.drawable.ic_action, getString(R.string.action_text), pendingIntent)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>setStyle(new NotificationCompat.BigPictureStyle().bigPicture(imageBitmap))</code>: Añade una imagen grande a la notificación.</li>
+<li><code>addAction(int icon, CharSequence title, PendingIntent intent)</code>: Añade una acción a la notificación.</li>
+</ul>
+</div><h1>Ejercicio práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Configura un servicio <code>FirebaseMessagingService</code> en tu aplicación.</li>
+<li>Implementa el método <code>onMessageReceived</code> para manejar mensajes entrantes.</li>
+<li>Personaliza una notificación para que incluya una imagen y una acción.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIE15RmlyZWJhc2VNZXNzYWdpbmdTZXJ2aWNlIGV4dGVuZHMgRmlyZWJhc2VNZXNzYWdpbmdTZXJ2aWNlIHsKCiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyB2b2lkIG9uTWVzc2FnZVJlY2VpdmVkKFJlbW90ZU1lc3NhZ2UgcmVtb3RlTWVzc2FnZSkgewogICAgICAgIGlmIChyZW1vdGVNZXNzYWdlLmdldE5vdGlmaWNhdGlvbigpICE9IG51bGwpIHsKICAgICAgICAgICAgc2VuZE5vdGlmaWNhdGlvbihyZW1vdGVNZXNzYWdlLmdldE5vdGlmaWNhdGlvbigpLmdldEJvZHkoKSk7CiAgICAgICAgfQogICAgfQoKICAgIHByaXZhdGUgdm9pZCBzZW5kTm90aWZpY2F0aW9uKFN0cmluZyBtZXNzYWdlQm9keSkgewogICAgICAgIEludGVudCBpbnRlbnQgPSBuZXcgSW50ZW50KHRoaXMsIE1haW5BY3Rpdml0eS5jbGFzcyk7CiAgICAgICAgaW50ZW50LmFkZEZsYWdzKEludGVudC5GTEFHX0FDVElWSVRZX0NMRUFSX1RPUCk7CiAgICAgICAgUGVuZGluZ0ludGVudCBwZW5kaW5nSW50ZW50ID0gUGVuZGluZ0ludGVudC5nZXRBY3Rpdml0eSh0aGlzLCAwLCBpbnRlbnQsIFBlbmRpbmdJbnRlbnQuRkxBR19PTkVfU0hPVCk7CgogICAgICAgIFN0cmluZyBjaGFubmVsSWQgPSBnZXRTdHJpbmcoUi5zdHJpbmcuZGVmYXVsdF9ub3RpZmljYXRpb25fY2hhbm5lbF9pZCk7CiAgICAgICAgQml0bWFwIGltYWdlQml0bWFwID0gQml0bWFwRmFjdG9yeS5kZWNvZGVSZXNvdXJjZShnZXRSZXNvdXJjZXMoKSwgUi5kcmF3YWJsZS5ub3RpZmljYXRpb25faW1hZ2UpOwogICAgICAgIE5vdGlmaWNhdGlvbkNvbXBhdC5CdWlsZGVyIG5vdGlmaWNhdGlvbkJ1aWxkZXIgPQogICAgICAgICAgICAgICAgbmV3IE5vdGlmaWNhdGlvbkNvbXBhdC5CdWlsZGVyKHRoaXMsIGNoYW5uZWxJZCkKICAgICAgICAgICAgICAgICAgICAgICAgLnNldFNtYWxsSWNvbihSLmRyYXdhYmxlLmljX3N0YXRfaWNfbm90aWZpY2F0aW9uKQogICAgICAgICAgICAgICAgICAgICAgICAuc2V0Q29udGVudFRpdGxlKGdldFN0cmluZyhSLnN0cmluZy5mY21fbWVzc2FnZSkpCiAgICAgICAgICAgICAgICAgICAgICAgIC5zZXRDb250ZW50VGV4dChtZXNzYWdlQm9keSkKICAgICAgICAgICAgICAgICAgICAgICAgLnNldFN0eWxlKG5ldyBOb3RpZmljYXRpb25Db21wYXQuQmlnUGljdHVyZVN0eWxlKCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAuYmlnUGljdHVyZShpbWFnZUJpdG1hcCkpCiAgICAgICAgICAgICAgICAgICAgICAgIC5hZGRBY3Rpb24oUi5kcmF3YWJsZS5pY19hY3Rpb24sIGdldFN0cmluZyhSLnN0cmluZy5hY3Rpb25fdGV4dCksIHBlbmRpbmdJbnRlbnQpCiAgICAgICAgICAgICAgICAgICAgICAgIC5zZXRBdXRvQ2FuY2VsKHRydWUpCiAgICAgICAgICAgICAgICAgICAgICAgIC5zZXRDb250ZW50SW50ZW50KHBlbmRpbmdJbnRlbnQpOwoKICAgICAgICBOb3RpZmljYXRpb25NYW5hZ2VyIG5vdGlmaWNhdGlvbk1hbmFnZXIgPQogICAgICAgICAgICAgICAgKE5vdGlmaWNhdGlvbk1hbmFnZXIpIGdldFN5c3RlbVNlcnZpY2UoQ29udGV4dC5OT1RJRklDQVRJT05fU0VSVklDRSk7CgogICAgICAgIG5vdGlmaWNhdGlvbk1hbmFnZXIubm90aWZ5KDAsIG5vdGlmaWNhdGlvbkJ1aWxkZXIuYnVpbGQoKSk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        if (remoteMessage.getNotification() != null) {
+            sendNotification(remoteMessage.getNotification().getBody());
+        }
+    }
+
+    private void sendNotification(String messageBody) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+        String channelId = getString(R.string.default_notification_channel_id);
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_image);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.ic_stat_ic_notification)
+                        .setContentTitle(getString(R.string.fcm_message))
+                        .setContentText(messageBody)
+                        .setStyle(new NotificationCompat.BigPictureStyle()
+                                .bigPicture(imageBitmap))
+                        .addAction(R.drawable.ic_action, getString(R.string.action_text), pendingIntent)
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent);
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, notificationBuilder.build());
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.notification_image)</code>: Carga una imagen desde los recursos.</li>
+<li><code>setStyle(new NotificationCompat.BigPictureStyle().bigPicture(imageBitmap))</code>: Añade la imagen a la notificación.</li>
+<li><code>addAction(R.drawable.ic_action, getString(R.string.action_text), pendingIntent)</code>: Añade una acción a la notificación.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo manejar notificaciones en una aplicación utilizando Firebase Cloud Messaging. Hemos visto cómo recibir y mostrar notificaciones, tanto en primer plano como en segundo plano, y cómo personalizarlas para mejorar la experiencia del usuario. Con estos conocimientos, estás listo para implementar notificaciones efectivas en tu aplicación. En el próximo módulo, exploraremos las características avanzadas de mensajería en la nube de Firebase.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-sending-notifications' title="Envío de notificaciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-advanced-messaging-features' title="Características avanzadas de mensajería">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

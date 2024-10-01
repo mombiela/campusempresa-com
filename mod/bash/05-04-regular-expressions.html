@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expresiones Regulares</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bash/05-04-regular-expressions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bash/05-04-regular-expressions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bash/05-04-regular-expressions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bash/05-04-regular-expressions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bash/05-04-regular-expressions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-error-handling-debugging' title="Manejo de Errores y Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Expresiones Regulares</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-using-awk' title="Usando awk">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las expresiones regulares (regex) son una herramienta poderosa para buscar y manipular texto. En Bash, se utilizan comúnmente con comandos como <code>grep</code>, <code>sed</code>, y <code>awk</code>. Este tema cubrirá los conceptos básicos y avanzados de las expresiones regulares, proporcionando ejemplos prácticos y ejercicios para reforzar el aprendizaje.</p>
+</div><h1>Conceptos Básicos de Expresiones Regulares</h1>
+<div class='content'></div><h2>¿Qué es una Expresión Regular?</h2>
+<div class='content'><p>Una expresión regular es una secuencia de caracteres que define un patrón de búsqueda. Este patrón puede ser utilizado para encontrar coincidencias dentro de cadenas de texto.</p>
+</div><h2>Sintaxis Básica</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Caracteres Literales</strong>: Coinciden exactamente con el carácter especificado.</p>
+<ul>
+<li>Ejemplo: <code>a</code> coincide con &quot;a&quot; en &quot;apple&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Metacaracteres</strong>: Tienen significados especiales.</p>
+<ul>
+<li><code>.</code>: Coincide con cualquier carácter excepto una nueva línea.</li>
+<li><code>^</code>: Coincide con el inicio de una línea.</li>
+<li><code>$</code>: Coincide con el final de una línea.</li>
+<li><code>*</code>: Coincide con cero o más repeticiones del carácter anterior.</li>
+<li><code>+</code>: Coincide con una o más repeticiones del carácter anterior.</li>
+<li><code>?</code>: Coincide con cero o una repetición del carácter anterior.</li>
+<li><code>[]</code>: Define un conjunto de caracteres.</li>
+<li><code>|</code>: Actúa como un operador OR.</li>
+<li><code>()</code> : Agrupa una parte de la expresión regular.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplos Prácticos</h2>
+<div class='content'><h4>Uso de <code>grep</code> con Expresiones Regulares</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCdXNjYXIgbMOtbmVhcyBxdWUgY29udGllbmVuICJhcHBsZSIKZ3JlcCAiYXBwbGUiIGZpbGUudHh0CgojIEJ1c2NhciBsw61uZWFzIHF1ZSBjb21pZW56YW4gY29uICJhcHBsZSIKZ3JlcCAiXmFwcGxlIiBmaWxlLnR4dAoKIyBCdXNjYXIgbMOtbmVhcyBxdWUgdGVybWluYW4gY29uICJhcHBsZSIKZ3JlcCAiYXBwbGUkIiBmaWxlLnR4dAoKIyBCdXNjYXIgbMOtbmVhcyBxdWUgY29udGllbmVuIGN1YWxxdWllciBjYXLDoWN0ZXIgc2VndWlkbyBkZSAicHBsZSIKZ3JlcCAiLnBwbGUiIGZpbGUudHh0CgojIEJ1c2NhciBsw61uZWFzIHF1ZSBjb250aWVuZW4gImEiIHNlZ3VpZG8gZGUgY2VybyBvIG3DoXMgInAiCmdyZXAgImFwKiIgZmlsZS50eHQKCiMgQnVzY2FyIGzDrW5lYXMgcXVlIGNvbnRpZW5lbiAiYSIgc2VndWlkbyBkZSB1bmEgbyBtw6FzICJwIgpncmVwICJhcCsiIGZpbGUudHh0CgojIEJ1c2NhciBsw61uZWFzIHF1ZSBjb250aWVuZW4gImEiIHNlZ3VpZG8gZGUgY2VybyBvIHVuYSAicCIKZ3JlcCAiYXA/IiBmaWxlLnR4dAoKIyBCdXNjYXIgbMOtbmVhcyBxdWUgY29udGllbmVuICJhIiBvICJiIgpncmVwICJhfGIiIGZpbGUudHh0CgojIEJ1c2NhciBsw61uZWFzIHF1ZSBjb250aWVuZW4gImEiIHNlZ3VpZG8gZGUgInAiIG8gImIiCmdyZXAgImEocHxiKSIgZmlsZS50eHQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Buscar l&iacute;neas que contienen &quot;apple&quot;
+grep &quot;apple&quot; file.txt
+
+# Buscar l&iacute;neas que comienzan con &quot;apple&quot;
+grep &quot;^apple&quot; file.txt
+
+# Buscar l&iacute;neas que terminan con &quot;apple&quot;
+grep &quot;apple$&quot; file.txt
+
+# Buscar l&iacute;neas que contienen cualquier car&aacute;cter seguido de &quot;pple&quot;
+grep &quot;.pple&quot; file.txt
+
+# Buscar l&iacute;neas que contienen &quot;a&quot; seguido de cero o m&aacute;s &quot;p&quot;
+grep &quot;ap*&quot; file.txt
+
+# Buscar l&iacute;neas que contienen &quot;a&quot; seguido de una o m&aacute;s &quot;p&quot;
+grep &quot;ap+&quot; file.txt
+
+# Buscar l&iacute;neas que contienen &quot;a&quot; seguido de cero o una &quot;p&quot;
+grep &quot;ap?&quot; file.txt
+
+# Buscar l&iacute;neas que contienen &quot;a&quot; o &quot;b&quot;
+grep &quot;a|b&quot; file.txt
+
+# Buscar l&iacute;neas que contienen &quot;a&quot; seguido de &quot;p&quot; o &quot;b&quot;
+grep &quot;a(p|b)&quot; file.txt</pre></div><div class='content'></div><h2>Ejercicio 1: Búsqueda Básica</h2>
+<div class='content'><p><strong>Instrucción</strong>: Usa <code>grep</code> para encontrar todas las líneas en <code>sample.txt</code> que:</p>
+<ol>
+<li>Comiencen con &quot;Error&quot;.</li>
+<li>Terminen con un número.</li>
+<li>Contengan una dirección de correo electrónico (formato simple: <code>usuario@dominio</code>).</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyAxLiBDb21pZW5jZW4gY29uICJFcnJvciIKZ3JlcCAiXkVycm9yIiBzYW1wbGUudHh0CgojIDIuIFRlcm1pbmVuIGNvbiB1biBuw7ptZXJvCmdyZXAgIlswLTldJCIgc2FtcGxlLnR4dAoKIyAzLiBDb250ZW5nYW4gdW5hIGRpcmVjY2nDs24gZGUgY29ycmVvIGVsZWN0csOzbmljbwpncmVwICJbYS16QS1aMC05Ll8lKy1dK0BbYS16QS1aMC05Li1dK1wuW2EtekEtWl17Mix9IiBzYW1wbGUudHh0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># 1. Comiencen con &quot;Error&quot;
+grep &quot;^Error&quot; sample.txt
+
+# 2. Terminen con un n&uacute;mero
+grep &quot;[0-9]$&quot; sample.txt
+
+# 3. Contengan una direcci&oacute;n de correo electr&oacute;nico
+grep &quot;[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}&quot; sample.txt</pre></div><div class='content'></div><h1>Conceptos Avanzados de Expresiones Regulares</h1>
+<div class='content'></div><h2>Grupos y Referencias</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Grupos</strong>: Se utilizan para agrupar partes de una expresión regular.</p>
+<ul>
+<li>Ejemplo: <code>(abc)</code> coincide con &quot;abc&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Referencias</strong>: Se utilizan para referirse a grupos capturados.</p>
+<ul>
+<li>Ejemplo: <code>\1</code> se refiere al primer grupo capturado.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplos Prácticos</h2>
+<div class='content'><h4>Uso de <code>sed</code> con Expresiones Regulares</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBSZWVtcGxhemFyICJhcHBsZSIgY29uICJvcmFuZ2UiCnNlZCAncy9hcHBsZS9vcmFuZ2UvZycgZmlsZS50eHQKCiMgUmVlbXBsYXphciBjdWFscXVpZXIgZMOtZ2l0byBjb24gIlgiCnNlZCAncy9bMC05XS9YL2cnIGZpbGUudHh0CgojIFJlZW1wbGF6YXIgImZvbyIgc2VndWlkbyBkZSBjdWFscXVpZXIgY2Fyw6FjdGVyIGNvbiAiYmFyIgpzZWQgJ3MvZm9vLi9iYXIvZycgZmlsZS50eHQKCiMgUmVlbXBsYXphciAiZm9vIiBzZWd1aWRvIGRlIHVubyBvIG3DoXMgY2FyYWN0ZXJlcyBjb24gImJhciIKc2VkICdzL2Zvby4qL2Jhci9nJyBmaWxlLnR4dAoKIyBSZWVtcGxhemFyICJmb28iIHNlZ3VpZG8gZGUgdW4gZMOtZ2l0byBjb24gImJhciIKc2VkICdzL2Zvb1swLTldL2Jhci9nJyBmaWxlLnR4dAoKIyBSZWVtcGxhemFyICJmb28iIHNlZ3VpZG8gZGUgdW4gZ3J1cG8gY2FwdHVyYWRvIGNvbiAiYmFyIiB5IGVsIGdydXBvIGNhcHR1cmFkbwpzZWQgJ3MvZm9vXCguXCkvYmFyXDEvZycgZmlsZS50eHQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Reemplazar &quot;apple&quot; con &quot;orange&quot;
+sed 's/apple/orange/g' file.txt
+
+# Reemplazar cualquier d&iacute;gito con &quot;X&quot;
+sed 's/[0-9]/X/g' file.txt
+
+# Reemplazar &quot;foo&quot; seguido de cualquier car&aacute;cter con &quot;bar&quot;
+sed 's/foo./bar/g' file.txt
+
+# Reemplazar &quot;foo&quot; seguido de uno o m&aacute;s caracteres con &quot;bar&quot;
+sed 's/foo.*/bar/g' file.txt
+
+# Reemplazar &quot;foo&quot; seguido de un d&iacute;gito con &quot;bar&quot;
+sed 's/foo[0-9]/bar/g' file.txt
+
+# Reemplazar &quot;foo&quot; seguido de un grupo capturado con &quot;bar&quot; y el grupo capturado
+sed 's/foo\(.\)/bar\1/g' file.txt</pre></div><div class='content'></div><h2>Ejercicio 2: Manipulación Avanzada</h2>
+<div class='content'><p><strong>Instrucción</strong>: Usa <code>sed</code> para:</p>
+<ol>
+<li>Reemplazar todas las direcciones de correo electrónico en <code>sample.txt</code> con &quot;hidden@example.com&quot;.</li>
+<li>Reemplazar todas las fechas en formato <code>YYYY-MM-DD</code> con &quot;DATE&quot;.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyAxLiBSZWVtcGxhemFyIGRpcmVjY2lvbmVzIGRlIGNvcnJlbyBlbGVjdHLDs25pY28Kc2VkICdzL1thLXpBLVowLTkuXyUrLV0rQFthLXpBLVowLTkuLV0rXC5bYS16QS1aXXsyLH0vaGlkZGVuQGV4YW1wbGUuY29tL2cnIHNhbXBsZS50eHQKCiMgMi4gUmVlbXBsYXphciBmZWNoYXMgZW4gZm9ybWF0byBZWVlZLU1NLURECnNlZCAncy9bMC05XVx7NFx9LVswLTldXHsyXH0tWzAtOV1cezJcfS9EQVRFL2cnIHNhbXBsZS50eHQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># 1. Reemplazar direcciones de correo electr&oacute;nico
+sed 's/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/hidden@example.com/g' sample.txt
+
+# 2. Reemplazar fechas en formato YYYY-MM-DD
+sed 's/[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}/DATE/g' sample.txt</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos y avanzados de las expresiones regulares en Bash. Aprendimos a utilizar <code>grep</code> y <code>sed</code> para buscar y manipular texto utilizando patrones definidos por expresiones regulares. Practicamos con ejemplos y ejercicios para reforzar el aprendizaje.</p>
+</div><h2>Puntos Clave</h2>
+<div class='content'><ul>
+<li>Las expresiones regulares son herramientas poderosas para buscar y manipular texto.</li>
+<li><code>grep</code> y <code>sed</code> son comandos comunes en Bash que utilizan expresiones regulares.</li>
+<li>Los metacaracteres y los grupos son componentes esenciales de las expresiones regulares.</li>
+</ul>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente módulo, exploraremos cómo trabajar con herramientas externas como <code>awk</code> y <code>sed</code> en mayor profundidad, lo que nos permitirá realizar manipulaciones de texto aún más complejas y potentes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-error-handling-debugging' title="Manejo de Errores y Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-using-awk' title="Usando awk">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

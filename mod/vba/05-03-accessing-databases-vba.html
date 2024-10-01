@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accediendo a Bases de Datos con VBA</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vba/05-03-accessing-databases-vba" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vba/05-03-accessing-databases-vba" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vba/05-03-accessing-databases-vba" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/vba/05-03-accessing-databases-vba" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/vba/05-03-accessing-databases-vba" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-automating-outlook-vba' title="Automatizando Outlook con VBA">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Accediendo a Bases de Datos con VBA</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-using-vba-control-powerpoint' title="Usando VBA para Controlar PowerPoint">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás cómo interactuar con bases de datos utilizando VBA. Este conocimiento es crucial para automatizar tareas que involucran la manipulación de datos almacenados en bases de datos, como Microsoft Access, SQL Server, entre otros.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>ADO (ActiveX Data Objects)</strong>: Es una biblioteca que permite a VBA interactuar con bases de datos.</li>
+<li><strong>Conexión a la Base de Datos</strong>: Establecer una conexión con la base de datos es el primer paso para realizar cualquier operación.</li>
+<li><strong>Consultas SQL</strong>: Utilizar SQL (Structured Query Language) para consultar y manipular datos.</li>
+<li><strong>Manipulación de Datos</strong>: Insertar, actualizar y eliminar registros en la base de datos.</li>
+</ol>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de que la biblioteca ADO esté habilitada en tu proyecto VBA:</p>
+<ol>
+<li>Abre el Editor de VBA (Alt + F11).</li>
+<li>Ve a <code>Herramientas</code> &gt; <code>Referencias</code>.</li>
+<li>Busca y selecciona <code>Microsoft ActiveX Data Objects x.x Library</code> (donde x.x es la versión disponible).</li>
+</ol>
+</div><h1>Estableciendo una Conexión a la Base de Datos</h1>
+<div class='content'><p>Para conectarte a una base de datos, necesitas una cadena de conexión. Aquí hay un ejemplo de cómo conectarse a una base de datos de Microsoft Access:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIENvbmVjdGFyQUJhc2VEZURhdG9zKCkKICAgIERpbSBjb25uIEFzIE9iamVjdAogICAgU2V0IGNvbm4gPSBDcmVhdGVPYmplY3QoIkFET0RCLkNvbm5lY3Rpb24iKQogICAgCiAgICBEaW0gY29ubmVjdGlvblN0cmluZyBBcyBTdHJpbmcKICAgIGNvbm5lY3Rpb25TdHJpbmcgPSAiUHJvdmlkZXI9TWljcm9zb2Z0LkFDRS5PTEVEQi4xMi4wO0RhdGEgU291cmNlPUM6XHJ1dGFcYVx0dVxiYXNlX2RlX2RhdG9zLmFjY2RiOyIKICAgIAogICAgY29ubi5PcGVuIGNvbm5lY3Rpb25TdHJpbmcKICAgIAogICAgSWYgY29ubi5TdGF0ZSA9IDEgVGhlbgogICAgICAgIE1zZ0JveCAiQ29uZXhpw7NuIGV4aXRvc2EiCiAgICBFbHNlCiAgICAgICAgTXNnQm94ICJFcnJvciBlbiBsYSBjb25leGnDs24iCiAgICBFbmQgSWYKICAgIAogICAgY29ubi5DbG9zZQogICAgU2V0IGNvbm4gPSBOb3RoaW5nCkVuZCBTdWI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub ConectarABaseDeDatos()
+    Dim conn As Object
+    Set conn = CreateObject(&quot;ADODB.Connection&quot;)
+    
+    Dim connectionString As String
+    connectionString = &quot;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\ruta\a\tu\base_de_datos.accdb;&quot;
+    
+    conn.Open connectionString
+    
+    If conn.State = 1 Then
+        MsgBox &quot;Conexi&oacute;n exitosa&quot;
+    Else
+        MsgBox &quot;Error en la conexi&oacute;n&quot;
+    End If
+    
+    conn.Close
+    Set conn = Nothing
+End Sub</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>CreateObject(&quot;ADODB.Connection&quot;)</strong>: Crea una nueva instancia de la conexión ADO.</li>
+<li><strong>connectionString</strong>: Define la cadena de conexión con el proveedor y la ruta de la base de datos.</li>
+<li><strong>conn.Open</strong>: Abre la conexión utilizando la cadena de conexión.</li>
+<li><strong>conn.State</strong>: Verifica el estado de la conexión (1 significa abierta, 0 significa cerrada).</li>
+<li><strong>conn.Close</strong>: Cierra la conexión.</li>
+</ul>
+</div><h1>Realizando Consultas SQL</h1>
+<div class='content'><p>Una vez establecida la conexión, puedes ejecutar consultas SQL para interactuar con la base de datos. Aquí hay un ejemplo de cómo realizar una consulta SELECT:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIENvbnN1bHRhckRhdG9zKCkKICAgIERpbSBjb25uIEFzIE9iamVjdAogICAgRGltIHJzIEFzIE9iamVjdAogICAgU2V0IGNvbm4gPSBDcmVhdGVPYmplY3QoIkFET0RCLkNvbm5lY3Rpb24iKQogICAgU2V0IHJzID0gQ3JlYXRlT2JqZWN0KCJBRE9EQi5SZWNvcmRzZXQiKQogICAgCiAgICBEaW0gY29ubmVjdGlvblN0cmluZyBBcyBTdHJpbmcKICAgIGNvbm5lY3Rpb25TdHJpbmcgPSAiUHJvdmlkZXI9TWljcm9zb2Z0LkFDRS5PTEVEQi4xMi4wO0RhdGEgU291cmNlPUM6XHJ1dGFcYVx0dVxiYXNlX2RlX2RhdG9zLmFjY2RiOyIKICAgIAogICAgY29ubi5PcGVuIGNvbm5lY3Rpb25TdHJpbmcKICAgIAogICAgRGltIHNxbCBBcyBTdHJpbmcKICAgIHNxbCA9ICJTRUxFQ1QgKiBGUk9NIE5vbWJyZURlTGFUYWJsYSIKICAgIAogICAgcnMuT3BlbiBzcWwsIGNvbm4KICAgIAogICAgRG8gV2hpbGUgTm90IHJzLkVPRgogICAgICAgIERlYnVnLlByaW50IHJzLkZpZWxkcygiTm9tYnJlRGVsQ2FtcG8iKS5WYWx1ZQogICAgICAgIHJzLk1vdmVOZXh0CiAgICBMb29wCiAgICAKICAgIHJzLkNsb3NlCiAgICBjb25uLkNsb3NlCiAgICBTZXQgcnMgPSBOb3RoaW5nCiAgICBTZXQgY29ubiA9IE5vdGhpbmcKRW5kIFN1Yg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub ConsultarDatos()
+    Dim conn As Object
+    Dim rs As Object
+    Set conn = CreateObject(&quot;ADODB.Connection&quot;)
+    Set rs = CreateObject(&quot;ADODB.Recordset&quot;)
+    
+    Dim connectionString As String
+    connectionString = &quot;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\ruta\a\tu\base_de_datos.accdb;&quot;
+    
+    conn.Open connectionString
+    
+    Dim sql As String
+    sql = &quot;SELECT * FROM NombreDeLaTabla&quot;
+    
+    rs.Open sql, conn
+    
+    Do While Not rs.EOF
+        Debug.Print rs.Fields(&quot;NombreDelCampo&quot;).Value
+        rs.MoveNext
+    Loop
+    
+    rs.Close
+    conn.Close
+    Set rs = Nothing
+    Set conn = Nothing
+End Sub</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>CreateObject(&quot;ADODB.Recordset&quot;)</strong>: Crea una nueva instancia del conjunto de registros ADO.</li>
+<li><strong>rs.Open sql, conn</strong>: Ejecuta la consulta SQL y abre el conjunto de registros.</li>
+<li><strong>rs.Fields(&quot;NombreDelCampo&quot;).Value</strong>: Accede al valor de un campo específico en el conjunto de registros.</li>
+<li><strong>rs.MoveNext</strong>: Mueve el cursor al siguiente registro.</li>
+<li><strong>rs.EOF</strong>: Verifica si se ha llegado al final del conjunto de registros.</li>
+</ul>
+</div><h1>Manipulación de Datos</h1>
+<div class='content'><p>Puedes insertar, actualizar y eliminar registros utilizando comandos SQL. Aquí hay ejemplos de cada operación:</p>
+</div><h2>Insertar Datos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIEluc2VydGFyRGF0b3MoKQogICAgRGltIGNvbm4gQXMgT2JqZWN0CiAgICBTZXQgY29ubiA9IENyZWF0ZU9iamVjdCgiQURPREIuQ29ubmVjdGlvbiIpCiAgICAKICAgIERpbSBjb25uZWN0aW9uU3RyaW5nIEFzIFN0cmluZwogICAgY29ubmVjdGlvblN0cmluZyA9ICJQcm92aWRlcj1NaWNyb3NvZnQuQUNFLk9MRURCLjEyLjA7RGF0YSBTb3VyY2U9QzpccnV0YVxhXHR1XGJhc2VfZGVfZGF0b3MuYWNjZGI7IgogICAgCiAgICBjb25uLk9wZW4gY29ubmVjdGlvblN0cmluZwogICAgCiAgICBEaW0gc3FsIEFzIFN0cmluZwogICAgc3FsID0gIklOU0VSVCBJTlRPIE5vbWJyZURlTGFUYWJsYSAoQ2FtcG8xLCBDYW1wbzIpIFZBTFVFUyAoJ1ZhbG9yMScsICdWYWxvcjInKSIKICAgIAogICAgY29ubi5FeGVjdXRlIHNxbAogICAgCiAgICBjb25uLkNsb3NlCiAgICBTZXQgY29ubiA9IE5vdGhpbmcKRW5kIFN1Yg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub InsertarDatos()
+    Dim conn As Object
+    Set conn = CreateObject(&quot;ADODB.Connection&quot;)
+    
+    Dim connectionString As String
+    connectionString = &quot;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\ruta\a\tu\base_de_datos.accdb;&quot;
+    
+    conn.Open connectionString
+    
+    Dim sql As String
+    sql = &quot;INSERT INTO NombreDeLaTabla (Campo1, Campo2) VALUES ('Valor1', 'Valor2')&quot;
+    
+    conn.Execute sql
+    
+    conn.Close
+    Set conn = Nothing
+End Sub</pre></div><div class='content'></div><h2>Actualizar Datos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIEFjdHVhbGl6YXJEYXRvcygpCiAgICBEaW0gY29ubiBBcyBPYmplY3QKICAgIFNldCBjb25uID0gQ3JlYXRlT2JqZWN0KCJBRE9EQi5Db25uZWN0aW9uIikKICAgIAogICAgRGltIGNvbm5lY3Rpb25TdHJpbmcgQXMgU3RyaW5nCiAgICBjb25uZWN0aW9uU3RyaW5nID0gIlByb3ZpZGVyPU1pY3Jvc29mdC5BQ0UuT0xFREIuMTIuMDtEYXRhIFNvdXJjZT1DOlxydXRhXGFcdHVcYmFzZV9kZV9kYXRvcy5hY2NkYjsiCiAgICAKICAgIGNvbm4uT3BlbiBjb25uZWN0aW9uU3RyaW5nCiAgICAKICAgIERpbSBzcWwgQXMgU3RyaW5nCiAgICBzcWwgPSAiVVBEQVRFIE5vbWJyZURlTGFUYWJsYSBTRVQgQ2FtcG8xID0gJ051ZXZvVmFsb3InIFdIRVJFIENhbXBvMiA9ICdDb25kaWNpb24nIgogICAgCiAgICBjb25uLkV4ZWN1dGUgc3FsCiAgICAKICAgIGNvbm4uQ2xvc2UKICAgIFNldCBjb25uID0gTm90aGluZwpFbmQgU3Vi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub ActualizarDatos()
+    Dim conn As Object
+    Set conn = CreateObject(&quot;ADODB.Connection&quot;)
+    
+    Dim connectionString As String
+    connectionString = &quot;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\ruta\a\tu\base_de_datos.accdb;&quot;
+    
+    conn.Open connectionString
+    
+    Dim sql As String
+    sql = &quot;UPDATE NombreDeLaTabla SET Campo1 = 'NuevoValor' WHERE Campo2 = 'Condicion'&quot;
+    
+    conn.Execute sql
+    
+    conn.Close
+    Set conn = Nothing
+End Sub</pre></div><div class='content'></div><h2>Eliminar Datos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIEVsaW1pbmFyRGF0b3MoKQogICAgRGltIGNvbm4gQXMgT2JqZWN0CiAgICBTZXQgY29ubiA9IENyZWF0ZU9iamVjdCgiQURPREIuQ29ubmVjdGlvbiIpCiAgICAKICAgIERpbSBjb25uZWN0aW9uU3RyaW5nIEFzIFN0cmluZwogICAgY29ubmVjdGlvblN0cmluZyA9ICJQcm92aWRlcj1NaWNyb3NvZnQuQUNFLk9MRURCLjEyLjA7RGF0YSBTb3VyY2U9QzpccnV0YVxhXHR1XGJhc2VfZGVfZGF0b3MuYWNjZGI7IgogICAgCiAgICBjb25uLk9wZW4gY29ubmVjdGlvblN0cmluZwogICAgCiAgICBEaW0gc3FsIEFzIFN0cmluZwogICAgc3FsID0gIkRFTEVURSBGUk9NIE5vbWJyZURlTGFUYWJsYSBXSEVSRSBDYW1wbzIgPSAnQ29uZGljaW9uJyIKICAgIAogICAgY29ubi5FeGVjdXRlIHNxbAogICAgCiAgICBjb25uLkNsb3NlCiAgICBTZXQgY29ubiA9IE5vdGhpbmcKRW5kIFN1Yg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub EliminarDatos()
+    Dim conn As Object
+    Set conn = CreateObject(&quot;ADODB.Connection&quot;)
+    
+    Dim connectionString As String
+    connectionString = &quot;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\ruta\a\tu\base_de_datos.accdb;&quot;
+    
+    conn.Open connectionString
+    
+    Dim sql As String
+    sql = &quot;DELETE FROM NombreDeLaTabla WHERE Campo2 = 'Condicion'&quot;
+    
+    conn.Execute sql
+    
+    conn.Close
+    Set conn = Nothing
+End Sub</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea una base de datos de Access con una tabla llamada <code>Empleados</code> que tenga los campos <code>ID</code>, <code>Nombre</code>, y <code>Puesto</code>.</li>
+<li>Escribe un programa en VBA que:
+<ul>
+<li>Inserte tres registros en la tabla <code>Empleados</code>.</li>
+<li>Actualice el <code>Puesto</code> de uno de los empleados.</li>
+<li>Elimine uno de los registros basándose en el <code>ID</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U3ViIEdlc3Rpb25hckVtcGxlYWRvcygpCiAgICBEaW0gY29ubiBBcyBPYmplY3QKICAgIFNldCBjb25uID0gQ3JlYXRlT2JqZWN0KCJBRE9EQi5Db25uZWN0aW9uIikKICAgIAogICAgRGltIGNvbm5lY3Rpb25TdHJpbmcgQXMgU3RyaW5nCiAgICBjb25uZWN0aW9uU3RyaW5nID0gIlByb3ZpZGVyPU1pY3Jvc29mdC5BQ0UuT0xFREIuMTIuMDtEYXRhIFNvdXJjZT1DOlxydXRhXGFcdHVcYmFzZV9kZV9kYXRvcy5hY2NkYjsiCiAgICAKICAgIGNvbm4uT3BlbiBjb25uZWN0aW9uU3RyaW5nCiAgICAKICAgICcgSW5zZXJ0YXIgcmVnaXN0cm9zCiAgICBjb25uLkV4ZWN1dGUgIklOU0VSVCBJTlRPIEVtcGxlYWRvcyAoSUQsIE5vbWJyZSwgUHVlc3RvKSBWQUxVRVMgKDEsICdKdWFuIFBlcmV6JywgJ0dlcmVudGUnKSIKICAgIGNvbm4uRXhlY3V0ZSAiSU5TRVJUIElOVE8gRW1wbGVhZG9zIChJRCwgTm9tYnJlLCBQdWVzdG8pIFZBTFVFUyAoMiwgJ0FuYSBHb21leicsICdBbmFsaXN0YScpIgogICAgY29ubi5FeGVjdXRlICJJTlNFUlQgSU5UTyBFbXBsZWFkb3MgKElELCBOb21icmUsIFB1ZXN0bykgVkFMVUVTICgzLCAnTHVpcyBNYXJ0aW5leicsICdEZXNhcnJvbGxhZG9yJykiCiAgICAKICAgICcgQWN0dWFsaXphciByZWdpc3RybwogICAgY29ubi5FeGVjdXRlICJVUERBVEUgRW1wbGVhZG9zIFNFVCBQdWVzdG8gPSAnU2VuaW9yIEFuYWxpc3RhJyBXSEVSRSBJRCA9IDIiCiAgICAKICAgICcgRWxpbWluYXIgcmVnaXN0cm8KICAgIGNvbm4uRXhlY3V0ZSAiREVMRVRFIEZST00gRW1wbGVhZG9zIFdIRVJFIElEID0gMyIKICAgIAogICAgY29ubi5DbG9zZQogICAgU2V0IGNvbm4gPSBOb3RoaW5nCkVuZCBTdWI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Sub GestionarEmpleados()
+    Dim conn As Object
+    Set conn = CreateObject(&quot;ADODB.Connection&quot;)
+    
+    Dim connectionString As String
+    connectionString = &quot;Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\ruta\a\tu\base_de_datos.accdb;&quot;
+    
+    conn.Open connectionString
+    
+    ' Insertar registros
+    conn.Execute &quot;INSERT INTO Empleados (ID, Nombre, Puesto) VALUES (1, 'Juan Perez', 'Gerente')&quot;
+    conn.Execute &quot;INSERT INTO Empleados (ID, Nombre, Puesto) VALUES (2, 'Ana Gomez', 'Analista')&quot;
+    conn.Execute &quot;INSERT INTO Empleados (ID, Nombre, Puesto) VALUES (3, 'Luis Martinez', 'Desarrollador')&quot;
+    
+    ' Actualizar registro
+    conn.Execute &quot;UPDATE Empleados SET Puesto = 'Senior Analista' WHERE ID = 2&quot;
+    
+    ' Eliminar registro
+    conn.Execute &quot;DELETE FROM Empleados WHERE ID = 3&quot;
+    
+    conn.Close
+    Set conn = Nothing
+End Sub</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido cómo conectar VBA a una base de datos, realizar consultas SQL y manipular datos. Estos conocimientos te permitirán automatizar tareas complejas que involucren bases de datos, mejorando la eficiencia y precisión de tus proyectos.</p>
+<p>En el siguiente módulo, exploraremos cómo usar VBA para controlar otras aplicaciones de Microsoft Office, comenzando con la automatización de Word.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-automating-outlook-vba' title="Automatizando Outlook con VBA">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-using-vba-control-powerpoint' title="Usando VBA para Controlar PowerPoint">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

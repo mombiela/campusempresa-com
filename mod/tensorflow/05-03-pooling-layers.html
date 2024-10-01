@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capas de Pooling</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/05-03-pooling-layers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/05-03-pooling-layers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/05-03-pooling-layers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/05-03-pooling-layers" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/05-03-pooling-layers" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-building-a-cnn' title="Construyendo una CNN">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Capas de Pooling</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-advanced-cnn-architectures' title="Arquitecturas Avanzadas de CNN">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las capas de pooling son un componente esencial en las Redes Neuronales Convolucionales (CNNs). Estas capas se utilizan para reducir las dimensiones espaciales (ancho y alto) de los mapas de características, lo que ayuda a disminuir la cantidad de parámetros y el costo computacional de la red. Además, las capas de pooling ayudan a hacer la detección de características más robusta a las variaciones de posición y escala.</p>
+</div><h1>Objetivos de esta sección</h1>
+<div class='content'><ul>
+<li>Comprender qué son las capas de pooling y su propósito en las CNNs.</li>
+<li>Aprender sobre los tipos más comunes de pooling: max pooling y average pooling.</li>
+<li>Implementar capas de pooling en TensorFlow.</li>
+<li>Realizar ejercicios prácticos para reforzar los conceptos aprendidos.</li>
+</ul>
+</div><h1>¿Qué es una Capa de Pooling?</h1>
+<div class='content'><p>Una capa de pooling realiza una operación de reducción de tamaño sobre los mapas de características generados por las capas convolucionales. La operación de pooling se aplica a cada mapa de características de manera independiente.</p>
+</div><h2>Tipos de Pooling</h2>
+<div class='content'><ol>
+<li><strong>Max Pooling</strong>: Selecciona el valor máximo en cada ventana de la matriz de entrada.</li>
+<li><strong>Average Pooling</strong>: Calcula el valor promedio en cada ventana de la matriz de entrada.</li>
+</ol>
+</div><h2>Ejemplo Visual</h2>
+<div class='content'><p>Consideremos una matriz de entrada de 4x4 y una ventana de pooling de 2x2 con un stride de 2:</p>
+<h4>Max Pooling</h4>
+<table>
+<thead>
+<tr>
+<th>Entrada</th>
+<th>Max Pooling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h4>Average Pooling</h4>
+<table>
+<thead>
+<tr>
+<th>Entrada</th>
+<th>Average Pooling</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>5</td>
+<td>6</td>
+</tr>
+<tr>
+<td>9</td>
+<td>2</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Implementación en TensorFlow</h1>
+<div class='content'></div><h2>Max Pooling</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQ3JlYXIgdW4gdGVuc29yIGRlIGVqZW1wbG8KaW5wdXRfdGVuc29yID0gdGYuY29uc3RhbnQoWwogICAgWzEsIDMsIDIsIDRdLAogICAgWzUsIDYsIDcsIDhdLAogICAgWzksIDIsIDMsIDRdLAogICAgWzEsIDAsIDEsIDJdCl0sIGR0eXBlPXRmLmZsb2F0MzIpCgojIEHDsWFkaXIgdW5hIGRpbWVuc2nDs24gcGFyYSBiYXRjaCB5IGNhbmFsZXMKaW5wdXRfdGVuc29yID0gdGYucmVzaGFwZShpbnB1dF90ZW5zb3IsIFsxLCA0LCA0LCAxXSkKCiMgQXBsaWNhciBtYXggcG9vbGluZwptYXhfcG9vbGluZ19sYXllciA9IHRmLmtlcmFzLmxheWVycy5NYXhQb29saW5nMkQocG9vbF9zaXplPSgyLCAyKSwgc3RyaWRlcz0yKQpvdXRwdXRfdGVuc29yID0gbWF4X3Bvb2xpbmdfbGF5ZXIoaW5wdXRfdGVuc29yKQoKcHJpbnQoIk1heCBQb29saW5nIE91dHB1dDpcbiIsIHRmLnNxdWVlemUob3V0cHV0X3RlbnNvcikubnVtcHkoKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Crear un tensor de ejemplo
+input_tensor = tf.constant([
+    [1, 3, 2, 4],
+    [5, 6, 7, 8],
+    [9, 2, 3, 4],
+    [1, 0, 1, 2]
+], dtype=tf.float32)
+
+# A&ntilde;adir una dimensi&oacute;n para batch y canales
+input_tensor = tf.reshape(input_tensor, [1, 4, 4, 1])
+
+# Aplicar max pooling
+max_pooling_layer = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2)
+output_tensor = max_pooling_layer(input_tensor)
+
+print(&quot;Max Pooling Output:\n&quot;, tf.squeeze(output_tensor).numpy())</pre></div><div class='content'></div><h2>Average Pooling</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQ3JlYXIgdW4gdGVuc29yIGRlIGVqZW1wbG8KaW5wdXRfdGVuc29yID0gdGYuY29uc3RhbnQoWwogICAgWzEsIDMsIDIsIDRdLAogICAgWzUsIDYsIDcsIDhdLAogICAgWzksIDIsIDMsIDRdLAogICAgWzEsIDAsIDEsIDJdCl0sIGR0eXBlPXRmLmZsb2F0MzIpCgojIEHDsWFkaXIgdW5hIGRpbWVuc2nDs24gcGFyYSBiYXRjaCB5IGNhbmFsZXMKaW5wdXRfdGVuc29yID0gdGYucmVzaGFwZShpbnB1dF90ZW5zb3IsIFsxLCA0LCA0LCAxXSkKCiMgQXBsaWNhciBhdmVyYWdlIHBvb2xpbmcKYXZlcmFnZV9wb29saW5nX2xheWVyID0gdGYua2VyYXMubGF5ZXJzLkF2ZXJhZ2VQb29saW5nMkQocG9vbF9zaXplPSgyLCAyKSwgc3RyaWRlcz0yKQpvdXRwdXRfdGVuc29yID0gYXZlcmFnZV9wb29saW5nX2xheWVyKGlucHV0X3RlbnNvcikKCnByaW50KCJBdmVyYWdlIFBvb2xpbmcgT3V0cHV0OlxuIiwgdGYuc3F1ZWV6ZShvdXRwdXRfdGVuc29yKS5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Crear un tensor de ejemplo
+input_tensor = tf.constant([
+    [1, 3, 2, 4],
+    [5, 6, 7, 8],
+    [9, 2, 3, 4],
+    [1, 0, 1, 2]
+], dtype=tf.float32)
+
+# A&ntilde;adir una dimensi&oacute;n para batch y canales
+input_tensor = tf.reshape(input_tensor, [1, 4, 4, 1])
+
+# Aplicar average pooling
+average_pooling_layer = tf.keras.layers.AveragePooling2D(pool_size=(2, 2), strides=2)
+output_tensor = average_pooling_layer(input_tensor)
+
+print(&quot;Average Pooling Output:\n&quot;, tf.squeeze(output_tensor).numpy())</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Aplicar Max Pooling</h2>
+<div class='content'><p>Dado el siguiente tensor de entrada, aplique una capa de max pooling con una ventana de 2x2 y un stride de 2.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5wdXRfdGVuc29yID0gdGYuY29uc3RhbnQoWwogICAgWzEsIDIsIDMsIDRdLAogICAgWzUsIDYsIDcsIDhdLAogICAgWzksIDEwLCAxMSwgMTJdLAogICAgWzEzLCAxNCwgMTUsIDE2XQpdLCBkdHlwZT10Zi5mbG9hdDMyKQoKIyBBw7FhZGlyIHVuYSBkaW1lbnNpw7NuIHBhcmEgYmF0Y2ggeSBjYW5hbGVzCmlucHV0X3RlbnNvciA9IHRmLnJlc2hhcGUoaW5wdXRfdGVuc29yLCBbMSwgNCwgNCwgMV0pCgojIEltcGxlbWVudGFyIG1heCBwb29saW5nCm1heF9wb29saW5nX2xheWVyID0gdGYua2VyYXMubGF5ZXJzLk1heFBvb2xpbmcyRChwb29sX3NpemU9KDIsIDIpLCBzdHJpZGVzPTIpCm91dHB1dF90ZW5zb3IgPSBtYXhfcG9vbGluZ19sYXllcihpbnB1dF90ZW5zb3IpCgpwcmludCgiTWF4IFBvb2xpbmcgT3V0cHV0OlxuIiwgdGYuc3F1ZWV6ZShvdXRwdXRfdGVuc29yKS5udW1weSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>input_tensor = tf.constant([
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+    [13, 14, 15, 16]
+], dtype=tf.float32)
+
+# A&ntilde;adir una dimensi&oacute;n para batch y canales
+input_tensor = tf.reshape(input_tensor, [1, 4, 4, 1])
+
+# Implementar max pooling
+max_pooling_layer = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2)
+output_tensor = max_pooling_layer(input_tensor)
+
+print(&quot;Max Pooling Output:\n&quot;, tf.squeeze(output_tensor).numpy())</pre></div><div class='content'></div><h2>Solución del Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCmlucHV0X3RlbnNvciA9IHRmLmNvbnN0YW50KFsKICAgIFsxLCAyLCAzLCA0XSwKICAgIFs1LCA2LCA3LCA4XSwKICAgIFs5LCAxMCwgMTEsIDEyXSwKICAgIFsxMywgMTQsIDE1LCAxNl0KXSwgZHR5cGU9dGYuZmxvYXQzMikKCmlucHV0X3RlbnNvciA9IHRmLnJlc2hhcGUoaW5wdXRfdGVuc29yLCBbMSwgNCwgNCwgMV0pCgptYXhfcG9vbGluZ19sYXllciA9IHRmLmtlcmFzLmxheWVycy5NYXhQb29saW5nMkQocG9vbF9zaXplPSgyLCAyKSwgc3RyaWRlcz0yKQpvdXRwdXRfdGVuc29yID0gbWF4X3Bvb2xpbmdfbGF5ZXIoaW5wdXRfdGVuc29yKQoKcHJpbnQoIk1heCBQb29saW5nIE91dHB1dDpcbiIsIHRmLnNxdWVlemUob3V0cHV0X3RlbnNvcikubnVtcHkoKSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+input_tensor = tf.constant([
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+    [13, 14, 15, 16]
+], dtype=tf.float32)
+
+input_tensor = tf.reshape(input_tensor, [1, 4, 4, 1])
+
+max_pooling_layer = tf.keras.layers.MaxPooling2D(pool_size=(2, 2), strides=2)
+output_tensor = max_pooling_layer(input_tensor)
+
+print(&quot;Max Pooling Output:\n&quot;, tf.squeeze(output_tensor).numpy())</pre></div><div class='content'></div><h2>Ejercicio 2: Aplicar Average Pooling</h2>
+<div class='content'><p>Dado el siguiente tensor de entrada, aplique una capa de average pooling con una ventana de 2x2 y un stride de 2.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5wdXRfdGVuc29yID0gdGYuY29uc3RhbnQoWwogICAgWzEsIDIsIDMsIDRdLAogICAgWzUsIDYsIDcsIDhdLAogICAgWzksIDEwLCAxMSwgMTJdLAogICAgWzEzLCAxNCwgMTUsIDE2XQpdLCBkdHlwZT10Zi5mbG9hdDMyKQoKIyBBw7FhZGlyIHVuYSBkaW1lbnNpw7NuIHBhcmEgYmF0Y2ggeSBjYW5hbGVzCmlucHV0X3RlbnNvciA9IHRmLnJlc2hhcGUoaW5wdXRfdGVuc29yLCBbMSwgNCwgNCwgMV0pCgojIEltcGxlbWVudGFyIGF2ZXJhZ2UgcG9vbGluZwphdmVyYWdlX3Bvb2xpbmdfbGF5ZXIgPSB0Zi5rZXJhcy5sYXllcnMuQXZlcmFnZVBvb2xpbmcyRChwb29sX3NpemU9KDIsIDIpLCBzdHJpZGVzPTIpCm91dHB1dF90ZW5zb3IgPSBhdmVyYWdlX3Bvb2xpbmdfbGF5ZXIoaW5wdXRfdGVuc29yKQoKcHJpbnQoIkF2ZXJhZ2UgUG9vbGluZyBPdXRwdXQ6XG4iLCB0Zi5zcXVlZXplKG91dHB1dF90ZW5zb3IpLm51bXB5KCkp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>input_tensor = tf.constant([
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+    [13, 14, 15, 16]
+], dtype=tf.float32)
+
+# A&ntilde;adir una dimensi&oacute;n para batch y canales
+input_tensor = tf.reshape(input_tensor, [1, 4, 4, 1])
+
+# Implementar average pooling
+average_pooling_layer = tf.keras.layers.AveragePooling2D(pool_size=(2, 2), strides=2)
+output_tensor = average_pooling_layer(input_tensor)
+
+print(&quot;Average Pooling Output:\n&quot;, tf.squeeze(output_tensor).numpy())</pre></div><div class='content'></div><h2>Solución del Ejercicio 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCmlucHV0X3RlbnNvciA9IHRmLmNvbnN0YW50KFsKICAgIFsxLCAyLCAzLCA0XSwKICAgIFs1LCA2LCA3LCA4XSwKICAgIFs5LCAxMCwgMTEsIDEyXSwKICAgIFsxMywgMTQsIDE1LCAxNl0KXSwgZHR5cGU9dGYuZmxvYXQzMikKCmlucHV0X3RlbnNvciA9IHRmLnJlc2hhcGUoaW5wdXRfdGVuc29yLCBbMSwgNCwgNCwgMV0pCgphdmVyYWdlX3Bvb2xpbmdfbGF5ZXIgPSB0Zi5rZXJhcy5sYXllcnMuQXZlcmFnZVBvb2xpbmcyRChwb29sX3NpemU9KDIsIDIpLCBzdHJpZGVzPTIpCm91dHB1dF90ZW5zb3IgPSBhdmVyYWdlX3Bvb2xpbmdfbGF5ZXIoaW5wdXRfdGVuc29yKQoKcHJpbnQoIkF2ZXJhZ2UgUG9vbGluZyBPdXRwdXQ6XG4iLCB0Zi5zcXVlZXplKG91dHB1dF90ZW5zb3IpLm51bXB5KCkp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+input_tensor = tf.constant([
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9, 10, 11, 12],
+    [13, 14, 15, 16]
+], dtype=tf.float32)
+
+input_tensor = tf.reshape(input_tensor, [1, 4, 4, 1])
+
+average_pooling_layer = tf.keras.layers.AveragePooling2D(pool_size=(2, 2), strides=2)
+output_tensor = average_pooling_layer(input_tensor)
+
+print(&quot;Average Pooling Output:\n&quot;, tf.squeeze(output_tensor).numpy())</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las capas de pooling y su importancia en las Redes Neuronales Convolucionales. Hemos explorado los dos tipos más comunes de pooling: max pooling y average pooling, y hemos implementado ambos en TensorFlow. Los ejercicios prácticos proporcionados deben ayudar a reforzar estos conceptos y prepararte para construir arquitecturas de CNN más complejas.</p>
+<p>En el próximo tema, exploraremos las arquitecturas avanzadas de CNN, donde veremos cómo se combinan las capas convolucionales y de pooling para construir modelos de vanguardia.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-building-a-cnn' title="Construyendo una CNN">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-advanced-cnn-architectures' title="Arquitecturas Avanzadas de CNN">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

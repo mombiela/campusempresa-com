@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desarrollo de Plugins Personalizados</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apache_cordova/04-01-custom-plugins-development" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apache_cordova/04-01-custom-plugins-development" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apache_cordova/04-01-custom-plugins-development" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/apache_cordova/04-01-custom-plugins-development" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/apache_cordova/04-01-custom-plugins-development" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-implementing-navigation' title="Implementando la Navegación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Desarrollo de Plugins Personalizados</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-using-native-code' title="Usando Código Nativo">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás cómo desarrollar tus propios plugins personalizados para Apache Cordova. Los plugins permiten extender la funcionalidad de tu aplicación Cordova mediante la integración de código nativo. Esto es especialmente útil cuando necesitas acceder a características específicas del dispositivo que no están cubiertas por los plugins existentes.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender la estructura de un plugin de Cordova.</li>
+<li>Aprender a crear un plugin básico.</li>
+<li>Integrar código nativo en tu plugin.</li>
+<li>Probar y depurar tu plugin.</li>
+</ul>
+</div><h1>1. Estructura de un Plugin de Cordova</h1>
+<div class='content'><p>Un plugin de Cordova generalmente consta de los siguientes componentes:</p>
+<ul>
+<li><strong><code>plugin.xml</code></strong>: Archivo de configuración del plugin.</li>
+<li><strong>Código JavaScript</strong>: Interfaz que expone las funcionalidades del plugin a la aplicación Cordova.</li>
+<li><strong>Código Nativo</strong>: Implementación de las funcionalidades específicas del dispositivo.</li>
+</ul>
+</div><h2>Ejemplo de `plugin.xml`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHBsdWdpbiBpZD0iY29tLmV4YW1wbGUuY3VzdG9tcGx1Z2luIiB2ZXJzaW9uPSIxLjAuMCIgeG1sbnM9Imh0dHA6Ly9hcGFjaGUub3JnL2NvcmRvdmEvbnMvcGx1Z2lucy8xLjAiPgogICAgPG5hbWU+Q3VzdG9tUGx1Z2luPC9uYW1lPgogICAgPGpzLW1vZHVsZSBzcmM9Ind3dy9DdXN0b21QbHVnaW4uanMiIG5hbWU9IkN1c3RvbVBsdWdpbiI+CiAgICAgICAgPGNsb2JiZXJzIHRhcmdldD0id2luZG93LkN1c3RvbVBsdWdpbiIgLz4KICAgIDwvanMtbW9kdWxlPgogICAgPHBsYXRmb3JtIG5hbWU9ImFuZHJvaWQiPgogICAgICAgIDxjb25maWctZmlsZSB0YXJnZXQ9InJlcy94bWwvY29uZmlnLnhtbCIgcGFyZW50PSIvKiI+CiAgICAgICAgICAgIDxmZWF0dXJlIG5hbWU9IkN1c3RvbVBsdWdpbiI+CiAgICAgICAgICAgICAgICA8cGFyYW0gbmFtZT0iYW5kcm9pZC1wYWNrYWdlIiB2YWx1ZT0iY29tLmV4YW1wbGUuY3VzdG9tcGx1Z2luLkN1c3RvbVBsdWdpbiIgLz4KICAgICAgICAgICAgPC9mZWF0dXJlPgogICAgICAgIDwvY29uZmlnLWZpbGU+CiAgICAgICAgPHNvdXJjZS1maWxlIHNyYz0ic3JjL2FuZHJvaWQvQ3VzdG9tUGx1Z2luLmphdmEiIHRhcmdldC1kaXI9InNyYy9jb20vZXhhbXBsZS9jdXN0b21wbHVnaW4iIC8+CiAgICA8L3BsYXRmb3JtPgo8L3BsdWdpbj4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;plugin id=&quot;com.example.customplugin&quot; version=&quot;1.0.0&quot; xmlns=&quot;http://apache.org/cordova/ns/plugins/1.0&quot;&gt;
+    &lt;name&gt;CustomPlugin&lt;/name&gt;
+    &lt;js-module src=&quot;www/CustomPlugin.js&quot; name=&quot;CustomPlugin&quot;&gt;
+        &lt;clobbers target=&quot;window.CustomPlugin&quot; /&gt;
+    &lt;/js-module&gt;
+    &lt;platform name=&quot;android&quot;&gt;
+        &lt;config-file target=&quot;res/xml/config.xml&quot; parent=&quot;/*&quot;&gt;
+            &lt;feature name=&quot;CustomPlugin&quot;&gt;
+                &lt;param name=&quot;android-package&quot; value=&quot;com.example.customplugin.CustomPlugin&quot; /&gt;
+            &lt;/feature&gt;
+        &lt;/config-file&gt;
+        &lt;source-file src=&quot;src/android/CustomPlugin.java&quot; target-dir=&quot;src/com/example/customplugin&quot; /&gt;
+    &lt;/platform&gt;
+&lt;/plugin&gt;</pre></div><div class='content'></div><h2>Estructura de Archivos</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VzdG9tLXBsdWdpbi8K4pSc4pSA4pSAIHNyYy8K4pSCICAg4pSU4pSA4pSAIGFuZHJvaWQvCuKUgiAgICAgICDilJTilIDilIAgQ3VzdG9tUGx1Z2luLmphdmEK4pSc4pSA4pSAIHd3dy8K4pSCICAg4pSU4pSA4pSAIEN1c3RvbVBsdWdpbi5qcwrilJTilIDilIAgcGx1Z2luLnhtbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>custom-plugin/
+├── src/
+│   └── android/
+│       └── CustomPlugin.java
+├── www/
+│   └── CustomPlugin.js
+└── plugin.xml</pre></div><div class='content'></div><h1>2. Creando un Plugin Básico</h1>
+<div class='content'></div><h2>Paso 1: Crear el Archivo `plugin.xml`</h2>
+<div class='content'><p>El archivo <code>plugin.xml</code> define la configuración del plugin, incluyendo las plataformas soportadas y los archivos de código fuente.</p>
+</div><h2>Paso 2: Escribir el Código JavaScript</h2>
+<div class='content'><p>El archivo JavaScript actúa como una interfaz entre la aplicación Cordova y el código nativo.</p>
+<h4><code>www/CustomPlugin.js</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyIGV4ZWMgPSByZXF1aXJlKCdjb3Jkb3ZhL2V4ZWMnKTsKCnZhciBDdXN0b21QbHVnaW4gPSB7CiAgICBjb29sTWV0aG9kOiBmdW5jdGlvbihhcmcwLCBzdWNjZXNzLCBlcnJvcikgewogICAgICAgIGV4ZWMoc3VjY2VzcywgZXJyb3IsICdDdXN0b21QbHVnaW4nLCAnY29vbE1ldGhvZCcsIFthcmcwXSk7CiAgICB9Cn07Cgptb2R1bGUuZXhwb3J0cyA9IEN1c3RvbVBsdWdpbjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>var exec = require('cordova/exec');
+
+var CustomPlugin = {
+    coolMethod: function(arg0, success, error) {
+        exec(success, error, 'CustomPlugin', 'coolMethod', [arg0]);
+    }
+};
+
+module.exports = CustomPlugin;</pre></div><div class='content'></div><h2>Paso 3: Escribir el Código Nativo</h2>
+<div class='content'><p>El código nativo implementa la funcionalidad específica del dispositivo.</p>
+<h4><code>src/android/CustomPlugin.java</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5jdXN0b21wbHVnaW47CgppbXBvcnQgb3JnLmFwYWNoZS5jb3Jkb3ZhLkNvcmRvdmFQbHVnaW47CmltcG9ydCBvcmcuYXBhY2hlLmNvcmRvdmEuQ2FsbGJhY2tDb250ZXh0OwppbXBvcnQgb3JnLmpzb24uSlNPTkFycmF5OwppbXBvcnQgb3JnLmpzb24uSlNPTkV4Y2VwdGlvbjsKaW1wb3J0IG9yZy5qc29uLkpTT05PYmplY3Q7CgpwdWJsaWMgY2xhc3MgQ3VzdG9tUGx1Z2luIGV4dGVuZHMgQ29yZG92YVBsdWdpbiB7CiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBib29sZWFuIGV4ZWN1dGUoU3RyaW5nIGFjdGlvbiwgSlNPTkFycmF5IGFyZ3MsIENhbGxiYWNrQ29udGV4dCBjYWxsYmFja0NvbnRleHQpIHRocm93cyBKU09ORXhjZXB0aW9uIHsKICAgICAgICBpZiAoYWN0aW9uLmVxdWFscygiY29vbE1ldGhvZCIpKSB7CiAgICAgICAgICAgIFN0cmluZyBtZXNzYWdlID0gYXJncy5nZXRTdHJpbmcoMCk7CiAgICAgICAgICAgIHRoaXMuY29vbE1ldGhvZChtZXNzYWdlLCBjYWxsYmFja0NvbnRleHQpOwogICAgICAgICAgICByZXR1cm4gdHJ1ZTsKICAgICAgICB9CiAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgfQoKICAgIHByaXZhdGUgdm9pZCBjb29sTWV0aG9kKFN0cmluZyBtZXNzYWdlLCBDYWxsYmFja0NvbnRleHQgY2FsbGJhY2tDb250ZXh0KSB7CiAgICAgICAgaWYgKG1lc3NhZ2UgIT0gbnVsbCAmJiBtZXNzYWdlLmxlbmd0aCgpID4gMCkgewogICAgICAgICAgICBjYWxsYmFja0NvbnRleHQuc3VjY2VzcyhtZXNzYWdlKTsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgICBjYWxsYmFja0NvbnRleHQuZXJyb3IoIkV4cGVjdGVkIG9uZSBub24tZW1wdHkgc3RyaW5nIGFyZ3VtZW50LiIpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.customplugin;
+
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class CustomPlugin extends CordovaPlugin {
+    @Override
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if (action.equals(&quot;coolMethod&quot;)) {
+            String message = args.getString(0);
+            this.coolMethod(message, callbackContext);
+            return true;
+        }
+        return false;
+    }
+
+    private void coolMethod(String message, CallbackContext callbackContext) {
+        if (message != null &amp;&amp; message.length() &gt; 0) {
+            callbackContext.success(message);
+        } else {
+            callbackContext.error(&quot;Expected one non-empty string argument.&quot;);
+        }
+    }
+}</pre></div><div class='content'></div><h1>3. Integrando Código Nativo</h1>
+<div class='content'></div><h2>Android</h2>
+<div class='content'><p>Para Android, el código nativo se escribe en Java y se coloca en el directorio <code>src/android/</code>.</p>
+</div><h2>iOS</h2>
+<div class='content'><p>Para iOS, el código nativo se escribe en Objective-C o Swift y se coloca en el directorio <code>src/ios/</code>.</p>
+</div><h1>4. Probando y Depurando tu Plugin</h1>
+<div class='content'></div><h2>Instalación del Plugin</h2>
+<div class='content'><p>Para probar tu plugin, primero debes instalarlo en tu proyecto Cordova.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29yZG92YSBwbHVnaW4gYWRkIC9wYXRoL3RvL2N1c3RvbS1wbHVnaW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cordova plugin add /path/to/custom-plugin</pre></div><div class='content'></div><h2>Uso del Plugin en tu Aplicación</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignZGV2aWNlcmVhZHknLCBmdW5jdGlvbigpIHsKICAgIEN1c3RvbVBsdWdpbi5jb29sTWV0aG9kKCdIZWxsbywgQ29yZG92YSEnLCBmdW5jdGlvbihzdWNjZXNzKSB7CiAgICAgICAgY29uc29sZS5sb2coJ1N1Y2Nlc3M6ICcgKyBzdWNjZXNzKTsKICAgIH0sIGZ1bmN0aW9uKGVycm9yKSB7CiAgICAgICAgY29uc29sZS5lcnJvcignRXJyb3I6ICcgKyBlcnJvcik7CiAgICB9KTsKfSwgZmFsc2UpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener('deviceready', function() {
+    CustomPlugin.coolMethod('Hello, Cordova!', function(success) {
+        console.log('Success: ' + success);
+    }, function(error) {
+        console.error('Error: ' + error);
+    });
+}, false);</pre></div><div class='content'></div><h2>Depuración</h2>
+<div class='content'><ul>
+<li><strong>Android</strong>: Utiliza Android Studio para depurar el código Java.</li>
+<li><strong>iOS</strong>: Utiliza Xcode para depurar el código Objective-C o Swift.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Plugin que Obtenga la Versión del Sistema Operativo</h2>
+<div class='content'><h4>Paso 1: Configuración del <code>plugin.xml</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHBsdWdpbiBpZD0iY29tLmV4YW1wbGUub3N2ZXJzaW9uIiB2ZXJzaW9uPSIxLjAuMCIgeG1sbnM9Imh0dHA6Ly9hcGFjaGUub3JnL2NvcmRvdmEvbnMvcGx1Z2lucy8xLjAiPgogICAgPG5hbWU+T1NWZXJzaW9uPC9uYW1lPgogICAgPGpzLW1vZHVsZSBzcmM9Ind3dy9PU1ZlcnNpb24uanMiIG5hbWU9Ik9TVmVyc2lvbiI+CiAgICAgICAgPGNsb2JiZXJzIHRhcmdldD0id2luZG93Lk9TVmVyc2lvbiIgLz4KICAgIDwvanMtbW9kdWxlPgogICAgPHBsYXRmb3JtIG5hbWU9ImFuZHJvaWQiPgogICAgICAgIDxjb25maWctZmlsZSB0YXJnZXQ9InJlcy94bWwvY29uZmlnLnhtbCIgcGFyZW50PSIvKiI+CiAgICAgICAgICAgIDxmZWF0dXJlIG5hbWU9Ik9TVmVyc2lvbiI+CiAgICAgICAgICAgICAgICA8cGFyYW0gbmFtZT0iYW5kcm9pZC1wYWNrYWdlIiB2YWx1ZT0iY29tLmV4YW1wbGUub3N2ZXJzaW9uLk9TVmVyc2lvbiIgLz4KICAgICAgICAgICAgPC9mZWF0dXJlPgogICAgICAgIDwvY29uZmlnLWZpbGU+CiAgICAgICAgPHNvdXJjZS1maWxlIHNyYz0ic3JjL2FuZHJvaWQvT1NWZXJzaW9uLmphdmEiIHRhcmdldC1kaXI9InNyYy9jb20vZXhhbXBsZS9vc3ZlcnNpb24iIC8+CiAgICA8L3BsYXRmb3JtPgo8L3BsdWdpbj4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;plugin id=&quot;com.example.osversion&quot; version=&quot;1.0.0&quot; xmlns=&quot;http://apache.org/cordova/ns/plugins/1.0&quot;&gt;
+    &lt;name&gt;OSVersion&lt;/name&gt;
+    &lt;js-module src=&quot;www/OSVersion.js&quot; name=&quot;OSVersion&quot;&gt;
+        &lt;clobbers target=&quot;window.OSVersion&quot; /&gt;
+    &lt;/js-module&gt;
+    &lt;platform name=&quot;android&quot;&gt;
+        &lt;config-file target=&quot;res/xml/config.xml&quot; parent=&quot;/*&quot;&gt;
+            &lt;feature name=&quot;OSVersion&quot;&gt;
+                &lt;param name=&quot;android-package&quot; value=&quot;com.example.osversion.OSVersion&quot; /&gt;
+            &lt;/feature&gt;
+        &lt;/config-file&gt;
+        &lt;source-file src=&quot;src/android/OSVersion.java&quot; target-dir=&quot;src/com/example/osversion&quot; /&gt;
+    &lt;/platform&gt;
+&lt;/plugin&gt;</pre></div><div class='content'><h4>Paso 2: Código JavaScript</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFyIGV4ZWMgPSByZXF1aXJlKCdjb3Jkb3ZhL2V4ZWMnKTsKCnZhciBPU1ZlcnNpb24gPSB7CiAgICBnZXRWZXJzaW9uOiBmdW5jdGlvbihzdWNjZXNzLCBlcnJvcikgewogICAgICAgIGV4ZWMoc3VjY2VzcywgZXJyb3IsICdPU1ZlcnNpb24nLCAnZ2V0VmVyc2lvbicsIFtdKTsKICAgIH0KfTsKCm1vZHVsZS5leHBvcnRzID0gT1NWZXJzaW9uOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>var exec = require('cordova/exec');
+
+var OSVersion = {
+    getVersion: function(success, error) {
+        exec(success, error, 'OSVersion', 'getVersion', []);
+    }
+};
+
+module.exports = OSVersion;</pre></div><div class='content'><h4>Paso 3: Código Nativo (Android)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5vc3ZlcnNpb247CgppbXBvcnQgb3JnLmFwYWNoZS5jb3Jkb3ZhLkNvcmRvdmFQbHVnaW47CmltcG9ydCBvcmcuYXBhY2hlLmNvcmRvdmEuQ2FsbGJhY2tDb250ZXh0OwppbXBvcnQgb3JnLmpzb24uSlNPTkFycmF5OwppbXBvcnQgb3JnLmpzb24uSlNPTkV4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBPU1ZlcnNpb24gZXh0ZW5kcyBDb3Jkb3ZhUGx1Z2luIHsKICAgIEBPdmVycmlkZQogICAgcHVibGljIGJvb2xlYW4gZXhlY3V0ZShTdHJpbmcgYWN0aW9uLCBKU09OQXJyYXkgYXJncywgQ2FsbGJhY2tDb250ZXh0IGNhbGxiYWNrQ29udGV4dCkgdGhyb3dzIEpTT05FeGNlcHRpb24gewogICAgICAgIGlmIChhY3Rpb24uZXF1YWxzKCJnZXRWZXJzaW9uIikpIHsKICAgICAgICAgICAgdGhpcy5nZXRWZXJzaW9uKGNhbGxiYWNrQ29udGV4dCk7CiAgICAgICAgICAgIHJldHVybiB0cnVlOwogICAgICAgIH0KICAgICAgICByZXR1cm4gZmFsc2U7CiAgICB9CgogICAgcHJpdmF0ZSB2b2lkIGdldFZlcnNpb24oQ2FsbGJhY2tDb250ZXh0IGNhbGxiYWNrQ29udGV4dCkgewogICAgICAgIFN0cmluZyB2ZXJzaW9uID0gYW5kcm9pZC5vcy5CdWlsZC5WRVJTSU9OLlJFTEVBU0U7CiAgICAgICAgY2FsbGJhY2tDb250ZXh0LnN1Y2Nlc3ModmVyc2lvbik7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.osversion;
+
+import org.apache.cordova.CordovaPlugin;
+import org.apache.cordova.CallbackContext;
+import org.json.JSONArray;
+import org.json.JSONException;
+
+public class OSVersion extends CordovaPlugin {
+    @Override
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if (action.equals(&quot;getVersion&quot;)) {
+            this.getVersion(callbackContext);
+            return true;
+        }
+        return false;
+    }
+
+    private void getVersion(CallbackContext callbackContext) {
+        String version = android.os.Build.VERSION.RELEASE;
+        callbackContext.success(version);
+    }
+}</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'><p>Instala el plugin y úsalo en tu aplicación Cordova para obtener la versión del sistema operativo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignZGV2aWNlcmVhZHknLCBmdW5jdGlvbigpIHsKICAgIE9TVmVyc2lvbi5nZXRWZXJzaW9uKGZ1bmN0aW9uKHZlcnNpb24pIHsKICAgICAgICBjb25zb2xlLmxvZygnT1MgVmVyc2lvbjogJyArIHZlcnNpb24pOwogICAgfSwgZnVuY3Rpb24oZXJyb3IpIHsKICAgICAgICBjb25zb2xlLmVycm9yKCdFcnJvcjogJyArIGVycm9yKTsKICAgIH0pOwp9LCBmYWxzZSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>document.addEventListener('deviceready', function() {
+    OSVersion.getVersion(function(version) {
+        console.log('OS Version: ' + version);
+    }, function(error) {
+        console.error('Error: ' + error);
+    });
+}, false);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido cómo desarrollar un plugin personalizado para Apache Cordova. Has visto cómo estructurar el plugin, escribir el código JavaScript y nativo, y cómo probar y depurar tu plugin. Con esta base, puedes extender la funcionalidad de tus aplicaciones Cordova para satisfacer necesidades específicas del dispositivo.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-implementing-navigation' title="Implementando la Navegación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-using-native-code' title="Usando Código Nativo">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

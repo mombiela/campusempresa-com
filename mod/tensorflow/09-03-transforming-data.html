@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformación de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/09-03-transforming-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/09-03-transforming-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/09-03-transforming-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/09-03-transforming-data" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/09-03-transforming-data" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-data-validation' title="Validación de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Transformación de Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-model-analysis' title="Análisis de Modelos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La transformación de datos es una etapa crucial en el flujo de trabajo de aprendizaje automático. En este módulo, aprenderás cómo utilizar TensorFlow Extended (TFX) para transformar datos de manera eficiente y preparar tus conjuntos de datos para el entrenamiento de modelos. La transformación de datos puede incluir operaciones como normalización, codificación de variables categóricas, y creación de características derivadas.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender la importancia de la transformación de datos.</li>
+<li>Aprender a utilizar <code>tf.Transform</code> para transformar datos.</li>
+<li>Implementar transformaciones comunes como normalización y codificación.</li>
+<li>Crear y aplicar funciones de preprocesamiento personalizadas.</li>
+</ul>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#qué-es-tftransform">¿Qué es tf.Transform?</a></li>
+<li><a href="#configuración-del-entorno">Configuración del Entorno</a></li>
+<li><a href="#transformaciones-comunes">Transformaciones Comunes</a></li>
+<li><a href="#funciones-de-preprocesamiento-personalizadas">Funciones de Preprocesamiento Personalizadas</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>¿Qué es tf.Transform?</h1>
+<div class='content'><p><code>tf.Transform</code> es una biblioteca de TensorFlow que permite definir y ejecutar transformaciones de datos de manera escalable y eficiente. Es especialmente útil para preprocesar datos antes de entrenar modelos de aprendizaje automático.</p>
+</div><h2>Características Clave de tf.Transform</h2>
+<div class='content'><ul>
+<li><strong>Escalabilidad</strong>: Puede manejar grandes volúmenes de datos.</li>
+<li><strong>Consistencia</strong>: Asegura que las transformaciones aplicadas durante el entrenamiento se apliquen de manera idéntica durante la inferencia.</li>
+<li><strong>Integración</strong>: Se integra fácilmente con otros componentes de TFX.</li>
+</ul>
+</div><h1>Configuración del Entorno</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener instalado TensorFlow y TFX. Puedes instalar TFX utilizando pip:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgdGZ4"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install tfx</pre></div><div class='content'></div><h1>Transformaciones Comunes</h1>
+<h2>Normalización</h2>
+<div class='content'><p>La normalización es una técnica para escalar los valores de las características a un rango específico, generalmente [0, 1] o [-1, 1].</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3dfdHJhbnNmb3JtIGFzIHRmdAoKZGVmIHByZXByb2Nlc3NpbmdfZm4oaW5wdXRzKToKICAgIG91dHB1dHMgPSBpbnB1dHMuY29weSgpCiAgICBvdXRwdXRzWydub3JtYWxpemVkX2ZlYXR1cmUnXSA9IHRmdC5zY2FsZV90b18wXzEoaW5wdXRzWydmZWF0dXJlJ10pCiAgICByZXR1cm4gb3V0cHV0cw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow_transform as tft
+
+def preprocessing_fn(inputs):
+    outputs = inputs.copy()
+    outputs['normalized_feature'] = tft.scale_to_0_1(inputs['feature'])
+    return outputs</pre></div><div class='content'></div><h2>Codificación de Variables Categóricas</h2>
+<div class='content'><p>La codificación de variables categóricas convierte categorías en valores numéricos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHByZXByb2Nlc3NpbmdfZm4oaW5wdXRzKToKICAgIG91dHB1dHMgPSBpbnB1dHMuY29weSgpCiAgICBvdXRwdXRzWydlbmNvZGVkX2ZlYXR1cmUnXSA9IHRmdC5jb21wdXRlX2FuZF9hcHBseV92b2NhYnVsYXJ5KGlucHV0c1snY2F0ZWdvcmljYWxfZmVhdHVyZSddKQogICAgcmV0dXJuIG91dHB1dHM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def preprocessing_fn(inputs):
+    outputs = inputs.copy()
+    outputs['encoded_feature'] = tft.compute_and_apply_vocabulary(inputs['categorical_feature'])
+    return outputs</pre></div><div class='content'></div><h1>Funciones de Preprocesamiento Personalizadas</h1>
+<div class='content'><p>Puedes definir funciones de preprocesamiento personalizadas para realizar transformaciones específicas.</p>
+</div><h2>Ejemplo: Creación de una Característica Derivada</h2>
+<div class='content'><p>Supongamos que tienes dos características, <code>feature1</code> y <code>feature2</code>, y deseas crear una nueva característica que sea el producto de ambas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHByZXByb2Nlc3NpbmdfZm4oaW5wdXRzKToKICAgIG91dHB1dHMgPSBpbnB1dHMuY29weSgpCiAgICBvdXRwdXRzWydkZXJpdmVkX2ZlYXR1cmUnXSA9IGlucHV0c1snZmVhdHVyZTEnXSAqIGlucHV0c1snZmVhdHVyZTInXQogICAgcmV0dXJuIG91dHB1dHM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def preprocessing_fn(inputs):
+    outputs = inputs.copy()
+    outputs['derived_feature'] = inputs['feature1'] * inputs['feature2']
+    return outputs</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<h2>Objetivo</h2>
+<div class='content'><p>Transformar un conjunto de datos de ejemplo aplicando normalización y codificación de variables categóricas.</p>
+</div><h2>Paso 1: Definir el Conjunto de Datos</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBhbmRhcyBhcyBwZAoKZGF0YSA9IHsKICAgICdmZWF0dXJlJzogWzEuMCwgMi4wLCAzLjAsIDQuMCwgNS4wXSwKICAgICdjYXRlZ29yaWNhbF9mZWF0dXJlJzogWydBJywgJ0InLCAnQScsICdCJywgJ0MnXQp9CmRmID0gcGQuRGF0YUZyYW1lKGRhdGEp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pandas as pd
+
+data = {
+    'feature': [1.0, 2.0, 3.0, 4.0, 5.0],
+    'categorical_feature': ['A', 'B', 'A', 'B', 'C']
+}
+df = pd.DataFrame(data)</pre></div><div class='content'></div><h2>Paso 2: Definir la Función de Preprocesamiento</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHByZXByb2Nlc3NpbmdfZm4oaW5wdXRzKToKICAgIG91dHB1dHMgPSBpbnB1dHMuY29weSgpCiAgICBvdXRwdXRzWydub3JtYWxpemVkX2ZlYXR1cmUnXSA9IHRmdC5zY2FsZV90b18wXzEoaW5wdXRzWydmZWF0dXJlJ10pCiAgICBvdXRwdXRzWydlbmNvZGVkX2ZlYXR1cmUnXSA9IHRmdC5jb21wdXRlX2FuZF9hcHBseV92b2NhYnVsYXJ5KGlucHV0c1snY2F0ZWdvcmljYWxfZmVhdHVyZSddKQogICAgcmV0dXJuIG91dHB1dHM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def preprocessing_fn(inputs):
+    outputs = inputs.copy()
+    outputs['normalized_feature'] = tft.scale_to_0_1(inputs['feature'])
+    outputs['encoded_feature'] = tft.compute_and_apply_vocabulary(inputs['categorical_feature'])
+    return outputs</pre></div><div class='content'></div><h2>Paso 3: Aplicar la Transformación</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKaW1wb3J0IHRlbnNvcmZsb3dfdHJhbnNmb3JtIGFzIHRmdAoKcmF3X2RhdGFfbWV0YWRhdGEgPSB0ZnQudGZfbWV0YWRhdGEuZGF0YXNldF9tZXRhZGF0YS5EYXRhc2V0TWV0YWRhdGEoCiAgICB0ZnQudGZfbWV0YWRhdGEuc2NoZW1hX3V0aWxzLnNjaGVtYV9mcm9tX2ZlYXR1cmVfc3BlYyh7CiAgICAgICAgJ2ZlYXR1cmUnOiB0Zi5pby5GaXhlZExlbkZlYXR1cmUoW10sIHRmLmZsb2F0MzIpLAogICAgICAgICdjYXRlZ29yaWNhbF9mZWF0dXJlJzogdGYuaW8uRml4ZWRMZW5GZWF0dXJlKFtdLCB0Zi5zdHJpbmcpCiAgICB9KQopCgp3aXRoIHRmdF9iZWFtLkNvbnRleHQodGVtcF9kaXI9dGVtcGZpbGUubWtkdGVtcCgpKToKICAgIHRyYW5zZm9ybWVkX2RhdGFzZXQsIHRyYW5zZm9ybV9mbiA9ICgKICAgICAgICAoZGYsIHJhd19kYXRhX21ldGFkYXRhKSB8IHRmdF9iZWFtLkFuYWx5emVBbmRUcmFuc2Zvcm1EYXRhc2V0KHByZXByb2Nlc3NpbmdfZm4pCiAgICApCgp0cmFuc2Zvcm1lZF9kYXRhLCB0cmFuc2Zvcm1lZF9tZXRhZGF0YSA9IHRyYW5zZm9ybWVkX2RhdGFzZXQKcHJpbnQodHJhbnNmb3JtZWRfZGF0YSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+import tensorflow_transform as tft
+
+raw_data_metadata = tft.tf_metadata.dataset_metadata.DatasetMetadata(
+    tft.tf_metadata.schema_utils.schema_from_feature_spec({
+        'feature': tf.io.FixedLenFeature([], tf.float32),
+        'categorical_feature': tf.io.FixedLenFeature([], tf.string)
+    })
+)
+
+with tft_beam.Context(temp_dir=tempfile.mkdtemp()):
+    transformed_dataset, transform_fn = (
+        (df, raw_data_metadata) | tft_beam.AnalyzeAndTransformDataset(preprocessing_fn)
+    )
+
+transformed_data, transformed_metadata = transformed_dataset
+print(transformed_data)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido cómo utilizar <code>tf.Transform</code> para realizar transformaciones de datos esenciales en el flujo de trabajo de aprendizaje automático. Estas transformaciones aseguran que tus datos estén en el formato adecuado para el entrenamiento de modelos, mejorando así la eficiencia y la precisión de tus modelos.</p>
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li><code>tf.Transform</code> es una herramienta poderosa para la transformación de datos.</li>
+<li>Las transformaciones comunes incluyen normalización y codificación de variables categóricas.</li>
+<li>Puedes definir funciones de preprocesamiento personalizadas para realizar transformaciones específicas.</li>
+</ul>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente módulo, exploraremos el análisis de modelos utilizando TFX, donde aprenderás a evaluar y mejorar tus modelos de manera sistemática.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-data-validation' title="Validación de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-model-analysis' title="Análisis de Modelos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

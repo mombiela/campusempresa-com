@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación y Entrenamiento de Modelos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/09-02-creating-training-models" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/09-02-creating-training-models" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/09-02-creating-training-models" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bigquery/09-02-creating-training-models" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/09-02-creating-training-models" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-introduction-bqml' title="Introducción a BigQuery ML">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creación y Entrenamiento de Modelos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-evaluating-predicting-models' title="Evaluación y Predicción con Modelos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo crear y entrenar modelos de Machine Learning (ML) utilizando BigQuery ML (BQML). BigQuery ML permite a los usuarios crear y ejecutar modelos de ML directamente en BigQuery utilizando SQL, lo que facilita la integración del análisis de datos y el aprendizaje automático.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Comprender los conceptos básicos de la creación de modelos en BQML.</li>
+<li>Aprender a crear y entrenar modelos de ML utilizando SQL.</li>
+<li>Conocer los diferentes tipos de modelos que se pueden crear en BQML.</li>
+<li>Realizar ejercicios prácticos para reforzar los conceptos aprendidos.</li>
+</ul>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>1. Tipos de Modelos en BQML</h2>
+<div class='content'><p>BigQuery ML soporta varios tipos de modelos de ML, incluyendo:</p>
+<ul>
+<li><strong>Modelos de Regresión Lineal</strong>: Para predecir valores numéricos.</li>
+<li><strong>Modelos de Clasificación Binaria</strong>: Para predecir una de dos clases.</li>
+<li><strong>Modelos de Clasificación Multiclase</strong>: Para predecir una de varias clases.</li>
+<li><strong>Modelos de Clustering</strong>: Para agrupar datos en clusters.</li>
+<li><strong>Modelos de Series Temporales</strong>: Para predecir valores futuros basados en datos históricos.</li>
+</ul>
+</div><h2>2. Sintaxis Básica para Crear un Modelo</h2>
+<div class='content'><p>La creación de un modelo en BQML se realiza mediante la instrucción <code>CREATE MODEL</code>. La sintaxis básica es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgTU9ERUwgYHByb2plY3QuZGF0YXNldC5tb2RlbF9uYW1lYApPUFRJT05TKG1vZGVsX3R5cGU9J21vZGVsX3R5cGUnLCBpbnB1dF9sYWJlbF9jb2xzPVsnbGFiZWxfY29sdW1uJ10pCkFTClNFTEVDVCAqIEZST00gYHByb2plY3QuZGF0YXNldC50YWJsZV9uYW1lYDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE MODEL `project.dataset.model_name`
+OPTIONS(model_type='model_type', input_label_cols=['label_column'])
+AS
+SELECT * FROM `project.dataset.table_name`;</pre></div><div class='content'><ul>
+<li><code>model_type</code>: Especifica el tipo de modelo (e.g., 'linear_reg', 'logistic_reg', 'kmeans', etc.).</li>
+<li><code>input_label_cols</code>: Especifica la columna que contiene las etiquetas (solo para modelos supervisados).</li>
+<li><code>SELECT * FROM table_name</code>: Especifica los datos de entrenamiento.</li>
+</ul>
+</div><h2>3. Ejemplo Práctico: Creación de un Modelo de Regresión Lineal</h2>
+<div class='content'><p>Vamos a crear un modelo de regresión lineal para predecir el precio de las casas basado en características como el tamaño y la ubicación.</p>
+<h4>Paso 1: Preparar los Datos</h4>
+<p>Primero, asegúrate de tener un conjunto de datos adecuado. Aquí hay un ejemplo de cómo podría verse tu tabla de datos:</p>
+<table>
+<thead>
+<tr>
+<th>house_id</th>
+<th>size_sqft</th>
+<th>location</th>
+<th>price</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1500</td>
+<td>A</td>
+<td>300000</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2000</td>
+<td>B</td>
+<td>400000</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1800</td>
+<td>A</td>
+<td>350000</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<h4>Paso 2: Crear el Modelo</h4>
+<p>Utiliza la siguiente consulta SQL para crear y entrenar el modelo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgTU9ERUwgYG15X3Byb2plY3QubXlfZGF0YXNldC5ob3VzZV9wcmljZV9tb2RlbGAKT1BUSU9OUyhtb2RlbF90eXBlPSdsaW5lYXJfcmVnJywgaW5wdXRfbGFiZWxfY29scz1bJ3ByaWNlJ10pCkFTClNFTEVDVCBzaXplX3NxZnQsIGxvY2F0aW9uLCBwcmljZQpGUk9NIGBteV9wcm9qZWN0Lm15X2RhdGFzZXQuaG91c2VfZGF0YWA7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE MODEL `my_project.my_dataset.house_price_model`
+OPTIONS(model_type='linear_reg', input_label_cols=['price'])
+AS
+SELECT size_sqft, location, price
+FROM `my_project.my_dataset.house_data`;</pre></div><div class='content'><h4>Paso 3: Evaluar el Modelo</h4>
+<p>Después de crear el modelo, puedes evaluarlo para ver su rendimiento:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgKgpGUk9NCiAgTUwuRVZBTFVBVEUoTU9ERUwgYG15X3Byb2plY3QubXlfZGF0YXNldC5ob3VzZV9wcmljZV9tb2RlbGApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `my_project.my_dataset.house_price_model`);</pre></div><div class='content'></div><h2>4. Ejemplo Práctico: Creación de un Modelo de Clasificación Binaria</h2>
+<div class='content'><p>Vamos a crear un modelo de clasificación binaria para predecir si un cliente comprará un producto basado en características como la edad y el ingreso.</p>
+<h4>Paso 1: Preparar los Datos</h4>
+<p>Asegúrate de tener un conjunto de datos adecuado. Aquí hay un ejemplo de cómo podría verse tu tabla de datos:</p>
+<table>
+<thead>
+<tr>
+<th>customer_id</th>
+<th>age</th>
+<th>income</th>
+<th>will_buy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>25</td>
+<td>50000</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>40</td>
+<td>80000</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>30</td>
+<td>60000</td>
+<td>1</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+<h4>Paso 2: Crear el Modelo</h4>
+<p>Utiliza la siguiente consulta SQL para crear y entrenar el modelo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgTU9ERUwgYG15X3Byb2plY3QubXlfZGF0YXNldC5wdXJjaGFzZV9tb2RlbGAKT1BUSU9OUyhtb2RlbF90eXBlPSdsb2dpc3RpY19yZWcnLCBpbnB1dF9sYWJlbF9jb2xzPVsnd2lsbF9idXknXSkKQVMKU0VMRUNUIGFnZSwgaW5jb21lLCB3aWxsX2J1eQpGUk9NIGBteV9wcm9qZWN0Lm15X2RhdGFzZXQuY3VzdG9tZXJfZGF0YWA7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE MODEL `my_project.my_dataset.purchase_model`
+OPTIONS(model_type='logistic_reg', input_label_cols=['will_buy'])
+AS
+SELECT age, income, will_buy
+FROM `my_project.my_dataset.customer_data`;</pre></div><div class='content'><h4>Paso 3: Evaluar el Modelo</h4>
+<p>Después de crear el modelo, puedes evaluarlo para ver su rendimiento:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgKgpGUk9NCiAgTUwuRVZBTFVBVEUoTU9ERUwgYG15X3Byb2plY3QubXlfZGF0YXNldC5wdXJjaGFzZV9tb2RlbGApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `my_project.my_dataset.purchase_model`);</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Modelo de Regresión Lineal</h2>
+<div class='content'><ol>
+<li>Utiliza un conjunto de datos de tu elección que contenga características numéricas y una columna de etiqueta.</li>
+<li>Crea un modelo de regresión lineal para predecir la etiqueta.</li>
+<li>Evalúa el modelo y analiza los resultados.</li>
+</ol>
+</div><h2>Ejercicio 2: Crear un Modelo de Clasificación Binaria</h2>
+<div class='content'><ol>
+<li>Utiliza un conjunto de datos de tu elección que contenga características numéricas y una columna de etiqueta binaria.</li>
+<li>Crea un modelo de clasificación binaria para predecir la etiqueta.</li>
+<li>Evalúa el modelo y analiza los resultados.</li>
+</ol>
+</div><h1>Soluciones a los Ejercicios</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgTU9ERUwgYG15X3Byb2plY3QubXlfZGF0YXNldC5teV9saW5lYXJfbW9kZWxgCk9QVElPTlMobW9kZWxfdHlwZT0nbGluZWFyX3JlZycsIGlucHV0X2xhYmVsX2NvbHM9WydsYWJlbF9jb2x1bW4nXSkKQVMKU0VMRUNUIGZlYXR1cmUxLCBmZWF0dXJlMiwgbGFiZWxfY29sdW1uCkZST00gYG15X3Byb2plY3QubXlfZGF0YXNldC5teV9kYXRhYDsKClNFTEVDVAogICoKRlJPTQogIE1MLkVWQUxVQVRFKE1PREVMIGBteV9wcm9qZWN0Lm15X2RhdGFzZXQubXlfbGluZWFyX21vZGVsYCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE MODEL `my_project.my_dataset.my_linear_model`
+OPTIONS(model_type='linear_reg', input_label_cols=['label_column'])
+AS
+SELECT feature1, feature2, label_column
+FROM `my_project.my_dataset.my_data`;
+
+SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `my_project.my_dataset.my_linear_model`);</pre></div><div class='content'></div><h2>Solución al Ejercicio 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgTU9ERUwgYG15X3Byb2plY3QubXlfZGF0YXNldC5teV9sb2dpc3RpY19tb2RlbGAKT1BUSU9OUyhtb2RlbF90eXBlPSdsb2dpc3RpY19yZWcnLCBpbnB1dF9sYWJlbF9jb2xzPVsnbGFiZWxfY29sdW1uJ10pCkFTClNFTEVDVCBmZWF0dXJlMSwgZmVhdHVyZTIsIGxhYmVsX2NvbHVtbgpGUk9NIGBteV9wcm9qZWN0Lm15X2RhdGFzZXQubXlfZGF0YWA7CgpTRUxFQ1QKICAqCkZST00KICBNTC5FVkFMVUFURShNT0RFTCBgbXlfcHJvamVjdC5teV9kYXRhc2V0Lm15X2xvZ2lzdGljX21vZGVsYCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE MODEL `my_project.my_dataset.my_logistic_model`
+OPTIONS(model_type='logistic_reg', input_label_cols=['label_column'])
+AS
+SELECT feature1, feature2, label_column
+FROM `my_project.my_dataset.my_data`;
+
+SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `my_project.my_dataset.my_logistic_model`);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo crear y entrenar modelos de Machine Learning utilizando BigQuery ML. Has visto ejemplos prácticos de cómo crear modelos de regresión lineal y clasificación binaria, y has tenido la oportunidad de practicar estos conceptos con ejercicios. En la siguiente sección, exploraremos cómo evaluar y predecir con los modelos creados.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-01-introduction-bqml' title="Introducción a BigQuery ML">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-03-evaluating-predicting-models' title="Evaluación y Predicción con Modelos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

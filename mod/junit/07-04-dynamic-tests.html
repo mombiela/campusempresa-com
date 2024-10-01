@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tests Dinámicos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/junit/07-04-dynamic-tests" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/junit/07-04-dynamic-tests" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/junit/07-04-dynamic-tests" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/junit/07-04-dynamic-tests" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/junit/07-04-dynamic-tests" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-assumptions-in-junit' title="Suposiciones en JUnit">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Tests Dinámicos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-writing-effective-tests' title="Escribiendo Tests Efectivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a los Tests Dinámicos</h1>
+<div class='content'><p>Los tests dinámicos en JUnit 5 permiten la creación de tests en tiempo de ejecución. A diferencia de los tests estáticos, que se definen de manera fija en el código, los tests dinámicos se generan y ejecutan de manera programática. Esto es útil cuando se necesita ejecutar una serie de tests que no se pueden definir de antemano, como pruebas basadas en datos externos o generados aleatoriamente.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>DynamicTest</strong>: Representa un test dinámico en JUnit 5.</li>
+<li><strong>DynamicContainer</strong>: Agrupa varios DynamicTest y otros DynamicContainer.</li>
+<li><strong>DynamicTest.stream()</strong>: Método para crear un flujo de tests dinámicos.</li>
+</ul>
+</div><h1>Creando Tests Dinámicos</h1>
+<div class='content'><p>Para crear tests dinámicos, se utiliza la anotación <code>@TestFactory</code> en un método que retorna una colección de <code>DynamicTest</code> o <code>DynamicContainer</code>.</p>
+</div><h2>Ejemplo Básico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5EeW5hbWljVGVzdDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0RmFjdG9yeTsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5mdW5jdGlvbi5FeGVjdXRhYmxlOwoKaW1wb3J0IGphdmEudXRpbC5BcnJheXM7CmltcG9ydCBqYXZhLnV0aWwuQ29sbGVjdGlvbjsKCmltcG9ydCBzdGF0aWMgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLkFzc2VydGlvbnMuYXNzZXJ0VHJ1ZTsKCnB1YmxpYyBjbGFzcyBEeW5hbWljVGVzdHNFeGFtcGxlIHsKCiAgICBAVGVzdEZhY3RvcnkKICAgIENvbGxlY3Rpb248RHluYW1pY1Rlc3Q+IGR5bmFtaWNUZXN0cygpIHsKICAgICAgICByZXR1cm4gQXJyYXlzLmFzTGlzdCgKICAgICAgICAgICAgRHluYW1pY1Rlc3QuZHluYW1pY1Rlc3QoIlRlc3QgMSIsICgpIC0+IGFzc2VydFRydWUoMSA8IDIpKSwKICAgICAgICAgICAgRHluYW1pY1Rlc3QuZHluYW1pY1Rlc3QoIlRlc3QgMiIsICgpIC0+IGFzc2VydFRydWUoMiA8IDMpKQogICAgICAgICk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.function.Executable;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class DynamicTestsExample {
+
+    @TestFactory
+    Collection&lt;DynamicTest&gt; dynamicTests() {
+        return Arrays.asList(
+            DynamicTest.dynamicTest(&quot;Test 1&quot;, () -&gt; assertTrue(1 &lt; 2)),
+            DynamicTest.dynamicTest(&quot;Test 2&quot;, () -&gt; assertTrue(2 &lt; 3))
+        );
+    }
+}</pre></div><div class='content'><p>En este ejemplo, el método <code>dynamicTests</code> retorna una colección de <code>DynamicTest</code>. Cada <code>DynamicTest</code> se define con un nombre y un <code>Executable</code> que contiene el código del test.</p>
+</div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>@TestFactory</strong>: Indica que el método es una fábrica de tests dinámicos.</li>
+<li><strong>DynamicTest.dynamicTest</strong>: Método estático para crear un <code>DynamicTest</code>.</li>
+<li><strong>Executable</strong>: Interfaz funcional que representa el código del test.</li>
+</ul>
+</div><h1>Usando DynamicContainer</h1>
+<div class='content'><p>Los <code>DynamicContainer</code> permiten agrupar varios <code>DynamicTest</code> y otros <code>DynamicContainer</code>, lo que es útil para organizar tests complejos.</p>
+</div><h2>Ejemplo con DynamicContainer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5EeW5hbWljQ29udGFpbmVyOwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLkR5bmFtaWNUZXN0OwppbXBvcnQgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLlRlc3RGYWN0b3J5OwoKaW1wb3J0IGphdmEudXRpbC5BcnJheXM7CmltcG9ydCBqYXZhLnV0aWwuQ29sbGVjdGlvbjsKCmltcG9ydCBzdGF0aWMgb3JnLmp1bml0Lmp1cGl0ZXIuYXBpLkFzc2VydGlvbnMuYXNzZXJ0VHJ1ZTsKCnB1YmxpYyBjbGFzcyBEeW5hbWljQ29udGFpbmVyRXhhbXBsZSB7CgogICAgQFRlc3RGYWN0b3J5CiAgICBDb2xsZWN0aW9uPER5bmFtaWNDb250YWluZXI+IGR5bmFtaWNDb250YWluZXJzKCkgewogICAgICAgIHJldHVybiBBcnJheXMuYXNMaXN0KAogICAgICAgICAgICBEeW5hbWljQ29udGFpbmVyLmR5bmFtaWNDb250YWluZXIoIkNvbnRhaW5lciAxIiwgQXJyYXlzLmFzTGlzdCgKICAgICAgICAgICAgICAgIER5bmFtaWNUZXN0LmR5bmFtaWNUZXN0KCJUZXN0IDEuMSIsICgpIC0+IGFzc2VydFRydWUoMSA8IDIpKSwKICAgICAgICAgICAgICAgIER5bmFtaWNUZXN0LmR5bmFtaWNUZXN0KCJUZXN0IDEuMiIsICgpIC0+IGFzc2VydFRydWUoMiA8IDMpKQogICAgICAgICAgICApKSwKICAgICAgICAgICAgRHluYW1pY0NvbnRhaW5lci5keW5hbWljQ29udGFpbmVyKCJDb250YWluZXIgMiIsIEFycmF5cy5hc0xpc3QoCiAgICAgICAgICAgICAgICBEeW5hbWljVGVzdC5keW5hbWljVGVzdCgiVGVzdCAyLjEiLCAoKSAtPiBhc3NlcnRUcnVlKDMgPCA0KSksCiAgICAgICAgICAgICAgICBEeW5hbWljVGVzdC5keW5hbWljVGVzdCgiVGVzdCAyLjIiLCAoKSAtPiBhc3NlcnRUcnVlKDQgPCA1KSkKICAgICAgICAgICAgKSkKICAgICAgICApOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.DynamicContainer;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
+import java.util.Arrays;
+import java.util.Collection;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class DynamicContainerExample {
+
+    @TestFactory
+    Collection&lt;DynamicContainer&gt; dynamicContainers() {
+        return Arrays.asList(
+            DynamicContainer.dynamicContainer(&quot;Container 1&quot;, Arrays.asList(
+                DynamicTest.dynamicTest(&quot;Test 1.1&quot;, () -&gt; assertTrue(1 &lt; 2)),
+                DynamicTest.dynamicTest(&quot;Test 1.2&quot;, () -&gt; assertTrue(2 &lt; 3))
+            )),
+            DynamicContainer.dynamicContainer(&quot;Container 2&quot;, Arrays.asList(
+                DynamicTest.dynamicTest(&quot;Test 2.1&quot;, () -&gt; assertTrue(3 &lt; 4)),
+                DynamicTest.dynamicTest(&quot;Test 2.2&quot;, () -&gt; assertTrue(4 &lt; 5))
+            ))
+        );
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>DynamicContainer.dynamicContainer</strong>: Método estático para crear un <code>DynamicContainer</code>.</li>
+<li><strong>Arrays.asList</strong>: Utilizado para crear una lista de <code>DynamicTest</code> dentro de cada <code>DynamicContainer</code>.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un test dinámico que verifique si una lista de números es par o impar. La lista de números debe ser generada aleatoriamente.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5EeW5hbWljVGVzdDsKaW1wb3J0IG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5UZXN0RmFjdG9yeTsKCmltcG9ydCBqYXZhLnV0aWwuQXJyYXlMaXN0OwppbXBvcnQgamF2YS51dGlsLkNvbGxlY3Rpb247CmltcG9ydCBqYXZhLnV0aWwuTGlzdDsKaW1wb3J0IGphdmEudXRpbC5SYW5kb207CgppbXBvcnQgc3RhdGljIG9yZy5qdW5pdC5qdXBpdGVyLmFwaS5Bc3NlcnRpb25zLmFzc2VydFRydWU7CgpwdWJsaWMgY2xhc3MgRHluYW1pY1Rlc3RFeGVyY2lzZSB7CgogICAgQFRlc3RGYWN0b3J5CiAgICBDb2xsZWN0aW9uPER5bmFtaWNUZXN0PiBkeW5hbWljVGVzdHMoKSB7CiAgICAgICAgTGlzdDxJbnRlZ2VyPiBudW1iZXJzID0gZ2VuZXJhdGVSYW5kb21OdW1iZXJzKDEwKTsKICAgICAgICBMaXN0PER5bmFtaWNUZXN0PiBkeW5hbWljVGVzdHMgPSBuZXcgQXJyYXlMaXN0PD4oKTsKCiAgICAgICAgZm9yIChJbnRlZ2VyIG51bWJlciA6IG51bWJlcnMpIHsKICAgICAgICAgICAgZHluYW1pY1Rlc3RzLmFkZChEeW5hbWljVGVzdC5keW5hbWljVGVzdCgiVGVzdCBpZiAiICsgbnVtYmVyICsgIiBpcyBldmVuIG9yIG9kZCIsICgpIC0+IHsKICAgICAgICAgICAgICAgIGlmIChudW1iZXIgJSAyID09IDApIHsKICAgICAgICAgICAgICAgICAgICBhc3NlcnRUcnVlKG51bWJlciAlIDIgPT0gMCwgbnVtYmVyICsgIiBpcyBldmVuIik7CiAgICAgICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgICAgIGFzc2VydFRydWUobnVtYmVyICUgMiAhPSAwLCBudW1iZXIgKyAiIGlzIG9kZCIpOwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9KSk7CiAgICAgICAgfQoKICAgICAgICByZXR1cm4gZHluYW1pY1Rlc3RzOwogICAgfQoKICAgIHByaXZhdGUgTGlzdDxJbnRlZ2VyPiBnZW5lcmF0ZVJhbmRvbU51bWJlcnMoaW50IGNvdW50KSB7CiAgICAgICAgTGlzdDxJbnRlZ2VyPiBudW1iZXJzID0gbmV3IEFycmF5TGlzdDw+KCk7CiAgICAgICAgUmFuZG9tIHJhbmRvbSA9IG5ldyBSYW5kb20oKTsKICAgICAgICBmb3IgKGludCBpID0gMDsgaSA8IGNvdW50OyBpKyspIHsKICAgICAgICAgICAgbnVtYmVycy5hZGQocmFuZG9tLm5leHRJbnQoMTAwKSk7CiAgICAgICAgfQogICAgICAgIHJldHVybiBudW1iZXJzOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+public class DynamicTestExercise {
+
+    @TestFactory
+    Collection&lt;DynamicTest&gt; dynamicTests() {
+        List&lt;Integer&gt; numbers = generateRandomNumbers(10);
+        List&lt;DynamicTest&gt; dynamicTests = new ArrayList&lt;&gt;();
+
+        for (Integer number : numbers) {
+            dynamicTests.add(DynamicTest.dynamicTest(&quot;Test if &quot; + number + &quot; is even or odd&quot;, () -&gt; {
+                if (number % 2 == 0) {
+                    assertTrue(number % 2 == 0, number + &quot; is even&quot;);
+                } else {
+                    assertTrue(number % 2 != 0, number + &quot; is odd&quot;);
+                }
+            }));
+        }
+
+        return dynamicTests;
+    }
+
+    private List&lt;Integer&gt; generateRandomNumbers(int count) {
+        List&lt;Integer&gt; numbers = new ArrayList&lt;&gt;();
+        Random random = new Random();
+        for (int i = 0; i &lt; count; i++) {
+            numbers.add(random.nextInt(100));
+        }
+        return numbers;
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>generateRandomNumbers</strong>: Método auxiliar para generar una lista de números aleatorios.</li>
+<li><strong>dynamicTests.add</strong>: Añade un <code>DynamicTest</code> para cada número en la lista.</li>
+<li><strong>assertTrue</strong>: Verifica si el número es par o impar.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los tests dinámicos en JUnit 5 proporcionan una manera flexible y poderosa de crear tests en tiempo de ejecución. Son especialmente útiles para escenarios donde los datos de prueba no se conocen de antemano o se generan dinámicamente. Con <code>DynamicTest</code> y <code>DynamicContainer</code>, puedes organizar y ejecutar tests de manera eficiente y estructurada.</p>
+<p>En el siguiente módulo, exploraremos las mejores prácticas y consejos para escribir tests efectivos y organizar el código de tests.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-assumptions-in-junit' title="Suposiciones en JUnit">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-writing-effective-tests' title="Escribiendo Tests Efectivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

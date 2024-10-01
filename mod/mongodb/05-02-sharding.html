@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fragmentación</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/05-02-sharding" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/05-02-sharding" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/05-02-sharding" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/mongodb/05-02-sharding" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/05-02-sharding" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-replication' title="Replicación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Fragmentación</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-transactions' title="Transacciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La fragmentación (sharding) es una técnica de escalabilidad horizontal utilizada en MongoDB para distribuir datos a través de múltiples servidores. Esto permite que una base de datos maneje grandes volúmenes de datos y altas tasas de tráfico de manera eficiente. En esta sección, aprenderemos qué es la fragmentación, cómo funciona en MongoDB, y cómo configurarla y gestionarla.</p>
+</div><h1>¿Qué es la Fragmentación?</h1>
+<div class='content'><p>La fragmentación divide una colección de datos en fragmentos más pequeños, llamados &quot;shards&quot;, que se distribuyen en diferentes servidores. Cada shard contiene una porción del conjunto de datos total. MongoDB utiliza un &quot;cluster&quot; de shards para almacenar y gestionar estos datos distribuidos.</p>
+</div><h2>Ventajas de la Fragmentación</h2>
+<div class='content'><ul>
+<li><strong>Escalabilidad Horizontal</strong>: Permite añadir más servidores para manejar el aumento de datos y tráfico.</li>
+<li><strong>Alta Disponibilidad</strong>: Los datos se replican en múltiples shards, lo que mejora la disponibilidad y la tolerancia a fallos.</li>
+<li><strong>Rendimiento Mejorado</strong>: Distribuye la carga de trabajo entre varios servidores, mejorando el rendimiento de las consultas y las operaciones de escritura.</li>
+</ul>
+</div><h1>Componentes de un Cluster de Sharding</h1>
+<div class='content'><p>Un cluster de sharding en MongoDB consta de los siguientes componentes:</p>
+<ol>
+<li><strong>Shards</strong>: Cada shard es una instancia de MongoDB que contiene una porción de los datos.</li>
+<li><strong>Config Servers</strong>: Almacenan la información de configuración y el estado del cluster.</li>
+<li><strong>Mongos</strong>: Actúa como un enrutador, dirigiendo las operaciones de los clientes a los shards apropiados.</li>
+</ol>
+</div><h2>Diagrama de un Cluster de Sharding</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Componente</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Shards</td>
+<td>Instancias de MongoDB que almacenan los datos distribuidos.</td>
+</tr>
+<tr>
+<td>Config Servers</td>
+<td>Almacenan la configuración y el estado del cluster.</td>
+</tr>
+<tr>
+<td>Mongos</td>
+<td>Enrutadores que dirigen las operaciones de los clientes a los shards.</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Configuración de la Fragmentación</h1>
+<div class='content'></div><h2>Paso 1: Configurar los Shards</h2>
+<div class='content'><p>Primero, debemos iniciar las instancias de MongoDB que actuarán como shards. Supongamos que tenemos tres servidores que queremos usar como shards.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbmljaWFyIGVsIHByaW1lciBzaGFyZAptb25nb2QgLS1zaGFyZHN2ciAtLXJlcGxTZXQgc2hhcmQxIC0tcG9ydCAyNzAxOCAtLWRicGF0aCAvZGF0YS9zaGFyZDEKCiMgSW5pY2lhciBlbCBzZWd1bmRvIHNoYXJkCm1vbmdvZCAtLXNoYXJkc3ZyIC0tcmVwbFNldCBzaGFyZDIgLS1wb3J0IDI3MDE5IC0tZGJwYXRoIC9kYXRhL3NoYXJkMgoKIyBJbmljaWFyIGVsIHRlcmNlciBzaGFyZAptb25nb2QgLS1zaGFyZHN2ciAtLXJlcGxTZXQgc2hhcmQzIC0tcG9ydCAyNzAyMCAtLWRicGF0aCAvZGF0YS9zaGFyZDM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Iniciar el primer shard
+mongod --shardsvr --replSet shard1 --port 27018 --dbpath /data/shard1
+
+# Iniciar el segundo shard
+mongod --shardsvr --replSet shard2 --port 27019 --dbpath /data/shard2
+
+# Iniciar el tercer shard
+mongod --shardsvr --replSet shard3 --port 27020 --dbpath /data/shard3</pre></div><div class='content'></div><h2>Paso 2: Configurar los Config Servers</h2>
+<div class='content'><p>Los config servers almacenan la información de configuración del cluster. Necesitamos al menos tres config servers para garantizar la alta disponibilidad.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbmljaWFyIGVsIHByaW1lciBjb25maWcgc2VydmVyCm1vbmdvZCAtLWNvbmZpZ3N2ciAtLXJlcGxTZXQgY29uZmlnUmVwbFNldCAtLXBvcnQgMjcwMjEgLS1kYnBhdGggL2RhdGEvY29uZmlnMQoKIyBJbmljaWFyIGVsIHNlZ3VuZG8gY29uZmlnIHNlcnZlcgptb25nb2QgLS1jb25maWdzdnIgLS1yZXBsU2V0IGNvbmZpZ1JlcGxTZXQgLS1wb3J0IDI3MDIyIC0tZGJwYXRoIC9kYXRhL2NvbmZpZzIKCiMgSW5pY2lhciBlbCB0ZXJjZXIgY29uZmlnIHNlcnZlcgptb25nb2QgLS1jb25maWdzdnIgLS1yZXBsU2V0IGNvbmZpZ1JlcGxTZXQgLS1wb3J0IDI3MDIzIC0tZGJwYXRoIC9kYXRhL2NvbmZpZzM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Iniciar el primer config server
+mongod --configsvr --replSet configReplSet --port 27021 --dbpath /data/config1
+
+# Iniciar el segundo config server
+mongod --configsvr --replSet configReplSet --port 27022 --dbpath /data/config2
+
+# Iniciar el tercer config server
+mongod --configsvr --replSet configReplSet --port 27023 --dbpath /data/config3</pre></div><div class='content'></div><h2>Paso 3: Iniciar el Mongos</h2>
+<div class='content'><p>El mongos actúa como un enrutador que dirige las operaciones de los clientes a los shards apropiados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbmljaWFyIGVsIG1vbmdvcwptb25nb3MgLS1jb25maWdkYiBjb25maWdSZXBsU2V0L2xvY2FsaG9zdDoyNzAyMSxsb2NhbGhvc3Q6MjcwMjIsbG9jYWxob3N0OjI3MDIzIC0tcG9ydCAyNzAxNw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Iniciar el mongos
+mongos --configdb configReplSet/localhost:27021,localhost:27022,localhost:27023 --port 27017</pre></div><div class='content'></div><h2>Paso 4: Añadir Shards al Cluster</h2>
+<div class='content'><p>Conectarse al mongos y añadir los shards al cluster.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29uZWN0YXJzZSBhbCBtb25nb3MKbW9uZ28gLS1wb3J0IDI3MDE3CgovLyBBw7FhZGlyIGxvcyBzaGFyZHMKc2guYWRkU2hhcmQoInNoYXJkMS9sb2NhbGhvc3Q6MjcwMTgiKQpzaC5hZGRTaGFyZCgic2hhcmQyL2xvY2FsaG9zdDoyNzAxOSIpCnNoLmFkZFNoYXJkKCJzaGFyZDMvbG9jYWxob3N0OjI3MDIwIik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Conectarse al mongos
+mongo --port 27017
+
+// A&ntilde;adir los shards
+sh.addShard(&quot;shard1/localhost:27018&quot;)
+sh.addShard(&quot;shard2/localhost:27019&quot;)
+sh.addShard(&quot;shard3/localhost:27020&quot;)</pre></div><div class='content'></div><h2>Paso 5: Habilitar la Fragmentación en una Colección</h2>
+<div class='content'><p>Finalmente, habilitamos la fragmentación en una base de datos y una colección específica.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSGFiaWxpdGFyIGxhIGZyYWdtZW50YWNpw7NuIGVuIGxhIGJhc2UgZGUgZGF0b3MKc2guZW5hYmxlU2hhcmRpbmcoIm1pQmFzZURlRGF0b3MiKQoKLy8gQ3JlYXIgdW4gw61uZGljZSBlbiBlbCBjYW1wbyBxdWUgc2UgdXNhcsOhIHBhcmEgZnJhZ21lbnRhcgpkYi5taUNvbGVjY2lvbi5jcmVhdGVJbmRleCh7IG1pQ2FtcG86IDEgfSkKCi8vIEhhYmlsaXRhciBsYSBmcmFnbWVudGFjacOzbiBlbiBsYSBjb2xlY2Npw7NuCnNoLnNoYXJkQ29sbGVjdGlvbigibWlCYXNlRGVEYXRvcy5taUNvbGVjY2lvbiIsIHsgbWlDYW1wbzogMSB9KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Habilitar la fragmentaci&oacute;n en la base de datos
+sh.enableSharding(&quot;miBaseDeDatos&quot;)
+
+// Crear un &iacute;ndice en el campo que se usar&aacute; para fragmentar
+db.miColeccion.createIndex({ miCampo: 1 })
+
+// Habilitar la fragmentaci&oacute;n en la colecci&oacute;n
+sh.shardCollection(&quot;miBaseDeDatos.miColeccion&quot;, { miCampo: 1 })</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar un Cluster de Sharding</h2>
+<div class='content'><ol>
+<li>Inicia tres instancias de MongoDB que actuarán como shards.</li>
+<li>Configura tres config servers.</li>
+<li>Inicia un mongos.</li>
+<li>Añade los shards al cluster.</li>
+<li>Habilita la fragmentación en una base de datos y una colección.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbmljaWFyIGxvcyBzaGFyZHMKbW9uZ29kIC0tc2hhcmRzdnIgLS1yZXBsU2V0IHNoYXJkMSAtLXBvcnQgMjcwMTggLS1kYnBhdGggL2RhdGEvc2hhcmQxCm1vbmdvZCAtLXNoYXJkc3ZyIC0tcmVwbFNldCBzaGFyZDIgLS1wb3J0IDI3MDE5IC0tZGJwYXRoIC9kYXRhL3NoYXJkMgptb25nb2QgLS1zaGFyZHN2ciAtLXJlcGxTZXQgc2hhcmQzIC0tcG9ydCAyNzAyMCAtLWRicGF0aCAvZGF0YS9zaGFyZDMKCiMgSW5pY2lhciBsb3MgY29uZmlnIHNlcnZlcnMKbW9uZ29kIC0tY29uZmlnc3ZyIC0tcmVwbFNldCBjb25maWdSZXBsU2V0IC0tcG9ydCAyNzAyMSAtLWRicGF0aCAvZGF0YS9jb25maWcxCm1vbmdvZCAtLWNvbmZpZ3N2ciAtLXJlcGxTZXQgY29uZmlnUmVwbFNldCAtLXBvcnQgMjcwMjIgLS1kYnBhdGggL2RhdGEvY29uZmlnMgptb25nb2QgLS1jb25maWdzdnIgLS1yZXBsU2V0IGNvbmZpZ1JlcGxTZXQgLS1wb3J0IDI3MDIzIC0tZGJwYXRoIC9kYXRhL2NvbmZpZzMKCiMgSW5pY2lhciBlbCBtb25nb3MKbW9uZ29zIC0tY29uZmlnZGIgY29uZmlnUmVwbFNldC9sb2NhbGhvc3Q6MjcwMjEsbG9jYWxob3N0OjI3MDIyLGxvY2FsaG9zdDoyNzAyMyAtLXBvcnQgMjcwMTcKCiMgQ29uZWN0YXJzZSBhbCBtb25nb3MgeSBhw7FhZGlyIGxvcyBzaGFyZHMKbW9uZ28gLS1wb3J0IDI3MDE3CnNoLmFkZFNoYXJkKCJzaGFyZDEvbG9jYWxob3N0OjI3MDE4IikKc2guYWRkU2hhcmQoInNoYXJkMi9sb2NhbGhvc3Q6MjcwMTkiKQpzaC5hZGRTaGFyZCgic2hhcmQzL2xvY2FsaG9zdDoyNzAyMCIpCgojIEhhYmlsaXRhciBsYSBmcmFnbWVudGFjacOzbiBlbiB1bmEgYmFzZSBkZSBkYXRvcyB5IGNvbGVjY2nDs24Kc2guZW5hYmxlU2hhcmRpbmcoIm1pQmFzZURlRGF0b3MiKQpkYi5taUNvbGVjY2lvbi5jcmVhdGVJbmRleCh7IG1pQ2FtcG86IDEgfSkKc2guc2hhcmRDb2xsZWN0aW9uKCJtaUJhc2VEZURhdG9zLm1pQ29sZWNjaW9uIiwgeyBtaUNhbXBvOiAxIH0p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Iniciar los shards
+mongod --shardsvr --replSet shard1 --port 27018 --dbpath /data/shard1
+mongod --shardsvr --replSet shard2 --port 27019 --dbpath /data/shard2
+mongod --shardsvr --replSet shard3 --port 27020 --dbpath /data/shard3
+
+# Iniciar los config servers
+mongod --configsvr --replSet configReplSet --port 27021 --dbpath /data/config1
+mongod --configsvr --replSet configReplSet --port 27022 --dbpath /data/config2
+mongod --configsvr --replSet configReplSet --port 27023 --dbpath /data/config3
+
+# Iniciar el mongos
+mongos --configdb configReplSet/localhost:27021,localhost:27022,localhost:27023 --port 27017
+
+# Conectarse al mongos y a&ntilde;adir los shards
+mongo --port 27017
+sh.addShard(&quot;shard1/localhost:27018&quot;)
+sh.addShard(&quot;shard2/localhost:27019&quot;)
+sh.addShard(&quot;shard3/localhost:27020&quot;)
+
+# Habilitar la fragmentaci&oacute;n en una base de datos y colecci&oacute;n
+sh.enableSharding(&quot;miBaseDeDatos&quot;)
+db.miColeccion.createIndex({ miCampo: 1 })
+sh.shardCollection(&quot;miBaseDeDatos.miColeccion&quot;, { miCampo: 1 })</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La fragmentación en MongoDB es una técnica poderosa para manejar grandes volúmenes de datos y altas tasas de tráfico mediante la distribución de datos en múltiples servidores. En esta sección, hemos aprendido los conceptos básicos de la fragmentación, cómo configurar un cluster de sharding y cómo habilitar la fragmentación en una colección. Con esta base, estarás preparado para manejar bases de datos de gran escala de manera eficiente y efectiva.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-replication' title="Replicación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-transactions' title="Transacciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

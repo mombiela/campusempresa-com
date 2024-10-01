@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka con Elasticsearch</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/06-04-kafka-elasticsearch" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/06-04-kafka-elasticsearch" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/06-04-kafka-elasticsearch" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kafka/06-04-kafka-elasticsearch" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/06-04-kafka-elasticsearch" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-kafka-flink' title="Kafka con Flink">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka con Elasticsearch</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-real-world-kafka-use-cases' title="Casos de Uso de Kafka en el Mundo Real">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo integrar Apache Kafka con Elasticsearch para aprovechar las capacidades de búsqueda y análisis en tiempo real de Elasticsearch. Esta integración es útil para casos de uso como la monitorización de logs, análisis de datos en tiempo real y más.</p>
+</div><h1>¿Qué es Elasticsearch?</h1>
+<div class='content'><p>Elasticsearch es un motor de búsqueda y análisis distribuido, basado en Lucene. Es conocido por su capacidad de búsqueda en tiempo real, escalabilidad y facilidad de uso. Elasticsearch es parte del stack ELK (Elasticsearch, Logstash, Kibana), que se utiliza comúnmente para la gestión y análisis de logs.</p>
+</div><h1>¿Por qué integrar Kafka con Elasticsearch?</h1>
+<div class='content'><p>Integrar Kafka con Elasticsearch permite:</p>
+<ul>
+<li><strong>Ingesta de datos en tiempo real</strong>: Kafka puede actuar como un buffer para datos en tiempo real que luego se indexan en Elasticsearch.</li>
+<li><strong>Escalabilidad</strong>: Kafka maneja la ingesta de datos a gran escala, mientras que Elasticsearch proporciona capacidades de búsqueda y análisis.</li>
+<li><strong>Desacoplamiento</strong>: Kafka desacopla la producción y el consumo de datos, permitiendo que múltiples sistemas consuman los mismos datos.</li>
+</ul>
+</div><h1>Arquitectura de la Integración</h1>
+<div class='content'><p>La arquitectura típica para integrar Kafka con Elasticsearch incluye:</p>
+<ol>
+<li><strong>Productores de Kafka</strong>: Aplicaciones que envían datos a Kafka.</li>
+<li><strong>Kafka</strong>: Actúa como un buffer y sistema de mensajería.</li>
+<li><strong>Kafka Connect</strong>: Un marco para conectar Kafka con otros sistemas, en este caso, Elasticsearch.</li>
+<li><strong>Elasticsearch</strong>: Almacena e indexa los datos para búsqueda y análisis.</li>
+</ol>
+</div><h1>Configuración de Kafka Connect para Elasticsearch</h1>
+<div class='content'></div><h2>Paso 1: Configurar Kafka Connect</h2>
+<div class='content'><p>Kafka Connect es una herramienta que facilita la integración de Kafka con otros sistemas. Para conectar Kafka con Elasticsearch, utilizaremos el conector de Elasticsearch proporcionado por Confluent.</p>
+<ol>
+<li>
+<p><strong>Descargar el conector de Elasticsearch</strong>:</p>
+<pre><code class="language-sh">confluent-hub install confluentinc/kafka-connect-elasticsearch:latest
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar el conector</strong>:
+Crea un archivo de configuración para el conector, por ejemplo <code>elasticsearch-sink.properties</code>:</p>
+<pre><code class="language-properties">name=elasticsearch-sink
+connector.class=io.confluent.connect.elasticsearch.ElasticsearchSinkConnector
+tasks.max=1
+topics=your-kafka-topic
+key.ignore=true
+connection.url=http://localhost:9200
+type.name=kafka-connect
+</code></pre>
+</li>
+</ol>
+</div><h2>Paso 2: Iniciar Kafka Connect</h2>
+<div class='content'><p>Inicia Kafka Connect con la configuración del conector:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29ubmVjdC1zdGFuZGFsb25lIGNvbm5lY3Qtc3RhbmRhbG9uZS5wcm9wZXJ0aWVzIGVsYXN0aWNzZWFyY2gtc2luay5wcm9wZXJ0aWVz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>connect-standalone connect-standalone.properties elasticsearch-sink.properties</pre></div><div class='content'></div><h2>Paso 3: Verificar la Integración</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Enviar mensajes a Kafka</strong>:
+Puedes usar la consola del productor de Kafka para enviar mensajes:</p>
+<pre><code class="language-sh">kafka-console-producer --broker-list localhost:9092 --topic your-kafka-topic
+&gt; {&quot;field1&quot;: &quot;value1&quot;, &quot;field2&quot;: &quot;value2&quot;}
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar en Elasticsearch</strong>:
+Usa la API de Elasticsearch para verificar que los datos se han indexado:</p>
+<pre><code class="language-sh">curl -X GET &quot;localhost:9200/your-kafka-topic/_search?pretty&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Productor de Kafka en Python</h2>
+<div class='content'><p>A continuación, un ejemplo de un productor de Kafka en Python que envía datos a un tema de Kafka:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBrYWZrYSBpbXBvcnQgS2Fma2FQcm9kdWNlcgppbXBvcnQganNvbgoKcHJvZHVjZXIgPSBLYWZrYVByb2R1Y2VyKGJvb3RzdHJhcF9zZXJ2ZXJzPSdsb2NhbGhvc3Q6OTA5MicsCiAgICAgICAgICAgICAgICAgICAgICAgICB2YWx1ZV9zZXJpYWxpemVyPWxhbWJkYSB2OiBqc29uLmR1bXBzKHYpLmVuY29kZSgndXRmLTgnKSkKCmRhdGEgPSB7J2ZpZWxkMSc6ICd2YWx1ZTEnLCAnZmllbGQyJzogJ3ZhbHVlMid9CnByb2R1Y2VyLnNlbmQoJ3lvdXIta2Fma2EtdG9waWMnLCB2YWx1ZT1kYXRhKQpwcm9kdWNlci5mbHVzaCgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from kafka import KafkaProducer
+import json
+
+producer = KafkaProducer(bootstrap_servers='localhost:9092',
+                         value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+
+data = {'field1': 'value1', 'field2': 'value2'}
+producer.send('your-kafka-topic', value=data)
+producer.flush()</pre></div><div class='content'></div><h2>Verificación en Elasticsearch</h2>
+<div class='content'><p>Después de enviar los datos, puedes verificar en Elasticsearch:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtWCBHRVQgImxvY2FsaG9zdDo5MjAwL3lvdXIta2Fma2EtdG9waWMvX3NlYXJjaD9wcmV0dHki"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -X GET &quot;localhost:9200/your-kafka-topic/_search?pretty&quot;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar y Verificar la Integración</h2>
+<div class='content'><ol>
+<li><strong>Configura Kafka Connect con el conector de Elasticsearch</strong>.</li>
+<li><strong>Envía datos a un tema de Kafka</strong>.</li>
+<li><strong>Verifica que los datos se han indexado en Elasticsearch</strong>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configura Kafka Connect</strong>:</p>
+<ul>
+<li>Descarga e instala el conector de Elasticsearch.</li>
+<li>Crea el archivo de configuración <code>elasticsearch-sink.properties</code>.</li>
+<li>Inicia Kafka Connect con la configuración.</li>
+</ul>
+</li>
+<li>
+<p><strong>Envía datos a Kafka</strong>:</p>
+<ul>
+<li>Usa el productor de Kafka en Python o la consola del productor de Kafka.</li>
+</ul>
+</li>
+<li>
+<p><strong>Verifica en Elasticsearch</strong>:</p>
+<ul>
+<li>Usa la API de Elasticsearch para verificar los datos.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido cómo integrar Apache Kafka con Elasticsearch utilizando Kafka Connect. Esta integración permite la ingesta de datos en tiempo real y proporciona capacidades de búsqueda y análisis avanzadas. Hemos cubierto la configuración de Kafka Connect, la verificación de la integración y proporcionado un ejemplo práctico y un ejercicio para reforzar los conceptos aprendidos.</p>
+<p>En el próximo módulo, exploraremos cómo integrar Kafka con otros sistemas como Hadoop, Spark y Flink.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-kafka-flink' title="Kafka con Flink">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-real-world-kafka-use-cases' title="Casos de Uso de Kafka en el Mundo Real">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

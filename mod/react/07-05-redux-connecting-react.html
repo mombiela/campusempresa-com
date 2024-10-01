@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redux: Conectando a React</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/react/07-05-redux-connecting-react" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/react/07-05-redux-connecting-react" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/react/07-05-redux-connecting-react" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/react/07-05-redux-connecting-react" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/react/07-05-redux-connecting-react" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-redux-actions-reducers' title="Redux: Acciones y Reductores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Redux: Conectando a React</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-performance-optimization-techniques' title="Técnicas de Optimización del Rendimiento en React">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta lección, aprenderemos cómo conectar Redux con una aplicación React. Redux es una biblioteca para la gestión del estado que nos permite manejar el estado de nuestra aplicación de manera predecible y centralizada. Conectar Redux a React nos permite acceder al estado global de la aplicación y despachar acciones desde nuestros componentes.</p>
+</div><h1>Objetivos de la Lección</h1>
+<div class='content'><ul>
+<li>Entender cómo conectar Redux con React.</li>
+<li>Aprender a usar el <code>Provider</code> de <code>react-redux</code>.</li>
+<li>Utilizar los hooks <code>useSelector</code> y <code>useDispatch</code> para interactuar con el store de Redux.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Conocimiento básico de React.</li>
+<li>Familiaridad con los conceptos de Redux, como acciones, reductores y el store.</li>
+</ul>
+</div><h1>Pasos para Conectar Redux a React</h1>
+<div class='content'></div><h2>1. Instalación de Dependencias</h2>
+<div class='content'><p>Primero, necesitamos instalar las dependencias necesarias. Asegúrate de tener <code>redux</code> y <code>react-redux</code> instalados en tu proyecto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgcmVkdXggcmVhY3QtcmVkdXg="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install redux react-redux</pre></div><div class='content'></div><h2>2. Configuración del Store</h2>
+<div class='content'><p>Crea un archivo <code>store.js</code> donde configuraremos nuestro store de Redux.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3RvcmUuanMKaW1wb3J0IHsgY3JlYXRlU3RvcmUgfSBmcm9tICdyZWR1eCc7CmltcG9ydCByb290UmVkdWNlciBmcm9tICcuL3JlZHVjZXJzJzsKCmNvbnN0IHN0b3JlID0gY3JlYXRlU3RvcmUocm9vdFJlZHVjZXIpOwoKZXhwb3J0IGRlZmF1bHQgc3RvcmU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// store.js
+import { createStore } from 'redux';
+import rootReducer from './reducers';
+
+const store = createStore(rootReducer);
+
+export default store;</pre></div><div class='content'></div><h2>3. Creación del Reducer</h2>
+<div class='content'><p>Crea un archivo <code>reducers.js</code> donde definiremos nuestro reductor. Un reductor es una función que toma el estado actual y una acción, y devuelve un nuevo estado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVkdWNlcnMuanMKY29uc3QgaW5pdGlhbFN0YXRlID0gewogIGNvdW50OiAwCn07Cgpjb25zdCByb290UmVkdWNlciA9IChzdGF0ZSA9IGluaXRpYWxTdGF0ZSwgYWN0aW9uKSA9PiB7CiAgc3dpdGNoIChhY3Rpb24udHlwZSkgewogICAgY2FzZSAnSU5DUkVNRU5UJzoKICAgICAgcmV0dXJuIHsKICAgICAgICAuLi5zdGF0ZSwKICAgICAgICBjb3VudDogc3RhdGUuY291bnQgKyAxCiAgICAgIH07CiAgICBjYXNlICdERUNSRU1FTlQnOgogICAgICByZXR1cm4gewogICAgICAgIC4uLnN0YXRlLAogICAgICAgIGNvdW50OiBzdGF0ZS5jb3VudCAtIDEKICAgICAgfTsKICAgIGRlZmF1bHQ6CiAgICAgIHJldHVybiBzdGF0ZTsKICB9Cn07CgpleHBvcnQgZGVmYXVsdCByb290UmVkdWNlcjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// reducers.js
+const initialState = {
+  count: 0
+};
+
+const rootReducer = (state = initialState, action) =&gt; {
+  switch (action.type) {
+    case 'INCREMENT':
+      return {
+        ...state,
+        count: state.count + 1
+      };
+    case 'DECREMENT':
+      return {
+        ...state,
+        count: state.count - 1
+      };
+    default:
+      return state;
+  }
+};
+
+export default rootReducer;</pre></div><div class='content'></div><h2>4. Proveer el Store a la Aplicación</h2>
+<div class='content'><p>Usa el componente <code>Provider</code> de <code>react-redux</code> para envolver tu aplicación y pasarle el store.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gaW5kZXguanMKaW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IFJlYWN0RE9NIGZyb20gJ3JlYWN0LWRvbSc7CmltcG9ydCB7IFByb3ZpZGVyIH0gZnJvbSAncmVhY3QtcmVkdXgnOwppbXBvcnQgQXBwIGZyb20gJy4vQXBwJzsKaW1wb3J0IHN0b3JlIGZyb20gJy4vc3RvcmUnOwoKUmVhY3RET00ucmVuZGVyKAogIDxQcm92aWRlciBzdG9yZT17c3RvcmV9PgogICAgPEFwcCAvPgogIDwvUHJvdmlkZXI+LAogIGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdyb290JykKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// index.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import App from './App';
+import store from './store';
+
+ReactDOM.render(
+  &lt;Provider store={store}&gt;
+    &lt;App /&gt;
+  &lt;/Provider&gt;,
+  document.getElementById('root')
+);</pre></div><div class='content'></div><h2>5. Conectar Componentes con Redux</h2>
+<div class='content'><p>Ahora, vamos a conectar nuestros componentes a Redux usando los hooks <code>useSelector</code> y <code>useDispatch</code>.</p>
+<h4>5.1. Usar <code>useSelector</code> para Leer el Estado</h4>
+<p>El hook <code>useSelector</code> nos permite acceder al estado del store.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ291bnRlci5qcwppbXBvcnQgUmVhY3QgZnJvbSAncmVhY3QnOwppbXBvcnQgeyB1c2VTZWxlY3RvciB9IGZyb20gJ3JlYWN0LXJlZHV4JzsKCmNvbnN0IENvdW50ZXIgPSAoKSA9PiB7CiAgY29uc3QgY291bnQgPSB1c2VTZWxlY3Rvcigoc3RhdGUpID0+IHN0YXRlLmNvdW50KTsKCiAgcmV0dXJuICgKICAgIDxkaXY+CiAgICAgIDxoMT5Db3VudDoge2NvdW50fTwvaDE+CiAgICA8L2Rpdj4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgQ291bnRlcjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Counter.js
+import React from 'react';
+import { useSelector } from 'react-redux';
+
+const Counter = () =&gt; {
+  const count = useSelector((state) =&gt; state.count);
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Count: {count}&lt;/h1&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default Counter;</pre></div><div class='content'><h4>5.2. Usar <code>useDispatch</code> para Despachar Acciones</h4>
+<p>El hook <code>useDispatch</code> nos permite despachar acciones al store.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ291bnRlckNvbnRyb2xzLmpzCmltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7CmltcG9ydCB7IHVzZURpc3BhdGNoIH0gZnJvbSAncmVhY3QtcmVkdXgnOwoKY29uc3QgQ291bnRlckNvbnRyb2xzID0gKCkgPT4gewogIGNvbnN0IGRpc3BhdGNoID0gdXNlRGlzcGF0Y2goKTsKCiAgcmV0dXJuICgKICAgIDxkaXY+CiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gZGlzcGF0Y2goeyB0eXBlOiAnSU5DUkVNRU5UJyB9KX0+SW5jcmVtZW50PC9idXR0b24+CiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gZGlzcGF0Y2goeyB0eXBlOiAnREVDUkVNRU5UJyB9KX0+RGVjcmVtZW50PC9idXR0b24+CiAgICA8L2Rpdj4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgQ291bnRlckNvbnRyb2xzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// CounterControls.js
+import React from 'react';
+import { useDispatch } from 'react-redux';
+
+const CounterControls = () =&gt; {
+  const dispatch = useDispatch();
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'INCREMENT' })}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'DECREMENT' })}&gt;Decrement&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default CounterControls;</pre></div><div class='content'></div><h2>6. Integrar los Componentes en la Aplicación</h2>
+<div class='content'><p>Finalmente, integra los componentes en tu aplicación principal.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQXBwLmpzCmltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7CmltcG9ydCBDb3VudGVyIGZyb20gJy4vQ291bnRlcic7CmltcG9ydCBDb3VudGVyQ29udHJvbHMgZnJvbSAnLi9Db3VudGVyQ29udHJvbHMnOwoKY29uc3QgQXBwID0gKCkgPT4gewogIHJldHVybiAoCiAgICA8ZGl2PgogICAgICA8Q291bnRlciAvPgogICAgICA8Q291bnRlckNvbnRyb2xzIC8+CiAgICA8L2Rpdj4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgQXBwOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// App.js
+import React from 'react';
+import Counter from './Counter';
+import CounterControls from './CounterControls';
+
+const App = () =&gt; {
+  return (
+    &lt;div&gt;
+      &lt;Counter /&gt;
+      &lt;CounterControls /&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default App;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea una nueva acción llamada <code>RESET</code> que restablezca el contador a 0.</li>
+<li>Modifica el reductor para manejar la nueva acción <code>RESET</code>.</li>
+<li>Añade un nuevo botón en <code>CounterControls</code> que despache la acción <code>RESET</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>1. Crear la Acción <code>RESET</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVkdWNlcnMuanMKY29uc3Qgcm9vdFJlZHVjZXIgPSAoc3RhdGUgPSBpbml0aWFsU3RhdGUsIGFjdGlvbikgPT4gewogIHN3aXRjaCAoYWN0aW9uLnR5cGUpIHsKICAgIC8vIC4uLiBvdHJvcyBjYXNvcwogICAgY2FzZSAnUkVTRVQnOgogICAgICByZXR1cm4gewogICAgICAgIC4uLnN0YXRlLAogICAgICAgIGNvdW50OiAwCiAgICAgIH07CiAgICBkZWZhdWx0OgogICAgICByZXR1cm4gc3RhdGU7CiAgfQp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// reducers.js
+const rootReducer = (state = initialState, action) =&gt; {
+  switch (action.type) {
+    // ... otros casos
+    case 'RESET':
+      return {
+        ...state,
+        count: 0
+      };
+    default:
+      return state;
+  }
+};</pre></div><div class='content'><h4>2. Añadir el Botón de Reset</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ291bnRlckNvbnRyb2xzLmpzCmltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7CmltcG9ydCB7IHVzZURpc3BhdGNoIH0gZnJvbSAncmVhY3QtcmVkdXgnOwoKY29uc3QgQ291bnRlckNvbnRyb2xzID0gKCkgPT4gewogIGNvbnN0IGRpc3BhdGNoID0gdXNlRGlzcGF0Y2goKTsKCiAgcmV0dXJuICgKICAgIDxkaXY+CiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gZGlzcGF0Y2goeyB0eXBlOiAnSU5DUkVNRU5UJyB9KX0+SW5jcmVtZW50PC9idXR0b24+CiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gZGlzcGF0Y2goeyB0eXBlOiAnREVDUkVNRU5UJyB9KX0+RGVjcmVtZW50PC9idXR0b24+CiAgICAgIDxidXR0b24gb25DbGljaz17KCkgPT4gZGlzcGF0Y2goeyB0eXBlOiAnUkVTRVQnIH0pfT5SZXNldDwvYnV0dG9uPgogICAgPC9kaXY+CiAgKTsKfTsKCmV4cG9ydCBkZWZhdWx0IENvdW50ZXJDb250cm9sczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// CounterControls.js
+import React from 'react';
+import { useDispatch } from 'react-redux';
+
+const CounterControls = () =&gt; {
+  const dispatch = useDispatch();
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'INCREMENT' })}&gt;Increment&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'DECREMENT' })}&gt;Decrement&lt;/button&gt;
+      &lt;button onClick={() =&gt; dispatch({ type: 'RESET' })}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default CounterControls;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido cómo conectar Redux con una aplicación React utilizando <code>react-redux</code>. Hemos cubierto cómo configurar el store, crear reductores, y usar los hooks <code>useSelector</code> y <code>useDispatch</code> para interactuar con el estado global. Con estos conocimientos, puedes gestionar el estado de tu aplicación de manera más eficiente y predecible.</p>
+<p>En la próxima lección, exploraremos técnicas de optimización del rendimiento en React. ¡Sigue adelante!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-redux-actions-reducers' title="Redux: Acciones y Reductores">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-performance-optimization-techniques' title="Técnicas de Optimización del Rendimiento en React">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

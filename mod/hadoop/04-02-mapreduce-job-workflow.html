@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flujo de Trabajo de un Job MapReduce</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/04-02-mapreduce-job-workflow" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/04-02-mapreduce-job-workflow" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/04-02-mapreduce-job-workflow" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/hadoop/04-02-mapreduce-job-workflow" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/04-02-mapreduce-job-workflow" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-mapreduce' title="Introducción a MapReduce">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Flujo de Trabajo de un Job MapReduce</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-writing-a-mapreduce-program' title="Escribiendo un Programa MapReduce">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos el flujo de trabajo de un job MapReduce, desde la entrada de datos hasta la salida final. MapReduce es un modelo de programación que permite el procesamiento de grandes volúmenes de datos de manera distribuida. Comprender el flujo de trabajo es crucial para escribir programas eficientes y optimizados.</p>
+</div><h1>1. Introducción al Flujo de Trabajo de MapReduce</h1>
+<div class='content'><p>El flujo de trabajo de un job MapReduce se puede dividir en varias etapas clave:</p>
+<ol>
+<li><strong>Input Splits</strong>: División de los datos de entrada en fragmentos manejables.</li>
+<li><strong>Map Phase</strong>: Procesamiento de los datos de entrada y generación de pares clave-valor intermedios.</li>
+<li><strong>Shuffle and Sort</strong>: Agrupación y ordenación de los pares clave-valor intermedios.</li>
+<li><strong>Reduce Phase</strong>: Procesamiento de los pares clave-valor agrupados para generar la salida final.</li>
+<li><strong>Output</strong>: Escritura de los resultados en el sistema de archivos.</li>
+</ol>
+</div><h1>2. Desglose del Flujo de Trabajo</h1>
+<div class='content'></div><h2>2.1 Input Splits</h2>
+<div class='content'><p>Antes de que comience el procesamiento, los datos de entrada se dividen en fragmentos llamados &quot;input splits&quot;. Cada split es procesado por una tarea de mapeo (mapper).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW5wdXQgRGF0YQp8LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS18CnwgICAgIFNwbGl0IDEgICAgfCAgICAgU3BsaXQgMiAgICB8ICAgICBTcGxpdCAzICAgIHwKfC0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tfA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Input Data
+|----------------|----------------|----------------|
+|     Split 1    |     Split 2    |     Split 3    |
+|----------------|----------------|----------------|</pre></div><div class='content'></div><h2>2.2 Map Phase</h2>
+<div class='content'><p>Cada mapper procesa un split de datos y genera pares clave-valor intermedios. La función <code>map</code> toma una entrada y produce una lista de pares clave-valor.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFRva2VuaXplck1hcHBlciBleHRlbmRzIE1hcHBlcjxPYmplY3QsIFRleHQsIFRleHQsIEludFdyaXRhYmxlPiB7CiAgICBwcml2YXRlIGZpbmFsIHN0YXRpYyBJbnRXcml0YWJsZSBvbmUgPSBuZXcgSW50V3JpdGFibGUoMSk7CiAgICBwcml2YXRlIFRleHQgd29yZCA9IG5ldyBUZXh0KCk7CgogICAgcHVibGljIHZvaWQgbWFwKE9iamVjdCBrZXksIFRleHQgdmFsdWUsIENvbnRleHQgY29udGV4dCkgdGhyb3dzIElPRXhjZXB0aW9uLCBJbnRlcnJ1cHRlZEV4Y2VwdGlvbiB7CiAgICAgICAgU3RyaW5nVG9rZW5pemVyIGl0ciA9IG5ldyBTdHJpbmdUb2tlbml6ZXIodmFsdWUudG9TdHJpbmcoKSk7CiAgICAgICAgd2hpbGUgKGl0ci5oYXNNb3JlVG9rZW5zKCkpIHsKICAgICAgICAgICAgd29yZC5zZXQoaXRyLm5leHRUb2tlbigpKTsKICAgICAgICAgICAgY29udGV4dC53cml0ZSh3b3JkLCBvbmUpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class TokenizerMapper extends Mapper&lt;Object, Text, Text, IntWritable&gt; {
+    private final static IntWritable one = new IntWritable(1);
+    private Text word = new Text();
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        StringTokenizer itr = new StringTokenizer(value.toString());
+        while (itr.hasMoreTokens()) {
+            word.set(itr.nextToken());
+            context.write(word, one);
+        }
+    }
+}</pre></div><div class='content'></div><h2>2.3 Shuffle and Sort</h2>
+<div class='content'><p>Después de la fase de mapeo, los pares clave-valor intermedios se agrupan y ordenan por clave. Este proceso se conoce como &quot;shuffle and sort&quot;. Es una etapa crucial que asegura que todos los valores asociados con una clave específica se envíen al mismo reducer.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW50ZXJtZWRpYXRlIEtleS1WYWx1ZSBQYWlycwp8LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS18CnwgIChrZXkxLCB2YWwxKSAgfCAgKGtleTIsIHZhbDIpICB8ICAoa2V5MSwgdmFsMykgIHwKfC0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tfAogICAgICAgfCAgICAgICAgICAgICAgICAgIHwgICAgICAgICAgICAgICAgIHwKICAgICAgIHwgICAgICAgICAgICAgICAgICB8ICAgICAgICAgICAgICAgICB8CiAgICAgICB2ICAgICAgICAgICAgICAgICAgdiAgICAgICAgICAgICAgICAgdgp8LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS18CnwgIChrZXkxLCBbdmFsMSwgdmFsM10pICB8ICAoa2V5MiwgW3ZhbDJdKSAgfAp8LS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS18"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Intermediate Key-Value Pairs
+|----------------|----------------|----------------|
+|  (key1, val1)  |  (key2, val2)  |  (key1, val3)  |
+|----------------|----------------|----------------|
+       |                  |                 |
+       |                  |                 |
+       v                  v                 v
+|----------------|----------------|----------------|
+|  (key1, [val1, val3])  |  (key2, [val2])  |
+|----------------|----------------|----------------|</pre></div><div class='content'></div><h2>2.4 Reduce Phase</h2>
+<div class='content'><p>En la fase de reducción, cada reducer procesa los pares clave-valor agrupados y genera la salida final. La función <code>reduce</code> toma una clave y una lista de valores asociados y produce una lista de pares clave-valor de salida.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEludFN1bVJlZHVjZXIgZXh0ZW5kcyBSZWR1Y2VyPFRleHQsIEludFdyaXRhYmxlLCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgcHJpdmF0ZSBJbnRXcml0YWJsZSByZXN1bHQgPSBuZXcgSW50V3JpdGFibGUoKTsKCiAgICBwdWJsaWMgdm9pZCByZWR1Y2UoVGV4dCBrZXksIEl0ZXJhYmxlPEludFdyaXRhYmxlPiB2YWx1ZXMsIENvbnRleHQgY29udGV4dCkgdGhyb3dzIElPRXhjZXB0aW9uLCBJbnRlcnJ1cHRlZEV4Y2VwdGlvbiB7CiAgICAgICAgaW50IHN1bSA9IDA7CiAgICAgICAgZm9yIChJbnRXcml0YWJsZSB2YWwgOiB2YWx1ZXMpIHsKICAgICAgICAgICAgc3VtICs9IHZhbC5nZXQoKTsKICAgICAgICB9CiAgICAgICAgcmVzdWx0LnNldChzdW0pOwogICAgICAgIGNvbnRleHQud3JpdGUoa2V5LCByZXN1bHQpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class IntSumReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+    private IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable val : values) {
+            sum += val.get();
+        }
+        result.set(sum);
+        context.write(key, result);
+    }
+}</pre></div><div class='content'></div><h2>2.5 Output</h2>
+<div class='content'><p>Finalmente, los resultados de la fase de reducción se escriben en el sistema de archivos. Este es el resultado final del job MapReduce.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("T3V0cHV0IERhdGEKfC0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLXwKfCAgKGtleTEsIHJlc3VsdDEpICB8ICAoa2V5MiwgcmVzdWx0MikgIHwKfC0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLXw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Output Data
+|----------------|----------------|
+|  (key1, result1)  |  (key2, result2)  |
+|----------------|----------------|</pre></div><div class='content'></div><h1>3. Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a ver un ejemplo práctico de un job MapReduce que cuenta la frecuencia de palabras en un conjunto de documentos.</p>
+</div><h2>3.1 Código del Mapper</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFRva2VuaXplck1hcHBlciBleHRlbmRzIE1hcHBlcjxPYmplY3QsIFRleHQsIFRleHQsIEludFdyaXRhYmxlPiB7CiAgICBwcml2YXRlIGZpbmFsIHN0YXRpYyBJbnRXcml0YWJsZSBvbmUgPSBuZXcgSW50V3JpdGFibGUoMSk7CiAgICBwcml2YXRlIFRleHQgd29yZCA9IG5ldyBUZXh0KCk7CgogICAgcHVibGljIHZvaWQgbWFwKE9iamVjdCBrZXksIFRleHQgdmFsdWUsIENvbnRleHQgY29udGV4dCkgdGhyb3dzIElPRXhjZXB0aW9uLCBJbnRlcnJ1cHRlZEV4Y2VwdGlvbiB7CiAgICAgICAgU3RyaW5nVG9rZW5pemVyIGl0ciA9IG5ldyBTdHJpbmdUb2tlbml6ZXIodmFsdWUudG9TdHJpbmcoKSk7CiAgICAgICAgd2hpbGUgKGl0ci5oYXNNb3JlVG9rZW5zKCkpIHsKICAgICAgICAgICAgd29yZC5zZXQoaXRyLm5leHRUb2tlbigpKTsKICAgICAgICAgICAgY29udGV4dC53cml0ZSh3b3JkLCBvbmUpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class TokenizerMapper extends Mapper&lt;Object, Text, Text, IntWritable&gt; {
+    private final static IntWritable one = new IntWritable(1);
+    private Text word = new Text();
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        StringTokenizer itr = new StringTokenizer(value.toString());
+        while (itr.hasMoreTokens()) {
+            word.set(itr.nextToken());
+            context.write(word, one);
+        }
+    }
+}</pre></div><div class='content'></div><h2>3.2 Código del Reducer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEludFN1bVJlZHVjZXIgZXh0ZW5kcyBSZWR1Y2VyPFRleHQsIEludFdyaXRhYmxlLCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgcHJpdmF0ZSBJbnRXcml0YWJsZSByZXN1bHQgPSBuZXcgSW50V3JpdGFibGUoKTsKCiAgICBwdWJsaWMgdm9pZCByZWR1Y2UoVGV4dCBrZXksIEl0ZXJhYmxlPEludFdyaXRhYmxlPiB2YWx1ZXMsIENvbnRleHQgY29udGV4dCkgdGhyb3dzIElPRXhjZXB0aW9uLCBJbnRlcnJ1cHRlZEV4Y2VwdGlvbiB7CiAgICAgICAgaW50IHN1bSA9IDA7CiAgICAgICAgZm9yIChJbnRXcml0YWJsZSB2YWwgOiB2YWx1ZXMpIHsKICAgICAgICAgICAgc3VtICs9IHZhbC5nZXQoKTsKICAgICAgICB9CiAgICAgICAgcmVzdWx0LnNldChzdW0pOwogICAgICAgIGNvbnRleHQud3JpdGUoa2V5LCByZXN1bHQpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class IntSumReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+    private IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable val : values) {
+            sum += val.get();
+        }
+        result.set(sum);
+        context.write(key, result);
+    }
+}</pre></div><div class='content'></div><h2>3.3 Configuración del Job</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFdvcmRDb3VudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBDb25maWd1cmF0aW9uIGNvbmYgPSBuZXcgQ29uZmlndXJhdGlvbigpOwogICAgICAgIEpvYiBqb2IgPSBKb2IuZ2V0SW5zdGFuY2UoY29uZiwgIndvcmQgY291bnQiKTsKICAgICAgICBqb2Iuc2V0SmFyQnlDbGFzcyhXb3JkQ291bnQuY2xhc3MpOwogICAgICAgIGpvYi5zZXRNYXBwZXJDbGFzcyhUb2tlbml6ZXJNYXBwZXIuY2xhc3MpOwogICAgICAgIGpvYi5zZXRDb21iaW5lckNsYXNzKEludFN1bVJlZHVjZXIuY2xhc3MpOwogICAgICAgIGpvYi5zZXRSZWR1Y2VyQ2xhc3MoSW50U3VtUmVkdWNlci5jbGFzcyk7CiAgICAgICAgam9iLnNldE91dHB1dEtleUNsYXNzKFRleHQuY2xhc3MpOwogICAgICAgIGpvYi5zZXRPdXRwdXRWYWx1ZUNsYXNzKEludFdyaXRhYmxlLmNsYXNzKTsKICAgICAgICBGaWxlSW5wdXRGb3JtYXQuYWRkSW5wdXRQYXRoKGpvYiwgbmV3IFBhdGgoYXJnc1swXSkpOwogICAgICAgIEZpbGVPdXRwdXRGb3JtYXQuc2V0T3V0cHV0UGF0aChqb2IsIG5ldyBQYXRoKGFyZ3NbMV0pKTsKICAgICAgICBTeXN0ZW0uZXhpdChqb2Iud2FpdEZvckNvbXBsZXRpb24odHJ1ZSkgPyAwIDogMSk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class WordCount {
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, &quot;word count&quot;);
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(TokenizerMapper.class);
+        job.setCombinerClass(IntSumReducer.class);
+        job.setReducerClass(IntSumReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</pre></div><div class='content'></div><h1>4. Ejercicio Práctico</h1>
+<div class='content'><p><strong>Ejercicio:</strong> Escribe un programa MapReduce que cuente la frecuencia de caracteres en un conjunto de documentos.</p>
+</div><h2>Solución</h2>
+<div class='content'><h4>Mapper</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIENoYXJDb3VudE1hcHBlciBleHRlbmRzIE1hcHBlcjxPYmplY3QsIFRleHQsIFRleHQsIEludFdyaXRhYmxlPiB7CiAgICBwcml2YXRlIGZpbmFsIHN0YXRpYyBJbnRXcml0YWJsZSBvbmUgPSBuZXcgSW50V3JpdGFibGUoMSk7CiAgICBwcml2YXRlIFRleHQgY2hhcmFjdGVyID0gbmV3IFRleHQoKTsKCiAgICBwdWJsaWMgdm9pZCBtYXAoT2JqZWN0IGtleSwgVGV4dCB2YWx1ZSwgQ29udGV4dCBjb250ZXh0KSB0aHJvd3MgSU9FeGNlcHRpb24sIEludGVycnVwdGVkRXhjZXB0aW9uIHsKICAgICAgICBmb3IgKGNoYXIgYyA6IHZhbHVlLnRvU3RyaW5nKCkudG9DaGFyQXJyYXkoKSkgewogICAgICAgICAgICBjaGFyYWN0ZXIuc2V0KENoYXJhY3Rlci50b1N0cmluZyhjKSk7CiAgICAgICAgICAgIGNvbnRleHQud3JpdGUoY2hhcmFjdGVyLCBvbmUpOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class CharCountMapper extends Mapper&lt;Object, Text, Text, IntWritable&gt; {
+    private final static IntWritable one = new IntWritable(1);
+    private Text character = new Text();
+
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+        for (char c : value.toString().toCharArray()) {
+            character.set(Character.toString(c));
+            context.write(character, one);
+        }
+    }
+}</pre></div><div class='content'><h4>Reducer</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIENoYXJDb3VudFJlZHVjZXIgZXh0ZW5kcyBSZWR1Y2VyPFRleHQsIEludFdyaXRhYmxlLCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgcHJpdmF0ZSBJbnRXcml0YWJsZSByZXN1bHQgPSBuZXcgSW50V3JpdGFibGUoKTsKCiAgICBwdWJsaWMgdm9pZCByZWR1Y2UoVGV4dCBrZXksIEl0ZXJhYmxlPEludFdyaXRhYmxlPiB2YWx1ZXMsIENvbnRleHQgY29udGV4dCkgdGhyb3dzIElPRXhjZXB0aW9uLCBJbnRlcnJ1cHRlZEV4Y2VwdGlvbiB7CiAgICAgICAgaW50IHN1bSA9IDA7CiAgICAgICAgZm9yIChJbnRXcml0YWJsZSB2YWwgOiB2YWx1ZXMpIHsKICAgICAgICAgICAgc3VtICs9IHZhbC5nZXQoKTsKICAgICAgICB9CiAgICAgICAgcmVzdWx0LnNldChzdW0pOwogICAgICAgIGNvbnRleHQud3JpdGUoa2V5LCByZXN1bHQpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class CharCountReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+    private IntWritable result = new IntWritable();
+
+    public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) throws IOException, InterruptedException {
+        int sum = 0;
+        for (IntWritable val : values) {
+            sum += val.get();
+        }
+        result.set(sum);
+        context.write(key, result);
+    }
+}</pre></div><div class='content'><h4>Configuración del Job</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIENoYXJDb3VudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBDb25maWd1cmF0aW9uIGNvbmYgPSBuZXcgQ29uZmlndXJhdGlvbigpOwogICAgICAgIEpvYiBqb2IgPSBKb2IuZ2V0SW5zdGFuY2UoY29uZiwgImNoYXIgY291bnQiKTsKICAgICAgICBqb2Iuc2V0SmFyQnlDbGFzcyhDaGFyQ291bnQuY2xhc3MpOwogICAgICAgIGpvYi5zZXRNYXBwZXJDbGFzcyhDaGFyQ291bnRNYXBwZXIuY2xhc3MpOwogICAgICAgIGpvYi5zZXRDb21iaW5lckNsYXNzKENoYXJDb3VudFJlZHVjZXIuY2xhc3MpOwogICAgICAgIGpvYi5zZXRSZWR1Y2VyQ2xhc3MoQ2hhckNvdW50UmVkdWNlci5jbGFzcyk7CiAgICAgICAgam9iLnNldE91dHB1dEtleUNsYXNzKFRleHQuY2xhc3MpOwogICAgICAgIGpvYi5zZXRPdXRwdXRWYWx1ZUNsYXNzKEludFdyaXRhYmxlLmNsYXNzKTsKICAgICAgICBGaWxlSW5wdXRGb3JtYXQuYWRkSW5wdXRQYXRoKGpvYiwgbmV3IFBhdGgoYXJnc1swXSkpOwogICAgICAgIEZpbGVPdXRwdXRGb3JtYXQuc2V0T3V0cHV0UGF0aChqb2IsIG5ldyBQYXRoKGFyZ3NbMV0pKTsKICAgICAgICBTeXN0ZW0uZXhpdChqb2Iud2FpdEZvckNvbXBsZXRpb24odHJ1ZSkgPyAwIDogMSk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class CharCount {
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, &quot;char count&quot;);
+        job.setJarByClass(CharCount.class);
+        job.setMapperClass(CharCountMapper.class);
+        job.setCombinerClass(CharCountReducer.class);
+        job.setReducerClass(CharCountReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</pre></div><div class='content'></div><h1>5. Conclusión</h1>
+<div class='content'><p>En esta sección, hemos desglosado el flujo de trabajo de un job MapReduce, desde la entrada de datos hasta la salida final. Hemos visto cómo se dividen los datos, cómo se procesan en la fase de mapeo, cómo se agrupan y ordenan, y finalmente, cómo se reducen para generar la salida final. También hemos proporcionado un ejemplo práctico y un ejercicio para reforzar los conceptos aprendidos.</p>
+<p>En el siguiente tema, profundizaremos en cómo escribir un programa MapReduce, abordando aspectos más detallados y avanzados de la programación MapReduce.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-introduction-to-mapreduce' title="Introducción a MapReduce">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-writing-a-mapreduce-program' title="Escribiendo un Programa MapReduce">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

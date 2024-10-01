@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canales</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/05-02-channels" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/05-02-channels" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/05-02-channels" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/go/05-02-channels" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/go/05-02-channels" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-goroutines' title="Goroutines">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Canales</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-select-statement' title="Instrucción Select">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Los canales en Go son una poderosa característica que permite la comunicación segura entre goroutines. Los canales proporcionan una forma de enviar y recibir valores entre goroutines, lo que facilita la sincronización y la coordinación de tareas concurrentes.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Definición de Canales</strong>: Un canal es un tipo de dato que permite enviar y recibir valores de un tipo específico entre goroutines.</li>
+<li><strong>Creación de Canales</strong>: Los canales se crean utilizando la función <code>make</code>.</li>
+<li><strong>Operaciones Básicas</strong>: Las operaciones principales con canales son el envío (<code>&lt;-</code>) y la recepción (<code>&lt;-</code>).</li>
+<li><strong>Canales Bufferizados y No Bufferizados</strong>: Los canales pueden ser bufferizados (con capacidad) o no bufferizados (sin capacidad).</li>
+</ol>
+</div><h1>Creación de Canales</h1>
+<div class='content'><p>Para crear un canal, se utiliza la función <code>make</code> con la sintaxis:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2ggOj0gbWFrZShjaGFuIGludCkgLy8gQ2FuYWwgbm8gYnVmZmVyaXphZG8gZGUgZW50ZXJvcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ch := make(chan int) // Canal no bufferizado de enteros</pre></div><div class='content'><p>Para crear un canal bufferizado, se especifica la capacidad del buffer:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2ggOj0gbWFrZShjaGFuIGludCwgNSkgLy8gQ2FuYWwgYnVmZmVyaXphZG8gY29uIGNhcGFjaWRhZCBkZSA1IGVudGVyb3M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ch := make(chan int, 5) // Canal bufferizado con capacidad de 5 enteros</pre></div><div class='content'></div><h1>Envío y Recepción de Datos</h1>
+<div class='content'></div><h2>Envío de Datos</h2>
+<div class='content'><p>Para enviar un valor a un canal, se utiliza el operador <code>&lt;-</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2ggPC0gNDIgLy8gRW52w61hIGVsIHZhbG9yIDQyIGFsIGNhbmFsIGNo"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ch &lt;- 42 // Env&iacute;a el valor 42 al canal ch</pre></div><div class='content'></div><h2>Recepción de Datos</h2>
+<div class='content'><p>Para recibir un valor de un canal, también se utiliza el operador <code>&lt;-</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsdWUgOj0gPC1jaCAvLyBSZWNpYmUgdW4gdmFsb3IgZGVsIGNhbmFsIGNoIHkgbG8gYXNpZ25hIGEgbGEgdmFyaWFibGUgdmFsdWU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>value := &lt;-ch // Recibe un valor del canal ch y lo asigna a la variable value</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>A continuación, se muestra un ejemplo práctico que ilustra el uso de canales para comunicar dos goroutines:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJ0aW1lIgopCgpmdW5jIG1haW4oKSB7CiAgICAvLyBDcmVhciB1biBjYW5hbCBubyBidWZmZXJpemFkbwogICAgY2ggOj0gbWFrZShjaGFuIHN0cmluZykKCiAgICAvLyBJbmljaWFyIHVuYSBnb3JvdXRpbmUgcXVlIGVudsOtYSB1biBtZW5zYWplIGEgdHJhdsOpcyBkZWwgY2FuYWwKICAgIGdvIGZ1bmMoKSB7CiAgICAgICAgdGltZS5TbGVlcCgyICogdGltZS5TZWNvbmQpCiAgICAgICAgY2ggPC0gIkhvbGEgZGVzZGUgbGEgZ29yb3V0aW5lIgogICAgfSgpCgogICAgLy8gUmVjaWJpciBlbCBtZW5zYWplIGRlc2RlIGVsIGNhbmFsCiAgICBtc2cgOj0gPC1jaAogICAgZm10LlByaW50bG4obXNnKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;time&quot;
+)
+
+func main() {
+    // Crear un canal no bufferizado
+    ch := make(chan string)
+
+    // Iniciar una goroutine que env&iacute;a un mensaje a trav&eacute;s del canal
+    go func() {
+        time.Sleep(2 * time.Second)
+        ch &lt;- &quot;Hola desde la goroutine&quot;
+    }()
+
+    // Recibir el mensaje desde el canal
+    msg := &lt;-ch
+    fmt.Println(msg)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Creación del Canal</strong>: Se crea un canal no bufferizado <code>ch</code> de tipo <code>string</code>.</li>
+<li><strong>Goroutine</strong>: Se inicia una goroutine que espera 2 segundos y luego envía un mensaje al canal <code>ch</code>.</li>
+<li><strong>Recepción del Mensaje</strong>: La goroutine principal espera a recibir el mensaje del canal <code>ch</code> y luego lo imprime.</li>
+</ol>
+</div><h1>Canales Bufferizados</h1>
+<div class='content'><p>Los canales bufferizados permiten almacenar múltiples valores en el canal sin necesidad de que una goroutine receptora esté lista para recibirlos inmediatamente.</p>
+</div><h2>Ejemplo de Canal Bufferizado</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKZnVuYyBtYWluKCkgewogICAgLy8gQ3JlYXIgdW4gY2FuYWwgYnVmZmVyaXphZG8gY29uIGNhcGFjaWRhZCBkZSAyCiAgICBjaCA6PSBtYWtlKGNoYW4gaW50LCAyKQoKICAgIC8vIEVudmlhciBkb3MgdmFsb3JlcyBhbCBjYW5hbAogICAgY2ggPC0gMQogICAgY2ggPC0gMgoKICAgIC8vIFJlY2liaXIgbG9zIHZhbG9yZXMgZGVsIGNhbmFsCiAgICBmbXQuUHJpbnRsbig8LWNoKQogICAgZm10LlByaW50bG4oPC1jaCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    // Crear un canal bufferizado con capacidad de 2
+    ch := make(chan int, 2)
+
+    // Enviar dos valores al canal
+    ch &lt;- 1
+    ch &lt;- 2
+
+    // Recibir los valores del canal
+    fmt.Println(&lt;-ch)
+    fmt.Println(&lt;-ch)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Creación del Canal Bufferizado</strong>: Se crea un canal bufferizado <code>ch</code> con capacidad de 2.</li>
+<li><strong>Envío de Valores</strong>: Se envían dos valores al canal.</li>
+<li><strong>Recepción de Valores</strong>: Se reciben y se imprimen los dos valores del canal.</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Comunicación Básica</h2>
+<div class='content'><p><strong>Descripción</strong>: Crea un programa que inicie dos goroutines. Una goroutine debe enviar un mensaje a través de un canal, y la otra goroutine debe recibir y mostrar el mensaje.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKZnVuYyBtYWluKCkgewogICAgY2ggOj0gbWFrZShjaGFuIHN0cmluZykKCiAgICBnbyBmdW5jKCkgewogICAgICAgIGNoIDwtICJNZW5zYWplIGRlc2RlIGxhIHByaW1lcmEgZ29yb3V0aW5lIgogICAgfSgpCgogICAgZ28gZnVuYygpIHsKICAgICAgICBtc2cgOj0gPC1jaAogICAgICAgIGZtdC5QcmludGxuKG1zZykKICAgIH0oKQoKICAgIC8vIEVzcGVyYXIgcGFyYSBxdWUgbGFzIGdvcm91dGluZXMgdGVybWluZW4KICAgIHZhciBpbnB1dCBzdHJpbmcKICAgIGZtdC5TY2FubG4oJmlucHV0KQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    ch := make(chan string)
+
+    go func() {
+        ch &lt;- &quot;Mensaje desde la primera goroutine&quot;
+    }()
+
+    go func() {
+        msg := &lt;-ch
+        fmt.Println(msg)
+    }()
+
+    // Esperar para que las goroutines terminen
+    var input string
+    fmt.Scanln(&amp;input)
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Canal Bufferizado</h2>
+<div class='content'><p><strong>Descripción</strong>: Crea un programa que utilice un canal bufferizado para enviar y recibir tres valores enteros.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKKQoKZnVuYyBtYWluKCkgewogICAgY2ggOj0gbWFrZShjaGFuIGludCwgMykKCiAgICBjaCA8LSAxMAogICAgY2ggPC0gMjAKICAgIGNoIDwtIDMwCgogICAgZm10LlByaW50bG4oPC1jaCkKICAgIGZtdC5QcmludGxuKDwtY2gpCiAgICBmbXQuUHJpbnRsbig8LWNoKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() {
+    ch := make(chan int, 3)
+
+    ch &lt;- 10
+    ch &lt;- 20
+    ch &lt;- 30
+
+    fmt.Println(&lt;-ch)
+    fmt.Println(&lt;-ch)
+    fmt.Println(&lt;-ch)
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los canales en Go, cómo crearlos, y cómo utilizarlos para enviar y recibir datos entre goroutines. También hemos explorado la diferencia entre canales bufferizados y no bufferizados, y hemos visto ejemplos prácticos y ejercicios para reforzar los conceptos aprendidos. En la siguiente sección, profundizaremos en la instrucción <code>select</code>, que permite manejar múltiples operaciones de canal de manera concurrente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-goroutines' title="Goroutines">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-select-statement' title="Instrucción Select">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

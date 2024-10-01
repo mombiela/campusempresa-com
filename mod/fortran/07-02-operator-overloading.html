@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobrecarga de Operadores</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fortran/07-02-operator-overloading" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fortran/07-02-operator-overloading" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fortran/07-02-operator-overloading" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/fortran/07-02-operator-overloading" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/fortran/07-02-operator-overloading" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-modules-interfaces' title="Módulos e Interfaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Sobrecarga de Operadores</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-parallel-programming-coarrays' title="Programación Paralela con Coarrays">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La sobrecarga de operadores es una característica poderosa en Fortran que permite a los programadores definir o redefinir el comportamiento de los operadores estándar (como <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, etc.) para tipos de datos definidos por el usuario. Esto es especialmente útil cuando se trabaja con tipos derivados, ya que permite que las operaciones con estos tipos sean tan naturales como las operaciones con tipos de datos intrínsecos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Tipos Derivados</strong>: Estructuras de datos definidas por el usuario que pueden contener múltiples componentes de diferentes tipos.</li>
+<li><strong>Operadores Intrínsecos</strong>: Operadores predefinidos en Fortran, como <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, etc.</li>
+<li><strong>Sobrecarga de Operadores</strong>: Proceso de definir o redefinir el comportamiento de los operadores intrínsecos para tipos derivados.</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Definición de un Tipo Derivado</h2>
+<div class='content'><p>Primero, definimos un tipo derivado llamado <code>Vector2D</code> que representa un vector en dos dimensiones.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlIHZlY3Rvcl9tb2R1bGUKICBpbXBsaWNpdCBub25lCiAgdHlwZSA6OiBWZWN0b3IyRAogICAgcmVhbCA6OiB4CiAgICByZWFsIDo6IHkKICBlbmQgdHlwZSBWZWN0b3IyRAplbmQgbW9kdWxlIHZlY3Rvcl9tb2R1bGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module vector_module
+  implicit none
+  type :: Vector2D
+    real :: x
+    real :: y
+  end type Vector2D
+end module vector_module</pre></div><div class='content'></div><h2>Sobrecarga del Operador `+`</h2>
+<div class='content'><p>Para sobrecargar el operador <code>+</code> para el tipo <code>Vector2D</code>, definimos una función que realiza la suma de dos vectores y luego la asociamos con el operador <code>+</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlIHZlY3Rvcl9tb2R1bGUKICBpbXBsaWNpdCBub25lCiAgdHlwZSA6OiBWZWN0b3IyRAogICAgcmVhbCA6OiB4CiAgICByZWFsIDo6IHkKICBlbmQgdHlwZSBWZWN0b3IyRAoKICBpbnRlcmZhY2Ugb3BlcmF0b3IoKykKICAgIG1vZHVsZSBwcm9jZWR1cmUgYWRkX3ZlY3RvcnMKICBlbmQgaW50ZXJmYWNlCgpjb250YWlucwoKICBmdW5jdGlvbiBhZGRfdmVjdG9ycyh2MSwgdjIpIHJlc3VsdCh2MykKICAgIHR5cGUoVmVjdG9yMkQpLCBpbnRlbnQoaW4pIDo6IHYxLCB2MgogICAgdHlwZShWZWN0b3IyRCkgOjogdjMKCiAgICB2MyV4ID0gdjEleCArIHYyJXgKICAgIHYzJXkgPSB2MSV5ICsgdjIleQogIGVuZCBmdW5jdGlvbiBhZGRfdmVjdG9ycwoKZW5kIG1vZHVsZSB2ZWN0b3JfbW9kdWxl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module vector_module
+  implicit none
+  type :: Vector2D
+    real :: x
+    real :: y
+  end type Vector2D
+
+  interface operator(+)
+    module procedure add_vectors
+  end interface
+
+contains
+
+  function add_vectors(v1, v2) result(v3)
+    type(Vector2D), intent(in) :: v1, v2
+    type(Vector2D) :: v3
+
+    v3%x = v1%x + v2%x
+    v3%y = v1%y + v2%y
+  end function add_vectors
+
+end module vector_module</pre></div><div class='content'></div><h2>Uso de la Sobrecarga de Operadores</h2>
+<div class='content'><p>Ahora podemos usar el operador <code>+</code> con el tipo <code>Vector2D</code> de manera natural.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSB0ZXN0X3ZlY3RvcgogIHVzZSB2ZWN0b3JfbW9kdWxlCiAgaW1wbGljaXQgbm9uZQoKICB0eXBlKFZlY3RvcjJEKSA6OiB2ZWMxLCB2ZWMyLCB2ZWMzCgogIHZlYzEleCA9IDEuMAogIHZlYzEleSA9IDIuMAogIHZlYzIleCA9IDMuMAogIHZlYzIleSA9IDQuMAoKICB2ZWMzID0gdmVjMSArIHZlYzIKCiAgcHJpbnQgKiwgJ3ZlYzMgPSAoJywgdmVjMyV4LCAnLCcsIHZlYzMleSwgJyknCmVuZCBwcm9ncmFtIHRlc3RfdmVjdG9y"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program test_vector
+  use vector_module
+  implicit none
+
+  type(Vector2D) :: vec1, vec2, vec3
+
+  vec1%x = 1.0
+  vec1%y = 2.0
+  vec2%x = 3.0
+  vec2%y = 4.0
+
+  vec3 = vec1 + vec2
+
+  print *, 'vec3 = (', vec3%x, ',', vec3%y, ')'
+end program test_vector</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Definición del Tipo Derivado</strong>: El tipo <code>Vector2D</code> se define con dos componentes <code>x</code> y <code>y</code> de tipo <code>real</code>.</li>
+<li><strong>Interfaz del Operador</strong>: La interfaz <code>operator(+)</code> se asocia con la función <code>add_vectors</code>.</li>
+<li><strong>Función de Suma</strong>: La función <code>add_vectors</code> toma dos vectores <code>v1</code> y <code>v2</code> como entrada y devuelve un nuevo vector <code>v3</code> que es la suma de <code>v1</code> y <code>v2</code>.</li>
+<li><strong>Uso del Operador Sobrecargado</strong>: En el programa principal, se crean dos vectores <code>vec1</code> y <code>vec2</code>, se suman usando el operador <code>+</code> y el resultado se almacena en <code>vec3</code>.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Sobrecarga del Operador `*`</h2>
+<div class='content'><p><strong>Objetivo</strong>: Sobrecargar el operador <code>*</code> para el tipo <code>Vector2D</code> para que realice el producto escalar de dos vectores.</p>
+<ol>
+<li><strong>Definir la función de producto escalar</strong>.</li>
+<li><strong>Asociar la función con el operador <code>*</code></strong>.</li>
+<li><strong>Probar la sobrecarga del operador en un programa principal</strong>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kdWxlIHZlY3Rvcl9tb2R1bGUKICBpbXBsaWNpdCBub25lCiAgdHlwZSA6OiBWZWN0b3IyRAogICAgcmVhbCA6OiB4CiAgICByZWFsIDo6IHkKICBlbmQgdHlwZSBWZWN0b3IyRAoKICBpbnRlcmZhY2Ugb3BlcmF0b3IoKykKICAgIG1vZHVsZSBwcm9jZWR1cmUgYWRkX3ZlY3RvcnMKICBlbmQgaW50ZXJmYWNlCgogIGludGVyZmFjZSBvcGVyYXRvcigqKQogICAgbW9kdWxlIHByb2NlZHVyZSBkb3RfcHJvZHVjdAogIGVuZCBpbnRlcmZhY2UKCmNvbnRhaW5zCgogIGZ1bmN0aW9uIGFkZF92ZWN0b3JzKHYxLCB2MikgcmVzdWx0KHYzKQogICAgdHlwZShWZWN0b3IyRCksIGludGVudChpbikgOjogdjEsIHYyCiAgICB0eXBlKFZlY3RvcjJEKSA6OiB2MwoKICAgIHYzJXggPSB2MSV4ICsgdjIleAogICAgdjMleSA9IHYxJXkgKyB2MiV5CiAgZW5kIGZ1bmN0aW9uIGFkZF92ZWN0b3JzCgogIGZ1bmN0aW9uIGRvdF9wcm9kdWN0KHYxLCB2MikgcmVzdWx0KGRvdCkKICAgIHR5cGUoVmVjdG9yMkQpLCBpbnRlbnQoaW4pIDo6IHYxLCB2MgogICAgcmVhbCA6OiBkb3QKCiAgICBkb3QgPSB2MSV4ICogdjIleCArIHYxJXkgKiB2MiV5CiAgZW5kIGZ1bmN0aW9uIGRvdF9wcm9kdWN0CgplbmQgbW9kdWxlIHZlY3Rvcl9tb2R1bGUKCnByb2dyYW0gdGVzdF92ZWN0b3IKICB1c2UgdmVjdG9yX21vZHVsZQogIGltcGxpY2l0IG5vbmUKCiAgdHlwZShWZWN0b3IyRCkgOjogdmVjMSwgdmVjMgogIHJlYWwgOjogcmVzdWx0CgogIHZlYzEleCA9IDEuMAogIHZlYzEleSA9IDIuMAogIHZlYzIleCA9IDMuMAogIHZlYzIleSA9IDQuMAoKICByZXN1bHQgPSB2ZWMxICogdmVjMgoKICBwcmludCAqLCAnRG90IHByb2R1Y3QgPSAnLCByZXN1bHQKZW5kIHByb2dyYW0gdGVzdF92ZWN0b3I="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>module vector_module
+  implicit none
+  type :: Vector2D
+    real :: x
+    real :: y
+  end type Vector2D
+
+  interface operator(+)
+    module procedure add_vectors
+  end interface
+
+  interface operator(*)
+    module procedure dot_product
+  end interface
+
+contains
+
+  function add_vectors(v1, v2) result(v3)
+    type(Vector2D), intent(in) :: v1, v2
+    type(Vector2D) :: v3
+
+    v3%x = v1%x + v2%x
+    v3%y = v1%y + v2%y
+  end function add_vectors
+
+  function dot_product(v1, v2) result(dot)
+    type(Vector2D), intent(in) :: v1, v2
+    real :: dot
+
+    dot = v1%x * v2%x + v1%y * v2%y
+  end function dot_product
+
+end module vector_module
+
+program test_vector
+  use vector_module
+  implicit none
+
+  type(Vector2D) :: vec1, vec2
+  real :: result
+
+  vec1%x = 1.0
+  vec1%y = 2.0
+  vec2%x = 3.0
+  vec2%y = 4.0
+
+  result = vec1 * vec2
+
+  print *, 'Dot product = ', result
+end program test_vector</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Interfaz del Operador <code>*</code></strong>: La interfaz <code>operator(*)</code> se asocia con la función <code>dot_product</code>.</li>
+<li><strong>Función de Producto Escalar</strong>: La función <code>dot_product</code> toma dos vectores <code>v1</code> y <code>v2</code> como entrada y devuelve un <code>real</code> que es el producto escalar de <code>v1</code> y <code>v2</code>.</li>
+<li><strong>Uso del Operador Sobrecargado</strong>: En el programa principal, se crean dos vectores <code>vec1</code> y <code>vec2</code>, y se calcula su producto escalar usando el operador <code>*</code>.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La sobrecarga de operadores en Fortran permite a los programadores definir comportamientos personalizados para operadores estándar cuando se trabaja con tipos derivados. Esto hace que el código sea más intuitivo y fácil de leer. En este módulo, hemos aprendido cómo sobrecargar los operadores <code>+</code> y <code>*</code> para un tipo derivado <code>Vector2D</code>, y hemos visto cómo usar estos operadores sobrecargados en un programa.</p>
+<p>En el siguiente módulo, exploraremos la programación paralela con coarrays, una característica avanzada de Fortran que permite escribir programas paralelos de manera más sencilla y eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-modules-interfaces' title="Módulos e Interfaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-parallel-programming-coarrays' title="Programación Paralela con Coarrays">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

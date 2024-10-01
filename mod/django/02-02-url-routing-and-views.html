@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrutamiento de URL y Vistas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/02-02-url-routing-and-views" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/02-02-url-routing-and-views" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/02-02-url-routing-and-views" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/django/02-02-url-routing-and-views" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/django/02-02-url-routing-and-views" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-django-apps-and-project-structure' title="Aplicaciones Django y Estructura del Proyecto">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Enrutamiento de URL y Vistas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-templates-and-static-files' title="Plantillas y Archivos Estáticos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo Django maneja las solicitudes web mediante el enrutamiento de URL y las vistas. Estos son componentes esenciales para cualquier aplicación web, ya que determinan cómo se procesan y responden las solicitudes de los usuarios.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>URLconf (URL Configuration)</strong>: Es un archivo de configuración que mapea las URL a las vistas correspondientes.</li>
+<li><strong>Vistas</strong>: Son funciones o clases que reciben una solicitud web y devuelven una respuesta.</li>
+</ol>
+</div><h1>Enrutamiento de URL</h1>
+<div class='content'></div><h2>¿Qué es URLconf?</h2>
+<div class='content'><p>URLconf es un módulo de Python que contiene una lista de patrones de URL y las vistas correspondientes. Django utiliza este módulo para decidir qué vista debe llamar para una URL solicitada.</p>
+</div><h2>Configuración Básica de URLconf</h2>
+<div class='content'><ol>
+<li><strong>Archivo <code>urls.py</code></strong>: Este archivo se encuentra en el directorio del proyecto y en cada aplicación. El archivo <code>urls.py</code> del proyecto principal suele incluir las URL de las aplicaciones.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteXByb2plY3QvdXJscy5weQpmcm9tIGRqYW5nby5jb250cmliIGltcG9ydCBhZG1pbgpmcm9tIGRqYW5nby51cmxzIGltcG9ydCBwYXRoLCBpbmNsdWRlCgp1cmxwYXR0ZXJucyA9IFsKICAgIHBhdGgoJ2FkbWluLycsIGFkbWluLnNpdGUudXJscyksCiAgICBwYXRoKCdhcHAvJywgaW5jbHVkZSgnbXlhcHAudXJscycpKSwgICMgSW5jbHV5ZSBsYXMgVVJMcyBkZSBsYSBhcGxpY2FjacOzbiAnbXlhcHAnCl0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myproject/urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('app/', include('myapp.urls')),  # Incluye las URLs de la aplicaci&oacute;n 'myapp'
+]</pre></div><div class='content'><ol start="2">
+<li><strong>Archivo <code>urls.py</code> en la Aplicación</strong>: Cada aplicación puede tener su propio archivo <code>urls.py</code> para definir sus rutas específicas.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC91cmxzLnB5CmZyb20gZGphbmdvLnVybHMgaW1wb3J0IHBhdGgKZnJvbSAuIGltcG9ydCB2aWV3cwoKdXJscGF0dGVybnMgPSBbCiAgICBwYXRoKCcnLCB2aWV3cy5pbmRleCwgbmFtZT0naW5kZXgnKSwgICMgTWFwZWEgbGEgVVJMIHJhw616IGRlIGxhIGFwbGljYWNpw7NuIGEgbGEgdmlzdGEgJ2luZGV4JwogICAgcGF0aCgnYWJvdXQvJywgdmlld3MuYWJvdXQsIG5hbWU9J2Fib3V0JyksICAjIE1hcGVhIGxhIFVSTCAnYWJvdXQvJyBhIGxhIHZpc3RhICdhYm91dCcKXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),  # Mapea la URL ra&iacute;z de la aplicaci&oacute;n a la vista 'index'
+    path('about/', views.about, name='about'),  # Mapea la URL 'about/' a la vista 'about'
+]</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos una aplicación llamada <code>myapp</code> y queremos definir dos rutas: una para la página de inicio y otra para la página &quot;Acerca de&quot;.</p>
+<ol>
+<li><strong>Definir las Vistas</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC92aWV3cy5weQpmcm9tIGRqYW5nby5odHRwIGltcG9ydCBIdHRwUmVzcG9uc2UKCmRlZiBpbmRleChyZXF1ZXN0KToKICAgIHJldHVybiBIdHRwUmVzcG9uc2UoIkJpZW52ZW5pZG8gYSBsYSBww6FnaW5hIGRlIGluaWNpbyIpCgpkZWYgYWJvdXQocmVxdWVzdCk6CiAgICByZXR1cm4gSHR0cFJlc3BvbnNlKCJBY2VyY2EgZGUgbm9zb3Ryb3MiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/views.py
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse(&quot;Bienvenido a la p&aacute;gina de inicio&quot;)
+
+def about(request):
+    return HttpResponse(&quot;Acerca de nosotros&quot;)</pre></div><div class='content'><ol start="2">
+<li><strong>Configurar las URLs</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC91cmxzLnB5CmZyb20gZGphbmdvLnVybHMgaW1wb3J0IHBhdGgKZnJvbSAuIGltcG9ydCB2aWV3cwoKdXJscGF0dGVybnMgPSBbCiAgICBwYXRoKCcnLCB2aWV3cy5pbmRleCwgbmFtZT0naW5kZXgnKSwKICAgIHBhdGgoJ2Fib3V0LycsIHZpZXdzLmFib3V0LCBuYW1lPSdhYm91dCcpLApd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('about/', views.about, name='about'),
+]</pre></div><div class='content'><ol start="3">
+<li><strong>Incluir las URLs de la Aplicación en el Proyecto</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteXByb2plY3QvdXJscy5weQpmcm9tIGRqYW5nby5jb250cmliIGltcG9ydCBhZG1pbgpmcm9tIGRqYW5nby51cmxzIGltcG9ydCBwYXRoLCBpbmNsdWRlCgp1cmxwYXR0ZXJucyA9IFsKICAgIHBhdGgoJ2FkbWluLycsIGFkbWluLnNpdGUudXJscyksCiAgICBwYXRoKCdhcHAvJywgaW5jbHVkZSgnbXlhcHAudXJscycpKSwKXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myproject/urls.py
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('app/', include('myapp.urls')),
+]</pre></div><div class='content'></div><h1>Vistas</h1>
+<div class='content'></div><h2>Vistas Basadas en Funciones (FBV)</h2>
+<div class='content'><p>Las vistas basadas en funciones son simplemente funciones de Python que reciben un objeto <code>HttpRequest</code> y devuelven un objeto <code>HttpResponse</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC92aWV3cy5weQpmcm9tIGRqYW5nby5odHRwIGltcG9ydCBIdHRwUmVzcG9uc2UKCmRlZiBpbmRleChyZXF1ZXN0KToKICAgIHJldHVybiBIdHRwUmVzcG9uc2UoIkJpZW52ZW5pZG8gYSBsYSBww6FnaW5hIGRlIGluaWNpbyIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/views.py
+from django.http import HttpResponse
+
+def index(request):
+    return HttpResponse(&quot;Bienvenido a la p&aacute;gina de inicio&quot;)</pre></div><div class='content'></div><h2>Vistas Basadas en Clases (CBV)</h2>
+<div class='content'><p>Las vistas basadas en clases proporcionan una forma más estructurada y reutilizable de manejar las solicitudes. Django ofrece varias vistas genéricas que pueden ser extendidas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC92aWV3cy5weQpmcm9tIGRqYW5nby52aWV3cyBpbXBvcnQgVmlldwpmcm9tIGRqYW5nby5odHRwIGltcG9ydCBIdHRwUmVzcG9uc2UKCmNsYXNzIEluZGV4VmlldyhWaWV3KToKICAgIGRlZiBnZXQoc2VsZiwgcmVxdWVzdCk6CiAgICAgICAgcmV0dXJuIEh0dHBSZXNwb25zZSgiQmllbnZlbmlkbyBhIGxhIHDDoWdpbmEgZGUgaW5pY2lvIik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/views.py
+from django.views import View
+from django.http import HttpResponse
+
+class IndexView(View):
+    def get(self, request):
+        return HttpResponse(&quot;Bienvenido a la p&aacute;gina de inicio&quot;)</pre></div><div class='content'><p>Para usar una vista basada en clases, debes mapearla en <code>urls.py</code> usando el método <code>as_view()</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC91cmxzLnB5CmZyb20gZGphbmdvLnVybHMgaW1wb3J0IHBhdGgKZnJvbSAudmlld3MgaW1wb3J0IEluZGV4VmlldwoKdXJscGF0dGVybnMgPSBbCiAgICBwYXRoKCcnLCBJbmRleFZpZXcuYXNfdmlldygpLCBuYW1lPSdpbmRleCcpLApd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/urls.py
+from django.urls import path
+from .views import IndexView
+
+urlpatterns = [
+    path('', IndexView.as_view(), name='index'),
+]</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear una Nueva Vista y URL</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Crear una nueva vista llamada <code>contact</code> que devuelva el texto &quot;Página de Contacto&quot;.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Define la vista <code>contact</code> en <code>views.py</code>.</li>
+<li>Añade una nueva ruta en <code>urls.py</code> que mapee la URL <code>contact/</code> a la vista <code>contact</code>.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC92aWV3cy5weQpmcm9tIGRqYW5nby5odHRwIGltcG9ydCBIdHRwUmVzcG9uc2UKCmRlZiBjb250YWN0KHJlcXVlc3QpOgogICAgcmV0dXJuIEh0dHBSZXNwb25zZSgiUMOhZ2luYSBkZSBDb250YWN0byIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/views.py
+from django.http import HttpResponse
+
+def contact(request):
+    return HttpResponse(&quot;P&aacute;gina de Contacto&quot;)</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC91cmxzLnB5CmZyb20gZGphbmdvLnVybHMgaW1wb3J0IHBhdGgKZnJvbSAuIGltcG9ydCB2aWV3cwoKdXJscGF0dGVybnMgPSBbCiAgICBwYXRoKCcnLCB2aWV3cy5pbmRleCwgbmFtZT0naW5kZXgnKSwKICAgIHBhdGgoJ2Fib3V0LycsIHZpZXdzLmFib3V0LCBuYW1lPSdhYm91dCcpLAogICAgcGF0aCgnY29udGFjdC8nLCB2aWV3cy5jb250YWN0LCBuYW1lPSdjb250YWN0JyksICAjIE51ZXZhIHJ1dGEgcGFyYSBsYSB2aXN0YSAnY29udGFjdCcKXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/urls.py
+from django.urls import path
+from . import views
+
+urlpatterns = [
+    path('', views.index, name='index'),
+    path('about/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),  # Nueva ruta para la vista 'contact'
+]</pre></div><div class='content'></div><h2>Ejercicio 2: Convertir una Vista Basada en Funciones a una Vista Basada en Clases</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Convertir la vista <code>about</code> a una vista basada en clases.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Define una clase <code>AboutView</code> en <code>views.py</code> que extienda <code>View</code>.</li>
+<li>Implementa el método <code>get</code> en <code>AboutView</code>.</li>
+<li>Actualiza <code>urls.py</code> para usar <code>AboutView</code>.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC92aWV3cy5weQpmcm9tIGRqYW5nby52aWV3cyBpbXBvcnQgVmlldwpmcm9tIGRqYW5nby5odHRwIGltcG9ydCBIdHRwUmVzcG9uc2UKCmNsYXNzIEFib3V0VmlldyhWaWV3KToKICAgIGRlZiBnZXQoc2VsZiwgcmVxdWVzdCk6CiAgICAgICAgcmV0dXJuIEh0dHBSZXNwb25zZSgiQWNlcmNhIGRlIG5vc290cm9zIik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/views.py
+from django.views import View
+from django.http import HttpResponse
+
+class AboutView(View):
+    def get(self, request):
+        return HttpResponse(&quot;Acerca de nosotros&quot;)</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBteWFwcC91cmxzLnB5CmZyb20gZGphbmdvLnVybHMgaW1wb3J0IHBhdGgKZnJvbSAudmlld3MgaW1wb3J0IEluZGV4VmlldywgQWJvdXRWaWV3Cgp1cmxwYXR0ZXJucyA9IFsKICAgIHBhdGgoJycsIEluZGV4Vmlldy5hc192aWV3KCksIG5hbWU9J2luZGV4JyksCiAgICBwYXRoKCdhYm91dC8nLCBBYm91dFZpZXcuYXNfdmlldygpLCBuYW1lPSdhYm91dCcpLCAgIyBVc2FyIEFib3V0VmlldyBlbiBsdWdhciBkZSBsYSBmdW5jacOzbiAnYWJvdXQnCl0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># myapp/urls.py
+from django.urls import path
+from .views import IndexView, AboutView
+
+urlpatterns = [
+    path('', IndexView.as_view(), name='index'),
+    path('about/', AboutView.as_view(), name='about'),  # Usar AboutView en lugar de la funci&oacute;n 'about'
+]</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar el enrutamiento de URL en Django y cómo crear vistas tanto basadas en funciones como en clases. Estos conceptos son fundamentales para el desarrollo de aplicaciones web con Django, ya que permiten manejar las solicitudes de los usuarios y devolver las respuestas adecuadas.</p>
+<p>En el próximo tema, exploraremos cómo trabajar con plantillas y archivos estáticos para mejorar la presentación de nuestras aplicaciones web.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-django-apps-and-project-structure' title="Aplicaciones Django y Estructura del Proyecto">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-templates-and-static-files' title="Plantillas y Archivos Estáticos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

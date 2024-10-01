@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConfigMaps</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/03-01-configmaps" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/03-01-configmaps" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/03-01-configmaps" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/03-01-configmaps" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/03-01-configmaps" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-05-namespaces' title="Namespaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">ConfigMaps</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-secrets' title="Secrets">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En Kubernetes, los ConfigMaps son objetos que permiten almacenar datos de configuración en forma de pares clave-valor. Estos datos pueden ser utilizados por los pods y otros recursos de Kubernetes para configurar aplicaciones sin necesidad de modificar las imágenes del contenedor. Los ConfigMaps son especialmente útiles para separar la configuración del código, lo que facilita la gestión y el despliegue de aplicaciones.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Clave-Valor</strong>: Los ConfigMaps almacenan datos en pares clave-valor.</li>
+<li><strong>Desacoplamiento</strong>: Permiten desacoplar la configuración de la aplicación del código.</li>
+<li><strong>Volatilidad</strong>: Los datos en ConfigMaps pueden cambiar sin necesidad de reconstruir la imagen del contenedor.</li>
+</ul>
+</div><h1>Creación de un ConfigMap</h1>
+<div class='content'></div><h2>Usando un Archivo YAML</h2>
+<div class='content'><p>Puedes definir un ConfigMap en un archivo YAML. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogQ29uZmlnTWFwCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtY29uZmlnCmRhdGE6CiAgZGF0YWJhc2VfdXJsOiAibW9uZ29kYjovL2xvY2FsaG9zdDoyNzAxNyIKICBkYXRhYmFzZV9uYW1lOiAibXlkYXRhYmFzZSI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-config
+data:
+  database_url: &quot;mongodb://localhost:27017&quot;
+  database_name: &quot;mydatabase&quot;</pre></div><div class='content'></div><h2>Usando la Línea de Comandos</h2>
+<div class='content'><p>También puedes crear un ConfigMap directamente desde la línea de comandos utilizando <code>kubectl</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBjcmVhdGUgY29uZmlnbWFwIGV4YW1wbGUtY29uZmlnIC0tZnJvbS1saXRlcmFsPWRhdGFiYXNlX3VybD0ibW9uZ29kYjovL2xvY2FsaG9zdDoyNzAxNyIgLS1mcm9tLWxpdGVyYWw9ZGF0YWJhc2VfbmFtZT0ibXlkYXRhYmFzZSI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl create configmap example-config --from-literal=database_url=&quot;mongodb://localhost:27017&quot; --from-literal=database_name=&quot;mydatabase&quot;</pre></div><div class='content'></div><h1>Uso de ConfigMaps en Pods</h1>
+<div class='content'></div><h2>Como Variables de Entorno</h2>
+<div class='content'><p>Puedes usar los datos de un ConfigMap como variables de entorno en un pod. Aquí hay un ejemplo de cómo hacerlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtcG9kCnNwZWM6CiAgY29udGFpbmVyczoKICAtIG5hbWU6IGV4YW1wbGUtY29udGFpbmVyCiAgICBpbWFnZTogbmdpbngKICAgIGVudjoKICAgIC0gbmFtZTogREFUQUJBU0VfVVJMCiAgICAgIHZhbHVlRnJvbToKICAgICAgICBjb25maWdNYXBLZXlSZWY6CiAgICAgICAgICBuYW1lOiBleGFtcGxlLWNvbmZpZwogICAgICAgICAga2V5OiBkYXRhYmFzZV91cmwKICAgIC0gbmFtZTogREFUQUJBU0VfTkFNRQogICAgICB2YWx1ZUZyb206CiAgICAgICAgY29uZmlnTWFwS2V5UmVmOgogICAgICAgICAgbmFtZTogZXhhbXBsZS1jb25maWcKICAgICAgICAgIGtleTogZGF0YWJhc2VfbmFtZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+  - name: example-container
+    image: nginx
+    env:
+    - name: DATABASE_URL
+      valueFrom:
+        configMapKeyRef:
+          name: example-config
+          key: database_url
+    - name: DATABASE_NAME
+      valueFrom:
+        configMapKeyRef:
+          name: example-config
+          key: database_name</pre></div><div class='content'></div><h2>Como Archivos en un Volumen</h2>
+<div class='content'><p>También puedes montar un ConfigMap como un volumen en un pod:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGV4YW1wbGUtcG9kCnNwZWM6CiAgY29udGFpbmVyczoKICAtIG5hbWU6IGV4YW1wbGUtY29udGFpbmVyCiAgICBpbWFnZTogbmdpbngKICAgIHZvbHVtZU1vdW50czoKICAgIC0gbmFtZTogY29uZmlnLXZvbHVtZQogICAgICBtb3VudFBhdGg6IC9ldGMvY29uZmlnCiAgdm9sdW1lczoKICAtIG5hbWU6IGNvbmZpZy12b2x1bWUKICAgIGNvbmZpZ01hcDoKICAgICAgbmFtZTogZXhhbXBsZS1jb25maWc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+spec:
+  containers:
+  - name: example-container
+    image: nginx
+    volumeMounts:
+    - name: config-volume
+      mountPath: /etc/config
+  volumes:
+  - name: config-volume
+    configMap:
+      name: example-config</pre></div><div class='content'><p>En este caso, los datos del ConfigMap estarán disponibles como archivos en el directorio <code>/etc/config</code> dentro del contenedor.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear y Usar un ConfigMap</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un ConfigMap</strong>: Define un ConfigMap en un archivo YAML llamado <code>configmap.yaml</code> con los siguientes datos:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+data:
+  app_name: &quot;MyApp&quot;
+  app_version: &quot;1.0&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Aplicar el ConfigMap</strong>: Usa <code>kubectl</code> para crear el ConfigMap en tu clúster:</p>
+<pre><code class="language-sh">kubectl apply -f configmap.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Crear un Pod que use el ConfigMap</strong>: Define un pod en un archivo YAML llamado <code>pod.yaml</code> que use los datos del ConfigMap como variables de entorno:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+spec:
+  containers:
+  - name: my-container
+    image: busybox
+    command: [&quot;sh&quot;, &quot;-c&quot;, &quot;echo $(APP_NAME) $(APP_VERSION) &amp;&amp; sleep 3600&quot;]
+    env:
+    - name: APP_NAME
+      valueFrom:
+        configMapKeyRef:
+          name: my-config
+          key: app_name
+    - name: APP_VERSION
+      valueFrom:
+        configMapKeyRef:
+          name: my-config
+          key: app_version
+</code></pre>
+</li>
+<li>
+<p><strong>Aplicar el Pod</strong>: Usa <code>kubectl</code> para crear el pod en tu clúster:</p>
+<pre><code class="language-sh">kubectl apply -f pod.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar la Salida</strong>: Usa <code>kubectl logs</code> para verificar que el pod está usando los datos del ConfigMap:</p>
+<pre><code class="language-sh">kubectl logs my-pod
+</code></pre>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><p>Si has seguido los pasos correctamente, deberías ver la salida <code>MyApp 1.0</code> en los logs del pod.</p>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los ConfigMaps en Kubernetes, cómo crearlos y cómo usarlos en pods. Los ConfigMaps son una herramienta poderosa para gestionar la configuración de aplicaciones de manera flexible y desacoplada del código. En la siguiente sección, exploraremos los Secrets, que son similares a los ConfigMaps pero están diseñados para almacenar datos sensibles de manera segura.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-05-namespaces' title="Namespaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-secrets' title="Secrets">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

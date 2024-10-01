@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inyección de dependencias con Dagger</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/androidstudio/05-02-dependency-injection-with-dagger" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/androidstudio/05-02-dependency-injection-with-dagger" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/androidstudio/05-02-dependency-injection-with-dagger" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/androidstudio/05-02-dependency-injection-with-dagger" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/androidstudio/05-02-dependency-injection-with-dagger" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-implementing-mvvm-architecture' title="Implementando la arquitectura MVVM">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Inyección de dependencias con Dagger</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-unit-testing-and-ui-testing' title="Pruebas unitarias y pruebas de interfaz de usuario">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La inyección de dependencias es un patrón de diseño que permite a los desarrolladores gestionar las dependencias de una aplicación de manera eficiente y modular. Dagger es una biblioteca popular para la inyección de dependencias en Android, que facilita la creación y gestión de dependencias de manera automática.</p>
+</div><h2>Objetivos del Módulo</h2>
+<div class='content'><ul>
+<li>Comprender el concepto de inyección de dependencias.</li>
+<li>Configurar Dagger en un proyecto Android.</li>
+<li>Implementar inyección de dependencias utilizando Dagger.</li>
+<li>Gestionar dependencias complejas y ciclos de vida con Dagger.</li>
+</ul>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>¿Qué es la inyección de dependencias?</h2>
+<div class='content'><p>La inyección de dependencias es un patrón de diseño que permite a un objeto recibir sus dependencias de una fuente externa en lugar de crearlas por sí mismo. Esto promueve la separación de responsabilidades y facilita la prueba y el mantenimiento del código.</p>
+</div><h2>¿Qué es Dagger?</h2>
+<div class='content'><p>Dagger es una biblioteca de inyección de dependencias para Java y Android que utiliza la generación de código en tiempo de compilación para crear y gestionar dependencias de manera eficiente.</p>
+</div><h1>Configuración de Dagger en Android Studio</h1>
+<div class='content'></div><h2>Paso 1: Añadir dependencias de Dagger</h2>
+<div class='content'><p>Primero, necesitas añadir las dependencias de Dagger en tu archivo <code>build.gradle</code> del módulo de la aplicación.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzIHsKICAgIGltcGxlbWVudGF0aW9uICdjb20uZ29vZ2xlLmRhZ2dlcjpkYWdnZXI6Mi54JwogICAga2FwdCAnY29tLmdvb2dsZS5kYWdnZXI6ZGFnZ2VyLWNvbXBpbGVyOjIueCcKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies {
+    implementation 'com.google.dagger:dagger:2.x'
+    kapt 'com.google.dagger:dagger-compiler:2.x'
+}</pre></div><div class='content'></div><h2>Paso 2: Habilitar KAPT</h2>
+<div class='content'><p>Dagger utiliza KAPT (Kotlin Annotation Processing Tool) para la generación de código. Asegúrate de habilitar KAPT en tu proyecto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwbHkgcGx1Z2luOiAna290bGluLWthcHQn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apply plugin: 'kotlin-kapt'</pre></div><div class='content'></div><h2>Paso 3: Crear módulos y componentes de Dagger</h2>
+<div class='content'><h4>Módulo de Dagger</h4>
+<p>Un módulo de Dagger es una clase que proporciona dependencias. Utiliza la anotación <code>@Module</code> para definir un módulo y <code>@Provides</code> para especificar cómo se crean las dependencias.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE1vZHVsZQpjbGFzcyBOZXR3b3JrTW9kdWxlIHsKCiAgICBAUHJvdmlkZXMKICAgIGZ1biBwcm92aWRlUmV0cm9maXQoKTogUmV0cm9maXQgewogICAgICAgIHJldHVybiBSZXRyb2ZpdC5CdWlsZGVyKCkKICAgICAgICAgICAgLmJhc2VVcmwoImh0dHBzOi8vYXBpLmV4YW1wbGUuY29tIikKICAgICAgICAgICAgLmFkZENvbnZlcnRlckZhY3RvcnkoR3NvbkNvbnZlcnRlckZhY3RvcnkuY3JlYXRlKCkpCiAgICAgICAgICAgIC5idWlsZCgpCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Module
+class NetworkModule {
+
+    @Provides
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(&quot;https://api.example.com&quot;)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+}</pre></div><div class='content'><h4>Componente de Dagger</h4>
+<p>Un componente de Dagger es una interfaz que conecta los módulos de Dagger con las clases que necesitan las dependencias. Utiliza la anotación <code>@Component</code> para definir un componente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QENvbXBvbmVudChtb2R1bGVzID0gW05ldHdvcmtNb2R1bGU6OmNsYXNzXSkKaW50ZXJmYWNlIEFwcENvbXBvbmVudCB7CiAgICBmdW4gaW5qZWN0KGFjdGl2aXR5OiBNYWluQWN0aXZpdHkpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Component(modules = [NetworkModule::class])
+interface AppComponent {
+    fun inject(activity: MainActivity)
+}</pre></div><div class='content'></div><h2>Paso 4: Inicializar Dagger en tu aplicación</h2>
+<div class='content'><h4>Clase de aplicación</h4>
+<p>Crea una clase de aplicación que inicialice Dagger.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlBcHAgOiBBcHBsaWNhdGlvbigpIHsKCiAgICBsYXRlaW5pdCB2YXIgYXBwQ29tcG9uZW50OiBBcHBDb21wb25lbnQKCiAgICBvdmVycmlkZSBmdW4gb25DcmVhdGUoKSB7CiAgICAgICAgc3VwZXIub25DcmVhdGUoKQogICAgICAgIGFwcENvbXBvbmVudCA9IERhZ2dlckFwcENvbXBvbmVudC5idWlsZGVyKCkKICAgICAgICAgICAgLm5ldHdvcmtNb2R1bGUoTmV0d29ya01vZHVsZSgpKQogICAgICAgICAgICAuYnVpbGQoKQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyApp : Application() {
+
+    lateinit var appComponent: AppComponent
+
+    override fun onCreate() {
+        super.onCreate()
+        appComponent = DaggerAppComponent.builder()
+            .networkModule(NetworkModule())
+            .build()
+    }
+}</pre></div><div class='content'><h4>Inyección en actividades</h4>
+<p>Inyecta las dependencias en tus actividades utilizando el componente de Dagger.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTWFpbkFjdGl2aXR5IDogQXBwQ29tcGF0QWN0aXZpdHkoKSB7CgogICAgQEluamVjdAogICAgbGF0ZWluaXQgdmFyIHJldHJvZml0OiBSZXRyb2ZpdAoKICAgIG92ZXJyaWRlIGZ1biBvbkNyZWF0ZShzYXZlZEluc3RhbmNlU3RhdGU6IEJ1bmRsZT8pIHsKICAgICAgICBzdXBlci5vbkNyZWF0ZShzYXZlZEluc3RhbmNlU3RhdGUpCiAgICAgICAgKGFwcGxpY2F0aW9uIGFzIE15QXBwKS5hcHBDb21wb25lbnQuaW5qZWN0KHRoaXMpCiAgICAgICAgLy8gQWhvcmEgcHVlZGVzIHVzYXIgcmV0cm9maXQKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var retrofit: Retrofit
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (application as MyApp).appComponent.inject(this)
+        // Ahora puedes usar retrofit
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de Dagger</h2>
+<div class='content'><ol>
+<li>Añade las dependencias de Dagger en tu archivo <code>build.gradle</code>.</li>
+<li>Crea un módulo de Dagger que proporcione una instancia de <code>Retrofit</code>.</li>
+<li>Define un componente de Dagger que incluya el módulo creado.</li>
+<li>Inicializa Dagger en tu clase de aplicación.</li>
+<li>Inyecta <code>Retrofit</code> en una actividad y realiza una solicitud de red simple.</li>
+</ol>
+</div><h2>Solución del Ejercicio 1</h2>
+<div class='content'><h4>build.gradle</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzIHsKICAgIGltcGxlbWVudGF0aW9uICdjb20uZ29vZ2xlLmRhZ2dlcjpkYWdnZXI6Mi54JwogICAga2FwdCAnY29tLmdvb2dsZS5kYWdnZXI6ZGFnZ2VyLWNvbXBpbGVyOjIueCcKfQphcHBseSBwbHVnaW46ICdrb3RsaW4ta2FwdCc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies {
+    implementation 'com.google.dagger:dagger:2.x'
+    kapt 'com.google.dagger:dagger-compiler:2.x'
+}
+apply plugin: 'kotlin-kapt'</pre></div><div class='content'><h4>NetworkModule.kt</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QE1vZHVsZQpjbGFzcyBOZXR3b3JrTW9kdWxlIHsKCiAgICBAUHJvdmlkZXMKICAgIGZ1biBwcm92aWRlUmV0cm9maXQoKTogUmV0cm9maXQgewogICAgICAgIHJldHVybiBSZXRyb2ZpdC5CdWlsZGVyKCkKICAgICAgICAgICAgLmJhc2VVcmwoImh0dHBzOi8vYXBpLmV4YW1wbGUuY29tIikKICAgICAgICAgICAgLmFkZENvbnZlcnRlckZhY3RvcnkoR3NvbkNvbnZlcnRlckZhY3RvcnkuY3JlYXRlKCkpCiAgICAgICAgICAgIC5idWlsZCgpCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Module
+class NetworkModule {
+
+    @Provides
+    fun provideRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(&quot;https://api.example.com&quot;)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+}</pre></div><div class='content'><h4>AppComponent.kt</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QENvbXBvbmVudChtb2R1bGVzID0gW05ldHdvcmtNb2R1bGU6OmNsYXNzXSkKaW50ZXJmYWNlIEFwcENvbXBvbmVudCB7CiAgICBmdW4gaW5qZWN0KGFjdGl2aXR5OiBNYWluQWN0aXZpdHkpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@Component(modules = [NetworkModule::class])
+interface AppComponent {
+    fun inject(activity: MainActivity)
+}</pre></div><div class='content'><h4>MyApp.kt</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlBcHAgOiBBcHBsaWNhdGlvbigpIHsKCiAgICBsYXRlaW5pdCB2YXIgYXBwQ29tcG9uZW50OiBBcHBDb21wb25lbnQKCiAgICBvdmVycmlkZSBmdW4gb25DcmVhdGUoKSB7CiAgICAgICAgc3VwZXIub25DcmVhdGUoKQogICAgICAgIGFwcENvbXBvbmVudCA9IERhZ2dlckFwcENvbXBvbmVudC5idWlsZGVyKCkKICAgICAgICAgICAgLm5ldHdvcmtNb2R1bGUoTmV0d29ya01vZHVsZSgpKQogICAgICAgICAgICAuYnVpbGQoKQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyApp : Application() {
+
+    lateinit var appComponent: AppComponent
+
+    override fun onCreate() {
+        super.onCreate()
+        appComponent = DaggerAppComponent.builder()
+            .networkModule(NetworkModule())
+            .build()
+    }
+}</pre></div><div class='content'><h4>MainActivity.kt</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTWFpbkFjdGl2aXR5IDogQXBwQ29tcGF0QWN0aXZpdHkoKSB7CgogICAgQEluamVjdAogICAgbGF0ZWluaXQgdmFyIHJldHJvZml0OiBSZXRyb2ZpdAoKICAgIG92ZXJyaWRlIGZ1biBvbkNyZWF0ZShzYXZlZEluc3RhbmNlU3RhdGU6IEJ1bmRsZT8pIHsKICAgICAgICBzdXBlci5vbkNyZWF0ZShzYXZlZEluc3RhbmNlU3RhdGUpCiAgICAgICAgKGFwcGxpY2F0aW9uIGFzIE15QXBwKS5hcHBDb21wb25lbnQuaW5qZWN0KHRoaXMpCiAgICAgICAgLy8gQWhvcmEgcHVlZGVzIHVzYXIgcmV0cm9maXQKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var retrofit: Retrofit
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        (application as MyApp).appComponent.inject(this)
+        // Ahora puedes usar retrofit
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre la inyección de dependencias y cómo utilizar Dagger para gestionar dependencias en una aplicación Android. Hemos cubierto la configuración de Dagger, la creación de módulos y componentes, y la inyección de dependencias en actividades. Con estos conocimientos, puedes mejorar la modularidad y mantenibilidad de tu código Android.</p>
+<p>En el siguiente módulo, exploraremos cómo realizar pruebas unitarias y pruebas de interfaz de usuario en aplicaciones Android.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-implementing-mvvm-architecture' title="Implementando la arquitectura MVVM">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-unit-testing-and-ui-testing' title="Pruebas unitarias y pruebas de interfaz de usuario">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

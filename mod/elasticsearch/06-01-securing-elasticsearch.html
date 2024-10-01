@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asegurando Elasticsearch</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/06-01-securing-elasticsearch" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/06-01-securing-elasticsearch" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/06-01-securing-elasticsearch" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/elasticsearch/06-01-securing-elasticsearch" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/06-01-securing-elasticsearch" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-backup-restore' title="Respaldo y Restauración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Asegurando Elasticsearch</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-user-authentication-authorization' title="Autenticación y Autorización de Usuarios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La seguridad es un aspecto crucial en cualquier sistema de gestión de datos, y Elasticsearch no es una excepción. En este módulo, aprenderemos cómo asegurar una instancia de Elasticsearch para proteger los datos y garantizar que solo los usuarios autorizados puedan acceder a ellos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Autenticación</strong>: Verificación de la identidad de los usuarios.</li>
+<li><strong>Autorización</strong>: Control de acceso a recursos y operaciones basadas en la identidad del usuario.</li>
+<li><strong>Cifrado</strong>: Protección de datos en tránsito y en reposo mediante técnicas criptográficas.</li>
+<li><strong>Auditoría</strong>: Registro de eventos y actividades para monitoreo y cumplimiento.</li>
+</ol>
+</div><h1>Configuración Básica de Seguridad</h1>
+<div class='content'></div><h2>1. Habilitar la Seguridad en Elasticsearch</h2>
+<div class='content'><p>Para habilitar la seguridad en Elasticsearch, es necesario modificar el archivo de configuración <code>elasticsearch.yml</code>. Asegúrate de que las siguientes configuraciones estén presentes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eHBhY2suc2VjdXJpdHkuZW5hYmxlZDogdHJ1ZQp4cGFjay5zZWN1cml0eS50cmFuc3BvcnQuc3NsLmVuYWJsZWQ6IHRydWUKeHBhY2suc2VjdXJpdHkuaHR0cC5zc2wuZW5hYmxlZDogdHJ1ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.http.ssl.enabled: true</pre></div><div class='content'></div><h2>2. Generar Certificados SSL</h2>
+<div class='content'><p>Elasticsearch utiliza SSL/TLS para cifrar la comunicación entre nodos y entre clientes y nodos. Puedes generar certificados SSL utilizando el <code>elasticsearch-certutil</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmluL2VsYXN0aWNzZWFyY2gtY2VydHV0aWwgY2EKYmluL2VsYXN0aWNzZWFyY2gtY2VydHV0aWwgY2VydCAtLWNhIGVsYXN0aWMtc3RhY2stY2EucDEy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bin/elasticsearch-certutil ca
+bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12</pre></div><div class='content'><p>Esto generará los certificados necesarios que deben ser configurados en <code>elasticsearch.yml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eHBhY2suc2VjdXJpdHkudHJhbnNwb3J0LnNzbC52ZXJpZmljYXRpb25fbW9kZTogY2VydGlmaWNhdGUKeHBhY2suc2VjdXJpdHkudHJhbnNwb3J0LnNzbC5rZXlzdG9yZS5wYXRoOiBwYXRoL3RvL3lvdXIva2V5c3RvcmUucDEyCnhwYWNrLnNlY3VyaXR5LnRyYW5zcG9ydC5zc2wudHJ1c3RzdG9yZS5wYXRoOiBwYXRoL3RvL3lvdXIvdHJ1c3RzdG9yZS5wMTIKeHBhY2suc2VjdXJpdHkuaHR0cC5zc2wua2V5c3RvcmUucGF0aDogcGF0aC90by95b3VyL2tleXN0b3JlLnAxMgp4cGFjay5zZWN1cml0eS5odHRwLnNzbC50cnVzdHN0b3JlLnBhdGg6IHBhdGgvdG8veW91ci90cnVzdHN0b3JlLnAxMg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: path/to/your/keystore.p12
+xpack.security.transport.ssl.truststore.path: path/to/your/truststore.p12
+xpack.security.http.ssl.keystore.path: path/to/your/keystore.p12
+xpack.security.http.ssl.truststore.path: path/to/your/truststore.p12</pre></div><div class='content'></div><h2>3. Configurar Usuarios y Roles</h2>
+<div class='content'><p>Elasticsearch permite la creación de usuarios y roles para controlar el acceso. Puedes usar la API de seguridad para crear usuarios y roles.</p>
+<h4>Crear un Rol</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9fc2VjdXJpdHkvcm9sZS9teV9hZG1pbl9yb2xlCnsKICAiY2x1c3RlciI6IFsiYWxsIl0sCiAgImluZGljZXMiOiBbCiAgICB7CiAgICAgICJuYW1lcyI6IFsiKiJdLAogICAgICAicHJpdmlsZWdlcyI6IFsiYWxsIl0KICAgIH0KICBdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /_security/role/my_admin_role
+{
+  &quot;cluster&quot;: [&quot;all&quot;],
+  &quot;indices&quot;: [
+    {
+      &quot;names&quot;: [&quot;*&quot;],
+      &quot;privileges&quot;: [&quot;all&quot;]
+    }
+  ]
+}</pre></div><div class='content'><h4>Crear un Usuario</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3VzZXIvbXlfYWRtaW5fdXNlcgp7CiAgInBhc3N3b3JkIiA6ICJwYXNzd29yZDEyMyIsCiAgInJvbGVzIiA6IFsgIm15X2FkbWluX3JvbGUiIF0sCiAgImZ1bGxfbmFtZSIgOiAiQWRtaW4gVXNlciIsCiAgImVtYWlsIiA6ICJhZG1pbkBleGFtcGxlLmNvbSIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/user/my_admin_user
+{
+  &quot;password&quot; : &quot;password123&quot;,
+  &quot;roles&quot; : [ &quot;my_admin_role&quot; ],
+  &quot;full_name&quot; : &quot;Admin User&quot;,
+  &quot;email&quot; : &quot;admin@example.com&quot;
+}</pre></div><div class='content'></div><h2>4. Configurar Autenticación</h2>
+<div class='content'><p>Elasticsearch soporta varios métodos de autenticación, incluyendo autenticación básica, LDAP, y SAML. Aquí configuraremos la autenticación básica:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eHBhY2suc2VjdXJpdHkuYXV0aGMucmVhbG1zLm5hdGl2ZS5uYXRpdmUxOgogIG9yZGVyOiAw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>xpack.security.authc.realms.native.native1:
+  order: 0</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Habilitar Seguridad y Crear un Usuario</h2>
+<div class='content'><ol>
+<li><strong>Habilitar Seguridad</strong>: Modifica el archivo <code>elasticsearch.yml</code> para habilitar la seguridad.</li>
+<li><strong>Generar Certificados</strong>: Usa <code>elasticsearch-certutil</code> para generar los certificados SSL.</li>
+<li><strong>Configurar Certificados</strong>: Configura los certificados en <code>elasticsearch.yml</code>.</li>
+<li><strong>Crear un Rol y un Usuario</strong>: Usa la API de seguridad para crear un rol y un usuario.</li>
+</ol>
+<h4>Solución</h4>
+<ol>
+<li><strong>Habilitar Seguridad</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eHBhY2suc2VjdXJpdHkuZW5hYmxlZDogdHJ1ZQp4cGFjay5zZWN1cml0eS50cmFuc3BvcnQuc3NsLmVuYWJsZWQ6IHRydWUKeHBhY2suc2VjdXJpdHkuaHR0cC5zc2wuZW5hYmxlZDogdHJ1ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.http.ssl.enabled: true</pre></div><div class='content'><ol start="2">
+<li><strong>Generar Certificados</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmluL2VsYXN0aWNzZWFyY2gtY2VydHV0aWwgY2EKYmluL2VsYXN0aWNzZWFyY2gtY2VydHV0aWwgY2VydCAtLWNhIGVsYXN0aWMtc3RhY2stY2EucDEy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bin/elasticsearch-certutil ca
+bin/elasticsearch-certutil cert --ca elastic-stack-ca.p12</pre></div><div class='content'><ol start="3">
+<li><strong>Configurar Certificados</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eHBhY2suc2VjdXJpdHkudHJhbnNwb3J0LnNzbC52ZXJpZmljYXRpb25fbW9kZTogY2VydGlmaWNhdGUKeHBhY2suc2VjdXJpdHkudHJhbnNwb3J0LnNzbC5rZXlzdG9yZS5wYXRoOiBwYXRoL3RvL3lvdXIva2V5c3RvcmUucDEyCnhwYWNrLnNlY3VyaXR5LnRyYW5zcG9ydC5zc2wudHJ1c3RzdG9yZS5wYXRoOiBwYXRoL3RvL3lvdXIvdHJ1c3RzdG9yZS5wMTIKeHBhY2suc2VjdXJpdHkuaHR0cC5zc2wua2V5c3RvcmUucGF0aDogcGF0aC90by95b3VyL2tleXN0b3JlLnAxMgp4cGFjay5zZWN1cml0eS5odHRwLnNzbC50cnVzdHN0b3JlLnBhdGg6IHBhdGgvdG8veW91ci90cnVzdHN0b3JlLnAxMg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: path/to/your/keystore.p12
+xpack.security.transport.ssl.truststore.path: path/to/your/truststore.p12
+xpack.security.http.ssl.keystore.path: path/to/your/keystore.p12
+xpack.security.http.ssl.truststore.path: path/to/your/truststore.p12</pre></div><div class='content'><ol start="4">
+<li><strong>Crear un Rol y un Usuario</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9fc2VjdXJpdHkvcm9sZS9teV9hZG1pbl9yb2xlCnsKICAiY2x1c3RlciI6IFsiYWxsIl0sCiAgImluZGljZXMiOiBbCiAgICB7CiAgICAgICJuYW1lcyI6IFsiKiJdLAogICAgICAicHJpdmlsZWdlcyI6IFsiYWxsIl0KICAgIH0KICBdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /_security/role/my_admin_role
+{
+  &quot;cluster&quot;: [&quot;all&quot;],
+  &quot;indices&quot;: [
+    {
+      &quot;names&quot;: [&quot;*&quot;],
+      &quot;privileges&quot;: [&quot;all&quot;]
+    }
+  ]
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvX3NlY3VyaXR5L3VzZXIvbXlfYWRtaW5fdXNlcgp7CiAgInBhc3N3b3JkIiA6ICJwYXNzd29yZDEyMyIsCiAgInJvbGVzIiA6IFsgIm15X2FkbWluX3JvbGUiIF0sCiAgImZ1bGxfbmFtZSIgOiAiQWRtaW4gVXNlciIsCiAgImVtYWlsIiA6ICJhZG1pbkBleGFtcGxlLmNvbSIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /_security/user/my_admin_user
+{
+  &quot;password&quot; : &quot;password123&quot;,
+  &quot;roles&quot; : [ &quot;my_admin_role&quot; ],
+  &quot;full_name&quot; : &quot;Admin User&quot;,
+  &quot;email&quot; : &quot;admin@example.com&quot;
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo habilitar y configurar la seguridad en Elasticsearch. Hemos cubierto la habilitación de SSL/TLS, la creación de usuarios y roles, y la configuración de métodos de autenticación. Estos pasos son fundamentales para asegurar que solo los usuarios autorizados puedan acceder a los datos y realizar operaciones en tu clúster de Elasticsearch.</p>
+<p>En el próximo tema, profundizaremos en la autenticación y autorización de usuarios, explorando métodos avanzados y configuraciones adicionales para asegurar tu clúster de Elasticsearch.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-backup-restore' title="Respaldo y Restauración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-user-authentication-authorization' title="Autenticación y Autorización de Usuarios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

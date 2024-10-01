@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creando Diseños Jerárquicos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/d3_js/05-01-hierarchical-layouts" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/d3_js/05-01-hierarchical-layouts" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/d3_js/05-01-hierarchical-layouts" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/d3_js/05-01-hierarchical-layouts" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/d3_js/05-01-hierarchical-layouts" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-creating-scatter-plots' title="Creando Diagramas de Dispersión">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creando Diseños Jerárquicos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-force-layouts' title="Creando Diseños de Fuerza">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos a crear visualizaciones jerárquicas utilizando D3.js. Las visualizaciones jerárquicas son útiles para representar datos estructurados en niveles, como árboles genealógicos, organigramas y estructuras de carpetas.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><p>Antes de comenzar con los ejemplos prácticos, es importante entender algunos conceptos clave:</p>
+<ul>
+<li><strong>Jerarquía</strong>: Una estructura de datos en la que los elementos están organizados en niveles, con un elemento raíz y varios niveles de nodos hijos.</li>
+<li><strong>Nodo</strong>: Cada elemento en la jerarquía.</li>
+<li><strong>Enlace</strong>: La conexión entre dos nodos, representando la relación padre-hijo.</li>
+</ul>
+</div><h1>Tipos de Diseños Jerárquicos en D3.js</h1>
+<div class='content'><p>D3.js proporciona varios tipos de diseños jerárquicos, entre los que se incluyen:</p>
+<ol>
+<li><strong>Árbol (Tree Layout)</strong>: Representa la jerarquía en una estructura de árbol.</li>
+<li><strong>Cluster</strong>: Similar al árbol, pero con un enfoque en la agrupación de nodos.</li>
+<li><strong>Treemap</strong>: Representa la jerarquía en un espacio rectangular, dividiendo el área en sub-rectángulos.</li>
+<li><strong>Pack</strong>: Representa la jerarquía en un espacio circular, con círculos anidados.</li>
+</ol>
+</div><h1>Ejemplo Práctico: Creando un Árbol Jerárquico</h1>
+<div class='content'></div><h2>Paso 1: Preparar los Datos</h2>
+<div class='content'><p>Primero, necesitamos definir nuestra estructura de datos jerárquica. Utilizaremos un formato JSON para representar la jerarquía.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogIlJvb3QiLAogICJjaGlsZHJlbiI6IFsKICAgIHsKICAgICAgIm5hbWUiOiAiQ2hpbGQgMSIsCiAgICAgICJjaGlsZHJlbiI6IFsKICAgICAgICB7ICJuYW1lIjogIkdyYW5kY2hpbGQgMSIgfSwKICAgICAgICB7ICJuYW1lIjogIkdyYW5kY2hpbGQgMiIgfQogICAgICBdCiAgICB9LAogICAgewogICAgICAibmFtZSI6ICJDaGlsZCAyIiwKICAgICAgImNoaWxkcmVuIjogWwogICAgICAgIHsgIm5hbWUiOiAiR3JhbmRjaGlsZCAzIiB9CiAgICAgIF0KICAgIH0KICBdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;Root&quot;,
+  &quot;children&quot;: [
+    {
+      &quot;name&quot;: &quot;Child 1&quot;,
+      &quot;children&quot;: [
+        { &quot;name&quot;: &quot;Grandchild 1&quot; },
+        { &quot;name&quot;: &quot;Grandchild 2&quot; }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Child 2&quot;,
+      &quot;children&quot;: [
+        { &quot;name&quot;: &quot;Grandchild 3&quot; }
+      ]
+    }
+  ]
+}</pre></div><div class='content'></div><h2>Paso 2: Configurar el Entorno</h2>
+<div class='content'><p>Asegúrate de tener un archivo HTML con un contenedor SVG donde se renderizará el árbol.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogIDx0aXRsZT5IaWVyYXJjaGljYWwgTGF5b3V0PC90aXRsZT4KICA8c2NyaXB0IHNyYz0iaHR0cHM6Ly9kM2pzLm9yZy9kMy52Ni5taW4uanMiPjwvc2NyaXB0PgogIDxzdHlsZT4KICAgIC5ub2RlIGNpcmNsZSB7CiAgICAgIGZpbGw6ICM5OTk7CiAgICB9CiAgICAubm9kZSB0ZXh0IHsKICAgICAgZm9udDogMTJweCBzYW5zLXNlcmlmOwogICAgfQogICAgLmxpbmsgewogICAgICBmaWxsOiBub25lOwogICAgICBzdHJva2U6ICM1NTU7CiAgICAgIHN0cm9rZS13aWR0aDogMS41cHg7CiAgICB9CiAgPC9zdHlsZT4KPC9oZWFkPgo8Ym9keT4KICA8c3ZnIHdpZHRoPSI5NjAiIGhlaWdodD0iNjAwIj48L3N2Zz4KICA8c2NyaXB0IHNyYz0iaGllcmFyY2hpY2FsLWxheW91dC5qcyI+PC9zY3JpcHQ+CjwvYm9keT4KPC9odG1sPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;title&gt;Hierarchical Layout&lt;/title&gt;
+  &lt;script src=&quot;https://d3js.org/d3.v6.min.js&quot;&gt;&lt;/script&gt;
+  &lt;style&gt;
+    .node circle {
+      fill: #999;
+    }
+    .node text {
+      font: 12px sans-serif;
+    }
+    .link {
+      fill: none;
+      stroke: #555;
+      stroke-width: 1.5px;
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;svg width=&quot;960&quot; height=&quot;600&quot;&gt;&lt;/svg&gt;
+  &lt;script src=&quot;hierarchical-layout.js&quot;&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Paso 3: Crear el Árbol en D3.js</h2>
+<div class='content'><p>En el archivo <code>hierarchical-layout.js</code>, escribiremos el código para crear el árbol jerárquico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGVmaW5pciBsYXMgZGltZW5zaW9uZXMgeSBtw6FyZ2VuZXMgZGVsIFNWRwpjb25zdCB3aWR0aCA9IDk2MDsKY29uc3QgaGVpZ2h0ID0gNjAwOwpjb25zdCBtYXJnaW4gPSB7IHRvcDogMjAsIHJpZ2h0OiAxMjAsIGJvdHRvbTogMjAsIGxlZnQ6IDEyMCB9OwoKLy8gQ3JlYXIgdW4gY29udGVuZWRvciBTVkcKY29uc3Qgc3ZnID0gZDMuc2VsZWN0KCJzdmciKQogIC5hdHRyKCJ3aWR0aCIsIHdpZHRoKQogIC5hdHRyKCJoZWlnaHQiLCBoZWlnaHQpCiAgLmFwcGVuZCgiZyIpCiAgLmF0dHIoInRyYW5zZm9ybSIsIGB0cmFuc2xhdGUoJHttYXJnaW4ubGVmdH0sJHttYXJnaW4udG9wfSlgKTsKCi8vIENyZWFyIHVuIGxheW91dCBkZSDDoXJib2wKY29uc3QgdHJlZUxheW91dCA9IGQzLnRyZWUoKS5zaXplKFtoZWlnaHQgLSBtYXJnaW4udG9wIC0gbWFyZ2luLmJvdHRvbSwgd2lkdGggLSBtYXJnaW4ubGVmdCAtIG1hcmdpbi5yaWdodF0pOwoKLy8gRGVmaW5pciBsYSByYcOteiBkZSBsb3MgZGF0b3MKY29uc3Qgcm9vdCA9IGQzLmhpZXJhcmNoeShkYXRhKTsKCi8vIEdlbmVyYXIgZWwgw6FyYm9sCnRyZWVMYXlvdXQocm9vdCk7CgovLyBDcmVhciBlbmxhY2VzIChsaW5rcykKY29uc3QgbGluayA9IHN2Zy5zZWxlY3RBbGwoIi5saW5rIikKICAuZGF0YShyb290LmxpbmtzKCkpCiAgLmVudGVyKCkuYXBwZW5kKCJwYXRoIikKICAuYXR0cigiY2xhc3MiLCAibGluayIpCiAgLmF0dHIoImQiLCBkMy5saW5rSG9yaXpvbnRhbCgpCiAgICAueChkID0+IGQueSkKICAgIC55KGQgPT4gZC54KSk7CgovLyBDcmVhciBub2Rvcwpjb25zdCBub2RlID0gc3ZnLnNlbGVjdEFsbCgiLm5vZGUiKQogIC5kYXRhKHJvb3QuZGVzY2VuZGFudHMoKSkKICAuZW50ZXIoKS5hcHBlbmQoImciKQogIC5hdHRyKCJjbGFzcyIsICJub2RlIikKICAuYXR0cigidHJhbnNmb3JtIiwgZCA9PiBgdHJhbnNsYXRlKCR7ZC55fSwke2QueH0pYCk7CgovLyBBw7FhZGlyIGPDrXJjdWxvcyBhIGxvcyBub2Rvcwpub2RlLmFwcGVuZCgiY2lyY2xlIikKICAuYXR0cigiciIsIDUpOwoKLy8gQcOxYWRpciBldGlxdWV0YXMgYSBsb3Mgbm9kb3MKbm9kZS5hcHBlbmQoInRleHQiKQogIC5hdHRyKCJkeSIsIDMpCiAgLmF0dHIoIngiLCBkID0+IGQuY2hpbGRyZW4gPyAtOCA6IDgpCiAgLnN0eWxlKCJ0ZXh0LWFuY2hvciIsIGQgPT4gZC5jaGlsZHJlbiA/ICJlbmQiIDogInN0YXJ0IikKICAudGV4dChkID0+IGQuZGF0YS5uYW1lKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Definir las dimensiones y m&aacute;rgenes del SVG
+const width = 960;
+const height = 600;
+const margin = { top: 20, right: 120, bottom: 20, left: 120 };
+
+// Crear un contenedor SVG
+const svg = d3.select(&quot;svg&quot;)
+  .attr(&quot;width&quot;, width)
+  .attr(&quot;height&quot;, height)
+  .append(&quot;g&quot;)
+  .attr(&quot;transform&quot;, `translate(${margin.left},${margin.top})`);
+
+// Crear un layout de &aacute;rbol
+const treeLayout = d3.tree().size([height - margin.top - margin.bottom, width - margin.left - margin.right]);
+
+// Definir la ra&iacute;z de los datos
+const root = d3.hierarchy(data);
+
+// Generar el &aacute;rbol
+treeLayout(root);
+
+// Crear enlaces (links)
+const link = svg.selectAll(&quot;.link&quot;)
+  .data(root.links())
+  .enter().append(&quot;path&quot;)
+  .attr(&quot;class&quot;, &quot;link&quot;)
+  .attr(&quot;d&quot;, d3.linkHorizontal()
+    .x(d =&gt; d.y)
+    .y(d =&gt; d.x));
+
+// Crear nodos
+const node = svg.selectAll(&quot;.node&quot;)
+  .data(root.descendants())
+  .enter().append(&quot;g&quot;)
+  .attr(&quot;class&quot;, &quot;node&quot;)
+  .attr(&quot;transform&quot;, d =&gt; `translate(${d.y},${d.x})`);
+
+// A&ntilde;adir c&iacute;rculos a los nodos
+node.append(&quot;circle&quot;)
+  .attr(&quot;r&quot;, 5);
+
+// A&ntilde;adir etiquetas a los nodos
+node.append(&quot;text&quot;)
+  .attr(&quot;dy&quot;, 3)
+  .attr(&quot;x&quot;, d =&gt; d.children ? -8 : 8)
+  .style(&quot;text-anchor&quot;, d =&gt; d.children ? &quot;end&quot; : &quot;start&quot;)
+  .text(d =&gt; d.data.name);</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Definir las Dimensiones y Márgenes</strong>: Configuramos el tamaño del SVG y los márgenes para el contenedor.</li>
+<li><strong>Crear el Contenedor SVG</strong>: Añadimos un grupo (<code>&lt;g&gt;</code>) dentro del SVG para aplicar las transformaciones.</li>
+<li><strong>Crear el Layout de Árbol</strong>: Utilizamos <code>d3.tree()</code> para crear el layout de árbol y definimos su tamaño.</li>
+<li><strong>Definir la Raíz de los Datos</strong>: Convertimos los datos JSON en una jerarquía utilizando <code>d3.hierarchy()</code>.</li>
+<li><strong>Generar el Árbol</strong>: Aplicamos el layout de árbol a la jerarquía de datos.</li>
+<li><strong>Crear Enlaces</strong>: Dibujamos las líneas que conectan los nodos utilizando <code>d3.linkHorizontal()</code>.</li>
+<li><strong>Crear Nodos</strong>: Añadimos grupos (<code>&lt;g&gt;</code>) para cada nodo y los posicionamos.</li>
+<li><strong>Añadir Círculos y Etiquetas</strong>: Dibujamos círculos y etiquetas de texto para cada nodo.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Añadir Colores a los Nodos</h2>
+<div class='content'><p>Modifica el código para que los nodos tengan diferentes colores según su nivel en la jerarquía.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQcOxYWRpciBjb2xvcmVzIGEgbG9zIG5vZG9zIHNlZ8O6biBzdSBuaXZlbApub2RlLmFwcGVuZCgiY2lyY2xlIikKICAuYXR0cigiciIsIDUpCiAgLnN0eWxlKCJmaWxsIiwgZCA9PiBkLmRlcHRoID09PSAwID8gIiNmZjAwMDAiIDogZC5kZXB0aCA9PT0gMSA/ICIjMDBmZjAwIiA6ICIjMDAwMGZmIik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// A&ntilde;adir colores a los nodos seg&uacute;n su nivel
+node.append(&quot;circle&quot;)
+  .attr(&quot;r&quot;, 5)
+  .style(&quot;fill&quot;, d =&gt; d.depth === 0 ? &quot;#ff0000&quot; : d.depth === 1 ? &quot;#00ff00&quot; : &quot;#0000ff&quot;);</pre></div><div class='content'></div><h2>Ejercicio 2: Añadir Interactividad</h2>
+<div class='content'><p>Añade interactividad para que los nodos cambien de color cuando se haga clic en ellos.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQcOxYWRpciBpbnRlcmFjdGl2aWRhZCBhIGxvcyBub2Rvcwpub2RlLmFwcGVuZCgiY2lyY2xlIikKICAuYXR0cigiciIsIDUpCiAgLnN0eWxlKCJmaWxsIiwgZCA9PiBkLmRlcHRoID09PSAwID8gIiNmZjAwMDAiIDogZC5kZXB0aCA9PT0gMSA/ICIjMDBmZjAwIiA6ICIjMDAwMGZmIikKICAub24oImNsaWNrIiwgZnVuY3Rpb24oZXZlbnQsIGQpIHsKICAgIGQzLnNlbGVjdCh0aGlzKS5zdHlsZSgiZmlsbCIsICIjZmYwMGZmIik7CiAgfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// A&ntilde;adir interactividad a los nodos
+node.append(&quot;circle&quot;)
+  .attr(&quot;r&quot;, 5)
+  .style(&quot;fill&quot;, d =&gt; d.depth === 0 ? &quot;#ff0000&quot; : d.depth === 1 ? &quot;#00ff00&quot; : &quot;#0000ff&quot;)
+  .on(&quot;click&quot;, function(event, d) {
+    d3.select(this).style(&quot;fill&quot;, &quot;#ff00ff&quot;);
+  });</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido a crear visualizaciones jerárquicas utilizando D3.js, específicamente un árbol jerárquico. Hemos cubierto los conceptos clave, configurado el entorno, y creado un ejemplo práctico. Además, hemos proporcionado ejercicios para reforzar los conceptos aprendidos. En el próximo módulo, exploraremos otros tipos de diseños jerárquicos y cómo utilizarlos en nuestras visualizaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-creating-scatter-plots' title="Creando Diagramas de Dispersión">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-force-layouts' title="Creando Diseños de Fuerza">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

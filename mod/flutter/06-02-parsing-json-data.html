@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parseo de Datos JSON</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flutter/06-02-parsing-json-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flutter/06-02-parsing-json-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flutter/06-02-parsing-json-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flutter/06-02-parsing-json-data" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flutter/06-02-parsing-json-data" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-fetching-data-from-internet' title="Obteniendo Datos de Internet">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Parseo de Datos JSON</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-handling-network-errors' title="Manejo de Errores de Red">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo manejar y parsear datos JSON en Flutter utilizando el lenguaje de programación Dart. JSON (JavaScript Object Notation) es un formato de intercambio de datos ligero y fácil de leer y escribir para los humanos, y fácil de parsear y generar para las máquinas.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li>¿Qué es JSON?</li>
+<li>Decodificación de JSON en Dart</li>
+<li>Codificación de JSON en Dart</li>
+<li>Ejemplo Práctico</li>
+<li>Ejercicios Prácticos</li>
+</ol>
+</div><h1>1. ¿Qué es JSON?</h1>
+<div class='content'><p>JSON es un formato de texto que se utiliza para representar datos estructurados basados en la sintaxis de objetos de JavaScript. Es comúnmente utilizado para transmitir datos en aplicaciones web (por ejemplo, enviar datos desde el servidor al cliente).</p>
+</div><h2>Ejemplo de JSON</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogIkpvaG4gRG9lIiwKICAiYWdlIjogMzAsCiAgImlzU3R1ZGVudCI6IGZhbHNlLAogICJjb3Vyc2VzIjogWyJNYXRoIiwgIlNjaWVuY2UiLCAiSGlzdG9yeSJdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;John Doe&quot;,
+  &quot;age&quot;: 30,
+  &quot;isStudent&quot;: false,
+  &quot;courses&quot;: [&quot;Math&quot;, &quot;Science&quot;, &quot;History&quot;]
+}</pre></div><div class='content'></div><h1>2. Decodificación de JSON en Dart</h1>
+<div class='content'><p>Para decodificar (parsear) JSON en Dart, utilizamos la función <code>jsonDecode</code> del paquete <code>dart:convert</code>. Esta función convierte una cadena JSON en un mapa de Dart.</p>
+</div><h2>Ejemplo de Decodificación</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgewogIFN0cmluZyBqc29uU3RyaW5nID0gJ3sibmFtZSI6ICJKb2huIERvZSIsICJhZ2UiOiAzMCwgImlzU3R1ZGVudCI6IGZhbHNlLCAiY291cnNlcyI6IFsiTWF0aCIsICJTY2llbmNlIiwgIkhpc3RvcnkiXX0nOwogIAogIE1hcDxTdHJpbmcsIGR5bmFtaWM+IHVzZXIgPSBqc29uRGVjb2RlKGpzb25TdHJpbmcpOwogIAogIHByaW50KCdOYW1lOiAke3VzZXJbJ25hbWUnXX0nKTsKICBwcmludCgnQWdlOiAke3VzZXJbJ2FnZSddfScpOwogIHByaW50KCdJcyBTdHVkZW50OiAke3VzZXJbJ2lzU3R1ZGVudCddfScpOwogIHByaW50KCdDb3Vyc2VzOiAke3VzZXJbJ2NvdXJzZXMnXX0nKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+
+void main() {
+  String jsonString = '{&quot;name&quot;: &quot;John Doe&quot;, &quot;age&quot;: 30, &quot;isStudent&quot;: false, &quot;courses&quot;: [&quot;Math&quot;, &quot;Science&quot;, &quot;History&quot;]}';
+  
+  Map&lt;String, dynamic&gt; user = jsonDecode(jsonString);
+  
+  print('Name: ${user['name']}');
+  print('Age: ${user['age']}');
+  print('Is Student: ${user['isStudent']}');
+  print('Courses: ${user['courses']}');
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>jsonDecode</code> convierte la cadena JSON en un mapa de Dart.</li>
+<li>Accedemos a los valores del mapa utilizando las claves correspondientes.</li>
+</ul>
+</div><h1>3. Codificación de JSON en Dart</h1>
+<div class='content'><p>Para codificar (serializar) un objeto de Dart a una cadena JSON, utilizamos la función <code>jsonEncode</code> del paquete <code>dart:convert</code>.</p>
+</div><h2>Ejemplo de Codificación</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgewogIE1hcDxTdHJpbmcsIGR5bmFtaWM+IHVzZXIgPSB7CiAgICAnbmFtZSc6ICdKb2huIERvZScsCiAgICAnYWdlJzogMzAsCiAgICAnaXNTdHVkZW50JzogZmFsc2UsCiAgICAnY291cnNlcyc6IFsnTWF0aCcsICdTY2llbmNlJywgJ0hpc3RvcnknXQogIH07CiAgCiAgU3RyaW5nIGpzb25TdHJpbmcgPSBqc29uRW5jb2RlKHVzZXIpOwogIAogIHByaW50KGpzb25TdHJpbmcpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+
+void main() {
+  Map&lt;String, dynamic&gt; user = {
+    'name': 'John Doe',
+    'age': 30,
+    'isStudent': false,
+    'courses': ['Math', 'Science', 'History']
+  };
+  
+  String jsonString = jsonEncode(user);
+  
+  print(jsonString);
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>jsonEncode</code> convierte el mapa de Dart en una cadena JSON.</li>
+<li>La cadena JSON resultante puede ser utilizada para transmitir datos a través de una red o almacenarlos.</li>
+</ul>
+</div><h1>4. Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear una clase <code>User</code> en Dart y veremos cómo podemos decodificar y codificar objetos de esta clase desde y hacia JSON.</p>
+</div><h2>Definición de la Clase `User`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgVXNlciB7CiAgU3RyaW5nIG5hbWU7CiAgaW50IGFnZTsKICBib29sIGlzU3R1ZGVudDsKICBMaXN0PFN0cmluZz4gY291cnNlczsKCiAgVXNlcih7cmVxdWlyZWQgdGhpcy5uYW1lLCByZXF1aXJlZCB0aGlzLmFnZSwgcmVxdWlyZWQgdGhpcy5pc1N0dWRlbnQsIHJlcXVpcmVkIHRoaXMuY291cnNlc30pOwoKICAvLyBNw6l0b2RvIHBhcmEgY3JlYXIgdW4gb2JqZXRvIFVzZXIgZGVzZGUgdW4gbWFwYSBKU09OCiAgZmFjdG9yeSBVc2VyLmZyb21Kc29uKE1hcDxTdHJpbmcsIGR5bmFtaWM+IGpzb24pIHsKICAgIHJldHVybiBVc2VyKAogICAgICBuYW1lOiBqc29uWyduYW1lJ10sCiAgICAgIGFnZToganNvblsnYWdlJ10sCiAgICAgIGlzU3R1ZGVudDoganNvblsnaXNTdHVkZW50J10sCiAgICAgIGNvdXJzZXM6IExpc3Q8U3RyaW5nPi5mcm9tKGpzb25bJ2NvdXJzZXMnXSksCiAgICApOwogIH0KCiAgLy8gTcOpdG9kbyBwYXJhIGNvbnZlcnRpciB1biBvYmpldG8gVXNlciBhIHVuIG1hcGEgSlNPTgogIE1hcDxTdHJpbmcsIGR5bmFtaWM+IHRvSnNvbigpIHsKICAgIHJldHVybiB7CiAgICAgICduYW1lJzogbmFtZSwKICAgICAgJ2FnZSc6IGFnZSwKICAgICAgJ2lzU3R1ZGVudCc6IGlzU3R1ZGVudCwKICAgICAgJ2NvdXJzZXMnOiBjb3Vyc2VzLAogICAgfTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class User {
+  String name;
+  int age;
+  bool isStudent;
+  List&lt;String&gt; courses;
+
+  User({required this.name, required this.age, required this.isStudent, required this.courses});
+
+  // M&eacute;todo para crear un objeto User desde un mapa JSON
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) {
+    return User(
+      name: json['name'],
+      age: json['age'],
+      isStudent: json['isStudent'],
+      courses: List&lt;String&gt;.from(json['courses']),
+    );
+  }
+
+  // M&eacute;todo para convertir un objeto User a un mapa JSON
+  Map&lt;String, dynamic&gt; toJson() {
+    return {
+      'name': name,
+      'age': age,
+      'isStudent': isStudent,
+      'courses': courses,
+    };
+  }
+}</pre></div><div class='content'></div><h2>Uso de la Clase `User`</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgewogIFN0cmluZyBqc29uU3RyaW5nID0gJ3sibmFtZSI6ICJKb2huIERvZSIsICJhZ2UiOiAzMCwgImlzU3R1ZGVudCI6IGZhbHNlLCAiY291cnNlcyI6IFsiTWF0aCIsICJTY2llbmNlIiwgIkhpc3RvcnkiXX0nOwogIAogIC8vIERlY29kaWZpY2FyIEpTT04gYSBvYmpldG8gVXNlcgogIE1hcDxTdHJpbmcsIGR5bmFtaWM+IHVzZXJNYXAgPSBqc29uRGVjb2RlKGpzb25TdHJpbmcpOwogIFVzZXIgdXNlciA9IFVzZXIuZnJvbUpzb24odXNlck1hcCk7CiAgCiAgcHJpbnQoJ05hbWU6ICR7dXNlci5uYW1lfScpOwogIHByaW50KCdBZ2U6ICR7dXNlci5hZ2V9Jyk7CiAgcHJpbnQoJ0lzIFN0dWRlbnQ6ICR7dXNlci5pc1N0dWRlbnR9Jyk7CiAgcHJpbnQoJ0NvdXJzZXM6ICR7dXNlci5jb3Vyc2VzfScpOwogIAogIC8vIENvZGlmaWNhciBvYmpldG8gVXNlciBhIEpTT04KICBTdHJpbmcgZW5jb2RlZEpzb24gPSBqc29uRW5jb2RlKHVzZXIudG9Kc29uKCkpOwogIHByaW50KCdFbmNvZGVkIEpTT046ICRlbmNvZGVkSnNvbicpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+
+void main() {
+  String jsonString = '{&quot;name&quot;: &quot;John Doe&quot;, &quot;age&quot;: 30, &quot;isStudent&quot;: false, &quot;courses&quot;: [&quot;Math&quot;, &quot;Science&quot;, &quot;History&quot;]}';
+  
+  // Decodificar JSON a objeto User
+  Map&lt;String, dynamic&gt; userMap = jsonDecode(jsonString);
+  User user = User.fromJson(userMap);
+  
+  print('Name: ${user.name}');
+  print('Age: ${user.age}');
+  print('Is Student: ${user.isStudent}');
+  print('Courses: ${user.courses}');
+  
+  // Codificar objeto User a JSON
+  String encodedJson = jsonEncode(user.toJson());
+  print('Encoded JSON: $encodedJson');
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>User.fromJson</code> es un constructor de fábrica que crea una instancia de <code>User</code> a partir de un mapa JSON.</li>
+<li><code>toJson</code> es un método que convierte una instancia de <code>User</code> en un mapa JSON.</li>
+<li>Utilizamos <code>jsonDecode</code> para convertir la cadena JSON en un mapa y luego <code>User.fromJson</code> para crear una instancia de <code>User</code>.</li>
+<li>Utilizamos <code>jsonEncode</code> para convertir el objeto <code>User</code> en una cadena JSON.</li>
+</ul>
+</div><h1>5. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1</h2>
+<div class='content'><p>Dado el siguiente JSON, crea una clase <code>Product</code> en Dart y escribe los métodos <code>fromJson</code> y <code>toJson</code> para decodificar y codificar objetos <code>Product</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJpZCI6IDEsCiAgIm5hbWUiOiAiTGFwdG9wIiwKICAicHJpY2UiOiA5OTkuOTksCiAgImluU3RvY2siOiB0cnVlCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;id&quot;: 1,
+  &quot;name&quot;: &quot;Laptop&quot;,
+  &quot;price&quot;: 999.99,
+  &quot;inStock&quot;: true
+}</pre></div><div class='content'><h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUHJvZHVjdCB7CiAgaW50IGlkOwogIFN0cmluZyBuYW1lOwogIGRvdWJsZSBwcmljZTsKICBib29sIGluU3RvY2s7CgogIFByb2R1Y3Qoe3JlcXVpcmVkIHRoaXMuaWQsIHJlcXVpcmVkIHRoaXMubmFtZSwgcmVxdWlyZWQgdGhpcy5wcmljZSwgcmVxdWlyZWQgdGhpcy5pblN0b2NrfSk7CgogIGZhY3RvcnkgUHJvZHVjdC5mcm9tSnNvbihNYXA8U3RyaW5nLCBkeW5hbWljPiBqc29uKSB7CiAgICByZXR1cm4gUHJvZHVjdCgKICAgICAgaWQ6IGpzb25bJ2lkJ10sCiAgICAgIG5hbWU6IGpzb25bJ25hbWUnXSwKICAgICAgcHJpY2U6IGpzb25bJ3ByaWNlJ10sCiAgICAgIGluU3RvY2s6IGpzb25bJ2luU3RvY2snXSwKICAgICk7CiAgfQoKICBNYXA8U3RyaW5nLCBkeW5hbWljPiB0b0pzb24oKSB7CiAgICByZXR1cm4gewogICAgICAnaWQnOiBpZCwKICAgICAgJ25hbWUnOiBuYW1lLAogICAgICAncHJpY2UnOiBwcmljZSwKICAgICAgJ2luU3RvY2snOiBpblN0b2NrLAogICAgfTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Product {
+  int id;
+  String name;
+  double price;
+  bool inStock;
+
+  Product({required this.id, required this.name, required this.price, required this.inStock});
+
+  factory Product.fromJson(Map&lt;String, dynamic&gt; json) {
+    return Product(
+      id: json['id'],
+      name: json['name'],
+      price: json['price'],
+      inStock: json['inStock'],
+    );
+  }
+
+  Map&lt;String, dynamic&gt; toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'price': price,
+      'inStock': inStock,
+    };
+  }
+}</pre></div><div class='content'></div><h2>Ejercicio 2</h2>
+<div class='content'><p>Escribe un programa que decodifique el siguiente JSON a una lista de objetos <code>Product</code> y luego codifique esa lista de vuelta a JSON.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WwogIHsiaWQiOiAxLCAibmFtZSI6ICJMYXB0b3AiLCAicHJpY2UiOiA5OTkuOTksICJpblN0b2NrIjogdHJ1ZX0sCiAgeyJpZCI6IDIsICJuYW1lIjogIk1vdXNlIiwgInByaWNlIjogMTkuOTksICJpblN0b2NrIjogdHJ1ZX0sCiAgeyJpZCI6IDMsICJuYW1lIjogIktleWJvYXJkIiwgInByaWNlIjogNDkuOTksICJpblN0b2NrIjogZmFsc2V9Cl0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[
+  {&quot;id&quot;: 1, &quot;name&quot;: &quot;Laptop&quot;, &quot;price&quot;: 999.99, &quot;inStock&quot;: true},
+  {&quot;id&quot;: 2, &quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 19.99, &quot;inStock&quot;: true},
+  {&quot;id&quot;: 3, &quot;name&quot;: &quot;Keyboard&quot;, &quot;price&quot;: 49.99, &quot;inStock&quot;: false}
+]</pre></div><div class='content'><h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgewogIFN0cmluZyBqc29uU3RyaW5nID0gJycnCiAgWwogICAgeyJpZCI6IDEsICJuYW1lIjogIkxhcHRvcCIsICJwcmljZSI6IDk5OS45OSwgImluU3RvY2siOiB0cnVlfSwKICAgIHsiaWQiOiAyLCAibmFtZSI6ICJNb3VzZSIsICJwcmljZSI6IDE5Ljk5LCAiaW5TdG9jayI6IHRydWV9LAogICAgeyJpZCI6IDMsICJuYW1lIjogIktleWJvYXJkIiwgInByaWNlIjogNDkuOTksICJpblN0b2NrIjogZmFsc2V9CiAgXQogICcnJzsKCiAgLy8gRGVjb2RpZmljYXIgSlNPTiBhIGxpc3RhIGRlIG9iamV0b3MgUHJvZHVjdAogIExpc3Q8ZHluYW1pYz4gcHJvZHVjdExpc3RKc29uID0ganNvbkRlY29kZShqc29uU3RyaW5nKTsKICBMaXN0PFByb2R1Y3Q+IHByb2R1Y3RMaXN0ID0gcHJvZHVjdExpc3RKc29uLm1hcCgoanNvbikgPT4gUHJvZHVjdC5mcm9tSnNvbihqc29uKSkudG9MaXN0KCk7CgogIHByb2R1Y3RMaXN0LmZvckVhY2goKHByb2R1Y3QpIHsKICAgIHByaW50KCdQcm9kdWN0IE5hbWU6ICR7cHJvZHVjdC5uYW1lfSwgUHJpY2U6ICR7cHJvZHVjdC5wcmljZX0nKTsKICB9KTsKCiAgLy8gQ29kaWZpY2FyIGxpc3RhIGRlIG9iamV0b3MgUHJvZHVjdCBhIEpTT04KICBTdHJpbmcgZW5jb2RlZEpzb24gPSBqc29uRW5jb2RlKHByb2R1Y3RMaXN0Lm1hcCgocHJvZHVjdCkgPT4gcHJvZHVjdC50b0pzb24oKSkudG9MaXN0KCkpOwogIHByaW50KCdFbmNvZGVkIEpTT046ICRlbmNvZGVkSnNvbicpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+
+void main() {
+  String jsonString = '''
+  [
+    {&quot;id&quot;: 1, &quot;name&quot;: &quot;Laptop&quot;, &quot;price&quot;: 999.99, &quot;inStock&quot;: true},
+    {&quot;id&quot;: 2, &quot;name&quot;: &quot;Mouse&quot;, &quot;price&quot;: 19.99, &quot;inStock&quot;: true},
+    {&quot;id&quot;: 3, &quot;name&quot;: &quot;Keyboard&quot;, &quot;price&quot;: 49.99, &quot;inStock&quot;: false}
+  ]
+  ''';
+
+  // Decodificar JSON a lista de objetos Product
+  List&lt;dynamic&gt; productListJson = jsonDecode(jsonString);
+  List&lt;Product&gt; productList = productListJson.map((json) =&gt; Product.fromJson(json)).toList();
+
+  productList.forEach((product) {
+    print('Product Name: ${product.name}, Price: ${product.price}');
+  });
+
+  // Codificar lista de objetos Product a JSON
+  String encodedJson = jsonEncode(productList.map((product) =&gt; product.toJson()).toList());
+  print('Encoded JSON: $encodedJson');
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li>Decodificamos la cadena JSON a una lista de mapas.</li>
+<li>Convertimos cada mapa en un objeto <code>Product</code> utilizando <code>Product.fromJson</code>.</li>
+<li>Codificamos la lista de objetos <code>Product</code> de vuelta a JSON utilizando <code>jsonEncode</code>.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido cómo decodificar y codificar datos JSON en Dart. Hemos visto ejemplos prácticos y hemos trabajado con una clase personalizada para manejar datos JSON de manera eficiente. Estos conocimientos son fundamentales para trabajar con APIs y manejar datos en aplicaciones Flutter.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-fetching-data-from-internet' title="Obteniendo Datos de Internet">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-handling-network-errors' title="Manejo de Errores de Red">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

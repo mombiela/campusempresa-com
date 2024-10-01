@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encriptación</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/05-02-encryption" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/05-02-encryption" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/05-02-encryption" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/redis/05-02-encryption" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/05-02-encryption" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-authentication' title="Autenticación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Encriptación</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-access-control-lists-acls' title="Listas de Control de Acceso (ACLs)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La encriptación es una técnica crucial para proteger los datos sensibles almacenados y transmitidos a través de Redis. En este tema, aprenderemos sobre las diferentes formas de implementar encriptación en Redis para asegurar que los datos estén protegidos contra accesos no autorizados.</p>
+</div><h1>1. ¿Por qué es Importante la Encriptación en Redis?</h1>
+<div class='content'><p>Redis, por su naturaleza, es una base de datos en memoria que puede contener datos sensibles. La encriptación ayuda a:</p>
+<ul>
+<li><strong>Proteger la confidencialidad de los datos</strong>: Asegura que solo las partes autorizadas puedan leer los datos.</li>
+<li><strong>Prevenir accesos no autorizados</strong>: Incluso si un atacante obtiene acceso a los datos, no podrá interpretarlos sin la clave de encriptación.</li>
+<li><strong>Cumplir con regulaciones</strong>: Muchas normativas de seguridad de datos requieren que la información sensible esté encriptada.</li>
+</ul>
+</div><h1>2. Métodos de Encriptación en Redis</h1>
+<div class='content'><p>Redis no proporciona encriptación de datos en reposo de forma nativa, pero se pueden utilizar varias estrategias para asegurar los datos:</p>
+</div><h2>2.1. Encriptación en Tránsito</h2>
+<div class='content'><p>Redis soporta la encriptación en tránsito utilizando TLS (Transport Layer Security). Esto asegura que los datos transmitidos entre el cliente y el servidor Redis estén encriptados.</p>
+<h4>Configuración de TLS en Redis</h4>
+<ol>
+<li>
+<p><strong>Generar Certificados TLS</strong>:</p>
+<ul>
+<li>Necesitarás un certificado de servidor y una clave privada. Puedes generar estos usando <code>openssl</code>:
+<pre><code class="language-sh">openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout redis-server.key -out redis-server.crt
+openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout redis-client.key -out redis-client.crt
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar Redis para Usar TLS</strong>:</p>
+<ul>
+<li>Edita el archivo de configuración de Redis (<code>redis.conf</code>) para incluir las siguientes líneas:
+<pre><code class="language-conf">tls-port 6379
+port 0
+tls-cert-file /path/to/redis-server.crt
+tls-key-file /path/to/redis-server.key
+tls-ca-cert-file /path/to/ca.crt
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el Cliente Redis para Usar TLS</strong>:</p>
+<ul>
+<li>Al conectar con el cliente Redis, asegúrate de especificar los parámetros TLS:
+<pre><code class="language-sh">redis-cli --tls --cert /path/to/redis-client.crt --key /path/to/redis-client.key --cacert /path/to/ca.crt -h &lt;redis-server-host&gt;
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>2.2. Encriptación en Reposo</h2>
+<div class='content'><p>Para encriptar datos en reposo, puedes utilizar soluciones externas ya que Redis no soporta encriptación en reposo de forma nativa. Algunas estrategias incluyen:</p>
+<ul>
+<li><strong>Encriptación a Nivel de Aplicación</strong>: Encripta los datos antes de almacenarlos en Redis y desencríptalos después de recuperarlos.</li>
+<li><strong>Sistemas de Archivos Encriptados</strong>: Utiliza un sistema de archivos encriptado para almacenar los archivos de datos de Redis.</li>
+</ul>
+<h4>Ejemplo de Encriptación a Nivel de Aplicación</h4>
+<ol>
+<li>
+<p><strong>Encriptar Datos Antes de Almacenarlos</strong>:</p>
+<pre><code class="language-python">from cryptography.fernet import Fernet
+
+# Generar una clave de encriptación
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+
+# Datos a encriptar
+data = &quot;datos_sensibles&quot;
+encrypted_data = cipher_suite.encrypt(data.encode())
+
+# Almacenar en Redis
+redis_client.set('clave', encrypted_data)
+</code></pre>
+</li>
+<li>
+<p><strong>Desencriptar Datos Después de Recuperarlos</strong>:</p>
+<pre><code class="language-python"># Recuperar datos de Redis
+encrypted_data = redis_client.get('clave')
+
+# Desencriptar datos
+decrypted_data = cipher_suite.decrypt(encrypted_data).decode()
+print(decrypted_data)  # Output: datos_sensibles
+</code></pre>
+</li>
+</ol>
+</div><h1>3. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de TLS en Redis</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar Redis para usar TLS y conectar un cliente Redis utilizando TLS.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Genera los certificados TLS necesarios.</li>
+<li>Configura el servidor Redis para usar TLS.</li>
+<li>Conecta al servidor Redis usando <code>redis-cli</code> con TLS.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejercicio 2: Encriptación a Nivel de Aplicación</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar encriptación a nivel de aplicación para almacenar y recuperar datos en Redis.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Utiliza la biblioteca <code>cryptography</code> en Python para encriptar datos antes de almacenarlos en Redis.</li>
+<li>Recupera y desencripta los datos almacenados.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+<ol>
+<li>
+<p><strong>Generar Certificados TLS</strong>:</p>
+<pre><code class="language-sh">openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout redis-server.key -out redis-server.crt
+openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -keyout redis-client.key -out redis-client.crt
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Redis para Usar TLS</strong>:</p>
+<pre><code class="language-conf">tls-port 6379
+port 0
+tls-cert-file /path/to/redis-server.crt
+tls-key-file /path/to/redis-server.key
+tls-ca-cert-file /path/to/ca.crt
+</code></pre>
+</li>
+<li>
+<p><strong>Conectar el Cliente Redis Usando TLS</strong>:</p>
+<pre><code class="language-sh">redis-cli --tls --cert /path/to/redis-client.crt --key /path/to/redis-client.key --cacert /path/to/ca.crt -h &lt;redis-server-host&gt;
+</code></pre>
+</li>
+</ol>
+<h4>Solución al Ejercicio 2</h4>
+<ol>
+<li>
+<p><strong>Encriptar Datos Antes de Almacenarlos</strong>:</p>
+<pre><code class="language-python">from cryptography.fernet import Fernet
+
+key = Fernet.generate_key()
+cipher_suite = Fernet(key)
+
+data = &quot;datos_sensibles&quot;
+encrypted_data = cipher_suite.encrypt(data.encode())
+
+redis_client.set('clave', encrypted_data)
+</code></pre>
+</li>
+<li>
+<p><strong>Desencriptar Datos Después de Recuperarlos</strong>:</p>
+<pre><code class="language-python">encrypted_data = redis_client.get('clave')
+decrypted_data = cipher_suite.decrypt(encrypted_data).decode()
+print(decrypted_data)  # Output: datos_sensibles
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La encriptación es una herramienta esencial para proteger los datos en Redis. A través de la encriptación en tránsito con TLS y la encriptación en reposo a nivel de aplicación, puedes asegurar que tus datos estén protegidos contra accesos no autorizados. Asegúrate de seguir las mejores prácticas de seguridad y mantener tus claves de encriptación seguras. En el próximo tema, exploraremos las Listas de Control de Acceso (ACLs) para gestionar permisos de usuario en Redis.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-authentication' title="Autenticación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-access-control-lists-acls' title="Listas de Control de Acceso (ACLs)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

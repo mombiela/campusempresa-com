@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inyección de Dependencias en Spring Boot</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/02-02-dependency-injection" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/02-02-dependency-injection" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/02-02-dependency-injection" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/springboot/02-02-dependency-injection" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/02-02-dependency-injection" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-spring-boot-annotations' title="Anotaciones de Spring Boot">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Inyección de Dependencias en Spring Boot</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-spring-boot-configuration' title="Configuración de Spring Boot">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La inyección de dependencias es un concepto fundamental en el desarrollo de aplicaciones con Spring Boot. Permite gestionar las dependencias entre los diferentes componentes de una aplicación de manera eficiente y flexible. En este tema, aprenderás qué es la inyección de dependencias, cómo funciona en Spring Boot y cómo implementarla en tus proyectos.</p>
+</div><h1>¿Qué es la Inyección de Dependencias?</h1>
+<div class='content'><p>La inyección de dependencias (DI, por sus siglas en inglés) es un patrón de diseño que permite a un objeto recibir sus dependencias de una fuente externa en lugar de crearlas por sí mismo. Esto promueve la separación de responsabilidades y facilita la prueba y el mantenimiento del código.</p>
+</div><h2>Beneficios de la Inyección de Dependencias</h2>
+<div class='content'><ul>
+<li><strong>Desacoplamiento:</strong> Los componentes no están fuertemente acoplados entre sí, lo que facilita el cambio de implementaciones.</li>
+<li><strong>Facilidad de Pruebas:</strong> Los componentes pueden ser fácilmente probados de manera aislada mediante la inyección de dependencias simuladas.</li>
+<li><strong>Mantenimiento:</strong> El código es más fácil de mantener y extender debido a la clara separación de responsabilidades.</li>
+</ul>
+</div><h1>Inyección de Dependencias en Spring Boot</h1>
+<div class='content'><p>Spring Boot utiliza el contenedor de inversión de control (IoC) de Spring para gestionar la inyección de dependencias. El contenedor IoC es responsable de instanciar, configurar y ensamblar los objetos conocidos como beans.</p>
+</div><h2>Anotaciones Clave</h2>
+<div class='content'><ul>
+<li><code>@Component</code>: Marca una clase como un bean gestionado por Spring.</li>
+<li><code>@Autowired</code>: Indica a Spring que debe inyectar una dependencia en un punto específico.</li>
+<li><code>@Service</code>: Especialización de <code>@Component</code> para la capa de servicio.</li>
+<li><code>@Repository</code>: Especialización de <code>@Component</code> para la capa de persistencia.</li>
+<li><code>@Controller</code>: Especialización de <code>@Component</code> para la capa de controladores web.</li>
+</ul>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Vamos a crear un ejemplo simple para ilustrar cómo funciona la inyección de dependencias en Spring Boot.</p>
+<h4>Paso 1: Crear una Interfaz de Servicio</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLnNlcnZpY2U7CgpwdWJsaWMgaW50ZXJmYWNlIEdyZWV0aW5nU2VydmljZSB7CiAgICBTdHJpbmcgZ3JlZXQoKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.service;
+
+public interface GreetingService {
+    String greet();
+}</pre></div><div class='content'><h4>Paso 2: Implementar la Interfaz de Servicio</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLnNlcnZpY2U7CgppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zdGVyZW90eXBlLlNlcnZpY2U7CgpAU2VydmljZQpwdWJsaWMgY2xhc3MgR3JlZXRpbmdTZXJ2aWNlSW1wbCBpbXBsZW1lbnRzIEdyZWV0aW5nU2VydmljZSB7CiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBTdHJpbmcgZ3JlZXQoKSB7CiAgICAgICAgcmV0dXJuICJIZWxsbywgV29ybGQhIjsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class GreetingServiceImpl implements GreetingService {
+    @Override
+    public String greet() {
+        return &quot;Hello, World!&quot;;
+    }
+}</pre></div><div class='content'><h4>Paso 3: Crear un Controlador que Use el Servicio</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLmNvbnRyb2xsZXI7CgppbXBvcnQgY29tLmV4YW1wbGUuZGVtby5zZXJ2aWNlLkdyZWV0aW5nU2VydmljZTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuYmVhbnMuZmFjdG9yeS5hbm5vdGF0aW9uLkF1dG93aXJlZDsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsud2ViLmJpbmQuYW5ub3RhdGlvbi5HZXRNYXBwaW5nOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay53ZWIuYmluZC5hbm5vdGF0aW9uLlJlc3RDb250cm9sbGVyOwoKQFJlc3RDb250cm9sbGVyCnB1YmxpYyBjbGFzcyBHcmVldGluZ0NvbnRyb2xsZXIgewoKICAgIHByaXZhdGUgZmluYWwgR3JlZXRpbmdTZXJ2aWNlIGdyZWV0aW5nU2VydmljZTsKCiAgICBAQXV0b3dpcmVkCiAgICBwdWJsaWMgR3JlZXRpbmdDb250cm9sbGVyKEdyZWV0aW5nU2VydmljZSBncmVldGluZ1NlcnZpY2UpIHsKICAgICAgICB0aGlzLmdyZWV0aW5nU2VydmljZSA9IGdyZWV0aW5nU2VydmljZTsKICAgIH0KCiAgICBAR2V0TWFwcGluZygiL2dyZWV0IikKICAgIHB1YmxpYyBTdHJpbmcgZ3JlZXQoKSB7CiAgICAgICAgcmV0dXJuIGdyZWV0aW5nU2VydmljZS5ncmVldCgpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.controller;
+
+import com.example.demo.service.GreetingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class GreetingController {
+
+    private final GreetingService greetingService;
+
+    @Autowired
+    public GreetingController(GreetingService greetingService) {
+        this.greetingService = greetingService;
+    }
+
+    @GetMapping(&quot;/greet&quot;)
+    public String greet() {
+        return greetingService.greet();
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Interfaz de Servicio (<code>GreetingService</code>):</strong> Define un contrato para el servicio de saludo.</li>
+<li><strong>Implementación del Servicio (<code>GreetingServiceImpl</code>):</strong> Implementa la interfaz y proporciona la lógica del saludo.</li>
+<li><strong>Controlador (<code>GreetingController</code>):</strong> Utiliza el servicio de saludo para manejar las solicitudes HTTP GET en la ruta <code>/greet</code>.</li>
+</ol>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Objetivo:</strong> Crear un servicio de cálculo de suma y un controlador que lo utilice.</p>
+<h4>Paso 1: Crear una Interfaz de Servicio de Cálculo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLnNlcnZpY2U7CgpwdWJsaWMgaW50ZXJmYWNlIENhbGN1bGF0aW9uU2VydmljZSB7CiAgICBpbnQgYWRkKGludCBhLCBpbnQgYik7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.service;
+
+public interface CalculationService {
+    int add(int a, int b);
+}</pre></div><div class='content'><h4>Paso 2: Implementar la Interfaz de Servicio de Cálculo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLnNlcnZpY2U7CgppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay5zdGVyZW90eXBlLlNlcnZpY2U7CgpAU2VydmljZQpwdWJsaWMgY2xhc3MgQ2FsY3VsYXRpb25TZXJ2aWNlSW1wbCBpbXBsZW1lbnRzIENhbGN1bGF0aW9uU2VydmljZSB7CiAgICBAT3ZlcnJpZGUKICAgIHB1YmxpYyBpbnQgYWRkKGludCBhLCBpbnQgYikgewogICAgICAgIHJldHVybiBhICsgYjsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+
+@Service
+public class CalculationServiceImpl implements CalculationService {
+    @Override
+    public int add(int a, int b) {
+        return a + b;
+    }
+}</pre></div><div class='content'><h4>Paso 3: Crear un Controlador que Use el Servicio de Cálculo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5kZW1vLmNvbnRyb2xsZXI7CgppbXBvcnQgY29tLmV4YW1wbGUuZGVtby5zZXJ2aWNlLkNhbGN1bGF0aW9uU2VydmljZTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsuYmVhbnMuZmFjdG9yeS5hbm5vdGF0aW9uLkF1dG93aXJlZDsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsud2ViLmJpbmQuYW5ub3RhdGlvbi5HZXRNYXBwaW5nOwppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay53ZWIuYmluZC5hbm5vdGF0aW9uLlJlcXVlc3RQYXJhbTsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsud2ViLmJpbmQuYW5ub3RhdGlvbi5SZXN0Q29udHJvbGxlcjsKCkBSZXN0Q29udHJvbGxlcgpwdWJsaWMgY2xhc3MgQ2FsY3VsYXRpb25Db250cm9sbGVyIHsKCiAgICBwcml2YXRlIGZpbmFsIENhbGN1bGF0aW9uU2VydmljZSBjYWxjdWxhdGlvblNlcnZpY2U7CgogICAgQEF1dG93aXJlZAogICAgcHVibGljIENhbGN1bGF0aW9uQ29udHJvbGxlcihDYWxjdWxhdGlvblNlcnZpY2UgY2FsY3VsYXRpb25TZXJ2aWNlKSB7CiAgICAgICAgdGhpcy5jYWxjdWxhdGlvblNlcnZpY2UgPSBjYWxjdWxhdGlvblNlcnZpY2U7CiAgICB9CgogICAgQEdldE1hcHBpbmcoIi9hZGQiKQogICAgcHVibGljIGludCBhZGQoQFJlcXVlc3RQYXJhbSBpbnQgYSwgQFJlcXVlc3RQYXJhbSBpbnQgYikgewogICAgICAgIHJldHVybiBjYWxjdWxhdGlvblNlcnZpY2UuYWRkKGEsIGIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.demo.controller;
+
+import com.example.demo.service.CalculationService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CalculationController {
+
+    private final CalculationService calculationService;
+
+    @Autowired
+    public CalculationController(CalculationService calculationService) {
+        this.calculationService = calculationService;
+    }
+
+    @GetMapping(&quot;/add&quot;)
+    public int add(@RequestParam int a, @RequestParam int b) {
+        return calculationService.add(a, b);
+    }
+}</pre></div><div class='content'></div><h2>Solución del Ejercicio</h2>
+<div class='content'><ol>
+<li><strong>Interfaz de Servicio de Cálculo (<code>CalculationService</code>):</strong> Define un contrato para el servicio de cálculo.</li>
+<li><strong>Implementación del Servicio de Cálculo (<code>CalculationServiceImpl</code>):</strong> Implementa la interfaz y proporciona la lógica de suma.</li>
+<li><strong>Controlador (<code>CalculationController</code>):</strong> Utiliza el servicio de cálculo para manejar las solicitudes HTTP GET en la ruta <code>/add</code>.</li>
+</ol>
+</div><h2>Errores Comunes y Consejos</h2>
+<div class='content'><ul>
+<li><strong>No Anotar las Clases:</strong> Asegúrate de anotar tus clases con <code>@Service</code>, <code>@Component</code>, <code>@Repository</code>, o <code>@Controller</code> para que Spring las gestione.</li>
+<li><strong>No Usar el Constructor para la Inyección:</strong> Es una buena práctica usar la inyección de dependencias a través del constructor en lugar de la inyección de campos para facilitar las pruebas y la inmutabilidad.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La inyección de dependencias es una técnica poderosa que facilita la gestión de dependencias en tus aplicaciones Spring Boot. Al entender y aplicar este concepto, puedes crear aplicaciones más modulares, mantenibles y fáciles de probar. En el próximo tema, exploraremos cómo configurar Spring Boot para personalizar aún más tu aplicación.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-spring-boot-annotations' title="Anotaciones de Spring Boot">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-spring-boot-configuration' title="Configuración de Spring Boot">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

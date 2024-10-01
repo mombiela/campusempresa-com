@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Client</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/06-02-apollo-client" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/06-02-apollo-client" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/06-02-apollo-client" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/graphql/06-02-apollo-client" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/06-02-apollo-client" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-graphiql-playground' title="GraphiQL y Playground">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Apollo Client</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-relay' title="Relay">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Apollo Client es una biblioteca completa de gestión de estado para JavaScript que permite interactuar con un servidor GraphQL para obtener, almacenar y manipular datos. Es una herramienta poderosa que facilita la integración de GraphQL en aplicaciones frontend, proporcionando una serie de características avanzadas como el manejo de caché, la actualización automática de la UI y la gestión de errores.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#instalación-y-configuración">Instalación y Configuración</a></li>
+<li><a href="#realizando-consultas">Realizando Consultas</a></li>
+<li><a href="#ejecutando-mutaciones">Ejecutando Mutaciones</a></li>
+<li><a href="#manejo-de-caché">Manejo de Caché</a></li>
+<li><a href="#suscripciones">Suscripciones</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Instalación y Configuración</h1>
+<div class='content'><p>Para comenzar a usar Apollo Client, primero necesitas instalarlo junto con sus dependencias. Puedes hacerlo usando npm o yarn:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgQGFwb2xsby9jbGllbnQgZ3JhcGhxbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install @apollo/client graphql</pre></div><div class='content'><p>O con yarn:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("eWFybiBhZGQgQGFwb2xsby9jbGllbnQgZ3JhcGhxbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>yarn add @apollo/client graphql</pre></div><div class='content'><p>Una vez instalado, debes configurar Apollo Client en tu aplicación. Aquí hay un ejemplo básico de configuración en una aplicación React:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IFJlYWN0RE9NIGZyb20gJ3JlYWN0LWRvbSc7CmltcG9ydCB7IEFwb2xsb1Byb3ZpZGVyLCBJbk1lbW9yeUNhY2hlLCBBcG9sbG9DbGllbnQgfSBmcm9tICdAYXBvbGxvL2NsaWVudCc7Cgpjb25zdCBjbGllbnQgPSBuZXcgQXBvbGxvQ2xpZW50KHsKICB1cmk6ICdodHRwczovL3lvdXItZ3JhcGhxbC1lbmRwb2ludC5jb20vZ3JhcGhxbCcsCiAgY2FjaGU6IG5ldyBJbk1lbW9yeUNhY2hlKCkKfSk7CgpSZWFjdERPTS5yZW5kZXIoCiAgPEFwb2xsb1Byb3ZpZGVyIGNsaWVudD17Y2xpZW50fT4KICAgIDxBcHAgLz4KICA8L0Fwb2xsb1Byb3ZpZGVyPiwKICBkb2N1bWVudC5nZXRFbGVtZW50QnlJZCgncm9vdCcpCik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import ReactDOM from 'react-dom';
+import { ApolloProvider, InMemoryCache, ApolloClient } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'https://your-graphql-endpoint.com/graphql',
+  cache: new InMemoryCache()
+});
+
+ReactDOM.render(
+  &lt;ApolloProvider client={client}&gt;
+    &lt;App /&gt;
+  &lt;/ApolloProvider&gt;,
+  document.getElementById('root')
+);</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>ApolloClient</strong>: Se crea una instancia de ApolloClient, especificando la URI del servidor GraphQL y configurando el caché.</li>
+<li><strong>ApolloProvider</strong>: Envuelve la aplicación con ApolloProvider para que Apollo Client esté disponible en toda la aplicación.</li>
+</ul>
+</div><h1>Realizando Consultas</h1>
+<div class='content'><p>Para realizar consultas, Apollo Client proporciona el hook <code>useQuery</code>. Aquí hay un ejemplo de cómo usarlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlUXVlcnksIGdxbCB9IGZyb20gJ0BhcG9sbG8vY2xpZW50JzsKCmNvbnN0IEdFVF9VU0VSUyA9IGdxbGAKICBxdWVyeSBHZXRVc2VycyB7CiAgICB1c2VycyB7CiAgICAgIGlkCiAgICAgIG5hbWUKICAgICAgZW1haWwKICAgIH0KICB9CmA7Cgpjb25zdCBVc2VycyA9ICgpID0+IHsKICBjb25zdCB7IGxvYWRpbmcsIGVycm9yLCBkYXRhIH0gPSB1c2VRdWVyeShHRVRfVVNFUlMpOwoKICBpZiAobG9hZGluZykgcmV0dXJuIDxwPkxvYWRpbmcuLi48L3A+OwogIGlmIChlcnJvcikgcmV0dXJuIDxwPkVycm9yOiB7ZXJyb3IubWVzc2FnZX08L3A+OwoKICByZXR1cm4gKAogICAgPHVsPgogICAgICB7ZGF0YS51c2Vycy5tYXAodXNlciA9PiAoCiAgICAgICAgPGxpIGtleT17dXNlci5pZH0+CiAgICAgICAgICB7dXNlci5uYW1lfSAtIHt1c2VyLmVtYWlsfQogICAgICAgIDwvbGk+CiAgICAgICkpfQogICAgPC91bD4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgVXNlcnM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import { useQuery, gql } from '@apollo/client';
+
+const GET_USERS = gql`
+  query GetUsers {
+    users {
+      id
+      name
+      email
+    }
+  }
+`;
+
+const Users = () =&gt; {
+  const { loading, error, data } = useQuery(GET_USERS);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Error: {error.message}&lt;/p&gt;;
+
+  return (
+    &lt;ul&gt;
+      {data.users.map(user =&gt; (
+        &lt;li key={user.id}&gt;
+          {user.name} - {user.email}
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};
+
+export default Users;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>gql</strong>: Se usa para definir la consulta GraphQL.</li>
+<li><strong>useQuery</strong>: Ejecuta la consulta y proporciona el estado de carga, errores y datos.</li>
+</ul>
+</div><h1>Ejecutando Mutaciones</h1>
+<div class='content'><p>Para ejecutar mutaciones, Apollo Client proporciona el hook <code>useMutation</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyB1c2VNdXRhdGlvbiwgZ3FsIH0gZnJvbSAnQGFwb2xsby9jbGllbnQnOwoKY29uc3QgQUREX1VTRVIgPSBncWxgCiAgbXV0YXRpb24gQWRkVXNlcigkbmFtZTogU3RyaW5nISwgJGVtYWlsOiBTdHJpbmchKSB7CiAgICBhZGRVc2VyKG5hbWU6ICRuYW1lLCBlbWFpbDogJGVtYWlsKSB7CiAgICAgIGlkCiAgICAgIG5hbWUKICAgICAgZW1haWwKICAgIH0KICB9CmA7Cgpjb25zdCBBZGRVc2VyID0gKCkgPT4gewogIGNvbnN0IFtuYW1lLCBzZXROYW1lXSA9IHVzZVN0YXRlKCcnKTsKICBjb25zdCBbZW1haWwsIHNldEVtYWlsXSA9IHVzZVN0YXRlKCcnKTsKICBjb25zdCBbYWRkVXNlciwgeyBkYXRhLCBsb2FkaW5nLCBlcnJvciB9XSA9IHVzZU11dGF0aW9uKEFERF9VU0VSKTsKCiAgY29uc3QgaGFuZGxlU3VibWl0ID0gKGUpID0+IHsKICAgIGUucHJldmVudERlZmF1bHQoKTsKICAgIGFkZFVzZXIoeyB2YXJpYWJsZXM6IHsgbmFtZSwgZW1haWwgfSB9KTsKICB9OwoKICBpZiAobG9hZGluZykgcmV0dXJuIDxwPkxvYWRpbmcuLi48L3A+OwogIGlmIChlcnJvcikgcmV0dXJuIDxwPkVycm9yOiB7ZXJyb3IubWVzc2FnZX08L3A+OwoKICByZXR1cm4gKAogICAgPGZvcm0gb25TdWJtaXQ9e2hhbmRsZVN1Ym1pdH0+CiAgICAgIDxpbnB1dAogICAgICAgIHR5cGU9InRleHQiCiAgICAgICAgdmFsdWU9e25hbWV9CiAgICAgICAgb25DaGFuZ2U9eyhlKSA9PiBzZXROYW1lKGUudGFyZ2V0LnZhbHVlKX0KICAgICAgICBwbGFjZWhvbGRlcj0iTmFtZSIKICAgICAgLz4KICAgICAgPGlucHV0CiAgICAgICAgdHlwZT0iZW1haWwiCiAgICAgICAgdmFsdWU9e2VtYWlsfQogICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0RW1haWwoZS50YXJnZXQudmFsdWUpfQogICAgICAgIHBsYWNlaG9sZGVyPSJFbWFpbCIKICAgICAgLz4KICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPkFkZCBVc2VyPC9idXR0b24+CiAgICAgIHtkYXRhICYmIDxwPlVzZXIgYWRkZWQ6IHtkYXRhLmFkZFVzZXIubmFtZX08L3A+fQogICAgPC9mb3JtPgogICk7Cn07CgpleHBvcnQgZGVmYXVsdCBBZGRVc2VyOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { useMutation, gql } from '@apollo/client';
+
+const ADD_USER = gql`
+  mutation AddUser($name: String!, $email: String!) {
+    addUser(name: $name, email: $email) {
+      id
+      name
+      email
+    }
+  }
+`;
+
+const AddUser = () =&gt; {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [addUser, { data, loading, error }] = useMutation(ADD_USER);
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    addUser({ variables: { name, email } });
+  };
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Error: {error.message}&lt;/p&gt;;
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type=&quot;text&quot;
+        value={name}
+        onChange={(e) =&gt; setName(e.target.value)}
+        placeholder=&quot;Name&quot;
+      /&gt;
+      &lt;input
+        type=&quot;email&quot;
+        value={email}
+        onChange={(e) =&gt; setEmail(e.target.value)}
+        placeholder=&quot;Email&quot;
+      /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Add User&lt;/button&gt;
+      {data &amp;&amp; &lt;p&gt;User added: {data.addUser.name}&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+};
+
+export default AddUser;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>useMutation</strong>: Ejecuta la mutación y proporciona el estado de carga, errores y datos.</li>
+<li><strong>handleSubmit</strong>: Maneja el envío del formulario y ejecuta la mutación con las variables proporcionadas.</li>
+</ul>
+</div><h1>Manejo de Caché</h1>
+<div class='content'><p>Apollo Client maneja automáticamente el caché de las consultas y mutaciones. Puedes personalizar el comportamiento del caché usando políticas de caché. Aquí hay un ejemplo de cómo actualizar el caché después de una mutación:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgW2FkZFVzZXJdID0gdXNlTXV0YXRpb24oQUREX1VTRVIsIHsKICB1cGRhdGUoY2FjaGUsIHsgZGF0YTogeyBhZGRVc2VyIH0gfSkgewogICAgY29uc3QgeyB1c2VycyB9ID0gY2FjaGUucmVhZFF1ZXJ5KHsgcXVlcnk6IEdFVF9VU0VSUyB9KTsKICAgIGNhY2hlLndyaXRlUXVlcnkoewogICAgICBxdWVyeTogR0VUX1VTRVJTLAogICAgICBkYXRhOiB7IHVzZXJzOiB1c2Vycy5jb25jYXQoW2FkZFVzZXJdKSB9LAogICAgfSk7CiAgfQp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const [addUser] = useMutation(ADD_USER, {
+  update(cache, { data: { addUser } }) {
+    const { users } = cache.readQuery({ query: GET_USERS });
+    cache.writeQuery({
+      query: GET_USERS,
+      data: { users: users.concat([addUser]) },
+    });
+  }
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>update</strong>: Permite actualizar el caché después de una mutación.</li>
+<li><strong>cache.readQuery</strong>: Lee los datos actuales del caché.</li>
+<li><strong>cache.writeQuery</strong>: Escribe los nuevos datos en el caché.</li>
+</ul>
+</div><h1>Suscripciones</h1>
+<div class='content'><p>Apollo Client también soporta suscripciones para recibir actualizaciones en tiempo real. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgdXNlU3Vic2NyaXB0aW9uLCBncWwgfSBmcm9tICdAYXBvbGxvL2NsaWVudCc7Cgpjb25zdCBVU0VSX0FEREVEID0gZ3FsYAogIHN1YnNjcmlwdGlvbiBPblVzZXJBZGRlZCB7CiAgICB1c2VyQWRkZWQgewogICAgICBpZAogICAgICBuYW1lCiAgICAgIGVtYWlsCiAgICB9CiAgfQpgOwoKY29uc3QgVXNlckxpc3QgPSAoKSA9PiB7CiAgY29uc3QgeyBkYXRhLCBsb2FkaW5nIH0gPSB1c2VTdWJzY3JpcHRpb24oVVNFUl9BRERFRCk7CgogIGlmIChsb2FkaW5nKSByZXR1cm4gPHA+TG9hZGluZy4uLjwvcD47CgogIHJldHVybiAoCiAgICA8ZGl2PgogICAgICA8cD5OZXcgdXNlciBhZGRlZDoge2RhdGEudXNlckFkZGVkLm5hbWV9PC9wPgogICAgPC9kaXY+CiAgKTsKfTsKCmV4cG9ydCBkZWZhdWx0IFVzZXJMaXN0Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import { useSubscription, gql } from '@apollo/client';
+
+const USER_ADDED = gql`
+  subscription OnUserAdded {
+    userAdded {
+      id
+      name
+      email
+    }
+  }
+`;
+
+const UserList = () =&gt; {
+  const { data, loading } = useSubscription(USER_ADDED);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;New user added: {data.userAdded.name}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};
+
+export default UserList;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>useSubscription</strong>: Ejecuta la suscripción y proporciona los datos en tiempo real.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Configura Apollo Client en una nueva aplicación React.</li>
+<li>Crea una consulta para obtener una lista de posts (id, title, content).</li>
+<li>Implementa una mutación para agregar un nuevo post.</li>
+<li>Actualiza el caché después de agregar un nuevo post.</li>
+<li>Implementa una suscripción para recibir notificaciones cuando se agregue un nuevo post.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li><strong>Configuración de Apollo Client</strong>: (Ver sección de instalación y configuración)</li>
+<li><strong>Consulta de Posts</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgR0VUX1BPU1RTID0gZ3FsYAogIHF1ZXJ5IEdldFBvc3RzIHsKICAgIHBvc3RzIHsKICAgICAgaWQKICAgICAgdGl0bGUKICAgICAgY29udGVudAogICAgfQogIH0KYDsKCmNvbnN0IFBvc3RzID0gKCkgPT4gewogIGNvbnN0IHsgbG9hZGluZywgZXJyb3IsIGRhdGEgfSA9IHVzZVF1ZXJ5KEdFVF9QT1NUUyk7CgogIGlmIChsb2FkaW5nKSByZXR1cm4gPHA+TG9hZGluZy4uLjwvcD47CiAgaWYgKGVycm9yKSByZXR1cm4gPHA+RXJyb3I6IHtlcnJvci5tZXNzYWdlfTwvcD47CgogIHJldHVybiAoCiAgICA8dWw+CiAgICAgIHtkYXRhLnBvc3RzLm1hcChwb3N0ID0+ICgKICAgICAgICA8bGkga2V5PXtwb3N0LmlkfT4KICAgICAgICAgIDxoMj57cG9zdC50aXRsZX08L2gyPgogICAgICAgICAgPHA+e3Bvc3QuY29udGVudH08L3A+CiAgICAgICAgPC9saT4KICAgICAgKSl9CiAgICA8L3VsPgogICk7Cn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const GET_POSTS = gql`
+  query GetPosts {
+    posts {
+      id
+      title
+      content
+    }
+  }
+`;
+
+const Posts = () =&gt; {
+  const { loading, error, data } = useQuery(GET_POSTS);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+  if (error) return &lt;p&gt;Error: {error.message}&lt;/p&gt;;
+
+  return (
+    &lt;ul&gt;
+      {data.posts.map(post =&gt; (
+        &lt;li key={post.id}&gt;
+          &lt;h2&gt;{post.title}&lt;/h2&gt;
+          &lt;p&gt;{post.content}&lt;/p&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  );
+};</pre></div><div class='content'><ol start="3">
+<li><strong>Mutación para Agregar Post</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgQUREX1BPU1QgPSBncWxgCiAgbXV0YXRpb24gQWRkUG9zdCgkdGl0bGU6IFN0cmluZyEsICRjb250ZW50OiBTdHJpbmchKSB7CiAgICBhZGRQb3N0KHRpdGxlOiAkdGl0bGUsIGNvbnRlbnQ6ICRjb250ZW50KSB7CiAgICAgIGlkCiAgICAgIHRpdGxlCiAgICAgIGNvbnRlbnQKICAgIH0KICB9CmA7Cgpjb25zdCBBZGRQb3N0ID0gKCkgPT4gewogIGNvbnN0IFt0aXRsZSwgc2V0VGl0bGVdID0gdXNlU3RhdGUoJycpOwogIGNvbnN0IFtjb250ZW50LCBzZXRDb250ZW50XSA9IHVzZVN0YXRlKCcnKTsKICBjb25zdCBbYWRkUG9zdF0gPSB1c2VNdXRhdGlvbihBRERfUE9TVCwgewogICAgdXBkYXRlKGNhY2hlLCB7IGRhdGE6IHsgYWRkUG9zdCB9IH0pIHsKICAgICAgY29uc3QgeyBwb3N0cyB9ID0gY2FjaGUucmVhZFF1ZXJ5KHsgcXVlcnk6IEdFVF9QT1NUUyB9KTsKICAgICAgY2FjaGUud3JpdGVRdWVyeSh7CiAgICAgICAgcXVlcnk6IEdFVF9QT1NUUywKICAgICAgICBkYXRhOiB7IHBvc3RzOiBwb3N0cy5jb25jYXQoW2FkZFBvc3RdKSB9LAogICAgICB9KTsKICAgIH0KICB9KTsKCiAgY29uc3QgaGFuZGxlU3VibWl0ID0gKGUpID0+IHsKICAgIGUucHJldmVudERlZmF1bHQoKTsKICAgIGFkZFBvc3QoeyB2YXJpYWJsZXM6IHsgdGl0bGUsIGNvbnRlbnQgfSB9KTsKICB9OwoKICByZXR1cm4gKAogICAgPGZvcm0gb25TdWJtaXQ9e2hhbmRsZVN1Ym1pdH0+CiAgICAgIDxpbnB1dAogICAgICAgIHR5cGU9InRleHQiCiAgICAgICAgdmFsdWU9e3RpdGxlfQogICAgICAgIG9uQ2hhbmdlPXsoZSkgPT4gc2V0VGl0bGUoZS50YXJnZXQudmFsdWUpfQogICAgICAgIHBsYWNlaG9sZGVyPSJUaXRsZSIKICAgICAgLz4KICAgICAgPHRleHRhcmVhCiAgICAgICAgdmFsdWU9e2NvbnRlbnR9CiAgICAgICAgb25DaGFuZ2U9eyhlKSA9PiBzZXRDb250ZW50KGUudGFyZ2V0LnZhbHVlKX0KICAgICAgICBwbGFjZWhvbGRlcj0iQ29udGVudCIKICAgICAgLz4KICAgICAgPGJ1dHRvbiB0eXBlPSJzdWJtaXQiPkFkZCBQb3N0PC9idXR0b24+CiAgICA8L2Zvcm0+CiAgKTsKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const ADD_POST = gql`
+  mutation AddPost($title: String!, $content: String!) {
+    addPost(title: $title, content: $content) {
+      id
+      title
+      content
+    }
+  }
+`;
+
+const AddPost = () =&gt; {
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [addPost] = useMutation(ADD_POST, {
+    update(cache, { data: { addPost } }) {
+      const { posts } = cache.readQuery({ query: GET_POSTS });
+      cache.writeQuery({
+        query: GET_POSTS,
+        data: { posts: posts.concat([addPost]) },
+      });
+    }
+  });
+
+  const handleSubmit = (e) =&gt; {
+    e.preventDefault();
+    addPost({ variables: { title, content } });
+  };
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input
+        type=&quot;text&quot;
+        value={title}
+        onChange={(e) =&gt; setTitle(e.target.value)}
+        placeholder=&quot;Title&quot;
+      /&gt;
+      &lt;textarea
+        value={content}
+        onChange={(e) =&gt; setContent(e.target.value)}
+        placeholder=&quot;Content&quot;
+      /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Add Post&lt;/button&gt;
+    &lt;/form&gt;
+  );
+};</pre></div><div class='content'><ol start="4">
+<li><strong>Suscripción para Nuevos Posts</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgUE9TVF9BRERFRCA9IGdxbGAKICBzdWJzY3JpcHRpb24gT25Qb3N0QWRkZWQgewogICAgcG9zdEFkZGVkIHsKICAgICAgaWQKICAgICAgdGl0bGUKICAgICAgY29udGVudAogICAgfQogIH0KYDsKCmNvbnN0IFBvc3RMaXN0ID0gKCkgPT4gewogIGNvbnN0IHsgZGF0YSwgbG9hZGluZyB9ID0gdXNlU3Vic2NyaXB0aW9uKFBPU1RfQURERUQpOwoKICBpZiAobG9hZGluZykgcmV0dXJuIDxwPkxvYWRpbmcuLi48L3A+OwoKICByZXR1cm4gKAogICAgPGRpdj4KICAgICAgPHA+TmV3IHBvc3QgYWRkZWQ6IHtkYXRhLnBvc3RBZGRlZC50aXRsZX08L3A+CiAgICA8L2Rpdj4KICApOwp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const POST_ADDED = gql`
+  subscription OnPostAdded {
+    postAdded {
+      id
+      title
+      content
+    }
+  }
+`;
+
+const PostList = () =&gt; {
+  const { data, loading } = useSubscription(POST_ADDED);
+
+  if (loading) return &lt;p&gt;Loading...&lt;/p&gt;;
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;New post added: {data.postAdded.title}&lt;/p&gt;
+    &lt;/div&gt;
+  );
+};</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Apollo Client es una herramienta poderosa para integrar GraphQL en aplicaciones frontend. Proporciona una serie de características avanzadas como el manejo de caché, la actualización automática de la UI y la gestión de errores. En este módulo, hemos cubierto cómo instalar y configurar Apollo Client, realizar consultas y mutaciones, manejar el caché y trabajar con suscripciones. Con estos conocimientos, estás listo para construir aplicaciones frontend robustas y eficientes utilizando Apollo Client y GraphQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-graphiql-playground' title="GraphiQL y Playground">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-relay' title="Relay">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

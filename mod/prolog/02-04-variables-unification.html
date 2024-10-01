@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variables y Unificación</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/prolog/02-04-variables-unification" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/prolog/02-04-variables-unification" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/prolog/02-04-variables-unification" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/prolog/02-04-variables-unification" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/prolog/02-04-variables-unification" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-simple-queries' title="Consultas Simples">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Variables y Unificación</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-05-backtracking' title="Retroceso">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos dos conceptos fundamentales en Prolog: las variables y la unificación. Estos conceptos son esenciales para entender cómo Prolog maneja la lógica y la inferencia.</p>
+</div><h1>Variables en Prolog</h1>
+<div class='content'></div><h2>Definición de Variables</h2>
+<div class='content'><p>En Prolog, las variables son diferentes de las variables en otros lenguajes de programación. Aquí, las variables son nombres que pueden representar cualquier valor. Se utilizan principalmente para la unificación y la inferencia lógica.</p>
+</div><h2>Sintaxis de Variables</h2>
+<div class='content'><ul>
+<li>Las variables en Prolog comienzan con una letra mayúscula o un guion bajo (<code>_</code>).</li>
+<li>Ejemplos de variables válidas: <code>X</code>, <code>Y</code>, <code>Person</code>, <code>_Var</code>.</li>
+</ul>
+</div><h2>Ejemplo de Variables</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JSBFamVtcGxvIGRlIHVuYSB2YXJpYWJsZSBlbiB1bmEgY29uc3VsdGEKbGlrZXMoUGVyc29uLCBwaXp6YSku"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>% Ejemplo de una variable en una consulta
+likes(Person, pizza).</pre></div><div class='content'><p>En este ejemplo, <code>Person</code> es una variable que puede unificarse con cualquier valor que haga que la consulta sea verdadera.</p>
+</div><h1>Unificación</h1>
+<div class='content'></div><h2>¿Qué es la Unificación?</h2>
+<div class='content'><p>La unificación es el proceso de hacer coincidir dos términos en Prolog. Si los términos pueden hacerse coincidir, se dice que se unifican. La unificación es la base de cómo Prolog resuelve consultas.</p>
+</div><h2>Reglas de Unificación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Dos constantes se unifican si son iguales.</strong></p>
+<pre><code class="language-prolog">?- 5 = 5.
+true.
+</code></pre>
+</li>
+<li>
+<p><strong>Una variable se unifica con cualquier término, y la variable se enlaza a ese término.</strong></p>
+<pre><code class="language-prolog">?- X = 5.
+X = 5.
+</code></pre>
+</li>
+<li>
+<p><strong>Dos estructuras se unifican si tienen el mismo nombre de functor y el mismo número de argumentos, y si sus argumentos correspondientes se unifican.</strong></p>
+<pre><code class="language-prolog">?- point(X, Y) = point(3, 4).
+X = 3,
+Y = 4.
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejemplos de Unificación</h2>
+<div class='content'><h4>Ejemplo 1: Unificación Simple</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JSBDb25zdWx0YQo/LSBYID0gMTAuCiUgUmVzdWx0YWRvClggPSAxMC4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>% Consulta
+?- X = 10.
+% Resultado
+X = 10.</pre></div><div class='content'><h4>Ejemplo 2: Unificación con Estructuras</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JSBDb25zdWx0YQo/LSBwZXJzb24oTmFtZSwgQWdlKSA9IHBlcnNvbihqb2huLCAzMCkuCiUgUmVzdWx0YWRvCk5hbWUgPSBqb2huLApBZ2UgPSAzMC4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>% Consulta
+?- person(Name, Age) = person(john, 30).
+% Resultado
+Name = john,
+Age = 30.</pre></div><div class='content'><h4>Ejemplo 3: Unificación Fallida</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JSBDb25zdWx0YQo/LSA1ID0gMTAuCiUgUmVzdWx0YWRvCmZhbHNlLg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>% Consulta
+?- 5 = 10.
+% Resultado
+false.</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><h4>Ejercicio 1: Unificación Básica</h4>
+<p>Escribe una consulta que unifique la variable <code>X</code> con el valor <code>apple</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JSBUdSBjb25zdWx0YSBhcXXDrQo/LSBYID0gYXBwbGUu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>% Tu consulta aqu&iacute;
+?- X = apple.</pre></div><div class='content'><h4>Ejercicio 2: Unificación con Estructuras</h4>
+<p>Escribe una consulta que unifique <code>point(X, Y)</code> con <code>point(2, 3)</code> y muestre los valores de <code>X</code> y <code>Y</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JSBUdSBjb25zdWx0YSBhcXXDrQo/LSBwb2ludChYLCBZKSA9IHBvaW50KDIsIDMpLg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>% Tu consulta aqu&iacute;
+?- point(X, Y) = point(2, 3).</pre></div><div class='content'></div><h2>Soluciones a los Ejercicios</h2>
+<div class='content'><h4>Solución 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Py0gWCA9IGFwcGxlLgolIFJlc3VsdGFkbyBlc3BlcmFkbwpYID0gYXBwbGUu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>?- X = apple.
+% Resultado esperado
+X = apple.</pre></div><div class='content'><h4>Solución 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Py0gcG9pbnQoWCwgWSkgPSBwb2ludCgyLCAzKS4KJSBSZXN1bHRhZG8gZXNwZXJhZG8KWCA9IDIsClkgPSAzLg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>?- point(X, Y) = point(2, 3).
+% Resultado esperado
+X = 2,
+Y = 3.</pre></div><div class='content'></div><h1>Retroalimentación y Consejos</h1>
+<div class='content'></div><h2>Errores Comunes</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Confundir variables con constantes:</strong> Recuerda que las variables en Prolog comienzan con una letra mayúscula o un guion bajo.</p>
+<pre><code class="language-prolog">% Incorrecto
+?- x = 5.
+% Correcto
+?- X = 5.
+</code></pre>
+</li>
+<li>
+<p><strong>No entender la unificación de estructuras:</strong> Asegúrate de que los nombres de los functors y el número de argumentos coincidan.</p>
+<pre><code class="language-prolog">% Incorrecto
+?- point(X, Y) = line(2, 3).
+% Correcto
+?- point(X, Y) = point(2, 3).
+</code></pre>
+</li>
+</ol>
+</div><h2>Consejos Adicionales</h2>
+<div class='content'><ul>
+<li>Practica la unificación con diferentes tipos de términos para familiarizarte con el proceso.</li>
+<li>Usa la traza (<code>trace.</code>) en Prolog para ver cómo se realiza la unificación paso a paso.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las variables y la unificación en Prolog. Estos conceptos son fundamentales para entender cómo Prolog maneja la lógica y resuelve consultas. En el próximo tema, exploraremos el retroceso, otro concepto clave en Prolog.</p>
+<p>¡Continúa practicando y experimentando con consultas para fortalecer tu comprensión de estos conceptos!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-simple-queries' title="Consultas Simples">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-05-backtracking' title="Retroceso">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

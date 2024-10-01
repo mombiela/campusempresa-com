@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A2: Pérdida de Autenticación</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/owasp/03-02-perdida-autenticacion" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/owasp/03-02-perdua-autenticacio" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/owasp/03-02-broken-authentication" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/owasp/03-02-perdida-autenticacion" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/owasp/03-02-perdida-autenticacion" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-inyeccion' title="A1: Inyección">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">A2: Pérdida de Autenticación</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-exposicion-datos-sensibles' title="A3: Exposición de Datos Sensibles">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>La pérdida de autenticación es una de las vulnerabilidades más críticas en aplicaciones web. Ocurre cuando una aplicación no maneja adecuadamente la autenticación de usuarios, permitiendo a atacantes obtener acceso no autorizado a cuentas y datos sensibles. Este módulo cubre los conceptos clave, ejemplos y prácticas recomendadas para mitigar esta vulnerabilidad.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Autenticación</strong>: Proceso de verificar la identidad de un usuario o sistema.</li>
+<li><strong>Autorización</strong>: Proceso de determinar si un usuario tiene permiso para realizar una acción específica.</li>
+<li><strong>Sesión</strong>: Estado de interacción entre un usuario y una aplicación, generalmente mantenido a través de cookies o tokens.</li>
+<li><strong>Gestión de Sesiones</strong>: Prácticas y mecanismos para manejar la creación, mantenimiento y destrucción de sesiones de usuario de manera segura.</li>
+</ol>
+</div><h1>Ejemplos Comunes de Pérdida de Autenticación</h1>
+<div class='content'><ol>
+<li><strong>Credenciales Débiles</strong>: Uso de contraseñas fáciles de adivinar o comunes.</li>
+<li><strong>Almacenamiento Inseguro de Contraseñas</strong>: Guardar contraseñas en texto plano o con algoritmos de hash inseguros.</li>
+<li><strong>Fallas en el Control de Sesiones</strong>: No invalidar sesiones después de un tiempo de inactividad o al cerrar sesión.</li>
+<li><strong>Falta de Protección contra Ataques de Fuerza Bruta</strong>: No limitar el número de intentos de inicio de sesión fallidos.</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Ejemplo de Código Inseguro</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIGPDs2RpZ28gUHl0aG9uIHBhcmEgYXV0ZW50aWNhY2nDs24gaW5zZWd1cmEKZGVmIGxvZ2luKHVzZXJuYW1lLCBwYXNzd29yZCk6CiAgICAjIENvbnN1bHRhIFNRTCBpbnNlZ3VyYSBzdXNjZXB0aWJsZSBhIGlueWVjY2nDs24gU1FMCiAgICBxdWVyeSA9IGYiU0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSB1c2VybmFtZT0ne3VzZXJuYW1lfScgQU5EIHBhc3N3b3JkPSd7cGFzc3dvcmR9JyIKICAgIHJlc3VsdCA9IGRhdGFiYXNlLmV4ZWN1dGUocXVlcnkpCiAgICBpZiByZXN1bHQ6CiAgICAgICAgcmV0dXJuICJMb2dpbiBzdWNjZXNzZnVsIgogICAgZWxzZToKICAgICAgICByZXR1cm4gIkxvZ2luIGZhaWxlZCI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de c&oacute;digo Python para autenticaci&oacute;n insegura
+def login(username, password):
+    # Consulta SQL insegura susceptible a inyecci&oacute;n SQL
+    query = f&quot;SELECT * FROM users WHERE username='{username}' AND password='{password}'&quot;
+    result = database.execute(query)
+    if result:
+        return &quot;Login successful&quot;
+    else:
+        return &quot;Login failed&quot;</pre></div><div class='content'></div><h2>Problemas en el Código</h2>
+<div class='content'><ol>
+<li><strong>Inyección SQL</strong>: El código es vulnerable a inyección SQL.</li>
+<li><strong>Almacenamiento Inseguro de Contraseñas</strong>: Las contraseñas se comparan directamente en texto plano.</li>
+</ol>
+</div><h2>Ejemplo de Código Seguro</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGhhc2hsaWIKaW1wb3J0IHNxbGl0ZTMKCiMgRnVuY2nDs24gcGFyYSBoYXNoZWFyIGNvbnRyYXNlw7FhcwpkZWYgaGFzaF9wYXNzd29yZChwYXNzd29yZCk6CiAgICByZXR1cm4gaGFzaGxpYi5zaGEyNTYocGFzc3dvcmQuZW5jb2RlKCkpLmhleGRpZ2VzdCgpCgojIEZ1bmNpw7NuIGRlIGF1dGVudGljYWNpw7NuIHNlZ3VyYQpkZWYgbG9naW4odXNlcm5hbWUsIHBhc3N3b3JkKToKICAgIGhhc2hlZF9wYXNzd29yZCA9IGhhc2hfcGFzc3dvcmQocGFzc3dvcmQpCiAgICBxdWVyeSA9ICJTRUxFQ1QgKiBGUk9NIHVzZXJzIFdIRVJFIHVzZXJuYW1lPT8gQU5EIHBhc3N3b3JkPT8iCiAgICByZXN1bHQgPSBkYXRhYmFzZS5leGVjdXRlKHF1ZXJ5LCAodXNlcm5hbWUsIGhhc2hlZF9wYXNzd29yZCkpCiAgICBpZiByZXN1bHQ6CiAgICAgICAgcmV0dXJuICJMb2dpbiBzdWNjZXNzZnVsIgogICAgZWxzZToKICAgICAgICByZXR1cm4gIkxvZ2luIGZhaWxlZCI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import hashlib
+import sqlite3
+
+# Funci&oacute;n para hashear contrase&ntilde;as
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+# Funci&oacute;n de autenticaci&oacute;n segura
+def login(username, password):
+    hashed_password = hash_password(password)
+    query = &quot;SELECT * FROM users WHERE username=? AND password=?&quot;
+    result = database.execute(query, (username, hashed_password))
+    if result:
+        return &quot;Login successful&quot;
+    else:
+        return &quot;Login failed&quot;</pre></div><div class='content'></div><h2>Explicación del Código Seguro</h2>
+<div class='content'><ol>
+<li><strong>Hashing de Contraseñas</strong>: Las contraseñas se hashean antes de almacenarse y compararse.</li>
+<li><strong>Consultas Parametrizadas</strong>: Uso de consultas parametrizadas para prevenir inyección SQL.</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Mejorar la Seguridad de la Autenticación</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Mejora el siguiente código de autenticación para hacerlo más seguro.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGxvZ2luKHVzZXJuYW1lLCBwYXNzd29yZCk6CiAgICBxdWVyeSA9IGYiU0VMRUNUICogRlJPTSB1c2VycyBXSEVSRSB1c2VybmFtZT0ne3VzZXJuYW1lfScgQU5EIHBhc3N3b3JkPSd7cGFzc3dvcmR9JyIKICAgIHJlc3VsdCA9IGRhdGFiYXNlLmV4ZWN1dGUocXVlcnkpCiAgICBpZiByZXN1bHQ6CiAgICAgICAgcmV0dXJuICJMb2dpbiBzdWNjZXNzZnVsIgogICAgZWxzZToKICAgICAgICByZXR1cm4gIkxvZ2luIGZhaWxlZCI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def login(username, password):
+    query = f&quot;SELECT * FROM users WHERE username='{username}' AND password='{password}'&quot;
+    result = database.execute(query)
+    if result:
+        return &quot;Login successful&quot;
+    else:
+        return &quot;Login failed&quot;</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGhhc2hsaWIKaW1wb3J0IHNxbGl0ZTMKCmRlZiBoYXNoX3Bhc3N3b3JkKHBhc3N3b3JkKToKICAgIHJldHVybiBoYXNobGliLnNoYTI1NihwYXNzd29yZC5lbmNvZGUoKSkuaGV4ZGlnZXN0KCkKCmRlZiBsb2dpbih1c2VybmFtZSwgcGFzc3dvcmQpOgogICAgaGFzaGVkX3Bhc3N3b3JkID0gaGFzaF9wYXNzd29yZChwYXNzd29yZCkKICAgIHF1ZXJ5ID0gIlNFTEVDVCAqIEZST00gdXNlcnMgV0hFUkUgdXNlcm5hbWU9PyBBTkQgcGFzc3dvcmQ9PyIKICAgIHJlc3VsdCA9IGRhdGFiYXNlLmV4ZWN1dGUocXVlcnksICh1c2VybmFtZSwgaGFzaGVkX3Bhc3N3b3JkKSkKICAgIGlmIHJlc3VsdDoKICAgICAgICByZXR1cm4gIkxvZ2luIHN1Y2Nlc3NmdWwiCiAgICBlbHNlOgogICAgICAgIHJldHVybiAiTG9naW4gZmFpbGVkIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import hashlib
+import sqlite3
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def login(username, password):
+    hashed_password = hash_password(password)
+    query = &quot;SELECT * FROM users WHERE username=? AND password=?&quot;
+    result = database.execute(query, (username, hashed_password))
+    if result:
+        return &quot;Login successful&quot;
+    else:
+        return &quot;Login failed&quot;</pre></div><div class='content'></div><h2>Ejercicio 2: Implementar Control de Sesiones</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Implementa un sistema básico de gestión de sesiones que invalide la sesión después de un tiempo de inactividad.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRpbWUKCiMgRGljY2lvbmFyaW8gcGFyYSBhbG1hY2VuYXIgc2VzaW9uZXMKc2Vzc2lvbnMgPSB7fQoKZGVmIGNyZWF0ZV9zZXNzaW9uKHVzZXJfaWQpOgogICAgc2Vzc2lvbl9pZCA9IGhhc2hsaWIuc2hhMjU2KHN0cih0aW1lLnRpbWUoKSkuZW5jb2RlKCkpLmhleGRpZ2VzdCgpCiAgICBzZXNzaW9uc1tzZXNzaW9uX2lkXSA9IHsndXNlcl9pZCc6IHVzZXJfaWQsICdsYXN0X2FjdGl2ZSc6IHRpbWUudGltZSgpfQogICAgcmV0dXJuIHNlc3Npb25faWQKCmRlZiB2YWxpZGF0ZV9zZXNzaW9uKHNlc3Npb25faWQpOgogICAgc2Vzc2lvbiA9IHNlc3Npb25zLmdldChzZXNzaW9uX2lkKQogICAgaWYgc2Vzc2lvbiBhbmQgdGltZS50aW1lKCkgLSBzZXNzaW9uWydsYXN0X2FjdGl2ZSddIDwgMTgwMDogICMgMzAgbWludXRvcyBkZSBpbmFjdGl2aWRhZAogICAgICAgIHNlc3Npb25bJ2xhc3RfYWN0aXZlJ10gPSB0aW1lLnRpbWUoKQogICAgICAgIHJldHVybiBUcnVlCiAgICByZXR1cm4gRmFsc2UKCmRlZiBsb2dvdXQoc2Vzc2lvbl9pZCk6CiAgICBpZiBzZXNzaW9uX2lkIGluIHNlc3Npb25zOgogICAgICAgIGRlbCBzZXNzaW9uc1tzZXNzaW9uX2lkXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import time
+
+# Diccionario para almacenar sesiones
+sessions = {}
+
+def create_session(user_id):
+    session_id = hashlib.sha256(str(time.time()).encode()).hexdigest()
+    sessions[session_id] = {'user_id': user_id, 'last_active': time.time()}
+    return session_id
+
+def validate_session(session_id):
+    session = sessions.get(session_id)
+    if session and time.time() - session['last_active'] &lt; 1800:  # 30 minutos de inactividad
+        session['last_active'] = time.time()
+        return True
+    return False
+
+def logout(session_id):
+    if session_id in sessions:
+        del sessions[session_id]</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En este módulo, hemos cubierto la pérdida de autenticación, una vulnerabilidad crítica en aplicaciones web. Hemos discutido ejemplos comunes, revisado código inseguro y seguro, y proporcionado ejercicios prácticos para reforzar los conceptos aprendidos. La autenticación segura es fundamental para proteger las aplicaciones web y los datos de los usuarios.</p>
+<p>En el próximo módulo, exploraremos la <strong>Exposición de Datos Sensibles</strong> y cómo proteger la información confidencial en nuestras aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-inyeccion' title="A1: Inyección">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-exposicion-datos-sensibles' title="A3: Exposición de Datos Sensibles">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

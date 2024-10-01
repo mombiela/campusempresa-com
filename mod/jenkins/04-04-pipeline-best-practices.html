@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mejores Prácticas de Pipeline</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/04-04-pipeline-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/04-04-pipeline-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/04-04-pipeline-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/jenkins/04-04-pipeline-best-practices" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/jenkins/04-04-pipeline-best-practices" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-using-environment-variables' title="Usando Variables de Entorno">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mejores Prácticas de Pipeline</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-managing-jenkins-nodes' title="Gestionando Nodos de Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos las mejores prácticas para crear y mantener pipelines en Jenkins. Estas prácticas te ayudarán a escribir pipelines más eficientes, mantenibles y escalables.</p>
+</div><h1>1. Mantén tus Pipelines Simples y Legibles</h1>
+<div class='content'></div><h2>Desglose de Conceptos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Simplicidad</strong>: Evita la complejidad innecesaria. Un pipeline simple es más fácil de entender y mantener.</li>
+<li><strong>Legibilidad</strong>: Usa nombres descriptivos para las etapas y pasos. Comenta el código cuando sea necesario.</li>
+</ul>
+</div><h2>Ejemplo Práctico:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICAvLyBBcXXDrSBpcsOtYW4gbG9zIGNvbWFuZG9zIGRlIGNvbnN0cnVjY2nDs24KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgIC8vIEFxdcOtIGlyw61hbiBsb3MgY29tYW5kb3MgZGUgcHJ1ZWJhCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBkZSBkZXNwbGllZ3VlCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Aqu&iacute; ir&iacute;an los comandos de construcci&oacute;n
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                // Aqu&iacute; ir&iacute;an los comandos de prueba
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                // Aqu&iacute; ir&iacute;an los comandos de despliegue
+            }
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>: Este pipeline está dividido en tres etapas claras: Build, Test y Deploy. Cada etapa tiene un propósito específico y es fácil de entender.</p>
+</div><h1>2. Usa Variables de Entorno</h1>
+<div class='content'></div><h2>Desglose de Conceptos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Variables de Entorno</strong>: Facilitan la configuración y reutilización de valores en diferentes partes del pipeline.</li>
+<li><strong>Seguridad</strong>: Almacena información sensible como credenciales en variables de entorno seguras.</li>
+</ul>
+</div><h2>Ejemplo Práctico:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBlbnZpcm9ubWVudCB7CiAgICAgICAgQlVJTERfRElSID0gJ2J1aWxkJwogICAgICAgIFRFU1RfRElSID0gJ3Rlc3QnCiAgICB9CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAiQnVpbGRpbmcgaW4gJHtlbnYuQlVJTERfRElSfS4uLiIKICAgICAgICAgICAgICAgIC8vIENvbWFuZG9zIGRlIGNvbnN0cnVjY2nDs24gdXNhbmRvIEJVSUxEX0RJUgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdUZXN0JykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBlY2hvICJUZXN0aW5nIGluICR7ZW52LlRFU1RfRElSfS4uLiIKICAgICAgICAgICAgICAgIC8vIENvbWFuZG9zIGRlIHBydWViYSB1c2FuZG8gVEVTVF9ESVIKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    environment {
+        BUILD_DIR = 'build'
+        TEST_DIR = 'test'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                echo &quot;Building in ${env.BUILD_DIR}...&quot;
+                // Comandos de construcci&oacute;n usando BUILD_DIR
+            }
+        }
+        stage('Test') {
+            steps {
+                echo &quot;Testing in ${env.TEST_DIR}...&quot;
+                // Comandos de prueba usando TEST_DIR
+            }
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>: Las variables <code>BUILD_DIR</code> y <code>TEST_DIR</code> se definen en la sección <code>environment</code> y se utilizan en las etapas correspondientes.</p>
+</div><h1>3. Implementa Ejecución Paralela</h1>
+<div class='content'></div><h2>Desglose de Conceptos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Ejecución Paralela</strong>: Permite que múltiples etapas o pasos se ejecuten simultáneamente, reduciendo el tiempo total de ejecución del pipeline.</li>
+<li><strong>Optimización</strong>: Útil para tareas que no dependen unas de otras, como pruebas en diferentes entornos.</li>
+</ul>
+</div><h2>Ejemplo Práctico:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdQYXJhbGxlbCBUZXN0cycpIHsKICAgICAgICAgICAgcGFyYWxsZWwgewogICAgICAgICAgICAgICAgc3RhZ2UoJ1VuaXQgVGVzdHMnKSB7CiAgICAgICAgICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgICAgICAgICBlY2hvICdSdW5uaW5nIHVuaXQgdGVzdHMuLi4nCiAgICAgICAgICAgICAgICAgICAgICAgIC8vIENvbWFuZG9zIGRlIHBydWViYXMgdW5pdGFyaWFzCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgc3RhZ2UoJ0ludGVncmF0aW9uIFRlc3RzJykgewogICAgICAgICAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgICAgICAgICAgZWNobyAnUnVubmluZyBpbnRlZ3JhdGlvbiB0ZXN0cy4uLicKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgcHJ1ZWJhcyBkZSBpbnRlZ3JhY2nDs24KICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Parallel Tests') {
+            parallel {
+                stage('Unit Tests') {
+                    steps {
+                        echo 'Running unit tests...'
+                        // Comandos de pruebas unitarias
+                    }
+                }
+                stage('Integration Tests') {
+                    steps {
+                        echo 'Running integration tests...'
+                        // Comandos de pruebas de integraci&oacute;n
+                    }
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>: Las pruebas unitarias y de integración se ejecutan en paralelo, lo que puede reducir significativamente el tiempo total de ejecución.</p>
+</div><h1>4. Maneja Errores y Notificaciones</h1>
+<div class='content'></div><h2>Desglose de Conceptos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Manejo de Errores</strong>: Usa bloques <code>try-catch</code> para capturar y manejar errores de manera adecuada.</li>
+<li><strong>Notificaciones</strong>: Configura notificaciones para alertar a los equipos sobre el estado del pipeline.</li>
+</ul>
+</div><h2>Ejemplo Práctico:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgc2NyaXB0IHsKICAgICAgICAgICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgICAgICAgICAgICBlY2hvICdCdWlsZGluZy4uLicKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgY29uc3RydWNjacOzbgogICAgICAgICAgICAgICAgICAgIH0gY2F0Y2ggKEV4Y2VwdGlvbiBlKSB7CiAgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gIkJ1aWxkIGZhaWxlZDogJHtlLm1lc3NhZ2V9IgogICAgICAgICAgICAgICAgICAgICAgICBjdXJyZW50QnVpbGQucmVzdWx0ID0gJ0ZBSUxVUkUnCiAgICAgICAgICAgICAgICAgICAgICAgIHRocm93IGUKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CiAgICBwb3N0IHsKICAgICAgICBhbHdheXMgewogICAgICAgICAgICBlY2hvICdDbGVhbmluZyB1cC4uLicKICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgbGltcGllemEKICAgICAgICB9CiAgICAgICAgc3VjY2VzcyB7CiAgICAgICAgICAgIGVjaG8gJ0J1aWxkIHN1Y2NlZWRlZCEnCiAgICAgICAgICAgIC8vIENvbWFuZG9zIGRlIG5vdGlmaWNhY2nDs24gZGUgw6l4aXRvCiAgICAgICAgfQogICAgICAgIGZhaWx1cmUgewogICAgICAgICAgICBlY2hvICdCdWlsZCBmYWlsZWQhJwogICAgICAgICAgICAvLyBDb21hbmRvcyBkZSBub3RpZmljYWNpw7NuIGRlIGZhbGxvCiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    try {
+                        echo 'Building...'
+                        // Comandos de construcci&oacute;n
+                    } catch (Exception e) {
+                        echo &quot;Build failed: ${e.message}&quot;
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleaning up...'
+            // Comandos de limpieza
+        }
+        success {
+            echo 'Build succeeded!'
+            // Comandos de notificaci&oacute;n de &eacute;xito
+        }
+        failure {
+            echo 'Build failed!'
+            // Comandos de notificaci&oacute;n de fallo
+        }
+    }
+}</pre></div><div class='content'><p><strong>Explicación</strong>: El bloque <code>try-catch</code> maneja errores en la etapa de construcción, y la sección <code>post</code> define acciones a tomar siempre, en caso de éxito o fallo.</p>
+</div><h1>5. Documenta tu Pipeline</h1>
+<div class='content'></div><h2>Desglose de Conceptos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Documentación</strong>: Facilita la comprensión y mantenimiento del pipeline por parte de otros desarrolladores.</li>
+<li><strong>Comentarios</strong>: Usa comentarios para explicar partes complejas o importantes del pipeline.</li>
+</ul>
+</div><h2>Ejemplo Práctico:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICAvLyBBcXXDrSBpcsOtYW4gbG9zIGNvbWFuZG9zIGRlIGNvbnN0cnVjY2nDs24KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgIC8vIEFxdcOtIGlyw61hbiBsb3MgY29tYW5kb3MgZGUgcHJ1ZWJhCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBkZSBkZXNwbGllZ3VlCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CiAgICAvLyBFc3RlIHBpcGVsaW5lIHJlYWxpemEgbGFzIGV0YXBhcyBkZSBjb25zdHJ1Y2Npw7NuLCBwcnVlYmEgeSBkZXNwbGllZ3VlIGRlIG1hbmVyYSBzZWN1ZW5jaWFsLgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Aqu&iacute; ir&iacute;an los comandos de construcci&oacute;n
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                // Aqu&iacute; ir&iacute;an los comandos de prueba
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                // Aqu&iacute; ir&iacute;an los comandos de despliegue
+            }
+        }
+    }
+    // Este pipeline realiza las etapas de construcci&oacute;n, prueba y despliegue de manera secuencial.
+}</pre></div><div class='content'><p><strong>Explicación</strong>: Los comentarios explican el propósito general del pipeline y cada etapa.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Tarea:</h2>
+<div class='content'><p>Crea un pipeline en Jenkins que incluya las siguientes características:</p>
+<ol>
+<li>Tres etapas: Build, Test y Deploy.</li>
+<li>Uso de variables de entorno para definir directorios de construcción y prueba.</li>
+<li>Ejecución paralela de pruebas unitarias y de integración.</li>
+<li>Manejo de errores en la etapa de construcción.</li>
+<li>Notificaciones en caso de éxito o fallo.</li>
+</ol>
+</div><h2>Solución:</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBlbnZpcm9ubWVudCB7CiAgICAgICAgQlVJTERfRElSID0gJ2J1aWxkJwogICAgICAgIFRFU1RfRElSID0gJ3Rlc3QnCiAgICB9CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgc2NyaXB0IHsKICAgICAgICAgICAgICAgICAgICB0cnkgewogICAgICAgICAgICAgICAgICAgICAgICBlY2hvICJCdWlsZGluZyBpbiAke2Vudi5CVUlMRF9ESVJ9Li4uIgogICAgICAgICAgICAgICAgICAgICAgICAvLyBDb21hbmRvcyBkZSBjb25zdHJ1Y2Npw7NuIHVzYW5kbyBCVUlMRF9ESVIKICAgICAgICAgICAgICAgICAgICB9IGNhdGNoIChFeGNlcHRpb24gZSkgewogICAgICAgICAgICAgICAgICAgICAgICBlY2hvICJCdWlsZCBmYWlsZWQ6ICR7ZS5tZXNzYWdlfSIKICAgICAgICAgICAgICAgICAgICAgICAgY3VycmVudEJ1aWxkLnJlc3VsdCA9ICdGQUlMVVJFJwogICAgICAgICAgICAgICAgICAgICAgICB0aHJvdyBlCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdQYXJhbGxlbCBUZXN0cycpIHsKICAgICAgICAgICAgcGFyYWxsZWwgewogICAgICAgICAgICAgICAgc3RhZ2UoJ1VuaXQgVGVzdHMnKSB7CiAgICAgICAgICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgICAgICAgICBlY2hvICJSdW5uaW5nIHVuaXQgdGVzdHMgaW4gJHtlbnYuVEVTVF9ESVJ9Li4uIgogICAgICAgICAgICAgICAgICAgICAgICAvLyBDb21hbmRvcyBkZSBwcnVlYmFzIHVuaXRhcmlhcyB1c2FuZG8gVEVTVF9ESVIKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBzdGFnZSgnSW50ZWdyYXRpb24gVGVzdHMnKSB7CiAgICAgICAgICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgICAgICAgICBlY2hvICJSdW5uaW5nIGludGVncmF0aW9uIHRlc3RzIGluICR7ZW52LlRFU1RfRElSfS4uLiIKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgcHJ1ZWJhcyBkZSBpbnRlZ3JhY2nDs24gdXNhbmRvIFRFU1RfRElSCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdEZXBsb3knKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0RlcGxveWluZy4uLicKICAgICAgICAgICAgICAgIC8vIENvbWFuZG9zIGRlIGRlc3BsaWVndWUKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KICAgIHBvc3QgewogICAgICAgIGFsd2F5cyB7CiAgICAgICAgICAgIGVjaG8gJ0NsZWFuaW5nIHVwLi4uJwogICAgICAgICAgICAvLyBDb21hbmRvcyBkZSBsaW1waWV6YQogICAgICAgIH0KICAgICAgICBzdWNjZXNzIHsKICAgICAgICAgICAgZWNobyAnQnVpbGQgc3VjY2VlZGVkIScKICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgbm90aWZpY2FjacOzbiBkZSDDqXhpdG8KICAgICAgICB9CiAgICAgICAgZmFpbHVyZSB7CiAgICAgICAgICAgIGVjaG8gJ0J1aWxkIGZhaWxlZCEnCiAgICAgICAgICAgIC8vIENvbWFuZG9zIGRlIG5vdGlmaWNhY2nDs24gZGUgZmFsbG8KICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    environment {
+        BUILD_DIR = 'build'
+        TEST_DIR = 'test'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                script {
+                    try {
+                        echo &quot;Building in ${env.BUILD_DIR}...&quot;
+                        // Comandos de construcci&oacute;n usando BUILD_DIR
+                    } catch (Exception e) {
+                        echo &quot;Build failed: ${e.message}&quot;
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
+                }
+            }
+        }
+        stage('Parallel Tests') {
+            parallel {
+                stage('Unit Tests') {
+                    steps {
+                        echo &quot;Running unit tests in ${env.TEST_DIR}...&quot;
+                        // Comandos de pruebas unitarias usando TEST_DIR
+                    }
+                }
+                stage('Integration Tests') {
+                    steps {
+                        echo &quot;Running integration tests in ${env.TEST_DIR}...&quot;
+                        // Comandos de pruebas de integraci&oacute;n usando TEST_DIR
+                    }
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                // Comandos de despliegue
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Cleaning up...'
+            // Comandos de limpieza
+        }
+        success {
+            echo 'Build succeeded!'
+            // Comandos de notificaci&oacute;n de &eacute;xito
+        }
+        failure {
+            echo 'Build failed!'
+            // Comandos de notificaci&oacute;n de fallo
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto las mejores prácticas para crear pipelines en Jenkins. Al seguir estas prácticas, puedes asegurarte de que tus pipelines sean más eficientes, mantenibles y escalables. En el próximo módulo, profundizaremos en la administración de Jenkins, donde aprenderás a gestionar nodos, configurar seguridad y más.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-using-environment-variables' title="Usando Variables de Entorno">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-managing-jenkins-nodes' title="Gestionando Nodos de Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

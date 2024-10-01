@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Agrupamiento DBSCAN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/05-04-dbscan" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/05-04-dbscan" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/05-04-dbscan" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/machine_learning/05-04-dbscan" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/machine_learning/05-04-dbscan" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-pca' title="Análisis de componentes principales (PCA)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Análisis de Agrupamiento DBSCAN</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-metricas-evaluacion' title="Métricas de evaluación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>DBSCAN (Density-Based Spatial Clustering of Applications with Noise) es un algoritmo de clustering basado en densidad que es capaz de identificar clusters de forma arbitraria y manejar ruido (outliers). A diferencia de otros algoritmos de clustering como K-means, DBSCAN no requiere que se especifique el número de clusters de antemano.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><p>Antes de profundizar en el algoritmo, es importante entender algunos conceptos clave:</p>
+<ol>
+<li><strong>Punto central (Core Point)</strong>: Un punto es considerado un punto central si tiene al menos <code>minPts</code> puntos dentro de una distancia <code>eps</code> (incluyendo el propio punto).</li>
+<li><strong>Punto alcanzable por densidad (Density-Reachable Point)</strong>: Un punto <code>p</code> es alcanzable por densidad desde un punto central <code>q</code> si hay una cadena de puntos <code>p1, p2, ..., pn</code> donde <code>p1 = q</code> y <code>pn = p</code>, y cada <code>pi+1</code> está dentro de la distancia <code>eps</code> de <code>pi</code>.</li>
+<li><strong>Punto frontera (Border Point)</strong>: Un punto que no es un punto central pero está dentro de la distancia <code>eps</code> de un punto central.</li>
+<li><strong>Punto de ruido (Noise Point)</strong>: Un punto que no es ni un punto central ni un punto frontera.</li>
+</ol>
+</div><h1>Algoritmo DBSCAN</h1>
+<div class='content'><p>El algoritmo DBSCAN sigue estos pasos:</p>
+<ol>
+<li><strong>Inicialización</strong>: Selecciona un punto arbitrario no visitado.</li>
+<li><strong>Expansión del cluster</strong>:
+<ul>
+<li>Si el punto es un punto central, crea un nuevo cluster y añade todos los puntos alcanzables por densidad (dentro de <code>eps</code>) al cluster.</li>
+<li>Si el punto no es un punto central, se marca como ruido (temporalmente).</li>
+</ul>
+</li>
+<li><strong>Iteración</strong>: Repite el proceso para los puntos no visitados hasta que todos los puntos hayan sido procesados.</li>
+</ol>
+</div><h1>Parámetros</h1>
+<div class='content'><ul>
+<li><code>eps</code>: La distancia máxima entre dos puntos para que uno sea considerado vecino del otro.</li>
+<li><code>minPts</code>: El número mínimo de puntos requeridos para formar un punto central.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a implementar DBSCAN usando la biblioteca <code>scikit-learn</code> en Python.</p>
+</div><h2>Código de Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCBtYXRwbG90bGliLnB5cGxvdCBhcyBwbHQKZnJvbSBza2xlYXJuLmNsdXN0ZXIgaW1wb3J0IERCU0NBTgpmcm9tIHNrbGVhcm4uZGF0YXNldHMgaW1wb3J0IG1ha2VfbW9vbnMKCiMgR2VuZXJhciBkYXRvcyBkZSBlamVtcGxvClgsIF8gPSBtYWtlX21vb25zKG5fc2FtcGxlcz0zMDAsIG5vaXNlPTAuMDUsIHJhbmRvbV9zdGF0ZT0wKQoKIyBBcGxpY2FyIERCU0NBTgpkYnNjYW4gPSBEQlNDQU4oZXBzPTAuMiwgbWluX3NhbXBsZXM9NSkKY2x1c3RlcnMgPSBkYnNjYW4uZml0X3ByZWRpY3QoWCkKCiMgVmlzdWFsaXphciBsb3MgcmVzdWx0YWRvcwpwbHQuc2NhdHRlcihYWzosIDBdLCBYWzosIDFdLCBjPWNsdXN0ZXJzLCBjbWFwPSd2aXJpZGlzJykKcGx0LnhsYWJlbCgnRmVhdHVyZSAxJykKcGx0LnlsYWJlbCgnRmVhdHVyZSAyJykKcGx0LnRpdGxlKCdEQlNDQU4gQ2x1c3RlcmluZycpCnBsdC5zaG93KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import DBSCAN
+from sklearn.datasets import make_moons
+
+# Generar datos de ejemplo
+X, _ = make_moons(n_samples=300, noise=0.05, random_state=0)
+
+# Aplicar DBSCAN
+dbscan = DBSCAN(eps=0.2, min_samples=5)
+clusters = dbscan.fit_predict(X)
+
+# Visualizar los resultados
+plt.scatter(X[:, 0], X[:, 1], c=clusters, cmap='viridis')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.title('DBSCAN Clustering')
+plt.show()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Generación de Datos</strong>:</p>
+<pre><code class="language-python">from sklearn.datasets import make_moons
+X, _ = make_moons(n_samples=300, noise=0.05, random_state=0)
+</code></pre>
+<p>Utilizamos <code>make_moons</code> para generar un conjunto de datos con forma de media luna, que es ideal para demostrar la capacidad de DBSCAN para identificar clusters de forma arbitraria.</p>
+</li>
+<li>
+<p><strong>Aplicación de DBSCAN</strong>:</p>
+<pre><code class="language-python">from sklearn.cluster import DBSCAN
+dbscan = DBSCAN(eps=0.2, min_samples=5)
+clusters = dbscan.fit_predict(X)
+</code></pre>
+<p>Creamos una instancia de DBSCAN con <code>eps=0.2</code> y <code>min_samples=5</code>. Luego, ajustamos el modelo a los datos y obtenemos las etiquetas de los clusters.</p>
+</li>
+<li>
+<p><strong>Visualización</strong>:</p>
+<pre><code class="language-python">import matplotlib.pyplot as plt
+plt.scatter(X[:, 0], X[:, 1], c=clusters, cmap='viridis')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.title('DBSCAN Clustering')
+plt.show()
+</code></pre>
+<p>Utilizamos <code>matplotlib</code> para visualizar los resultados del clustering. Los puntos se colorean según el cluster al que pertenecen.</p>
+</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Ajustar Parámetros</h2>
+<div class='content'><p><strong>Objetivo</strong>: Experimentar con diferentes valores de <code>eps</code> y <code>min_samples</code> para observar cómo afectan al resultado del clustering.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Modifica el valor de <code>eps</code> a 0.1 y observa los resultados.</li>
+<li>Modifica el valor de <code>min_samples</code> a 10 y observa los resultados.</li>
+<li>Combina diferentes valores de <code>eps</code> y <code>min_samples</code> para encontrar la mejor configuración para los datos generados.</li>
+</ol>
+</div><h2>Ejercicio 2: Aplicar DBSCAN a un Conjunto de Datos Real</h2>
+<div class='content'><p><strong>Objetivo</strong>: Aplicar DBSCAN a un conjunto de datos real y analizar los resultados.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Descarga el conjunto de datos &quot;Iris&quot; de <code>sklearn.datasets</code>.</li>
+<li>Aplica DBSCAN al conjunto de datos.</li>
+<li>Visualiza los resultados utilizando un gráfico de dispersión en 2D (puedes usar PCA para reducir la dimensionalidad si es necesario).</li>
+</ol>
+<p><strong>Código de Inicio</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBsb2FkX2lyaXMKZnJvbSBza2xlYXJuLmRlY29tcG9zaXRpb24gaW1wb3J0IFBDQQoKIyBDYXJnYXIgZWwgY29uanVudG8gZGUgZGF0b3MgSXJpcwppcmlzID0gbG9hZF9pcmlzKCkKWCA9IGlyaXMuZGF0YQoKIyBSZWR1Y2lyIGxhIGRpbWVuc2lvbmFsaWRhZCBhIDJEIHBhcmEgdmlzdWFsaXphY2nDs24KcGNhID0gUENBKG5fY29tcG9uZW50cz0yKQpYX3BjYSA9IHBjYS5maXRfdHJhbnNmb3JtKFgpCgojIEFwbGljYXIgREJTQ0FOCmRic2NhbiA9IERCU0NBTihlcHM9MC41LCBtaW5fc2FtcGxlcz01KQpjbHVzdGVycyA9IGRic2Nhbi5maXRfcHJlZGljdChYX3BjYSkKCiMgVmlzdWFsaXphciBsb3MgcmVzdWx0YWRvcwpwbHQuc2NhdHRlcihYX3BjYVs6LCAwXSwgWF9wY2FbOiwgMV0sIGM9Y2x1c3RlcnMsIGNtYXA9J3ZpcmlkaXMnKQpwbHQueGxhYmVsKCdQQ0EgRmVhdHVyZSAxJykKcGx0LnlsYWJlbCgnUENBIEZlYXR1cmUgMicpCnBsdC50aXRsZSgnREJTQ0FOIENsdXN0ZXJpbmcgb24gSXJpcyBEYXRhc2V0JykKcGx0LnNob3coKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.datasets import load_iris
+from sklearn.decomposition import PCA
+
+# Cargar el conjunto de datos Iris
+iris = load_iris()
+X = iris.data
+
+# Reducir la dimensionalidad a 2D para visualizaci&oacute;n
+pca = PCA(n_components=2)
+X_pca = pca.fit_transform(X)
+
+# Aplicar DBSCAN
+dbscan = DBSCAN(eps=0.5, min_samples=5)
+clusters = dbscan.fit_predict(X_pca)
+
+# Visualizar los resultados
+plt.scatter(X_pca[:, 0], X_pca[:, 1], c=clusters, cmap='viridis')
+plt.xlabel('PCA Feature 1')
+plt.ylabel('PCA Feature 2')
+plt.title('DBSCAN Clustering on Iris Dataset')
+plt.show()</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>DBSCAN es un algoritmo poderoso para el clustering basado en densidad que puede identificar clusters de forma arbitraria y manejar ruido de manera efectiva. A diferencia de otros algoritmos como K-means, no requiere que se especifique el número de clusters de antemano. Sin embargo, la elección de los parámetros <code>eps</code> y <code>min_samples</code> es crucial para obtener buenos resultados. Experimentar con estos parámetros y aplicar el algoritmo a diferentes conjuntos de datos puede ayudar a entender mejor su funcionamiento y capacidades.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-pca' title="Análisis de componentes principales (PCA)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-metricas-evaluacion' title="Métricas de evaluación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

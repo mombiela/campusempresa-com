@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construyendo una Aplicación Simple</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/06-01-simple-application" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/06-01-simple-application" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/06-01-simple-application" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/plsql/06-01-simple-application" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/06-01-simple-application" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-profiling-tuning' title="Perfilado y Ajuste">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Construyendo una Aplicación Simple</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-interfacing-languages' title="Interfaz con Otros Lenguajes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, vamos a aplicar los conocimientos adquiridos en los módulos anteriores para construir una aplicación simple utilizando PL/SQL. Este ejercicio te permitirá ver cómo se integran los diferentes componentes de PL/SQL en una aplicación funcional.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Crear una base de datos simple.</li>
+<li>Desarrollar procedimientos almacenados y funciones.</li>
+<li>Implementar disparadores.</li>
+<li>Manejar excepciones.</li>
+<li>Optimizar y depurar el código.</li>
+</ul>
+</div><h1>Paso 1: Crear la Base de Datos</h1>
+<div class='content'><p>Primero, necesitamos crear una base de datos simple. Para este ejemplo, vamos a crear una base de datos de &quot;Gestión de Empleados&quot;.</p>
+</div><h2>Estructura de la Base de Datos</h2>
+<div class='content'><p>La base de datos tendrá las siguientes tablas:</p>
+<ul>
+<li><code>employees</code>: Almacena información sobre los empleados.</li>
+<li><code>departments</code>: Almacena información sobre los departamentos.</li>
+</ul>
+</div><h2>Script de Creación de Tablas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGRlcGFydG1lbnRzICgKICAgIGRlcGFydG1lbnRfaWQgTlVNQkVSIFBSSU1BUlkgS0VZLAogICAgZGVwYXJ0bWVudF9uYW1lIFZBUkNIQVIyKDUwKSBOT1QgTlVMTAopOwoKQ1JFQVRFIFRBQkxFIGVtcGxveWVlcyAoCiAgICBlbXBsb3llZV9pZCBOVU1CRVIgUFJJTUFSWSBLRVksCiAgICBmaXJzdF9uYW1lIFZBUkNIQVIyKDUwKSwKICAgIGxhc3RfbmFtZSBWQVJDSEFSMig1MCksCiAgICBlbWFpbCBWQVJDSEFSMigxMDApIFVOSVFVRSBOT1QgTlVMTCwKICAgIGhpcmVfZGF0ZSBEQVRFIE5PVCBOVUxMLAogICAgam9iX2lkIFZBUkNIQVIyKDEwKSBOT1QgTlVMTCwKICAgIHNhbGFyeSBOVU1CRVIoOCwgMiksCiAgICBkZXBhcnRtZW50X2lkIE5VTUJFUiwKICAgIENPTlNUUkFJTlQgZmtfZGVwYXJ0bWVudAogICAgICAgIEZPUkVJR04gS0VZIChkZXBhcnRtZW50X2lkKQogICAgICAgIFJFRkVSRU5DRVMgZGVwYXJ0bWVudHMoZGVwYXJ0bWVudF9pZCkKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE departments (
+    department_id NUMBER PRIMARY KEY,
+    department_name VARCHAR2(50) NOT NULL
+);
+
+CREATE TABLE employees (
+    employee_id NUMBER PRIMARY KEY,
+    first_name VARCHAR2(50),
+    last_name VARCHAR2(50),
+    email VARCHAR2(100) UNIQUE NOT NULL,
+    hire_date DATE NOT NULL,
+    job_id VARCHAR2(10) NOT NULL,
+    salary NUMBER(8, 2),
+    department_id NUMBER,
+    CONSTRAINT fk_department
+        FOREIGN KEY (department_id)
+        REFERENCES departments(department_id)
+);</pre></div><div class='content'></div><h2>Insertar Datos de Prueba</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gZGVwYXJ0bWVudHMgKGRlcGFydG1lbnRfaWQsIGRlcGFydG1lbnRfbmFtZSkgVkFMVUVTICgxLCAnSFInKTsKSU5TRVJUIElOVE8gZGVwYXJ0bWVudHMgKGRlcGFydG1lbnRfaWQsIGRlcGFydG1lbnRfbmFtZSkgVkFMVUVTICgyLCAnSVQnKTsKSU5TRVJUIElOVE8gZGVwYXJ0bWVudHMgKGRlcGFydG1lbnRfaWQsIGRlcGFydG1lbnRfbmFtZSkgVkFMVUVTICgzLCAnRmluYW5jZScpOwoKSU5TRVJUIElOVE8gZW1wbG95ZWVzIChlbXBsb3llZV9pZCwgZmlyc3RfbmFtZSwgbGFzdF9uYW1lLCBlbWFpbCwgaGlyZV9kYXRlLCBqb2JfaWQsIHNhbGFyeSwgZGVwYXJ0bWVudF9pZCkgClZBTFVFUyAoMSwgJ0pvaG4nLCAnRG9lJywgJ2pvaG4uZG9lQGV4YW1wbGUuY29tJywgU1lTREFURSwgJ0hSX01BTicsIDUwMDAsIDEpOwpJTlNFUlQgSU5UTyBlbXBsb3llZXMgKGVtcGxveWVlX2lkLCBmaXJzdF9uYW1lLCBsYXN0X25hbWUsIGVtYWlsLCBoaXJlX2RhdGUsIGpvYl9pZCwgc2FsYXJ5LCBkZXBhcnRtZW50X2lkKSAKVkFMVUVTICgyLCAnSmFuZScsICdTbWl0aCcsICdqYW5lLnNtaXRoQGV4YW1wbGUuY29tJywgU1lTREFURSwgJ0lUX1BST0cnLCA2MDAwLCAyKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO departments (department_id, department_name) VALUES (1, 'HR');
+INSERT INTO departments (department_id, department_name) VALUES (2, 'IT');
+INSERT INTO departments (department_id, department_name) VALUES (3, 'Finance');
+
+INSERT INTO employees (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) 
+VALUES (1, 'John', 'Doe', 'john.doe@example.com', SYSDATE, 'HR_MAN', 5000, 1);
+INSERT INTO employees (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id) 
+VALUES (2, 'Jane', 'Smith', 'jane.smith@example.com', SYSDATE, 'IT_PROG', 6000, 2);</pre></div><div class='content'></div><h1>Paso 2: Desarrollar Procedimientos Almacenados y Funciones</h1>
+<div class='content'></div><h2>Procedimiento para Agregar un Nuevo Empleado</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIGFkZF9lbXBsb3llZSAoCiAgICBwX2ZpcnN0X25hbWUgSU4gZW1wbG95ZWVzLmZpcnN0X25hbWUlVFlQRSwKICAgIHBfbGFzdF9uYW1lIElOIGVtcGxveWVlcy5sYXN0X25hbWUlVFlQRSwKICAgIHBfZW1haWwgSU4gZW1wbG95ZWVzLmVtYWlsJVRZUEUsCiAgICBwX2hpcmVfZGF0ZSBJTiBlbXBsb3llZXMuaGlyZV9kYXRlJVRZUEUsCiAgICBwX2pvYl9pZCBJTiBlbXBsb3llZXMuam9iX2lkJVRZUEUsCiAgICBwX3NhbGFyeSBJTiBlbXBsb3llZXMuc2FsYXJ5JVRZUEUsCiAgICBwX2RlcGFydG1lbnRfaWQgSU4gZW1wbG95ZWVzLmRlcGFydG1lbnRfaWQlVFlQRQopIElTCkJFR0lOCiAgICBJTlNFUlQgSU5UTyBlbXBsb3llZXMgKGVtcGxveWVlX2lkLCBmaXJzdF9uYW1lLCBsYXN0X25hbWUsIGVtYWlsLCBoaXJlX2RhdGUsIGpvYl9pZCwgc2FsYXJ5LCBkZXBhcnRtZW50X2lkKQogICAgVkFMVUVTIChlbXBsb3llZXNfc2VxLk5FWFRWQUwsIHBfZmlyc3RfbmFtZSwgcF9sYXN0X25hbWUsIHBfZW1haWwsIHBfaGlyZV9kYXRlLCBwX2pvYl9pZCwgcF9zYWxhcnksIHBfZGVwYXJ0bWVudF9pZCk7CiAgICBDT01NSVQ7CkVORDsKLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE add_employee (
+    p_first_name IN employees.first_name%TYPE,
+    p_last_name IN employees.last_name%TYPE,
+    p_email IN employees.email%TYPE,
+    p_hire_date IN employees.hire_date%TYPE,
+    p_job_id IN employees.job_id%TYPE,
+    p_salary IN employees.salary%TYPE,
+    p_department_id IN employees.department_id%TYPE
+) IS
+BEGIN
+    INSERT INTO employees (employee_id, first_name, last_name, email, hire_date, job_id, salary, department_id)
+    VALUES (employees_seq.NEXTVAL, p_first_name, p_last_name, p_email, p_hire_date, p_job_id, p_salary, p_department_id);
+    COMMIT;
+END;
+/</pre></div><div class='content'></div><h2>Función para Obtener el Salario de un Empleado</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgRlVOQ1RJT04gZ2V0X2VtcGxveWVlX3NhbGFyeSAoCiAgICBwX2VtcGxveWVlX2lkIElOIGVtcGxveWVlcy5lbXBsb3llZV9pZCVUWVBFCikgUkVUVVJOIE5VTUJFUiBJUwogICAgdl9zYWxhcnkgZW1wbG95ZWVzLnNhbGFyeSVUWVBFOwpCRUdJTgogICAgU0VMRUNUIHNhbGFyeSBJTlRPIHZfc2FsYXJ5CiAgICBGUk9NIGVtcGxveWVlcwogICAgV0hFUkUgZW1wbG95ZWVfaWQgPSBwX2VtcGxveWVlX2lkOwogICAgUkVUVVJOIHZfc2FsYXJ5OwpFWENFUFRJT04KICAgIFdIRU4gTk9fREFUQV9GT1VORCBUSEVOCiAgICAgICAgUkVUVVJOIE5VTEw7CkVORDsKLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE FUNCTION get_employee_salary (
+    p_employee_id IN employees.employee_id%TYPE
+) RETURN NUMBER IS
+    v_salary employees.salary%TYPE;
+BEGIN
+    SELECT salary INTO v_salary
+    FROM employees
+    WHERE employee_id = p_employee_id;
+    RETURN v_salary;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END;
+/</pre></div><div class='content'></div><h1>Paso 3: Implementar Disparadores</h1>
+<div class='content'></div><h2>Disparador para Auditar Cambios en la Tabla de Empleados</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgVFJJR0dFUiB0cmdfYXVkaXRfZW1wbG95ZWVfY2hhbmdlcwpBRlRFUiBJTlNFUlQgT1IgVVBEQVRFIE9SIERFTEVURSBPTiBlbXBsb3llZXMKRk9SIEVBQ0ggUk9XCkJFR0lOCiAgICBJRiBJTlNFUlRJTkcgVEhFTgogICAgICAgIElOU0VSVCBJTlRPIGF1ZGl0X2xvZyAobG9nX2RhdGUsIHVzZXJfaWQsIG9wZXJhdGlvbiwgdGFibGVfbmFtZSwgcm93X2lkKQogICAgICAgIFZBTFVFUyAoU1lTREFURSwgVVNFUiwgJ0lOU0VSVCcsICdlbXBsb3llZXMnLCA6TkVXLmVtcGxveWVlX2lkKTsKICAgIEVMU0lGIFVQREFUSU5HIFRIRU4KICAgICAgICBJTlNFUlQgSU5UTyBhdWRpdF9sb2cgKGxvZ19kYXRlLCB1c2VyX2lkLCBvcGVyYXRpb24sIHRhYmxlX25hbWUsIHJvd19pZCkKICAgICAgICBWQUxVRVMgKFNZU0RBVEUsIFVTRVIsICdVUERBVEUnLCAnZW1wbG95ZWVzJywgOk9MRC5lbXBsb3llZV9pZCk7CiAgICBFTFNJRiBERUxFVElORyBUSEVOCiAgICAgICAgSU5TRVJUIElOVE8gYXVkaXRfbG9nIChsb2dfZGF0ZSwgdXNlcl9pZCwgb3BlcmF0aW9uLCB0YWJsZV9uYW1lLCByb3dfaWQpCiAgICAgICAgVkFMVUVTIChTWVNEQVRFLCBVU0VSLCAnREVMRVRFJywgJ2VtcGxveWVlcycsIDpPTEQuZW1wbG95ZWVfaWQpOwogICAgRU5EIElGOwpFTkQ7Ci8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE TRIGGER trg_audit_employee_changes
+AFTER INSERT OR UPDATE OR DELETE ON employees
+FOR EACH ROW
+BEGIN
+    IF INSERTING THEN
+        INSERT INTO audit_log (log_date, user_id, operation, table_name, row_id)
+        VALUES (SYSDATE, USER, 'INSERT', 'employees', :NEW.employee_id);
+    ELSIF UPDATING THEN
+        INSERT INTO audit_log (log_date, user_id, operation, table_name, row_id)
+        VALUES (SYSDATE, USER, 'UPDATE', 'employees', :OLD.employee_id);
+    ELSIF DELETING THEN
+        INSERT INTO audit_log (log_date, user_id, operation, table_name, row_id)
+        VALUES (SYSDATE, USER, 'DELETE', 'employees', :OLD.employee_id);
+    END IF;
+END;
+/</pre></div><div class='content'></div><h1>Paso 4: Manejar Excepciones</h1>
+<div class='content'></div><h2>Procedimiento con Manejo de Excepciones</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIHVwZGF0ZV9lbXBsb3llZV9zYWxhcnkgKAogICAgcF9lbXBsb3llZV9pZCBJTiBlbXBsb3llZXMuZW1wbG95ZWVfaWQlVFlQRSwKICAgIHBfbmV3X3NhbGFyeSBJTiBlbXBsb3llZXMuc2FsYXJ5JVRZUEUKKSBJUwpCRUdJTgogICAgVVBEQVRFIGVtcGxveWVlcwogICAgU0VUIHNhbGFyeSA9IHBfbmV3X3NhbGFyeQogICAgV0hFUkUgZW1wbG95ZWVfaWQgPSBwX2VtcGxveWVlX2lkOwogICAgQ09NTUlUOwpFWENFUFRJT04KICAgIFdIRU4gTk9fREFUQV9GT1VORCBUSEVOCiAgICAgICAgREJNU19PVVRQVVQuUFVUX0xJTkUoJ0VtcGxveWVlIG5vdCBmb3VuZC4nKTsKICAgIFdIRU4gT1RIRVJTIFRIRU4KICAgICAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnQW4gZXJyb3Igb2NjdXJyZWQ6ICcgfHwgU1FMRVJSTSk7CkVORDsKLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE update_employee_salary (
+    p_employee_id IN employees.employee_id%TYPE,
+    p_new_salary IN employees.salary%TYPE
+) IS
+BEGIN
+    UPDATE employees
+    SET salary = p_new_salary
+    WHERE employee_id = p_employee_id;
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Employee not found.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/</pre></div><div class='content'></div><h1>Paso 5: Optimizar y Depurar el Código</h1>
+<div class='content'></div><h2>Optimización</h2>
+<div class='content'><ul>
+<li>Utiliza índices en las columnas que se usan frecuentemente en las cláusulas WHERE.</li>
+<li>Evita el uso de cursores explícitos cuando sea posible.</li>
+</ul>
+</div><h2>Depuración</h2>
+<div class='content'><ul>
+<li>Utiliza <code>DBMS_OUTPUT.PUT_LINE</code> para imprimir mensajes de depuración.</li>
+<li>Revisa los planes de ejecución para identificar cuellos de botella.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea un procedimiento almacenado que elimine un empleado por su ID.</li>
+<li>Crea una función que devuelva el nombre completo de un empleado dado su ID.</li>
+<li>Implementa un disparador que registre en una tabla de auditoría cada vez que se actualice el salario de un empleado.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Procedimiento para Eliminar un Empleado</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIGRlbGV0ZV9lbXBsb3llZSAoCiAgICBwX2VtcGxveWVlX2lkIElOIGVtcGxveWVlcy5lbXBsb3llZV9pZCVUWVBFCikgSVMKQkVHSU4KICAgIERFTEVURSBGUk9NIGVtcGxveWVlcwogICAgV0hFUkUgZW1wbG95ZWVfaWQgPSBwX2VtcGxveWVlX2lkOwogICAgQ09NTUlUOwpFWENFUFRJT04KICAgIFdIRU4gTk9fREFUQV9GT1VORCBUSEVOCiAgICAgICAgREJNU19PVVRQVVQuUFVUX0xJTkUoJ0VtcGxveWVlIG5vdCBmb3VuZC4nKTsKICAgIFdIRU4gT1RIRVJTIFRIRU4KICAgICAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnQW4gZXJyb3Igb2NjdXJyZWQ6ICcgfHwgU1FMRVJSTSk7CkVORDsKLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE delete_employee (
+    p_employee_id IN employees.employee_id%TYPE
+) IS
+BEGIN
+    DELETE FROM employees
+    WHERE employee_id = p_employee_id;
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Employee not found.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/</pre></div><div class='content'><h4>Función para Obtener el Nombre Completo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgRlVOQ1RJT04gZ2V0X2VtcGxveWVlX2Z1bGxfbmFtZSAoCiAgICBwX2VtcGxveWVlX2lkIElOIGVtcGxveWVlcy5lbXBsb3llZV9pZCVUWVBFCikgUkVUVVJOIFZBUkNIQVIyIElTCiAgICB2X2Z1bGxfbmFtZSBWQVJDSEFSMigxMDApOwpCRUdJTgogICAgU0VMRUNUIGZpcnN0X25hbWUgfHwgJyAnIHx8IGxhc3RfbmFtZSBJTlRPIHZfZnVsbF9uYW1lCiAgICBGUk9NIGVtcGxveWVlcwogICAgV0hFUkUgZW1wbG95ZWVfaWQgPSBwX2VtcGxveWVlX2lkOwogICAgUkVUVVJOIHZfZnVsbF9uYW1lOwpFWENFUFRJT04KICAgIFdIRU4gTk9fREFUQV9GT1VORCBUSEVOCiAgICAgICAgUkVUVVJOIE5VTEw7CkVORDsKLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE FUNCTION get_employee_full_name (
+    p_employee_id IN employees.employee_id%TYPE
+) RETURN VARCHAR2 IS
+    v_full_name VARCHAR2(100);
+BEGIN
+    SELECT first_name || ' ' || last_name INTO v_full_name
+    FROM employees
+    WHERE employee_id = p_employee_id;
+    RETURN v_full_name;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        RETURN NULL;
+END;
+/</pre></div><div class='content'><h4>Disparador para Auditar Cambios en el Salario</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgVFJJR0dFUiB0cmdfYXVkaXRfc2FsYXJ5X2NoYW5nZXMKQUZURVIgVVBEQVRFIE9GIHNhbGFyeSBPTiBlbXBsb3llZXMKRk9SIEVBQ0ggUk9XCkJFR0lOCiAgICBJTlNFUlQgSU5UTyBhdWRpdF9sb2cgKGxvZ19kYXRlLCB1c2VyX2lkLCBvcGVyYXRpb24sIHRhYmxlX25hbWUsIHJvd19pZCwgb2xkX3ZhbHVlLCBuZXdfdmFsdWUpCiAgICBWQUxVRVMgKFNZU0RBVEUsIFVTRVIsICdVUERBVEUnLCAnZW1wbG95ZWVzJywgOk9MRC5lbXBsb3llZV9pZCwgOk9MRC5zYWxhcnksIDpORVcuc2FsYXJ5KTsKRU5EOwov"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE TRIGGER trg_audit_salary_changes
+AFTER UPDATE OF salary ON employees
+FOR EACH ROW
+BEGIN
+    INSERT INTO audit_log (log_date, user_id, operation, table_name, row_id, old_value, new_value)
+    VALUES (SYSDATE, USER, 'UPDATE', 'employees', :OLD.employee_id, :OLD.salary, :NEW.salary);
+END;
+/</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos construido una aplicación simple utilizando PL/SQL. Hemos cubierto la creación de tablas, procedimientos almacenados, funciones, disparadores y el manejo de excepciones. Además, hemos discutido técnicas de optimización y depuración. Este ejercicio te proporciona una base sólida para desarrollar aplicaciones más complejas en PL/SQL. ¡Sigue practicando y explorando más características avanzadas de PL/SQL!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-profiling-tuning' title="Perfilado y Ajuste">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-interfacing-languages' title="Interfaz con Otros Lenguajes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

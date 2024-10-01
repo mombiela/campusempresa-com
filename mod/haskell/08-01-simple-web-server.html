@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construcción de un Servidor Web Simple</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/haskell/08-01-simple-web-server" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/haskell/08-01-simple-web-server" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/haskell/08-01-simple-web-server" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/haskell/08-01-simple-web-server" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/haskell/08-01-simple-web-server" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-template-haskell' title="Template Haskell">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Construcción de un Servidor Web Simple</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-database-access' title="Acceso a Bases de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos a construir un servidor web simple en Haskell utilizando la biblioteca <code>Warp</code>. Este ejercicio nos permitirá aplicar muchos de los conceptos aprendidos en los módulos anteriores y nos introducirá a la programación web en Haskell.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Configurar un proyecto Haskell para construir un servidor web.</li>
+<li>Entender los conceptos básicos de la biblioteca <code>Warp</code>.</li>
+<li>Crear rutas y manejar solicitudes HTTP.</li>
+<li>Responder con contenido HTML.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Conocimientos básicos de Haskell.</li>
+<li>Familiaridad con el sistema de tipos y funciones en Haskell.</li>
+<li>Haber completado los módulos anteriores del curso.</li>
+</ul>
+</div><h1>Paso 1: Configuración del Proyecto</h1>
+<div class='content'><p>Primero, necesitamos configurar un nuevo proyecto Haskell. Utilizaremos <code>stack</code>, una herramienta de construcción para Haskell.</p>
+<ol>
+<li>
+<p><strong>Crear un nuevo proyecto:</strong></p>
+<pre><code class="language-sh">stack new simple-web-server
+cd simple-web-server
+</code></pre>
+</li>
+<li>
+<p><strong>Editar el archivo <code>package.yaml</code> para incluir las dependencias necesarias:</strong></p>
+<pre><code class="language-yaml">dependencies:
+- base &gt;= 4.7 &amp;&amp; &lt; 5
+- warp
+- wai
+- text
+</code></pre>
+</li>
+<li>
+<p><strong>Instalar las dependencias:</strong></p>
+<pre><code class="language-sh">stack build
+</code></pre>
+</li>
+</ol>
+</div><h1>Paso 2: Escribir el Código del Servidor</h1>
+<div class='content'><p>Vamos a crear un archivo <code>src/Main.hs</code> y escribir el código para nuestro servidor web.</p>
+<ol>
+<li>
+<p><strong>Importar las bibliotecas necesarias:</strong></p>
+<pre><code class="language-haskell">{-# LANGUAGE OverloadedStrings #-}
+
+import Network.Wai (Application, responseLBS)
+import Network.Wai.Handler.Warp (run)
+import Network.HTTP.Types (status200)
+import Data.Text.Lazy (Text)
+import Data.Text.Lazy.Encoding (encodeUtf8)
+</code></pre>
+</li>
+<li>
+<p><strong>Definir la aplicación:</strong></p>
+<pre><code class="language-haskell">app :: Application
+app request respond = do
+    let responseText = &quot;&lt;h1&gt;Hola, Mundo!&lt;/h1&gt;&quot;
+    respond $ responseLBS status200 [(&quot;Content-Type&quot;, &quot;text/html&quot;)] (encodeUtf8 responseText)
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar el servidor para que escuche en el puerto 8080:</strong></p>
+<pre><code class="language-haskell">main :: IO ()
+main = do
+    putStrLn &quot;Servidor escuchando en http://localhost:8080&quot;
+    run 8080 app
+</code></pre>
+</li>
+</ol>
+</div><h1>Explicación del Código</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Importaciones:</strong></p>
+<ul>
+<li><code>Network.Wai</code> y <code>Network.Wai.Handler.Warp</code> son las bibliotecas principales para manejar aplicaciones web y servidores en Haskell.</li>
+<li><code>Network.HTTP.Types</code> proporciona tipos y funciones para manejar HTTP.</li>
+<li><code>Data.Text.Lazy</code> y <code>Data.Text.Lazy.Encoding</code> se utilizan para manejar y codificar texto.</li>
+</ul>
+</li>
+<li>
+<p><strong>Definición de la Aplicación:</strong></p>
+<ul>
+<li><code>app</code> es una función que toma una solicitud (<code>request</code>) y una función de respuesta (<code>respond</code>).</li>
+<li><code>responseLBS</code> crea una respuesta HTTP con un estado, encabezados y cuerpo.</li>
+<li><code>status200</code> es el código de estado HTTP para &quot;OK&quot;.</li>
+<li><code>encodeUtf8</code> convierte el texto en una cadena de bytes UTF-8.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuración del Servidor:</strong></p>
+<ul>
+<li><code>run 8080 app</code> inicia el servidor en el puerto 8080 y utiliza la aplicación <code>app</code> para manejar las solicitudes.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejecución del Servidor</h1>
+<div class='content'><p>Para ejecutar el servidor, usa el siguiente comando en la terminal:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RhY2sgcnVu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>stack run</pre></div><div class='content'><p>Abre tu navegador y visita <code>http://localhost:8080</code>. Deberías ver &quot;Hola, Mundo!&quot; en la pantalla.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Añadir una Ruta Adicional</h2>
+<div class='content'><p>Modifica el servidor para que maneje una ruta adicional <code>/about</code> que responda con &quot;Acerca de nosotros&quot;.</p>
+<h4>Solución</h4>
+<ol>
+<li>
+<p><strong>Modificar la aplicación para manejar múltiples rutas:</strong></p>
+<pre><code class="language-haskell">{-# LANGUAGE OverloadedStrings #-}
+
+import Network.Wai (Application, responseLBS, pathInfo)
+import Network.Wai.Handler.Warp (run)
+import Network.HTTP.Types (status200, status404)
+import Data.Text.Lazy (Text)
+import Data.Text.Lazy.Encoding (encodeUtf8)
+
+app :: Application
+app request respond = do
+    let path = pathInfo request
+    case path of
+        [] -&gt; respond $ responseLBS status200 [(&quot;Content-Type&quot;, &quot;text/html&quot;)] (encodeUtf8 &quot;&lt;h1&gt;Hola, Mundo!&lt;/h1&gt;&quot;)
+        [&quot;about&quot;] -&gt; respond $ responseLBS status200 [(&quot;Content-Type&quot;, &quot;text/html&quot;)] (encodeUtf8 &quot;&lt;h1&gt;Acerca de nosotros&lt;/h1&gt;&quot;)
+        _ -&gt; respond $ responseLBS status404 [(&quot;Content-Type&quot;, &quot;text/html&quot;)] (encodeUtf8 &quot;&lt;h1&gt;Página no encontrada&lt;/h1&gt;&quot;)
+
+main :: IO ()
+main = do
+    putStrLn &quot;Servidor escuchando en http://localhost:8080&quot;
+    run 8080 app
+</code></pre>
+</li>
+<li>
+<p><strong>Explicación:</strong></p>
+<ul>
+<li><code>pathInfo</code> extrae la ruta de la solicitud.</li>
+<li><code>case path of</code> se utiliza para manejar diferentes rutas.</li>
+<li>Se añade una ruta adicional <code>[&quot;about&quot;]</code> que responde con &quot;Acerca de nosotros&quot;.</li>
+<li>Se maneja una ruta por defecto para páginas no encontradas con el estado <code>status404</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido a configurar y construir un servidor web simple en Haskell utilizando la biblioteca <code>Warp</code>. Hemos cubierto cómo manejar rutas y responder con contenido HTML. Este es un primer paso hacia la creación de aplicaciones web más complejas en Haskell.</p>
+<p>En el siguiente tema, exploraremos cómo acceder a bases de datos desde Haskell, lo que nos permitirá construir aplicaciones web dinámicas y ricas en funcionalidades.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-template-haskell' title="Template Haskell">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-database-access' title="Acceso a Bases de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

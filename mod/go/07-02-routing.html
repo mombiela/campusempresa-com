@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrutamiento</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/07-02-routing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/07-02-routing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/07-02-routing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/go/07-02-routing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/go/07-02-routing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-building-a-simple-web-server' title="Construcción de un Servidor Web Simple">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Enrutamiento</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-middleware' title="Middleware">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos sobre el enrutamiento en aplicaciones web desarrolladas con Go. El enrutamiento es un componente esencial en cualquier aplicación web, ya que permite definir cómo las solicitudes HTTP son manejadas por el servidor. En Go, el paquete <code>net/http</code> proporciona las herramientas básicas para manejar rutas, pero también existen frameworks y librerías que facilitan y mejoran el manejo de rutas.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li>Introducción al Enrutamiento</li>
+<li>Enrutamiento Básico con <code>net/http</code></li>
+<li>Uso de Multiplexores de Rutas</li>
+<li>Enrutamiento con <code>gorilla/mux</code></li>
+<li>Ejercicio Práctico</li>
+<li>Conclusión</li>
+</ol>
+</div><h1>1. Introducción al Enrutamiento</h1>
+<div class='content'><p>El enrutamiento en una aplicación web se refiere al proceso de definir cómo las solicitudes HTTP son dirigidas a diferentes manejadores de solicitudes. Cada ruta está asociada con una URL específica y un método HTTP (GET, POST, PUT, DELETE, etc.).</p>
+</div><h1>2. Enrutamiento Básico con `net/http`</h1>
+<div class='content'><p>El paquete <code>net/http</code> de la biblioteca estándar de Go proporciona funcionalidades básicas para manejar rutas. A continuación, se muestra un ejemplo simple de cómo definir rutas utilizando <code>net/http</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJuZXQvaHR0cCIKKQoKZnVuYyBob21lSGFuZGxlcih3IGh0dHAuUmVzcG9uc2VXcml0ZXIsIHIgKmh0dHAuUmVxdWVzdCkgewogICAgZm10LkZwcmludGYodywgIldlbGNvbWUgdG8gdGhlIEhvbWUgUGFnZSEiKQp9CgpmdW5jIGFib3V0SGFuZGxlcih3IGh0dHAuUmVzcG9uc2VXcml0ZXIsIHIgKmh0dHAuUmVxdWVzdCkgewogICAgZm10LkZwcmludGYodywgIlRoaXMgaXMgdGhlIEFib3V0IFBhZ2UuIikKfQoKZnVuYyBtYWluKCkgewogICAgaHR0cC5IYW5kbGVGdW5jKCIvIiwgaG9tZUhhbmRsZXIpCiAgICBodHRwLkhhbmRsZUZ1bmMoIi9hYm91dCIsIGFib3V0SGFuZGxlcikKCiAgICBmbXQuUHJpbnRsbigiU2VydmVyIGlzIHJ1bm5pbmcgb24gcG9ydCA4MDgwIikKICAgIGh0dHAuTGlzdGVuQW5kU2VydmUoIjo4MDgwIiwgbmlsKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net/http&quot;
+)
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;Welcome to the Home Page!&quot;)
+}
+
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;This is the About Page.&quot;)
+}
+
+func main() {
+    http.HandleFunc(&quot;/&quot;, homeHandler)
+    http.HandleFunc(&quot;/about&quot;, aboutHandler)
+
+    fmt.Println(&quot;Server is running on port 8080&quot;)
+    http.ListenAndServe(&quot;:8080&quot;, nil)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>http.HandleFunc(&quot;/&quot;, homeHandler)</code>: Asocia la ruta raíz (&quot;/&quot;) con la función <code>homeHandler</code>.</li>
+<li><code>http.HandleFunc(&quot;/about&quot;, aboutHandler)</code>: Asocia la ruta &quot;/about&quot; con la función <code>aboutHandler</code>.</li>
+<li><code>http.ListenAndServe(&quot;:8080&quot;, nil)</code>: Inicia el servidor en el puerto 8080.</li>
+</ul>
+</div><h1>3. Uso de Multiplexores de Rutas</h1>
+<div class='content'><p>El paquete <code>net/http</code> también permite el uso de multiplexores de rutas (<code>http.ServeMux</code>) para manejar rutas de manera más organizada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJuZXQvaHR0cCIKKQoKZnVuYyBob21lSGFuZGxlcih3IGh0dHAuUmVzcG9uc2VXcml0ZXIsIHIgKmh0dHAuUmVxdWVzdCkgewogICAgZm10LkZwcmludGYodywgIldlbGNvbWUgdG8gdGhlIEhvbWUgUGFnZSEiKQp9CgpmdW5jIGFib3V0SGFuZGxlcih3IGh0dHAuUmVzcG9uc2VXcml0ZXIsIHIgKmh0dHAuUmVxdWVzdCkgewogICAgZm10LkZwcmludGYodywgIlRoaXMgaXMgdGhlIEFib3V0IFBhZ2UuIikKfQoKZnVuYyBtYWluKCkgewogICAgbXV4IDo9IGh0dHAuTmV3U2VydmVNdXgoKQogICAgbXV4LkhhbmRsZUZ1bmMoIi8iLCBob21lSGFuZGxlcikKICAgIG11eC5IYW5kbGVGdW5jKCIvYWJvdXQiLCBhYm91dEhhbmRsZXIpCgogICAgZm10LlByaW50bG4oIlNlcnZlciBpcyBydW5uaW5nIG9uIHBvcnQgODA4MCIpCiAgICBodHRwLkxpc3RlbkFuZFNlcnZlKCI6ODA4MCIsIG11eCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net/http&quot;
+)
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;Welcome to the Home Page!&quot;)
+}
+
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;This is the About Page.&quot;)
+}
+
+func main() {
+    mux := http.NewServeMux()
+    mux.HandleFunc(&quot;/&quot;, homeHandler)
+    mux.HandleFunc(&quot;/about&quot;, aboutHandler)
+
+    fmt.Println(&quot;Server is running on port 8080&quot;)
+    http.ListenAndServe(&quot;:8080&quot;, mux)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>mux := http.NewServeMux()</code>: Crea un nuevo multiplexor de rutas.</li>
+<li><code>mux.HandleFunc(&quot;/&quot;, homeHandler)</code>: Asocia la ruta raíz (&quot;/&quot;) con la función <code>homeHandler</code> en el multiplexor.</li>
+<li><code>http.ListenAndServe(&quot;:8080&quot;, mux)</code>: Inicia el servidor en el puerto 8080 utilizando el multiplexor <code>mux</code>.</li>
+</ul>
+</div><h1>4. Enrutamiento con `gorilla/mux`</h1>
+<div class='content'><p><code>gorilla/mux</code> es un paquete popular que proporciona un enrutador más potente y flexible que el multiplexor estándar de Go. Permite definir rutas con parámetros, expresiones regulares y más.</p>
+</div><h2>Instalación</h2>
+<div class='content'><p>Para instalar <code>gorilla/mux</code>, ejecuta el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z28gZ2V0IC11IGdpdGh1Yi5jb20vZ29yaWxsYS9tdXg="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>go get -u github.com/gorilla/mux</pre></div><div class='content'></div><h2>Ejemplo de Uso</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJuZXQvaHR0cCIKICAgICJnaXRodWIuY29tL2dvcmlsbGEvbXV4IgopCgpmdW5jIGhvbWVIYW5kbGVyKHcgaHR0cC5SZXNwb25zZVdyaXRlciwgciAqaHR0cC5SZXF1ZXN0KSB7CiAgICBmbXQuRnByaW50Zih3LCAiV2VsY29tZSB0byB0aGUgSG9tZSBQYWdlISIpCn0KCmZ1bmMgYWJvdXRIYW5kbGVyKHcgaHR0cC5SZXNwb25zZVdyaXRlciwgciAqaHR0cC5SZXF1ZXN0KSB7CiAgICBmbXQuRnByaW50Zih3LCAiVGhpcyBpcyB0aGUgQWJvdXQgUGFnZS4iKQp9CgpmdW5jIG1haW4oKSB7CiAgICByIDo9IG11eC5OZXdSb3V0ZXIoKQogICAgci5IYW5kbGVGdW5jKCIvIiwgaG9tZUhhbmRsZXIpLk1ldGhvZHMoIkdFVCIpCiAgICByLkhhbmRsZUZ1bmMoIi9hYm91dCIsIGFib3V0SGFuZGxlcikuTWV0aG9kcygiR0VUIikKCiAgICBmbXQuUHJpbnRsbigiU2VydmVyIGlzIHJ1bm5pbmcgb24gcG9ydCA4MDgwIikKICAgIGh0dHAuTGlzdGVuQW5kU2VydmUoIjo4MDgwIiwgcikKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net/http&quot;
+    &quot;github.com/gorilla/mux&quot;
+)
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;Welcome to the Home Page!&quot;)
+}
+
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;This is the About Page.&quot;)
+}
+
+func main() {
+    r := mux.NewRouter()
+    r.HandleFunc(&quot;/&quot;, homeHandler).Methods(&quot;GET&quot;)
+    r.HandleFunc(&quot;/about&quot;, aboutHandler).Methods(&quot;GET&quot;)
+
+    fmt.Println(&quot;Server is running on port 8080&quot;)
+    http.ListenAndServe(&quot;:8080&quot;, r)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>r := mux.NewRouter()</code>: Crea un nuevo enrutador.</li>
+<li><code>r.HandleFunc(&quot;/&quot;, homeHandler).Methods(&quot;GET&quot;)</code>: Asocia la ruta raíz (&quot;/&quot;) con la función <code>homeHandler</code> y especifica que solo maneja solicitudes GET.</li>
+<li><code>http.ListenAndServe(&quot;:8080&quot;, r)</code>: Inicia el servidor en el puerto 8080 utilizando el enrutador <code>r</code>.</li>
+</ul>
+</div><h1>5. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una aplicación web en Go que tenga las siguientes rutas:</p>
+<ul>
+<li><code>/</code>: Muestra &quot;Welcome to the Home Page!&quot;</li>
+<li><code>/about</code>: Muestra &quot;This is the About Page.&quot;</li>
+<li><code>/contact</code>: Muestra &quot;Contact us at contact@example.com&quot;</li>
+</ul>
+</div><h2>Solución</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJuZXQvaHR0cCIKICAgICJnaXRodWIuY29tL2dvcmlsbGEvbXV4IgopCgpmdW5jIGhvbWVIYW5kbGVyKHcgaHR0cC5SZXNwb25zZVdyaXRlciwgciAqaHR0cC5SZXF1ZXN0KSB7CiAgICBmbXQuRnByaW50Zih3LCAiV2VsY29tZSB0byB0aGUgSG9tZSBQYWdlISIpCn0KCmZ1bmMgYWJvdXRIYW5kbGVyKHcgaHR0cC5SZXNwb25zZVdyaXRlciwgciAqaHR0cC5SZXF1ZXN0KSB7CiAgICBmbXQuRnByaW50Zih3LCAiVGhpcyBpcyB0aGUgQWJvdXQgUGFnZS4iKQp9CgpmdW5jIGNvbnRhY3RIYW5kbGVyKHcgaHR0cC5SZXNwb25zZVdyaXRlciwgciAqaHR0cC5SZXF1ZXN0KSB7CiAgICBmbXQuRnByaW50Zih3LCAiQ29udGFjdCB1cyBhdCBjb250YWN0QGV4YW1wbGUuY29tIikKfQoKZnVuYyBtYWluKCkgewogICAgciA6PSBtdXguTmV3Um91dGVyKCkKICAgIHIuSGFuZGxlRnVuYygiLyIsIGhvbWVIYW5kbGVyKS5NZXRob2RzKCJHRVQiKQogICAgci5IYW5kbGVGdW5jKCIvYWJvdXQiLCBhYm91dEhhbmRsZXIpLk1ldGhvZHMoIkdFVCIpCiAgICByLkhhbmRsZUZ1bmMoIi9jb250YWN0IiwgY29udGFjdEhhbmRsZXIpLk1ldGhvZHMoIkdFVCIpCgogICAgZm10LlByaW50bG4oIlNlcnZlciBpcyBydW5uaW5nIG9uIHBvcnQgODA4MCIpCiAgICBodHRwLkxpc3RlbkFuZFNlcnZlKCI6ODA4MCIsIHIpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;net/http&quot;
+    &quot;github.com/gorilla/mux&quot;
+)
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;Welcome to the Home Page!&quot;)
+}
+
+func aboutHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;This is the About Page.&quot;)
+}
+
+func contactHandler(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, &quot;Contact us at contact@example.com&quot;)
+}
+
+func main() {
+    r := mux.NewRouter()
+    r.HandleFunc(&quot;/&quot;, homeHandler).Methods(&quot;GET&quot;)
+    r.HandleFunc(&quot;/about&quot;, aboutHandler).Methods(&quot;GET&quot;)
+    r.HandleFunc(&quot;/contact&quot;, contactHandler).Methods(&quot;GET&quot;)
+
+    fmt.Println(&quot;Server is running on port 8080&quot;)
+    http.ListenAndServe(&quot;:8080&quot;, r)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li>Se define una nueva ruta <code>/contact</code> que maneja solicitudes GET y está asociada con la función <code>contactHandler</code>.</li>
+</ul>
+</div><h1>6. Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre el enrutamiento en aplicaciones web desarrolladas con Go. Comenzamos con el enrutamiento básico utilizando el paquete <code>net/http</code>, luego exploramos el uso de multiplexores de rutas y finalmente, vimos cómo utilizar el paquete <code>gorilla/mux</code> para un enrutamiento más avanzado y flexible. Con estos conocimientos, estás preparado para manejar rutas en tus aplicaciones web de manera eficiente y organizada.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-building-a-simple-web-server' title="Construcción de un Servidor Web Simple">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-middleware' title="Middleware">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

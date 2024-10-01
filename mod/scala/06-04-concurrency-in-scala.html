@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concurrencia en Scala</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/scala/06-04-concurrency-in-scala" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/scala/06-04-concurrency-in-scala" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/scala/06-04-concurrency-in-scala" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/scala/06-04-concurrency-in-scala" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/scala/06-04-concurrency-in-scala" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-macros-and-reflection' title="Macros y Reflexión">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Concurrencia en Scala</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-05-introduction-to-akka' title="Introducción a Akka">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La concurrencia es un concepto fundamental en la programación moderna, especialmente en aplicaciones que requieren alta disponibilidad y rendimiento. Scala proporciona varias herramientas y bibliotecas para manejar la concurrencia de manera eficiente. En esta sección, exploraremos los conceptos básicos de la concurrencia en Scala, las herramientas disponibles y cómo utilizarlas.</p>
+</div><h1>Contenidos</h1>
+<div class='content'><ol>
+<li><a href="#conceptos-básicos-de-concurrencia">Conceptos Básicos de Concurrencia</a></li>
+<li><a href="#futuros-y-promesas">Futuros y Promesas</a></li>
+<li><a href="#actores-y-akka">Actores y Akka</a></li>
+<li><a href="#paralelismo-y-colecciones-paralelas">Paralelismo y Colecciones Paralelas</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Conceptos Básicos de Concurrencia</h1>
+<div class='content'><p>La concurrencia se refiere a la capacidad de un programa para ejecutar múltiples tareas de manera simultánea. En Scala, la concurrencia se puede manejar de varias maneras:</p>
+<ul>
+<li><strong>Hilos (Threads)</strong>: La forma más básica de concurrencia, donde cada tarea se ejecuta en un hilo separado.</li>
+<li><strong>Futuros y Promesas</strong>: Abstracciones de alto nivel para manejar tareas asincrónicas.</li>
+<li><strong>Actores</strong>: Un modelo de concurrencia basado en el paso de mensajes, implementado en la biblioteca Akka.</li>
+<li><strong>Colecciones Paralelas</strong>: Permiten realizar operaciones en colecciones de manera concurrente.</li>
+</ul>
+</div><h2>Ejemplo Básico de Hilos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b2JqZWN0IFRocmVhZEV4YW1wbGUgZXh0ZW5kcyBBcHAgewogIHZhbCB0aHJlYWQxID0gbmV3IFRocmVhZChuZXcgUnVubmFibGUgewogICAgZGVmIHJ1bigpOiBVbml0ID0gewogICAgICBwcmludGxuKCJUaHJlYWQgMSBpcyBydW5uaW5nIikKICAgIH0KICB9KQoKICB2YWwgdGhyZWFkMiA9IG5ldyBUaHJlYWQobmV3IFJ1bm5hYmxlIHsKICAgIGRlZiBydW4oKTogVW5pdCA9IHsKICAgICAgcHJpbnRsbigiVGhyZWFkIDIgaXMgcnVubmluZyIpCiAgICB9CiAgfSkKCiAgdGhyZWFkMS5zdGFydCgpCiAgdGhyZWFkMi5zdGFydCgpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>object ThreadExample extends App {
+  val thread1 = new Thread(new Runnable {
+    def run(): Unit = {
+      println(&quot;Thread 1 is running&quot;)
+    }
+  })
+
+  val thread2 = new Thread(new Runnable {
+    def run(): Unit = {
+      println(&quot;Thread 2 is running&quot;)
+    }
+  })
+
+  thread1.start()
+  thread2.start()
+}</pre></div><div class='content'><p>En este ejemplo, creamos dos hilos que imprimen mensajes diferentes. Cada hilo se ejecuta de manera concurrente.</p>
+</div><h1>Futuros y Promesas</h1>
+<div class='content'><p>Los futuros y las promesas son abstracciones de alto nivel para manejar tareas asincrónicas. Un <code>Future</code> representa un valor que puede estar disponible en algún momento en el futuro, mientras que una <code>Promise</code> es un contenedor que puede completar un <code>Future</code>.</p>
+</div><h2>Ejemplo de Futuros</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLmNvbmN1cnJlbnQue0Z1dHVyZSwgRXhlY3V0aW9uQ29udGV4dH0KaW1wb3J0IHNjYWxhLnV0aWwue1N1Y2Nlc3MsIEZhaWx1cmV9CgpvYmplY3QgRnV0dXJlRXhhbXBsZSBleHRlbmRzIEFwcCB7CiAgaW1wbGljaXQgdmFsIGVjOiBFeGVjdXRpb25Db250ZXh0ID0gRXhlY3V0aW9uQ29udGV4dC5nbG9iYWwKCiAgdmFsIGZ1dHVyZSA9IEZ1dHVyZSB7CiAgICAvLyBTaW11bGFuZG8gdW5hIHRhcmVhIHF1ZSB0b21hIHRpZW1wbwogICAgVGhyZWFkLnNsZWVwKDEwMDApCiAgICA0MgogIH0KCiAgZnV0dXJlLm9uQ29tcGxldGUgewogICAgY2FzZSBTdWNjZXNzKHZhbHVlKSA9PiBwcmludGxuKHMiRWwgcmVzdWx0YWRvIGVzICR2YWx1ZSIpCiAgICBjYXNlIEZhaWx1cmUoZSkgPT4gcHJpbnRsbihzIkVycm9yOiAke2UuZ2V0TWVzc2FnZX0iKQogIH0KCiAgLy8gTWFudGVuZXIgbGEgYXBsaWNhY2nDs24gdml2YSBwYXJhIHZlciBlbCByZXN1bHRhZG8KICBUaHJlYWQuc2xlZXAoMjAwMCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.concurrent.{Future, ExecutionContext}
+import scala.util.{Success, Failure}
+
+object FutureExample extends App {
+  implicit val ec: ExecutionContext = ExecutionContext.global
+
+  val future = Future {
+    // Simulando una tarea que toma tiempo
+    Thread.sleep(1000)
+    42
+  }
+
+  future.onComplete {
+    case Success(value) =&gt; println(s&quot;El resultado es $value&quot;)
+    case Failure(e) =&gt; println(s&quot;Error: ${e.getMessage}&quot;)
+  }
+
+  // Mantener la aplicaci&oacute;n viva para ver el resultado
+  Thread.sleep(2000)
+}</pre></div><div class='content'><p>En este ejemplo, creamos un <code>Future</code> que simula una tarea que toma tiempo (1 segundo). Usamos <code>onComplete</code> para manejar el resultado del <code>Future</code>.</p>
+</div><h1>Actores y Akka</h1>
+<div class='content'><p>Akka es una biblioteca poderosa para manejar la concurrencia en Scala usando el modelo de actores. Un actor es una entidad que puede recibir y procesar mensajes.</p>
+</div><h2>Ejemplo de Actores con Akka</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFra2EuYWN0b3Iue0FjdG9yLCBBY3RvclN5c3RlbSwgUHJvcHN9CgpjbGFzcyBTaW1wbGVBY3RvciBleHRlbmRzIEFjdG9yIHsKICBkZWYgcmVjZWl2ZTogUmVjZWl2ZSA9IHsKICAgIGNhc2UgbXNnOiBTdHJpbmcgPT4gcHJpbnRsbihzIlJlY2VpdmVkIG1lc3NhZ2U6ICRtc2ciKQogIH0KfQoKb2JqZWN0IEFra2FFeGFtcGxlIGV4dGVuZHMgQXBwIHsKICB2YWwgc3lzdGVtID0gQWN0b3JTeXN0ZW0oIlNpbXBsZVN5c3RlbSIpCiAgdmFsIHNpbXBsZUFjdG9yID0gc3lzdGVtLmFjdG9yT2YoUHJvcHNbU2ltcGxlQWN0b3JdLCAic2ltcGxlQWN0b3IiKQoKICBzaW1wbGVBY3RvciAhICJIZWxsbywgQWN0b3IiCiAgc3lzdGVtLnRlcm1pbmF0ZSgpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import akka.actor.{Actor, ActorSystem, Props}
+
+class SimpleActor extends Actor {
+  def receive: Receive = {
+    case msg: String =&gt; println(s&quot;Received message: $msg&quot;)
+  }
+}
+
+object AkkaExample extends App {
+  val system = ActorSystem(&quot;SimpleSystem&quot;)
+  val simpleActor = system.actorOf(Props[SimpleActor], &quot;simpleActor&quot;)
+
+  simpleActor ! &quot;Hello, Actor&quot;
+  system.terminate()
+}</pre></div><div class='content'><p>En este ejemplo, creamos un actor simple que imprime los mensajes que recibe. Usamos <code>ActorSystem</code> para crear y gestionar el ciclo de vida del actor.</p>
+</div><h1>Paralelismo y Colecciones Paralelas</h1>
+<div class='content'><p>Scala proporciona colecciones paralelas que permiten realizar operaciones en colecciones de manera concurrente.</p>
+</div><h2>Ejemplo de Colecciones Paralelas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b2JqZWN0IFBhcmFsbGVsQ29sbGVjdGlvbnNFeGFtcGxlIGV4dGVuZHMgQXBwIHsKICB2YWwgbGlzdCA9ICgxIHRvIDEwMDAwMDApLnRvTGlzdAoKICB2YWwgc3VtID0gbGlzdC5wYXIuc3VtCiAgcHJpbnRsbihzIlN1bTogJHN1bSIpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>object ParallelCollectionsExample extends App {
+  val list = (1 to 1000000).toList
+
+  val sum = list.par.sum
+  println(s&quot;Sum: $sum&quot;)
+}</pre></div><div class='content'><p>En este ejemplo, usamos la colección paralela <code>par</code> para sumar los elementos de una lista de manera concurrente.</p>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Uso de Futuros</h2>
+<div class='content'><p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Crea un <code>Future</code> que simule una tarea que toma 2 segundos y devuelva el valor 100.</li>
+<li>Usa <code>onComplete</code> para imprimir el resultado del <code>Future</code>.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHNjYWxhLmNvbmN1cnJlbnQue0Z1dHVyZSwgRXhlY3V0aW9uQ29udGV4dH0KaW1wb3J0IHNjYWxhLnV0aWwue1N1Y2Nlc3MsIEZhaWx1cmV9CgpvYmplY3QgRnV0dXJlRXhlcmNpc2UgZXh0ZW5kcyBBcHAgewogIGltcGxpY2l0IHZhbCBlYzogRXhlY3V0aW9uQ29udGV4dCA9IEV4ZWN1dGlvbkNvbnRleHQuZ2xvYmFsCgogIHZhbCBmdXR1cmUgPSBGdXR1cmUgewogICAgVGhyZWFkLnNsZWVwKDIwMDApCiAgICAxMDAKICB9CgogIGZ1dHVyZS5vbkNvbXBsZXRlIHsKICAgIGNhc2UgU3VjY2Vzcyh2YWx1ZSkgPT4gcHJpbnRsbihzIkVsIHJlc3VsdGFkbyBlcyAkdmFsdWUiKQogICAgY2FzZSBGYWlsdXJlKGUpID0+IHByaW50bG4ocyJFcnJvcjogJHtlLmdldE1lc3NhZ2V9IikKICB9CgogIFRocmVhZC5zbGVlcCgzMDAwKQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import scala.concurrent.{Future, ExecutionContext}
+import scala.util.{Success, Failure}
+
+object FutureExercise extends App {
+  implicit val ec: ExecutionContext = ExecutionContext.global
+
+  val future = Future {
+    Thread.sleep(2000)
+    100
+  }
+
+  future.onComplete {
+    case Success(value) =&gt; println(s&quot;El resultado es $value&quot;)
+    case Failure(e) =&gt; println(s&quot;Error: ${e.getMessage}&quot;)
+  }
+
+  Thread.sleep(3000)
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Uso de Actores</h2>
+<div class='content'><p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Crea un actor que reciba un mensaje de tipo <code>Int</code> y calcule su cuadrado.</li>
+<li>Envía un mensaje con el valor 5 al actor y verifica que el resultado sea 25.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFra2EuYWN0b3Iue0FjdG9yLCBBY3RvclN5c3RlbSwgUHJvcHN9CgpjbGFzcyBTcXVhcmVBY3RvciBleHRlbmRzIEFjdG9yIHsKICBkZWYgcmVjZWl2ZTogUmVjZWl2ZSA9IHsKICAgIGNhc2UgbnVtOiBJbnQgPT4gcHJpbnRsbihzIkVsIGN1YWRyYWRvIGRlICRudW0gZXMgJHtudW0gKiBudW19IikKICB9Cn0KCm9iamVjdCBBY3RvckV4ZXJjaXNlIGV4dGVuZHMgQXBwIHsKICB2YWwgc3lzdGVtID0gQWN0b3JTeXN0ZW0oIlNxdWFyZVN5c3RlbSIpCiAgdmFsIHNxdWFyZUFjdG9yID0gc3lzdGVtLmFjdG9yT2YoUHJvcHNbU3F1YXJlQWN0b3JdLCAic3F1YXJlQWN0b3IiKQoKICBzcXVhcmVBY3RvciAhIDUKICBzeXN0ZW0udGVybWluYXRlKCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import akka.actor.{Actor, ActorSystem, Props}
+
+class SquareActor extends Actor {
+  def receive: Receive = {
+    case num: Int =&gt; println(s&quot;El cuadrado de $num es ${num * num}&quot;)
+  }
+}
+
+object ActorExercise extends App {
+  val system = ActorSystem(&quot;SquareSystem&quot;)
+  val squareActor = system.actorOf(Props[SquareActor], &quot;squareActor&quot;)
+
+  squareActor ! 5
+  system.terminate()
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos explorado los conceptos básicos de la concurrencia en Scala, incluyendo hilos, futuros, promesas, actores y colecciones paralelas. La concurrencia es una herramienta poderosa que puede mejorar significativamente el rendimiento y la capacidad de respuesta de tus aplicaciones. A medida que avances en tu aprendizaje de Scala, te encontrarás utilizando estas herramientas de manera más frecuente y sofisticada.</p>
+<p>En la próxima sección, profundizaremos en el ecosistema y las herramientas de Scala, comenzando con SBT, la herramienta de construcción de Scala.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-macros-and-reflection' title="Macros y Reflexión">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-05-introduction-to-akka' title="Introducción a Akka">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimización de Consultas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/06-01-query-optimization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/06-01-query-optimization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/06-01-query-optimization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/06-01-query-optimization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/06-01-query-optimization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-transactions-and-concurrency' title="Transacciones y Concurrencia">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimización de Consultas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-indexing-strategies' title="Estrategias de Indexación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La optimización de consultas es una habilidad crucial para cualquier desarrollador o administrador de bases de datos. En este módulo, aprenderás cómo mejorar el rendimiento de tus consultas en PostgreSQL, asegurando que tus aplicaciones funcionen de manera eficiente y rápida.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Plan de Ejecución</strong>: Es el plan que PostgreSQL utiliza para ejecutar una consulta. Entender cómo se genera y cómo interpretarlo es fundamental para la optimización.</li>
+<li><strong>Índices</strong>: Estructuras que mejoran la velocidad de las operaciones de lectura en una base de datos.</li>
+<li><strong>Estadísticas</strong>: Información que PostgreSQL utiliza para decidir el mejor plan de ejecución.</li>
+<li><strong>Vacuum</strong>: Proceso de mantenimiento que ayuda a mantener la base de datos eficiente.</li>
+</ol>
+</div><h1>Plan de Ejecución</h1>
+<div class='content'></div><h2>¿Qué es un Plan de Ejecución?</h2>
+<div class='content'><p>Un plan de ejecución es una representación detallada de cómo PostgreSQL ejecutará una consulta. Incluye información sobre los métodos de acceso a los datos, el orden de las operaciones y los costos estimados.</p>
+</div><h2>Cómo Ver un Plan de Ejecución</h2>
+<div class='content'><p>Puedes ver el plan de ejecución de una consulta utilizando el comando <code>EXPLAIN</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'><p>Para obtener un plan de ejecución más detallado, incluyendo el tiempo real de ejecución, utiliza <code>EXPLAIN ANALYZE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gZW1wbG95ZWVzIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>Interpretación del Plan de Ejecución</h2>
+<div class='content'><p>Un plan de ejecución típico incluye varias secciones, como:</p>
+<ul>
+<li><strong>Seq Scan</strong>: Escaneo secuencial de una tabla.</li>
+<li><strong>Index Scan</strong>: Escaneo de una tabla utilizando un índice.</li>
+<li><strong>Nested Loop</strong>: Un tipo de join que itera sobre cada fila de una tabla y busca filas coincidentes en otra tabla.</li>
+</ul>
+<p>Ejemplo de un plan de ejecución:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U2VxIFNjYW4gb24gZW1wbG95ZWVzICAoY29zdD0wLjAwLi4zNS41MCByb3dzPTUgd2lkdGg9MTAwKQogIEZpbHRlcjogKGRlcGFydG1lbnQgPSAnU2FsZXMnOjp0ZXh0KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Seq Scan on employees  (cost=0.00..35.50 rows=5 width=100)
+  Filter: (department = 'Sales'::text)</pre></div><div class='content'><ul>
+<li><strong>Seq Scan on employees</strong>: Indica que se está realizando un escaneo secuencial en la tabla <code>employees</code>.</li>
+<li><strong>cost=0.00..35.50</strong>: El costo estimado de ejecutar esta operación.</li>
+<li><strong>rows=5</strong>: El número estimado de filas que se devolverán.</li>
+<li><strong>width=100</strong>: El tamaño promedio de las filas en bytes.</li>
+<li><strong>Filter: (department = 'Sales'::text)</strong>: El filtro aplicado durante el escaneo.</li>
+</ul>
+</div><h1>Índices</h1>
+<div class='content'></div><h2>Creación de Índices</h2>
+<div class='content'><p>Los índices pueden mejorar significativamente el rendimiento de las consultas. Puedes crear un índice en una columna específica utilizando el comando <code>CREATE INDEX</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXBhcnRtZW50IE9OIGVtcGxveWVlcyhkZXBhcnRtZW50KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_department ON employees(department);</pre></div><div class='content'></div><h2>Tipos de Índices</h2>
+<div class='content'><ul>
+<li><strong>B-tree</strong>: El tipo de índice más común, adecuado para la mayoría de las consultas.</li>
+<li><strong>Hash</strong>: Útil para igualdad simple.</li>
+<li><strong>GIN</strong>: Bueno para búsquedas de texto completo.</li>
+<li><strong>GiST</strong>: Útil para datos geoespaciales.</li>
+</ul>
+</div><h2>Uso de Índices en Consultas</h2>
+<div class='content'><p>Una vez que se crea un índice, PostgreSQL puede utilizarlo automáticamente para optimizar las consultas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gZW1wbG95ZWVzIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'><p>El plan de ejecución debería mostrar un <code>Index Scan</code> en lugar de un <code>Seq Scan</code>.</p>
+</div><h1>Estadísticas</h1>
+<div class='content'></div><h2>Actualización de Estadísticas</h2>
+<div class='content'><p>PostgreSQL utiliza estadísticas para decidir el mejor plan de ejecución. Puedes actualizar las estadísticas utilizando el comando <code>ANALYZE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QU5BTFlaRSBlbXBsb3llZXM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ANALYZE employees;</pre></div><div class='content'></div><h2>Configuración de Estadísticas</h2>
+<div class='content'><p>Puedes ajustar la configuración de las estadísticas para columnas específicas utilizando el comando <code>ALTER TABLE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUxURVIgVEFCTEUgZW1wbG95ZWVzIEFMVEVSIENPTFVNTiBkZXBhcnRtZW50IFNFVCBTVEFUSVNUSUNTIDEwMDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ALTER TABLE employees ALTER COLUMN department SET STATISTICS 100;</pre></div><div class='content'></div><h1>Vacuum</h1>
+<div class='content'></div><h2>¿Qué es Vacuum?</h2>
+<div class='content'><p><code>VACUUM</code> es un comando de mantenimiento que limpia las filas muertas y actualiza las estadísticas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNIGVtcGxveWVlczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM employees;</pre></div><div class='content'></div><h2>Vacuum Full</h2>
+<div class='content'><p><code>VACUUM FULL</code> es una versión más intensiva que también compacta la tabla.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VkFDVVVNIEZVTEwgZW1wbG95ZWVzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>VACUUM FULL employees;</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Interpretar un Plan de Ejecución</h2>
+<div class='content'><ol>
+<li>Ejecuta la siguiente consulta y obtén el plan de ejecución:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gb3JkZXJzIFdIRVJFIG9yZGVyX2RhdGUgPSAnMjAyMy0wMS0wMSc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM orders WHERE order_date = '2023-01-01';</pre></div><div class='content'><ol start="2">
+<li>Interpreta el plan de ejecución. ¿Qué tipo de escaneo se está utilizando? ¿Cuál es el costo estimado?</li>
+</ol>
+</div><h2>Ejercicio 2: Crear y Utilizar un Índice</h2>
+<div class='content'><ol>
+<li>Crea un índice en la columna <code>order_date</code> de la tabla <code>orders</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9vcmRlcl9kYXRlIE9OIG9yZGVycyhvcmRlcl9kYXRlKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_order_date ON orders(order_date);</pre></div><div class='content'><ol start="2">
+<li>Ejecuta la misma consulta del Ejercicio 1 y observa el plan de ejecución. ¿Ha cambiado el tipo de escaneo?</li>
+</ol>
+</div><h2>Ejercicio 3: Actualizar Estadísticas</h2>
+<div class='content'><ol>
+<li>Actualiza las estadísticas de la tabla <code>orders</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QU5BTFlaRSBvcmRlcnM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ANALYZE orders;</pre></div><div class='content'><ol start="2">
+<li>Ejecuta la consulta del Ejercicio 1 nuevamente y observa si hay algún cambio en el plan de ejecución.</li>
+</ol>
+</div><h1>Soluciones</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U2VxIFNjYW4gb24gb3JkZXJzICAoY29zdD0wLjAwLi4zNS41MCByb3dzPTUgd2lkdGg9MTAwKQogIEZpbHRlcjogKG9yZGVyX2RhdGUgPSAnMjAyMy0wMS0wMSc6OmRhdGUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Seq Scan on orders  (cost=0.00..35.50 rows=5 width=100)
+  Filter: (order_date = '2023-01-01'::date)</pre></div><div class='content'><ul>
+<li><strong>Seq Scan on orders</strong>: Se está utilizando un escaneo secuencial.</li>
+<li><strong>cost=0.00..35.50</strong>: El costo estimado de ejecutar esta operación.</li>
+<li><strong>rows=5</strong>: El número estimado de filas que se devolverán.</li>
+<li><strong>width=100</strong>: El tamaño promedio de las filas en bytes.</li>
+<li><strong>Filter: (order_date = '2023-01-01'::date)</strong>: El filtro aplicado durante el escaneo.</li>
+</ul>
+</div><h2>Solución al Ejercicio 2</h2>
+<div class='content'><p>Después de crear el índice, el plan de ejecución debería mostrar un <code>Index Scan</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SW5kZXggU2NhbiB1c2luZyBpZHhfb3JkZXJfZGF0ZSBvbiBvcmRlcnMgIChjb3N0PTAuMDAuLjE1LjUwIHJvd3M9NSB3aWR0aD0xMDApCiAgSW5kZXggQ29uZDogKG9yZGVyX2RhdGUgPSAnMjAyMy0wMS0wMSc6OmRhdGUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Index Scan using idx_order_date on orders  (cost=0.00..15.50 rows=5 width=100)
+  Index Cond: (order_date = '2023-01-01'::date)</pre></div><div class='content'></div><h2>Solución al Ejercicio 3</h2>
+<div class='content'><p>Después de actualizar las estadísticas, el plan de ejecución puede mostrar un costo diferente, pero el tipo de escaneo debería seguir siendo <code>Index Scan</code>.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de la optimización de consultas en PostgreSQL, incluyendo cómo interpretar planes de ejecución, crear y utilizar índices, y mantener estadísticas actualizadas. Estos conocimientos te permitirán mejorar significativamente el rendimiento de tus consultas y, en consecuencia, de tus aplicaciones. En el próximo módulo, profundizaremos en estrategias de indexación avanzadas para optimizar aún más tus bases de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-transactions-and-concurrency' title="Transacciones y Concurrencia">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-indexing-strategies' title="Estrategias de Indexación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

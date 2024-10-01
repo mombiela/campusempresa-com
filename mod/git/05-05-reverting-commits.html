@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revirtiendo Confirmaciones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/git/05-05-reverting-commits" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/git/05-05-reverting-commits" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/git/05-05-reverting-commits" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/git/05-05-reverting-commits" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/git/05-05-reverting-commits" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-tagging-commits' title="Etiquetando Confirmaciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Revirtiendo Confirmaciones</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-using-git-hooks' title="Usando Git Hooks">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo revertir confirmaciones en Git. Revertir una confirmación es una operación común cuando necesitas deshacer cambios específicos en el historial de tu repositorio. A diferencia de <code>git reset</code>, que puede alterar el historial de confirmaciones, <code>git revert</code> crea una nueva confirmación que deshace los cambios de una confirmación anterior, manteniendo el historial intacto.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Revertir Confirmaciones</strong>: Crear una nueva confirmación que deshace los cambios de una confirmación anterior.</li>
+<li><strong>Historial Inmutable</strong>: <code>git revert</code> no elimina confirmaciones del historial, lo que es útil para mantener un registro claro de los cambios.</li>
+</ul>
+</div><h1>Comando Básico</h1>
+<div class='content'><p>El comando principal para revertir una confirmación es <code>git revert</code>. La sintaxis básica es:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IHJldmVydCA8Y29tbWl0LWhhc2g+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git revert &lt;commit-hash&gt;</pre></div><div class='content'><p>Donde <code>&lt;commit-hash&gt;</code> es el identificador de la confirmación que deseas revertir.</p>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que tienes el siguiente historial de confirmaciones:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29tbWl0IDNhMWY0ZTIgKEhFQUQgLT4gbWFpbikKQXV0aG9yOiBKdWFuIFBlcmV6CkRhdGU6ICAgTW9uIE9jdCAyIDEwOjAwOjAwIDIwMjMgLTA1MDAKCiAgICBBw7FhZGlyIGFyY2hpdm8gZGUgY29uZmlndXJhY2nDs24KCmNvbW1pdCAyYjNjNGQ1CkF1dGhvcjogTWFyaWEgTG9wZXoKRGF0ZTogICBTdW4gT2N0IDEgMTQ6MzA6MDAgMjAyMyAtMDUwMAoKICAgIENvcnJlZ2lyIGVycm9yZXMgdGlwb2dyw6FmaWNvcyBlbiBSRUFETUUKCmNvbW1pdCAxYTJiM2M0CkF1dGhvcjogQ2FybG9zIEdhcmNpYQpEYXRlOiAgIFNhdCBTZXAgMzAgMDk6MDA6MDAgMjAyMyAtMDUwMAoKICAgIEluaWNpYWxpemFyIHJlcG9zaXRvcmlv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>commit 3a1f4e2 (HEAD -&gt; main)
+Author: Juan Perez
+Date:   Mon Oct 2 10:00:00 2023 -0500
+
+    A&ntilde;adir archivo de configuraci&oacute;n
+
+commit 2b3c4d5
+Author: Maria Lopez
+Date:   Sun Oct 1 14:30:00 2023 -0500
+
+    Corregir errores tipogr&aacute;ficos en README
+
+commit 1a2b3c4
+Author: Carlos Garcia
+Date:   Sat Sep 30 09:00:00 2023 -0500
+
+    Inicializar repositorio</pre></div><div class='content'><p>Si deseas revertir la confirmación <code>2b3c4d5</code> (Corregir errores tipográficos en README), ejecutarías:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IHJldmVydCAyYjNjNGQ1"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git revert 2b3c4d5</pre></div><div class='content'><p>Esto abrirá tu editor de texto predeterminado para que puedas modificar el mensaje de confirmación de la reversión. Una vez que guardes y cierres el editor, Git creará una nueva confirmación que deshace los cambios introducidos por <code>2b3c4d5</code>.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Revertir una Confirmación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crea un nuevo repositorio y añade algunos archivos:</strong></p>
+<pre><code class="language-bash">mkdir mi_proyecto
+cd mi_proyecto
+git init
+echo &quot;Hola Mundo&quot; &gt; archivo.txt
+git add archivo.txt
+git commit -m &quot;Añadir archivo.txt&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Realiza algunos cambios y confirma:</strong></p>
+<pre><code class="language-bash">echo &quot;Cambio 1&quot; &gt;&gt; archivo.txt
+git commit -am &quot;Añadir Cambio 1&quot;
+echo &quot;Cambio 2&quot; &gt;&gt; archivo.txt
+git commit -am &quot;Añadir Cambio 2&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Revisa el historial de confirmaciones:</strong></p>
+<pre><code class="language-bash">git log --oneline
+</code></pre>
+</li>
+<li>
+<p><strong>Revertir la confirmación &quot;Añadir Cambio 1&quot;:</strong></p>
+<pre><code class="language-bash">git revert HEAD~1
+</code></pre>
+</li>
+<li>
+<p><strong>Revisa el historial de confirmaciones nuevamente:</strong></p>
+<pre><code class="language-bash">git log --oneline
+</code></pre>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><p>Después de ejecutar los comandos anteriores, tu historial de confirmaciones debería verse algo así:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29tbWl0IDRlNWY2ZzcgKEhFQUQgLT4gbWFpbikKQXV0aG9yOiBUdSBOb21icmUKRGF0ZTogICBNb24gT2N0IDIgMTE6MDA6MDAgMjAyMyAtMDUwMAoKICAgIFJldmVydCAiQcOxYWRpciBDYW1iaW8gMSIKCmNvbW1pdCAzYTFmNGUyCkF1dGhvcjogVHUgTm9tYnJlCkRhdGU6ICAgTW9uIE9jdCAyIDEwOjMwOjAwIDIwMjMgLTA1MDAKCiAgICBBw7FhZGlyIENhbWJpbyAyCgpjb21taXQgMmIzYzRkNQpBdXRob3I6IFR1IE5vbWJyZQpEYXRlOiAgIE1vbiBPY3QgMiAxMDowMDowMCAyMDIzIC0wNTAwCgogICAgQcOxYWRpciBDYW1iaW8gMQoKY29tbWl0IDFhMmIzYzQKQXV0aG9yOiBUdSBOb21icmUKRGF0ZTogICBNb24gT2N0IDIgMDk6MzA6MDAgMjAyMyAtMDUwMAoKICAgIEHDsWFkaXIgYXJjaGl2by50eHQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>commit 4e5f6g7 (HEAD -&gt; main)
+Author: Tu Nombre
+Date:   Mon Oct 2 11:00:00 2023 -0500
+
+    Revert &quot;A&ntilde;adir Cambio 1&quot;
+
+commit 3a1f4e2
+Author: Tu Nombre
+Date:   Mon Oct 2 10:30:00 2023 -0500
+
+    A&ntilde;adir Cambio 2
+
+commit 2b3c4d5
+Author: Tu Nombre
+Date:   Mon Oct 2 10:00:00 2023 -0500
+
+    A&ntilde;adir Cambio 1
+
+commit 1a2b3c4
+Author: Tu Nombre
+Date:   Mon Oct 2 09:30:00 2023 -0500
+
+    A&ntilde;adir archivo.txt</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ul>
+<li><strong>Conflictos de Fusión</strong>: Al revertir una confirmación, podrías encontrarte con conflictos de fusión si los cambios a revertir afectan las mismas líneas de código que otros cambios recientes. Resuelve los conflictos manualmente y luego completa la reversión.</li>
+<li><strong>Revertir Reversiones</strong>: Si accidentalmente revertiste una confirmación, puedes revertir la confirmación de la reversión para restaurar los cambios originales.</li>
+</ul>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, aprendiste cómo revertir confirmaciones en Git utilizando el comando <code>git revert</code>. Esta técnica es esencial para mantener un historial de confirmaciones claro y comprensible, permitiéndote deshacer cambios sin alterar el historial existente. Practica revertir confirmaciones en diferentes escenarios para familiarizarte con el proceso y estar preparado para manejar cualquier situación en tus proyectos reales.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-tagging-commits' title="Etiquetando Confirmaciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-using-git-hooks' title="Usando Git Hooks">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

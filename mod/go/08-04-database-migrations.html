@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Migraciones de Base de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/08-04-database-migrations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/08-04-database-migrations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/08-04-database-migrations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/go/08-04-database-migrations" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/go/08-04-database-migrations" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-using-orm' title="Usando ORM">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Migraciones de Base de Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-building-and-deploying-go-applications' title="Construcción y Despliegue de Aplicaciones Go">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las migraciones de base de datos son una parte crucial del desarrollo de aplicaciones, ya que permiten gestionar los cambios en la estructura de la base de datos de manera controlada y reproducible. En este tema, aprenderemos cómo realizar migraciones de base de datos en Go utilizando herramientas populares.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><p>Al final de este tema, deberías ser capaz de:</p>
+<ol>
+<li>Comprender el concepto de migraciones de base de datos.</li>
+<li>Configurar una herramienta de migraciones en un proyecto Go.</li>
+<li>Crear y aplicar migraciones de base de datos.</li>
+<li>Revertir migraciones en caso de errores.</li>
+</ol>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>¿Qué son las Migraciones de Base de Datos?</h2>
+<div class='content'><p>Las migraciones de base de datos son scripts que permiten modificar la estructura de la base de datos (como crear, modificar o eliminar tablas y columnas) de manera incremental. Esto es especialmente útil en entornos de desarrollo colaborativo y despliegue continuo.</p>
+</div><h2>Herramientas de Migración</h2>
+<div class='content'><p>Existen varias herramientas para gestionar migraciones en Go. Algunas de las más populares son:</p>
+<ul>
+<li><strong>golang-migrate</strong>: Una herramienta flexible y ampliamente utilizada.</li>
+<li><strong>goose</strong>: Otra opción popular que es fácil de usar.</li>
+</ul>
+<p>En este tema, nos centraremos en <strong>golang-migrate</strong>.</p>
+</div><h1>Configuración de golang-migrate</h1>
+<div class='content'></div><h2>Instalación</h2>
+<div class='content'><p>Primero, necesitamos instalar la herramienta <code>golang-migrate</code>. Puedes hacerlo utilizando <code>go get</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z28gZ2V0IC11IC1kIGdpdGh1Yi5jb20vZ29sYW5nLW1pZ3JhdGUvbWlncmF0ZS9jbWQvbWlncmF0ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>go get -u -d github.com/golang-migrate/migrate/cmd/migrate</pre></div><div class='content'></div><h2>Configuración del Proyecto</h2>
+<div class='content'><p>Asegúrate de tener una estructura de proyecto similar a la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXktZ28tcHJvamVjdC8K4pSc4pSA4pSAIG1haW4uZ28K4pSc4pSA4pSAIGRiLwrilIIgICDilJzilIDilIAgbWlncmF0aW9ucy8K4pSCICAg4pSU4pSA4pSAIGRiLmdvCuKUlOKUgOKUgCBnby5tb2Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>my-go-project/
+├── main.go
+├── db/
+│   ├── migrations/
+│   └── db.go
+└── go.mod</pre></div><div class='content'></div><h2>Archivo de Configuración de la Base de Datos</h2>
+<div class='content'><p>Crea un archivo <code>db/db.go</code> para manejar la conexión a la base de datos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBkYgoKaW1wb3J0ICgKICAgICJkYXRhYmFzZS9zcWwiCiAgICBfICJnaXRodWIuY29tL2xpYi9wcSIgLy8gSW1wb3J0YSBlbCBkcml2ZXIgZGUgUG9zdGdyZVNRTAogICAgImxvZyIKKQoKdmFyIERCICpzcWwuREIKCmZ1bmMgSW5pdERCKGRhdGFTb3VyY2VOYW1lIHN0cmluZykgewogICAgdmFyIGVyciBlcnJvcgogICAgREIsIGVyciA9IHNxbC5PcGVuKCJwb3N0Z3JlcyIsIGRhdGFTb3VyY2VOYW1lKQogICAgaWYgZXJyICE9IG5pbCB7CiAgICAgICAgbG9nLkZhdGFsKGVycikKICAgIH0KCiAgICBpZiBlcnIgPSBEQi5QaW5nKCk7IGVyciAhPSBuaWwgewogICAgICAgIGxvZy5GYXRhbChlcnIpCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package db
+
+import (
+    &quot;database/sql&quot;
+    _ &quot;github.com/lib/pq&quot; // Importa el driver de PostgreSQL
+    &quot;log&quot;
+)
+
+var DB *sql.DB
+
+func InitDB(dataSourceName string) {
+    var err error
+    DB, err = sql.Open(&quot;postgres&quot;, dataSourceName)
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    if err = DB.Ping(); err != nil {
+        log.Fatal(err)
+    }
+}</pre></div><div class='content'></div><h1>Creación de Migraciones</h1>
+<div class='content'></div><h2>Crear una Nueva Migración</h2>
+<div class='content'><p>Para crear una nueva migración, usa el comando <code>migrate create</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWlncmF0ZSBjcmVhdGUgLWV4dCBzcWwgLWRpciBkYi9taWdyYXRpb25zIC1zZXEgY3JlYXRlX3VzZXJzX3RhYmxl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>migrate create -ext sql -dir db/migrations -seq create_users_table</pre></div><div class='content'><p>Esto creará dos archivos en el directorio <code>db/migrations</code>:</p>
+<ul>
+<li><code>000001_create_users_table.up.sql</code></li>
+<li><code>000001_create_users_table.down.sql</code></li>
+</ul>
+</div><h2>Escribir la Migración</h2>
+<div class='content'><p>Edita el archivo <code>000001_create_users_table.up.sql</code> para definir la estructura de la nueva tabla:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHVzZXJzICgKICAgIGlkIFNFUklBTCBQUklNQVJZIEtFWSwKICAgIHVzZXJuYW1lIFZBUkNIQVIoNTApIE5PVCBOVUxMLAogICAgZW1haWwgVkFSQ0hBUigxMDApIE5PVCBOVUxMIFVOSVFVRSwKICAgIGNyZWF0ZWRfYXQgVElNRVNUQU1QIFdJVEggVElNRSBaT05FIERFRkFVTFQgQ1VSUkVOVF9USU1FU1RBTVAKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);</pre></div><div class='content'><p>Y el archivo <code>000001_create_users_table.down.sql</code> para revertir la migración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RFJPUCBUQUJMRSB1c2Vyczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DROP TABLE users;</pre></div><div class='content'></div><h1>Aplicar Migraciones</h1>
+<div class='content'></div><h2>Ejecutar Migraciones</h2>
+<div class='content'><p>Para aplicar las migraciones, usa el comando <code>migrate up</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWlncmF0ZSAtcGF0aCBkYi9taWdyYXRpb25zIC1kYXRhYmFzZSAicG9zdGdyZXM6Ly91c2VyOnBhc3N3b3JkQGxvY2FsaG9zdDo1NDMyL215ZGI/c3NsbW9kZT1kaXNhYmxlIiB1cA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>migrate -path db/migrations -database &quot;postgres://user:password@localhost:5432/mydb?sslmode=disable&quot; up</pre></div><div class='content'></div><h2>Revertir Migraciones</h2>
+<div class='content'><p>Si necesitas revertir una migración, usa el comando <code>migrate down</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWlncmF0ZSAtcGF0aCBkYi9taWdyYXRpb25zIC1kYXRhYmFzZSAicG9zdGdyZXM6Ly91c2VyOnBhc3N3b3JkQGxvY2FsaG9zdDo1NDMyL215ZGI/c3NsbW9kZT1kaXNhYmxlIiBkb3du"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>migrate -path db/migrations -database &quot;postgres://user:password@localhost:5432/mydb?sslmode=disable&quot; down</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea una nueva migración para añadir una columna <code>last_login</code> a la tabla <code>users</code>.</li>
+<li>Escribe los scripts SQL para la migración y la reversión.</li>
+<li>Aplica la migración y verifica que la columna ha sido añadida.</li>
+<li>Revertir la migración y verifica que la columna ha sido eliminada.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Crear la migración:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWlncmF0ZSBjcmVhdGUgLWV4dCBzcWwgLWRpciBkYi9taWdyYXRpb25zIC1zZXEgYWRkX2xhc3RfbG9naW5fdG9fdXNlcnM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>migrate create -ext sql -dir db/migrations -seq add_last_login_to_users</pre></div><div class='content'><ol start="2">
+<li>Editar <code>000002_add_last_login_to_users.up.sql</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUxURVIgVEFCTEUgdXNlcnMgQUREIENPTFVNTiBsYXN0X2xvZ2luIFRJTUVTVEFNUCBXSVRIIFRJTUUgWk9ORTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ALTER TABLE users ADD COLUMN last_login TIMESTAMP WITH TIME ZONE;</pre></div><div class='content'><ol start="3">
+<li>Editar <code>000002_add_last_login_to_users.down.sql</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUxURVIgVEFCTEUgdXNlcnMgRFJPUCBDT0xVTU4gbGFzdF9sb2dpbjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ALTER TABLE users DROP COLUMN last_login;</pre></div><div class='content'><ol start="4">
+<li>Aplicar la migración:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWlncmF0ZSAtcGF0aCBkYi9taWdyYXRpb25zIC1kYXRhYmFzZSAicG9zdGdyZXM6Ly91c2VyOnBhc3N3b3JkQGxvY2FsaG9zdDo1NDMyL215ZGI/c3NsbW9kZT1kaXNhYmxlIiB1cA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>migrate -path db/migrations -database &quot;postgres://user:password@localhost:5432/mydb?sslmode=disable&quot; up</pre></div><div class='content'><ol start="5">
+<li>Revertir la migración:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWlncmF0ZSAtcGF0aCBkYi9taWdyYXRpb25zIC1kYXRhYmFzZSAicG9zdGdyZXM6Ly91c2VyOnBhc3N3b3JkQGxvY2FsaG9zdDo1NDMyL215ZGI/c3NsbW9kZT1kaXNhYmxlIiBkb3du"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>migrate -path db/migrations -database &quot;postgres://user:password@localhost:5432/mydb?sslmode=disable&quot; down</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido sobre la importancia de las migraciones de base de datos y cómo utilizarlas en un proyecto Go utilizando <code>golang-migrate</code>. Ahora deberías ser capaz de crear, aplicar y revertir migraciones de base de datos, lo que te permitirá gestionar cambios en la estructura de tu base de datos de manera eficiente y controlada.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-using-orm' title="Usando ORM">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-building-and-deploying-go-applications' title="Construcción y Despliegue de Aplicaciones Go">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

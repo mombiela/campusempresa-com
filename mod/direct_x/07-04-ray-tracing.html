@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trazado de Rayos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/07-04-ray-tracing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/07-04-ray-tracing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/07-04-ray-tracing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/direct_x/07-04-ray-tracing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/07-04-ray-tracing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-tessellation' title="Teselación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Trazado de Rayos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-building-game-engine' title="Construyendo un Motor de Juego">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El trazado de rayos (Ray Tracing) es una técnica avanzada de renderizado que simula la forma en que los rayos de luz interactúan con los objetos en una escena para producir imágenes altamente realistas. A diferencia del renderizado tradicional basado en rasterización, el trazado de rayos puede manejar efectos complejos como reflejos, refracciones y sombras suaves de manera más natural.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Rayos Primarios y Secundarios</strong>:</p>
+<ul>
+<li><strong>Rayos Primarios</strong>: Emitidos desde la cámara hacia la escena.</li>
+<li><strong>Rayos Secundarios</strong>: Generados cuando los rayos primarios interactúan con los objetos (reflejos, refracciones).</li>
+</ul>
+</li>
+<li>
+<p><strong>Intersección de Rayos</strong>:</p>
+<ul>
+<li>Determinar si un rayo intersecta con un objeto en la escena y calcular el punto de intersección.</li>
+</ul>
+</li>
+<li>
+<p><strong>Sombras</strong>:</p>
+<ul>
+<li>Generar rayos de sombra desde el punto de intersección hacia las fuentes de luz para determinar si el punto está en sombra.</li>
+</ul>
+</li>
+<li>
+<p><strong>Reflejos y Refracciones</strong>:</p>
+<ul>
+<li>Calcular rayos reflejados y refractados en superficies reflectantes y transparentes.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Configuración Inicial</h1>
+<div class='content'><p>Antes de comenzar con el trazado de rayos en DirectX, asegúrate de tener configurado tu entorno de desarrollo y de estar familiarizado con los conceptos básicos de Direct3D.</p>
+</div><h2>Requisitos</h2>
+<div class='content'><ul>
+<li>DirectX 12 SDK</li>
+<li>Un entorno de desarrollo compatible (Visual Studio recomendado)</li>
+<li>Una GPU compatible con DirectX Raytracing (DXR)</li>
+</ul>
+</div><h1>Inicializando el Trazado de Rayos</h1>
+<div class='content'></div><h2>Paso 1: Habilitar DXR</h2>
+<div class='content'><p>Primero, asegúrate de que tu aplicación esté configurada para usar DirectX 12 y que DXR esté habilitado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSGFiaWxpdGFyIERYUgpEM0QxMl9GRUFUVVJFX0RBVEFfRDNEMTJfT1BUSU9OUzUgb3B0aW9uczUgPSB7fTsKZGV2aWNlLT5DaGVja0ZlYXR1cmVTdXBwb3J0KEQzRDEyX0ZFQVRVUkVfRDNEMTJfT1BUSU9OUzUsICZvcHRpb25zNSwgc2l6ZW9mKG9wdGlvbnM1KSk7CmlmIChvcHRpb25zNS5SYXl0cmFjaW5nVGllciA9PSBEM0QxMl9SQVlUUkFDSU5HX1RJRVJfTk9UX1NVUFBPUlRFRCkgewogICAgdGhyb3cgc3RkOjpydW50aW1lX2Vycm9yKCJSYXl0cmFjaW5nIG5vdCBzdXBwb3J0ZWQgb24gdGhpcyBkZXZpY2UiKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Habilitar DXR
+D3D12_FEATURE_DATA_D3D12_OPTIONS5 options5 = {};
+device-&gt;CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &amp;options5, sizeof(options5));
+if (options5.RaytracingTier == D3D12_RAYTRACING_TIER_NOT_SUPPORTED) {
+    throw std::runtime_error(&quot;Raytracing not supported on this device&quot;);
+}</pre></div><div class='content'></div><h2>Paso 2: Crear la Estructura de la Escena</h2>
+<div class='content'><p>Define las estructuras necesarias para representar los objetos en la escena y los rayos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFJheSB7CiAgICBEaXJlY3RYOjpYTUZMT0FUMyBPcmlnaW47CiAgICBEaXJlY3RYOjpYTUZMT0FUMyBEaXJlY3Rpb247Cn07CgpzdHJ1Y3QgU3BoZXJlIHsKICAgIERpcmVjdFg6OlhNRkxPQVQzIENlbnRlcjsKICAgIGZsb2F0IFJhZGl1czsKICAgIERpcmVjdFg6OlhNRkxPQVQzIENvbG9yOwp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct Ray {
+    DirectX::XMFLOAT3 Origin;
+    DirectX::XMFLOAT3 Direction;
+};
+
+struct Sphere {
+    DirectX::XMFLOAT3 Center;
+    float Radius;
+    DirectX::XMFLOAT3 Color;
+};</pre></div><div class='content'></div><h2>Paso 3: Crear el Pipeline de Trazado de Rayos</h2>
+<div class='content'><p>Configura el pipeline de trazado de rayos, incluyendo la creación de shaders de rayos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ3JlYXIgZWwgcGlwZWxpbmUgZGUgdHJhemFkbyBkZSByYXlvcwpEM0QxMl9TVEFURV9PQkpFQ1RfREVTQyByYXl0cmFjaW5nUGlwZWxpbmVEZXNjID0ge307CnJheXRyYWNpbmdQaXBlbGluZURlc2MuVHlwZSA9IEQzRDEyX1NUQVRFX09CSkVDVF9UWVBFX1JBWVRSQUNJTkdfUElQRUxJTkU7CgovLyBBZ3JlZ2FyIHNoYWRlcnMgeSBvdHJvcyBlc3RhZG9zIGFsIHBpcGVsaW5lCi8vIC4uLgoKZGV2aWNlLT5DcmVhdGVTdGF0ZU9iamVjdCgmcmF5dHJhY2luZ1BpcGVsaW5lRGVzYywgSUlEX1BQVl9BUkdTKCZyYXl0cmFjaW5nUGlwZWxpbmUpKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Crear el pipeline de trazado de rayos
+D3D12_STATE_OBJECT_DESC raytracingPipelineDesc = {};
+raytracingPipelineDesc.Type = D3D12_STATE_OBJECT_TYPE_RAYTRACING_PIPELINE;
+
+// Agregar shaders y otros estados al pipeline
+// ...
+
+device-&gt;CreateStateObject(&amp;raytracingPipelineDesc, IID_PPV_ARGS(&amp;raytracingPipeline));</pre></div><div class='content'></div><h1>Escribiendo Shaders de Rayos</h1>
+<div class='content'></div><h2>Shader de Generación de Rayos</h2>
+<div class='content'><p>El shader de generación de rayos es responsable de emitir los rayos primarios desde la cámara.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmF5IEdlbmVyYXRpb24gU2hhZGVyCltzaGFkZXIoInJheWdlbmVyYXRpb24iKV0Kdm9pZCBSYXlHZW5TaGFkZXIoKSB7CiAgICAvLyBFbWl0aXIgcmF5b3MgcHJpbWFyaW9zCiAgICBSYXlEZXNjIHJheTsKICAgIHJheS5PcmlnaW4gPSBjYW1lcmFQb3NpdGlvbjsKICAgIHJheS5EaXJlY3Rpb24gPSBjYWxjdWxhdGVSYXlEaXJlY3Rpb24oKTsKICAgIAogICAgLy8gTGxhbWFyIGEgbGEgZnVuY2nDs24gZGUgdHJhemFkbyBkZSByYXlvcwogICAgVHJhY2VSYXkocmF5LCAuLi4pOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ray Generation Shader
+[shader(&quot;raygeneration&quot;)]
+void RayGenShader() {
+    // Emitir rayos primarios
+    RayDesc ray;
+    ray.Origin = cameraPosition;
+    ray.Direction = calculateRayDirection();
+    
+    // Llamar a la funci&oacute;n de trazado de rayos
+    TraceRay(ray, ...);
+}</pre></div><div class='content'></div><h2>Shader de Intersección</h2>
+<div class='content'><p>El shader de intersección determina si un rayo intersecta con un objeto en la escena.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW50ZXJzZWN0aW9uIFNoYWRlcgpbc2hhZGVyKCJpbnRlcnNlY3Rpb24iKV0Kdm9pZCBJbnRlcnNlY3Rpb25TaGFkZXIoaW5vdXQgUmF5UGF5bG9hZCBwYXlsb2FkLCBpbiBSYXlEZXNjIHJheSkgewogICAgLy8gQ2FsY3VsYXIgaW50ZXJzZWNjacOzbiBjb24gdW5hIGVzZmVyYQogICAgZmxvYXQgdCA9IGludGVyc2VjdFNwaGVyZShyYXksIHNwaGVyZSk7CiAgICBpZiAodCA+IDAuMGYpIHsKICAgICAgICBwYXlsb2FkLkhpdCA9IHRydWU7CiAgICAgICAgcGF5bG9hZC5IaXREaXN0YW5jZSA9IHQ7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Intersection Shader
+[shader(&quot;intersection&quot;)]
+void IntersectionShader(inout RayPayload payload, in RayDesc ray) {
+    // Calcular intersecci&oacute;n con una esfera
+    float t = intersectSphere(ray, sphere);
+    if (t &gt; 0.0f) {
+        payload.Hit = true;
+        payload.HitDistance = t;
+    }
+}</pre></div><div class='content'></div><h2>Shader de Sombra</h2>
+<div class='content'><p>El shader de sombra calcula si un punto está en sombra.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2hhZG93IFNoYWRlcgpbc2hhZGVyKCJjbG9zZXN0aGl0IildCnZvaWQgU2hhZG93U2hhZGVyKGlub3V0IFJheVBheWxvYWQgcGF5bG9hZCkgewogICAgLy8gQ2FsY3VsYXIgc29tYnJhcwogICAgaWYgKGlzSW5TaGFkb3cocGF5bG9hZC5IaXRQb2ludCkpIHsKICAgICAgICBwYXlsb2FkLkNvbG9yID0gZmxvYXQzKDAuMGYsIDAuMGYsIDAuMGYpOyAvLyBFbiBzb21icmEKICAgIH0gZWxzZSB7CiAgICAgICAgcGF5bG9hZC5Db2xvciA9IGNhbGN1bGF0ZUxpZ2h0aW5nKHBheWxvYWQuSGl0UG9pbnQpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Shadow Shader
+[shader(&quot;closesthit&quot;)]
+void ShadowShader(inout RayPayload payload) {
+    // Calcular sombras
+    if (isInShadow(payload.HitPoint)) {
+        payload.Color = float3(0.0f, 0.0f, 0.0f); // En sombra
+    } else {
+        payload.Color = calculateLighting(payload.HitPoint);
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Reflejos</h2>
+<div class='content'><ol>
+<li>Modifica el shader de intersección para calcular rayos reflejados.</li>
+<li>Implementa un nuevo shader para manejar los rayos reflejados y combinar los resultados con el color original.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW50ZXJzZWN0aW9uIFNoYWRlciBjb24gUmVmbGVqb3MKW3NoYWRlcigiaW50ZXJzZWN0aW9uIildCnZvaWQgSW50ZXJzZWN0aW9uU2hhZGVyKGlub3V0IFJheVBheWxvYWQgcGF5bG9hZCwgaW4gUmF5RGVzYyByYXkpIHsKICAgIGZsb2F0IHQgPSBpbnRlcnNlY3RTcGhlcmUocmF5LCBzcGhlcmUpOwogICAgaWYgKHQgPiAwLjBmKSB7CiAgICAgICAgcGF5bG9hZC5IaXQgPSB0cnVlOwogICAgICAgIHBheWxvYWQuSGl0RGlzdGFuY2UgPSB0OwogICAgICAgIAogICAgICAgIC8vIENhbGN1bGFyIGVsIHJheW8gcmVmbGVqYWRvCiAgICAgICAgZmxvYXQzIG5vcm1hbCA9IGNhbGN1bGF0ZU5vcm1hbChwYXlsb2FkLkhpdFBvaW50KTsKICAgICAgICBmbG9hdDMgcmVmbGVjdGVkRGlyZWN0aW9uID0gcmVmbGVjdChyYXkuRGlyZWN0aW9uLCBub3JtYWwpOwogICAgICAgIAogICAgICAgIC8vIEVtaXRpciBlbCByYXlvIHJlZmxlamFkbwogICAgICAgIFJheURlc2MgcmVmbGVjdGVkUmF5OwogICAgICAgIHJlZmxlY3RlZFJheS5PcmlnaW4gPSBwYXlsb2FkLkhpdFBvaW50OwogICAgICAgIHJlZmxlY3RlZFJheS5EaXJlY3Rpb24gPSByZWZsZWN0ZWREaXJlY3Rpb247CiAgICAgICAgCiAgICAgICAgVHJhY2VSYXkocmVmbGVjdGVkUmF5LCAuLi4pOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Intersection Shader con Reflejos
+[shader(&quot;intersection&quot;)]
+void IntersectionShader(inout RayPayload payload, in RayDesc ray) {
+    float t = intersectSphere(ray, sphere);
+    if (t &gt; 0.0f) {
+        payload.Hit = true;
+        payload.HitDistance = t;
+        
+        // Calcular el rayo reflejado
+        float3 normal = calculateNormal(payload.HitPoint);
+        float3 reflectedDirection = reflect(ray.Direction, normal);
+        
+        // Emitir el rayo reflejado
+        RayDesc reflectedRay;
+        reflectedRay.Origin = payload.HitPoint;
+        reflectedRay.Direction = reflectedDirection;
+        
+        TraceRay(reflectedRay, ...);
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El trazado de rayos es una técnica poderosa que permite crear imágenes altamente realistas al simular la física de la luz. Aunque es más complejo y computacionalmente intensivo que la rasterización tradicional, ofrece una calidad visual superior. En este módulo, hemos cubierto los conceptos básicos del trazado de rayos, la configuración inicial y la implementación de shaders de rayos. Con estos conocimientos, estás preparado para explorar técnicas más avanzadas y optimizaciones en el trazado de rayos.</p>
+<p>En el siguiente módulo, profundizaremos en la construcción de un motor de juego utilizando DirectX, integrando todos los conceptos aprendidos hasta ahora. ¡Sigue adelante y sigue practicando!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-tessellation' title="Teselación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-building-game-engine' title="Construyendo un Motor de Juego">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

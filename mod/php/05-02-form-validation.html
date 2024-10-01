@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación de Formularios</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/05-02-form-validation" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/05-02-form-validation" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/05-02-form-validation" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/php/05-02-form-validation" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/php/05-02-form-validation" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-handling-form-data' title="Manejo de Datos de Formularios">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Validación de Formularios</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-file-uploads' title="Subida de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La validación de formularios es un aspecto crucial en el desarrollo web, ya que garantiza que los datos ingresados por los usuarios sean correctos y seguros antes de ser procesados. En PHP, la validación de formularios puede realizarse tanto en el lado del cliente (usando JavaScript) como en el lado del servidor (usando PHP). En este módulo, nos centraremos en la validación del lado del servidor con PHP.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Validación del Lado del Cliente vs. Lado del Servidor</strong>:</p>
+<ul>
+<li><strong>Lado del Cliente</strong>: Se realiza en el navegador del usuario antes de enviar los datos al servidor. Es rápida y mejora la experiencia del usuario, pero no es segura por sí sola.</li>
+<li><strong>Lado del Servidor</strong>: Se realiza en el servidor después de que los datos han sido enviados. Es más segura y debe ser siempre implementada, incluso si también se usa la validación del lado del cliente.</li>
+</ul>
+</li>
+<li>
+<p><strong>Tipos de Validación</strong>:</p>
+<ul>
+<li><strong>Validación de Presencia</strong>: Asegura que los campos requeridos no estén vacíos.</li>
+<li><strong>Validación de Formato</strong>: Verifica que los datos ingresados sigan un formato específico (por ejemplo, correos electrónicos, números de teléfono).</li>
+<li><strong>Validación de Longitud</strong>: Asegura que los datos ingresados no sean demasiado cortos o largos.</li>
+<li><strong>Validación de Rango</strong>: Verifica que los valores numéricos estén dentro de un rango permitido.</li>
+<li><strong>Validación de Coincidencia</strong>: Asegura que dos campos coincidan (por ejemplo, confirmación de contraseña).</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un formulario simple y validar sus datos en PHP.</p>
+</div><h2>Paso 1: Crear el Formulario HTML</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVzIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+Rm9ybXVsYXJpbyBkZSBSZWdpc3RybzwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDI+Rm9ybXVsYXJpbyBkZSBSZWdpc3RybzwvaDI+CiAgICA8Zm9ybSBhY3Rpb249InByb2Nlc3NfZm9ybS5waHAiIG1ldGhvZD0icG9zdCI+CiAgICAgICAgTm9tYnJlOiA8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0ibmFtZSI+PGJyPjxicj4KICAgICAgICBDb3JyZW8gRWxlY3Ryw7NuaWNvOiA8aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0iZW1haWwiPjxicj48YnI+CiAgICAgICAgRWRhZDogPGlucHV0IHR5cGU9InRleHQiIG5hbWU9ImFnZSI+PGJyPjxicj4KICAgICAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iUmVnaXN0cmFyIj4KICAgIDwvZm9ybT4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Formulario de Registro&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h2&gt;Formulario de Registro&lt;/h2&gt;
+    &lt;form action=&quot;process_form.php&quot; method=&quot;post&quot;&gt;
+        Nombre: &lt;input type=&quot;text&quot; name=&quot;name&quot;&gt;&lt;br&gt;&lt;br&gt;
+        Correo Electr&oacute;nico: &lt;input type=&quot;text&quot; name=&quot;email&quot;&gt;&lt;br&gt;&lt;br&gt;
+        Edad: &lt;input type=&quot;text&quot; name=&quot;age&quot;&gt;&lt;br&gt;&lt;br&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Registrar&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Paso 2: Procesar y Validar los Datos en PHP</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gcHJvY2Vzc19mb3JtLnBocAoKLy8gRGVmaW5pciB2YXJpYWJsZXMgeSBlc3RhYmxlY2VyIHZhbG9yZXMgdmFjw61vcwokbmFtZSA9ICRlbWFpbCA9ICRhZ2UgPSAiIjsKJG5hbWVFcnIgPSAkZW1haWxFcnIgPSAkYWdlRXJyID0gIiI7CgovLyBGdW5jacOzbiBwYXJhIGxpbXBpYXIgZGF0b3MKZnVuY3Rpb24gdGVzdF9pbnB1dCgkZGF0YSkgewogICAgJGRhdGEgPSB0cmltKCRkYXRhKTsKICAgICRkYXRhID0gc3RyaXBzbGFzaGVzKCRkYXRhKTsKICAgICRkYXRhID0gaHRtbHNwZWNpYWxjaGFycygkZGF0YSk7CiAgICByZXR1cm4gJGRhdGE7Cn0KCmlmICgkX1NFUlZFUlsiUkVRVUVTVF9NRVRIT0QiXSA9PSAiUE9TVCIpIHsKICAgIC8vIFZhbGlkYXIgbm9tYnJlCiAgICBpZiAoZW1wdHkoJF9QT1NUWyJuYW1lIl0pKSB7CiAgICAgICAgJG5hbWVFcnIgPSAiRWwgbm9tYnJlIGVzIHJlcXVlcmlkbyI7CiAgICB9IGVsc2UgewogICAgICAgICRuYW1lID0gdGVzdF9pbnB1dCgkX1BPU1RbIm5hbWUiXSk7CiAgICAgICAgaWYgKCFwcmVnX21hdGNoKCIvXlthLXpBLVotJyBdKiQvIiwgJG5hbWUpKSB7CiAgICAgICAgICAgICRuYW1lRXJyID0gIlNvbG8gc2UgcGVybWl0ZW4gbGV0cmFzIHkgZXNwYWNpb3MgZW4gYmxhbmNvIjsKICAgICAgICB9CiAgICB9CgogICAgLy8gVmFsaWRhciBjb3JyZW8gZWxlY3Ryw7NuaWNvCiAgICBpZiAoZW1wdHkoJF9QT1NUWyJlbWFpbCJdKSkgewogICAgICAgICRlbWFpbEVyciA9ICJFbCBjb3JyZW8gZWxlY3Ryw7NuaWNvIGVzIHJlcXVlcmlkbyI7CiAgICB9IGVsc2UgewogICAgICAgICRlbWFpbCA9IHRlc3RfaW5wdXQoJF9QT1NUWyJlbWFpbCJdKTsKICAgICAgICBpZiAoIWZpbHRlcl92YXIoJGVtYWlsLCBGSUxURVJfVkFMSURBVEVfRU1BSUwpKSB7CiAgICAgICAgICAgICRlbWFpbEVyciA9ICJGb3JtYXRvIGRlIGNvcnJlbyBlbGVjdHLDs25pY28gaW52w6FsaWRvIjsKICAgICAgICB9CiAgICB9CgogICAgLy8gVmFsaWRhciBlZGFkCiAgICBpZiAoZW1wdHkoJF9QT1NUWyJhZ2UiXSkpIHsKICAgICAgICAkYWdlRXJyID0gIkxhIGVkYWQgZXMgcmVxdWVyaWRhIjsKICAgIH0gZWxzZSB7CiAgICAgICAgJGFnZSA9IHRlc3RfaW5wdXQoJF9QT1NUWyJhZ2UiXSk7CiAgICAgICAgaWYgKCFpc19udW1lcmljKCRhZ2UpIHx8ICRhZ2UgPCAwIHx8ICRhZ2UgPiAxMjApIHsKICAgICAgICAgICAgJGFnZUVyciA9ICJFZGFkIGludsOhbGlkYSI7CiAgICAgICAgfQogICAgfQoKICAgIC8vIE1vc3RyYXIgZXJyb3JlcyBvIGRhdG9zIHZhbGlkYWRvcwogICAgaWYgKGVtcHR5KCRuYW1lRXJyKSAmJiBlbXB0eSgkZW1haWxFcnIpICYmIGVtcHR5KCRhZ2VFcnIpKSB7CiAgICAgICAgZWNobyAiTm9tYnJlOiAkbmFtZTxicj4iOwogICAgICAgIGVjaG8gIkNvcnJlbyBFbGVjdHLDs25pY286ICRlbWFpbDxicj4iOwogICAgICAgIGVjaG8gIkVkYWQ6ICRhZ2U8YnI+IjsKICAgIH0gZWxzZSB7CiAgICAgICAgZWNobyAiRXJyb3JlcyBlbiBlbCBmb3JtdWxhcmlvOjxicj4iOwogICAgICAgIGVjaG8gJG5hbWVFcnIgLiAiPGJyPiI7CiAgICAgICAgZWNobyAkZW1haWxFcnIgLiAiPGJyPiI7CiAgICAgICAgZWNobyAkYWdlRXJyIC4gIjxicj4iOwogICAgfQp9Cj8+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// process_form.php
+
+// Definir variables y establecer valores vac&iacute;os
+$name = $email = $age = &quot;&quot;;
+$nameErr = $emailErr = $ageErr = &quot;&quot;;
+
+// Funci&oacute;n para limpiar datos
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    // Validar nombre
+    if (empty($_POST[&quot;name&quot;])) {
+        $nameErr = &quot;El nombre es requerido&quot;;
+    } else {
+        $name = test_input($_POST[&quot;name&quot;]);
+        if (!preg_match(&quot;/^[a-zA-Z-' ]*$/&quot;, $name)) {
+            $nameErr = &quot;Solo se permiten letras y espacios en blanco&quot;;
+        }
+    }
+
+    // Validar correo electr&oacute;nico
+    if (empty($_POST[&quot;email&quot;])) {
+        $emailErr = &quot;El correo electr&oacute;nico es requerido&quot;;
+    } else {
+        $email = test_input($_POST[&quot;email&quot;]);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = &quot;Formato de correo electr&oacute;nico inv&aacute;lido&quot;;
+        }
+    }
+
+    // Validar edad
+    if (empty($_POST[&quot;age&quot;])) {
+        $ageErr = &quot;La edad es requerida&quot;;
+    } else {
+        $age = test_input($_POST[&quot;age&quot;]);
+        if (!is_numeric($age) || $age &lt; 0 || $age &gt; 120) {
+            $ageErr = &quot;Edad inv&aacute;lida&quot;;
+        }
+    }
+
+    // Mostrar errores o datos validados
+    if (empty($nameErr) &amp;&amp; empty($emailErr) &amp;&amp; empty($ageErr)) {
+        echo &quot;Nombre: $name&lt;br&gt;&quot;;
+        echo &quot;Correo Electr&oacute;nico: $email&lt;br&gt;&quot;;
+        echo &quot;Edad: $age&lt;br&gt;&quot;;
+    } else {
+        echo &quot;Errores en el formulario:&lt;br&gt;&quot;;
+        echo $nameErr . &quot;&lt;br&gt;&quot;;
+        echo $emailErr . &quot;&lt;br&gt;&quot;;
+        echo $ageErr . &quot;&lt;br&gt;&quot;;
+    }
+}
+?&gt;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Formulario HTML</strong>:</p>
+<ul>
+<li>El formulario envía los datos a <code>process_form.php</code> usando el método POST.</li>
+</ul>
+</li>
+<li>
+<p><strong>Archivo PHP (<code>process_form.php</code>)</strong>:</p>
+<ul>
+<li><strong>Inicialización de Variables</strong>: Se definen variables para almacenar los datos y los mensajes de error.</li>
+<li><strong>Función <code>test_input</code></strong>: Limpia los datos de entrada para eliminar espacios en blanco, barras invertidas y caracteres especiales.</li>
+<li><strong>Validación de Nombre</strong>: Verifica que el nombre no esté vacío y que solo contenga letras y espacios.</li>
+<li><strong>Validación de Correo Electrónico</strong>: Verifica que el correo no esté vacío y que tenga un formato válido.</li>
+<li><strong>Validación de Edad</strong>: Verifica que la edad no esté vacía, sea un número y esté dentro de un rango razonable.</li>
+<li><strong>Mostrar Resultados</strong>: Si no hay errores, muestra los datos validados; de lo contrario, muestra los mensajes de error.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Validar un Formulario de Registro</h2>
+<div class='content'><p>Crea un formulario de registro que incluya los siguientes campos:</p>
+<ul>
+<li>Nombre de usuario</li>
+<li>Contraseña</li>
+<li>Confirmación de contraseña</li>
+<li>Correo electrónico</li>
+<li>Número de teléfono</li>
+</ul>
+<p>Valida los datos ingresados en PHP asegurándote de:</p>
+<ul>
+<li>El nombre de usuario no esté vacío y solo contenga letras y números.</li>
+<li>La contraseña tenga al menos 8 caracteres.</li>
+<li>La confirmación de contraseña coincida con la contraseña.</li>
+<li>El correo electrónico tenga un formato válido.</li>
+<li>El número de teléfono solo contenga dígitos y tenga una longitud de 10 dígitos.</li>
+</ul>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKLy8gRGVmaW5pciB2YXJpYWJsZXMgeSBlc3RhYmxlY2VyIHZhbG9yZXMgdmFjw61vcwokdXNlcm5hbWUgPSAkcGFzc3dvcmQgPSAkY29uZmlybV9wYXNzd29yZCA9ICRlbWFpbCA9ICRwaG9uZSA9ICIiOwokdXNlcm5hbWVFcnIgPSAkcGFzc3dvcmRFcnIgPSAkY29uZmlybV9wYXNzd29yZEVyciA9ICRlbWFpbEVyciA9ICRwaG9uZUVyciA9ICIiOwoKLy8gRnVuY2nDs24gcGFyYSBsaW1waWFyIGRhdG9zCmZ1bmN0aW9uIHRlc3RfaW5wdXQoJGRhdGEpIHsKICAgICRkYXRhID0gdHJpbSgkZGF0YSk7CiAgICAkZGF0YSA9IHN0cmlwc2xhc2hlcygkZGF0YSk7CiAgICAkZGF0YSA9IGh0bWxzcGVjaWFsY2hhcnMoJGRhdGEpOwogICAgcmV0dXJuICRkYXRhOwp9CgppZiAoJF9TRVJWRVJbIlJFUVVFU1RfTUVUSE9EIl0gPT0gIlBPU1QiKSB7CiAgICAvLyBWYWxpZGFyIG5vbWJyZSBkZSB1c3VhcmlvCiAgICBpZiAoZW1wdHkoJF9QT1NUWyJ1c2VybmFtZSJdKSkgewogICAgICAgICR1c2VybmFtZUVyciA9ICJFbCBub21icmUgZGUgdXN1YXJpbyBlcyByZXF1ZXJpZG8iOwogICAgfSBlbHNlIHsKICAgICAgICAkdXNlcm5hbWUgPSB0ZXN0X2lucHV0KCRfUE9TVFsidXNlcm5hbWUiXSk7CiAgICAgICAgaWYgKCFwcmVnX21hdGNoKCIvXlthLXpBLVowLTldKiQvIiwgJHVzZXJuYW1lKSkgewogICAgICAgICAgICAkdXNlcm5hbWVFcnIgPSAiU29sbyBzZSBwZXJtaXRlbiBsZXRyYXMgeSBuw7ptZXJvcyI7CiAgICAgICAgfQogICAgfQoKICAgIC8vIFZhbGlkYXIgY29udHJhc2XDsWEKICAgIGlmIChlbXB0eSgkX1BPU1RbInBhc3N3b3JkIl0pKSB7CiAgICAgICAgJHBhc3N3b3JkRXJyID0gIkxhIGNvbnRyYXNlw7FhIGVzIHJlcXVlcmlkYSI7CiAgICB9IGVsc2UgewogICAgICAgICRwYXNzd29yZCA9IHRlc3RfaW5wdXQoJF9QT1NUWyJwYXNzd29yZCJdKTsKICAgICAgICBpZiAoc3RybGVuKCRwYXNzd29yZCkgPCA4KSB7CiAgICAgICAgICAgICRwYXNzd29yZEVyciA9ICJMYSBjb250cmFzZcOxYSBkZWJlIHRlbmVyIGFsIG1lbm9zIDggY2FyYWN0ZXJlcyI7CiAgICAgICAgfQogICAgfQoKICAgIC8vIFZhbGlkYXIgY29uZmlybWFjacOzbiBkZSBjb250cmFzZcOxYQogICAgaWYgKGVtcHR5KCRfUE9TVFsiY29uZmlybV9wYXNzd29yZCJdKSkgewogICAgICAgICRjb25maXJtX3Bhc3N3b3JkRXJyID0gIkxhIGNvbmZpcm1hY2nDs24gZGUgY29udHJhc2XDsWEgZXMgcmVxdWVyaWRhIjsKICAgIH0gZWxzZSB7CiAgICAgICAgJGNvbmZpcm1fcGFzc3dvcmQgPSB0ZXN0X2lucHV0KCRfUE9TVFsiY29uZmlybV9wYXNzd29yZCJdKTsKICAgICAgICBpZiAoJGNvbmZpcm1fcGFzc3dvcmQgIT09ICRwYXNzd29yZCkgewogICAgICAgICAgICAkY29uZmlybV9wYXNzd29yZEVyciA9ICJMYXMgY29udHJhc2XDsWFzIG5vIGNvaW5jaWRlbiI7CiAgICAgICAgfQogICAgfQoKICAgIC8vIFZhbGlkYXIgY29ycmVvIGVsZWN0csOzbmljbwogICAgaWYgKGVtcHR5KCRfUE9TVFsiZW1haWwiXSkpIHsKICAgICAgICAkZW1haWxFcnIgPSAiRWwgY29ycmVvIGVsZWN0csOzbmljbyBlcyByZXF1ZXJpZG8iOwogICAgfSBlbHNlIHsKICAgICAgICAkZW1haWwgPSB0ZXN0X2lucHV0KCRfUE9TVFsiZW1haWwiXSk7CiAgICAgICAgaWYgKCFmaWx0ZXJfdmFyKCRlbWFpbCwgRklMVEVSX1ZBTElEQVRFX0VNQUlMKSkgewogICAgICAgICAgICAkZW1haWxFcnIgPSAiRm9ybWF0byBkZSBjb3JyZW8gZWxlY3Ryw7NuaWNvIGludsOhbGlkbyI7CiAgICAgICAgfQogICAgfQoKICAgIC8vIFZhbGlkYXIgbsO6bWVybyBkZSB0ZWzDqWZvbm8KICAgIGlmIChlbXB0eSgkX1BPU1RbInBob25lIl0pKSB7CiAgICAgICAgJHBob25lRXJyID0gIkVsIG7Dum1lcm8gZGUgdGVsw6lmb25vIGVzIHJlcXVlcmlkbyI7CiAgICB9IGVsc2UgewogICAgICAgICRwaG9uZSA9IHRlc3RfaW5wdXQoJF9QT1NUWyJwaG9uZSJdKTsKICAgICAgICBpZiAoIXByZWdfbWF0Y2goIi9eWzAtOV17MTB9JC8iLCAkcGhvbmUpKSB7CiAgICAgICAgICAgICRwaG9uZUVyciA9ICJFbCBuw7ptZXJvIGRlIHRlbMOpZm9ubyBkZWJlIHRlbmVyIDEwIGTDrWdpdG9zIjsKICAgICAgICB9CiAgICB9CgogICAgLy8gTW9zdHJhciBlcnJvcmVzIG8gZGF0b3MgdmFsaWRhZG9zCiAgICBpZiAoZW1wdHkoJHVzZXJuYW1lRXJyKSAmJiBlbXB0eSgkcGFzc3dvcmRFcnIpICYmIGVtcHR5KCRjb25maXJtX3Bhc3N3b3JkRXJyKSAmJiBlbXB0eSgkZW1haWxFcnIpICYmIGVtcHR5KCRwaG9uZUVycikpIHsKICAgICAgICBlY2hvICJOb21icmUgZGUgVXN1YXJpbzogJHVzZXJuYW1lPGJyPiI7CiAgICAgICAgZWNobyAiQ29ycmVvIEVsZWN0csOzbmljbzogJGVtYWlsPGJyPiI7CiAgICAgICAgZWNobyAiTsO6bWVybyBkZSBUZWzDqWZvbm86ICRwaG9uZTxicj4iOwogICAgfSBlbHNlIHsKICAgICAgICBlY2hvICJFcnJvcmVzIGVuIGVsIGZvcm11bGFyaW86PGJyPiI7CiAgICAgICAgZWNobyAkdXNlcm5hbWVFcnIgLiAiPGJyPiI7CiAgICAgICAgZWNobyAkcGFzc3dvcmRFcnIgLiAiPGJyPiI7CiAgICAgICAgZWNobyAkY29uZmlybV9wYXNzd29yZEVyciAuICI8YnI+IjsKICAgICAgICBlY2hvICRlbWFpbEVyciAuICI8YnI+IjsKICAgICAgICBlY2hvICRwaG9uZUVyciAuICI8YnI+IjsKICAgIH0KfQo/Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+// Definir variables y establecer valores vac&iacute;os
+$username = $password = $confirm_password = $email = $phone = &quot;&quot;;
+$usernameErr = $passwordErr = $confirm_passwordErr = $emailErr = $phoneErr = &quot;&quot;;
+
+// Funci&oacute;n para limpiar datos
+function test_input($data) {
+    $data = trim($data);
+    $data = stripslashes($data);
+    $data = htmlspecialchars($data);
+    return $data;
+}
+
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    // Validar nombre de usuario
+    if (empty($_POST[&quot;username&quot;])) {
+        $usernameErr = &quot;El nombre de usuario es requerido&quot;;
+    } else {
+        $username = test_input($_POST[&quot;username&quot;]);
+        if (!preg_match(&quot;/^[a-zA-Z0-9]*$/&quot;, $username)) {
+            $usernameErr = &quot;Solo se permiten letras y n&uacute;meros&quot;;
+        }
+    }
+
+    // Validar contrase&ntilde;a
+    if (empty($_POST[&quot;password&quot;])) {
+        $passwordErr = &quot;La contrase&ntilde;a es requerida&quot;;
+    } else {
+        $password = test_input($_POST[&quot;password&quot;]);
+        if (strlen($password) &lt; 8) {
+            $passwordErr = &quot;La contrase&ntilde;a debe tener al menos 8 caracteres&quot;;
+        }
+    }
+
+    // Validar confirmaci&oacute;n de contrase&ntilde;a
+    if (empty($_POST[&quot;confirm_password&quot;])) {
+        $confirm_passwordErr = &quot;La confirmaci&oacute;n de contrase&ntilde;a es requerida&quot;;
+    } else {
+        $confirm_password = test_input($_POST[&quot;confirm_password&quot;]);
+        if ($confirm_password !== $password) {
+            $confirm_passwordErr = &quot;Las contrase&ntilde;as no coinciden&quot;;
+        }
+    }
+
+    // Validar correo electr&oacute;nico
+    if (empty($_POST[&quot;email&quot;])) {
+        $emailErr = &quot;El correo electr&oacute;nico es requerido&quot;;
+    } else {
+        $email = test_input($_POST[&quot;email&quot;]);
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $emailErr = &quot;Formato de correo electr&oacute;nico inv&aacute;lido&quot;;
+        }
+    }
+
+    // Validar n&uacute;mero de tel&eacute;fono
+    if (empty($_POST[&quot;phone&quot;])) {
+        $phoneErr = &quot;El n&uacute;mero de tel&eacute;fono es requerido&quot;;
+    } else {
+        $phone = test_input($_POST[&quot;phone&quot;]);
+        if (!preg_match(&quot;/^[0-9]{10}$/&quot;, $phone)) {
+            $phoneErr = &quot;El n&uacute;mero de tel&eacute;fono debe tener 10 d&iacute;gitos&quot;;
+        }
+    }
+
+    // Mostrar errores o datos validados
+    if (empty($usernameErr) &amp;&amp; empty($passwordErr) &amp;&amp; empty($confirm_passwordErr) &amp;&amp; empty($emailErr) &amp;&amp; empty($phoneErr)) {
+        echo &quot;Nombre de Usuario: $username&lt;br&gt;&quot;;
+        echo &quot;Correo Electr&oacute;nico: $email&lt;br&gt;&quot;;
+        echo &quot;N&uacute;mero de Tel&eacute;fono: $phone&lt;br&gt;&quot;;
+    } else {
+        echo &quot;Errores en el formulario:&lt;br&gt;&quot;;
+        echo $usernameErr . &quot;&lt;br&gt;&quot;;
+        echo $passwordErr . &quot;&lt;br&gt;&quot;;
+        echo $confirm_passwordErr . &quot;&lt;br&gt;&quot;;
+        echo $emailErr . &quot;&lt;br&gt;&quot;;
+        echo $phoneErr . &quot;&lt;br&gt;&quot;;
+    }
+}
+?&gt;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La validación de formularios es esencial para asegurar la integridad y seguridad de los datos ingresados por los usuarios. En este módulo, hemos aprendido cómo validar diferentes tipos de datos en PHP y cómo manejar errores de validación. La práctica constante y la implementación de validaciones robustas son clave para desarrollar aplicaciones web seguras y confiables.</p>
+<p>En el próximo módulo, exploraremos cómo manejar la subida de archivos en PHP, un aspecto importante para muchas aplicaciones web.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-handling-form-data' title="Manejo de Datos de Formularios">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-file-uploads' title="Subida de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expresiones condicionales</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/06-04-conditional-expressions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/06-04-conditional-expressions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/06-04-conditional-expressions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sql/06-04-conditional-expressions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/06-04-conditional-expressions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-date-time-functions' title="Funciones de fecha y hora">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Expresiones condicionales</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-introduction-subqueries' title="Introducción a subconsultas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las expresiones condicionales en SQL permiten realizar operaciones basadas en condiciones específicas. Estas expresiones son útiles para tomar decisiones dentro de una consulta y pueden simplificar la lógica de tus consultas SQL. En este tema, cubriremos las siguientes expresiones condicionales:</p>
+<ol>
+<li><strong>CASE</strong></li>
+<li><strong>IF</strong></li>
+<li><strong>COALESCE</strong></li>
+<li><strong>NULLIF</strong></li>
+</ol>
+</div><h1>1. CASE</h1>
+<div class='content'><p>La expresión <code>CASE</code> es una estructura de control que permite evaluar una lista de condiciones y devolver un valor específico cuando se cumple la primera condición verdadera.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q0FTRQogICAgV0hFTiBjb25kaXRpb24xIFRIRU4gcmVzdWx0MQogICAgV0hFTiBjb25kaXRpb24yIFRIRU4gcmVzdWx0MgogICAgLi4uCiAgICBFTFNFIHJlc3VsdE4KRU5E"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CASE
+    WHEN condition1 THEN result1
+    WHEN condition2 THEN result2
+    ...
+    ELSE resultN
+END</pre></div><div class='content'></div><h2>Ejemplo</h2>
+<div class='content'><p>Supongamos que tenemos una tabla <code>employees</code> con las siguientes columnas: <code>employee_id</code>, <code>name</code>, <code>salary</code>, y <code>department_id</code>. Queremos clasificar a los empleados según su salario.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIG5hbWUsCiAgICBzYWxhcnksCiAgICBDQVNFCiAgICAgICAgV0hFTiBzYWxhcnkgPiAxMDAwMDAgVEhFTiAnSGlnaCcKICAgICAgICBXSEVOIHNhbGFyeSBCRVRXRUVOIDUwMDAwIEFORCAxMDAwMDAgVEhFTiAnTWVkaXVtJwogICAgICAgIEVMU0UgJ0xvdycKICAgIEVORCBBUyBzYWxhcnlfY2F0ZWdvcnkKRlJPTSBlbXBsb3llZXM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    name,
+    salary,
+    CASE
+        WHEN salary &gt; 100000 THEN 'High'
+        WHEN salary BETWEEN 50000 AND 100000 THEN 'Medium'
+        ELSE 'Low'
+    END AS salary_category
+FROM employees;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>CASE</code> evalúa cada condición en orden.</li>
+<li>Si <code>salary</code> es mayor que 100000, devuelve 'High'.</li>
+<li>Si <code>salary</code> está entre 50000 y 100000, devuelve 'Medium'.</li>
+<li>Si ninguna de las condiciones anteriores se cumple, devuelve 'Low'.</li>
+</ul>
+</div><h1>2. IF</h1>
+<div class='content'><p>La función <code>IF</code> es una expresión condicional que devuelve un valor si una condición es verdadera y otro valor si es falsa. Es más común en MySQL.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SUYoY29uZGl0aW9uLCB2YWx1ZV9pZl90cnVlLCB2YWx1ZV9pZl9mYWxzZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>IF(condition, value_if_true, value_if_false)</pre></div><div class='content'></div><h2>Ejemplo</h2>
+<div class='content'><p>Queremos etiquetar a los empleados como 'Senior' si su salario es mayor a 80000, de lo contrario, 'Junior'.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIG5hbWUsCiAgICBzYWxhcnksCiAgICBJRihzYWxhcnkgPiA4MDAwMCwgJ1NlbmlvcicsICdKdW5pb3InKSBBUyBwb3NpdGlvbgpGUk9NIGVtcGxveWVlczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    name,
+    salary,
+    IF(salary &gt; 80000, 'Senior', 'Junior') AS position
+FROM employees;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>IF</code> evalúa la condición <code>salary &gt; 80000</code>.</li>
+<li>Si la condición es verdadera, devuelve 'Senior'.</li>
+<li>Si la condición es falsa, devuelve 'Junior'.</li>
+</ul>
+</div><h1>3. COALESCE</h1>
+<div class='content'><p>La función <code>COALESCE</code> devuelve el primer valor no nulo de una lista de expresiones.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q09BTEVTQ0UoZXhwcmVzc2lvbjEsIGV4cHJlc3Npb24yLCAuLi4sIGV4cHJlc3Npb25OKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>COALESCE(expression1, expression2, ..., expressionN)</pre></div><div class='content'></div><h2>Ejemplo</h2>
+<div class='content'><p>Queremos mostrar el nombre del departamento de los empleados, pero si el nombre del departamento es nulo, mostrar 'Unknown'.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIG5hbWUsCiAgICBzYWxhcnksCiAgICBDT0FMRVNDRShkZXBhcnRtZW50X25hbWUsICdVbmtub3duJykgQVMgZGVwYXJ0bWVudF9uYW1lCkZST00gZW1wbG95ZWVzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    name,
+    salary,
+    COALESCE(department_name, 'Unknown') AS department_name
+FROM employees;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>COALESCE</code> evalúa cada expresión en orden.</li>
+<li>Devuelve el primer valor no nulo encontrado.</li>
+<li>Si <code>department_name</code> es nulo, devuelve 'Unknown'.</li>
+</ul>
+</div><h1>4. NULLIF</h1>
+<div class='content'><p>La función <code>NULLIF</code> compara dos expresiones y devuelve <code>NULL</code> si son iguales; de lo contrario, devuelve la primera expresión.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlVMTElGKGV4cHJlc3Npb24xLCBleHByZXNzaW9uMik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NULLIF(expression1, expression2)</pre></div><div class='content'></div><h2>Ejemplo</h2>
+<div class='content'><p>Queremos evitar mostrar el salario como 0, en su lugar, mostrar <code>NULL</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIG5hbWUsCiAgICBOVUxMSUYoc2FsYXJ5LCAwKSBBUyBzYWxhcnkKRlJPTSBlbXBsb3llZXM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    name,
+    NULLIF(salary, 0) AS salary
+FROM employees;</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>NULLIF</code> compara <code>salary</code> con 0.</li>
+<li>Si <code>salary</code> es 0, devuelve <code>NULL</code>.</li>
+<li>Si <code>salary</code> no es 0, devuelve el valor de <code>salary</code>.</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1</h2>
+<div class='content'><p>Dada la tabla <code>students</code> con las columnas <code>student_id</code>, <code>name</code>, y <code>grade</code>, clasifica a los estudiantes en 'Pass' o 'Fail' según su calificación. Una calificación mayor o igual a 50 es 'Pass', de lo contrario, 'Fail'.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBzdHVkZW50X2lkLAogICAgbmFtZSwKICAgIGdyYWRlLAogICAgQ0FTRQogICAgICAgIFdIRU4gZ3JhZGUgPj0gNTAgVEhFTiAnUGFzcycKICAgICAgICBFTFNFICdGYWlsJwogICAgRU5EIEFTIHJlc3VsdApGUk9NIHN0dWRlbnRzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    student_id,
+    name,
+    grade,
+    CASE
+        WHEN grade &gt;= 50 THEN 'Pass'
+        ELSE 'Fail'
+    END AS result
+FROM students;</pre></div><div class='content'></div><h2>Ejercicio 2</h2>
+<div class='content'><p>Usa la función <code>COALESCE</code> para mostrar el nombre del supervisor de los empleados. Si el nombre del supervisor es nulo, muestra 'No Supervisor'.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIG5hbWUsCiAgICBDT0FMRVNDRShzdXBlcnZpc29yX25hbWUsICdObyBTdXBlcnZpc29yJykgQVMgc3VwZXJ2aXNvcl9uYW1lCkZST00gZW1wbG95ZWVzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    name,
+    COALESCE(supervisor_name, 'No Supervisor') AS supervisor_name
+FROM employees;</pre></div><div class='content'></div><h2>Ejercicio 3</h2>
+<div class='content'><p>Utiliza la función <code>NULLIF</code> para evitar mostrar el valor 0 en la columna <code>bonus</code>. Si el valor es 0, debe mostrarse como <code>NULL</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIG5hbWUsCiAgICBOVUxMSUYoYm9udXMsIDApIEFTIGJvbnVzCkZST00gZW1wbG95ZWVzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    name,
+    NULLIF(bonus, 0) AS bonus
+FROM employees;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Las expresiones condicionales en SQL son herramientas poderosas que permiten realizar operaciones basadas en condiciones específicas. En este módulo, hemos cubierto las expresiones <code>CASE</code>, <code>IF</code>, <code>COALESCE</code> y <code>NULLIF</code>, proporcionando ejemplos prácticos y ejercicios para reforzar los conceptos aprendidos. Con estas herramientas, puedes escribir consultas más dinámicas y adaptativas, mejorando la flexibilidad y funcionalidad de tus bases de datos SQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-date-time-functions' title="Funciones de fecha y hora">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-introduction-subqueries' title="Introducción a subconsultas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

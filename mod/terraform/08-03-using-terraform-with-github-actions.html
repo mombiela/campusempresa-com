@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de Terraform con GitHub Actions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/08-03-using-terraform-with-github-actions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/08-03-using-terraform-with-github-actions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/08-03-using-terraform-with-github-actions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/terraform/08-03-using-terraform-with-github-actions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/08-03-using-terraform-with-github-actions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-automating-terraform-with-jenkins' title="Automatización de Terraform con Jenkins">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Uso de Terraform con GitHub Actions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-terraform-cloud-and-enterprise' title="Terraform Cloud y Enterprise">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo integrar Terraform con GitHub Actions para automatizar el despliegue de infraestructura como código (IaC). GitHub Actions es una plataforma de CI/CD que permite automatizar flujos de trabajo directamente desde tu repositorio de GitHub.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Entender los conceptos básicos de GitHub Actions.</li>
+<li>Configurar un flujo de trabajo de GitHub Actions para ejecutar Terraform.</li>
+<li>Implementar un pipeline de CI/CD para desplegar infraestructura con Terraform.</li>
+</ul>
+</div><h1>Conceptos Básicos de GitHub Actions</h1>
+<div class='content'><p>GitHub Actions permite crear flujos de trabajo personalizados que se ejecutan en respuesta a eventos en tu repositorio de GitHub. Los componentes clave son:</p>
+<ul>
+<li><strong>Workflows (Flujos de trabajo):</strong> Definiciones de procesos automatizados que se ejecutan en respuesta a eventos.</li>
+<li><strong>Jobs (Trabajos):</strong> Un conjunto de pasos que se ejecutan en un mismo entorno.</li>
+<li><strong>Steps (Pasos):</strong> Tareas individuales que se ejecutan como parte de un trabajo.</li>
+<li><strong>Actions (Acciones):</strong> Comandos o scripts que se ejecutan en los pasos.</li>
+</ul>
+</div><h1>Configuración del Flujo de Trabajo</h1>
+<div class='content'></div><h2>Paso 1: Crear un Repositorio de GitHub</h2>
+<div class='content'><ol>
+<li>Ve a GitHub y crea un nuevo repositorio.</li>
+<li>Clona el repositorio en tu máquina local.</li>
+</ol>
+</div><h2>Paso 2: Crear un Archivo de Flujo de Trabajo</h2>
+<div class='content'><ol>
+<li>En tu repositorio, crea un directorio <code>.github/workflows</code>.</li>
+<li>Dentro de este directorio, crea un archivo YAML, por ejemplo, <code>terraform.yml</code>.</li>
+</ol>
+</div><h2>Ejemplo de Archivo YAML</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmFtZTogVGVycmFmb3JtIENJL0NECgpvbjoKICBwdXNoOgogICAgYnJhbmNoZXM6CiAgICAgIC0gbWFpbgogIHB1bGxfcmVxdWVzdDoKICAgIGJyYW5jaGVzOgogICAgICAtIG1haW4KCmpvYnM6CiAgdGVycmFmb3JtOgogICAgcnVucy1vbjogdWJ1bnR1LWxhdGVzdAoKICAgIHN0ZXBzOgogICAgLSBuYW1lOiBDaGVja291dCBjb2RlCiAgICAgIHVzZXM6IGFjdGlvbnMvY2hlY2tvdXRAdjIKCiAgICAtIG5hbWU6IFNldHVwIFRlcnJhZm9ybQogICAgICB1c2VzOiBoYXNoaWNvcnAvc2V0dXAtdGVycmFmb3JtQHYxCiAgICAgIHdpdGg6CiAgICAgICAgdGVycmFmb3JtX3ZlcnNpb246IDEuMC4wCgogICAgLSBuYW1lOiBUZXJyYWZvcm0gSW5pdAogICAgICBydW46IHRlcnJhZm9ybSBpbml0CgogICAgLSBuYW1lOiBUZXJyYWZvcm0gUGxhbgogICAgICBydW46IHRlcnJhZm9ybSBwbGFuCgogICAgLSBuYW1lOiBUZXJyYWZvcm0gQXBwbHkKICAgICAgaWY6IGdpdGh1Yi5yZWYgPT0gJ3JlZnMvaGVhZHMvbWFpbicKICAgICAgcnVuOiB0ZXJyYWZvcm0gYXBwbHkgLWF1dG8tYXBwcm92ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>name: Terraform CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Plan
+      run: terraform plan
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/main'
+      run: terraform apply -auto-approve</pre></div><div class='content'></div><h2>Explicación del Archivo YAML</h2>
+<div class='content'><ul>
+<li><strong>name:</strong> Nombre del flujo de trabajo.</li>
+<li><strong>on:</strong> Eventos que desencadenan el flujo de trabajo (<code>push</code> y <code>pull_request</code> en la rama <code>main</code>).</li>
+<li><strong>jobs:</strong> Define los trabajos que se ejecutarán.
+<ul>
+<li><strong>runs-on:</strong> Especifica el sistema operativo del entorno de ejecución (<code>ubuntu-latest</code>).</li>
+<li><strong>steps:</strong> Lista de pasos a ejecutar.
+<ul>
+<li><strong>Checkout code:</strong> Usa la acción <code>actions/checkout@v2</code> para clonar el repositorio.</li>
+<li><strong>Setup Terraform:</strong> Usa la acción <code>hashicorp/setup-terraform@v1</code> para instalar Terraform.</li>
+<li><strong>Terraform Init:</strong> Ejecuta <code>terraform init</code> para inicializar el directorio de trabajo.</li>
+<li><strong>Terraform Plan:</strong> Ejecuta <code>terraform plan</code> para crear un plan de ejecución.</li>
+<li><strong>Terraform Apply:</strong> Ejecuta <code>terraform apply -auto-approve</code> para aplicar los cambios, solo si la rama es <code>main</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar y Ejecutar un Flujo de Trabajo Básico</h2>
+<div class='content'><ol>
+<li>Crea un archivo <code>main.tf</code> en el directorio raíz de tu repositorio con el siguiente contenido:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvdmlkZXIgImF3cyIgewogIHJlZ2lvbiA9ICJ1cy13ZXN0LTIiCn0KCnJlc291cmNlICJhd3NfczNfYnVja2V0IiAiZXhhbXBsZSIgewogIGJ1Y2tldCA9ICJteS11bmlxdWUtYnVja2V0LW5hbWUtMTIzNDUiCiAgYWNsICAgID0gInByaXZhdGUiCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>provider &quot;aws&quot; {
+  region = &quot;us-west-2&quot;
+}
+
+resource &quot;aws_s3_bucket&quot; &quot;example&quot; {
+  bucket = &quot;my-unique-bucket-name-12345&quot;
+  acl    = &quot;private&quot;
+}</pre></div><div class='content'><ol start="2">
+<li>Añade y comete los cambios en tu repositorio:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGFkZCAuCmdpdCBjb21taXQgLW0gIkFkZCBUZXJyYWZvcm0gY29uZmlndXJhdGlvbiIKZ2l0IHB1c2ggb3JpZ2luIG1haW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git add .
+git commit -m &quot;Add Terraform configuration&quot;
+git push origin main</pre></div><div class='content'><ol start="3">
+<li>Ve a la pestaña &quot;Actions&quot; en tu repositorio de GitHub para ver el flujo de trabajo en acción.</li>
+</ol>
+</div><h2>Solución del Ejercicio</h2>
+<div class='content'><p>Si todo está configurado correctamente, deberías ver que el flujo de trabajo se ejecuta y despliega la infraestructura definida en <code>main.tf</code>.</p>
+</div><h1>Retroalimentación y Consejos</h1>
+<div class='content'><ul>
+<li>
+<p><strong>Errores Comunes:</strong></p>
+<ul>
+<li><strong>Error de Autenticación:</strong> Asegúrate de que tus credenciales de AWS estén configuradas correctamente en GitHub Secrets.</li>
+<li><strong>Errores de Sintaxis:</strong> Verifica que tu archivo YAML no tenga errores de sintaxis.</li>
+<li><strong>Permisos Insuficientes:</strong> Asegúrate de que la cuenta de GitHub tenga los permisos necesarios para ejecutar acciones.</li>
+</ul>
+</li>
+<li>
+<p><strong>Consejos Adicionales:</strong></p>
+<ul>
+<li><strong>Usa Variables de Entorno:</strong> Almacena las credenciales y otros datos sensibles en GitHub Secrets y accede a ellos en tu flujo de trabajo.</li>
+<li><strong>Pruebas en Ramas de Desarrollo:</strong> Ejecuta <code>terraform plan</code> en ramas de desarrollo antes de aplicar cambios en la rama <code>main</code>.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, aprendiste cómo integrar Terraform con GitHub Actions para automatizar el despliegue de infraestructura. Configuraste un flujo de trabajo básico que ejecuta comandos de Terraform en respuesta a eventos en tu repositorio. Esta integración te permite implementar un pipeline de CI/CD eficiente y seguro para gestionar tu infraestructura como código.</p>
+<p>En el siguiente tema, exploraremos cómo utilizar Terraform Cloud y Enterprise para mejorar aún más la gestión y el despliegue de tu infraestructura.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-automating-terraform-with-jenkins' title="Automatización de Terraform con Jenkins">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-terraform-cloud-and-enterprise' title="Terraform Cloud y Enterprise">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

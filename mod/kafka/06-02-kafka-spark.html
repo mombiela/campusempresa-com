@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka con Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/06-02-kafka-spark" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/06-02-kafka-spark" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/06-02-kafka-spark" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kafka/06-02-kafka-spark" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/06-02-kafka-spark" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-kafka-hadoop' title="Kafka con Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka con Spark</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-kafka-flink' title="Kafka con Flink">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, exploraremos cómo integrar Apache Kafka con Apache Spark para procesar flujos de datos en tiempo real. Esta combinación es poderosa para construir aplicaciones de procesamiento de datos en tiempo real que pueden manejar grandes volúmenes de datos con baja latencia.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender la integración entre Kafka y Spark.</li>
+<li>Configurar un entorno para trabajar con Kafka y Spark.</li>
+<li>Implementar un ejemplo práctico de procesamiento de datos en tiempo real utilizando Kafka y Spark.</li>
+<li>Realizar ejercicios prácticos para reforzar los conceptos aprendidos.</li>
+</ul>
+</div><h1>1. Introducción a la Integración Kafka-Spark</h1>
+<div class='content'></div><h2>¿Por qué Integrar Kafka con Spark?</h2>
+<div class='content'><ul>
+<li><strong>Procesamiento en Tiempo Real</strong>: Spark Streaming permite procesar datos en tiempo real, mientras que Kafka actúa como un sistema de mensajería distribuido que puede manejar grandes volúmenes de datos.</li>
+<li><strong>Escalabilidad</strong>: Ambos sistemas están diseñados para escalar horizontalmente, lo que permite manejar grandes cantidades de datos y usuarios.</li>
+<li><strong>Tolerancia a Fallos</strong>: Kafka y Spark proporcionan mecanismos para la recuperación de fallos, asegurando la continuidad del procesamiento de datos.</li>
+</ul>
+</div><h2>Arquitectura de la Integración</h2>
+<div class='content'><p>La arquitectura típica de una integración Kafka-Spark incluye:</p>
+<ul>
+<li><strong>Kafka Producer</strong>: Publica mensajes en un tema de Kafka.</li>
+<li><strong>Kafka Broker</strong>: Almacena los mensajes y los distribuye a los consumidores.</li>
+<li><strong>Spark Streaming</strong>: Consume los mensajes de Kafka y los procesa en tiempo real.</li>
+<li><strong>Spark Processing</strong>: Realiza operaciones de transformación y acción sobre los datos.</li>
+</ul>
+</div><h1>2. Configuración del Entorno</h1>
+<div class='content'></div><h2>Requisitos Previos</h2>
+<div class='content'><ul>
+<li><strong>Java</strong>: Asegúrate de tener Java instalado en tu sistema.</li>
+<li><strong>Kafka</strong>: Debes tener un clúster de Kafka en funcionamiento.</li>
+<li><strong>Spark</strong>: Instala Apache Spark en tu sistema.</li>
+</ul>
+</div><h2>Instalación de Apache Spark</h2>
+<div class='content'><ol>
+<li><strong>Descargar Spark</strong>:
+<pre><code class="language-sh">wget https://archive.apache.org/dist/spark/spark-3.1.2/spark-3.1.2-bin-hadoop3.2.tgz
+</code></pre>
+</li>
+<li><strong>Extraer el archivo</strong>:
+<pre><code class="language-sh">tar -xvzf spark-3.1.2-bin-hadoop3.2.tgz
+</code></pre>
+</li>
+<li><strong>Configurar las variables de entorno</strong>:
+<pre><code class="language-sh">export SPARK_HOME=~/spark-3.1.2-bin-hadoop3.2
+export PATH=$PATH:$SPARK_HOME/bin
+</code></pre>
+</li>
+</ol>
+</div><h2>Configuración de Kafka</h2>
+<div class='content'><ol>
+<li><strong>Descargar Kafka</strong>:
+<pre><code class="language-sh">wget https://archive.apache.org/dist/kafka/2.8.0/kafka_2.13-2.8.0.tgz
+</code></pre>
+</li>
+<li><strong>Extraer el archivo</strong>:
+<pre><code class="language-sh">tar -xvzf kafka_2.13-2.8.0.tgz
+</code></pre>
+</li>
+<li><strong>Iniciar Zookeeper</strong>:
+<pre><code class="language-sh">cd kafka_2.13-2.8.0
+bin/zookeeper-server-start.sh config/zookeeper.properties
+</code></pre>
+</li>
+<li><strong>Iniciar Kafka</strong>:
+<pre><code class="language-sh">bin/kafka-server-start.sh config/server.properties
+</code></pre>
+</li>
+</ol>
+</div><h1>3. Ejemplo Práctico: Procesamiento de Datos en Tiempo Real</h1>
+<div class='content'></div><h2>Crear un Productor de Kafka</h2>
+<div class='content'><p>Primero, crearemos un productor de Kafka que enviará mensajes a un tema.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBrYWZrYSBpbXBvcnQgS2Fma2FQcm9kdWNlcgppbXBvcnQganNvbgppbXBvcnQgdGltZQoKcHJvZHVjZXIgPSBLYWZrYVByb2R1Y2VyKGJvb3RzdHJhcF9zZXJ2ZXJzPSdsb2NhbGhvc3Q6OTA5MicsCiAgICAgICAgICAgICAgICAgICAgICAgICB2YWx1ZV9zZXJpYWxpemVyPWxhbWJkYSB2OiBqc29uLmR1bXBzKHYpLmVuY29kZSgndXRmLTgnKSkKCmZvciBpIGluIHJhbmdlKDEwMCk6CiAgICBkYXRhID0geydudW1iZXInOiBpfQogICAgcHJvZHVjZXIuc2VuZCgnbnVtYmVycycsIHZhbHVlPWRhdGEpCiAgICB0aW1lLnNsZWVwKDEpCgpwcm9kdWNlci5mbHVzaCgpCnByb2R1Y2VyLmNsb3NlKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from kafka import KafkaProducer
+import json
+import time
+
+producer = KafkaProducer(bootstrap_servers='localhost:9092',
+                         value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+
+for i in range(100):
+    data = {'number': i}
+    producer.send('numbers', value=data)
+    time.sleep(1)
+
+producer.flush()
+producer.close()</pre></div><div class='content'></div><h2>Crear un Consumidor de Spark</h2>
+<div class='content'><p>Ahora, crearemos una aplicación de Spark Streaming que consumirá los mensajes de Kafka y los procesará.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrLnNxbCBpbXBvcnQgU3BhcmtTZXNzaW9uCmZyb20gcHlzcGFyay5zcWwuZnVuY3Rpb25zIGltcG9ydCBmcm9tX2pzb24sIGNvbApmcm9tIHB5c3Bhcmsuc3FsLnR5cGVzIGltcG9ydCBTdHJ1Y3RUeXBlLCBTdHJ1Y3RGaWVsZCwgSW50ZWdlclR5cGUKCiMgQ3JlYXIgdW5hIHNlc2nDs24gZGUgU3BhcmsKc3BhcmsgPSBTcGFya1Nlc3Npb24uYnVpbGRlciBcCiAgICAuYXBwTmFtZSgiS2Fma2FTcGFya0ludGVncmF0aW9uIikgXAogICAgLmdldE9yQ3JlYXRlKCkKCiMgRGVmaW5pciBlbCBlc3F1ZW1hIGRlIGxvcyBkYXRvcwpzY2hlbWEgPSBTdHJ1Y3RUeXBlKFtTdHJ1Y3RGaWVsZCgibnVtYmVyIiwgSW50ZWdlclR5cGUoKSwgVHJ1ZSldKQoKIyBMZWVyIGRhdG9zIGRlIEthZmthCmRmID0gc3BhcmsgXAogICAgLnJlYWRTdHJlYW0gXAogICAgLmZvcm1hdCgia2Fma2EiKSBcCiAgICAub3B0aW9uKCJrYWZrYS5ib290c3RyYXAuc2VydmVycyIsICJsb2NhbGhvc3Q6OTA5MiIpIFwKICAgIC5vcHRpb24oInN1YnNjcmliZSIsICJudW1iZXJzIikgXAogICAgLmxvYWQoKQoKIyBDb252ZXJ0aXIgbG9zIGRhdG9zIGRlIEthZmthIGEgdW4gRGF0YUZyYW1lCmRmID0gZGYuc2VsZWN0RXhwcigiQ0FTVCh2YWx1ZSBBUyBTVFJJTkcpIGFzIGpzb24iKSBcCiAgICAuc2VsZWN0KGZyb21fanNvbihjb2woImpzb24iKSwgc2NoZW1hKS5hbGlhcygiZGF0YSIpKSBcCiAgICAuc2VsZWN0KCJkYXRhLioiKQoKIyBSZWFsaXphciB1bmEgb3BlcmFjacOzbiBkZSBhZ3JlZ2FjacOzbgphZ2dfZGYgPSBkZi5ncm91cEJ5KCJudW1iZXIiKS5jb3VudCgpCgojIEVzY3JpYmlyIGxvcyByZXN1bHRhZG9zIGVuIGxhIGNvbnNvbGEKcXVlcnkgPSBhZ2dfZGYud3JpdGVTdHJlYW0gXAogICAgLm91dHB1dE1vZGUoImNvbXBsZXRlIikgXAogICAgLmZvcm1hdCgiY29uc29sZSIpIFwKICAgIC5zdGFydCgpCgpxdWVyeS5hd2FpdFRlcm1pbmF0aW9uKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark.sql import SparkSession
+from pyspark.sql.functions import from_json, col
+from pyspark.sql.types import StructType, StructField, IntegerType
+
+# Crear una sesi&oacute;n de Spark
+spark = SparkSession.builder \
+    .appName(&quot;KafkaSparkIntegration&quot;) \
+    .getOrCreate()
+
+# Definir el esquema de los datos
+schema = StructType([StructField(&quot;number&quot;, IntegerType(), True)])
+
+# Leer datos de Kafka
+df = spark \
+    .readStream \
+    .format(&quot;kafka&quot;) \
+    .option(&quot;kafka.bootstrap.servers&quot;, &quot;localhost:9092&quot;) \
+    .option(&quot;subscribe&quot;, &quot;numbers&quot;) \
+    .load()
+
+# Convertir los datos de Kafka a un DataFrame
+df = df.selectExpr(&quot;CAST(value AS STRING) as json&quot;) \
+    .select(from_json(col(&quot;json&quot;), schema).alias(&quot;data&quot;)) \
+    .select(&quot;data.*&quot;)
+
+# Realizar una operaci&oacute;n de agregaci&oacute;n
+agg_df = df.groupBy(&quot;number&quot;).count()
+
+# Escribir los resultados en la consola
+query = agg_df.writeStream \
+    .outputMode(&quot;complete&quot;) \
+    .format(&quot;console&quot;) \
+    .start()
+
+query.awaitTermination()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Productor de Kafka</strong>:</p>
+<ul>
+<li>Utilizamos <code>KafkaProducer</code> para enviar mensajes JSON a un tema llamado <code>numbers</code>.</li>
+<li>Los mensajes se envían en un bucle con un retraso de 1 segundo entre cada mensaje.</li>
+</ul>
+</li>
+<li>
+<p><strong>Consumidor de Spark</strong>:</p>
+<ul>
+<li>Creamos una sesión de Spark y definimos el esquema de los datos que esperamos recibir.</li>
+<li>Leemos los datos de Kafka utilizando el formato <code>kafka</code> y especificamos el servidor y el tema.</li>
+<li>Convertimos los datos de Kafka a un DataFrame de Spark.</li>
+<li>Realizamos una operación de agregación para contar la cantidad de veces que aparece cada número.</li>
+<li>Escribimos los resultados en la consola en modo de salida <code>complete</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>4. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Filtrado de Datos</h2>
+<div class='content'><p>Modifica el consumidor de Spark para filtrar los números pares y contar solo los números impares.</p>
+</div><h2>Ejercicio 2: Almacenamiento en HDFS</h2>
+<div class='content'><p>Modifica el consumidor de Spark para almacenar los resultados en HDFS en lugar de la consola.</p>
+</div><h2>Ejercicio 3: Integración con una Base de Datos</h2>
+<div class='content'><p>Modifica el consumidor de Spark para almacenar los resultados en una base de datos SQL.</p>
+</div><h1>Soluciones a los Ejercicios</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBGaWx0cmFyIG7Dum1lcm9zIGltcGFyZXMKZmlsdGVyZWRfZGYgPSBkZi5maWx0ZXIoY29sKCJudW1iZXIiKSAlIDIgIT0gMCkKCiMgUmVhbGl6YXIgdW5hIG9wZXJhY2nDs24gZGUgYWdyZWdhY2nDs24KYWdnX2RmID0gZmlsdGVyZWRfZGYuZ3JvdXBCeSgibnVtYmVyIikuY291bnQoKQoKIyBFc2NyaWJpciBsb3MgcmVzdWx0YWRvcyBlbiBsYSBjb25zb2xhCnF1ZXJ5ID0gYWdnX2RmLndyaXRlU3RyZWFtIFwKICAgIC5vdXRwdXRNb2RlKCJjb21wbGV0ZSIpIFwKICAgIC5mb3JtYXQoImNvbnNvbGUiKSBcCiAgICAuc3RhcnQoKQoKcXVlcnkuYXdhaXRUZXJtaW5hdGlvbigp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Filtrar n&uacute;meros impares
+filtered_df = df.filter(col(&quot;number&quot;) % 2 != 0)
+
+# Realizar una operaci&oacute;n de agregaci&oacute;n
+agg_df = filtered_df.groupBy(&quot;number&quot;).count()
+
+# Escribir los resultados en la consola
+query = agg_df.writeStream \
+    .outputMode(&quot;complete&quot;) \
+    .format(&quot;console&quot;) \
+    .start()
+
+query.awaitTermination()</pre></div><div class='content'></div><h2>Solución al Ejercicio 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBsb3MgcmVzdWx0YWRvcyBlbiBIREZTCnF1ZXJ5ID0gYWdnX2RmLndyaXRlU3RyZWFtIFwKICAgIC5vdXRwdXRNb2RlKCJjb21wbGV0ZSIpIFwKICAgIC5mb3JtYXQoInBhcnF1ZXQiKSBcCiAgICAub3B0aW9uKCJwYXRoIiwgImhkZnM6Ly9sb2NhbGhvc3Q6OTAwMC91c2VyL3NwYXJrL291dHB1dCIpIFwKICAgIC5vcHRpb24oImNoZWNrcG9pbnRMb2NhdGlvbiIsICJoZGZzOi8vbG9jYWxob3N0OjkwMDAvdXNlci9zcGFyay9jaGVja3BvaW50IikgXAogICAgLnN0YXJ0KCkKCnF1ZXJ5LmF3YWl0VGVybWluYXRpb24oKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir los resultados en HDFS
+query = agg_df.writeStream \
+    .outputMode(&quot;complete&quot;) \
+    .format(&quot;parquet&quot;) \
+    .option(&quot;path&quot;, &quot;hdfs://localhost:9000/user/spark/output&quot;) \
+    .option(&quot;checkpointLocation&quot;, &quot;hdfs://localhost:9000/user/spark/checkpoint&quot;) \
+    .start()
+
+query.awaitTermination()</pre></div><div class='content'></div><h2>Solución al Ejercicio 3</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFc2NyaWJpciBsb3MgcmVzdWx0YWRvcyBlbiB1bmEgYmFzZSBkZSBkYXRvcyBTUUwKcXVlcnkgPSBhZ2dfZGYud3JpdGVTdHJlYW0gXAogICAgLm91dHB1dE1vZGUoImNvbXBsZXRlIikgXAogICAgLmZvcm1hdCgiamRiYyIpIFwKICAgIC5vcHRpb24oInVybCIsICJqZGJjOm15c3FsOi8vbG9jYWxob3N0OjMzMDYvc3BhcmtkYiIpIFwKICAgIC5vcHRpb24oImRidGFibGUiLCAibnVtYmVyc19jb3VudCIpIFwKICAgIC5vcHRpb24oInVzZXIiLCAicm9vdCIpIFwKICAgIC5vcHRpb24oInBhc3N3b3JkIiwgInBhc3N3b3JkIikgXAogICAgLnN0YXJ0KCkKCnF1ZXJ5LmF3YWl0VGVybWluYXRpb24oKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Escribir los resultados en una base de datos SQL
+query = agg_df.writeStream \
+    .outputMode(&quot;complete&quot;) \
+    .format(&quot;jdbc&quot;) \
+    .option(&quot;url&quot;, &quot;jdbc:mysql://localhost:3306/sparkdb&quot;) \
+    .option(&quot;dbtable&quot;, &quot;numbers_count&quot;) \
+    .option(&quot;user&quot;, &quot;root&quot;) \
+    .option(&quot;password&quot;, &quot;password&quot;) \
+    .start()
+
+query.awaitTermination()</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido cómo integrar Apache Kafka con Apache Spark para procesar flujos de datos en tiempo real. Hemos configurado un entorno de trabajo, implementado un ejemplo práctico y realizado ejercicios para reforzar los conceptos aprendidos. Esta integración es fundamental para construir aplicaciones de procesamiento de datos en tiempo real que pueden manejar grandes volúmenes de datos con baja latencia.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-kafka-hadoop' title="Kafka con Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-kafka-flink' title="Kafka con Flink">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

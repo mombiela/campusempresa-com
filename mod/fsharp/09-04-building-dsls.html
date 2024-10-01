@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construcción de DSLs</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fsharp/09-04-building-dsls" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fsharp/09-04-building-dsls" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fsharp/09-04-building-dsls" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/fsharp/09-04-building-dsls" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/fsharp/09-04-building-dsls" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-domain-driven-design' title="Diseño Guiado por el Dominio">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Construcción de DSLs</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-web-applications-giraffe' title="Construcción de Aplicaciones Web con Giraffe">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos sobre la construcción de Lenguajes Específicos de Dominio (DSLs) en F#. Un DSL es un lenguaje de programación o especificación dedicado a un dominio particular de problemas, diseñado para ser más eficiente y expresivo en ese dominio que los lenguajes de propósito general.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender qué es un DSL y sus beneficios.</li>
+<li>Aprender a diseñar y construir DSLs internos y externos en F#.</li>
+<li>Implementar un DSL simple y práctico.</li>
+</ul>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-los-dsls">Introducción a los DSLs</a></li>
+<li><a href="#dsls-internos-vs-externos">DSLs Internos vs Externos</a></li>
+<li><a href="#construcción-de-un-dsl-interno">Construcción de un DSL Interno</a></li>
+<li><a href="#construcción-de-un-dsl-externo">Construcción de un DSL Externo</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción a los DSLs</h1>
+<div class='content'></div><h2>¿Qué es un DSL?</h2>
+<div class='content'><p>Un DSL (Domain-Specific Language) es un lenguaje diseñado para un dominio específico. A diferencia de los lenguajes de propósito general como F#, un DSL está optimizado para tareas específicas, lo que puede hacer que el código sea más legible y fácil de mantener.</p>
+</div><h2>Beneficios de los DSLs</h2>
+<div class='content'><ul>
+<li><strong>Expresividad</strong>: Permiten expresar soluciones de manera más natural y concisa.</li>
+<li><strong>Mantenibilidad</strong>: Facilitan la comprensión y modificación del código.</li>
+<li><strong>Productividad</strong>: Aumentan la eficiencia en el desarrollo de soluciones específicas.</li>
+</ul>
+</div><h1>DSLs Internos vs Externos</h1>
+<div class='content'></div><h2>DSLs Internos</h2>
+<div class='content'><p>Un DSL interno (o embebido) es un DSL que se construye utilizando las características de un lenguaje de propósito general. En F#, esto significa aprovechar la sintaxis y las capacidades del lenguaje para crear un DSL.</p>
+</div><h2>DSLs Externos</h2>
+<div class='content'><p>Un DSL externo es un lenguaje completamente separado que requiere su propio analizador sintáctico y traductor. Estos DSLs suelen ser más complejos de implementar pero pueden ofrecer una mayor flexibilidad y control.</p>
+</div><h1>Construcción de un DSL Interno</h1>
+<div class='content'></div><h2>Paso 1: Definir el Dominio</h2>
+<div class='content'><p>Primero, debemos identificar el dominio y las operaciones que queremos soportar. Supongamos que queremos crear un DSL para describir recetas de cocina.</p>
+</div><h2>Paso 2: Diseñar la Sintaxis</h2>
+<div class='content'><p>Diseñamos una sintaxis que sea intuitiva y fácil de usar. En F#, podemos usar funciones y operadores personalizados para lograr esto.</p>
+</div><h2>Paso 3: Implementar el DSL</h2>
+<div class='content'><p>Implementamos el DSL utilizando las características del lenguaje F#.</p>
+<h4>Ejemplo: DSL para Recetas de Cocina</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBJbmdyZWRpZW50ID0gCiAgICB7IE5hbWU6IHN0cmluZzsgUXVhbnRpdHk6IGZsb2F0OyBVbml0OiBzdHJpbmcgfQoKdHlwZSBTdGVwID0gCiAgICB8IEFkZCBvZiBJbmdyZWRpZW50CiAgICB8IE1peCBvZiBzdHJpbmcKICAgIHwgQ29vayBvZiBzdHJpbmcgKiBpbnQKCmxldCBpbmdyZWRpZW50IG5hbWUgcXVhbnRpdHkgdW5pdCA9IAogICAgeyBOYW1lID0gbmFtZTsgUXVhbnRpdHkgPSBxdWFudGl0eTsgVW5pdCA9IHVuaXQgfQoKbGV0IGFkZCBpbmdyZWRpZW50ID0gQWRkIGluZ3JlZGllbnQKbGV0IG1peCBkZXNjcmlwdGlvbiA9IE1peCBkZXNjcmlwdGlvbgpsZXQgY29vayBkZXNjcmlwdGlvbiB0aW1lID0gQ29vayAoZGVzY3JpcHRpb24sIHRpbWUpCgpsZXQgcmVjaXBlID0gCiAgICBbIGFkZCAoaW5ncmVkaWVudCAiSGFyaW5hIiAyMDAuMCAiZ3JhbW9zIikKICAgICAgYWRkIChpbmdyZWRpZW50ICJBesO6Y2FyIiAxMDAuMCAiZ3JhbW9zIikKICAgICAgbWl4ICJNZXpjbGFyIGxvcyBpbmdyZWRpZW50ZXMgc2Vjb3MiCiAgICAgIGNvb2sgIkhvcm5lYXIgYSAxODAgZ3JhZG9zIiAzMCBd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type Ingredient = 
+    { Name: string; Quantity: float; Unit: string }
+
+type Step = 
+    | Add of Ingredient
+    | Mix of string
+    | Cook of string * int
+
+let ingredient name quantity unit = 
+    { Name = name; Quantity = quantity; Unit = unit }
+
+let add ingredient = Add ingredient
+let mix description = Mix description
+let cook description time = Cook (description, time)
+
+let recipe = 
+    [ add (ingredient &quot;Harina&quot; 200.0 &quot;gramos&quot;)
+      add (ingredient &quot;Az&uacute;car&quot; 100.0 &quot;gramos&quot;)
+      mix &quot;Mezclar los ingredientes secos&quot;
+      cook &quot;Hornear a 180 grados&quot; 30 ]</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Definición de Tipos</strong>: Definimos los tipos <code>Ingredient</code> y <code>Step</code> para representar los ingredientes y los pasos de la receta.</li>
+<li><strong>Funciones de Ayuda</strong>: Creamos funciones como <code>ingredient</code>, <code>add</code>, <code>mix</code> y <code>cook</code> para construir los pasos de la receta de manera más legible.</li>
+<li><strong>Receta</strong>: Usamos una lista para definir una receta utilizando nuestro DSL.</li>
+</ul>
+</div><h1>Construcción de un DSL Externo</h1>
+<div class='content'></div><h2>Paso 1: Definir la Gramática</h2>
+<div class='content'><p>Definimos la gramática del DSL utilizando una notación formal como BNF (Backus-Naur Form).</p>
+</div><h2>Paso 2: Implementar el Analizador Sintáctico</h2>
+<div class='content'><p>Implementamos un analizador sintáctico que pueda leer y entender el DSL.</p>
+</div><h2>Paso 3: Traducir a Código Ejecutable</h2>
+<div class='content'><p>Traducimos las instrucciones del DSL a código ejecutable en F#.</p>
+<h4>Ejemplo: DSL Externo para Recetas de Cocina</h4>
+<p>Supongamos que tenemos un archivo de texto con la siguiente receta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QUREIDIwMCBncmFtb3MgSGFyaW5hCkFERCAxMDAgZ3JhbW9zIEF6w7pjYXIKTUlYIE1lemNsYXIgbG9zIGluZ3JlZGllbnRlcyBzZWNvcwpDT09LIEhvcm5lYXIgYSAxODAgZ3JhZG9zIDMwIG1pbnV0b3M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ADD 200 gramos Harina
+ADD 100 gramos Az&uacute;car
+MIX Mezclar los ingredientes secos
+COOK Hornear a 180 grados 30 minutos</pre></div><div class='content'></div><h2>Implementación del Analizador Sintáctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBTeXN0ZW0uSU8KCnR5cGUgSW5ncmVkaWVudCA9IAogICAgeyBOYW1lOiBzdHJpbmc7IFF1YW50aXR5OiBmbG9hdDsgVW5pdDogc3RyaW5nIH0KCnR5cGUgU3RlcCA9IAogICAgfCBBZGQgb2YgSW5ncmVkaWVudAogICAgfCBNaXggb2Ygc3RyaW5nCiAgICB8IENvb2sgb2Ygc3RyaW5nICogaW50CgpsZXQgcGFyc2VJbmdyZWRpZW50IChsaW5lOiBzdHJpbmcpID0KICAgIGxldCBwYXJ0cyA9IGxpbmUuU3BsaXQoJyAnKQogICAgeyBOYW1lID0gcGFydHMuWzJdOyBRdWFudGl0eSA9IGZsb2F0IHBhcnRzLlsxXTsgVW5pdCA9IHBhcnRzLlszXSB9CgpsZXQgcGFyc2VTdGVwIChsaW5lOiBzdHJpbmcpID0KICAgIGxldCBwYXJ0cyA9IGxpbmUuU3BsaXQoJyAnKQogICAgbWF0Y2ggcGFydHMuWzBdIHdpdGgKICAgIHwgIkFERCIgLT4gQWRkIChwYXJzZUluZ3JlZGllbnQgbGluZSkKICAgIHwgIk1JWCIgLT4gTWl4IChTdHJpbmcuSm9pbigiICIsIHBhcnRzLlsxLi5dKSkKICAgIHwgIkNPT0siIC0+IENvb2sgKFN0cmluZy5Kb2luKCIgIiwgcGFydHMuWzEuLjNdKSwgaW50IHBhcnRzLls0XSkKICAgIHwgXyAtPiBmYWlsd2l0aCAiVW5rbm93biBzdGVwIgoKbGV0IHBhcnNlUmVjaXBlIChmaWxlUGF0aDogc3RyaW5nKSA9CiAgICBGaWxlLlJlYWRBbGxMaW5lcyhmaWxlUGF0aCkKICAgIHw+IEFycmF5Lm1hcCBwYXJzZVN0ZXAKICAgIHw+IEFycmF5LnRvTGlzdAoKbGV0IHJlY2lwZSA9IHBhcnNlUmVjaXBlICJyZWNpcGUudHh0Ig=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open System.IO
+
+type Ingredient = 
+    { Name: string; Quantity: float; Unit: string }
+
+type Step = 
+    | Add of Ingredient
+    | Mix of string
+    | Cook of string * int
+
+let parseIngredient (line: string) =
+    let parts = line.Split(' ')
+    { Name = parts.[2]; Quantity = float parts.[1]; Unit = parts.[3] }
+
+let parseStep (line: string) =
+    let parts = line.Split(' ')
+    match parts.[0] with
+    | &quot;ADD&quot; -&gt; Add (parseIngredient line)
+    | &quot;MIX&quot; -&gt; Mix (String.Join(&quot; &quot;, parts.[1..]))
+    | &quot;COOK&quot; -&gt; Cook (String.Join(&quot; &quot;, parts.[1..3]), int parts.[4])
+    | _ -&gt; failwith &quot;Unknown step&quot;
+
+let parseRecipe (filePath: string) =
+    File.ReadAllLines(filePath)
+    |&gt; Array.map parseStep
+    |&gt; Array.toList
+
+let recipe = parseRecipe &quot;recipe.txt&quot;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>parseIngredient</strong>: Función que convierte una línea de texto en un <code>Ingredient</code>.</li>
+<li><strong>parseStep</strong>: Función que convierte una línea de texto en un <code>Step</code>.</li>
+<li><strong>parseRecipe</strong>: Función que lee un archivo de texto y convierte cada línea en un paso de la receta.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un DSL interno en F# para describir un flujo de trabajo de tareas. Cada tarea puede tener un nombre, una descripción y una duración en minutos. Implementa funciones para agregar tareas y para calcular la duración total del flujo de trabajo.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBUYXNrID0gCiAgICB7IE5hbWU6IHN0cmluZzsgRGVzY3JpcHRpb246IHN0cmluZzsgRHVyYXRpb246IGludCB9CgpsZXQgdGFzayBuYW1lIGRlc2NyaXB0aW9uIGR1cmF0aW9uID0gCiAgICB7IE5hbWUgPSBuYW1lOyBEZXNjcmlwdGlvbiA9IGRlc2NyaXB0aW9uOyBEdXJhdGlvbiA9IGR1cmF0aW9uIH0KCmxldCBhZGRUYXNrIHRhc2tMaXN0IHRhc2sgPSAKICAgIHRhc2sgOjogdGFza0xpc3QKCmxldCB0b3RhbER1cmF0aW9uIHRhc2tMaXN0ID0gCiAgICB0YXNrTGlzdCB8PiBMaXN0LnN1bUJ5IChmdW4gdCAtPiB0LkR1cmF0aW9uKQoKbGV0IHdvcmtmbG93ID0gCiAgICBbXQogICAgfD4gYWRkVGFzayAodGFzayAiVGFyZWEgMSIgIkRlc2NyaXBjacOzbiBkZSBsYSB0YXJlYSAxIiAzMCkKICAgIHw+IGFkZFRhc2sgKHRhc2sgIlRhcmVhIDIiICJEZXNjcmlwY2nDs24gZGUgbGEgdGFyZWEgMiIgNDUpCiAgICB8PiBhZGRUYXNrICh0YXNrICJUYXJlYSAzIiAiRGVzY3JpcGNpw7NuIGRlIGxhIHRhcmVhIDMiIDYwKQoKbGV0IGR1cmF0aW9uID0gdG90YWxEdXJhdGlvbiB3b3JrZmxvdwpwcmludGZuICJEdXJhY2nDs24gdG90YWwgZGVsIGZsdWpvIGRlIHRyYWJham86ICVkIG1pbnV0b3MiIGR1cmF0aW9u"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type Task = 
+    { Name: string; Description: string; Duration: int }
+
+let task name description duration = 
+    { Name = name; Description = description; Duration = duration }
+
+let addTask taskList task = 
+    task :: taskList
+
+let totalDuration taskList = 
+    taskList |&gt; List.sumBy (fun t -&gt; t.Duration)
+
+let workflow = 
+    []
+    |&gt; addTask (task &quot;Tarea 1&quot; &quot;Descripci&oacute;n de la tarea 1&quot; 30)
+    |&gt; addTask (task &quot;Tarea 2&quot; &quot;Descripci&oacute;n de la tarea 2&quot; 45)
+    |&gt; addTask (task &quot;Tarea 3&quot; &quot;Descripci&oacute;n de la tarea 3&quot; 60)
+
+let duration = totalDuration workflow
+printfn &quot;Duraci&oacute;n total del flujo de trabajo: %d minutos&quot; duration</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Definición de Tipos</strong>: Definimos el tipo <code>Task</code> para representar una tarea.</li>
+<li><strong>Funciones de Ayuda</strong>: Creamos funciones como <code>task</code>, <code>addTask</code> y <code>totalDuration</code> para construir y manipular el flujo de trabajo.</li>
+<li><strong>Flujo de Trabajo</strong>: Usamos una lista para definir un flujo de trabajo utilizando nuestro DSL.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido sobre la construcción de DSLs en F#. Hemos visto la diferencia entre DSLs internos y externos, y hemos implementado ejemplos prácticos de ambos tipos. Los DSLs pueden ser una herramienta poderosa para hacer que el código sea más expresivo y fácil de mantener, especialmente en dominios específicos.</p>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente módulo, exploraremos aplicaciones prácticas de F#, incluyendo la construcción de aplicaciones web y de escritorio.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-domain-driven-design' title="Diseño Guiado por el Dominio">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-web-applications-giraffe' title="Construcción de Aplicaciones Web con Giraffe">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

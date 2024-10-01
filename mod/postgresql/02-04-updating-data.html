@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Actualizando Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/02-04-updating-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/02-04-updating-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/02-04-updating-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/02-04-updating-data" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/02-04-updating-data" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-querying-data' title="Consultando Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Actualizando Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-05-deleting-data' title="Eliminando Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, aprenderás cómo actualizar datos en una base de datos PostgreSQL utilizando la instrucción <code>UPDATE</code>. Actualizar datos es una operación fundamental en cualquier sistema de gestión de bases de datos, ya que permite modificar registros existentes para reflejar cambios en la información.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#sintaxis-básica-de-update">Sintaxis Básica de <code>UPDATE</code></a></li>
+<li><a href="#actualización-condicional">Actualización Condicional</a></li>
+<li><a href="#actualización-de-múltiples-columnas">Actualización de Múltiples Columnas</a></li>
+<li><a href="#uso-de-subconsultas-en-update">Uso de Subconsultas en <code>UPDATE</code></a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#errores-comunes-y-consejos">Errores Comunes y Consejos</a></li>
+<li><a href="#resumen">Resumen</a></li>
+</ol>
+</div><h1>Sintaxis Básica de `UPDATE`</h1>
+<div class='content'><p>La instrucción <code>UPDATE</code> se utiliza para modificar los datos existentes en una tabla. La sintaxis básica es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIG5vbWJyZV90YWJsYQpTRVQgbm9tYnJlX2NvbHVtbmEgPSBudWV2b192YWxvcgpXSEVSRSBjb25kaWNpw7NuOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE nombre_tabla
+SET nombre_columna = nuevo_valor
+WHERE condici&oacute;n;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos una tabla llamada <code>empleados</code> con las siguientes columnas: <code>id</code>, <code>nombre</code>, <code>salario</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRXN0cnVjdHVyYSBkZSBsYSB0YWJsYSBlbXBsZWFkb3MKQ1JFQVRFIFRBQkxFIGVtcGxlYWRvcyAoCiAgICBpZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBub21icmUgVkFSQ0hBUigxMDApLAogICAgc2FsYXJpbyBOVU1FUklDCik7CgotLSBEYXRvcyBkZSBlamVtcGxvCklOU0VSVCBJTlRPIGVtcGxlYWRvcyAobm9tYnJlLCBzYWxhcmlvKSBWQUxVRVMKKCdKdWFuIFDDqXJleicsIDUwMDAwKSwKKCdBbmEgR8OzbWV6JywgNjAwMDApLAooJ0x1aXMgTWFydMOtbmV6JywgNTUwMDApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Estructura de la tabla empleados
+CREATE TABLE empleados (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100),
+    salario NUMERIC
+);
+
+-- Datos de ejemplo
+INSERT INTO empleados (nombre, salario) VALUES
+('Juan P&eacute;rez', 50000),
+('Ana G&oacute;mez', 60000),
+('Luis Mart&iacute;nez', 55000);</pre></div><div class='content'><p>Para actualizar el salario de 'Juan Pérez' a 55000, usaríamos la siguiente instrucción:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxlYWRvcwpTRVQgc2FsYXJpbyA9IDU1MDAwCldIRVJFIG5vbWJyZSA9ICdKdWFuIFDDqXJleic7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE empleados
+SET salario = 55000
+WHERE nombre = 'Juan P&eacute;rez';</pre></div><div class='content'></div><h1>Actualización Condicional</h1>
+<div class='content'><p>Es importante usar la cláusula <code>WHERE</code> para especificar qué registros deben ser actualizados. Si omites la cláusula <code>WHERE</code>, todos los registros de la tabla serán actualizados.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Actualizar el salario de todos los empleados cuyo salario actual sea menor a 60000:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxlYWRvcwpTRVQgc2FsYXJpbyA9IDYwMDAwCldIRVJFIHNhbGFyaW8gPCA2MDAwMDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE empleados
+SET salario = 60000
+WHERE salario &lt; 60000;</pre></div><div class='content'></div><h1>Actualización de Múltiples Columnas</h1>
+<div class='content'><p>Puedes actualizar múltiples columnas en una sola instrucción <code>UPDATE</code> separando cada asignación con una coma.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Actualizar el nombre y el salario de un empleado específico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxlYWRvcwpTRVQgbm9tYnJlID0gJ0p1YW4gUMOpcmV6IEdhcmPDrWEnLCBzYWxhcmlvID0gNTgwMDAKV0hFUkUgaWQgPSAxOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE empleados
+SET nombre = 'Juan P&eacute;rez Garc&iacute;a', salario = 58000
+WHERE id = 1;</pre></div><div class='content'></div><h1>Uso de Subconsultas en `UPDATE`</h1>
+<div class='content'><p>Las subconsultas pueden ser utilizadas en la cláusula <code>SET</code> para calcular nuevos valores basados en otros datos de la base de datos.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos otra tabla llamada <code>aumentos</code> que registra los aumentos de salario:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRXN0cnVjdHVyYSBkZSBsYSB0YWJsYSBhdW1lbnRvcwpDUkVBVEUgVEFCTEUgYXVtZW50b3MgKAogICAgZW1wbGVhZG9faWQgSU5ULAogICAgYXVtZW50byBOVU1FUklDCik7CgotLSBEYXRvcyBkZSBlamVtcGxvCklOU0VSVCBJTlRPIGF1bWVudG9zIChlbXBsZWFkb19pZCwgYXVtZW50bykgVkFMVUVTCigxLCA1MDAwKSwKKDIsIDQwMDApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Estructura de la tabla aumentos
+CREATE TABLE aumentos (
+    empleado_id INT,
+    aumento NUMERIC
+);
+
+-- Datos de ejemplo
+INSERT INTO aumentos (empleado_id, aumento) VALUES
+(1, 5000),
+(2, 4000);</pre></div><div class='content'><p>Para actualizar los salarios de los empleados basándonos en los aumentos registrados en la tabla <code>aumentos</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxlYWRvcwpTRVQgc2FsYXJpbyA9IHNhbGFyaW8gKyAoCiAgICBTRUxFQ1QgYXVtZW50bwogICAgRlJPTSBhdW1lbnRvcwogICAgV0hFUkUgZW1wbGVhZG9zLmlkID0gYXVtZW50b3MuZW1wbGVhZG9faWQKKQpXSEVSRSBpZCBJTiAoU0VMRUNUIGVtcGxlYWRvX2lkIEZST00gYXVtZW50b3MpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE empleados
+SET salario = salario + (
+    SELECT aumento
+    FROM aumentos
+    WHERE empleados.id = aumentos.empleado_id
+)
+WHERE id IN (SELECT empleado_id FROM aumentos);</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1</h2>
+<div class='content'><p>Actualiza el nombre del empleado con <code>id = 2</code> a 'Ana Gómez López'.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxlYWRvcwpTRVQgbm9tYnJlID0gJ0FuYSBHw7NtZXogTMOzcGV6JwpXSEVSRSBpZCA9IDI7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE empleados
+SET nombre = 'Ana G&oacute;mez L&oacute;pez'
+WHERE id = 2;</pre></div><div class='content'></div><h2>Ejercicio 2</h2>
+<div class='content'><p>Incrementa el salario de todos los empleados en un 10%.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxlYWRvcwpTRVQgc2FsYXJpbyA9IHNhbGFyaW8gKiAxLjEwOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE empleados
+SET salario = salario * 1.10;</pre></div><div class='content'></div><h2>Ejercicio 3</h2>
+<div class='content'><p>Usa una subconsulta para establecer el salario de todos los empleados al promedio de los salarios actuales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VVBEQVRFIGVtcGxlYWRvcwpTRVQgc2FsYXJpbyA9ICgKICAgIFNFTEVDVCBBVkcoc2FsYXJpbykKICAgIEZST00gZW1wbGVhZG9zCik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>UPDATE empleados
+SET salario = (
+    SELECT AVG(salario)
+    FROM empleados
+);</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ol>
+<li><strong>Olvidar la cláusula <code>WHERE</code></strong>: Esto actualizará todos los registros de la tabla, lo cual puede ser desastroso.</li>
+<li><strong>Errores de tipo de datos</strong>: Asegúrate de que los valores que estás asignando sean del tipo correcto.</li>
+<li><strong>Subconsultas que devuelven múltiples filas</strong>: Asegúrate de que las subconsultas utilizadas en la cláusula <code>SET</code> devuelvan un solo valor.</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto cómo actualizar datos en PostgreSQL utilizando la instrucción <code>UPDATE</code>. Aprendiste la sintaxis básica, cómo realizar actualizaciones condicionales, cómo actualizar múltiples columnas y cómo utilizar subconsultas en las actualizaciones. También realizaste ejercicios prácticos para reforzar estos conceptos.</p>
+<p>En la siguiente sección, aprenderás sobre cómo eliminar datos de una base de datos PostgreSQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-querying-data' title="Consultando Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-05-deleting-data' title="Eliminando Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

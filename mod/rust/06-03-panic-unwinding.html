@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pánico y Desenrollado</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/rust/06-03-panic-unwinding" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/rust/06-03-panic-unwinding" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/rust/06-03-panic-unwinding" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/rust/06-03-panic-unwinding" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/rust/06-03-panic-unwinding" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-error-handling-option' title="Manejo de Errores con Option">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Pánico y Desenrollado</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-lifetimes' title="Tiempos de Vida">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En Rust, el manejo de errores es una parte fundamental del lenguaje, y se realiza principalmente a través de los tipos <code>Result</code> y <code>Option</code>. Sin embargo, hay situaciones en las que un error es tan grave que no se puede manejar de manera convencional. En estos casos, Rust proporciona el mecanismo de pánico (<code>panic!</code>) y desenrollado (unwinding).</p>
+</div><h1>¿Qué es un Pánico?</h1>
+<div class='content'><p>Un pánico en Rust es una situación en la que el programa encuentra un error irrecuperable y decide detener la ejecución. Esto se logra mediante la macro <code>panic!</code>. Cuando se invoca <code>panic!</code>, el programa imprime un mensaje de error y comienza el proceso de desenrollado de la pila.</p>
+</div><h2>Ejemplo de Pánico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCB2ID0gdmVjIVsxLCAyLCAzXTsKCiAgICAvLyBJbnRlbnRhciBhY2NlZGVyIGEgdW4gw61uZGljZSBmdWVyYSBkZSBsb3MgbMOtbWl0ZXMgZGVsIHZlY3RvcgogICAgcHJpbnRsbiEoInt9Iiwgdls5OV0pOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let v = vec![1, 2, 3];
+
+    // Intentar acceder a un &iacute;ndice fuera de los l&iacute;mites del vector
+    println!(&quot;{}&quot;, v[99]);
+}</pre></div><div class='content'><p>En este ejemplo, el programa intentará acceder al índice 99 de un vector que solo tiene 3 elementos. Esto causará un pánico porque el índice está fuera de los límites del vector.</p>
+</div><h1>Desenrollado de la Pila</h1>
+<div class='content'><p>Cuando ocurre un pánico, Rust realiza un proceso llamado &quot;desenrollado de la pila&quot; (stack unwinding). Durante este proceso, Rust limpia y libera los recursos de cada función en la pila de llamadas antes de detener el programa. Este proceso asegura que los recursos se liberen adecuadamente, incluso en caso de errores graves.</p>
+</div><h2>Desenrollado vs. Abortar</h2>
+<div class='content'><p>Rust ofrece dos estrategias para manejar un pánico:</p>
+<ol>
+<li><strong>Desenrollado (Unwinding)</strong>: Limpia la pila de llamadas y libera los recursos.</li>
+<li><strong>Abortar (Abort)</strong>: Detiene inmediatamente el programa sin limpiar la pila.</li>
+</ol>
+<p>La estrategia predeterminada es el desenrollado, pero se puede cambiar a abortar configurando el archivo <code>Cargo.toml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("W3Byb2ZpbGUucmVsZWFzZV0KcGFuaWMgPSAnYWJvcnQn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[profile.release]
+panic = 'abort'</pre></div><div class='content'></div><h1>Uso de `panic!`</h1>
+<div class='content'><p>La macro <code>panic!</code> se puede utilizar para generar un pánico manualmente en situaciones específicas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gbWFpbigpIHsKICAgIGxldCB4ID0gU29tZSg1KTsKCiAgICBpZiB4LmlzX25vbmUoKSB7CiAgICAgICAgcGFuaWMhKCJFbCB2YWxvciBlcyBOb25lISIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn main() {
+    let x = Some(5);
+
+    if x.is_none() {
+        panic!(&quot;El valor es None!&quot;);
+    }
+}</pre></div><div class='content'><p>En este ejemplo, si <code>x</code> es <code>None</code>, el programa entrará en pánico y se detendrá.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Manejo de Pánico</h2>
+<div class='content'><p>Escribe un programa que intente dividir dos números. Si el divisor es cero, el programa debe entrar en pánico con un mensaje adecuado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZGl2aWRlKGE6IGkzMiwgYjogaTMyKSAtPiBpMzIgewogICAgaWYgYiA9PSAwIHsKICAgICAgICBwYW5pYyEoIk5vIHNlIHB1ZWRlIGRpdmlkaXIgcG9yIGNlcm8hIik7CiAgICB9CiAgICBhIC8gYgp9CgpmbiBtYWluKCkgewogICAgbGV0IHJlc3VsdCA9IGRpdmlkZSgxMCwgMCk7CiAgICBwcmludGxuISgiUmVzdWx0YWRvOiB7fSIsIHJlc3VsdCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn divide(a: i32, b: i32) -&gt; i32 {
+    if b == 0 {
+        panic!(&quot;No se puede dividir por cero!&quot;);
+    }
+    a / b
+}
+
+fn main() {
+    let result = divide(10, 0);
+    println!(&quot;Resultado: {}&quot;, result);
+}</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm4gZGl2aWRlKGE6IGkzMiwgYjogaTMyKSAtPiBpMzIgewogICAgaWYgYiA9PSAwIHsKICAgICAgICBwYW5pYyEoIk5vIHNlIHB1ZWRlIGRpdmlkaXIgcG9yIGNlcm8hIik7CiAgICB9CiAgICBhIC8gYgp9CgpmbiBtYWluKCkgewogICAgLy8gRXN0ZSBjw7NkaWdvIGNhdXNhcsOhIHVuIHDDoW5pY28gcG9ycXVlIGVsIGRpdmlzb3IgZXMgY2VybwogICAgbGV0IHJlc3VsdCA9IGRpdmlkZSgxMCwgMCk7CiAgICBwcmludGxuISgiUmVzdWx0YWRvOiB7fSIsIHJlc3VsdCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fn divide(a: i32, b: i32) -&gt; i32 {
+    if b == 0 {
+        panic!(&quot;No se puede dividir por cero!&quot;);
+    }
+    a / b
+}
+
+fn main() {
+    // Este c&oacute;digo causar&aacute; un p&aacute;nico porque el divisor es cero
+    let result = divide(10, 0);
+    println!(&quot;Resultado: {}&quot;, result);
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Configuración de Abortar</h2>
+<div class='content'><p>Modifica el archivo <code>Cargo.toml</code> para que el programa aborte en lugar de desenrollar la pila cuando ocurra un pánico.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("W3Byb2ZpbGUucmVsZWFzZV0KcGFuaWMgPSAnYWJvcnQn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>[profile.release]
+panic = 'abort'</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre el mecanismo de pánico y desenrollado en Rust. Hemos visto cómo y cuándo usar la macro <code>panic!</code>, y cómo configurar el comportamiento del pánico en nuestro proyecto. Estos conceptos son cruciales para manejar errores graves y asegurar que los recursos se liberen adecuadamente en situaciones de error.</p>
+<p>En el próximo módulo, exploraremos los conceptos avanzados de Rust, incluyendo tiempos de vida, traits y genéricos. ¡Prepárate para profundizar aún más en el lenguaje Rust!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-error-handling-option' title="Manejo de Errores con Option">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-lifetimes' title="Tiempos de Vida">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

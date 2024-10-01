@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta Disponibilidad y Balanceo de Carga</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/linux/07-05-high-availability-and-load-balancing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/linux/07-05-alta-disponibilitat-i-balanceig-de-carrega" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/linux/07-05-high-availability-and-load-balancing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/linux/07-05-high-availability-and-load-balancing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/linux/07-05-high-availability-and-load-balancing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-linux-kernel-tuning' title="Optimización del Kernel de Linux">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Alta Disponibilidad y Balanceo de Carga</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-setting-up-a-web-server' title="Configuración de un Servidor Web">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, exploraremos los conceptos de alta disponibilidad y balanceo de carga en sistemas Linux. Estos son componentes críticos para garantizar que los servicios y aplicaciones sean robustos, escalables y capaces de manejar fallos sin interrupciones significativas.</p>
+</div><h2>Objetivos del Tema</h2>
+<div class='content'><ul>
+<li>Comprender los conceptos de alta disponibilidad y balanceo de carga.</li>
+<li>Aprender a configurar y gestionar soluciones de alta disponibilidad.</li>
+<li>Implementar técnicas de balanceo de carga para distribuir el tráfico de manera eficiente.</li>
+</ul>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Alta Disponibilidad (HA)</h2>
+<div class='content'><p>La alta disponibilidad se refiere a un sistema o componente que está operativo y accesible durante un alto porcentaje del tiempo. Los sistemas de alta disponibilidad están diseñados para minimizar el tiempo de inactividad y garantizar que los servicios estén disponibles incluso en caso de fallos.</p>
+<h4>Componentes de HA</h4>
+<ul>
+<li><strong>Clústeres de Alta Disponibilidad</strong>: Conjunto de servidores que trabajan juntos para garantizar la disponibilidad de servicios.</li>
+<li><strong>Failover</strong>: Proceso de cambiar automáticamente a un sistema de respaldo cuando el sistema principal falla.</li>
+<li><strong>Heartbeat</strong>: Señales periódicas enviadas entre nodos para verificar su estado.</li>
+</ul>
+</div><h2>Balanceo de Carga</h2>
+<div class='content'><p>El balanceo de carga distribuye el tráfico de red o las solicitudes de servicio entre varios servidores para garantizar que ningún servidor se sobrecargue. Esto mejora la disponibilidad y la capacidad de respuesta del sistema.</p>
+<h4>Tipos de Balanceo de Carga</h4>
+<ul>
+<li><strong>Balanceo de Carga de Red</strong>: Distribuye el tráfico de red entre varios servidores.</li>
+<li><strong>Balanceo de Carga de Aplicaciones</strong>: Distribuye las solicitudes de aplicaciones entre varios servidores de aplicaciones.</li>
+</ul>
+</div><h1>Configuración de Alta Disponibilidad</h1>
+<div class='content'></div><h2>Herramientas Comunes</h2>
+<div class='content'><ul>
+<li><strong>Pacemaker</strong>: Un gestor de recursos de clúster que proporciona alta disponibilidad.</li>
+<li><strong>Corosync</strong>: Proporciona comunicación entre nodos en un clúster de alta disponibilidad.</li>
+</ul>
+</div><h2>Ejemplo de Configuración de Clúster HA con Pacemaker y Corosync</h2>
+<div class='content'><h4>Paso 1: Instalación de Pacemaker y Corosync</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCBwYWNlbWFrZXIgY29yb3N5bmM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
+sudo apt-get install pacemaker corosync</pre></div><div class='content'><h4>Paso 2: Configuración de Corosync</h4>
+<p>Edita el archivo de configuración de Corosync (<code>/etc/corosync/corosync.conf</code>):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dG90ZW0gewogICAgdmVyc2lvbjogMgogICAgc2VjYXV0aDogb24KICAgIGNsdXN0ZXJfbmFtZTogbXlfY2x1c3RlcgogICAgdHJhbnNwb3J0OiB1ZHB1CiAgICBpbnRlcmZhY2UgewogICAgICAgIHJpbmdudW1iZXI6IDAKICAgICAgICBiaW5kbmV0YWRkcjogMTkyLjE2OC4xLjAKICAgICAgICBtY2FzdHBvcnQ6IDU0MDUKICAgIH0KfQoKbm9kZWxpc3QgewogICAgbm9kZSB7CiAgICAgICAgcmluZzBfYWRkcjogbm9kZTEKICAgICAgICBub2RlaWQ6IDEKICAgIH0KICAgIG5vZGUgewogICAgICAgIHJpbmcwX2FkZHI6IG5vZGUyCiAgICAgICAgbm9kZWlkOiAyCiAgICB9Cn0KCnF1b3J1bSB7CiAgICBwcm92aWRlcjogY29yb3N5bmNfdm90ZXF1b3J1bQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>totem {
+    version: 2
+    secauth: on
+    cluster_name: my_cluster
+    transport: udpu
+    interface {
+        ringnumber: 0
+        bindnetaddr: 192.168.1.0
+        mcastport: 5405
+    }
+}
+
+nodelist {
+    node {
+        ring0_addr: node1
+        nodeid: 1
+    }
+    node {
+        ring0_addr: node2
+        nodeid: 2
+    }
+}
+
+quorum {
+    provider: corosync_votequorum
+}</pre></div><div class='content'><h4>Paso 3: Iniciar los Servicios</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RhcnQgY29yb3N5bmMKc3VkbyBzeXN0ZW1jdGwgc3RhcnQgcGFjZW1ha2Vy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl start corosync
+sudo systemctl start pacemaker</pre></div><div class='content'><h4>Paso 4: Configuración de Recursos en Pacemaker</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBjcm0gY29uZmlndXJlIHByaW1pdGl2ZSBteV9pcCBvY2Y6aGVhcnRiZWF0OklQYWRkcjIgcGFyYW1zIGlwPTE5Mi4xNjguMS4xMDAgY2lkcl9uZXRtYXNrPTI0IG9wIG1vbml0b3IgaW50ZXJ2YWw9MzBzCnN1ZG8gY3JtIGNvbmZpZ3VyZSBwcmltaXRpdmUgbXlfc2VydmljZSBsc2I6bXlfc2VydmljZSBvcCBtb25pdG9yIGludGVydmFsPTMwcwpzdWRvIGNybSBjb25maWd1cmUgY29sb2NhdGlvbiBteV9zZXJ2aWNlX3dpdGhfaXAgaW5mOiBteV9zZXJ2aWNlIG15X2lwCnN1ZG8gY3JtIGNvbmZpZ3VyZSBvcmRlciBteV9zZXJ2aWNlX2FmdGVyX2lwIGluZjogbXlfaXAgbXlfc2VydmljZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo crm configure primitive my_ip ocf:heartbeat:IPaddr2 params ip=192.168.1.100 cidr_netmask=24 op monitor interval=30s
+sudo crm configure primitive my_service lsb:my_service op monitor interval=30s
+sudo crm configure colocation my_service_with_ip inf: my_service my_ip
+sudo crm configure order my_service_after_ip inf: my_ip my_service</pre></div><div class='content'></div><h1>Implementación de Balanceo de Carga</h1>
+<div class='content'></div><h2>Herramientas Comunes</h2>
+<div class='content'><ul>
+<li><strong>HAProxy</strong>: Un balanceador de carga de código abierto que distribuye el tráfico entre varios servidores.</li>
+<li><strong>Nginx</strong>: Un servidor web que también puede actuar como balanceador de carga.</li>
+</ul>
+</div><h2>Ejemplo de Configuración de HAProxy</h2>
+<div class='content'><h4>Paso 1: Instalación de HAProxy</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCBoYXByb3h5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
+sudo apt-get install haproxy</pre></div><div class='content'><h4>Paso 2: Configuración de HAProxy</h4>
+<p>Edita el archivo de configuración de HAProxy (<code>/etc/haproxy/haproxy.cfg</code>):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2xvYmFsCiAgICBsb2cgL2Rldi9sb2cgbG9jYWwwCiAgICBsb2cgL2Rldi9sb2cgbG9jYWwxIG5vdGljZQogICAgY2hyb290IC92YXIvbGliL2hhcHJveHkKICAgIHN0YXRzIHNvY2tldCAvcnVuL2hhcHJveHkvYWRtaW4uc29jayBtb2RlIDY2MCBsZXZlbCBhZG1pbgogICAgc3RhdHMgdGltZW91dCAzMHMKICAgIHVzZXIgaGFwcm94eQogICAgZ3JvdXAgaGFwcm94eQogICAgZGFlbW9uCgpkZWZhdWx0cwogICAgbG9nIGdsb2JhbAogICAgbW9kZSBodHRwCiAgICBvcHRpb24gaHR0cGxvZwogICAgb3B0aW9uIGRvbnRsb2dudWxsCiAgICB0aW1lb3V0IGNvbm5lY3QgNTAwMAogICAgdGltZW91dCBjbGllbnQgIDUwMDAwCiAgICB0aW1lb3V0IHNlcnZlciAgNTAwMDAKCmZyb250ZW5kIGh0dHBfZnJvbnQKICAgIGJpbmQgKjo4MAogICAgZGVmYXVsdF9iYWNrZW5kIGh0dHBfYmFjawoKYmFja2VuZCBodHRwX2JhY2sKICAgIGJhbGFuY2Ugcm91bmRyb2JpbgogICAgc2VydmVyIHNlcnZlcjEgMTkyLjE2OC4xLjEwMTo4MCBjaGVjawogICAgc2VydmVyIHNlcnZlcjIgMTkyLjE2OC4xLjEwMjo4MCBjaGVjaw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>global
+    log /dev/log local0
+    log /dev/log local1 notice
+    chroot /var/lib/haproxy
+    stats socket /run/haproxy/admin.sock mode 660 level admin
+    stats timeout 30s
+    user haproxy
+    group haproxy
+    daemon
+
+defaults
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    timeout connect 5000
+    timeout client  50000
+    timeout server  50000
+
+frontend http_front
+    bind *:80
+    default_backend http_back
+
+backend http_back
+    balance roundrobin
+    server server1 192.168.1.101:80 check
+    server server2 192.168.1.102:80 check</pre></div><div class='content'><h4>Paso 3: Iniciar el Servicio HAProxy</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgc3RhcnQgaGFwcm94eQpzdWRvIHN5c3RlbWN0bCBlbmFibGUgaGFwcm94eQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl start haproxy
+sudo systemctl enable haproxy</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de un Clúster HA</h2>
+<div class='content'><ol>
+<li>Instala y configura Pacemaker y Corosync en dos nodos.</li>
+<li>Configura un recurso IP y un servicio en Pacemaker.</li>
+<li>Verifica que el failover funcione correctamente.</li>
+</ol>
+</div><h2>Ejercicio 2: Implementación de Balanceo de Carga con HAProxy</h2>
+<div class='content'><ol>
+<li>Instala HAProxy en un servidor.</li>
+<li>Configura HAProxy para balancear la carga entre dos servidores web.</li>
+<li>Verifica que el tráfico se distribuya correctamente entre los servidores.</li>
+</ol>
+</div><h1>Soluciones a los Ejercicios</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'><ol>
+<li>Sigue los pasos de instalación y configuración de Pacemaker y Corosync descritos anteriormente.</li>
+<li>Configura los recursos en Pacemaker como se muestra en el ejemplo.</li>
+<li>Para verificar el failover, apaga uno de los nodos y observa cómo el recurso se transfiere al nodo activo.</li>
+</ol>
+</div><h2>Solución al Ejercicio 2</h2>
+<div class='content'><ol>
+<li>Instala HAProxy usando el comando <code>sudo apt-get install haproxy</code>.</li>
+<li>Configura HAProxy editando el archivo <code>/etc/haproxy/haproxy.cfg</code> como se muestra en el ejemplo.</li>
+<li>Inicia el servicio HAProxy y usa herramientas como <code>curl</code> o un navegador web para verificar que las solicitudes se distribuyan entre los servidores configurados.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los conceptos de alta disponibilidad y balanceo de carga, y cómo implementarlos en sistemas Linux utilizando herramientas como Pacemaker, Corosync y HAProxy. Estas técnicas son esenciales para garantizar que los servicios sean robustos, escalables y capaces de manejar fallos sin interrupciones significativas. Con estos conocimientos, estás preparado para diseñar y gestionar sistemas que ofrezcan alta disponibilidad y un rendimiento óptimo.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-linux-kernel-tuning' title="Optimización del Kernel de Linux">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-setting-up-a-web-server' title="Configuración de un Servidor Web">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

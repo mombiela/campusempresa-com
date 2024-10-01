@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despliegue de Modelos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/08-03-deploying-models" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/08-03-deploying-models" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/08-03-deploying-models" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/08-03-deploying-models" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/08-03-deploying-models" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-tensorflow-serving' title="TensorFlow Serving">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Despliegue de Modelos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-monitoring-and-maintenance' title="Monitoreo y Mantenimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El despliegue de modelos es una etapa crucial en el ciclo de vida de un modelo de aprendizaje automático. Una vez que se ha entrenado y evaluado un modelo, el siguiente paso es ponerlo en producción para que pueda ser utilizado en aplicaciones del mundo real. En esta sección, aprenderemos cómo desplegar modelos de TensorFlow utilizando diferentes técnicas y herramientas.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-al-despliegue-de-modelos">Introducción al Despliegue de Modelos</a></li>
+<li><a href="#guardado-del-modelo">Guardado del Modelo</a></li>
+<li><a href="#cargando-el-modelo-guardado">Cargando el Modelo Guardado</a></li>
+<li><a href="#despliegue-con-tensorflow-serving">Despliegue con TensorFlow Serving</a></li>
+<li><a href="#despliegue-en-la-nube">Despliegue en la Nube</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción al Despliegue de Modelos</h1>
+<div class='content'><p>El despliegue de modelos implica varias etapas, desde el guardado del modelo entrenado hasta su integración en una aplicación de producción. Aquí hay algunos conceptos clave:</p>
+<ul>
+<li><strong>Guardado del Modelo</strong>: Almacenar el modelo entrenado en un formato que pueda ser fácilmente cargado y utilizado en producción.</li>
+<li><strong>Cargando el Modelo</strong>: Recuperar el modelo guardado para realizar predicciones.</li>
+<li><strong>TensorFlow Serving</strong>: Una herramienta que facilita el despliegue de modelos de TensorFlow en un entorno de producción.</li>
+<li><strong>Despliegue en la Nube</strong>: Utilizar servicios en la nube para alojar y servir modelos de aprendizaje automático.</li>
+</ul>
+</div><h1>Guardado del Modelo</h1>
+<div class='content'><p>TensorFlow proporciona varias formas de guardar modelos. La más común es utilizar el formato <code>SavedModel</code>, que es el formato estándar para guardar modelos en TensorFlow.</p>
+</div><h2>Ejemplo de Guardado de un Modelo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRGVmaW5pciB1biBtb2RlbG8gc2ltcGxlCm1vZGVsID0gdGYua2VyYXMuU2VxdWVudGlhbChbCiAgICB0Zi5rZXJhcy5sYXllcnMuRGVuc2UoMTAsIGFjdGl2YXRpb249J3JlbHUnLCBpbnB1dF9zaGFwZT0oNzg0LCkpLAogICAgdGYua2VyYXMubGF5ZXJzLkRlbnNlKDEwLCBhY3RpdmF0aW9uPSdzb2Z0bWF4JykKXSkKCiMgQ29tcGlsYXIgZWwgbW9kZWxvCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPSdhZGFtJywgbG9zcz0nc3BhcnNlX2NhdGVnb3JpY2FsX2Nyb3NzZW50cm9weScsIG1ldHJpY3M9WydhY2N1cmFjeSddKQoKIyBFbnRyZW5hciBlbCBtb2RlbG8gKHVzYW5kbyBkYXRvcyBmaWN0aWNpb3MpCm1vZGVsLmZpdCh4X3RyYWluLCB5X3RyYWluLCBlcG9jaHM9NSkKCiMgR3VhcmRhciBlbCBtb2RlbG8KbW9kZWwuc2F2ZSgncGF0aF90b19teV9tb2RlbCcp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Definir un modelo simple
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(10, activation='relu', input_shape=(784,)),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+
+# Compilar el modelo
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Entrenar el modelo (usando datos ficticios)
+model.fit(x_train, y_train, epochs=5)
+
+# Guardar el modelo
+model.save('path_to_my_model')</pre></div><div class='content'><p>En este ejemplo, hemos definido y entrenado un modelo simple, y luego lo hemos guardado en el directorio <code>path_to_my_model</code>.</p>
+</div><h1>Cargando el Modelo Guardado</h1>
+<div class='content'><p>Una vez que el modelo ha sido guardado, podemos cargarlo fácilmente para realizar predicciones.</p>
+</div><h2>Ejemplo de Carga de un Modelo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgZWwgbW9kZWxvCm5ld19tb2RlbCA9IHRmLmtlcmFzLm1vZGVscy5sb2FkX21vZGVsKCdwYXRoX3RvX215X21vZGVsJykKCiMgUmVhbGl6YXIgcHJlZGljY2lvbmVzCnByZWRpY3Rpb25zID0gbmV3X21vZGVsLnByZWRpY3QoeF90ZXN0KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar el modelo
+new_model = tf.keras.models.load_model('path_to_my_model')
+
+# Realizar predicciones
+predictions = new_model.predict(x_test)</pre></div><div class='content'><p>En este ejemplo, hemos cargado el modelo guardado y lo hemos utilizado para realizar predicciones en un conjunto de datos de prueba.</p>
+</div><h1>Despliegue con TensorFlow Serving</h1>
+<div class='content'><p>TensorFlow Serving es una herramienta flexible y de alto rendimiento para servir modelos de aprendizaje automático en producción. Permite servir modelos de TensorFlow y realizar inferencias en tiempo real.</p>
+</div><h2>Instalación de TensorFlow Serving</h2>
+<div class='content'><p>Para instalar TensorFlow Serving, puedes seguir las instrucciones oficiales en la <a href="https://www.tensorflow.org/tfx/guide/serving">documentación de TensorFlow Serving</a>.</p>
+</div><h2>Ejemplo de Despliegue con TensorFlow Serving</h2>
+<div class='content'><ol>
+<li><strong>Guardar el modelo en el formato <code>SavedModel</code></strong> (ya cubierto anteriormente).</li>
+<li><strong>Iniciar TensorFlow Serving</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVuc29yZmxvd19tb2RlbF9zZXJ2ZXIgLS1yZXN0X2FwaV9wb3J0PTg1MDEgLS1tb2RlbF9uYW1lPW15X21vZGVsIC0tbW9kZWxfYmFzZV9wYXRoPSIvcGF0aF90b19teV9tb2RlbCI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>tensorflow_model_server --rest_api_port=8501 --model_name=my_model --model_base_path=&quot;/path_to_my_model&quot;</pre></div><div class='content'><ol start="3">
+<li><strong>Realizar una solicitud de predicción</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlcXVlc3RzCmltcG9ydCBqc29uCgojIERhdG9zIGRlIGVudHJhZGEgcGFyYSBsYSBwcmVkaWNjacOzbgpkYXRhID0ganNvbi5kdW1wcyh7InNpZ25hdHVyZV9uYW1lIjogInNlcnZpbmdfZGVmYXVsdCIsICJpbnN0YW5jZXMiOiB4X3Rlc3QudG9saXN0KCl9KQoKIyBSZWFsaXphciBsYSBzb2xpY2l0dWQgUE9TVApoZWFkZXJzID0geyJjb250ZW50LXR5cGUiOiAiYXBwbGljYXRpb24vanNvbiJ9Cmpzb25fcmVzcG9uc2UgPSByZXF1ZXN0cy5wb3N0KCdodHRwOi8vbG9jYWxob3N0Ojg1MDEvdjEvbW9kZWxzL215X21vZGVsOnByZWRpY3QnLCBkYXRhPWRhdGEsIGhlYWRlcnM9aGVhZGVycykKCiMgT2J0ZW5lciBsYXMgcHJlZGljY2lvbmVzCnByZWRpY3Rpb25zID0ganNvbi5sb2Fkcyhqc29uX3Jlc3BvbnNlLnRleHQpWydwcmVkaWN0aW9ucydd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import requests
+import json
+
+# Datos de entrada para la predicci&oacute;n
+data = json.dumps({&quot;signature_name&quot;: &quot;serving_default&quot;, &quot;instances&quot;: x_test.tolist()})
+
+# Realizar la solicitud POST
+headers = {&quot;content-type&quot;: &quot;application/json&quot;}
+json_response = requests.post('http://localhost:8501/v1/models/my_model:predict', data=data, headers=headers)
+
+# Obtener las predicciones
+predictions = json.loads(json_response.text)['predictions']</pre></div><div class='content'><p>En este ejemplo, hemos iniciado TensorFlow Serving para servir nuestro modelo y luego hemos realizado una solicitud de predicción utilizando la API REST.</p>
+</div><h1>Despliegue en la Nube</h1>
+<div class='content'><p>Desplegar modelos en la nube permite escalar y gestionar modelos de manera eficiente. Servicios como Google Cloud AI Platform, AWS SageMaker y Azure Machine Learning proporcionan soluciones robustas para el despliegue de modelos.</p>
+</div><h2>Ejemplo de Despliegue en Google Cloud AI Platform</h2>
+<div class='content'><ol>
+<li><strong>Subir el modelo a Google Cloud Storage</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3N1dGlsIGNwIC1yIHBhdGhfdG9fbXlfbW9kZWwgZ3M6Ly9teV9idWNrZXQvcGF0aF90b19teV9tb2RlbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gsutil cp -r path_to_my_model gs://my_bucket/path_to_my_model</pre></div><div class='content'><ol start="2">
+<li><strong>Desplegar el modelo en AI Platform</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2Nsb3VkIGFpLXBsYXRmb3JtIG1vZGVscyBjcmVhdGUgbXlfbW9kZWwKZ2Nsb3VkIGFpLXBsYXRmb3JtIHZlcnNpb25zIGNyZWF0ZSB2MSAtLW1vZGVsPW15X21vZGVsIC0tb3JpZ2luPWdzOi8vbXlfYnVja2V0L3BhdGhfdG9fbXlfbW9kZWwgLS1ydW50aW1lLXZlcnNpb249Mi4xIC0tcHl0aG9uLXZlcnNpb249My43"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcloud ai-platform models create my_model
+gcloud ai-platform versions create v1 --model=my_model --origin=gs://my_bucket/path_to_my_model --runtime-version=2.1 --python-version=3.7</pre></div><div class='content'><ol start="3">
+<li><strong>Realizar una solicitud de predicción</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBnb29nbGVhcGljbGllbnQgaW1wb3J0IGRpc2NvdmVyeQppbXBvcnQgbnVtcHkgYXMgbnAKCiMgQ3JlYXIgZWwgY2xpZW50ZSBkZSBBSSBQbGF0Zm9ybQpzZXJ2aWNlID0gZGlzY292ZXJ5LmJ1aWxkKCdtbCcsICd2MScpCgojIERhdG9zIGRlIGVudHJhZGEgcGFyYSBsYSBwcmVkaWNjacOzbgppbnN0YW5jZXMgPSB4X3Rlc3QudG9saXN0KCkKCiMgUmVhbGl6YXIgbGEgc29saWNpdHVkIGRlIHByZWRpY2Npw7NuCm5hbWUgPSAncHJvamVjdHMve30vbW9kZWxzL3t9L3ZlcnNpb25zL3t9Jy5mb3JtYXQoJ215X3Byb2plY3QnLCAnbXlfbW9kZWwnLCAndjEnKQpyZXNwb25zZSA9IHNlcnZpY2UucHJvamVjdHMoKS5wcmVkaWN0KG5hbWU9bmFtZSwgYm9keT17J2luc3RhbmNlcyc6IGluc3RhbmNlc30pLmV4ZWN1dGUoKQoKIyBPYnRlbmVyIGxhcyBwcmVkaWNjaW9uZXMKcHJlZGljdGlvbnMgPSByZXNwb25zZVsncHJlZGljdGlvbnMnXQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from googleapiclient import discovery
+import numpy as np
+
+# Crear el cliente de AI Platform
+service = discovery.build('ml', 'v1')
+
+# Datos de entrada para la predicci&oacute;n
+instances = x_test.tolist()
+
+# Realizar la solicitud de predicci&oacute;n
+name = 'projects/{}/models/{}/versions/{}'.format('my_project', 'my_model', 'v1')
+response = service.projects().predict(name=name, body={'instances': instances}).execute()
+
+# Obtener las predicciones
+predictions = response['predictions']</pre></div><div class='content'><p>En este ejemplo, hemos subido nuestro modelo a Google Cloud Storage, lo hemos desplegado en AI Platform y hemos realizado una solicitud de predicción.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Entrena un modelo simple de TensorFlow utilizando el conjunto de datos MNIST.</li>
+<li>Guarda el modelo en el formato <code>SavedModel</code>.</li>
+<li>Inicia TensorFlow Serving para servir el modelo.</li>
+<li>Realiza una solicitud de predicción utilizando la API REST de TensorFlow Serving.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKaW1wb3J0IHJlcXVlc3RzCmltcG9ydCBqc29uCgojIENhcmdhciBlbCBjb25qdW50byBkZSBkYXRvcyBNTklTVAooeF90cmFpbiwgeV90cmFpbiksICh4X3Rlc3QsIHlfdGVzdCkgPSB0Zi5rZXJhcy5kYXRhc2V0cy5tbmlzdC5sb2FkX2RhdGEoKQp4X3RyYWluLCB4X3Rlc3QgPSB4X3RyYWluIC8gMjU1LjAsIHhfdGVzdCAvIDI1NS4wCgojIERlZmluaXIgeSBlbnRyZW5hciBlbCBtb2RlbG8KbW9kZWwgPSB0Zi5rZXJhcy5TZXF1ZW50aWFsKFsKICAgIHRmLmtlcmFzLmxheWVycy5GbGF0dGVuKGlucHV0X3NoYXBlPSgyOCwgMjgpKSwKICAgIHRmLmtlcmFzLmxheWVycy5EZW5zZSgxMjgsIGFjdGl2YXRpb249J3JlbHUnKSwKICAgIHRmLmtlcmFzLmxheWVycy5Ecm9wb3V0KDAuMiksCiAgICB0Zi5rZXJhcy5sYXllcnMuRGVuc2UoMTAsIGFjdGl2YXRpb249J3NvZnRtYXgnKQpdKQptb2RlbC5jb21waWxlKG9wdGltaXplcj0nYWRhbScsIGxvc3M9J3NwYXJzZV9jYXRlZ29yaWNhbF9jcm9zc2VudHJvcHknLCBtZXRyaWNzPVsnYWNjdXJhY3knXSkKbW9kZWwuZml0KHhfdHJhaW4sIHlfdHJhaW4sIGVwb2Nocz01KQoKIyBHdWFyZGFyIGVsIG1vZGVsbwptb2RlbC5zYXZlKCdtbmlzdF9tb2RlbCcpCgojIEluaWNpYXIgVGVuc29yRmxvdyBTZXJ2aW5nIChlbiBsYSB0ZXJtaW5hbCkKIyB0ZW5zb3JmbG93X21vZGVsX3NlcnZlciAtLXJlc3RfYXBpX3BvcnQ9ODUwMSAtLW1vZGVsX25hbWU9bW5pc3RfbW9kZWwgLS1tb2RlbF9iYXNlX3BhdGg9Ii9wYXRoX3RvX21uaXN0X21vZGVsIgoKIyBSZWFsaXphciB1bmEgc29saWNpdHVkIGRlIHByZWRpY2Npw7NuCmRhdGEgPSBqc29uLmR1bXBzKHsic2lnbmF0dXJlX25hbWUiOiAic2VydmluZ19kZWZhdWx0IiwgImluc3RhbmNlcyI6IHhfdGVzdFs6NV0udG9saXN0KCl9KQpoZWFkZXJzID0geyJjb250ZW50LXR5cGUiOiAiYXBwbGljYXRpb24vanNvbiJ9Cmpzb25fcmVzcG9uc2UgPSByZXF1ZXN0cy5wb3N0KCdodHRwOi8vbG9jYWxob3N0Ojg1MDEvdjEvbW9kZWxzL21uaXN0X21vZGVsOnByZWRpY3QnLCBkYXRhPWRhdGEsIGhlYWRlcnM9aGVhZGVycykKcHJlZGljdGlvbnMgPSBqc29uLmxvYWRzKGpzb25fcmVzcG9uc2UudGV4dClbJ3ByZWRpY3Rpb25zJ10KCnByaW50KHByZWRpY3Rpb25zKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+import requests
+import json
+
+# Cargar el conjunto de datos MNIST
+(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Definir y entrenar el modelo
+model = tf.keras.Sequential([
+    tf.keras.layers.Flatten(input_shape=(28, 28)),
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.Dense(10, activation='softmax')
+])
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.fit(x_train, y_train, epochs=5)
+
+# Guardar el modelo
+model.save('mnist_model')
+
+# Iniciar TensorFlow Serving (en la terminal)
+# tensorflow_model_server --rest_api_port=8501 --model_name=mnist_model --model_base_path=&quot;/path_to_mnist_model&quot;
+
+# Realizar una solicitud de predicci&oacute;n
+data = json.dumps({&quot;signature_name&quot;: &quot;serving_default&quot;, &quot;instances&quot;: x_test[:5].tolist()})
+headers = {&quot;content-type&quot;: &quot;application/json&quot;}
+json_response = requests.post('http://localhost:8501/v1/models/mnist_model:predict', data=data, headers=headers)
+predictions = json.loads(json_response.text)['predictions']
+
+print(predictions)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo desplegar modelos de TensorFlow utilizando diferentes técnicas y herramientas. Hemos cubierto el guardado y la carga de modelos, el despliegue con TensorFlow Serving y el despliegue en la nube. Además, hemos realizado un ejercicio práctico para reforzar los conceptos aprendidos. En la siguiente sección, exploraremos cómo monitorear y mantener modelos en producción.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-tensorflow-serving' title="TensorFlow Serving">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-monitoring-and-maintenance' title="Monitoreo y Mantenimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

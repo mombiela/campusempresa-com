@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción al Proxy Inverso</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/03-01-introduction-reverse-proxy" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/03-01-introduction-reverse-proxy" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/03-01-introduction-reverse-proxy" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/03-01-introduction-reverse-proxy" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/03-01-introduction-reverse-proxy" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-logging-log-formats' title="Registro y Formatos de Registro">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introducción al Proxy Inverso</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-configuring-reverse-proxy' title="Configurando un Proxy Inverso">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>¿Qué es un Proxy Inverso?</h1>
+<div class='content'><p>Un proxy inverso es un servidor que se sitúa entre los clientes y los servidores backend. Su función principal es redirigir las solicitudes de los clientes a uno o más servidores backend y devolver las respuestas de estos servidores a los clientes. A diferencia de un proxy directo, que se utiliza para ocultar la identidad del cliente, un proxy inverso oculta la identidad del servidor backend.</p>
+</div><h2>Beneficios del Proxy Inverso</h2>
+<div class='content'><ol>
+<li><strong>Balanceo de Carga</strong>: Distribuye las solicitudes entrantes entre varios servidores backend para evitar la sobrecarga de un solo servidor.</li>
+<li><strong>Seguridad</strong>: Oculta la infraestructura del servidor backend, protegiéndolo de ataques directos.</li>
+<li><strong>Caché</strong>: Almacena en caché las respuestas de los servidores backend para mejorar el rendimiento y reducir la carga.</li>
+<li><strong>SSL/TLS</strong>: Maneja la terminación SSL/TLS, descargando esta tarea de los servidores backend.</li>
+<li><strong>Compresión</strong>: Comprime las respuestas antes de enviarlas al cliente, reduciendo el tiempo de carga.</li>
+</ol>
+</div><h1>Cómo Funciona un Proxy Inverso en NGINX</h1>
+<div class='content'><p>NGINX es una opción popular para configurar un proxy inverso debido a su alto rendimiento y flexibilidad. En una configuración de proxy inverso, NGINX recibe las solicitudes del cliente y las reenvía a los servidores backend configurados. Luego, NGINX devuelve la respuesta del servidor backend al cliente.</p>
+</div><h2>Ejemplo Básico de Configuración de Proxy Inverso</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo básico de configuración de un proxy inverso en NGINX:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kX3NlcnZlcnMgewogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kX3NlcnZlcnM7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgSG9zdCAkaG9zdDsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVJlYWwtSVAgJHJlbW90ZV9hZGRyOwogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIFgtRm9yd2FyZGVkLUZvciAkcHJveHlfYWRkX3hfZm9yd2FyZGVkX2ZvcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLUZvcndhcmRlZC1Qcm90byAkc2NoZW1lOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend_servers {
+        server backend1.example.com;
+        server backend2.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>upstream backend_servers</strong>: Define un grupo de servidores backend. En este caso, <code>backend1.example.com</code> y <code>backend2.example.com</code>.</li>
+<li><strong>server</strong>: Configura un servidor virtual que escucha en el puerto 80.</li>
+<li><strong>location /</strong>: Define una ubicación que coincide con todas las solicitudes.</li>
+<li><strong>proxy_pass http://backend_servers</strong>: Redirige las solicitudes a los servidores backend definidos en el bloque <code>upstream</code>.</li>
+<li><strong>proxy_set_header</strong>: Configura los encabezados HTTP que se enviarán al servidor backend. Estos encabezados incluyen:
+<ul>
+<li><code>Host</code>: El nombre del host de la solicitud original.</li>
+<li><code>X-Real-IP</code>: La dirección IP del cliente.</li>
+<li><code>X-Forwarded-For</code>: Una lista de direcciones IP a través de las cuales ha pasado la solicitud.</li>
+<li><code>X-Forwarded-Proto</code>: El esquema de la solicitud (http o https).</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración Básica de Proxy Inverso</h2>
+<div class='content'><p><strong>Objetivo</strong>: Configurar NGINX como un proxy inverso para redirigir las solicitudes a dos servidores backend.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Instala NGINX en tu servidor local.</li>
+<li>Crea un archivo de configuración en <code>/etc/nginx/conf.d/reverse_proxy.conf</code>.</li>
+<li>Copia el siguiente código en el archivo de configuración:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kX3NlcnZlcnMgewogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kX3NlcnZlcnM7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgSG9zdCAkaG9zdDsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVJlYWwtSVAgJHJlbW90ZV9hZGRyOwogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIFgtRm9yd2FyZGVkLUZvciAkcHJveHlfYWRkX3hfZm9yd2FyZGVkX2ZvcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLUZvcndhcmRlZC1Qcm90byAkc2NoZW1lOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend_servers {
+        server backend1.example.com;
+        server backend2.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}</pre></div><div class='content'><ol start="4">
+<li>Guarda el archivo y reinicia NGINX con el comando <code>sudo systemctl restart nginx</code>.</li>
+</ol>
+</div><h2>Solución del Ejercicio</h2>
+<div class='content'><p>Si has seguido las instrucciones correctamente, NGINX debería estar configurado como un proxy inverso que redirige las solicitudes a los servidores backend <code>backend1.example.com</code> y <code>backend2.example.com</code>.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido qué es un proxy inverso y cómo configurarlo en NGINX. Un proxy inverso puede mejorar la seguridad, el rendimiento y la escalabilidad de tu infraestructura. En la próxima lección, profundizaremos en la configuración de un proxy inverso en NGINX, incluyendo técnicas avanzadas como el balanceo de carga y las verificaciones de salud.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-logging-log-formats' title="Registro y Formatos de Registro">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-configuring-reverse-proxy' title="Configurando un Proxy Inverso">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

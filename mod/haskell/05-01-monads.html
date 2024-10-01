@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mónadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/haskell/05-01-monads" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/haskell/05-01-monads" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/haskell/05-01-monads" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/haskell/05-01-monads" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/haskell/05-01-monads" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-type-synonyms' title="Sinónimos de Tipos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mónadas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-applicative-functors' title="Funtores Aplicativos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las mónadas son un concepto fundamental en Haskell y en la programación funcional en general. Aunque pueden parecer complicadas al principio, son una herramienta poderosa para manejar efectos secundarios, como la entrada/salida, el manejo de errores y el estado mutable, de una manera pura y funcional.</p>
+</div><h1>¿Qué es una Mónada?</h1>
+<div class='content'><p>Una mónada es una estructura que representa cálculos secuenciales. En Haskell, una mónada es un tipo que implementa las siguientes tres operaciones:</p>
+<ol>
+<li><strong><code>return</code></strong>: Toma un valor y lo coloca en un contexto monádico.</li>
+<li><strong><code>&gt;&gt;=</code> (bind)</strong>: Toma un valor en un contexto monádico y una función que produce un nuevo contexto monádico, y los combina.</li>
+<li><strong><code>&gt;&gt;</code></strong>: Similar a <code>&gt;&gt;=</code>, pero ignora el valor producido por el primer cálculo.</li>
+</ol>
+</div><h2>Definición de la Clase Monad</h2>
+<div class='content'><p>En Haskell, la clase <code>Monad</code> se define de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQXBwbGljYXRpdmUgbSA9PiBNb25hZCBtIHdoZXJlCiAgICByZXR1cm4gOjogYSAtPiBtIGEKICAgICg+Pj0pICA6OiBtIGEgLT4gKGEgLT4gbSBiKSAtPiBtIGIKICAgICg+PikgICA6OiBtIGEgLT4gbSBiIC0+IG0gYgogICAgbSA+PiBrID0gbSA+Pj0gXF8gLT4gaw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Applicative m =&gt; Monad m where
+    return :: a -&gt; m a
+    (&gt;&gt;=)  :: m a -&gt; (a -&gt; m b) -&gt; m b
+    (&gt;&gt;)   :: m a -&gt; m b -&gt; m b
+    m &gt;&gt; k = m &gt;&gt;= \_ -&gt; k</pre></div><div class='content'></div><h2>Ejemplo: La Mónada Maybe</h2>
+<div class='content'><p>La mónada <code>Maybe</code> es una de las más simples y se utiliza para representar cálculos que pueden fallar. La definición de <code>Maybe</code> es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBNYXliZSBhID0gTm90aGluZyB8IEp1c3QgYQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data Maybe a = Nothing | Just a</pre></div><div class='content'><p>La instancia de <code>Monad</code> para <code>Maybe</code> se define así:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW5zdGFuY2UgTW9uYWQgTWF5YmUgd2hlcmUKICAgIHJldHVybiA9IEp1c3QKCiAgICBOb3RoaW5nID4+PSBfID0gTm90aGluZwogICAgSnVzdCB4ICA+Pj0gZiA9IGYgeA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>instance Monad Maybe where
+    return = Just
+
+    Nothing &gt;&gt;= _ = Nothing
+    Just x  &gt;&gt;= f = f x</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos dos funciones que pueden fallar:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2FmZURpdiA6OiBJbnQgLT4gSW50IC0+IE1heWJlIEludApzYWZlRGl2IF8gMCA9IE5vdGhpbmcKc2FmZURpdiB4IHkgPSBKdXN0ICh4IGBkaXZgIHkpCgpzYWZlU3FydCA6OiBJbnQgLT4gTWF5YmUgSW50CnNhZmVTcXJ0IHgKICAgIHwgeCA8IDAgICAgID0gTm90aGluZwogICAgfCBvdGhlcndpc2UgPSBKdXN0IChmbG9vciAuIHNxcnQgLiBmcm9tSW50ZWdyYWwgJCB4KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>safeDiv :: Int -&gt; Int -&gt; Maybe Int
+safeDiv _ 0 = Nothing
+safeDiv x y = Just (x `div` y)
+
+safeSqrt :: Int -&gt; Maybe Int
+safeSqrt x
+    | x &lt; 0     = Nothing
+    | otherwise = Just (floor . sqrt . fromIntegral $ x)</pre></div><div class='content'><p>Podemos componer estas funciones usando la notación <code>do</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2FmZURpdlNxcnQgOjogSW50IC0+IEludCAtPiBNYXliZSBJbnQKc2FmZURpdlNxcnQgeCB5ID0gZG8KICAgIHogPC0gc2FmZURpdiB4IHkKICAgIHNhZmVTcXJ0IHo="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>safeDivSqrt :: Int -&gt; Int -&gt; Maybe Int
+safeDivSqrt x y = do
+    z &lt;- safeDiv x y
+    safeSqrt z</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio 1: Implementar una Mónada Simple</strong></p>
+<p>Implementa una mónada <code>Logger</code> que registre mensajes durante el cálculo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBMb2dnZXIgYSA9IExvZ2dlciBbU3RyaW5nXSBhIGRlcml2aW5nIFNob3cKCmluc3RhbmNlIE1vbmFkIExvZ2dlciB3aGVyZQogICAgcmV0dXJuIHggPSBMb2dnZXIgW10geAogICAgKExvZ2dlciBsb2dzIHgpID4+PSBmID0gCiAgICAgICAgbGV0IExvZ2dlciBuZXdMb2dzIHkgPSBmIHgKICAgICAgICBpbiBMb2dnZXIgKGxvZ3MgKysgbmV3TG9ncykgeQoKbG9nTXNnIDo6IFN0cmluZyAtPiBMb2dnZXIgKCkKbG9nTXNnIG1zZyA9IExvZ2dlciBbbXNnXSAoKQoKZXhhbXBsZSA6OiBMb2dnZXIgSW50CmV4YW1wbGUgPSBkbwogICAgbG9nTXNnICJTdGFydGluZyBjYWxjdWxhdGlvbiIKICAgIHggPC0gcmV0dXJuIDQyCiAgICBsb2dNc2cgIkNhbGN1bGF0aW9uIGRvbmUiCiAgICByZXR1cm4geA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data Logger a = Logger [String] a deriving Show
+
+instance Monad Logger where
+    return x = Logger [] x
+    (Logger logs x) &gt;&gt;= f = 
+        let Logger newLogs y = f x
+        in Logger (logs ++ newLogs) y
+
+logMsg :: String -&gt; Logger ()
+logMsg msg = Logger [msg] ()
+
+example :: Logger Int
+example = do
+    logMsg &quot;Starting calculation&quot;
+    x &lt;- return 42
+    logMsg &quot;Calculation done&quot;
+    return x</pre></div><div class='content'><p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBMb2dnZXIgYSA9IExvZ2dlciBbU3RyaW5nXSBhIGRlcml2aW5nIFNob3cKCmluc3RhbmNlIE1vbmFkIExvZ2dlciB3aGVyZQogICAgcmV0dXJuIHggPSBMb2dnZXIgW10geAogICAgKExvZ2dlciBsb2dzIHgpID4+PSBmID0gCiAgICAgICAgbGV0IExvZ2dlciBuZXdMb2dzIHkgPSBmIHgKICAgICAgICBpbiBMb2dnZXIgKGxvZ3MgKysgbmV3TG9ncykgeQoKbG9nTXNnIDo6IFN0cmluZyAtPiBMb2dnZXIgKCkKbG9nTXNnIG1zZyA9IExvZ2dlciBbbXNnXSAoKQoKZXhhbXBsZSA6OiBMb2dnZXIgSW50CmV4YW1wbGUgPSBkbwogICAgbG9nTXNnICJTdGFydGluZyBjYWxjdWxhdGlvbiIKICAgIHggPC0gcmV0dXJuIDQyCiAgICBsb2dNc2cgIkNhbGN1bGF0aW9uIGRvbmUiCiAgICByZXR1cm4geAoKLS0gRWplY3VjacOzbiBkZWwgZWplbXBsbwotLSA+IGV4YW1wbGUKLS0gTG9nZ2VyIFsiU3RhcnRpbmcgY2FsY3VsYXRpb24iLCJDYWxjdWxhdGlvbiBkb25lIl0gNDI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data Logger a = Logger [String] a deriving Show
+
+instance Monad Logger where
+    return x = Logger [] x
+    (Logger logs x) &gt;&gt;= f = 
+        let Logger newLogs y = f x
+        in Logger (logs ++ newLogs) y
+
+logMsg :: String -&gt; Logger ()
+logMsg msg = Logger [msg] ()
+
+example :: Logger Int
+example = do
+    logMsg &quot;Starting calculation&quot;
+    x &lt;- return 42
+    logMsg &quot;Calculation done&quot;
+    return x
+
+-- Ejecuci&oacute;n del ejemplo
+-- &gt; example
+-- Logger [&quot;Starting calculation&quot;,&quot;Calculation done&quot;] 42</pre></div><div class='content'></div><h2>Errores Comunes y Consejos</h2>
+<div class='content'><ol>
+<li><strong>Olvidar el Contexto Monádico</strong>: Asegúrate de que todas las funciones que uses dentro de una mónada devuelvan un valor en el contexto monádico.</li>
+<li><strong>Confundir <code>&gt;&gt;</code> y <code>&gt;&gt;=</code></strong>: Usa <code>&gt;&gt;</code> cuando no te importe el valor producido por el primer cálculo, y <code>&gt;&gt;=</code> cuando necesites pasar ese valor a la siguiente función.</li>
+<li><strong>No Usar <code>do</code> Notation</strong>: La notación <code>do</code> puede hacer que el código sea más legible y fácil de seguir.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las mónadas son una herramienta poderosa en Haskell para manejar cálculos secuenciales y efectos secundarios de manera pura. Aunque pueden parecer complicadas al principio, con práctica y ejemplos prácticos, se vuelven una parte esencial del arsenal de cualquier programador funcional. En el próximo tema, exploraremos los funtores aplicativos, que son una generalización de las mónadas y proporcionan aún más flexibilidad en la programación funcional.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-type-synonyms' title="Sinónimos de Tipos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-applicative-functors' title="Funtores Aplicativos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

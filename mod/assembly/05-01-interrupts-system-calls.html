@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interrupciones y Llamadas al Sistema</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/assembly/05-01-interrupts-system-calls" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/assembly/05-01-interrupts-system-calls" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/assembly/05-01-interrupts-system-calls" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/assembly/05-01-interrupts-system-calls" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/assembly/05-01-interrupts-system-calls" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-stack-operations' title="Operaciones con la Pila">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Interrupciones y Llamadas al Sistema</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-macros-conditional' title="Macros y Ensamblado Condicional">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este módulo, exploraremos las interrupciones y las llamadas al sistema, dos conceptos fundamentales en la programación en ensamblador que permiten interactuar con el hardware y el sistema operativo. Las interrupciones son señales que indican que un evento ha ocurrido, mientras que las llamadas al sistema son interfaces que permiten a los programas solicitar servicios del sistema operativo.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Interrupciones</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Una interrupción es una señal enviada al procesador que indica que un evento necesita atención inmediata.</li>
+<li><strong>Tipos de Interrupciones</strong>:
+<ul>
+<li><strong>Interrupciones de Hardware</strong>: Generadas por dispositivos externos como teclados, ratones, etc.</li>
+<li><strong>Interrupciones de Software</strong>: Generadas por instrucciones específicas en el código del programa.</li>
+<li><strong>Interrupciones del Sistema</strong>: Generadas por el sistema operativo para manejar eventos internos.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Llamadas al Sistema</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Una llamada al sistema es una interfaz que permite a un programa solicitar servicios del sistema operativo, como operaciones de entrada/salida, gestión de memoria, etc.</li>
+<li><strong>Ejemplos Comunes</strong>:
+<ul>
+<li><code>int 0x80</code> en sistemas Linux para realizar llamadas al sistema.</li>
+<li><code>syscall</code> en sistemas modernos de 64 bits.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Interrupciones en Detalle</h1>
+<div class='content'></div><h2>Tabla de Interrupciones</h2>
+<div class='content'><p>La tabla de interrupciones es una estructura de datos que contiene las direcciones de las rutinas de servicio de interrupciones (ISR). Cada entrada en la tabla corresponde a una interrupción específica.</p>
+<table>
+<thead>
+<tr>
+<th>Interrupción</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0x00</td>
+<td>División por cero</td>
+</tr>
+<tr>
+<td>0x80</td>
+<td>Llamada al sistema en Linux</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Manejo de Interrupciones</h2>
+<div class='content'><p>Cuando ocurre una interrupción, el procesador:</p>
+<ol>
+<li>Guarda el estado actual (registros, puntero de instrucción).</li>
+<li>Busca la dirección de la ISR en la tabla de interrupciones.</li>
+<li>Salta a la ISR y ejecuta el código correspondiente.</li>
+<li>Restaura el estado y continúa la ejecución normal.</li>
+</ol>
+</div><h2>Ejemplo de Interrupción de Software</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VjdGlvbiAuZGF0YQogICAgbXNnIGRiICdIZWxsbywgV29ybGQhJywgMHgwQSAgOyBNZW5zYWplIGEgaW1wcmltaXIKCnNlY3Rpb24gLnRleHQKICAgIGdsb2JhbCBfc3RhcnQKCl9zdGFydDoKICAgIDsgTGxhbWFkYSBhbCBzaXN0ZW1hIHBhcmEgZXNjcmliaXIgZW4gbGEgc2FsaWRhIGVzdMOhbmRhcgogICAgbW92IGVheCwgNCAgICAgICAgICA7IE7Dum1lcm8gZGUgbGxhbWFkYSBhbCBzaXN0ZW1hIChzeXNfd3JpdGUpCiAgICBtb3YgZWJ4LCAxICAgICAgICAgIDsgRmlsZSBkZXNjcmlwdG9yICgxID0gc2FsaWRhIGVzdMOhbmRhcikKICAgIG1vdiBlY3gsIG1zZyAgICAgICAgOyBEaXJlY2Npw7NuIGRlbCBtZW5zYWplCiAgICBtb3YgZWR4LCAxMyAgICAgICAgIDsgTG9uZ2l0dWQgZGVsIG1lbnNhamUKICAgIGludCAweDgwICAgICAgICAgICAgOyBJbnRlcnJ1cGNpw7NuIGRlIHNvZnR3YXJlIHBhcmEgbGxhbWFkYSBhbCBzaXN0ZW1hCgogICAgOyBMbGFtYWRhIGFsIHNpc3RlbWEgcGFyYSBzYWxpciBkZWwgcHJvZ3JhbWEKICAgIG1vdiBlYXgsIDEgICAgICAgICAgOyBOw7ptZXJvIGRlIGxsYW1hZGEgYWwgc2lzdGVtYSAoc3lzX2V4aXQpCiAgICB4b3IgZWJ4LCBlYnggICAgICAgIDsgQ8OzZGlnbyBkZSBzYWxpZGEgKDApCiAgICBpbnQgMHg4MCAgICAgICAgICAgIDsgSW50ZXJydXBjacOzbiBkZSBzb2Z0d2FyZSBwYXJhIGxsYW1hZGEgYWwgc2lzdGVtYQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>section .data
+    msg db 'Hello, World!', 0x0A  ; Mensaje a imprimir
+
+section .text
+    global _start
+
+_start:
+    ; Llamada al sistema para escribir en la salida est&aacute;ndar
+    mov eax, 4          ; N&uacute;mero de llamada al sistema (sys_write)
+    mov ebx, 1          ; File descriptor (1 = salida est&aacute;ndar)
+    mov ecx, msg        ; Direcci&oacute;n del mensaje
+    mov edx, 13         ; Longitud del mensaje
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema
+
+    ; Llamada al sistema para salir del programa
+    mov eax, 1          ; N&uacute;mero de llamada al sistema (sys_exit)
+    xor ebx, ebx        ; C&oacute;digo de salida (0)
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema</pre></div><div class='content'></div><h1>Llamadas al Sistema en Detalle</h1>
+<div class='content'></div><h2>Realizando una Llamada al Sistema</h2>
+<div class='content'><p>Para realizar una llamada al sistema en Linux, se utilizan registros específicos para pasar los parámetros y el número de la llamada al sistema.</p>
+<table>
+<thead>
+<tr>
+<th>Registro</th>
+<th>Propósito</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eax</td>
+<td>Número de la llamada al sistema</td>
+</tr>
+<tr>
+<td>ebx</td>
+<td>Primer parámetro</td>
+</tr>
+<tr>
+<td>ecx</td>
+<td>Segundo parámetro</td>
+</tr>
+<tr>
+<td>edx</td>
+<td>Tercer parámetro</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ejemplo de Llamada al Sistema</h2>
+<div class='content'><p>El siguiente ejemplo muestra cómo realizar una llamada al sistema para leer datos desde la entrada estándar.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VjdGlvbiAuYnNzCiAgICBidWZmZXIgcmVzYiAxMjggIDsgQnVmZmVyIHBhcmEgYWxtYWNlbmFyIGxvcyBkYXRvcyBsZcOtZG9zCgpzZWN0aW9uIC50ZXh0CiAgICBnbG9iYWwgX3N0YXJ0Cgpfc3RhcnQ6CiAgICA7IExsYW1hZGEgYWwgc2lzdGVtYSBwYXJhIGxlZXIgZGVzZGUgbGEgZW50cmFkYSBlc3TDoW5kYXIKICAgIG1vdiBlYXgsIDMgICAgICAgICAgOyBOw7ptZXJvIGRlIGxsYW1hZGEgYWwgc2lzdGVtYSAoc3lzX3JlYWQpCiAgICBtb3YgZWJ4LCAwICAgICAgICAgIDsgRmlsZSBkZXNjcmlwdG9yICgwID0gZW50cmFkYSBlc3TDoW5kYXIpCiAgICBtb3YgZWN4LCBidWZmZXIgICAgIDsgRGlyZWNjacOzbiBkZWwgYnVmZmVyCiAgICBtb3YgZWR4LCAxMjggICAgICAgIDsgVGFtYcOxbyBkZWwgYnVmZmVyCiAgICBpbnQgMHg4MCAgICAgICAgICAgIDsgSW50ZXJydXBjacOzbiBkZSBzb2Z0d2FyZSBwYXJhIGxsYW1hZGEgYWwgc2lzdGVtYQoKICAgIDsgTGxhbWFkYSBhbCBzaXN0ZW1hIHBhcmEgZXNjcmliaXIgZW4gbGEgc2FsaWRhIGVzdMOhbmRhcgogICAgbW92IGVheCwgNCAgICAgICAgICA7IE7Dum1lcm8gZGUgbGxhbWFkYSBhbCBzaXN0ZW1hIChzeXNfd3JpdGUpCiAgICBtb3YgZWJ4LCAxICAgICAgICAgIDsgRmlsZSBkZXNjcmlwdG9yICgxID0gc2FsaWRhIGVzdMOhbmRhcikKICAgIG1vdiBlY3gsIGJ1ZmZlciAgICAgOyBEaXJlY2Npw7NuIGRlbCBidWZmZXIKICAgIG1vdiBlZHgsIDEyOCAgICAgICAgOyBUYW1hw7FvIGRlbCBidWZmZXIKICAgIGludCAweDgwICAgICAgICAgICAgOyBJbnRlcnJ1cGNpw7NuIGRlIHNvZnR3YXJlIHBhcmEgbGxhbWFkYSBhbCBzaXN0ZW1hCgogICAgOyBMbGFtYWRhIGFsIHNpc3RlbWEgcGFyYSBzYWxpciBkZWwgcHJvZ3JhbWEKICAgIG1vdiBlYXgsIDEgICAgICAgICAgOyBOw7ptZXJvIGRlIGxsYW1hZGEgYWwgc2lzdGVtYSAoc3lzX2V4aXQpCiAgICB4b3IgZWJ4LCBlYnggICAgICAgIDsgQ8OzZGlnbyBkZSBzYWxpZGEgKDApCiAgICBpbnQgMHg4MCAgICAgICAgICAgIDsgSW50ZXJydXBjacOzbiBkZSBzb2Z0d2FyZSBwYXJhIGxsYW1hZGEgYWwgc2lzdGVtYQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>section .bss
+    buffer resb 128  ; Buffer para almacenar los datos le&iacute;dos
+
+section .text
+    global _start
+
+_start:
+    ; Llamada al sistema para leer desde la entrada est&aacute;ndar
+    mov eax, 3          ; N&uacute;mero de llamada al sistema (sys_read)
+    mov ebx, 0          ; File descriptor (0 = entrada est&aacute;ndar)
+    mov ecx, buffer     ; Direcci&oacute;n del buffer
+    mov edx, 128        ; Tama&ntilde;o del buffer
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema
+
+    ; Llamada al sistema para escribir en la salida est&aacute;ndar
+    mov eax, 4          ; N&uacute;mero de llamada al sistema (sys_write)
+    mov ebx, 1          ; File descriptor (1 = salida est&aacute;ndar)
+    mov ecx, buffer     ; Direcci&oacute;n del buffer
+    mov edx, 128        ; Tama&ntilde;o del buffer
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema
+
+    ; Llamada al sistema para salir del programa
+    mov eax, 1          ; N&uacute;mero de llamada al sistema (sys_exit)
+    xor ebx, ebx        ; C&oacute;digo de salida (0)
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Escribir un Mensaje en la Salida Estándar</h2>
+<div class='content'><p><strong>Objetivo</strong>: Escribir un programa en ensamblador que imprima &quot;Hola, Mundo!&quot; en la salida estándar utilizando una llamada al sistema.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VjdGlvbiAuZGF0YQogICAgbXNnIGRiICdIb2xhLCBNdW5kbyEnLCAweDBBICA7IE1lbnNhamUgYSBpbXByaW1pcgoKc2VjdGlvbiAudGV4dAogICAgZ2xvYmFsIF9zdGFydAoKX3N0YXJ0OgogICAgOyBMbGFtYWRhIGFsIHNpc3RlbWEgcGFyYSBlc2NyaWJpciBlbiBsYSBzYWxpZGEgZXN0w6FuZGFyCiAgICBtb3YgZWF4LCA0ICAgICAgICAgIDsgTsO6bWVybyBkZSBsbGFtYWRhIGFsIHNpc3RlbWEgKHN5c193cml0ZSkKICAgIG1vdiBlYngsIDEgICAgICAgICAgOyBGaWxlIGRlc2NyaXB0b3IgKDEgPSBzYWxpZGEgZXN0w6FuZGFyKQogICAgbW92IGVjeCwgbXNnICAgICAgICA7IERpcmVjY2nDs24gZGVsIG1lbnNhamUKICAgIG1vdiBlZHgsIDEzICAgICAgICAgOyBMb25naXR1ZCBkZWwgbWVuc2FqZQogICAgaW50IDB4ODAgICAgICAgICAgICA7IEludGVycnVwY2nDs24gZGUgc29mdHdhcmUgcGFyYSBsbGFtYWRhIGFsIHNpc3RlbWEKCiAgICA7IExsYW1hZGEgYWwgc2lzdGVtYSBwYXJhIHNhbGlyIGRlbCBwcm9ncmFtYQogICAgbW92IGVheCwgMSAgICAgICAgICA7IE7Dum1lcm8gZGUgbGxhbWFkYSBhbCBzaXN0ZW1hIChzeXNfZXhpdCkKICAgIHhvciBlYngsIGVieCAgICAgICAgOyBDw7NkaWdvIGRlIHNhbGlkYSAoMCkKICAgIGludCAweDgwICAgICAgICAgICAgOyBJbnRlcnJ1cGNpw7NuIGRlIHNvZnR3YXJlIHBhcmEgbGxhbWFkYSBhbCBzaXN0ZW1h"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>section .data
+    msg db 'Hola, Mundo!', 0x0A  ; Mensaje a imprimir
+
+section .text
+    global _start
+
+_start:
+    ; Llamada al sistema para escribir en la salida est&aacute;ndar
+    mov eax, 4          ; N&uacute;mero de llamada al sistema (sys_write)
+    mov ebx, 1          ; File descriptor (1 = salida est&aacute;ndar)
+    mov ecx, msg        ; Direcci&oacute;n del mensaje
+    mov edx, 13         ; Longitud del mensaje
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema
+
+    ; Llamada al sistema para salir del programa
+    mov eax, 1          ; N&uacute;mero de llamada al sistema (sys_exit)
+    xor ebx, ebx        ; C&oacute;digo de salida (0)
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema</pre></div><div class='content'></div><h2>Ejercicio 2: Leer y Escribir Datos</h2>
+<div class='content'><p><strong>Objetivo</strong>: Escribir un programa en ensamblador que lea una línea de texto desde la entrada estándar y la escriba en la salida estándar.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VjdGlvbiAuYnNzCiAgICBidWZmZXIgcmVzYiAxMjggIDsgQnVmZmVyIHBhcmEgYWxtYWNlbmFyIGxvcyBkYXRvcyBsZcOtZG9zCgpzZWN0aW9uIC50ZXh0CiAgICBnbG9iYWwgX3N0YXJ0Cgpfc3RhcnQ6CiAgICA7IExsYW1hZGEgYWwgc2lzdGVtYSBwYXJhIGxlZXIgZGVzZGUgbGEgZW50cmFkYSBlc3TDoW5kYXIKICAgIG1vdiBlYXgsIDMgICAgICAgICAgOyBOw7ptZXJvIGRlIGxsYW1hZGEgYWwgc2lzdGVtYSAoc3lzX3JlYWQpCiAgICBtb3YgZWJ4LCAwICAgICAgICAgIDsgRmlsZSBkZXNjcmlwdG9yICgwID0gZW50cmFkYSBlc3TDoW5kYXIpCiAgICBtb3YgZWN4LCBidWZmZXIgICAgIDsgRGlyZWNjacOzbiBkZWwgYnVmZmVyCiAgICBtb3YgZWR4LCAxMjggICAgICAgIDsgVGFtYcOxbyBkZWwgYnVmZmVyCiAgICBpbnQgMHg4MCAgICAgICAgICAgIDsgSW50ZXJydXBjacOzbiBkZSBzb2Z0d2FyZSBwYXJhIGxsYW1hZGEgYWwgc2lzdGVtYQoKICAgIDsgTGxhbWFkYSBhbCBzaXN0ZW1hIHBhcmEgZXNjcmliaXIgZW4gbGEgc2FsaWRhIGVzdMOhbmRhcgogICAgbW92IGVheCwgNCAgICAgICAgICA7IE7Dum1lcm8gZGUgbGxhbWFkYSBhbCBzaXN0ZW1hIChzeXNfd3JpdGUpCiAgICBtb3YgZWJ4LCAxICAgICAgICAgIDsgRmlsZSBkZXNjcmlwdG9yICgxID0gc2FsaWRhIGVzdMOhbmRhcikKICAgIG1vdiBlY3gsIGJ1ZmZlciAgICAgOyBEaXJlY2Npw7NuIGRlbCBidWZmZXIKICAgIG1vdiBlZHgsIDEyOCAgICAgICAgOyBUYW1hw7FvIGRlbCBidWZmZXIKICAgIGludCAweDgwICAgICAgICAgICAgOyBJbnRlcnJ1cGNpw7NuIGRlIHNvZnR3YXJlIHBhcmEgbGxhbWFkYSBhbCBzaXN0ZW1hCgogICAgOyBMbGFtYWRhIGFsIHNpc3RlbWEgcGFyYSBzYWxpciBkZWwgcHJvZ3JhbWEKICAgIG1vdiBlYXgsIDEgICAgICAgICAgOyBOw7ptZXJvIGRlIGxsYW1hZGEgYWwgc2lzdGVtYSAoc3lzX2V4aXQpCiAgICB4b3IgZWJ4LCBlYnggICAgICAgIDsgQ8OzZGlnbyBkZSBzYWxpZGEgKDApCiAgICBpbnQgMHg4MCAgICAgICAgICAgIDsgSW50ZXJydXBjacOzbiBkZSBzb2Z0d2FyZSBwYXJhIGxsYW1hZGEgYWwgc2lzdGVtYQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>section .bss
+    buffer resb 128  ; Buffer para almacenar los datos le&iacute;dos
+
+section .text
+    global _start
+
+_start:
+    ; Llamada al sistema para leer desde la entrada est&aacute;ndar
+    mov eax, 3          ; N&uacute;mero de llamada al sistema (sys_read)
+    mov ebx, 0          ; File descriptor (0 = entrada est&aacute;ndar)
+    mov ecx, buffer     ; Direcci&oacute;n del buffer
+    mov edx, 128        ; Tama&ntilde;o del buffer
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema
+
+    ; Llamada al sistema para escribir en la salida est&aacute;ndar
+    mov eax, 4          ; N&uacute;mero de llamada al sistema (sys_write)
+    mov ebx, 1          ; File descriptor (1 = salida est&aacute;ndar)
+    mov ecx, buffer     ; Direcci&oacute;n del buffer
+    mov edx, 128        ; Tama&ntilde;o del buffer
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema
+
+    ; Llamada al sistema para salir del programa
+    mov eax, 1          ; N&uacute;mero de llamada al sistema (sys_exit)
+    xor ebx, ebx        ; C&oacute;digo de salida (0)
+    int 0x80            ; Interrupci&oacute;n de software para llamada al sistema</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido sobre las interrupciones y las llamadas al sistema, dos mecanismos esenciales para interactuar con el hardware y el sistema operativo en programación en ensamblador. Hemos visto cómo manejar interrupciones y realizar llamadas al sistema con ejemplos prácticos y ejercicios. Estos conceptos son fundamentales para escribir programas eficientes y efectivos en ensamblador.</p>
+<p>En el próximo módulo, exploraremos macros y ensamblado condicional, que nos permitirán escribir código más modular y reutilizable.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-stack-operations' title="Operaciones con la Pila">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-macros-conditional' title="Macros y Ensamblado Condicional">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

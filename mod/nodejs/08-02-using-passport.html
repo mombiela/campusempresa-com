@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usando Passport.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/08-02-using-passport" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/08-02-using-passport" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/08-02-using-passport" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nodejs/08-02-using-passport" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/08-02-using-passport" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-authentication' title="Introducción a la Autenticación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Usando Passport.js</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-jwt-authentication' title="Autenticación JWT">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Passport.js es un middleware de autenticación para Node.js que facilita la integración de diversas estrategias de autenticación en aplicaciones web. En este módulo, aprenderemos cómo configurar y utilizar Passport.js para autenticar usuarios en una aplicación Node.js.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-passportjs">Introducción a Passport.js</a></li>
+<li><a href="#instalación-de-passportjs-y-estrategias">Instalación de Passport.js y Estrategias</a></li>
+<li><a href="#configuración-de-passportjs">Configuración de Passport.js</a></li>
+<li><a href="#implementación-de-estrategias-de-autenticación">Implementación de Estrategias de Autenticación</a></li>
+<li><a href="#protección-de-rutas">Protección de Rutas</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción a Passport.js</h1>
+<div class='content'><p>Passport.js es un middleware flexible y modular que se puede integrar fácilmente en cualquier aplicación Node.js. Soporta más de 500 estrategias de autenticación, incluyendo autenticación local, OAuth, OpenID, y muchas más.</p>
+</div><h2>Características Clave</h2>
+<div class='content'><ul>
+<li><strong>Modularidad</strong>: Passport.js permite agregar múltiples estrategias de autenticación.</li>
+<li><strong>Simplicidad</strong>: La configuración y uso de Passport.js es sencillo y directo.</li>
+<li><strong>Flexibilidad</strong>: Se puede personalizar según las necesidades de la aplicación.</li>
+</ul>
+</div><h1>Instalación de Passport.js y Estrategias</h1>
+<div class='content'><p>Para comenzar, necesitamos instalar Passport.js y la estrategia de autenticación que vamos a utilizar. En este ejemplo, usaremos la estrategia de autenticación local.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgcGFzc3BvcnQgcGFzc3BvcnQtbG9jYWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install passport passport-local</pre></div><div class='content'></div><h1>Configuración de Passport.js</h1>
+<div class='content'></div><h2>1. Configuración Básica</h2>
+<div class='content'><p>Primero, necesitamos configurar Passport.js en nuestra aplicación Express. Crearemos un archivo <code>passport-config.js</code> para manejar la configuración de Passport.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcGFzc3BvcnQtY29uZmlnLmpzCmNvbnN0IHBhc3Nwb3J0ID0gcmVxdWlyZSgncGFzc3BvcnQnKTsKY29uc3QgTG9jYWxTdHJhdGVneSA9IHJlcXVpcmUoJ3Bhc3Nwb3J0LWxvY2FsJykuU3RyYXRlZ3k7CmNvbnN0IGJjcnlwdCA9IHJlcXVpcmUoJ2JjcnlwdCcpOwoKLy8gU2ltdWxhY2nDs24gZGUgYmFzZSBkZSBkYXRvcyBkZSB1c3Vhcmlvcwpjb25zdCB1c2VycyA9IFsKICB7IGlkOiAxLCB1c2VybmFtZTogJ3VzZXIxJywgcGFzc3dvcmQ6ICckMmIkMTAkRWl4WmFZVksxZnNidzFaZmJYM09YZVBhV3huOTZwMzZaZjRkNlo2UTVlNlE1ZTZRNWU2UTVlJyB9IC8vIHBhc3N3b3JkOiAncGFzc3dvcmQxMjMnCl07CgpwYXNzcG9ydC51c2UobmV3IExvY2FsU3RyYXRlZ3koCiAgZnVuY3Rpb24odXNlcm5hbWUsIHBhc3N3b3JkLCBkb25lKSB7CiAgICBjb25zdCB1c2VyID0gdXNlcnMuZmluZCh1c2VyID0+IHVzZXIudXNlcm5hbWUgPT09IHVzZXJuYW1lKTsKICAgIGlmICghdXNlcikgewogICAgICByZXR1cm4gZG9uZShudWxsLCBmYWxzZSwgeyBtZXNzYWdlOiAnSW5jb3JyZWN0IHVzZXJuYW1lLicgfSk7CiAgICB9CiAgICBiY3J5cHQuY29tcGFyZShwYXNzd29yZCwgdXNlci5wYXNzd29yZCwgZnVuY3Rpb24oZXJyLCByZXMpIHsKICAgICAgaWYgKHJlcykgewogICAgICAgIHJldHVybiBkb25lKG51bGwsIHVzZXIpOwogICAgICB9IGVsc2UgewogICAgICAgIHJldHVybiBkb25lKG51bGwsIGZhbHNlLCB7IG1lc3NhZ2U6ICdJbmNvcnJlY3QgcGFzc3dvcmQuJyB9KTsKICAgICAgfQogICAgfSk7CiAgfQopKTsKCnBhc3Nwb3J0LnNlcmlhbGl6ZVVzZXIoZnVuY3Rpb24odXNlciwgZG9uZSkgewogIGRvbmUobnVsbCwgdXNlci5pZCk7Cn0pOwoKcGFzc3BvcnQuZGVzZXJpYWxpemVVc2VyKGZ1bmN0aW9uKGlkLCBkb25lKSB7CiAgY29uc3QgdXNlciA9IHVzZXJzLmZpbmQodXNlciA9PiB1c2VyLmlkID09PSBpZCk7CiAgZG9uZShudWxsLCB1c2VyKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// passport-config.js
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcrypt');
+
+// Simulaci&oacute;n de base de datos de usuarios
+const users = [
+  { id: 1, username: 'user1', password: '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36Zf4d6Z6Q5e6Q5e6Q5e6Q5e' } // password: 'password123'
+];
+
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    const user = users.find(user =&gt; user.username === username);
+    if (!user) {
+      return done(null, false, { message: 'Incorrect username.' });
+    }
+    bcrypt.compare(password, user.password, function(err, res) {
+      if (res) {
+        return done(null, user);
+      } else {
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+    });
+  }
+));
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  const user = users.find(user =&gt; user.id === id);
+  done(null, user);
+});</pre></div><div class='content'></div><h2>2. Integración con Express</h2>
+<div class='content'><p>Ahora, integramos Passport.js en nuestra aplicación Express.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYXBwLmpzCmNvbnN0IGV4cHJlc3MgPSByZXF1aXJlKCdleHByZXNzJyk7CmNvbnN0IHBhc3Nwb3J0ID0gcmVxdWlyZSgncGFzc3BvcnQnKTsKY29uc3Qgc2Vzc2lvbiA9IHJlcXVpcmUoJ2V4cHJlc3Mtc2Vzc2lvbicpOwpyZXF1aXJlKCcuL3Bhc3Nwb3J0LWNvbmZpZycpOwoKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKYXBwLnVzZShleHByZXNzLnVybGVuY29kZWQoeyBleHRlbmRlZDogZmFsc2UgfSkpOwphcHAudXNlKHNlc3Npb24oewogIHNlY3JldDogJ3NlY3JldCcsCiAgcmVzYXZlOiBmYWxzZSwKICBzYXZlVW5pbml0aWFsaXplZDogZmFsc2UKfSkpOwphcHAudXNlKHBhc3Nwb3J0LmluaXRpYWxpemUoKSk7CmFwcC51c2UocGFzc3BvcnQuc2Vzc2lvbigpKTsKCmFwcC5wb3N0KCcvbG9naW4nLCBwYXNzcG9ydC5hdXRoZW50aWNhdGUoJ2xvY2FsJywgewogIHN1Y2Nlc3NSZWRpcmVjdDogJy9kYXNoYm9hcmQnLAogIGZhaWx1cmVSZWRpcmVjdDogJy9sb2dpbicsCiAgZmFpbHVyZUZsYXNoOiB0cnVlCn0pKTsKCmFwcC5nZXQoJy9kYXNoYm9hcmQnLCAocmVxLCByZXMpID0+IHsKICBpZiAocmVxLmlzQXV0aGVudGljYXRlZCgpKSB7CiAgICByZXMuc2VuZCgnV2VsY29tZSB0byB0aGUgZGFzaGJvYXJkIScpOwogIH0gZWxzZSB7CiAgICByZXMucmVkaXJlY3QoJy9sb2dpbicpOwogIH0KfSk7CgphcHAubGlzdGVuKDMwMDAsICgpID0+IHsKICBjb25zb2xlLmxvZygnU2VydmVyIHN0YXJ0ZWQgb24gaHR0cDovL2xvY2FsaG9zdDozMDAwJyk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// app.js
+const express = require('express');
+const passport = require('passport');
+const session = require('express-session');
+require('./passport-config');
+
+const app = express();
+
+app.use(express.urlencoded({ extended: false }));
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.post('/login', passport.authenticate('local', {
+  successRedirect: '/dashboard',
+  failureRedirect: '/login',
+  failureFlash: true
+}));
+
+app.get('/dashboard', (req, res) =&gt; {
+  if (req.isAuthenticated()) {
+    res.send('Welcome to the dashboard!');
+  } else {
+    res.redirect('/login');
+  }
+});
+
+app.listen(3000, () =&gt; {
+  console.log('Server started on http://localhost:3000');
+});</pre></div><div class='content'></div><h1>Implementación de Estrategias de Autenticación</h1>
+<div class='content'><p>En este ejemplo, hemos implementado la estrategia de autenticación local. Passport.js también soporta otras estrategias como OAuth y OpenID, que se pueden integrar de manera similar.</p>
+</div><h2>Estrategia Local</h2>
+<div class='content'><p>La estrategia local autentica a los usuarios mediante un nombre de usuario y una contraseña. En el archivo <code>passport-config.js</code>, hemos configurado la estrategia local para buscar el usuario en una base de datos simulada y comparar la contraseña proporcionada con la almacenada.</p>
+</div><h1>Protección de Rutas</h1>
+<div class='content'><p>Para proteger rutas específicas, podemos usar el método <code>req.isAuthenticated()</code> para verificar si el usuario está autenticado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLmdldCgnL2Rhc2hib2FyZCcsIChyZXEsIHJlcykgPT4gewogIGlmIChyZXEuaXNBdXRoZW50aWNhdGVkKCkpIHsKICAgIHJlcy5zZW5kKCdXZWxjb21lIHRvIHRoZSBkYXNoYm9hcmQhJyk7CiAgfSBlbHNlIHsKICAgIHJlcy5yZWRpcmVjdCgnL2xvZ2luJyk7CiAgfQp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.get('/dashboard', (req, res) =&gt; {
+  if (req.isAuthenticated()) {
+    res.send('Welcome to the dashboard!');
+  } else {
+    res.redirect('/login');
+  }
+});</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Registro de Usuarios</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar una ruta de registro de usuarios que permita a los nuevos usuarios registrarse en la aplicación.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Crear una ruta <code>/register</code> que muestre un formulario de registro.</li>
+<li>Crear una ruta POST <code>/register</code> que maneje el registro de usuarios.</li>
+<li>Almacenar los nuevos usuarios en la base de datos simulada.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gYXBwLmpzIChjb250aW51YWNpw7NuKQpjb25zdCBiY3J5cHQgPSByZXF1aXJlKCdiY3J5cHQnKTsKCmFwcC5nZXQoJy9yZWdpc3RlcicsIChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKCc8Zm9ybSBhY3Rpb249Ii9yZWdpc3RlciIgbWV0aG9kPSJwb3N0Ij48aW5wdXQgdHlwZT0idGV4dCIgbmFtZT0idXNlcm5hbWUiLz48aW5wdXQgdHlwZT0icGFzc3dvcmQiIG5hbWU9InBhc3N3b3JkIi8+PGJ1dHRvbiB0eXBlPSJzdWJtaXQiPlJlZ2lzdGVyPC9idXR0b24+PC9mb3JtPicpOwp9KTsKCmFwcC5wb3N0KCcvcmVnaXN0ZXInLCBhc3luYyAocmVxLCByZXMpID0+IHsKICBjb25zdCB7IHVzZXJuYW1lLCBwYXNzd29yZCB9ID0gcmVxLmJvZHk7CiAgY29uc3QgaGFzaGVkUGFzc3dvcmQgPSBhd2FpdCBiY3J5cHQuaGFzaChwYXNzd29yZCwgMTApOwogIHVzZXJzLnB1c2goeyBpZDogdXNlcnMubGVuZ3RoICsgMSwgdXNlcm5hbWUsIHBhc3N3b3JkOiBoYXNoZWRQYXNzd29yZCB9KTsKICByZXMucmVkaXJlY3QoJy9sb2dpbicpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// app.js (continuaci&oacute;n)
+const bcrypt = require('bcrypt');
+
+app.get('/register', (req, res) =&gt; {
+  res.send('&lt;form action=&quot;/register&quot; method=&quot;post&quot;&gt;&lt;input type=&quot;text&quot; name=&quot;username&quot;/&gt;&lt;input type=&quot;password&quot; name=&quot;password&quot;/&gt;&lt;button type=&quot;submit&quot;&gt;Register&lt;/button&gt;&lt;/form&gt;');
+});
+
+app.post('/register', async (req, res) =&gt; {
+  const { username, password } = req.body;
+  const hashedPassword = await bcrypt.hash(password, 10);
+  users.push({ id: users.length + 1, username, password: hashedPassword });
+  res.redirect('/login');
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar y utilizar Passport.js para autenticar usuarios en una aplicación Node.js. Hemos cubierto la instalación, configuración y protección de rutas, así como la implementación de una estrategia de autenticación local. Además, hemos realizado un ejercicio práctico para reforzar los conceptos aprendidos.</p>
+<p>En el siguiente módulo, exploraremos la autenticación JWT, que es otra forma popular de autenticar usuarios en aplicaciones web modernas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-authentication' title="Introducción a la Autenticación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-jwt-authentication' title="Autenticación JWT">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

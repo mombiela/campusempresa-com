@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coloreado y Sombreado</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/02-03-coloring-shading" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/02-03-coloring-shading" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/02-03-coloring-shading" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/02-03-coloring-shading" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/02-03-coloring-shading" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-coordinates-transformations' title="Entendiendo Coordenadas y Transformaciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Coloreado y Sombreado</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-using-buffers' title="Usando Buffers">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, aprenderemos cómo aplicar colores y sombras a los objetos que renderizamos en OpenGL. Estos conceptos son fundamentales para crear gráficos visualmente atractivos y realistas.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Coloreado</strong>: Aplicar colores a los vértices de los objetos.</li>
+<li><strong>Sombreado</strong>: Técnica para simular la forma en que la luz interactúa con las superficies de los objetos.</li>
+</ol>
+</div><h1>Coloreado en OpenGL</h1>
+<div class='content'></div><h2>Coloreado de Vértices</h2>
+<div class='content'><p>En OpenGL, podemos asignar colores a los vértices de un objeto. Estos colores se interpolan a lo largo de las superficies del objeto durante el proceso de rasterización.</p>
+</div><h2>Ejemplo Práctico: Coloreado de un Triángulo</h2>
+<div class='content'><p>Vamos a colorear un triángulo con tres colores diferentes en cada vértice.</p>
+<h4>Código de Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVmVydGV4IFNoYWRlciAodmVydGV4X3NoYWRlci5nbHNsKQojdmVyc2lvbiAzMzAgY29yZQpsYXlvdXQobG9jYXRpb24gPSAwKSBpbiB2ZWMzIGFQb3M7CmxheW91dChsb2NhdGlvbiA9IDEpIGluIHZlYzMgYUNvbG9yOwoKb3V0IHZlYzMgb3VyQ29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBnbF9Qb3NpdGlvbiA9IHZlYzQoYVBvcywgMS4wKTsKICAgIG91ckNvbG9yID0gYUNvbG9yOwp9CgovLyBGcmFnbWVudCBTaGFkZXIgKGZyYWdtZW50X3NoYWRlci5nbHNsKQojdmVyc2lvbiAzMzAgY29yZQppbiB2ZWMzIG91ckNvbG9yOwpvdXQgdmVjNCBGcmFnQ29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBGcmFnQ29sb3IgPSB2ZWM0KG91ckNvbG9yLCAxLjApOwp9CgovLyBNYWluIFByb2dyYW0gKG1haW4uY3BwKQojaW5jbHVkZSA8Z2xhZC9nbGFkLmg+CiNpbmNsdWRlIDxHTEZXL2dsZnczLmg+CgovLyBGdW5jdGlvbiBwcm90b3R5cGVzCnZvaWQgZnJhbWVidWZmZXJfc2l6ZV9jYWxsYmFjayhHTEZXd2luZG93KiB3aW5kb3csIGludCB3aWR0aCwgaW50IGhlaWdodCk7CnZvaWQgcHJvY2Vzc0lucHV0KEdMRld3aW5kb3cgKndpbmRvdyk7CgovLyBTZXR0aW5ncwpjb25zdCB1bnNpZ25lZCBpbnQgU0NSX1dJRFRIID0gODAwOwpjb25zdCB1bnNpZ25lZCBpbnQgU0NSX0hFSUdIVCA9IDYwMDsKCmludCBtYWluKCkKewogICAgLy8gSW5pdGlhbGl6ZSBHTEZXCiAgICBnbGZ3SW5pdCgpOwogICAgZ2xmd1dpbmRvd0hpbnQoR0xGV19DT05URVhUX1ZFUlNJT05fTUFKT1IsIDMpOwogICAgZ2xmd1dpbmRvd0hpbnQoR0xGV19DT05URVhUX1ZFUlNJT05fTUlOT1IsIDMpOwogICAgZ2xmd1dpbmRvd0hpbnQoR0xGV19PUEVOR0xfUFJPRklMRSwgR0xGV19PUEVOR0xfQ09SRV9QUk9GSUxFKTsKCiAgICAvLyBDcmVhdGUgYSB3aW5kb3dlZCBtb2RlIHdpbmRvdyBhbmQgaXRzIE9wZW5HTCBjb250ZXh0CiAgICBHTEZXd2luZG93KiB3aW5kb3cgPSBnbGZ3Q3JlYXRlV2luZG93KFNDUl9XSURUSCwgU0NSX0hFSUdIVCwgIkxlYXJuT3BlbkdMIiwgTlVMTCwgTlVMTCk7CiAgICBpZiAod2luZG93ID09IE5VTEwpCiAgICB7CiAgICAgICAgc3RkOjpjb3V0IDw8ICJGYWlsZWQgdG8gY3JlYXRlIEdMRlcgd2luZG93IiA8PCBzdGQ6OmVuZGw7CiAgICAgICAgZ2xmd1Rlcm1pbmF0ZSgpOwogICAgICAgIHJldHVybiAtMTsKICAgIH0KICAgIGdsZndNYWtlQ29udGV4dEN1cnJlbnQod2luZG93KTsKICAgIGdsZndTZXRGcmFtZWJ1ZmZlclNpemVDYWxsYmFjayh3aW5kb3csIGZyYW1lYnVmZmVyX3NpemVfY2FsbGJhY2spOwoKICAgIC8vIExvYWQgYWxsIE9wZW5HTCBmdW5jdGlvbiBwb2ludGVycwogICAgaWYgKCFnbGFkTG9hZEdMTG9hZGVyKChHTEFEbG9hZHByb2MpZ2xmd0dldFByb2NBZGRyZXNzKSkKICAgIHsKICAgICAgICBzdGQ6OmNvdXQgPDwgIkZhaWxlZCB0byBpbml0aWFsaXplIEdMQUQiIDw8IHN0ZDo6ZW5kbDsKICAgICAgICByZXR1cm4gLTE7CiAgICB9CgogICAgLy8gQnVpbGQgYW5kIGNvbXBpbGUgb3VyIHNoYWRlciBwcm9ncmFtCiAgICAvLyBWZXJ0ZXggc2hhZGVyCiAgICB1bnNpZ25lZCBpbnQgdmVydGV4U2hhZGVyID0gZ2xDcmVhdGVTaGFkZXIoR0xfVkVSVEVYX1NIQURFUik7CiAgICBnbFNoYWRlclNvdXJjZSh2ZXJ0ZXhTaGFkZXIsIDEsICZ2ZXJ0ZXhTaGFkZXJTb3VyY2UsIE5VTEwpOwogICAgZ2xDb21waWxlU2hhZGVyKHZlcnRleFNoYWRlcik7CiAgICAvLyBDaGVjayBmb3Igc2hhZGVyIGNvbXBpbGUgZXJyb3JzCiAgICBpbnQgc3VjY2VzczsKICAgIGNoYXIgaW5mb0xvZ1s1MTJdOwogICAgZ2xHZXRTaGFkZXJpdih2ZXJ0ZXhTaGFkZXIsIEdMX0NPTVBJTEVfU1RBVFVTLCAmc3VjY2Vzcyk7CiAgICBpZiAoIXN1Y2Nlc3MpCiAgICB7CiAgICAgICAgZ2xHZXRTaGFkZXJJbmZvTG9nKHZlcnRleFNoYWRlciwgNTEyLCBOVUxMLCBpbmZvTG9nKTsKICAgICAgICBzdGQ6OmNvdXQgPDwgIkVSUk9SOjpTSEFERVI6OlZFUlRFWDo6Q09NUElMQVRJT05fRkFJTEVEXG4iIDw8IGluZm9Mb2cgPDwgc3RkOjplbmRsOwogICAgfQogICAgLy8gRnJhZ21lbnQgc2hhZGVyCiAgICB1bnNpZ25lZCBpbnQgZnJhZ21lbnRTaGFkZXIgPSBnbENyZWF0ZVNoYWRlcihHTF9GUkFHTUVOVF9TSEFERVIpOwogICAgZ2xTaGFkZXJTb3VyY2UoZnJhZ21lbnRTaGFkZXIsIDEsICZmcmFnbWVudFNoYWRlclNvdXJjZSwgTlVMTCk7CiAgICBnbENvbXBpbGVTaGFkZXIoZnJhZ21lbnRTaGFkZXIpOwogICAgLy8gQ2hlY2sgZm9yIHNoYWRlciBjb21waWxlIGVycm9ycwogICAgZ2xHZXRTaGFkZXJpdihmcmFnbWVudFNoYWRlciwgR0xfQ09NUElMRV9TVEFUVVMsICZzdWNjZXNzKTsKICAgIGlmICghc3VjY2VzcykKICAgIHsKICAgICAgICBnbEdldFNoYWRlckluZm9Mb2coZnJhZ21lbnRTaGFkZXIsIDUxMiwgTlVMTCwgaW5mb0xvZyk7CiAgICAgICAgc3RkOjpjb3V0IDw8ICJFUlJPUjo6U0hBREVSOjpGUkFHTUVOVDo6Q09NUElMQVRJT05fRkFJTEVEXG4iIDw8IGluZm9Mb2cgPDwgc3RkOjplbmRsOwogICAgfQogICAgLy8gTGluayBzaGFkZXJzCiAgICB1bnNpZ25lZCBpbnQgc2hhZGVyUHJvZ3JhbSA9IGdsQ3JlYXRlUHJvZ3JhbSgpOwogICAgZ2xBdHRhY2hTaGFkZXIoc2hhZGVyUHJvZ3JhbSwgdmVydGV4U2hhZGVyKTsKICAgIGdsQXR0YWNoU2hhZGVyKHNoYWRlclByb2dyYW0sIGZyYWdtZW50U2hhZGVyKTsKICAgIGdsTGlua1Byb2dyYW0oc2hhZGVyUHJvZ3JhbSk7CiAgICAvLyBDaGVjayBmb3IgbGlua2luZyBlcnJvcnMKICAgIGdsR2V0UHJvZ3JhbWl2KHNoYWRlclByb2dyYW0sIEdMX0xJTktfU1RBVFVTLCAmc3VjY2Vzcyk7CiAgICBpZiAoIXN1Y2Nlc3MpIHsKICAgICAgICBnbEdldFByb2dyYW1JbmZvTG9nKHNoYWRlclByb2dyYW0sIDUxMiwgTlVMTCwgaW5mb0xvZyk7CiAgICAgICAgc3RkOjpjb3V0IDw8ICJFUlJPUjo6U0hBREVSOjpQUk9HUkFNOjpMSU5LSU5HX0ZBSUxFRFxuIiA8PCBpbmZvTG9nIDw8IHN0ZDo6ZW5kbDsKICAgIH0KICAgIGdsRGVsZXRlU2hhZGVyKHZlcnRleFNoYWRlcik7CiAgICBnbERlbGV0ZVNoYWRlcihmcmFnbWVudFNoYWRlcik7CgogICAgLy8gU2V0IHVwIHZlcnRleCBkYXRhIChhbmQgYnVmZmVyKHMpKSBhbmQgY29uZmlndXJlIHZlcnRleCBhdHRyaWJ1dGVzCiAgICBmbG9hdCB2ZXJ0aWNlc1tdID0gewogICAgICAgIC8vIHBvc2l0aW9ucyAgICAgICAgIC8vIGNvbG9ycwogICAgICAgICAwLjVmLCAtMC41ZiwgMC4wZiwgIDEuMGYsIDAuMGYsIDAuMGYsICAvLyBib3R0b20gcmlnaHQKICAgICAgICAtMC41ZiwgLTAuNWYsIDAuMGYsICAwLjBmLCAxLjBmLCAwLjBmLCAgLy8gYm90dG9tIGxlZnQKICAgICAgICAgMC4wZiwgIDAuNWYsIDAuMGYsICAwLjBmLCAwLjBmLCAxLjBmICAgLy8gdG9wIAogICAgfTsKCiAgICB1bnNpZ25lZCBpbnQgVkJPLCBWQU87CiAgICBnbEdlblZlcnRleEFycmF5cygxLCAmVkFPKTsKICAgIGdsR2VuQnVmZmVycygxLCAmVkJPKTsKCiAgICBnbEJpbmRWZXJ0ZXhBcnJheShWQU8pOwoKICAgIGdsQmluZEJ1ZmZlcihHTF9BUlJBWV9CVUZGRVIsIFZCTyk7CiAgICBnbEJ1ZmZlckRhdGEoR0xfQVJSQVlfQlVGRkVSLCBzaXplb2YodmVydGljZXMpLCB2ZXJ0aWNlcywgR0xfU1RBVElDX0RSQVcpOwoKICAgIC8vIHBvc2l0aW9uIGF0dHJpYnV0ZQogICAgZ2xWZXJ0ZXhBdHRyaWJQb2ludGVyKDAsIDMsIEdMX0ZMT0FULCBHTF9GQUxTRSwgNiAqIHNpemVvZihmbG9hdCksICh2b2lkKikwKTsKICAgIGdsRW5hYmxlVmVydGV4QXR0cmliQXJyYXkoMCk7CiAgICAvLyBjb2xvciBhdHRyaWJ1dGUKICAgIGdsVmVydGV4QXR0cmliUG9pbnRlcigxLCAzLCBHTF9GTE9BVCwgR0xfRkFMU0UsIDYgKiBzaXplb2YoZmxvYXQpLCAodm9pZCopKDMgKiBzaXplb2YoZmxvYXQpKSk7CiAgICBnbEVuYWJsZVZlcnRleEF0dHJpYkFycmF5KDEpOwoKICAgIC8vIFJlbmRlciBsb29wCiAgICB3aGlsZSAoIWdsZndXaW5kb3dTaG91bGRDbG9zZSh3aW5kb3cpKQogICAgewogICAgICAgIC8vIElucHV0CiAgICAgICAgcHJvY2Vzc0lucHV0KHdpbmRvdyk7CgogICAgICAgIC8vIFJlbmRlcgogICAgICAgIGdsQ2xlYXJDb2xvcigwLjJmLCAwLjNmLCAwLjNmLCAxLjBmKTsKICAgICAgICBnbENsZWFyKEdMX0NPTE9SX0JVRkZFUl9CSVQpOwoKICAgICAgICAvLyBEcmF3IG91ciBmaXJzdCB0cmlhbmdsZQogICAgICAgIGdsVXNlUHJvZ3JhbShzaGFkZXJQcm9ncmFtKTsKICAgICAgICBnbEJpbmRWZXJ0ZXhBcnJheShWQU8pOwogICAgICAgIGdsRHJhd0FycmF5cyhHTF9UUklBTkdMRVMsIDAsIDMpOwoKICAgICAgICAvLyBTd2FwIGJ1ZmZlcnMgYW5kIHBvbGwgSU8gZXZlbnRzCiAgICAgICAgZ2xmd1N3YXBCdWZmZXJzKHdpbmRvdyk7CiAgICAgICAgZ2xmd1BvbGxFdmVudHMoKTsKICAgIH0KCiAgICAvLyBEZWFsbG9jYXRlIGFsbCByZXNvdXJjZXMgb25jZSB0aGV5J3ZlIG91dGxpdmVkIHRoZWlyIHB1cnBvc2UKICAgIGdsRGVsZXRlVmVydGV4QXJyYXlzKDEsICZWQU8pOwogICAgZ2xEZWxldGVCdWZmZXJzKDEsICZWQk8pOwoKICAgIC8vIFRlcm1pbmF0ZSBHTEZXCiAgICBnbGZ3VGVybWluYXRlKCk7CiAgICByZXR1cm4gMDsKfQoKdm9pZCBmcmFtZWJ1ZmZlcl9zaXplX2NhbGxiYWNrKEdMRld3aW5kb3cqIHdpbmRvdywgaW50IHdpZHRoLCBpbnQgaGVpZ2h0KQp7CiAgICBnbFZpZXdwb3J0KDAsIDAsIHdpZHRoLCBoZWlnaHQpOwp9Cgp2b2lkIHByb2Nlc3NJbnB1dChHTEZXd2luZG93ICp3aW5kb3cpCnsKICAgIGlmIChnbGZ3R2V0S2V5KHdpbmRvdywgR0xGV19LRVlfRVNDQVBFKSA9PSBHTEZXX1BSRVNTKQogICAgICAgIGdsZndTZXRXaW5kb3dTaG91bGRDbG9zZSh3aW5kb3csIHRydWUpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Vertex Shader (vertex_shader.glsl)
+#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aColor;
+
+out vec3 ourColor;
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+    ourColor = aColor;
+}
+
+// Fragment Shader (fragment_shader.glsl)
+#version 330 core
+in vec3 ourColor;
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(ourColor, 1.0);
+}
+
+// Main Program (main.cpp)
+#include &lt;glad/glad.h&gt;
+#include &lt;GLFW/glfw3.h&gt;
+
+// Function prototypes
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void processInput(GLFWwindow *window);
+
+// Settings
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+int main()
+{
+    // Initialize GLFW
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    // Create a windowed mode window and its OpenGL context
+    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, &quot;LearnOpenGL&quot;, NULL, NULL);
+    if (window == NULL)
+    {
+        std::cout &lt;&lt; &quot;Failed to create GLFW window&quot; &lt;&lt; std::endl;
+        glfwTerminate();
+        return -1;
+    }
+    glfwMakeContextCurrent(window);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Load all OpenGL function pointers
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        std::cout &lt;&lt; &quot;Failed to initialize GLAD&quot; &lt;&lt; std::endl;
+        return -1;
+    }
+
+    // Build and compile our shader program
+    // Vertex shader
+    unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &amp;vertexShaderSource, NULL);
+    glCompileShader(vertexShader);
+    // Check for shader compile errors
+    int success;
+    char infoLog[512];
+    glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &amp;success);
+    if (!success)
+    {
+        glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+        std::cout &lt;&lt; &quot;ERROR::SHADER::VERTEX::COMPILATION_FAILED\n&quot; &lt;&lt; infoLog &lt;&lt; std::endl;
+    }
+    // Fragment shader
+    unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &amp;fragmentShaderSource, NULL);
+    glCompileShader(fragmentShader);
+    // Check for shader compile errors
+    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &amp;success);
+    if (!success)
+    {
+        glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+        std::cout &lt;&lt; &quot;ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n&quot; &lt;&lt; infoLog &lt;&lt; std::endl;
+    }
+    // Link shaders
+    unsigned int shaderProgram = glCreateProgram();
+    glAttachShader(shaderProgram, vertexShader);
+    glAttachShader(shaderProgram, fragmentShader);
+    glLinkProgram(shaderProgram);
+    // Check for linking errors
+    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &amp;success);
+    if (!success) {
+        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+        std::cout &lt;&lt; &quot;ERROR::SHADER::PROGRAM::LINKING_FAILED\n&quot; &lt;&lt; infoLog &lt;&lt; std::endl;
+    }
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    // Set up vertex data (and buffer(s)) and configure vertex attributes
+    float vertices[] = {
+        // positions         // colors
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // bottom right
+        -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom left
+         0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f   // top 
+    };
+
+    unsigned int VBO, VAO;
+    glGenVertexArrays(1, &amp;VAO);
+    glGenBuffers(1, &amp;VBO);
+
+    glBindVertexArray(VAO);
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    // position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    // color attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    // Render loop
+    while (!glfwWindowShouldClose(window))
+    {
+        // Input
+        processInput(window);
+
+        // Render
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Draw our first triangle
+        glUseProgram(shaderProgram);
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        // Swap buffers and poll IO events
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    // Deallocate all resources once they've outlived their purpose
+    glDeleteVertexArrays(1, &amp;VAO);
+    glDeleteBuffers(1, &amp;VBO);
+
+    // Terminate GLFW
+    glfwTerminate();
+    return 0;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+}
+
+void processInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Shaders</strong>:</p>
+<ul>
+<li><strong>Vertex Shader</strong>: Define la posición de los vértices y pasa el color a los fragment shaders.</li>
+<li><strong>Fragment Shader</strong>: Recibe el color interpolado y lo asigna al fragmento.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuración de Vértices</strong>:</p>
+<ul>
+<li>Definimos un array de vértices que incluye posiciones y colores.</li>
+<li>Configuramos los atributos de vértices para posiciones y colores.</li>
+</ul>
+</li>
+<li>
+<p><strong>Render Loop</strong>:</p>
+<ul>
+<li>Limpiamos el buffer de color.</li>
+<li>Usamos el programa de shaders y dibujamos el triángulo.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Sombreado en OpenGL</h1>
+<div class='content'></div><h2>Tipos de Sombreado</h2>
+<div class='content'><ol>
+<li><strong>Sombreado Plano (Flat Shading)</strong>: Cada polígono tiene un solo color.</li>
+<li><strong>Sombreado de Gouraud</strong>: Los colores se interpolan a lo largo de los vértices.</li>
+<li><strong>Sombreado de Phong</strong>: Los colores se interpolan a lo largo de los píxeles.</li>
+</ol>
+</div><h2>Ejemplo Práctico: Sombreado de Phong</h2>
+<div class='content'><p>Vamos a implementar el sombreado de Phong para un objeto simple.</p>
+<h4>Código de Ejemplo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVmVydGV4IFNoYWRlciAodmVydGV4X3NoYWRlci5nbHNsKQojdmVyc2lvbiAzMzAgY29yZQpsYXlvdXQobG9jYXRpb24gPSAwKSBpbiB2ZWMzIGFQb3M7CmxheW91dChsb2NhdGlvbiA9IDEpIGluIHZlYzMgYU5vcm1hbDsKCm91dCB2ZWMzIEZyYWdQb3M7Cm91dCB2ZWMzIE5vcm1hbDsKCnVuaWZvcm0gbWF0NCBtb2RlbDsKdW5pZm9ybSBtYXQ0IHZpZXc7CnVuaWZvcm0gbWF0NCBwcm9qZWN0aW9uOwoKdm9pZCBtYWluKCkKewogICAgRnJhZ1BvcyA9IHZlYzMobW9kZWwgKiB2ZWM0KGFQb3MsIDEuMCkpOwogICAgTm9ybWFsID0gbWF0Myh0cmFuc3Bvc2UoaW52ZXJzZShtb2RlbCkpKSAqIGFOb3JtYWw7ICAKICAgIGdsX1Bvc2l0aW9uID0gcHJvamVjdGlvbiAqIHZpZXcgKiB2ZWM0KEZyYWdQb3MsIDEuMCk7Cn0KCi8vIEZyYWdtZW50IFNoYWRlciAoZnJhZ21lbnRfc2hhZGVyLmdsc2wpCiN2ZXJzaW9uIDMzMCBjb3JlCm91dCB2ZWM0IEZyYWdDb2xvcjsKCmluIHZlYzMgRnJhZ1BvczsgIAppbiB2ZWMzIE5vcm1hbDsgIAoKdW5pZm9ybSB2ZWMzIGxpZ2h0UG9zOyAKdW5pZm9ybSB2ZWMzIHZpZXdQb3M7IAp1bmlmb3JtIHZlYzMgbGlnaHRDb2xvcjsKdW5pZm9ybSB2ZWMzIG9iamVjdENvbG9yOwoKdm9pZCBtYWluKCkKewogICAgLy8gQW1iaWVudAogICAgZmxvYXQgYW1iaWVudFN0cmVuZ3RoID0gMC4xOwogICAgdmVjMyBhbWJpZW50ID0gYW1iaWVudFN0cmVuZ3RoICogbGlnaHRDb2xvcjsKICAJCiAgICAvLyBEaWZmdXNlIAogICAgdmVjMyBub3JtID0gbm9ybWFsaXplKE5vcm1hbCk7CiAgICB2ZWMzIGxpZ2h0RGlyID0gbm9ybWFsaXplKGxpZ2h0UG9zIC0gRnJhZ1Bvcyk7CiAgICBmbG9hdCBkaWZmID0gbWF4KGRvdChub3JtLCBsaWdodERpciksIDAuMCk7CiAgICB2ZWMzIGRpZmZ1c2UgPSBkaWZmICogbGlnaHRDb2xvcjsKICAgIAogICAgLy8gU3BlY3VsYXIKICAgIGZsb2F0IHNwZWN1bGFyU3RyZW5ndGggPSAwLjU7CiAgICB2ZWMzIHZpZXdEaXIgPSBub3JtYWxpemUodmlld1BvcyAtIEZyYWdQb3MpOwogICAgdmVjMyByZWZsZWN0RGlyID0gcmVmbGVjdCgtbGlnaHREaXIsIG5vcm0pOyAgCiAgICBmbG9hdCBzcGVjID0gcG93KG1heChkb3Qodmlld0RpciwgcmVmbGVjdERpciksIDAuMCksIDMyKTsKICAgIHZlYzMgc3BlY3VsYXIgPSBzcGVjdWxhclN0cmVuZ3RoICogc3BlYyAqIGxpZ2h0Q29sb3I7ICAKICAgIAogICAgdmVjMyByZXN1bHQgPSAoYW1iaWVudCArIGRpZmZ1c2UgKyBzcGVjdWxhcikgKiBvYmplY3RDb2xvcjsKICAgIEZyYWdDb2xvciA9IHZlYzQocmVzdWx0LCAxLjApOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Vertex Shader (vertex_shader.glsl)
+#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aNormal;
+
+out vec3 FragPos;
+out vec3 Normal;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}
+
+// Fragment Shader (fragment_shader.glsl)
+#version 330 core
+out vec4 FragColor;
+
+in vec3 FragPos;  
+in vec3 Normal;  
+
+uniform vec3 lightPos; 
+uniform vec3 viewPos; 
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+
+void main()
+{
+    // Ambient
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+  	
+    // Diffuse 
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    
+    // Specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;  
+    
+    vec3 result = (ambient + diffuse + specular) * objectColor;
+    FragColor = vec4(result, 1.0);
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Vertex Shader</strong>:
+<ul>
+<li>Calcula la posición del fragmento y la normal transformada.</li>
+</ul>
+</li>
+<li><strong>Fragment Shader</strong>:
+<ul>
+<li>Calcula los componentes ambiental, difuso y especular de la iluminación.</li>
+<li>Combina estos componentes para obtener el color final del fragmento.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Coloreado de un Cuadrado</h2>
+<div class='content'><p><strong>Objetivo</strong>: Colorear un cuadrado con diferentes colores en cada vértice.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Modifica el array de vértices para definir un cuadrado.</li>
+<li>Asigna colores diferentes a cada vértice.</li>
+<li>Renderiza el cuadrado.</li>
+</ol>
+</div><h2>Ejercicio 2: Implementar Sombreado de Gouraud</h2>
+<div class='content'><p><strong>Objetivo</strong>: Implementar el sombreado de Gouraud en un objeto.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Modifica los shaders para calcular la iluminación en el vertex shader.</li>
+<li>Interpola los colores calculados en el fragment shader.</li>
+</ol>
+</div><h1>Soluciones</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVmVydGV4IGRhdGEgZm9yIGEgc3F1YXJlCmZsb2F0IHZlcnRpY2VzW10gPSB7CiAgICAvLyBwb3NpdGlvbnMgICAgICAgICAvLyBjb2xvcnMKICAgICAwLjVmLCAgMC41ZiwgMC4wZiwgIDEuMGYsIDAuMGYsIDAuMGYsICAvLyB0b3AgcmlnaHQKICAgICAwLjVmLCAtMC41ZiwgMC4wZiwgIDAuMGYsIDEuMGYsIDAuMGYsICAvLyBib3R0b20gcmlnaHQKICAgIC0wLjVmLCAtMC41ZiwgMC4wZiwgIDAuMGYsIDAuMGYsIDEuMGYsICAvLyBib3R0b20gbGVmdAogICAgLTAuNWYsICAwLjVmLCAwLjBmLCAgMS4wZiwgMS4wZiwgMC4wZiAgIC8vIHRvcCBsZWZ0IAp9OwoKdW5zaWduZWQgaW50IGluZGljZXNbXSA9IHsgIC8vIG5vdGUgdGhhdCB3ZSBzdGFydCBmcm9tIDAhCiAgICAwLCAxLCAzLCAgIC8vIGZpcnN0IHRyaWFuZ2xlCiAgICAxLCAyLCAzICAgIC8vIHNlY29uZCB0cmlhbmdsZQp9OwoKLy8gU2V0dXAgY29kZSByZW1haW5zIHRoZSBzYW1lLCBqdXN0IHVzZSB0aGUgbmV3IHZlcnRleCBkYXRhIGFuZCBpbmRpY2Vz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Vertex data for a square
+float vertices[] = {
+    // positions         // colors
+     0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f   // top left 
+};
+
+unsigned int indices[] = {  // note that we start from 0!
+    0, 1, 3,   // first triangle
+    1, 2, 3    // second triangle
+};
+
+// Setup code remains the same, just use the new vertex data and indices</pre></div><div class='content'></div><h2>Solución al Ejercicio 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVmVydGV4IFNoYWRlciAodmVydGV4X3NoYWRlci5nbHNsKQojdmVyc2lvbiAzMzAgY29yZQpsYXlvdXQobG9jYXRpb24gPSAwKSBpbiB2ZWMzIGFQb3M7CmxheW91dChsb2NhdGlvbiA9IDEpIGluIHZlYzMgYU5vcm1hbDsKCm91dCB2ZWMzIHZlcnRleENvbG9yOwoKdW5pZm9ybSB2ZWMzIGxpZ2h0UG9zOyAKdW5pZm9ybSB2ZWMzIHZpZXdQb3M7IAp1bmlmb3JtIHZlYzMgbGlnaHRDb2xvcjsKdW5pZm9ybSB2ZWMzIG9iamVjdENvbG9yOwoKdm9pZCBtYWluKCkKewogICAgLy8gQW1iaWVudAogICAgZmxvYXQgYW1iaWVudFN0cmVuZ3RoID0gMC4xOwogICAgdmVjMyBhbWJpZW50ID0gYW1iaWVudFN0cmVuZ3RoICogbGlnaHRDb2xvcjsKICAJCiAgICAvLyBEaWZmdXNlIAogICAgdmVjMyBub3JtID0gbm9ybWFsaXplKGFOb3JtYWwpOwogICAgdmVjMyBsaWdodERpciA9IG5vcm1hbGl6ZShsaWdodFBvcyAtIGFQb3MpOwogICAgZmxvYXQgZGlmZiA9IG1heChkb3Qobm9ybSwgbGlnaHREaXIpLCAwLjApOwogICAgdmVjMyBkaWZmdXNlID0gZGlmZiAqIGxpZ2h0Q29sb3I7CiAgICAKICAgIC8vIFNwZWN1bGFyCiAgICBmbG9hdCBzcGVjdWxhclN0cmVuZ3RoID0gMC41OwogICAgdmVjMyB2aWV3RGlyID0gbm9ybWFsaXplKHZpZXdQb3MgLSBhUG9zKTsKICAgIHZlYzMgcmVmbGVjdERpciA9IHJlZmxlY3QoLWxpZ2h0RGlyLCBub3JtKTsgIAogICAgZmxvYXQgc3BlYyA9IHBvdyhtYXgoZG90KHZpZXdEaXIsIHJlZmxlY3REaXIpLCAwLjApLCAzMik7CiAgICB2ZWMzIHNwZWN1bGFyID0gc3BlY3VsYXJTdHJlbmd0aCAqIHNwZWMgKiBsaWdodENvbG9yOyAgCiAgICAKICAgIHZlYzMgcmVzdWx0ID0gKGFtYmllbnQgKyBkaWZmdXNlICsgc3BlY3VsYXIpICogb2JqZWN0Q29sb3I7CiAgICB2ZXJ0ZXhDb2xvciA9IHJlc3VsdDsKICAgIGdsX1Bvc2l0aW9uID0gdmVjNChhUG9zLCAxLjApOwp9CgovLyBGcmFnbWVudCBTaGFkZXIgKGZyYWdtZW50X3NoYWRlci5nbHNsKQojdmVyc2lvbiAzMzAgY29yZQppbiB2ZWMzIHZlcnRleENvbG9yOwpvdXQgdmVjNCBGcmFnQ29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBGcmFnQ29sb3IgPSB2ZWM0KHZlcnRleENvbG9yLCAxLjApOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Vertex Shader (vertex_shader.glsl)
+#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aNormal;
+
+out vec3 vertexColor;
+
+uniform vec3 lightPos; 
+uniform vec3 viewPos; 
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+
+void main()
+{
+    // Ambient
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+  	
+    // Diffuse 
+    vec3 norm = normalize(aNormal);
+    vec3 lightDir = normalize(lightPos - aPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    
+    // Specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - aPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;  
+    
+    vec3 result = (ambient + diffuse + specular) * objectColor;
+    vertexColor = result;
+    gl_Position = vec4(aPos, 1.0);
+}
+
+// Fragment Shader (fragment_shader.glsl)
+#version 330 core
+in vec3 vertexColor;
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(vertexColor, 1.0);
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo aplicar colores y sombras a los objetos en OpenGL. Hemos cubierto los conceptos básicos de coloreado de vértices y sombreado, y hemos implementado ejemplos prácticos para ilustrar estos conceptos. Con estos conocimientos, estás preparado para crear gráficos más complejos y visualmente atractivos en OpenGL. En la próxima sección, exploraremos cómo usar buffers para optimizar el renderizado.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-coordinates-transformations' title="Entendiendo Coordenadas y Transformaciones">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-using-buffers' title="Usando Buffers">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

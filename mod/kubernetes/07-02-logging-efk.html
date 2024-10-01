@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro con Elasticsearch, Fluentd y Kibana (EFK)</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/07-02-logging-efk" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/07-02-logging-efk" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/07-02-logging-efk" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/07-02-logging-efk" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/07-02-logging-efk" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-monitoring-prometheus' title="Monitoreo con Prometheus">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Registro con Elasticsearch, Fluentd y Kibana (EFK)</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-health-checks-probes' title="Verificaciones de Salud y Sondas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El stack EFK (Elasticsearch, Fluentd y Kibana) es una solución popular para la gestión de registros en Kubernetes. Este stack permite recolectar, almacenar y visualizar logs de manera eficiente, facilitando el monitoreo y la depuración de aplicaciones en un clúster de Kubernetes.</p>
+</div><h1>¿Qué es EFK?</h1>
+<div class='content'><ul>
+<li><strong>Elasticsearch</strong>: Un motor de búsqueda y análisis distribuido que almacena y permite consultas rápidas sobre grandes volúmenes de datos.</li>
+<li><strong>Fluentd</strong>: Un colector de logs que unifica la recolección y el consumo de datos de registro de diferentes fuentes.</li>
+<li><strong>Kibana</strong>: Una herramienta de visualización que se integra con Elasticsearch para explorar y visualizar datos de registro.</li>
+</ul>
+</div><h1>Arquitectura del Stack EFK</h1>
+<div class='content'><ol>
+<li><strong>Fluentd</strong> recolecta logs de los nodos y contenedores en el clúster de Kubernetes.</li>
+<li><strong>Elasticsearch</strong> almacena estos logs y permite realizar búsquedas y análisis sobre ellos.</li>
+<li><strong>Kibana</strong> proporciona una interfaz gráfica para visualizar y explorar los logs almacenados en Elasticsearch.</li>
+</ol>
+</div><h1>Configuración del Stack EFK en Kubernetes</h1>
+<div class='content'></div><h2>Paso 1: Desplegar Elasticsearch</h2>
+<div class='content'><p>Primero, necesitamos desplegar Elasticsearch en nuestro clúster de Kubernetes. A continuación, se muestra un ejemplo de un archivo de configuración para desplegar Elasticsearch:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBTdGF0ZWZ1bFNldAptZXRhZGF0YToKICBuYW1lOiBlbGFzdGljc2VhcmNoCiAgbmFtZXNwYWNlOiBsb2dnaW5nCnNwZWM6CiAgc2VydmljZU5hbWU6ICJlbGFzdGljc2VhcmNoIgogIHJlcGxpY2FzOiAxCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBlbGFzdGljc2VhcmNoCiAgdGVtcGxhdGU6CiAgICBtZXRhZGF0YToKICAgICAgbGFiZWxzOgogICAgICAgIGFwcDogZWxhc3RpY3NlYXJjaAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBlbGFzdGljc2VhcmNoCiAgICAgICAgaW1hZ2U6IGRvY2tlci5lbGFzdGljLmNvL2VsYXN0aWNzZWFyY2gvZWxhc3RpY3NlYXJjaDo3LjEwLjEKICAgICAgICBwb3J0czoKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDkyMDAKICAgICAgICAgIG5hbWU6IGh0dHAKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDkzMDAKICAgICAgICAgIG5hbWU6IHRyYW5zcG9ydAogICAgICAgIGVudjoKICAgICAgICAtIG5hbWU6IGRpc2NvdmVyeS50eXBlCiAgICAgICAgICB2YWx1ZTogc2luZ2xlLW5vZGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: elasticsearch
+  namespace: logging
+spec:
+  serviceName: &quot;elasticsearch&quot;
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+      - name: elasticsearch
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.10.1
+        ports:
+        - containerPort: 9200
+          name: http
+        - containerPort: 9300
+          name: transport
+        env:
+        - name: discovery.type
+          value: single-node</pre></div><div class='content'></div><h2>Paso 2: Desplegar Fluentd</h2>
+<div class='content'><p>Fluentd se utiliza para recolectar y enviar logs a Elasticsearch. Aquí hay un ejemplo de configuración para desplegar Fluentd como un DaemonSet:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEYWVtb25TZXQKbWV0YWRhdGE6CiAgbmFtZTogZmx1ZW50ZAogIG5hbWVzcGFjZTogbG9nZ2luZwpzcGVjOgogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGFwcDogZmx1ZW50ZAogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IGZsdWVudGQKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZTogZmx1ZW50ZAogICAgICAgIGltYWdlOiBmbHVlbnQvZmx1ZW50ZC1rdWJlcm5ldGVzLWRhZW1vbnNldDp2MS4xMS4yLWRlYmlhbi1lbGFzdGljc2VhcmNoNy0xLjAKICAgICAgICBlbnY6CiAgICAgICAgLSBuYW1lOiBGTFVFTlRfRUxBU1RJQ1NFQVJDSF9IT1NUCiAgICAgICAgICB2YWx1ZTogImVsYXN0aWNzZWFyY2gubG9nZ2luZy5zdmMuY2x1c3Rlci5sb2NhbCIKICAgICAgICAtIG5hbWU6IEZMVUVOVF9FTEFTVElDU0VBUkNIX1BPUlQKICAgICAgICAgIHZhbHVlOiAiOTIwMCIKICAgICAgICB2b2x1bWVNb3VudHM6CiAgICAgICAgLSBuYW1lOiB2YXJsb2cKICAgICAgICAgIG1vdW50UGF0aDogL3Zhci9sb2cKICAgICAgICAtIG5hbWU6IHZhcmxpYmRvY2tlcmNvbnRhaW5lcnMKICAgICAgICAgIG1vdW50UGF0aDogL3Zhci9saWIvZG9ja2VyL2NvbnRhaW5lcnMKICAgICAgICAgIHJlYWRPbmx5OiB0cnVlCiAgICAgIHZvbHVtZXM6CiAgICAgIC0gbmFtZTogdmFybG9nCiAgICAgICAgaG9zdFBhdGg6CiAgICAgICAgICBwYXRoOiAvdmFyL2xvZwogICAgICAtIG5hbWU6IHZhcmxpYmRvY2tlcmNvbnRhaW5lcnMKICAgICAgICBob3N0UGF0aDoKICAgICAgICAgIHBhdGg6IC92YXIvbGliL2RvY2tlci9jb250YWluZXJz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd
+  namespace: logging
+spec:
+  selector:
+    matchLabels:
+      app: fluentd
+  template:
+    metadata:
+      labels:
+        app: fluentd
+    spec:
+      containers:
+      - name: fluentd
+        image: fluent/fluentd-kubernetes-daemonset:v1.11.2-debian-elasticsearch7-1.0
+        env:
+        - name: FLUENT_ELASTICSEARCH_HOST
+          value: &quot;elasticsearch.logging.svc.cluster.local&quot;
+        - name: FLUENT_ELASTICSEARCH_PORT
+          value: &quot;9200&quot;
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers</pre></div><div class='content'></div><h2>Paso 3: Desplegar Kibana</h2>
+<div class='content'><p>Finalmente, desplegamos Kibana para visualizar los logs almacenados en Elasticsearch:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IGtpYmFuYQogIG5hbWVzcGFjZTogbG9nZ2luZwpzcGVjOgogIHJlcGxpY2FzOiAxCiAgc2VsZWN0b3I6CiAgICBtYXRjaExhYmVsczoKICAgICAgYXBwOiBraWJhbmEKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBraWJhbmEKICAgIHNwZWM6CiAgICAgIGNvbnRhaW5lcnM6CiAgICAgIC0gbmFtZToga2liYW5hCiAgICAgICAgaW1hZ2U6IGRvY2tlci5lbGFzdGljLmNvL2tpYmFuYS9raWJhbmE6Ny4xMC4xCiAgICAgICAgcG9ydHM6CiAgICAgICAgLSBjb250YWluZXJQb3J0OiA1NjAx"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kibana
+  template:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      containers:
+      - name: kibana
+        image: docker.elastic.co/kibana/kibana:7.10.1
+        ports:
+        - containerPort: 5601</pre></div><div class='content'></div><h2>Paso 4: Exponer Kibana</h2>
+<div class='content'><p>Para acceder a Kibana desde fuera del clúster, podemos crear un servicio de tipo LoadBalancer o NodePort:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBraWJhbmEKICBuYW1lc3BhY2U6IGxvZ2dpbmcKc3BlYzoKICB0eXBlOiBMb2FkQmFsYW5jZXIKICBwb3J0czoKICAtIHBvcnQ6IDU2MDEKICAgIHRhcmdldFBvcnQ6IDU2MDEKICBzZWxlY3RvcjoKICAgIGFwcDoga2liYW5h"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: kibana
+  namespace: logging
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 5601
+    targetPort: 5601
+  selector:
+    app: kibana</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Desplegar el Stack EFK</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configura un namespace llamado <code>logging</code></strong>:</p>
+<pre><code class="language-bash">kubectl create namespace logging
+</code></pre>
+</li>
+<li>
+<p><strong>Despliega Elasticsearch</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f elasticsearch.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Despliega Fluentd</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f fluentd.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Despliega Kibana</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f kibana.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Exponer Kibana</strong>:</p>
+<pre><code class="language-bash">kubectl apply -f kibana-service.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejercicio 2: Visualizar Logs en Kibana</h2>
+<div class='content'><ol>
+<li><strong>Accede a Kibana</strong>: Utiliza la IP del servicio LoadBalancer o el puerto del NodePort para acceder a Kibana desde tu navegador.</li>
+<li><strong>Configura un índice en Kibana</strong>: Navega a la sección de &quot;Management&quot; en Kibana y configura un índice para visualizar los logs recolectados por Fluentd.</li>
+</ol>
+</div><h1>Soluciones</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Namespace <code>logging</code></strong>:</p>
+<pre><code class="language-bash">kubectl create namespace logging
+</code></pre>
+</li>
+<li>
+<p><strong>Despliegue de Elasticsearch</strong>:</p>
+<pre><code class="language-yaml"># Guardar el contenido del archivo de configuración en elasticsearch.yaml
+kubectl apply -f elasticsearch.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Despliegue de Fluentd</strong>:</p>
+<pre><code class="language-yaml"># Guardar el contenido del archivo de configuración en fluentd.yaml
+kubectl apply -f fluentd.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Despliegue de Kibana</strong>:</p>
+<pre><code class="language-yaml"># Guardar el contenido del archivo de configuración en kibana.yaml
+kubectl apply -f kibana.yaml
+</code></pre>
+</li>
+<li>
+<p><strong>Exposición de Kibana</strong>:</p>
+<pre><code class="language-yaml"># Guardar el contenido del archivo de configuración en kibana-service.yaml
+kubectl apply -f kibana-service.yaml
+</code></pre>
+</li>
+</ol>
+</div><h2>Solución al Ejercicio 2</h2>
+<div class='content'><ol>
+<li><strong>Acceso a Kibana</strong>: Utiliza la IP del servicio LoadBalancer o el puerto del NodePort para acceder a Kibana desde tu navegador.</li>
+<li><strong>Configuración del índice en Kibana</strong>:
+<ul>
+<li>Navega a &quot;Management&quot; &gt; &quot;Kibana&quot; &gt; &quot;Index Patterns&quot;.</li>
+<li>Crea un nuevo índice con el patrón <code>fluentd-*</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo desplegar y configurar el stack EFK (Elasticsearch, Fluentd y Kibana) en un clúster de Kubernetes. Este stack es esencial para la gestión de logs, permitiendo recolectar, almacenar y visualizar logs de manera eficiente. Con esta configuración, podrás monitorear y depurar tus aplicaciones de manera más efectiva.</p>
+<p>En el próximo módulo, exploraremos las verificaciones de salud y sondas en Kubernetes, que son cruciales para asegurar que tus aplicaciones estén funcionando correctamente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-monitoring-prometheus' title="Monitoreo con Prometheus">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-health-checks-probes' title="Verificaciones de Salud y Sondas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

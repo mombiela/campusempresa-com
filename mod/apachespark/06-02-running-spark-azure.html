@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejecutando Spark en Azure</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/06-02-running-spark-azure" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/06-02-running-spark-azure" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/06-02-running-spark-azure" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/apachespark/06-02-running-spark-azure" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/06-02-running-spark-azure" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-running-spark-aws' title="Ejecutando Spark en AWS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ejecutando Spark en Azure</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-running-spark-google-cloud' title="Ejecutando Spark en Google Cloud">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este módulo, aprenderás cómo ejecutar Apache Spark en Microsoft Azure. Azure es una plataforma de computación en la nube que ofrece una variedad de servicios, incluyendo Azure Databricks, que es una plataforma de análisis de datos basada en Apache Spark. Este módulo cubrirá los siguientes temas:</p>
+<ol>
+<li><strong>Configuración de Azure Databricks</strong></li>
+<li><strong>Creación de un Clúster de Spark en Azure</strong></li>
+<li><strong>Desarrollo y Ejecución de Aplicaciones Spark en Azure</strong></li>
+<li><strong>Monitoreo y Optimización de Trabajos Spark en Azure</strong></li>
+</ol>
+</div><h1>1. Configuración de Azure Databricks</h1>
+<div class='content'></div><h2>Paso 1: Crear una Cuenta de Azure</h2>
+<div class='content'><p>Si aún no tienes una cuenta de Azure, sigue estos pasos para crear una:</p>
+<ol>
+<li>Visita el <a href="https://azure.microsoft.com/">sitio web de Azure</a>.</li>
+<li>Haz clic en &quot;Comenzar gratis&quot; y sigue las instrucciones para registrarte.</li>
+</ol>
+</div><h2>Paso 2: Crear un Workspace de Azure Databricks</h2>
+<div class='content'><ol>
+<li>Inicia sesión en el <a href="https://portal.azure.com/">portal de Azure</a>.</li>
+<li>En el menú de la izquierda, selecciona &quot;Crear un recurso&quot;.</li>
+<li>Busca &quot;Azure Databricks&quot; y selecciona &quot;Crear&quot;.</li>
+<li>Completa los detalles del workspace:
+<ul>
+<li><strong>Nombre del workspace</strong>: Elige un nombre único.</li>
+<li><strong>Suscripción</strong>: Selecciona tu suscripción de Azure.</li>
+<li><strong>Grupo de recursos</strong>: Crea un nuevo grupo de recursos o selecciona uno existente.</li>
+<li><strong>Ubicación</strong>: Selecciona la región más cercana a ti.</li>
+</ul>
+</li>
+<li>Haz clic en &quot;Revisar + crear&quot; y luego en &quot;Crear&quot;.</li>
+</ol>
+</div><h1>2. Creación de un Clúster de Spark en Azure</h1>
+<div class='content'></div><h2>Paso 1: Acceder al Workspace de Azure Databricks</h2>
+<div class='content'><ol>
+<li>En el portal de Azure, navega a tu nuevo workspace de Azure Databricks.</li>
+<li>Haz clic en &quot;Iniciar Workspace&quot;.</li>
+</ol>
+</div><h2>Paso 2: Crear un Clúster</h2>
+<div class='content'><ol>
+<li>En el portal de Azure Databricks, selecciona &quot;Clústeres&quot; en el menú de la izquierda.</li>
+<li>Haz clic en &quot;Crear Clúster&quot;.</li>
+<li>Completa los detalles del clúster:
+<ul>
+<li><strong>Nombre del clúster</strong>: Elige un nombre descriptivo.</li>
+<li><strong>Versión de Databricks Runtime</strong>: Selecciona la versión de Spark que deseas usar.</li>
+<li><strong>Tipo de clúster</strong>: Selecciona &quot;Standard&quot;.</li>
+<li><strong>Configuración de nodos</strong>: Elige el número y tipo de nodos de trabajo.</li>
+</ul>
+</li>
+<li>Haz clic en &quot;Crear Clúster&quot;.</li>
+</ol>
+</div><h1>3. Desarrollo y Ejecución de Aplicaciones Spark en Azure</h1>
+<div class='content'></div><h2>Paso 1: Crear un Notebook</h2>
+<div class='content'><ol>
+<li>En el portal de Azure Databricks, selecciona &quot;Workspaces&quot; en el menú de la izquierda.</li>
+<li>Haz clic en el botón &quot;Crear&quot; y selecciona &quot;Notebook&quot;.</li>
+<li>Completa los detalles del notebook:
+<ul>
+<li><strong>Nombre</strong>: Elige un nombre para tu notebook.</li>
+<li><strong>Lenguaje</strong>: Selecciona el lenguaje de programación (Scala, Python, SQL, R).</li>
+</ul>
+</li>
+<li>Haz clic en &quot;Crear&quot;.</li>
+</ol>
+</div><h2>Paso 2: Escribir y Ejecutar Código Spark</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo de código en Python para contar las palabras en un archivo de texto:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgZWwgYXJjaGl2byBkZSB0ZXh0byBlbiB1biBSREQKdGV4dF9maWxlID0gc2MudGV4dEZpbGUoIi9kYXRhYnJpY2tzLWRhdGFzZXRzL3NhbXBsZXMvZG9jcy9SRUFETUUubWQiKQoKIyBDb250YXIgbGFzIHBhbGFicmFzCndvcmRfY291bnRzID0gdGV4dF9maWxlLmZsYXRNYXAobGFtYmRhIGxpbmU6IGxpbmUuc3BsaXQoIiAiKSkgXAogICAgICAgICAgICAgICAgICAgICAgIC5tYXAobGFtYmRhIHdvcmQ6ICh3b3JkLCAxKSkgXAogICAgICAgICAgICAgICAgICAgICAgIC5yZWR1Y2VCeUtleShsYW1iZGEgYSwgYjogYSArIGIpCgojIE1vc3RyYXIgbG9zIHJlc3VsdGFkb3MKd29yZF9jb3VudHMuY29sbGVjdCgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar el archivo de texto en un RDD
+text_file = sc.textFile(&quot;/databricks-datasets/samples/docs/README.md&quot;)
+
+# Contar las palabras
+word_counts = text_file.flatMap(lambda line: line.split(&quot; &quot;)) \
+                       .map(lambda word: (word, 1)) \
+                       .reduceByKey(lambda a, b: a + b)
+
+# Mostrar los resultados
+word_counts.collect()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Cargar el archivo de texto</strong>: <code>sc.textFile</code> carga el archivo de texto en un RDD.</li>
+<li><strong>Contar las palabras</strong>:
+<ul>
+<li><code>flatMap</code> divide cada línea en palabras.</li>
+<li><code>map</code> crea un par (palabra, 1) para cada palabra.</li>
+<li><code>reduceByKey</code> suma los valores para cada palabra.</li>
+</ul>
+</li>
+<li><strong>Mostrar los resultados</strong>: <code>collect</code> devuelve los resultados al driver.</li>
+</ol>
+</div><h1>4. Monitoreo y Optimización de Trabajos Spark en Azure</h1>
+<div class='content'></div><h2>Monitoreo de Trabajos</h2>
+<div class='content'><ol>
+<li>En el portal de Azure Databricks, selecciona &quot;Trabajos&quot; en el menú de la izquierda.</li>
+<li>Aquí puedes ver el estado de tus trabajos, incluyendo el tiempo de ejecución y los recursos utilizados.</li>
+</ol>
+</div><h2>Optimización de Trabajos</h2>
+<div class='content'><ol>
+<li><strong>Caché y Persistencia</strong>: Usa <code>persist</code> y <code>cache</code> para almacenar RDDs en memoria y mejorar el rendimiento.</li>
+<li><strong>Particiones</strong>: Ajusta el número de particiones para equilibrar la carga de trabajo.</li>
+<li><strong>Configuración del Clúster</strong>: Ajusta la configuración del clúster para optimizar el uso de recursos.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido cómo ejecutar Apache Spark en Azure utilizando Azure Databricks. Has configurado un workspace, creado un clúster, desarrollado y ejecutado aplicaciones Spark, y monitoreado y optimizado tus trabajos. Con estos conocimientos, estás listo para aprovechar la potencia de Apache Spark en la nube de Azure.</p>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio</strong>: Crea un notebook en Azure Databricks y escribe un programa en Python que lea un archivo CSV, realice algunas transformaciones y guarde los resultados en un nuevo archivo CSV.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgZWwgYXJjaGl2byBDU1YgZW4gdW4gRGF0YUZyYW1lCmRmID0gc3BhcmsucmVhZC5jc3YoIi9kYXRhYnJpY2tzLWRhdGFzZXRzL3NhbXBsZXMvcG9wdWxhdGlvbi12cy1wcmljZS9kYXRhX2dlby5jc3YiLCBoZWFkZXI9VHJ1ZSwgaW5mZXJTY2hlbWE9VHJ1ZSkKCiMgUmVhbGl6YXIgYWxndW5hcyB0cmFuc2Zvcm1hY2lvbmVzCmRmX2ZpbHRlcmVkID0gZGYuZmlsdGVyKGRmWycyMDE0IFBvcHVsYXRpb24gZXN0aW1hdGUnXSA+IDEwMDAwMDApCmRmX3NlbGVjdGVkID0gZGZfZmlsdGVyZWQuc2VsZWN0KCJSZWdpb24iLCAiMjAxNCBQb3B1bGF0aW9uIGVzdGltYXRlIiwgIjIwMTUgbWVkaWFuIHNhbGVzIHByaWNlIikKCiMgR3VhcmRhciBsb3MgcmVzdWx0YWRvcyBlbiB1biBudWV2byBhcmNoaXZvIENTVgpkZl9zZWxlY3RlZC53cml0ZS5jc3YoIi90bXAvZmlsdGVyZWRfcG9wdWxhdGlvbl92c19wcmljZS5jc3YiLCBoZWFkZXI9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar el archivo CSV en un DataFrame
+df = spark.read.csv(&quot;/databricks-datasets/samples/population-vs-price/data_geo.csv&quot;, header=True, inferSchema=True)
+
+# Realizar algunas transformaciones
+df_filtered = df.filter(df['2014 Population estimate'] &gt; 1000000)
+df_selected = df_filtered.select(&quot;Region&quot;, &quot;2014 Population estimate&quot;, &quot;2015 median sales price&quot;)
+
+# Guardar los resultados en un nuevo archivo CSV
+df_selected.write.csv(&quot;/tmp/filtered_population_vs_price.csv&quot;, header=True)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Cargar el archivo CSV</strong>: <code>spark.read.csv</code> carga el archivo CSV en un DataFrame.</li>
+<li><strong>Filtrar los datos</strong>: <code>filter</code> selecciona las filas donde la población estimada en 2014 es mayor a 1,000,000.</li>
+<li><strong>Seleccionar columnas</strong>: <code>select</code> elige las columnas relevantes.</li>
+<li><strong>Guardar los resultados</strong>: <code>write.csv</code> guarda el DataFrame resultante en un nuevo archivo CSV.</li>
+</ol>
+<p>Con esto, has completado el módulo sobre cómo ejecutar Spark en Azure. ¡Felicidades!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-running-spark-aws' title="Ejecutando Spark en AWS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-running-spark-google-cloud' title="Ejecutando Spark en Google Cloud">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

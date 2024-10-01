@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integrando Google Maps</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/androidstudio/06-02-integrating-google-maps" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/androidstudio/06-02-integrating-google-maps" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/androidstudio/06-02-integrating-google-maps" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/androidstudio/06-02-integrating-google-maps" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/androidstudio/06-02-integrating-google-maps" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-using-firebase-in-android' title="Usando Firebase en Android">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Integrando Google Maps</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-implementing-in-app-purchases' title="Implementando compras dentro de la aplicación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo integrar Google Maps en tu aplicación Android. Google Maps es una herramienta poderosa que permite a los desarrolladores agregar mapas interactivos a sus aplicaciones, proporcionando una experiencia rica y dinámica para los usuarios.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Configurar el proyecto para usar Google Maps.</li>
+<li>Obtener una clave de API de Google Maps.</li>
+<li>Agregar un fragmento de mapa a tu aplicación.</li>
+<li>Personalizar y manipular el mapa.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Conocimientos básicos de Android Studio.</li>
+<li>Familiaridad con XML y Java/Kotlin.</li>
+<li>Conexión a Internet para obtener la clave de API y descargar las dependencias necesarias.</li>
+</ul>
+</div><h1>Paso 1: Configuración del Proyecto</h1>
+<div class='content'></div><h2>1.1. Agregar Dependencias</h2>
+<div class='content'><p>Primero, necesitas agregar las dependencias de Google Maps en tu archivo <code>build.gradle</code> (nivel de aplicación).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzIHsKICAgIGltcGxlbWVudGF0aW9uICdjb20uZ29vZ2xlLmFuZHJvaWQuZ21zOnBsYXktc2VydmljZXMtbWFwczoxOC4wLjInCiAgICBpbXBsZW1lbnRhdGlvbiAnY29tLmdvb2dsZS5hbmRyb2lkLmdtczpwbGF5LXNlcnZpY2VzLWxvY2F0aW9uOjE5LjAuMScKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies {
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation 'com.google.android.gms:play-services-location:19.0.1'
+}</pre></div><div class='content'></div><h2>1.2. Obtener la Clave de API de Google Maps</h2>
+<div class='content'><p>Para usar Google Maps, necesitas una clave de API. Sigue estos pasos para obtenerla:</p>
+<ol>
+<li>Ve a la <a href="https://console.cloud.google.com/">Consola de Google Cloud</a>.</li>
+<li>Crea un nuevo proyecto o selecciona uno existente.</li>
+<li>Habilita la API de Google Maps para Android.</li>
+<li>Genera una clave de API y cópiala.</li>
+</ol>
+</div><h2>1.3. Agregar la Clave de API al Proyecto</h2>
+<div class='content'><p>Agrega la clave de API en el archivo <code>AndroidManifest.xml</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PG1hbmlmZXN0IHhtbG5zOmFuZHJvaWQ9Imh0dHA6Ly9zY2hlbWFzLmFuZHJvaWQuY29tL2Fway9yZXMvYW5kcm9pZCIKICAgIHBhY2thZ2U9ImNvbS5leGFtcGxlLnlvdXJhcHAiPgoKICAgIDxhcHBsaWNhdGlvbgogICAgICAgIC4uLj4KICAgICAgICA8bWV0YS1kYXRhCiAgICAgICAgICAgIGFuZHJvaWQ6bmFtZT0iY29tLmdvb2dsZS5hbmRyb2lkLmdlby5BUElfS0VZIgogICAgICAgICAgICBhbmRyb2lkOnZhbHVlPSJUVV9DTEFWRV9ERV9BUElfQVFVw40iLz4KICAgICAgICAuLi4KICAgIDwvYXBwbGljYXRpb24+Cgo8L21hbmlmZXN0Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;manifest xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    package=&quot;com.example.yourapp&quot;&gt;
+
+    &lt;application
+        ...&gt;
+        &lt;meta-data
+            android:name=&quot;com.google.android.geo.API_KEY&quot;
+            android:value=&quot;TU_CLAVE_DE_API_AQU&Iacute;&quot;/&gt;
+        ...
+    &lt;/application&gt;
+
+&lt;/manifest&gt;</pre></div><div class='content'></div><h1>Paso 2: Agregar un Fragmento de Mapa</h1>
+<div class='content'></div><h2>2.1. Crear un Fragmento de Mapa en el Layout</h2>
+<div class='content'><p>Agrega un <code>SupportMapFragment</code> en tu archivo de diseño XML.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PFJlbGF0aXZlTGF5b3V0IHhtbG5zOmFuZHJvaWQ9Imh0dHA6Ly9zY2hlbWFzLmFuZHJvaWQuY29tL2Fway9yZXMvYW5kcm9pZCIKICAgIHhtbG5zOnRvb2xzPSJodHRwOi8vc2NoZW1hcy5hbmRyb2lkLmNvbS90b29scyIKICAgIGFuZHJvaWQ6bGF5b3V0X3dpZHRoPSJtYXRjaF9wYXJlbnQiCiAgICBhbmRyb2lkOmxheW91dF9oZWlnaHQ9Im1hdGNoX3BhcmVudCIKICAgIHRvb2xzOmNvbnRleHQ9Ii5NYXBzQWN0aXZpdHkiPgoKICAgIDxmcmFnbWVudAogICAgICAgIGFuZHJvaWQ6aWQ9IkAraWQvbWFwIgogICAgICAgIGFuZHJvaWQ6bmFtZT0iY29tLmdvb2dsZS5hbmRyb2lkLmdtcy5tYXBzLlN1cHBvcnRNYXBGcmFnbWVudCIKICAgICAgICBhbmRyb2lkOmxheW91dF93aWR0aD0ibWF0Y2hfcGFyZW50IgogICAgICAgIGFuZHJvaWQ6bGF5b3V0X2hlaWdodD0ibWF0Y2hfcGFyZW50Ii8+CjwvUmVsYXRpdmVMYXlvdXQ+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;RelativeLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+    xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;match_parent&quot;
+    tools:context=&quot;.MapsActivity&quot;&gt;
+
+    &lt;fragment
+        android:id=&quot;@+id/map&quot;
+        android:name=&quot;com.google.android.gms.maps.SupportMapFragment&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;match_parent&quot;/&gt;
+&lt;/RelativeLayout&gt;</pre></div><div class='content'></div><h2>2.2. Configurar el Fragmento de Mapa en la Actividad</h2>
+<div class='content'><p>En tu actividad, configura el fragmento de mapa.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGFuZHJvaWR4LmZyYWdtZW50LmFwcC5GcmFnbWVudEFjdGl2aXR5OwppbXBvcnQgYW5kcm9pZC5vcy5CdW5kbGU7CmltcG9ydCBjb20uZ29vZ2xlLmFuZHJvaWQuZ21zLm1hcHMuQ2FtZXJhVXBkYXRlRmFjdG9yeTsKaW1wb3J0IGNvbS5nb29nbGUuYW5kcm9pZC5nbXMubWFwcy5Hb29nbGVNYXA7CmltcG9ydCBjb20uZ29vZ2xlLmFuZHJvaWQuZ21zLm1hcHMuT25NYXBSZWFkeUNhbGxiYWNrOwppbXBvcnQgY29tLmdvb2dsZS5hbmRyb2lkLmdtcy5tYXBzLlN1cHBvcnRNYXBGcmFnbWVudDsKaW1wb3J0IGNvbS5nb29nbGUuYW5kcm9pZC5nbXMubWFwcy5tb2RlbC5MYXRMbmc7CmltcG9ydCBjb20uZ29vZ2xlLmFuZHJvaWQuZ21zLm1hcHMubW9kZWwuTWFya2VyT3B0aW9uczsKCnB1YmxpYyBjbGFzcyBNYXBzQWN0aXZpdHkgZXh0ZW5kcyBGcmFnbWVudEFjdGl2aXR5IGltcGxlbWVudHMgT25NYXBSZWFkeUNhbGxiYWNrIHsKCiAgICBwcml2YXRlIEdvb2dsZU1hcCBtTWFwOwoKICAgIEBPdmVycmlkZQogICAgcHJvdGVjdGVkIHZvaWQgb25DcmVhdGUoQnVuZGxlIHNhdmVkSW5zdGFuY2VTdGF0ZSkgewogICAgICAgIHN1cGVyLm9uQ3JlYXRlKHNhdmVkSW5zdGFuY2VTdGF0ZSk7CiAgICAgICAgc2V0Q29udGVudFZpZXcoUi5sYXlvdXQuYWN0aXZpdHlfbWFwcyk7CiAgICAgICAgLy8gT2J0ZW5lciBlbCBTdXBwb3J0TWFwRnJhZ21lbnQgeSBub3RpZmljYXIgY3VhbmRvIGVsIG1hcGEgZXN0w6kgbGlzdG8gcGFyYSBzZXIgdXNhZG8uCiAgICAgICAgU3VwcG9ydE1hcEZyYWdtZW50IG1hcEZyYWdtZW50ID0gKFN1cHBvcnRNYXBGcmFnbWVudCkgZ2V0U3VwcG9ydEZyYWdtZW50TWFuYWdlcigpCiAgICAgICAgICAgICAgICAuZmluZEZyYWdtZW50QnlJZChSLmlkLm1hcCk7CiAgICAgICAgbWFwRnJhZ21lbnQuZ2V0TWFwQXN5bmModGhpcyk7CiAgICB9CgogICAgQE92ZXJyaWRlCiAgICBwdWJsaWMgdm9pZCBvbk1hcFJlYWR5KEdvb2dsZU1hcCBnb29nbGVNYXApIHsKICAgICAgICBtTWFwID0gZ29vZ2xlTWFwOwoKICAgICAgICAvLyBBZ3JlZ2FyIHVuIG1hcmNhZG9yIGVuIHVuYSB1YmljYWNpw7NuIGVzcGVjw61maWNhIHkgbW92ZXIgbGEgY8OhbWFyYQogICAgICAgIExhdExuZyBzeWRuZXkgPSBuZXcgTGF0TG5nKC0zNCwgMTUxKTsKICAgICAgICBtTWFwLmFkZE1hcmtlcihuZXcgTWFya2VyT3B0aW9ucygpLnBvc2l0aW9uKHN5ZG5leSkudGl0bGUoIk1hcmtlciBpbiBTeWRuZXkiKSk7CiAgICAgICAgbU1hcC5tb3ZlQ2FtZXJhKENhbWVyYVVwZGF0ZUZhY3RvcnkubmV3TGF0TG5nKHN5ZG5leSkpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import androidx.fragment.app.FragmentActivity;
+import android.os.Bundle;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+
+    private GoogleMap mMap;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
+        // Obtener el SupportMapFragment y notificar cuando el mapa est&eacute; listo para ser usado.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Agregar un marcador en una ubicaci&oacute;n espec&iacute;fica y mover la c&aacute;mara
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title(&quot;Marker in Sydney&quot;));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+}</pre></div><div class='content'></div><h1>Paso 3: Personalizar y Manipular el Mapa</h1>
+<div class='content'></div><h2>3.1. Cambiar el Tipo de Mapa</h2>
+<div class='content'><p>Puedes cambiar el tipo de mapa (normal, satélite, híbrido, terreno).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bU1hcC5zZXRNYXBUeXBlKEdvb2dsZU1hcC5NQVBfVFlQRV9TQVRFTExJVEUpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);</pre></div><div class='content'></div><h2>3.2. Agregar Marcadores y Líneas</h2>
+<div class='content'><p>Puedes agregar marcadores, líneas y otras formas al mapa.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQWdyZWdhciB1biBtYXJjYWRvcgpMYXRMbmcgbG9jYXRpb24gPSBuZXcgTGF0TG5nKC0zNCwgMTUxKTsKbU1hcC5hZGRNYXJrZXIobmV3IE1hcmtlck9wdGlvbnMoKS5wb3NpdGlvbihsb2NhdGlvbikudGl0bGUoIk1hcmtlciBUaXRsZSIpKTsKCi8vIEFncmVnYXIgdW5hIGzDrW5lYQpQb2x5bGluZU9wdGlvbnMgcG9seWxpbmVPcHRpb25zID0gbmV3IFBvbHlsaW5lT3B0aW9ucygpCiAgICAgICAgLmFkZChuZXcgTGF0TG5nKC0zNCwgMTUxKSkKICAgICAgICAuYWRkKG5ldyBMYXRMbmcoLTM1LCAxNTApKTsKbU1hcC5hZGRQb2x5bGluZShwb2x5bGluZU9wdGlvbnMpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Agregar un marcador
+LatLng location = new LatLng(-34, 151);
+mMap.addMarker(new MarkerOptions().position(location).title(&quot;Marker Title&quot;));
+
+// Agregar una l&iacute;nea
+PolylineOptions polylineOptions = new PolylineOptions()
+        .add(new LatLng(-34, 151))
+        .add(new LatLng(-35, 150));
+mMap.addPolyline(polylineOptions);</pre></div><div class='content'></div><h2>3.3. Habilitar Controles de Usuario</h2>
+<div class='content'><p>Puedes habilitar o deshabilitar los controles de usuario como el zoom y la brújula.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bU1hcC5nZXRVaVNldHRpbmdzKCkuc2V0Wm9vbUNvbnRyb2xzRW5hYmxlZCh0cnVlKTsKbU1hcC5nZXRVaVNldHRpbmdzKCkuc2V0Q29tcGFzc0VuYWJsZWQodHJ1ZSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mMap.getUiSettings().setZoomControlsEnabled(true);
+mMap.getUiSettings().setCompassEnabled(true);</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Agregar un Marcador Personalizado</h2>
+<div class='content'><ol>
+<li>Agrega un marcador en una ubicación de tu elección.</li>
+<li>Personaliza el marcador con un título y un snippet.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TGF0TG5nIGN1c3RvbUxvY2F0aW9uID0gbmV3IExhdExuZyg0MC43MTI4LCAtNzQuMDA2MCk7IC8vIE51ZXZhIFlvcmsKbU1hcC5hZGRNYXJrZXIobmV3IE1hcmtlck9wdGlvbnMoKQogICAgICAgIC5wb3NpdGlvbihjdXN0b21Mb2NhdGlvbikKICAgICAgICAudGl0bGUoIk5ldyBZb3JrIENpdHkiKQogICAgICAgIC5zbmlwcGV0KCJUaGUgQmlnIEFwcGxlIikpOwptTWFwLm1vdmVDYW1lcmEoQ2FtZXJhVXBkYXRlRmFjdG9yeS5uZXdMYXRMbmdab29tKGN1c3RvbUxvY2F0aW9uLCAxMCkpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>LatLng customLocation = new LatLng(40.7128, -74.0060); // Nueva York
+mMap.addMarker(new MarkerOptions()
+        .position(customLocation)
+        .title(&quot;New York City&quot;)
+        .snippet(&quot;The Big Apple&quot;));
+mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(customLocation, 10));</pre></div><div class='content'></div><h2>Ejercicio 2: Dibujar una Ruta</h2>
+<div class='content'><ol>
+<li>Dibuja una ruta entre dos puntos en el mapa usando <code>Polyline</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UG9seWxpbmVPcHRpb25zIHJvdXRlID0gbmV3IFBvbHlsaW5lT3B0aW9ucygpCiAgICAgICAgLmFkZChuZXcgTGF0TG5nKDQwLjcxMjgsIC03NC4wMDYwKSkgLy8gTnVldmEgWW9yawogICAgICAgIC5hZGQobmV3IExhdExuZygzNC4wNTIyLCAtMTE4LjI0MzcpKTsgLy8gTG9zIMOBbmdlbGVzCm1NYXAuYWRkUG9seWxpbmUocm91dGUpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PolylineOptions route = new PolylineOptions()
+        .add(new LatLng(40.7128, -74.0060)) // Nueva York
+        .add(new LatLng(34.0522, -118.2437)); // Los &Aacute;ngeles
+mMap.addPolyline(route);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo integrar Google Maps en tu aplicación Android, desde la configuración inicial hasta la personalización del mapa. Ahora puedes agregar mapas interactivos a tus aplicaciones, mejorando significativamente la experiencia del usuario.</p>
+<p>En el siguiente tema, exploraremos cómo implementar compras dentro de la aplicación, lo que te permitirá monetizar tus aplicaciones de manera efectiva.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-using-firebase-in-android' title="Usando Firebase en Android">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-implementing-in-app-purchases' title="Implementando compras dentro de la aplicación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

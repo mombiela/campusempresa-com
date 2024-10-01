@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a Spark con Scala</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/scala/07-04-introduction-to-spark-with-scala" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/scala/07-04-introduction-to-spark-with-scala" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/scala/07-04-introduction-to-spark-with-scala" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/scala/07-04-introduction-to-spark-with-scala" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/scala/07-04-introduction-to-spark-with-scala" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-introduction-to-play-framework' title="Introducción a Play Framework">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introducción a Spark con Scala</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-best-practices-and-code-style' title="Mejores Prácticas y Estilo de Código">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Apache Spark es un motor de procesamiento de datos en clústeres rápido y de propósito general. Proporciona una API de alto nivel en Java, Scala, Python y R, y un motor optimizado que admite gráficos de flujo de datos generales para la computación en clústeres. En este módulo, aprenderemos cómo utilizar Spark con Scala para procesar grandes volúmenes de datos de manera eficiente.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender los conceptos básicos de Apache Spark.</li>
+<li>Configurar un entorno de desarrollo para trabajar con Spark y Scala.</li>
+<li>Aprender a crear y manipular RDDs (Resilient Distributed Datasets).</li>
+<li>Realizar operaciones básicas de transformación y acción en Spark.</li>
+<li>Introducirse en el uso de DataFrames y Datasets.</li>
+</ul>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#conceptos-básicos-de-apache-spark">Conceptos Básicos de Apache Spark</a></li>
+<li><a href="#configuración-del-entorno-de-desarrollo">Configuración del Entorno de Desarrollo</a></li>
+<li><a href="#creación-y-manipulación-de-rdds">Creación y Manipulación de RDDs</a></li>
+<li><a href="#operaciones-básicas-en-spark">Operaciones Básicas en Spark</a></li>
+<li><a href="#introducción-a-dataframes-y-datasets">Introducción a DataFrames y Datasets</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+</ol>
+</div><h1>Conceptos Básicos de Apache Spark</h1>
+<div class='content'><p>Apache Spark es una plataforma de procesamiento de datos en clústeres que permite realizar análisis de datos a gran escala. Algunos de los conceptos clave incluyen:</p>
+<ul>
+<li><strong>RDD (Resilient Distributed Dataset)</strong>: Es la unidad fundamental de datos en Spark. Es una colección distribuida de elementos que se pueden procesar en paralelo.</li>
+<li><strong>Transformaciones</strong>: Operaciones que crean un nuevo RDD a partir de uno existente, como <code>map</code>, <code>filter</code> y <code>reduceByKey</code>.</li>
+<li><strong>Acciones</strong>: Operaciones que devuelven un valor al controlador después de ejecutar un cálculo en el RDD, como <code>collect</code>, <code>count</code> y <code>first</code>.</li>
+<li><strong>DataFrames y Datasets</strong>: Abstracciones de alto nivel que proporcionan una API más estructurada y optimizada para trabajar con datos.</li>
+</ul>
+</div><h1>Configuración del Entorno de Desarrollo</h1>
+<div class='content'><p>Para trabajar con Spark y Scala, necesitamos configurar nuestro entorno de desarrollo. A continuación, se detallan los pasos necesarios:</p>
+<ol>
+<li>
+<p><strong>Instalar Apache Spark</strong>:</p>
+<ul>
+<li>Descarga Apache Spark desde <a href="https://spark.apache.org/downloads.html">la página oficial</a>.</li>
+<li>Extrae el archivo descargado y configura las variables de entorno <code>SPARK_HOME</code> y <code>PATH</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Instalar Scala</strong>:</p>
+<ul>
+<li>Descarga Scala desde <a href="https://www.scala-lang.org/download/">la página oficial</a>.</li>
+<li>Configura las variables de entorno <code>SCALA_HOME</code> y <code>PATH</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Instalar SBT (Scala Build Tool)</strong>:</p>
+<ul>
+<li>Descarga e instala SBT desde <a href="https://www.scala-sbt.org/download.html">la página oficial</a>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar un Proyecto SBT</strong>:</p>
+<ul>
+<li>Crea un nuevo proyecto SBT con la siguiente estructura:
+<pre><code>my-spark-project/
+├── build.sbt
+└── src/
+    └── main/
+        └── scala/
+            └── Main.scala
+</code></pre>
+</li>
+<li>El archivo <code>build.sbt</code> debe incluir las dependencias de Spark:
+<pre><code class="language-scala">name := &quot;MySparkProject&quot;
+version := &quot;0.1&quot;
+scalaVersion := &quot;2.12.10&quot;
+
+libraryDependencies ++= Seq(
+  &quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;3.1.2&quot;,
+  &quot;org.apache.spark&quot; %% &quot;spark-sql&quot; % &quot;3.1.2&quot;
+)
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Creación y Manipulación de RDDs</h1>
+<div class='content'><p>Los RDDs son la unidad fundamental de datos en Spark. A continuación, se muestra cómo crear y manipular RDDs en Scala:</p>
+</div><h2>Creación de un RDD</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsue1NwYXJrQ29uZiwgU3BhcmtDb250ZXh0fQoKb2JqZWN0IE1haW4gewogIGRlZiBtYWluKGFyZ3M6IEFycmF5W1N0cmluZ10pOiBVbml0ID0gewogICAgdmFsIGNvbmYgPSBuZXcgU3BhcmtDb25mKCkuc2V0QXBwTmFtZSgiTXlTcGFya0FwcCIpLnNldE1hc3RlcigibG9jYWxbKl0iKQogICAgdmFsIHNjID0gbmV3IFNwYXJrQ29udGV4dChjb25mKQoKICAgIC8vIENyZWFyIHVuIFJERCBhIHBhcnRpciBkZSB1bmEgY29sZWNjacOzbgogICAgdmFsIGRhdGEgPSBBcnJheSgxLCAyLCAzLCA0LCA1KQogICAgdmFsIHJkZCA9IHNjLnBhcmFsbGVsaXplKGRhdGEpCgogICAgLy8gTW9zdHJhciBlbCBjb250ZW5pZG8gZGVsIFJERAogICAgcmRkLmNvbGxlY3QoKS5mb3JlYWNoKHByaW50bG4pCiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.{SparkConf, SparkContext}
+
+object Main {
+  def main(args: Array[String]): Unit = {
+    val conf = new SparkConf().setAppName(&quot;MySparkApp&quot;).setMaster(&quot;local[*]&quot;)
+    val sc = new SparkContext(conf)
+
+    // Crear un RDD a partir de una colecci&oacute;n
+    val data = Array(1, 2, 3, 4, 5)
+    val rdd = sc.parallelize(data)
+
+    // Mostrar el contenido del RDD
+    rdd.collect().foreach(println)
+  }
+}</pre></div><div class='content'></div><h2>Transformaciones y Acciones</h2>
+<div class='content'><p>Las transformaciones crean un nuevo RDD a partir de uno existente, mientras que las acciones devuelven un valor al controlador. Ejemplos de transformaciones y acciones:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gVHJhbnNmb3JtYWNpw7NuOiBtYXAKdmFsIHJkZDIgPSByZGQubWFwKHggPT4geCAqIDIpCgovLyBBY2Npw7NuOiBjb2xsZWN0CnZhbCByZXN1bHQgPSByZGQyLmNvbGxlY3QoKQpyZXN1bHQuZm9yZWFjaChwcmludGxuKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Transformaci&oacute;n: map
+val rdd2 = rdd.map(x =&gt; x * 2)
+
+// Acci&oacute;n: collect
+val result = rdd2.collect()
+result.foreach(println)</pre></div><div class='content'></div><h1>Operaciones Básicas en Spark</h1>
+<div class='content'></div><h2>Transformaciones Comunes</h2>
+<div class='content'><ul>
+<li><strong>map</strong>: Aplica una función a cada elemento del RDD.</li>
+<li><strong>filter</strong>: Filtra los elementos del RDD según una condición.</li>
+<li><strong>flatMap</strong>: Aplica una función a cada elemento y aplana el resultado.</li>
+<li><strong>reduceByKey</strong>: Agrupa los elementos por clave y aplica una función de reducción.</li>
+</ul>
+</div><h2>Acciones Comunes</h2>
+<div class='content'><ul>
+<li><strong>collect</strong>: Devuelve todos los elementos del RDD como una colección.</li>
+<li><strong>count</strong>: Devuelve el número de elementos en el RDD.</li>
+<li><strong>first</strong>: Devuelve el primer elemento del RDD.</li>
+<li><strong>take</strong>: Devuelve los primeros N elementos del RDD.</li>
+</ul>
+</div><h1>Introducción a DataFrames y Datasets</h1>
+<div class='content'><p>Los DataFrames y Datasets son abstracciones de alto nivel que proporcionan una API más estructurada y optimizada para trabajar con datos.</p>
+</div><h2>Creación de un DataFrame</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuc3Bhcmsuc3FsLlNwYXJrU2Vzc2lvbgoKb2JqZWN0IE1haW4gewogIGRlZiBtYWluKGFyZ3M6IEFycmF5W1N0cmluZ10pOiBVbml0ID0gewogICAgdmFsIHNwYXJrID0gU3BhcmtTZXNzaW9uLmJ1aWxkZXIKICAgICAgLmFwcE5hbWUoIk15U3BhcmtBcHAiKQogICAgICAubWFzdGVyKCJsb2NhbFsqXSIpCiAgICAgIC5nZXRPckNyZWF0ZSgpCgogICAgaW1wb3J0IHNwYXJrLmltcGxpY2l0cy5fCgogICAgLy8gQ3JlYXIgdW4gRGF0YUZyYW1lIGEgcGFydGlyIGRlIHVuYSBjb2xlY2Npw7NuCiAgICB2YWwgZGF0YSA9IFNlcSgoIkFsaWNlIiwgMjkpLCAoIkJvYiIsIDM1KSwgKCJDYXRoeSIsIDIzKSkKICAgIHZhbCBkZiA9IGRhdGEudG9ERigibmFtZSIsICJhZ2UiKQoKICAgIC8vIE1vc3RyYXIgZWwgY29udGVuaWRvIGRlbCBEYXRhRnJhbWUKICAgIGRmLnNob3coKQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.spark.sql.SparkSession
+
+object Main {
+  def main(args: Array[String]): Unit = {
+    val spark = SparkSession.builder
+      .appName(&quot;MySparkApp&quot;)
+      .master(&quot;local[*]&quot;)
+      .getOrCreate()
+
+    import spark.implicits._
+
+    // Crear un DataFrame a partir de una colecci&oacute;n
+    val data = Seq((&quot;Alice&quot;, 29), (&quot;Bob&quot;, 35), (&quot;Cathy&quot;, 23))
+    val df = data.toDF(&quot;name&quot;, &quot;age&quot;)
+
+    // Mostrar el contenido del DataFrame
+    df.show()
+  }
+}</pre></div><div class='content'></div><h2>Operaciones en DataFrames</h2>
+<div class='content'><ul>
+<li><strong>select</strong>: Selecciona columnas específicas.</li>
+<li><strong>filter</strong>: Filtra filas según una condición.</li>
+<li><strong>groupBy</strong>: Agrupa filas por una o más columnas.</li>
+<li><strong>agg</strong>: Aplica funciones de agregación.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gU2VsZWNjaW9uYXIgY29sdW1uYXMKZGYuc2VsZWN0KCJuYW1lIikuc2hvdygpCgovLyBGaWx0cmFyIGZpbGFzCmRmLmZpbHRlcigkImFnZSIgPiAzMCkuc2hvdygpCgovLyBBZ3J1cGFyIHkgYWdyZWdhcgpkZi5ncm91cEJ5KCJhZ2UiKS5jb3VudCgpLnNob3coKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Seleccionar columnas
+df.select(&quot;name&quot;).show()
+
+// Filtrar filas
+df.filter($&quot;age&quot; &gt; 30).show()
+
+// Agrupar y agregar
+df.groupBy(&quot;age&quot;).count().show()</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Creación y Transformación de RDDs</h2>
+<div class='content'><ol>
+<li>Crea un RDD a partir de una lista de números del 1 al 10.</li>
+<li>Aplica una transformación <code>map</code> para multiplicar cada número por 2.</li>
+<li>Filtra los números que son mayores que 10.</li>
+<li>Recoge y muestra los resultados.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRhdGEgPSAoMSB0byAxMCkudG9BcnJheQp2YWwgcmRkID0gc2MucGFyYWxsZWxpemUoZGF0YSkKdmFsIHJkZDIgPSByZGQubWFwKF8gKiAyKQp2YWwgcmRkMyA9IHJkZDIuZmlsdGVyKF8gPiAxMCkKdmFsIHJlc3VsdCA9IHJkZDMuY29sbGVjdCgpCnJlc3VsdC5mb3JlYWNoKHByaW50bG4p"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val data = (1 to 10).toArray
+val rdd = sc.parallelize(data)
+val rdd2 = rdd.map(_ * 2)
+val rdd3 = rdd2.filter(_ &gt; 10)
+val result = rdd3.collect()
+result.foreach(println)</pre></div><div class='content'></div><h2>Ejercicio 2: Operaciones en DataFrames</h2>
+<div class='content'><ol>
+<li>Crea un DataFrame a partir de una colección de tuplas con nombres y edades.</li>
+<li>Selecciona la columna de nombres.</li>
+<li>Filtra las filas donde la edad es mayor que 25.</li>
+<li>Agrupa por edad y cuenta el número de personas en cada grupo.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRhdGEgPSBTZXEoKCJBbGljZSIsIDI5KSwgKCJCb2IiLCAzNSksICgiQ2F0aHkiLCAyMykpCnZhbCBkZiA9IGRhdGEudG9ERigibmFtZSIsICJhZ2UiKQpkZi5zZWxlY3QoIm5hbWUiKS5zaG93KCkKZGYuZmlsdGVyKCQiYWdlIiA+IDI1KS5zaG93KCkKZGYuZ3JvdXBCeSgiYWdlIikuY291bnQoKS5zaG93KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val data = Seq((&quot;Alice&quot;, 29), (&quot;Bob&quot;, 35), (&quot;Cathy&quot;, 23))
+val df = data.toDF(&quot;name&quot;, &quot;age&quot;)
+df.select(&quot;name&quot;).show()
+df.filter($&quot;age&quot; &gt; 25).show()
+df.groupBy(&quot;age&quot;).count().show()</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido los conceptos básicos de Apache Spark y cómo utilizarlo con Scala para procesar grandes volúmenes de datos. Hemos cubierto la creación y manipulación de RDDs, así como las operaciones básicas en Spark. También hemos introducido los DataFrames y Datasets, que proporcionan una API más estructurada y optimizada para trabajar con datos. Con estos conocimientos, estás preparado para explorar más a fondo las capacidades de Spark y aplicar estas técnicas en proyectos de análisis de datos a gran escala.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-introduction-to-play-framework' title="Introducción a Play Framework">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-05-best-practices-and-code-style' title="Mejores Prácticas y Estilo de Código">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka con Hadoop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/06-01-kafka-hadoop" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/06-01-kafka-hadoop" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/06-01-kafka-hadoop" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kafka/06-01-kafka-hadoop" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/06-01-kafka-hadoop" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-kafka-streams-advanced' title="Kafka Streams Avanzado">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka con Hadoop</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-kafka-spark' title="Kafka con Spark">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, exploraremos cómo integrar Apache Kafka con Apache Hadoop. Esta integración es crucial para construir pipelines de datos robustos y escalables que pueden manejar grandes volúmenes de datos en tiempo real y almacenarlos para análisis posteriores.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ol>
+<li><strong>Comprender la integración de Kafka con Hadoop.</strong></li>
+<li><strong>Configurar Kafka para enviar datos a Hadoop.</strong></li>
+<li><strong>Utilizar herramientas como Kafka Connect para facilitar la integración.</strong></li>
+<li><strong>Ejecutar un ejemplo práctico de integración.</strong></li>
+</ol>
+</div><h1>¿Por Qué Integrar Kafka con Hadoop?</h1>
+<div class='content'><ul>
+<li><strong>Procesamiento en Tiempo Real:</strong> Kafka permite la ingesta de datos en tiempo real, mientras que Hadoop es excelente para el almacenamiento y procesamiento a gran escala.</li>
+<li><strong>Escalabilidad:</strong> Ambos sistemas están diseñados para escalar horizontalmente, lo que los hace ideales para grandes volúmenes de datos.</li>
+<li><strong>Análisis Completo:</strong> Kafka puede manejar la ingesta de datos en tiempo real, y Hadoop puede realizar análisis complejos y almacenamiento a largo plazo.</li>
+</ul>
+</div><h1>Herramientas Necesarias</h1>
+<div class='content'><ul>
+<li><strong>Apache Kafka:</strong> Para la ingesta de datos en tiempo real.</li>
+<li><strong>Apache Hadoop:</strong> Para el almacenamiento y procesamiento de datos.</li>
+<li><strong>Kafka Connect:</strong> Para facilitar la integración entre Kafka y Hadoop.</li>
+</ul>
+</div><h1>Configuración de Kafka para Enviar Datos a Hadoop</h1>
+<div class='content'></div><h2>Paso 1: Configurar Kafka</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar Kafka:</strong></p>
+<ul>
+<li>Descarga Kafka desde <a href="https://kafka.apache.org/downloads">Apache Kafka Downloads</a>.</li>
+<li>Descomprime el archivo y navega al directorio de Kafka.</li>
+<li>Inicia el servidor de Kafka:
+<pre><code class="language-sh">bin/zookeeper-server-start.sh config/zookeeper.properties
+bin/kafka-server-start.sh config/server.properties
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear un Tema en Kafka:</strong></p>
+<ul>
+<li>Crea un tema llamado <code>hadoop_topic</code>:
+<pre><code class="language-sh">bin/kafka-topics.sh --create --topic hadoop_topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 2: Configurar Hadoop</h2>
+<div class='content'><ol>
+<li><strong>Instalar Hadoop:</strong>
+<ul>
+<li>Descarga Hadoop desde <a href="https://hadoop.apache.org/releases.html">Apache Hadoop Downloads</a>.</li>
+<li>Descomprime el archivo y navega al directorio de Hadoop.</li>
+<li>Configura los archivos <code>core-site.xml</code> y <code>hdfs-site.xml</code> para tu entorno.</li>
+<li>Inicia el sistema de archivos Hadoop:
+<pre><code class="language-sh">bin/hdfs namenode -format
+sbin/start-dfs.sh
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 3: Configurar Kafka Connect</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar Confluent Platform:</strong></p>
+<ul>
+<li>Descarga Confluent Platform desde <a href="https://www.confluent.io/download/">Confluent Downloads</a>.</li>
+<li>Descomprime el archivo y navega al directorio de Confluent.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el Conector HDFS:</strong></p>
+<ul>
+<li>Crea un archivo de configuración para el conector HDFS (<code>hdfs-sink.properties</code>):
+<pre><code class="language-properties">name=hdfs-sink
+connector.class=io.confluent.connect.hdfs.HdfsSinkConnector
+tasks.max=1
+topics=hadoop_topic
+hdfs.url=hdfs://localhost:9000
+flush.size=3
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Iniciar Kafka Connect:</strong></p>
+<ul>
+<li>Inicia Kafka Connect con el conector HDFS:
+<pre><code class="language-sh">bin/connect-standalone.sh config/connect-standalone.properties hdfs-sink.properties
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Paso 1: Producción de Mensajes en Kafka</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Iniciar un Productor de Kafka:</strong></p>
+<pre><code class="language-sh">bin/kafka-console-producer.sh --broker-list localhost:9092 --topic hadoop_topic
+</code></pre>
+</li>
+<li>
+<p><strong>Enviar Mensajes:</strong></p>
+<ul>
+<li>Escribe algunos mensajes en la consola del productor:
+<pre><code>{&quot;user&quot;: &quot;alice&quot;, &quot;action&quot;: &quot;login&quot;}
+{&quot;user&quot;: &quot;bob&quot;, &quot;action&quot;: &quot;logout&quot;}
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 2: Verificar Datos en Hadoop</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Verificar los Archivos en HDFS:</strong></p>
+<ul>
+<li>Navega al directorio de Hadoop y lista los archivos en HDFS:
+<pre><code class="language-sh">bin/hdfs dfs -ls /topics/hadoop_topic
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Leer los Datos:</strong></p>
+<ul>
+<li>Lee los datos almacenados en HDFS:
+<pre><code class="language-sh">bin/hdfs dfs -cat /topics/hadoop_topic/partition=0/*
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><p>En este módulo, hemos aprendido cómo integrar Apache Kafka con Apache Hadoop para construir pipelines de datos robustos y escalables. Hemos configurado Kafka y Hadoop, utilizado Kafka Connect para facilitar la integración y ejecutado un ejemplo práctico para enviar datos desde Kafka a Hadoop.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Kafka Connect:</strong> Herramienta para integrar Kafka con otros sistemas.</li>
+<li><strong>Conector HDFS:</strong> Permite enviar datos de Kafka a Hadoop.</li>
+<li><strong>Configuración de Kafka y Hadoop:</strong> Pasos necesarios para configurar ambos sistemas y permitir la integración.</li>
+</ul>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente módulo, exploraremos cómo integrar Kafka con Apache Spark para realizar procesamiento de datos en tiempo real.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-kafka-streams-advanced' title="Kafka Streams Avanzado">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-kafka-spark' title="Kafka con Spark">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

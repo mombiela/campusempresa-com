@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limitación de Tasa</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/05-02-rate-limiting" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/05-02-rate-limiting" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/05-02-rate-limiting" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/graphql/05-02-rate-limiting" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/05-02-rate-limiting" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-query-optimization' title="Optimización de Consultas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Limitación de Tasa</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-authentication-authorization' title="Autenticación y Autorización">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La limitación de tasa (Rate Limiting) es una técnica utilizada para controlar la cantidad de solicitudes que un cliente puede hacer a un servidor en un período de tiempo determinado. Esto es crucial para proteger tu servidor GraphQL de abusos y garantizar un rendimiento estable y predecible.</p>
+</div><h1>¿Por qué es Importante la Limitación de Tasa?</h1>
+<div class='content'><ol>
+<li><strong>Protección contra Abuso</strong>: Evita que un solo cliente consuma todos los recursos del servidor.</li>
+<li><strong>Estabilidad del Sistema</strong>: Mantiene el rendimiento del servidor bajo control, evitando sobrecargas.</li>
+<li><strong>Equidad</strong>: Asegura que todos los clientes tengan acceso justo a los recursos del servidor.</li>
+<li><strong>Seguridad</strong>: Puede ayudar a mitigar ataques de denegación de servicio (DoS).</li>
+</ol>
+</div><h1>Estrategias Comunes de Limitación de Tasa</h1>
+<div class='content'><ol>
+<li><strong>Límite Fijo (Fixed Window)</strong>: Permite un número fijo de solicitudes en un período de tiempo determinado.</li>
+<li><strong>Ventana Deslizante (Sliding Window)</strong>: Permite un número fijo de solicitudes en un período de tiempo, pero la ventana se desliza con cada solicitud.</li>
+<li><strong>Token Bucket</strong>: Utiliza un &quot;cubo&quot; de tokens que se llenan a una tasa constante. Cada solicitud consume un token.</li>
+<li><strong>Leaky Bucket</strong>: Similar al Token Bucket, pero las solicitudes se procesan a una tasa constante, y el exceso se descarta.</li>
+</ol>
+</div><h1>Implementación de Limitación de Tasa en GraphQL</h1>
+<div class='content'></div><h2>Ejemplo con Express.js y express-rate-limit</h2>
+<div class='content'><p>Vamos a implementar una limitación de tasa básica utilizando <code>express-rate-limit</code> en un servidor GraphQL configurado con Express.js.</p>
+<ol>
+<li>
+<p><strong>Instalación de Dependencias</strong></p>
+<pre><code class="language-bash">npm install express express-rate-limit express-graphql graphql
+</code></pre>
+</li>
+<li>
+<p><strong>Configuración del Servidor</strong></p>
+<pre><code class="language-javascript">const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+const rateLimit = require('express-rate-limit');
+
+// Definir el esquema de GraphQL
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// Definir los resolvers
+const root = {
+  hello: () =&gt; {
+    return 'Hello, world!';
+  },
+};
+
+// Crear una instancia de Express
+const app = express();
+
+// Configurar la limitación de tasa
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // Limitar cada IP a 100 solicitudes por ventana
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+// Aplicar la limitación de tasa a todas las rutas
+app.use(limiter);
+
+// Configurar el endpoint de GraphQL
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+// Iniciar el servidor
+app.listen(4000, () =&gt; {
+  console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+});
+</code></pre>
+</li>
+</ol>
+</div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Dependencias</strong>: Importamos <code>express</code>, <code>express-rate-limit</code>, <code>express-graphql</code> y <code>graphql</code>.</li>
+<li><strong>Esquema y Resolvers</strong>: Definimos un esquema simple con una consulta <code>hello</code> y su resolver correspondiente.</li>
+<li><strong>Express App</strong>: Creamos una instancia de Express.</li>
+<li><strong>Rate Limiter</strong>: Configuramos <code>express-rate-limit</code> para permitir un máximo de 100 solicitudes por IP cada 15 minutos.</li>
+<li><strong>Middleware</strong>: Aplicamos el middleware de limitación de tasa a todas las rutas.</li>
+<li><strong>GraphQL Endpoint</strong>: Configuramos el endpoint de GraphQL con <code>express-graphql</code>.</li>
+<li><strong>Servidor</strong>: Iniciamos el servidor en el puerto 4000.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar una limitación de tasa en un servidor GraphQL que permita un máximo de 50 solicitudes por IP cada 10 minutos.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Modifica el código anterior para ajustar la ventana de tiempo y el número máximo de solicitudes.</li>
+<li>Prueba el servidor enviando más de 50 solicitudes en 10 minutos desde la misma IP y observa el mensaje de error.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKY29uc3QgcmF0ZUxpbWl0ID0gcmVxdWlyZSgnZXhwcmVzcy1yYXRlLWxpbWl0Jyk7CgovLyBEZWZpbmlyIGVsIGVzcXVlbWEgZGUgR3JhcGhRTApjb25zdCBzY2hlbWEgPSBidWlsZFNjaGVtYShgCiAgdHlwZSBRdWVyeSB7CiAgICBoZWxsbzogU3RyaW5nCiAgfQpgKTsKCi8vIERlZmluaXIgbG9zIHJlc29sdmVycwpjb25zdCByb290ID0gewogIGhlbGxvOiAoKSA9PiB7CiAgICByZXR1cm4gJ0hlbGxvLCB3b3JsZCEnOwogIH0sCn07CgovLyBDcmVhciB1bmEgaW5zdGFuY2lhIGRlIEV4cHJlc3MKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gQ29uZmlndXJhciBsYSBsaW1pdGFjacOzbiBkZSB0YXNhCmNvbnN0IGxpbWl0ZXIgPSByYXRlTGltaXQoewogIHdpbmRvd01zOiAxMCAqIDYwICogMTAwMCwgLy8gMTAgbWludXRvcwogIG1heDogNTAsIC8vIExpbWl0YXIgY2FkYSBJUCBhIDUwIHNvbGljaXR1ZGVzIHBvciB2ZW50YW5hCiAgbWVzc2FnZTogJ1RvbyBtYW55IHJlcXVlc3RzIGZyb20gdGhpcyBJUCwgcGxlYXNlIHRyeSBhZ2FpbiBsYXRlci4nCn0pOwoKLy8gQXBsaWNhciBsYSBsaW1pdGFjacOzbiBkZSB0YXNhIGEgdG9kYXMgbGFzIHJ1dGFzCmFwcC51c2UobGltaXRlcik7CgovLyBDb25maWd1cmFyIGVsIGVuZHBvaW50IGRlIEdyYXBoUUwKYXBwLnVzZSgnL2dyYXBocWwnLCBncmFwaHFsSFRUUCh7CiAgc2NoZW1hOiBzY2hlbWEsCiAgcm9vdFZhbHVlOiByb290LAogIGdyYXBoaXFsOiB0cnVlLAp9KSk7CgovLyBJbmljaWFyIGVsIHNlcnZpZG9yCmFwcC5saXN0ZW4oNDAwMCwgKCkgPT4gewogIGNvbnNvbGUubG9nKCdSdW5uaW5nIGEgR3JhcGhRTCBBUEkgc2VydmVyIGF0IGh0dHA6Ly9sb2NhbGhvc3Q6NDAwMC9ncmFwaHFsJyk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+const rateLimit = require('express-rate-limit');
+
+// Definir el esquema de GraphQL
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// Definir los resolvers
+const root = {
+  hello: () =&gt; {
+    return 'Hello, world!';
+  },
+};
+
+// Crear una instancia de Express
+const app = express();
+
+// Configurar la limitaci&oacute;n de tasa
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutos
+  max: 50, // Limitar cada IP a 50 solicitudes por ventana
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+// Aplicar la limitaci&oacute;n de tasa a todas las rutas
+app.use(limiter);
+
+// Configurar el endpoint de GraphQL
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+// Iniciar el servidor
+app.listen(4000, () =&gt; {
+  console.log('Running a GraphQL API server at http://localhost:4000/graphql');
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La limitación de tasa es una técnica esencial para proteger tu servidor GraphQL de abusos y mantener un rendimiento estable. En este módulo, aprendimos sobre diferentes estrategias de limitación de tasa y cómo implementarlas en un servidor GraphQL utilizando <code>express-rate-limit</code>. Asegúrate de ajustar los parámetros de limitación de tasa según las necesidades específicas de tu aplicación para lograr un equilibrio entre seguridad y usabilidad.</p>
+<p>En el próximo tema, exploraremos la <strong>Autenticación y Autorización</strong> en GraphQL, donde aprenderemos a proteger nuestras consultas y mutaciones con mecanismos de seguridad robustos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-query-optimization' title="Optimización de Consultas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-authentication-authorization' title="Autenticación y Autorización">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

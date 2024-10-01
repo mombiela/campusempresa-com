@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hooks en React Native</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/reactnative/06-02-hooks-react-native" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/reactnative/06-02-hooks-react-native" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/reactnative/06-02-hooks-react-native" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/reactnative/06-02-hooks-react-native" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/reactnative/06-02-hooks-react-native" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-context-api' title="API de Contexto">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Hooks en React Native</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-performance-optimization' title="Optimización de Rendimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los hooks son una característica introducida en React 16.8 que permiten usar el estado y otras características de React sin escribir una clase. En React Native, los hooks son igualmente poderosos y permiten manejar el estado, los efectos secundarios y otros aspectos de los componentes de manera más sencilla y funcional.</p>
+</div><h2>Objetivos del Módulo</h2>
+<div class='content'><ul>
+<li>Comprender qué son los hooks y por qué son útiles.</li>
+<li>Aprender a usar los hooks más comunes: <code>useState</code>, <code>useEffect</code>, <code>useContext</code>.</li>
+<li>Implementar hooks personalizados para reutilizar lógica de estado.</li>
+</ul>
+</div><h1>¿Qué son los Hooks?</h1>
+<div class='content'><p>Los hooks son funciones que te permiten &quot;enganchar&quot; características de React como el estado y el ciclo de vida en componentes funcionales. Los hooks más comunes son:</p>
+<ul>
+<li><code>useState</code>: Permite agregar estado local a un componente funcional.</li>
+<li><code>useEffect</code>: Permite realizar efectos secundarios en componentes funcionales.</li>
+<li><code>useContext</code>: Permite acceder al contexto en componentes funcionales.</li>
+</ul>
+</div><h1>useState</h1>
+<div class='content'><p>El hook <code>useState</code> permite agregar estado local a un componente funcional. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0LCBCdXR0b24gfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgQ291bnRlciA9ICgpID0+IHsKICBjb25zdCBbY291bnQsIHNldENvdW50XSA9IHVzZVN0YXRlKDApOwoKICByZXR1cm4gKAogICAgPFZpZXc+CiAgICAgIDxUZXh0PkNvdW50OiB7Y291bnR9PC9UZXh0PgogICAgICA8QnV0dG9uIHRpdGxlPSJJbmNyZW1lbnQiIG9uUHJlc3M9eygpID0+IHNldENvdW50KGNvdW50ICsgMSl9IC8+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmV4cG9ydCBkZWZhdWx0IENvdW50ZXI7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
+
+const Counter = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Count: {count}&lt;/Text&gt;
+      &lt;Button title=&quot;Increment&quot; onPress={() =&gt; setCount(count + 1)} /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default Counter;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importación de <code>useState</code></strong>: Importamos <code>useState</code> desde React.</li>
+<li><strong>Declaración del Estado</strong>: <code>const [count, setCount] = useState(0);</code> inicializa el estado <code>count</code> a 0 y proporciona una función <code>setCount</code> para actualizarlo.</li>
+<li><strong>Uso del Estado</strong>: <code>count</code> se muestra en un componente <code>Text</code> y se actualiza cuando se presiona el botón.</li>
+</ol>
+</div><h1>useEffect</h1>
+<div class='content'><p>El hook <code>useEffect</code> permite realizar efectos secundarios en componentes funcionales, como la obtención de datos, la suscripción a eventos o la manipulación del DOM.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VFZmZlY3QgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFZpZXcsIFRleHQgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgVGltZXIgPSAoKSA9PiB7CiAgY29uc3QgW3NlY29uZHMsIHNldFNlY29uZHNdID0gdXNlU3RhdGUoMCk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBjb25zdCBpbnRlcnZhbCA9IHNldEludGVydmFsKCgpID0+IHsKICAgICAgc2V0U2Vjb25kcyhwcmV2U2Vjb25kcyA9PiBwcmV2U2Vjb25kcyArIDEpOwogICAgfSwgMTAwMCk7CgogICAgcmV0dXJuICgpID0+IGNsZWFySW50ZXJ2YWwoaW50ZXJ2YWwpOwogIH0sIFtdKTsKCiAgcmV0dXJuICgKICAgIDxWaWV3PgogICAgICA8VGV4dD5TZWNvbmRzOiB7c2Vjb25kc308L1RleHQ+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmV4cG9ydCBkZWZhdWx0IFRpbWVyOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+
+const Timer = () =&gt; {
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() =&gt; {
+    const interval = setInterval(() =&gt; {
+      setSeconds(prevSeconds =&gt; prevSeconds + 1);
+    }, 1000);
+
+    return () =&gt; clearInterval(interval);
+  }, []);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Seconds: {seconds}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default Timer;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importación de <code>useEffect</code></strong>: Importamos <code>useEffect</code> desde React.</li>
+<li><strong>Uso de <code>useEffect</code></strong>: <code>useEffect</code> se ejecuta después de que el componente se monta. En este caso, establece un intervalo que incrementa <code>seconds</code> cada segundo.</li>
+<li><strong>Limpieza</strong>: La función de limpieza <code>return () =&gt; clearInterval(interval);</code> se ejecuta cuando el componente se desmonta para limpiar el intervalo.</li>
+</ol>
+</div><h1>useContext</h1>
+<div class='content'><p>El hook <code>useContext</code> permite acceder al contexto en componentes funcionales. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZUNvbnRleHQgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFZpZXcsIFRleHQgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgVGhlbWVDb250ZXh0ID0gUmVhY3QuY3JlYXRlQ29udGV4dCgnbGlnaHQnKTsKCmNvbnN0IFRoZW1lZENvbXBvbmVudCA9ICgpID0+IHsKICBjb25zdCB0aGVtZSA9IHVzZUNvbnRleHQoVGhlbWVDb250ZXh0KTsKCiAgcmV0dXJuICgKICAgIDxWaWV3PgogICAgICA8VGV4dD5DdXJyZW50IFRoZW1lOiB7dGhlbWV9PC9UZXh0PgogICAgPC9WaWV3PgogICk7Cn07Cgpjb25zdCBBcHAgPSAoKSA9PiB7CiAgcmV0dXJuICgKICAgIDxUaGVtZUNvbnRleHQuUHJvdmlkZXIgdmFsdWU9ImRhcmsiPgogICAgICA8VGhlbWVkQ29tcG9uZW50IC8+CiAgICA8L1RoZW1lQ29udGV4dC5Qcm92aWRlcj4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgQXBwOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useContext } from 'react';
+import { View, Text } from 'react-native';
+
+const ThemeContext = React.createContext('light');
+
+const ThemedComponent = () =&gt; {
+  const theme = useContext(ThemeContext);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Current Theme: {theme}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+const App = () =&gt; {
+  return (
+    &lt;ThemeContext.Provider value=&quot;dark&quot;&gt;
+      &lt;ThemedComponent /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+};
+
+export default App;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Creación del Contexto</strong>: <code>const ThemeContext = React.createContext('light');</code> crea un contexto con un valor predeterminado de 'light'.</li>
+<li><strong>Uso de <code>useContext</code></strong>: <code>const theme = useContext(ThemeContext);</code> obtiene el valor del contexto.</li>
+<li><strong>Provisión del Contexto</strong>: <code>ThemeContext.Provider</code> proporciona el valor 'dark' al contexto.</li>
+</ol>
+</div><h1>Hooks Personalizados</h1>
+<div class='content'><p>Los hooks personalizados permiten encapsular y reutilizar lógica de estado. Aquí hay un ejemplo de un hook personalizado para manejar un contador:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICdyZWFjdCc7Cgpjb25zdCB1c2VDb3VudGVyID0gKGluaXRpYWxWYWx1ZSA9IDApID0+IHsKICBjb25zdCBbY291bnQsIHNldENvdW50XSA9IHVzZVN0YXRlKGluaXRpYWxWYWx1ZSk7CgogIGNvbnN0IGluY3JlbWVudCA9ICgpID0+IHNldENvdW50KGNvdW50ICsgMSk7CiAgY29uc3QgZGVjcmVtZW50ID0gKCkgPT4gc2V0Q291bnQoY291bnQgLSAxKTsKICBjb25zdCByZXNldCA9ICgpID0+IHNldENvdW50KGluaXRpYWxWYWx1ZSk7CgogIHJldHVybiB7IGNvdW50LCBpbmNyZW1lbnQsIGRlY3JlbWVudCwgcmVzZXQgfTsKfTsKCmV4cG9ydCBkZWZhdWx0IHVzZUNvdW50ZXI7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { useState } from 'react';
+
+const useCounter = (initialValue = 0) =&gt; {
+  const [count, setCount] = useState(initialValue);
+
+  const increment = () =&gt; setCount(count + 1);
+  const decrement = () =&gt; setCount(count - 1);
+  const reset = () =&gt; setCount(initialValue);
+
+  return { count, increment, decrement, reset };
+};
+
+export default useCounter;</pre></div><div class='content'></div><h2>Uso del Hook Personalizado</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JzsKaW1wb3J0IHsgVmlldywgVGV4dCwgQnV0dG9uIH0gZnJvbSAncmVhY3QtbmF0aXZlJzsKaW1wb3J0IHVzZUNvdW50ZXIgZnJvbSAnLi91c2VDb3VudGVyJzsKCmNvbnN0IENvdW50ZXJDb21wb25lbnQgPSAoKSA9PiB7CiAgY29uc3QgeyBjb3VudCwgaW5jcmVtZW50LCBkZWNyZW1lbnQsIHJlc2V0IH0gPSB1c2VDb3VudGVyKDEwKTsKCiAgcmV0dXJuICgKICAgIDxWaWV3PgogICAgICA8VGV4dD5Db3VudDoge2NvdW50fTwvVGV4dD4KICAgICAgPEJ1dHRvbiB0aXRsZT0iSW5jcmVtZW50IiBvblByZXNzPXtpbmNyZW1lbnR9IC8+CiAgICAgIDxCdXR0b24gdGl0bGU9IkRlY3JlbWVudCIgb25QcmVzcz17ZGVjcmVtZW50fSAvPgogICAgICA8QnV0dG9uIHRpdGxlPSJSZXNldCIgb25QcmVzcz17cmVzZXR9IC8+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmV4cG9ydCBkZWZhdWx0IENvdW50ZXJDb21wb25lbnQ7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React from 'react';
+import { View, Text, Button } from 'react-native';
+import useCounter from './useCounter';
+
+const CounterComponent = () =&gt; {
+  const { count, increment, decrement, reset } = useCounter(10);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Count: {count}&lt;/Text&gt;
+      &lt;Button title=&quot;Increment&quot; onPress={increment} /&gt;
+      &lt;Button title=&quot;Decrement&quot; onPress={decrement} /&gt;
+      &lt;Button title=&quot;Reset&quot; onPress={reset} /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default CounterComponent;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Creación del Hook Personalizado</strong>: <code>useCounter</code> encapsula la lógica del contador.</li>
+<li><strong>Uso del Hook Personalizado</strong>: <code>const { count, increment, decrement, reset } = useCounter(10);</code> utiliza el hook personalizado en un componente funcional.</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Contador con useState</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Crea un componente que tenga dos botones, uno para incrementar y otro para decrementar un contador. Usa el hook <code>useState</code>.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlIH0gZnJvbSAncmVhY3QnOwppbXBvcnQgeyBWaWV3LCBUZXh0LCBCdXR0b24gfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgQ291bnRlciA9ICgpID0+IHsKICBjb25zdCBbY291bnQsIHNldENvdW50XSA9IHVzZVN0YXRlKDApOwoKICByZXR1cm4gKAogICAgPFZpZXc+CiAgICAgIDxUZXh0PkNvdW50OiB7Y291bnR9PC9UZXh0PgogICAgICA8QnV0dG9uIHRpdGxlPSJJbmNyZW1lbnQiIG9uUHJlc3M9eygpID0+IHNldENvdW50KGNvdW50ICsgMSl9IC8+CiAgICAgIDxCdXR0b24gdGl0bGU9IkRlY3JlbWVudCIgb25QcmVzcz17KCkgPT4gc2V0Q291bnQoY291bnQgLSAxKX0gLz4KICAgIDwvVmlldz4KICApOwp9OwoKZXhwb3J0IGRlZmF1bHQgQ291bnRlcjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState } from 'react';
+import { View, Text, Button } from 'react-native';
+
+const Counter = () =&gt; {
+  const [count, setCount] = useState(0);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Count: {count}&lt;/Text&gt;
+      &lt;Button title=&quot;Increment&quot; onPress={() =&gt; setCount(count + 1)} /&gt;
+      &lt;Button title=&quot;Decrement&quot; onPress={() =&gt; setCount(count - 1)} /&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default Counter;</pre></div><div class='content'></div><h2>Ejercicio 2: Temporizador con useEffect</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Crea un componente que muestre un temporizador que se incremente cada segundo. Usa el hook <code>useEffect</code>.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZVN0YXRlLCB1c2VFZmZlY3QgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFZpZXcsIFRleHQgfSBmcm9tICdyZWFjdC1uYXRpdmUnOwoKY29uc3QgVGltZXIgPSAoKSA9PiB7CiAgY29uc3QgW3NlY29uZHMsIHNldFNlY29uZHNdID0gdXNlU3RhdGUoMCk7CgogIHVzZUVmZmVjdCgoKSA9PiB7CiAgICBjb25zdCBpbnRlcnZhbCA9IHNldEludGVydmFsKCgpID0+IHsKICAgICAgc2V0U2Vjb25kcyhwcmV2U2Vjb25kcyA9PiBwcmV2U2Vjb25kcyArIDEpOwogICAgfSwgMTAwMCk7CgogICAgcmV0dXJuICgpID0+IGNsZWFySW50ZXJ2YWwoaW50ZXJ2YWwpOwogIH0sIFtdKTsKCiAgcmV0dXJuICgKICAgIDxWaWV3PgogICAgICA8VGV4dD5TZWNvbmRzOiB7c2Vjb25kc308L1RleHQ+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmV4cG9ydCBkZWZhdWx0IFRpbWVyOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
+
+const Timer = () =&gt; {
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() =&gt; {
+    const interval = setInterval(() =&gt; {
+      setSeconds(prevSeconds =&gt; prevSeconds + 1);
+    }, 1000);
+
+    return () =&gt; clearInterval(interval);
+  }, []);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Seconds: {seconds}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+export default Timer;</pre></div><div class='content'></div><h2>Ejercicio 3: Tema con useContext</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Crea un componente que use un contexto para cambiar el tema entre 'light' y 'dark'. Usa el hook <code>useContext</code>.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFJlYWN0LCB7IHVzZUNvbnRleHQgfSBmcm9tICdyZWFjdCc7CmltcG9ydCB7IFZpZXcsIFRleHQsIEJ1dHRvbiB9IGZyb20gJ3JlYWN0LW5hdGl2ZSc7Cgpjb25zdCBUaGVtZUNvbnRleHQgPSBSZWFjdC5jcmVhdGVDb250ZXh0KCdsaWdodCcpOwoKY29uc3QgVGhlbWVkQ29tcG9uZW50ID0gKCkgPT4gewogIGNvbnN0IHRoZW1lID0gdXNlQ29udGV4dChUaGVtZUNvbnRleHQpOwoKICByZXR1cm4gKAogICAgPFZpZXc+CiAgICAgIDxUZXh0PkN1cnJlbnQgVGhlbWU6IHt0aGVtZX08L1RleHQ+CiAgICA8L1ZpZXc+CiAgKTsKfTsKCmNvbnN0IEFwcCA9ICgpID0+IHsKICBjb25zdCBbdGhlbWUsIHNldFRoZW1lXSA9IHVzZVN0YXRlKCdsaWdodCcpOwoKICByZXR1cm4gKAogICAgPFRoZW1lQ29udGV4dC5Qcm92aWRlciB2YWx1ZT17dGhlbWV9PgogICAgICA8VGhlbWVkQ29tcG9uZW50IC8+CiAgICAgIDxCdXR0b24gdGl0bGU9IlRvZ2dsZSBUaGVtZSIgb25QcmVzcz17KCkgPT4gc2V0VGhlbWUodGhlbWUgPT09ICdsaWdodCcgPyAnZGFyaycgOiAnbGlnaHQnKX0gLz4KICAgIDwvVGhlbWVDb250ZXh0LlByb3ZpZGVyPgogICk7Cn07CgpleHBvcnQgZGVmYXVsdCBBcHA7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import React, { useContext } from 'react';
+import { View, Text, Button } from 'react-native';
+
+const ThemeContext = React.createContext('light');
+
+const ThemedComponent = () =&gt; {
+  const theme = useContext(ThemeContext);
+
+  return (
+    &lt;View&gt;
+      &lt;Text&gt;Current Theme: {theme}&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+};
+
+const App = () =&gt; {
+  const [theme, setTheme] = useState('light');
+
+  return (
+    &lt;ThemeContext.Provider value={theme}&gt;
+      &lt;ThemedComponent /&gt;
+      &lt;Button title=&quot;Toggle Theme&quot; onPress={() =&gt; setTheme(theme === 'light' ? 'dark' : 'light')} /&gt;
+    &lt;/ThemeContext.Provider&gt;
+  );
+};
+
+export default App;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los hooks en React Native, incluyendo <code>useState</code>, <code>useEffect</code>, y <code>useContext</code>. También hemos visto cómo crear hooks personalizados para encapsular y reutilizar lógica de estado. Los hooks son una herramienta poderosa que simplifica la gestión del estado y los efectos secundarios en componentes funcionales, haciendo que el código sea más limpio y fácil de entender.</p>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente módulo, exploraremos la optimización del rendimiento en React Native, donde aprenderemos técnicas y estrategias para hacer que nuestras aplicaciones sean más rápidas y eficientes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-context-api' title="API de Contexto">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-performance-optimization' title="Optimización de Rendimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

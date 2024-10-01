@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creación de una Red Neuronal Simple</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/02-02-creating-simple-neural-network" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/02-02-creating-simple-neural-network" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/02-02-creating-simple-neural-network" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/pytorch/02-02-creating-simple-neural-network" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/pytorch/02-02-creating-simple-neural-network" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-introduction-to-neural-networks' title="Introducción a las Redes Neuronales">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creación de una Red Neuronal Simple</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-activation-functions' title="Funciones de Activación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos a construir una red neuronal simple utilizando PyTorch. Este es un paso fundamental para cualquier persona que desee trabajar con redes neuronales, ya que proporciona una base sólida sobre la cual se pueden construir modelos más complejos.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Entender la estructura básica de una red neuronal.</li>
+<li>Aprender a definir una red neuronal en PyTorch.</li>
+<li>Implementar una red neuronal simple y entrenarla con datos de ejemplo.</li>
+</ul>
+</div><h1>1. Estructura Básica de una Red Neuronal</h1>
+<div class='content'><p>Una red neuronal típica consta de:</p>
+<ul>
+<li><strong>Capas de entrada</strong>: Reciben los datos de entrada.</li>
+<li><strong>Capas ocultas</strong>: Procesan los datos mediante operaciones matemáticas.</li>
+<li><strong>Capas de salida</strong>: Producen la salida final del modelo.</li>
+</ul>
+</div><h1>2. Definiendo una Red Neuronal en PyTorch</h1>
+<div class='content'><p>En PyTorch, las redes neuronales se definen utilizando la clase <code>torch.nn.Module</code>. A continuación, se muestra cómo definir una red neuronal simple con una capa oculta.</p>
+</div><h2>Paso 1: Importar las Bibliotecas Necesarias</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KaW1wb3J0IHRvcmNoLm5uLmZ1bmN0aW9uYWwgYXMgRg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim
+import torch.nn.functional as F</pre></div><div class='content'></div><h2>Paso 2: Definir la Red Neuronal</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgU2ltcGxlTk4obm4uTW9kdWxlKToKICAgIGRlZiBfX2luaXRfXyhzZWxmKToKICAgICAgICBzdXBlcihTaW1wbGVOTiwgc2VsZikuX19pbml0X18oKQogICAgICAgIHNlbGYuZmMxID0gbm4uTGluZWFyKDc4NCwgMTI4KSAgIyBDYXBhIG9jdWx0YSBjb24gMTI4IG5ldXJvbmFzCiAgICAgICAgc2VsZi5mYzIgPSBubi5MaW5lYXIoMTI4LCAxMCkgICAjIENhcGEgZGUgc2FsaWRhIGNvbiAxMCBuZXVyb25hcyAocGFyYSAxMCBjbGFzZXMpCgogICAgZGVmIGZvcndhcmQoc2VsZiwgeCk6CiAgICAgICAgeCA9IEYucmVsdShzZWxmLmZjMSh4KSkgICMgRnVuY2nDs24gZGUgYWN0aXZhY2nDs24gUmVMVQogICAgICAgIHggPSBzZWxmLmZjMih4KQogICAgICAgIHJldHVybiB4"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class SimpleNN(nn.Module):
+    def __init__(self):
+        super(SimpleNN, self).__init__()
+        self.fc1 = nn.Linear(784, 128)  # Capa oculta con 128 neuronas
+        self.fc2 = nn.Linear(128, 10)   # Capa de salida con 10 neuronas (para 10 clases)
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))  # Funci&oacute;n de activaci&oacute;n ReLU
+        x = self.fc2(x)
+        return x</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>nn.Linear(784, 128)</code>: Define una capa totalmente conectada con 784 entradas y 128 salidas.</li>
+<li><code>F.relu</code>: Aplica la función de activación ReLU.</li>
+<li><code>nn.Linear(128, 10)</code>: Define una capa totalmente conectada con 128 entradas y 10 salidas.</li>
+</ul>
+</div><h1>3. Entrenando la Red Neuronal</h1>
+<div class='content'></div><h2>Paso 1: Preparar los Datos</h2>
+<div class='content'><p>Para este ejemplo, utilizaremos el conjunto de datos MNIST, que contiene imágenes de dígitos escritos a mano.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0b3JjaHZpc2lvbiBpbXBvcnQgZGF0YXNldHMsIHRyYW5zZm9ybXMKCnRyYW5zZm9ybSA9IHRyYW5zZm9ybXMuQ29tcG9zZShbdHJhbnNmb3Jtcy5Ub1RlbnNvcigpLCB0cmFuc2Zvcm1zLk5vcm1hbGl6ZSgoMC41LCksICgwLjUsKSldKQoKdHJhaW5zZXQgPSBkYXRhc2V0cy5NTklTVChyb290PScuL2RhdGEnLCB0cmFpbj1UcnVlLCBkb3dubG9hZD1UcnVlLCB0cmFuc2Zvcm09dHJhbnNmb3JtKQp0cmFpbmxvYWRlciA9IHRvcmNoLnV0aWxzLmRhdGEuRGF0YUxvYWRlcih0cmFpbnNldCwgYmF0Y2hfc2l6ZT02NCwgc2h1ZmZsZT1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from torchvision import datasets, transforms
+
+transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize((0.5,), (0.5,))])
+
+trainset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
+trainloader = torch.utils.data.DataLoader(trainset, batch_size=64, shuffle=True)</pre></div><div class='content'></div><h2>Paso 2: Definir la Función de Pérdida y el Optimizador</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwgPSBTaW1wbGVOTigpCmNyaXRlcmlvbiA9IG5uLkNyb3NzRW50cm9weUxvc3MoKQpvcHRpbWl6ZXIgPSBvcHRpbS5TR0QobW9kZWwucGFyYW1ldGVycygpLCBscj0wLjAxKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model = SimpleNN()
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.SGD(model.parameters(), lr=0.01)</pre></div><div class='content'></div><h2>Paso 3: Entrenar el Modelo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXBvY2hzID0gNQpmb3IgZXBvY2ggaW4gcmFuZ2UoZXBvY2hzKToKICAgIHJ1bm5pbmdfbG9zcyA9IDAKICAgIGZvciBpbWFnZXMsIGxhYmVscyBpbiB0cmFpbmxvYWRlcjoKICAgICAgICBpbWFnZXMgPSBpbWFnZXMudmlldyhpbWFnZXMuc2hhcGVbMF0sIC0xKSAgIyBBcGxhbmFyIGxhcyBpbcOhZ2VuZXMKCiAgICAgICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpICAjIExpbXBpYXIgbG9zIGdyYWRpZW50ZXMKCiAgICAgICAgb3V0cHV0ID0gbW9kZWwoaW1hZ2VzKSAgIyBGb3J3YXJkIHBhc3MKICAgICAgICBsb3NzID0gY3JpdGVyaW9uKG91dHB1dCwgbGFiZWxzKSAgIyBDYWxjdWxhciBsYSBww6lyZGlkYQogICAgICAgIGxvc3MuYmFja3dhcmQoKSAgIyBCYWNrd2FyZCBwYXNzCiAgICAgICAgb3B0aW1pemVyLnN0ZXAoKSAgIyBBY3R1YWxpemFyIGxvcyBwZXNvcwoKICAgICAgICBydW5uaW5nX2xvc3MgKz0gbG9zcy5pdGVtKCkKICAgIHByaW50KGYiRXBvY2gge2Vwb2NoKzF9IC0gTG9zczoge3J1bm5pbmdfbG9zcy9sZW4odHJhaW5sb2FkZXIpfSIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>epochs = 5
+for epoch in range(epochs):
+    running_loss = 0
+    for images, labels in trainloader:
+        images = images.view(images.shape[0], -1)  # Aplanar las im&aacute;genes
+
+        optimizer.zero_grad()  # Limpiar los gradientes
+
+        output = model(images)  # Forward pass
+        loss = criterion(output, labels)  # Calcular la p&eacute;rdida
+        loss.backward()  # Backward pass
+        optimizer.step()  # Actualizar los pesos
+
+        running_loss += loss.item()
+    print(f&quot;Epoch {epoch+1} - Loss: {running_loss/len(trainloader)}&quot;)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>images.view(images.shape[0], -1)</code>: Aplana las imágenes de 28x28 a un vector de 784 elementos.</li>
+<li><code>optimizer.zero_grad()</code>: Limpia los gradientes acumulados.</li>
+<li><code>model(images)</code>: Realiza el forward pass.</li>
+<li><code>criterion(output, labels)</code>: Calcula la pérdida.</li>
+<li><code>loss.backward()</code>: Realiza el backward pass.</li>
+<li><code>optimizer.step()</code>: Actualiza los pesos del modelo.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Modifica la red neuronal para que tenga dos capas ocultas en lugar de una. La primera capa oculta debe tener 256 neuronas y la segunda 128 neuronas.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTW9kaWZpZWROTihubi5Nb2R1bGUpOgogICAgZGVmIF9faW5pdF9fKHNlbGYpOgogICAgICAgIHN1cGVyKE1vZGlmaWVkTk4sIHNlbGYpLl9faW5pdF9fKCkKICAgICAgICBzZWxmLmZjMSA9IG5uLkxpbmVhcig3ODQsIDI1NikgICMgUHJpbWVyYSBjYXBhIG9jdWx0YSBjb24gMjU2IG5ldXJvbmFzCiAgICAgICAgc2VsZi5mYzIgPSBubi5MaW5lYXIoMjU2LCAxMjgpICAjIFNlZ3VuZGEgY2FwYSBvY3VsdGEgY29uIDEyOCBuZXVyb25hcwogICAgICAgIHNlbGYuZmMzID0gbm4uTGluZWFyKDEyOCwgMTApICAgIyBDYXBhIGRlIHNhbGlkYSBjb24gMTAgbmV1cm9uYXMKCiAgICBkZWYgZm9yd2FyZChzZWxmLCB4KToKICAgICAgICB4ID0gRi5yZWx1KHNlbGYuZmMxKHgpKSAgIyBGdW5jacOzbiBkZSBhY3RpdmFjacOzbiBSZUxVCiAgICAgICAgeCA9IEYucmVsdShzZWxmLmZjMih4KSkgICMgRnVuY2nDs24gZGUgYWN0aXZhY2nDs24gUmVMVQogICAgICAgIHggPSBzZWxmLmZjMyh4KQogICAgICAgIHJldHVybiB4"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class ModifiedNN(nn.Module):
+    def __init__(self):
+        super(ModifiedNN, self).__init__()
+        self.fc1 = nn.Linear(784, 256)  # Primera capa oculta con 256 neuronas
+        self.fc2 = nn.Linear(256, 128)  # Segunda capa oculta con 128 neuronas
+        self.fc3 = nn.Linear(128, 10)   # Capa de salida con 10 neuronas
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))  # Funci&oacute;n de activaci&oacute;n ReLU
+        x = F.relu(self.fc2(x))  # Funci&oacute;n de activaci&oacute;n ReLU
+        x = self.fc3(x)
+        return x</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido a definir y entrenar una red neuronal simple utilizando PyTorch. Hemos cubierto los conceptos básicos de las redes neuronales y cómo implementarlas en código. En el próximo módulo, profundizaremos en las funciones de activación y cómo afectan el rendimiento de nuestras redes neuronales.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-01-introduction-to-neural-networks' title="Introducción a las Redes Neuronales">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-03-activation-functions' title="Funciones de Activación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

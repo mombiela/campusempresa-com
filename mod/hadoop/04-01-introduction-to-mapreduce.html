@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introducción a MapReduce</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/04-01-introduction-to-mapreduce" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/04-01-introduction-to-mapreduce" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/04-01-introduction-to-mapreduce" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/hadoop/04-01-introduction-to-mapreduce" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/04-01-introduction-to-mapreduce" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-hdfs-fault-tolerance' title="Tolerancia a Fallos en HDFS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Introducción a MapReduce</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-mapreduce-job-workflow' title="Flujo de Trabajo de un Job MapReduce">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>¿Qué es MapReduce?</h1>
+<div class='content'><p>MapReduce es un modelo de programación y una plataforma de procesamiento de datos que permite el procesamiento de grandes volúmenes de datos de manera distribuida. Fue desarrollado por Google y es una de las tecnologías fundamentales en el ecosistema Hadoop. MapReduce divide el trabajo en dos fases principales: <strong>Map</strong> y <strong>Reduce</strong>.</p>
+</div><h2>Fases de MapReduce</h2>
+<div class='content'><ol>
+<li><strong>Map</strong>: En esta fase, los datos de entrada se dividen en fragmentos más pequeños y se procesan en paralelo. Cada fragmento es procesado por una función de mapeo que genera pares clave-valor intermedios.</li>
+<li><strong>Reduce</strong>: En esta fase, los pares clave-valor intermedios generados por la fase de mapeo se agrupan por clave y se procesan para producir el resultado final.</li>
+</ol>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Para ilustrar cómo funciona MapReduce, consideremos un ejemplo clásico: el conteo de palabras en un conjunto de documentos.</p>
+<h4>Paso 1: Datos de Entrada</h4>
+<p>Supongamos que tenemos los siguientes documentos:</p>
+<ul>
+<li>Documento 1: &quot;Hadoop es una plataforma de procesamiento de datos.&quot;</li>
+<li>Documento 2: &quot;MapReduce es un modelo de programación.&quot;</li>
+</ul>
+<h4>Paso 2: Fase de Mapeo</h4>
+<p>La función de mapeo toma cada documento y lo divide en palabras, generando pares clave-valor donde la clave es la palabra y el valor es el número 1.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUHNldWRvY8OzZGlnbyBkZSBsYSBmdW5jacOzbiBkZSBtYXBlbwpmdW5jdGlvbiBtYXAoU3RyaW5nIGRvY3VtZW50KSB7CiAgICBmb3IgZWFjaCB3b3JkIGluIGRvY3VtZW50LnNwbGl0KCIgIikgewogICAgICAgIGVtaXQod29yZCwgMSk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Pseudoc&oacute;digo de la funci&oacute;n de mapeo
+function map(String document) {
+    for each word in document.split(&quot; &quot;) {
+        emit(word, 1);
+    }
+}</pre></div><div class='content'><p>Salida de la fase de mapeo:</p>
+<table>
+<thead>
+<tr>
+<th>Clave</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hadoop</td>
+<td>1</td>
+</tr>
+<tr>
+<td>es</td>
+<td>1</td>
+</tr>
+<tr>
+<td>una</td>
+<td>1</td>
+</tr>
+<tr>
+<td>plataforma</td>
+<td>1</td>
+</tr>
+<tr>
+<td>de</td>
+<td>1</td>
+</tr>
+<tr>
+<td>procesamiento</td>
+<td>1</td>
+</tr>
+<tr>
+<td>de</td>
+<td>1</td>
+</tr>
+<tr>
+<td>datos</td>
+<td>1</td>
+</tr>
+<tr>
+<td>MapReduce</td>
+<td>1</td>
+</tr>
+<tr>
+<td>es</td>
+<td>1</td>
+</tr>
+<tr>
+<td>un</td>
+<td>1</td>
+</tr>
+<tr>
+<td>modelo</td>
+<td>1</td>
+</tr>
+<tr>
+<td>de</td>
+<td>1</td>
+</tr>
+<tr>
+<td>programación</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<h4>Paso 3: Fase de Reducción</h4>
+<p>La función de reducción toma los pares clave-valor intermedios, los agrupa por clave y suma los valores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUHNldWRvY8OzZGlnbyBkZSBsYSBmdW5jacOzbiBkZSByZWR1Y2Npw7NuCmZ1bmN0aW9uIHJlZHVjZShTdHJpbmcga2V5LCBMaXN0PEludGVnZXI+IHZhbHVlcykgewogICAgaW50IHN1bSA9IDA7CiAgICBmb3IgZWFjaCB2YWx1ZSBpbiB2YWx1ZXMgewogICAgICAgIHN1bSArPSB2YWx1ZTsKICAgIH0KICAgIGVtaXQoa2V5LCBzdW0pOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Pseudoc&oacute;digo de la funci&oacute;n de reducci&oacute;n
+function reduce(String key, List&lt;Integer&gt; values) {
+    int sum = 0;
+    for each value in values {
+        sum += value;
+    }
+    emit(key, sum);
+}</pre></div><div class='content'><p>Salida de la fase de reducción:</p>
+<table>
+<thead>
+<tr>
+<th>Clave</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hadoop</td>
+<td>1</td>
+</tr>
+<tr>
+<td>es</td>
+<td>2</td>
+</tr>
+<tr>
+<td>una</td>
+<td>1</td>
+</tr>
+<tr>
+<td>plataforma</td>
+<td>1</td>
+</tr>
+<tr>
+<td>de</td>
+<td>3</td>
+</tr>
+<tr>
+<td>procesamiento</td>
+<td>1</td>
+</tr>
+<tr>
+<td>datos</td>
+<td>1</td>
+</tr>
+<tr>
+<td>MapReduce</td>
+<td>1</td>
+</tr>
+<tr>
+<td>un</td>
+<td>1</td>
+</tr>
+<tr>
+<td>modelo</td>
+<td>1</td>
+</tr>
+<tr>
+<td>programación</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ventajas de MapReduce</h2>
+<div class='content'><ul>
+<li><strong>Escalabilidad</strong>: MapReduce puede manejar petabytes de datos distribuidos en miles de nodos.</li>
+<li><strong>Tolerancia a Fallos</strong>: Hadoop MapReduce maneja fallos de hardware y software de manera eficiente.</li>
+<li><strong>Simplicidad</strong>: El modelo de programación es sencillo y permite a los desarrolladores centrarse en la lógica de procesamiento de datos.</li>
+</ul>
+</div><h2>Desventajas de MapReduce</h2>
+<div class='content'><ul>
+<li><strong>Latencia</strong>: MapReduce puede tener una latencia alta debido a la necesidad de escribir datos intermedios en disco.</li>
+<li><strong>Complejidad en la Depuración</strong>: Depurar programas MapReduce puede ser complicado debido a la naturaleza distribuida del procesamiento.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Conteo de Palabras</h2>
+<div class='content'><p>Escribe un programa MapReduce en Java para contar el número de ocurrencias de cada palabra en un conjunto de documentos.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CmltcG9ydCBqYXZhLnV0aWwuU3RyaW5nVG9rZW5pemVyOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuY29uZi5Db25maWd1cmF0aW9uOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuZnMuUGF0aDsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmlvLkludFdyaXRhYmxlOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuaW8uVGV4dDsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLm1hcHJlZHVjZS5Kb2I7CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5tYXByZWR1Y2UuTWFwcGVyOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AubWFwcmVkdWNlLlJlZHVjZXI7CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5tYXByZWR1Y2UubGliLmlucHV0LkZpbGVJbnB1dEZvcm1hdDsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLm1hcHJlZHVjZS5saWIub3V0cHV0LkZpbGVPdXRwdXRGb3JtYXQ7CgpwdWJsaWMgY2xhc3MgV29yZENvdW50IHsKCiAgICBwdWJsaWMgc3RhdGljIGNsYXNzIFRva2VuaXplck1hcHBlcgogICAgICAgICAgICBleHRlbmRzIE1hcHBlcjxPYmplY3QsIFRleHQsIFRleHQsIEludFdyaXRhYmxlPnsKCiAgICAgICAgcHJpdmF0ZSBmaW5hbCBzdGF0aWMgSW50V3JpdGFibGUgb25lID0gbmV3IEludFdyaXRhYmxlKDEpOwogICAgICAgIHByaXZhdGUgVGV4dCB3b3JkID0gbmV3IFRleHQoKTsKCiAgICAgICAgcHVibGljIHZvaWQgbWFwKE9iamVjdCBrZXksIFRleHQgdmFsdWUsIENvbnRleHQgY29udGV4dAogICAgICAgICkgdGhyb3dzIElPRXhjZXB0aW9uLCBJbnRlcnJ1cHRlZEV4Y2VwdGlvbiB7CiAgICAgICAgICAgIFN0cmluZ1Rva2VuaXplciBpdHIgPSBuZXcgU3RyaW5nVG9rZW5pemVyKHZhbHVlLnRvU3RyaW5nKCkpOwogICAgICAgICAgICB3aGlsZSAoaXRyLmhhc01vcmVUb2tlbnMoKSkgewogICAgICAgICAgICAgICAgd29yZC5zZXQoaXRyLm5leHRUb2tlbigpKTsKICAgICAgICAgICAgICAgIGNvbnRleHQud3JpdGUod29yZCwgb25lKTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KCiAgICBwdWJsaWMgc3RhdGljIGNsYXNzIEludFN1bVJlZHVjZXIKICAgICAgICAgICAgZXh0ZW5kcyBSZWR1Y2VyPFRleHQsIEludFdyaXRhYmxlLCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgICAgIHByaXZhdGUgSW50V3JpdGFibGUgcmVzdWx0ID0gbmV3IEludFdyaXRhYmxlKCk7CgogICAgICAgIHB1YmxpYyB2b2lkIHJlZHVjZShUZXh0IGtleSwgSXRlcmFibGU8SW50V3JpdGFibGU+IHZhbHVlcywKICAgICAgICAgICAgICAgICAgICAgICAgICAgQ29udGV4dCBjb250ZXh0CiAgICAgICAgKSB0aHJvd3MgSU9FeGNlcHRpb24sIEludGVycnVwdGVkRXhjZXB0aW9uIHsKICAgICAgICAgICAgaW50IHN1bSA9IDA7CiAgICAgICAgICAgIGZvciAoSW50V3JpdGFibGUgdmFsIDogdmFsdWVzKSB7CiAgICAgICAgICAgICAgICBzdW0gKz0gdmFsLmdldCgpOwogICAgICAgICAgICB9CiAgICAgICAgICAgIHJlc3VsdC5zZXQoc3VtKTsKICAgICAgICAgICAgY29udGV4dC53cml0ZShrZXksIHJlc3VsdCk7CiAgICAgICAgfQogICAgfQoKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHRocm93cyBFeGNlcHRpb24gewogICAgICAgIENvbmZpZ3VyYXRpb24gY29uZiA9IG5ldyBDb25maWd1cmF0aW9uKCk7CiAgICAgICAgSm9iIGpvYiA9IEpvYi5nZXRJbnN0YW5jZShjb25mLCAid29yZCBjb3VudCIpOwogICAgICAgIGpvYi5zZXRKYXJCeUNsYXNzKFdvcmRDb3VudC5jbGFzcyk7CiAgICAgICAgam9iLnNldE1hcHBlckNsYXNzKFRva2VuaXplck1hcHBlci5jbGFzcyk7CiAgICAgICAgam9iLnNldENvbWJpbmVyQ2xhc3MoSW50U3VtUmVkdWNlci5jbGFzcyk7CiAgICAgICAgam9iLnNldFJlZHVjZXJDbGFzcyhJbnRTdW1SZWR1Y2VyLmNsYXNzKTsKICAgICAgICBqb2Iuc2V0T3V0cHV0S2V5Q2xhc3MoVGV4dC5jbGFzcyk7CiAgICAgICAgam9iLnNldE91dHB1dFZhbHVlQ2xhc3MoSW50V3JpdGFibGUuY2xhc3MpOwogICAgICAgIEZpbGVJbnB1dEZvcm1hdC5hZGRJbnB1dFBhdGgoam9iLCBuZXcgUGF0aChhcmdzWzBdKSk7CiAgICAgICAgRmlsZU91dHB1dEZvcm1hdC5zZXRPdXRwdXRQYXRoKGpvYiwgbmV3IFBhdGgoYXJnc1sxXSkpOwogICAgICAgIFN5c3RlbS5leGl0KGpvYi53YWl0Rm9yQ29tcGxldGlvbih0cnVlKSA/IDAgOiAxKTsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.IOException;
+import java.util.StringTokenizer;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class WordCount {
+
+    public static class TokenizerMapper
+            extends Mapper&lt;Object, Text, Text, IntWritable&gt;{
+
+        private final static IntWritable one = new IntWritable(1);
+        private Text word = new Text();
+
+        public void map(Object key, Text value, Context context
+        ) throws IOException, InterruptedException {
+            StringTokenizer itr = new StringTokenizer(value.toString());
+            while (itr.hasMoreTokens()) {
+                word.set(itr.nextToken());
+                context.write(word, one);
+            }
+        }
+    }
+
+    public static class IntSumReducer
+            extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+        private IntWritable result = new IntWritable();
+
+        public void reduce(Text key, Iterable&lt;IntWritable&gt; values,
+                           Context context
+        ) throws IOException, InterruptedException {
+            int sum = 0;
+            for (IntWritable val : values) {
+                sum += val.get();
+            }
+            result.set(sum);
+            context.write(key, result);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, &quot;word count&quot;);
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(TokenizerMapper.class);
+        job.setCombinerClass(IntSumReducer.class);
+        job.setReducerClass(IntSumReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>TokenizerMapper</strong>: Esta clase extiende <code>Mapper</code> y sobrescribe el método <code>map</code>. Divide cada línea de texto en palabras y emite un par clave-valor (palabra, 1).</li>
+<li><strong>IntSumReducer</strong>: Esta clase extiende <code>Reducer</code> y sobrescribe el método <code>reduce</code>. Suma los valores para cada clave (palabra) y emite el resultado final.</li>
+<li><strong>Main Method</strong>: Configura el trabajo MapReduce, especifica las clases de mapeo y reducción, y define las rutas de entrada y salida.</li>
+</ol>
+</div><h2>Retroalimentación y Consejos</h2>
+<div class='content'><ul>
+<li><strong>Error Común</strong>: Asegúrate de que las rutas de entrada y salida sean correctas y que el directorio de salida no exista antes de ejecutar el trabajo.</li>
+<li><strong>Consejo</strong>: Utiliza un combinador (como <code>IntSumReducer</code> en este ejemplo) para reducir la cantidad de datos transferidos entre las fases de mapeo y reducción, mejorando así el rendimiento.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos introducido el modelo de programación MapReduce y hemos visto cómo se puede utilizar para procesar grandes volúmenes de datos de manera distribuida. Hemos cubierto las fases de mapeo y reducción, y hemos implementado un ejemplo práctico de conteo de palabras. En la próxima lección, profundizaremos en el flujo de trabajo de un job MapReduce y exploraremos técnicas avanzadas para optimizar el rendimiento de MapReduce.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-hdfs-fault-tolerance' title="Tolerancia a Fallos en HDFS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-mapreduce-job-workflow' title="Flujo de Trabajo de un Job MapReduce">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

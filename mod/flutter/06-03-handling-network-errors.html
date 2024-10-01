@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Errores de Red</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flutter/06-03-handling-network-errors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flutter/06-03-handling-network-errors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flutter/06-03-handling-network-errors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flutter/06-03-handling-network-errors" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flutter/06-03-handling-network-errors" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-parsing-json-data' title="Parseo de Datos JSON">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de Errores de Red</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-using-rest-apis' title="Usando APIs REST">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo manejar errores de red en Flutter. La gestión adecuada de errores es crucial para crear aplicaciones robustas y ofrecer una buena experiencia de usuario. Cubriremos los siguientes puntos:</p>
+<ol>
+<li><strong>Tipos Comunes de Errores de Red</strong></li>
+<li><strong>Manejo de Errores con <code>try-catch</code></strong></li>
+<li><strong>Uso de <code>Future</code> y <code>async-await</code> para Manejo de Errores</strong></li>
+<li><strong>Manejo de Errores con Paquetes de Terceros</strong></li>
+<li><strong>Ejemplo Práctico</strong></li>
+<li><strong>Ejercicio Práctico</strong></li>
+</ol>
+</div><h1>1. Tipos Comunes de Errores de Red</h1>
+<div class='content'><p>Antes de manejar errores, es importante entender los tipos comunes de errores de red que puedes encontrar:</p>
+<ul>
+<li><strong>Errores de Conexión</strong>: Ocurren cuando no se puede establecer una conexión con el servidor.</li>
+<li><strong>Errores de Tiempo de Espera</strong>: Ocurren cuando la solicitud tarda demasiado en completarse.</li>
+<li><strong>Errores de Respuesta</strong>: Ocurren cuando el servidor responde con un código de estado HTTP que indica un error (por ejemplo, 404, 500).</li>
+<li><strong>Errores de Parseo</strong>: Ocurren cuando la respuesta del servidor no se puede convertir al formato esperado (por ejemplo, JSON malformado).</li>
+</ul>
+</div><h1>2. Manejo de Errores con `try-catch`</h1>
+<div class='content'><p>En Dart, puedes usar bloques <code>try-catch</code> para manejar excepciones. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmh0dHAvaHR0cC5kYXJ0JyBhcyBodHRwOwoKRnV0dXJlPHZvaWQ+IGZldGNoRGF0YSgpIGFzeW5jIHsKICB0cnkgewogICAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBodHRwLmdldChVcmkucGFyc2UoJ2h0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2RhdGEnKSk7CiAgICBpZiAocmVzcG9uc2Uuc3RhdHVzQ29kZSA9PSAyMDApIHsKICAgICAgLy8gUHJvY2VzYXIgbGEgcmVzcHVlc3RhCiAgICAgIHByaW50KCdEYXRvcyByZWNpYmlkb3M6ICR7cmVzcG9uc2UuYm9keX0nKTsKICAgIH0gZWxzZSB7CiAgICAgIC8vIE1hbmVqYXIgZXJyb3JlcyBkZSByZXNwdWVzdGEKICAgICAgcHJpbnQoJ0Vycm9yIGVuIGxhIHJlc3B1ZXN0YTogJHtyZXNwb25zZS5zdGF0dXNDb2RlfScpOwogICAgfQogIH0gY2F0Y2ggKGUpIHsKICAgIC8vIE1hbmVqYXIgZXJyb3JlcyBkZSBjb25leGnDs24geSBvdHJvcwogICAgcHJpbnQoJ0Vycm9yIGRlIHJlZDogJGUnKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:http/http.dart' as http;
+
+Future&lt;void&gt; fetchData() async {
+  try {
+    final response = await http.get(Uri.parse('https://api.example.com/data'));
+    if (response.statusCode == 200) {
+      // Procesar la respuesta
+      print('Datos recibidos: ${response.body}');
+    } else {
+      // Manejar errores de respuesta
+      print('Error en la respuesta: ${response.statusCode}');
+    }
+  } catch (e) {
+    // Manejar errores de conexi&oacute;n y otros
+    print('Error de red: $e');
+  }
+}</pre></div><div class='content'></div><h1>3. Uso de `Future` y `async-await` para Manejo de Errores</h1>
+<div class='content'><p>El uso de <code>async-await</code> facilita la lectura y el manejo de errores en código asíncrono. Aquí hay un ejemplo más detallado:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwppbXBvcnQgJ3BhY2thZ2U6aHR0cC9odHRwLmRhcnQnIGFzIGh0dHA7CgpGdXR1cmU8dm9pZD4gZmV0Y2hEYXRhKCkgYXN5bmMgewogIHRyeSB7CiAgICBmaW5hbCByZXNwb25zZSA9IGF3YWl0IGh0dHAuZ2V0KFVyaS5wYXJzZSgnaHR0cHM6Ly9hcGkuZXhhbXBsZS5jb20vZGF0YScpKTsKICAgIGlmIChyZXNwb25zZS5zdGF0dXNDb2RlID09IDIwMCkgewogICAgICBmaW5hbCBkYXRhID0ganNvbkRlY29kZShyZXNwb25zZS5ib2R5KTsKICAgICAgLy8gUHJvY2VzYXIgbG9zIGRhdG9zCiAgICAgIHByaW50KCdEYXRvcyByZWNpYmlkb3M6ICRkYXRhJyk7CiAgICB9IGVsc2UgewogICAgICAvLyBNYW5lamFyIGVycm9yZXMgZGUgcmVzcHVlc3RhCiAgICAgIHByaW50KCdFcnJvciBlbiBsYSByZXNwdWVzdGE6ICR7cmVzcG9uc2Uuc3RhdHVzQ29kZX0nKTsKICAgIH0KICB9IG9uIGh0dHAuQ2xpZW50RXhjZXB0aW9uIGNhdGNoIChlKSB7CiAgICAvLyBNYW5lamFyIGVycm9yZXMgZGUgY29uZXhpw7NuCiAgICBwcmludCgnRXJyb3IgZGUgY29uZXhpw7NuOiAkZScpOwogIH0gY2F0Y2ggKGUpIHsKICAgIC8vIE1hbmVqYXIgb3Ryb3MgZXJyb3JlcwogICAgcHJpbnQoJ0Vycm9yIGRlc2Nvbm9jaWRvOiAkZScpOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+Future&lt;void&gt; fetchData() async {
+  try {
+    final response = await http.get(Uri.parse('https://api.example.com/data'));
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      // Procesar los datos
+      print('Datos recibidos: $data');
+    } else {
+      // Manejar errores de respuesta
+      print('Error en la respuesta: ${response.statusCode}');
+    }
+  } on http.ClientException catch (e) {
+    // Manejar errores de conexi&oacute;n
+    print('Error de conexi&oacute;n: $e');
+  } catch (e) {
+    // Manejar otros errores
+    print('Error desconocido: $e');
+  }
+}</pre></div><div class='content'></div><h1>4. Manejo de Errores con Paquetes de Terceros</h1>
+<div class='content'><p>Paquetes como <code>dio</code> ofrecen funcionalidades avanzadas para manejar errores de red. Aquí hay un ejemplo usando <code>dio</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmRpby9kaW8uZGFydCc7CgpGdXR1cmU8dm9pZD4gZmV0Y2hEYXRhKCkgYXN5bmMgewogIGZpbmFsIGRpbyA9IERpbygpOwoKICB0cnkgewogICAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBkaW8uZ2V0KCdodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhJyk7CiAgICBwcmludCgnRGF0b3MgcmVjaWJpZG9zOiAke3Jlc3BvbnNlLmRhdGF9Jyk7CiAgfSBvbiBEaW9FcnJvciBjYXRjaCAoZSkgewogICAgaWYgKGUudHlwZSA9PSBEaW9FcnJvclR5cGUuY29ubmVjdFRpbWVvdXQpIHsKICAgICAgcHJpbnQoJ0Vycm9yIGRlIHRpZW1wbyBkZSBlc3BlcmEnKTsKICAgIH0gZWxzZSBpZiAoZS50eXBlID09IERpb0Vycm9yVHlwZS5yZXNwb25zZSkgewogICAgICBwcmludCgnRXJyb3IgZW4gbGEgcmVzcHVlc3RhOiAke2UucmVzcG9uc2U/LnN0YXR1c0NvZGV9Jyk7CiAgICB9IGVsc2UgewogICAgICBwcmludCgnRXJyb3IgZGUgcmVkOiAkZScpOwogICAgfQogIH0gY2F0Y2ggKGUpIHsKICAgIHByaW50KCdFcnJvciBkZXNjb25vY2lkbzogJGUnKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:dio/dio.dart';
+
+Future&lt;void&gt; fetchData() async {
+  final dio = Dio();
+
+  try {
+    final response = await dio.get('https://api.example.com/data');
+    print('Datos recibidos: ${response.data}');
+  } on DioError catch (e) {
+    if (e.type == DioErrorType.connectTimeout) {
+      print('Error de tiempo de espera');
+    } else if (e.type == DioErrorType.response) {
+      print('Error en la respuesta: ${e.response?.statusCode}');
+    } else {
+      print('Error de red: $e');
+    }
+  } catch (e) {
+    print('Error desconocido: $e');
+  }
+}</pre></div><div class='content'></div><h1>5. Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear una aplicación simple que obtenga datos de una API y maneje los errores de red adecuadamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAncGFja2FnZTpodHRwL2h0dHAuZGFydCcgYXMgaHR0cDsKaW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgewogIHJ1bkFwcChNeUFwcCgpKTsKfQoKY2xhc3MgTXlBcHAgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIE1hdGVyaWFsQXBwKAogICAgICBob21lOiBTY2FmZm9sZCgKICAgICAgICBhcHBCYXI6IEFwcEJhcih0aXRsZTogVGV4dCgnTWFuZWpvIGRlIEVycm9yZXMgZGUgUmVkJykpLAogICAgICAgIGJvZHk6IERhdGFGZXRjaGVyKCksCiAgICAgICksCiAgICApOwogIH0KfQoKY2xhc3MgRGF0YUZldGNoZXIgZXh0ZW5kcyBTdGF0ZWZ1bFdpZGdldCB7CiAgQG92ZXJyaWRlCiAgX0RhdGFGZXRjaGVyU3RhdGUgY3JlYXRlU3RhdGUoKSA9PiBfRGF0YUZldGNoZXJTdGF0ZSgpOwp9CgpjbGFzcyBfRGF0YUZldGNoZXJTdGF0ZSBleHRlbmRzIFN0YXRlPERhdGFGZXRjaGVyPiB7CiAgU3RyaW5nIF9kYXRhID0gJ1ByZXNpb25hIGVsIGJvdMOzbiBwYXJhIG9idGVuZXIgZGF0b3MnOwoKICBGdXR1cmU8dm9pZD4gZmV0Y2hEYXRhKCkgYXN5bmMgewogICAgdHJ5IHsKICAgICAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBodHRwLmdldChVcmkucGFyc2UoJ2h0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2RhdGEnKSk7CiAgICAgIGlmIChyZXNwb25zZS5zdGF0dXNDb2RlID09IDIwMCkgewogICAgICAgIGZpbmFsIGRhdGEgPSBqc29uRGVjb2RlKHJlc3BvbnNlLmJvZHkpOwogICAgICAgIHNldFN0YXRlKCgpIHsKICAgICAgICAgIF9kYXRhID0gJ0RhdG9zIHJlY2liaWRvczogJGRhdGEnOwogICAgICAgIH0pOwogICAgICB9IGVsc2UgewogICAgICAgIHNldFN0YXRlKCgpIHsKICAgICAgICAgIF9kYXRhID0gJ0Vycm9yIGVuIGxhIHJlc3B1ZXN0YTogJHtyZXNwb25zZS5zdGF0dXNDb2RlfSc7CiAgICAgICAgfSk7CiAgICAgIH0KICAgIH0gY2F0Y2ggKGUpIHsKICAgICAgc2V0U3RhdGUoKCkgewogICAgICAgIF9kYXRhID0gJ0Vycm9yIGRlIHJlZDogJGUnOwogICAgICB9KTsKICAgIH0KICB9CgogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIENlbnRlcigKICAgICAgY2hpbGQ6IENvbHVtbigKICAgICAgICBtYWluQXhpc0FsaWdubWVudDogTWFpbkF4aXNBbGlnbm1lbnQuY2VudGVyLAogICAgICAgIGNoaWxkcmVuOiBbCiAgICAgICAgICBUZXh0KF9kYXRhKSwKICAgICAgICAgIFNpemVkQm94KGhlaWdodDogMjApLAogICAgICAgICAgRWxldmF0ZWRCdXR0b24oCiAgICAgICAgICAgIG9uUHJlc3NlZDogZmV0Y2hEYXRhLAogICAgICAgICAgICBjaGlsZDogVGV4dCgnT2J0ZW5lciBEYXRvcycpLAogICAgICAgICAgKSwKICAgICAgICBdLAogICAgICApLAogICAgKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Manejo de Errores de Red')),
+        body: DataFetcher(),
+      ),
+    );
+  }
+}
+
+class DataFetcher extends StatefulWidget {
+  @override
+  _DataFetcherState createState() =&gt; _DataFetcherState();
+}
+
+class _DataFetcherState extends State&lt;DataFetcher&gt; {
+  String _data = 'Presiona el bot&oacute;n para obtener datos';
+
+  Future&lt;void&gt; fetchData() async {
+    try {
+      final response = await http.get(Uri.parse('https://api.example.com/data'));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _data = 'Datos recibidos: $data';
+        });
+      } else {
+        setState(() {
+          _data = 'Error en la respuesta: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _data = 'Error de red: $e';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(_data),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: fetchData,
+            child: Text('Obtener Datos'),
+          ),
+        ],
+      ),
+    );
+  }
+}</pre></div><div class='content'></div><h1>6. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una aplicación Flutter que obtenga datos de una API pública (por ejemplo, https://jsonplaceholder.typicode.com/posts) y maneje los errores de red. Muestra los datos en una lista y maneja los siguientes errores:</p>
+<ol>
+<li><strong>Error de Conexión</strong>: Muestra un mensaje de error si no se puede conectar al servidor.</li>
+<li><strong>Error de Respuesta</strong>: Muestra un mensaje de error si el servidor responde con un código de estado HTTP que indica un error.</li>
+<li><strong>Error de Parseo</strong>: Muestra un mensaje de error si la respuesta no se puede convertir al formato esperado.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAncGFja2FnZTpodHRwL2h0dHAuZGFydCcgYXMgaHR0cDsKaW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgewogIHJ1bkFwcChNeUFwcCgpKTsKfQoKY2xhc3MgTXlBcHAgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIE1hdGVyaWFsQXBwKAogICAgICBob21lOiBTY2FmZm9sZCgKICAgICAgICBhcHBCYXI6IEFwcEJhcih0aXRsZTogVGV4dCgnTWFuZWpvIGRlIEVycm9yZXMgZGUgUmVkJykpLAogICAgICAgIGJvZHk6IFBvc3RMaXN0KCksCiAgICAgICksCiAgICApOwogIH0KfQoKY2xhc3MgUG9zdExpc3QgZXh0ZW5kcyBTdGF0ZWZ1bFdpZGdldCB7CiAgQG92ZXJyaWRlCiAgX1Bvc3RMaXN0U3RhdGUgY3JlYXRlU3RhdGUoKSA9PiBfUG9zdExpc3RTdGF0ZSgpOwp9CgpjbGFzcyBfUG9zdExpc3RTdGF0ZSBleHRlbmRzIFN0YXRlPFBvc3RMaXN0PiB7CiAgTGlzdDxkeW5hbWljPiBfcG9zdHMgPSBbXTsKICBTdHJpbmcgX2Vycm9yID0gJyc7CgogIEZ1dHVyZTx2b2lkPiBmZXRjaFBvc3RzKCkgYXN5bmMgewogICAgdHJ5IHsKICAgICAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBodHRwLmdldChVcmkucGFyc2UoJ2h0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cycpKTsKICAgICAgaWYgKHJlc3BvbnNlLnN0YXR1c0NvZGUgPT0gMjAwKSB7CiAgICAgICAgZmluYWwgZGF0YSA9IGpzb25EZWNvZGUocmVzcG9uc2UuYm9keSk7CiAgICAgICAgc2V0U3RhdGUoKCkgewogICAgICAgICAgX3Bvc3RzID0gZGF0YTsKICAgICAgICAgIF9lcnJvciA9ICcnOwogICAgICAgIH0pOwogICAgICB9IGVsc2UgewogICAgICAgIHNldFN0YXRlKCgpIHsKICAgICAgICAgIF9lcnJvciA9ICdFcnJvciBlbiBsYSByZXNwdWVzdGE6ICR7cmVzcG9uc2Uuc3RhdHVzQ29kZX0nOwogICAgICAgIH0pOwogICAgICB9CiAgICB9IGNhdGNoIChlKSB7CiAgICAgIHNldFN0YXRlKCgpIHsKICAgICAgICBfZXJyb3IgPSAnRXJyb3IgZGUgcmVkOiAkZSc7CiAgICAgIH0pOwogICAgfQogIH0KCiAgQG92ZXJyaWRlCiAgdm9pZCBpbml0U3RhdGUoKSB7CiAgICBzdXBlci5pbml0U3RhdGUoKTsKICAgIGZldGNoUG9zdHMoKTsKICB9CgogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIF9lcnJvci5pc05vdEVtcHR5CiAgICAgICAgPyBDZW50ZXIoY2hpbGQ6IFRleHQoX2Vycm9yKSkKICAgICAgICA6IExpc3RWaWV3LmJ1aWxkZXIoCiAgICAgICAgICAgIGl0ZW1Db3VudDogX3Bvc3RzLmxlbmd0aCwKICAgICAgICAgICAgaXRlbUJ1aWxkZXI6IChjb250ZXh0LCBpbmRleCkgewogICAgICAgICAgICAgIHJldHVybiBMaXN0VGlsZSgKICAgICAgICAgICAgICAgIHRpdGxlOiBUZXh0KF9wb3N0c1tpbmRleF1bJ3RpdGxlJ10pLAogICAgICAgICAgICAgICAgc3VidGl0bGU6IFRleHQoX3Bvc3RzW2luZGV4XVsnYm9keSddKSwKICAgICAgICAgICAgICApOwogICAgICAgICAgICB9LAogICAgICAgICAgKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Manejo de Errores de Red')),
+        body: PostList(),
+      ),
+    );
+  }
+}
+
+class PostList extends StatefulWidget {
+  @override
+  _PostListState createState() =&gt; _PostListState();
+}
+
+class _PostListState extends State&lt;PostList&gt; {
+  List&lt;dynamic&gt; _posts = [];
+  String _error = '';
+
+  Future&lt;void&gt; fetchPosts() async {
+    try {
+      final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          _posts = data;
+          _error = '';
+        });
+      } else {
+        setState(() {
+          _error = 'Error en la respuesta: ${response.statusCode}';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _error = 'Error de red: $e';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchPosts();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _error.isNotEmpty
+        ? Center(child: Text(_error))
+        : ListView.builder(
+            itemCount: _posts.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(_posts[index]['title']),
+                subtitle: Text(_posts[index]['body']),
+              );
+            },
+          );
+  }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, aprendiste cómo manejar errores de red en Flutter utilizando <code>try-catch</code>, <code>async-await</code> y paquetes de terceros como <code>dio</code>. También implementaste un ejemplo práctico y un ejercicio para reforzar los conceptos aprendidos. Ahora estás mejor preparado para manejar errores de red en tus aplicaciones Flutter, mejorando así la robustez y la experiencia del usuario.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-parsing-json-data' title="Parseo de Datos JSON">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-using-rest-apis' title="Usando APIs REST">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

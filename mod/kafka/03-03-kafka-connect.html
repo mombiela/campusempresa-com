@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Connect</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kafka/03-03-kafka-connect" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kafka/03-03-kafka-connect" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kafka/03-03-kafka-connect" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kafka/03-03-kafka-connect" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kafka/03-03-kafka-connect" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-consuming-messages' title="Consumo de Mensajes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Kafka Connect</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-kafka-streams' title="Kafka Streams">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Kafka Connect es una herramienta integral para la integración de datos en Apache Kafka. Permite la conexión de Kafka con sistemas externos, como bases de datos, sistemas de almacenamiento, y otros sistemas de mensajería, de una manera sencilla y escalable. En este módulo, aprenderemos sobre los conceptos básicos de Kafka Connect, cómo configurarlo y cómo utilizarlo para mover datos hacia y desde Kafka.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>1. Conectores</h2>
+<div class='content'><ul>
+<li><strong>Fuente (Source) Conectores</strong>: Permiten la importación de datos desde sistemas externos a Kafka.</li>
+<li><strong>Sumidero (Sink) Conectores</strong>: Permiten la exportación de datos desde Kafka a sistemas externos.</li>
+</ul>
+</div><h2>2. Tareas</h2>
+<div class='content'><ul>
+<li><strong>Tareas (Tasks)</strong>: Son las unidades de trabajo que ejecutan los conectores. Un conector puede tener múltiples tareas para paralelizar el trabajo.</li>
+</ul>
+</div><h2>3. Trabajadores</h2>
+<div class='content'><ul>
+<li><strong>Trabajadores (Workers)</strong>: Son las instancias de Kafka Connect que ejecutan las tareas. Pueden ser distribuidos o independientes.</li>
+</ul>
+</div><h2>4. Configuración</h2>
+<div class='content'><ul>
+<li><strong>Configuración de Conectores</strong>: Define cómo se comportan los conectores, incluyendo las propiedades de conexión y las transformaciones de datos.</li>
+</ul>
+</div><h1>Configuración de Kafka Connect</h1>
+<div class='content'></div><h2>Paso 1: Instalación de Kafka Connect</h2>
+<div class='content'><p>Kafka Connect viene incluido con la distribución de Apache Kafka. No se requiere una instalación separada.</p>
+</div><h2>Paso 2: Configuración de un Conector de Fuente</h2>
+<div class='content'><h4>Ejemplo: Conector de Fuente JDBC</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogImpkYmMtc291cmNlLWNvbm5lY3RvciIsCiAgImNvbmZpZyI6IHsKICAgICJjb25uZWN0b3IuY2xhc3MiOiAiaW8uY29uZmx1ZW50LmNvbm5lY3QuamRiYy5KZGJjU291cmNlQ29ubmVjdG9yIiwKICAgICJ0YXNrcy5tYXgiOiAiMSIsCiAgICAiY29ubmVjdGlvbi51cmwiOiAiamRiYzpteXNxbDovL2xvY2FsaG9zdDozMzA2L215ZGF0YWJhc2UiLAogICAgImNvbm5lY3Rpb24udXNlciI6ICJteXVzZXIiLAogICAgImNvbm5lY3Rpb24ucGFzc3dvcmQiOiAibXlwYXNzd29yZCIsCiAgICAidGFibGUud2hpdGVsaXN0IjogIm15dGFibGUiLAogICAgIm1vZGUiOiAiaW5jcmVtZW50aW5nIiwKICAgICJpbmNyZW1lbnRpbmcuY29sdW1uLm5hbWUiOiAiaWQiLAogICAgInRvcGljLnByZWZpeCI6ICJqZGJjLSIKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;jdbc-source-connector&quot;,
+  &quot;config&quot;: {
+    &quot;connector.class&quot;: &quot;io.confluent.connect.jdbc.JdbcSourceConnector&quot;,
+    &quot;tasks.max&quot;: &quot;1&quot;,
+    &quot;connection.url&quot;: &quot;jdbc:mysql://localhost:3306/mydatabase&quot;,
+    &quot;connection.user&quot;: &quot;myuser&quot;,
+    &quot;connection.password&quot;: &quot;mypassword&quot;,
+    &quot;table.whitelist&quot;: &quot;mytable&quot;,
+    &quot;mode&quot;: &quot;incrementing&quot;,
+    &quot;incrementing.column.name&quot;: &quot;id&quot;,
+    &quot;topic.prefix&quot;: &quot;jdbc-&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>name</strong>: Nombre del conector.</li>
+<li><strong>connector.class</strong>: Clase del conector.</li>
+<li><strong>tasks.max</strong>: Número máximo de tareas.</li>
+<li><strong>connection.url</strong>: URL de conexión a la base de datos.</li>
+<li><strong>connection.user</strong>: Usuario de la base de datos.</li>
+<li><strong>connection.password</strong>: Contraseña de la base de datos.</li>
+<li><strong>table.whitelist</strong>: Lista de tablas a importar.</li>
+<li><strong>mode</strong>: Modo de importación (incremental en este caso).</li>
+<li><strong>incrementing.column.name</strong>: Columna utilizada para el seguimiento incremental.</li>
+<li><strong>topic.prefix</strong>: Prefijo para los temas de Kafka.</li>
+</ul>
+</div><h2>Paso 3: Configuración de un Conector de Sumidero</h2>
+<div class='content'><h4>Ejemplo: Conector de Sumidero Elasticsearch</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogImVsYXN0aWNzZWFyY2gtc2luay1jb25uZWN0b3IiLAogICJjb25maWciOiB7CiAgICAiY29ubmVjdG9yLmNsYXNzIjogImlvLmNvbmZsdWVudC5jb25uZWN0LmVsYXN0aWNzZWFyY2guRWxhc3RpY3NlYXJjaFNpbmtDb25uZWN0b3IiLAogICAgInRhc2tzLm1heCI6ICIxIiwKICAgICJ0b3BpY3MiOiAiamRiYy1teXRhYmxlIiwKICAgICJjb25uZWN0aW9uLnVybCI6ICJodHRwOi8vbG9jYWxob3N0OjkyMDAiLAogICAgInR5cGUubmFtZSI6ICJrYWZrYS1jb25uZWN0IiwKICAgICJrZXkuaWdub3JlIjogInRydWUiLAogICAgInNjaGVtYS5pZ25vcmUiOiAidHJ1ZSIKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;elasticsearch-sink-connector&quot;,
+  &quot;config&quot;: {
+    &quot;connector.class&quot;: &quot;io.confluent.connect.elasticsearch.ElasticsearchSinkConnector&quot;,
+    &quot;tasks.max&quot;: &quot;1&quot;,
+    &quot;topics&quot;: &quot;jdbc-mytable&quot;,
+    &quot;connection.url&quot;: &quot;http://localhost:9200&quot;,
+    &quot;type.name&quot;: &quot;kafka-connect&quot;,
+    &quot;key.ignore&quot;: &quot;true&quot;,
+    &quot;schema.ignore&quot;: &quot;true&quot;
+  }
+}</pre></div><div class='content'><ul>
+<li><strong>name</strong>: Nombre del conector.</li>
+<li><strong>connector.class</strong>: Clase del conector.</li>
+<li><strong>tasks.max</strong>: Número máximo de tareas.</li>
+<li><strong>topics</strong>: Temas de Kafka a exportar.</li>
+<li><strong>connection.url</strong>: URL de conexión a Elasticsearch.</li>
+<li><strong>type.name</strong>: Tipo de documento en Elasticsearch.</li>
+<li><strong>key.ignore</strong>: Ignorar la clave del mensaje.</li>
+<li><strong>schema.ignore</strong>: Ignorar el esquema del mensaje.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar un Conector de Fuente JDBC</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar un conector de fuente JDBC para importar datos desde una base de datos MySQL a Kafka.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Configura una base de datos MySQL con una tabla llamada <code>employees</code>.</li>
+<li>Inserta algunos datos de ejemplo en la tabla <code>employees</code>.</li>
+<li>Configura un conector de fuente JDBC para importar los datos de <code>employees</code> a un tema de Kafka llamado <code>jdbc-employees</code>.</li>
+</ul>
+</li>
+</ol>
+<h4>Solución:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogImpkYmMtc291cmNlLWNvbm5lY3RvciIsCiAgImNvbmZpZyI6IHsKICAgICJjb25uZWN0b3IuY2xhc3MiOiAiaW8uY29uZmx1ZW50LmNvbm5lY3QuamRiYy5KZGJjU291cmNlQ29ubmVjdG9yIiwKICAgICJ0YXNrcy5tYXgiOiAiMSIsCiAgICAiY29ubmVjdGlvbi51cmwiOiAiamRiYzpteXNxbDovL2xvY2FsaG9zdDozMzA2L215ZGF0YWJhc2UiLAogICAgImNvbm5lY3Rpb24udXNlciI6ICJteXVzZXIiLAogICAgImNvbm5lY3Rpb24ucGFzc3dvcmQiOiAibXlwYXNzd29yZCIsCiAgICAidGFibGUud2hpdGVsaXN0IjogImVtcGxveWVlcyIsCiAgICAibW9kZSI6ICJpbmNyZW1lbnRpbmciLAogICAgImluY3JlbWVudGluZy5jb2x1bW4ubmFtZSI6ICJpZCIsCiAgICAidG9waWMucHJlZml4IjogImpkYmMtIgogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;jdbc-source-connector&quot;,
+  &quot;config&quot;: {
+    &quot;connector.class&quot;: &quot;io.confluent.connect.jdbc.JdbcSourceConnector&quot;,
+    &quot;tasks.max&quot;: &quot;1&quot;,
+    &quot;connection.url&quot;: &quot;jdbc:mysql://localhost:3306/mydatabase&quot;,
+    &quot;connection.user&quot;: &quot;myuser&quot;,
+    &quot;connection.password&quot;: &quot;mypassword&quot;,
+    &quot;table.whitelist&quot;: &quot;employees&quot;,
+    &quot;mode&quot;: &quot;incrementing&quot;,
+    &quot;incrementing.column.name&quot;: &quot;id&quot;,
+    &quot;topic.prefix&quot;: &quot;jdbc-&quot;
+  }
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Configurar un Conector de Sumidero Elasticsearch</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar un conector de sumidero Elasticsearch para exportar datos desde un tema de Kafka a Elasticsearch.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Configura un clúster de Elasticsearch.</li>
+<li>Configura un conector de sumidero Elasticsearch para exportar los datos del tema <code>jdbc-employees</code> a un índice de Elasticsearch llamado <code>employees</code>.</li>
+</ul>
+</li>
+</ol>
+<h4>Solución:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJuYW1lIjogImVsYXN0aWNzZWFyY2gtc2luay1jb25uZWN0b3IiLAogICJjb25maWciOiB7CiAgICAiY29ubmVjdG9yLmNsYXNzIjogImlvLmNvbmZsdWVudC5jb25uZWN0LmVsYXN0aWNzZWFyY2guRWxhc3RpY3NlYXJjaFNpbmtDb25uZWN0b3IiLAogICAgInRhc2tzLm1heCI6ICIxIiwKICAgICJ0b3BpY3MiOiAiamRiYy1lbXBsb3llZXMiLAogICAgImNvbm5lY3Rpb24udXJsIjogImh0dHA6Ly9sb2NhbGhvc3Q6OTIwMCIsCiAgICAidHlwZS5uYW1lIjogImthZmthLWNvbm5lY3QiLAogICAgImtleS5pZ25vcmUiOiAidHJ1ZSIsCiAgICAic2NoZW1hLmlnbm9yZSI6ICJ0cnVlIgogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;name&quot;: &quot;elasticsearch-sink-connector&quot;,
+  &quot;config&quot;: {
+    &quot;connector.class&quot;: &quot;io.confluent.connect.elasticsearch.ElasticsearchSinkConnector&quot;,
+    &quot;tasks.max&quot;: &quot;1&quot;,
+    &quot;topics&quot;: &quot;jdbc-employees&quot;,
+    &quot;connection.url&quot;: &quot;http://localhost:9200&quot;,
+    &quot;type.name&quot;: &quot;kafka-connect&quot;,
+    &quot;key.ignore&quot;: &quot;true&quot;,
+    &quot;schema.ignore&quot;: &quot;true&quot;
+  }
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En este módulo, hemos aprendido sobre Kafka Connect, una herramienta poderosa para la integración de datos en Kafka. Hemos cubierto los conceptos clave, cómo configurar conectores de fuente y sumidero, y hemos realizado ejercicios prácticos para reforzar el aprendizaje. Con Kafka Connect, puedes mover datos de manera eficiente y escalable entre Kafka y otros sistemas, facilitando la construcción de pipelines de datos robustos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-consuming-messages' title="Consumo de Mensajes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-kafka-streams' title="Kafka Streams">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

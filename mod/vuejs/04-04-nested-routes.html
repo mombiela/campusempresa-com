@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutas Anidadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vuejs/04-04-nested-routes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vuejs/04-04-nested-routes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vuejs/04-04-nested-routes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/vuejs/04-04-nested-routes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/vuejs/04-04-nested-routes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-dynamic-routing' title="Rutas Dinámicas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Rutas Anidadas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-05-navigation-guards' title="Guardias de Navegación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En aplicaciones Vue.js, a menudo necesitamos estructurar nuestras rutas de manera jerárquica para reflejar la estructura de nuestra aplicación. Las rutas anidadas (nested routes) nos permiten definir rutas dentro de otras rutas, lo que facilita la creación de aplicaciones complejas con múltiples niveles de navegación.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Rutas Padre e Hijo</strong>: Las rutas anidadas se definen dentro de una ruta padre. La ruta padre contiene un <code>&lt;router-view&gt;</code> donde se renderizarán las rutas hijas.</li>
+<li><strong>Componentes Anidados</strong>: Cada ruta hija puede tener su propio componente, que se renderizará dentro del componente de la ruta padre.</li>
+</ol>
+</div><h1>Configuración de Rutas Anidadas</h1>
+<div class='content'></div><h2>Paso 1: Definir las Rutas</h2>
+<div class='content'><p>Primero, definimos nuestras rutas en el archivo de configuración de rutas (por ejemplo, <code>src/router/index.js</code>).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFZ1ZSBmcm9tICd2dWUnOwppbXBvcnQgUm91dGVyIGZyb20gJ3Z1ZS1yb3V0ZXInOwppbXBvcnQgUGFyZW50Q29tcG9uZW50IGZyb20gJ0AvY29tcG9uZW50cy9QYXJlbnRDb21wb25lbnQudnVlJzsKaW1wb3J0IENoaWxkQ29tcG9uZW50IGZyb20gJ0AvY29tcG9uZW50cy9DaGlsZENvbXBvbmVudC52dWUnOwppbXBvcnQgQW5vdGhlckNoaWxkQ29tcG9uZW50IGZyb20gJ0AvY29tcG9uZW50cy9Bbm90aGVyQ2hpbGRDb21wb25lbnQudnVlJzsKClZ1ZS51c2UoUm91dGVyKTsKCmV4cG9ydCBkZWZhdWx0IG5ldyBSb3V0ZXIoewogIHJvdXRlczogWwogICAgewogICAgICBwYXRoOiAnL3BhcmVudCcsCiAgICAgIGNvbXBvbmVudDogUGFyZW50Q29tcG9uZW50LAogICAgICBjaGlsZHJlbjogWwogICAgICAgIHsKICAgICAgICAgIHBhdGg6ICdjaGlsZCcsCiAgICAgICAgICBjb21wb25lbnQ6IENoaWxkQ29tcG9uZW50CiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICBwYXRoOiAnYW5vdGhlci1jaGlsZCcsCiAgICAgICAgICBjb21wb25lbnQ6IEFub3RoZXJDaGlsZENvbXBvbmVudAogICAgICAgIH0KICAgICAgXQogICAgfQogIF0KfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Vue from 'vue';
+import Router from 'vue-router';
+import ParentComponent from '@/components/ParentComponent.vue';
+import ChildComponent from '@/components/ChildComponent.vue';
+import AnotherChildComponent from '@/components/AnotherChildComponent.vue';
+
+Vue.use(Router);
+
+export default new Router({
+  routes: [
+    {
+      path: '/parent',
+      component: ParentComponent,
+      children: [
+        {
+          path: 'child',
+          component: ChildComponent
+        },
+        {
+          path: 'another-child',
+          component: AnotherChildComponent
+        }
+      ]
+    }
+  ]
+});</pre></div><div class='content'></div><h2>Paso 2: Crear los Componentes</h2>
+<div class='content'><p>Creamos los componentes que se utilizarán en las rutas. Aquí hay un ejemplo básico de cómo podrían verse estos componentes.</p>
+<p><strong>ParentComponent.vue</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDI+UGFyZW50IENvbXBvbmVudDwvaDI+CiAgICA8cm91dGVyLXZpZXc+PC9yb3V0ZXItdmlldz4gPCEtLSBBcXXDrSBzZSByZW5kZXJpemFyw6FuIGxhcyBydXRhcyBoaWphcyAtLT4KICA8L2Rpdj4KPC90ZW1wbGF0ZT4KCjxzY3JpcHQ+CmV4cG9ydCBkZWZhdWx0IHsKICBuYW1lOiAnUGFyZW50Q29tcG9uZW50Jwp9Owo8L3NjcmlwdD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h2&gt;Parent Component&lt;/h2&gt;
+    &lt;router-view&gt;&lt;/router-view&gt; &lt;!-- Aqu&iacute; se renderizar&aacute;n las rutas hijas --&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'ParentComponent'
+};
+&lt;/script&gt;</pre></div><div class='content'><p><strong>ChildComponent.vue</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDM+Q2hpbGQgQ29tcG9uZW50PC9oMz4KICA8L2Rpdj4KPC90ZW1wbGF0ZT4KCjxzY3JpcHQ+CmV4cG9ydCBkZWZhdWx0IHsKICBuYW1lOiAnQ2hpbGRDb21wb25lbnQnCn07Cjwvc2NyaXB0Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h3&gt;Child Component&lt;/h3&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'ChildComponent'
+};
+&lt;/script&gt;</pre></div><div class='content'><p><strong>AnotherChildComponent.vue</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDM+QW5vdGhlciBDaGlsZCBDb21wb25lbnQ8L2gzPgogIDwvZGl2Pgo8L3RlbXBsYXRlPgoKPHNjcmlwdD4KZXhwb3J0IGRlZmF1bHQgewogIG5hbWU6ICdBbm90aGVyQ2hpbGRDb21wb25lbnQnCn07Cjwvc2NyaXB0Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h3&gt;Another Child Component&lt;/h3&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'AnotherChildComponent'
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h2>Paso 3: Navegar entre Rutas Anidadas</h2>
+<div class='content'><p>Podemos navegar entre las rutas anidadas utilizando enlaces de navegación (<code>&lt;router-link&gt;</code>).</p>
+<p><strong>ParentComponent.vue (actualizado)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDI+UGFyZW50IENvbXBvbmVudDwvaDI+CiAgICA8bmF2PgogICAgICA8cm91dGVyLWxpbmsgdG89Ii9wYXJlbnQvY2hpbGQiPkdvIHRvIENoaWxkPC9yb3V0ZXItbGluaz4KICAgICAgPHJvdXRlci1saW5rIHRvPSIvcGFyZW50L2Fub3RoZXItY2hpbGQiPkdvIHRvIEFub3RoZXIgQ2hpbGQ8L3JvdXRlci1saW5rPgogICAgPC9uYXY+CiAgICA8cm91dGVyLXZpZXc+PC9yb3V0ZXItdmlldz4gPCEtLSBBcXXDrSBzZSByZW5kZXJpemFyw6FuIGxhcyBydXRhcyBoaWphcyAtLT4KICA8L2Rpdj4KPC90ZW1wbGF0ZT4KCjxzY3JpcHQ+CmV4cG9ydCBkZWZhdWx0IHsKICBuYW1lOiAnUGFyZW50Q29tcG9uZW50Jwp9Owo8L3NjcmlwdD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h2&gt;Parent Component&lt;/h2&gt;
+    &lt;nav&gt;
+      &lt;router-link to=&quot;/parent/child&quot;&gt;Go to Child&lt;/router-link&gt;
+      &lt;router-link to=&quot;/parent/another-child&quot;&gt;Go to Another Child&lt;/router-link&gt;
+    &lt;/nav&gt;
+    &lt;router-view&gt;&lt;/router-view&gt; &lt;!-- Aqu&iacute; se renderizar&aacute;n las rutas hijas --&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'ParentComponent'
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea un nuevo componente llamado <code>NestedParentComponent.vue</code>.</li>
+<li>Dentro de <code>NestedParentComponent.vue</code>, define dos rutas hijas: <code>NestedChildOne.vue</code> y <code>NestedChildTwo.vue</code>.</li>
+<li>Configura las rutas en el archivo de configuración de rutas.</li>
+<li>Añade enlaces de navegación en <code>NestedParentComponent.vue</code> para navegar entre las rutas hijas.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><p><strong>NestedParentComponent.vue</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDI+TmVzdGVkIFBhcmVudCBDb21wb25lbnQ8L2gyPgogICAgPG5hdj4KICAgICAgPHJvdXRlci1saW5rIHRvPSIvbmVzdGVkLXBhcmVudC9jaGlsZC1vbmUiPkdvIHRvIENoaWxkIE9uZTwvcm91dGVyLWxpbms+CiAgICAgIDxyb3V0ZXItbGluayB0bz0iL25lc3RlZC1wYXJlbnQvY2hpbGQtdHdvIj5HbyB0byBDaGlsZCBUd288L3JvdXRlci1saW5rPgogICAgPC9uYXY+CiAgICA8cm91dGVyLXZpZXc+PC9yb3V0ZXItdmlldz4gPCEtLSBBcXXDrSBzZSByZW5kZXJpemFyw6FuIGxhcyBydXRhcyBoaWphcyAtLT4KICA8L2Rpdj4KPC90ZW1wbGF0ZT4KCjxzY3JpcHQ+CmV4cG9ydCBkZWZhdWx0IHsKICBuYW1lOiAnTmVzdGVkUGFyZW50Q29tcG9uZW50Jwp9Owo8L3NjcmlwdD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h2&gt;Nested Parent Component&lt;/h2&gt;
+    &lt;nav&gt;
+      &lt;router-link to=&quot;/nested-parent/child-one&quot;&gt;Go to Child One&lt;/router-link&gt;
+      &lt;router-link to=&quot;/nested-parent/child-two&quot;&gt;Go to Child Two&lt;/router-link&gt;
+    &lt;/nav&gt;
+    &lt;router-view&gt;&lt;/router-view&gt; &lt;!-- Aqu&iacute; se renderizar&aacute;n las rutas hijas --&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'NestedParentComponent'
+};
+&lt;/script&gt;</pre></div><div class='content'><p><strong>NestedChildOne.vue</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDM+TmVzdGVkIENoaWxkIE9uZTwvaDM+CiAgPC9kaXY+CjwvdGVtcGxhdGU+Cgo8c2NyaXB0PgpleHBvcnQgZGVmYXVsdCB7CiAgbmFtZTogJ05lc3RlZENoaWxkT25lJwp9Owo8L3NjcmlwdD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h3&gt;Nested Child One&lt;/h3&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'NestedChildOne'
+};
+&lt;/script&gt;</pre></div><div class='content'><p><strong>NestedChildTwo.vue</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDM+TmVzdGVkIENoaWxkIFR3bzwvaDM+CiAgPC9kaXY+CjwvdGVtcGxhdGU+Cgo8c2NyaXB0PgpleHBvcnQgZGVmYXVsdCB7CiAgbmFtZTogJ05lc3RlZENoaWxkVHdvJwp9Owo8L3NjcmlwdD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;template&gt;
+  &lt;div&gt;
+    &lt;h3&gt;Nested Child Two&lt;/h3&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  name: 'NestedChildTwo'
+};
+&lt;/script&gt;</pre></div><div class='content'><p><strong>src/router/index.js (actualizado)</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IFZ1ZSBmcm9tICd2dWUnOwppbXBvcnQgUm91dGVyIGZyb20gJ3Z1ZS1yb3V0ZXInOwppbXBvcnQgTmVzdGVkUGFyZW50Q29tcG9uZW50IGZyb20gJ0AvY29tcG9uZW50cy9OZXN0ZWRQYXJlbnRDb21wb25lbnQudnVlJzsKaW1wb3J0IE5lc3RlZENoaWxkT25lIGZyb20gJ0AvY29tcG9uZW50cy9OZXN0ZWRDaGlsZE9uZS52dWUnOwppbXBvcnQgTmVzdGVkQ2hpbGRUd28gZnJvbSAnQC9jb21wb25lbnRzL05lc3RlZENoaWxkVHdvLnZ1ZSc7CgpWdWUudXNlKFJvdXRlcik7CgpleHBvcnQgZGVmYXVsdCBuZXcgUm91dGVyKHsKICByb3V0ZXM6IFsKICAgIHsKICAgICAgcGF0aDogJy9uZXN0ZWQtcGFyZW50JywKICAgICAgY29tcG9uZW50OiBOZXN0ZWRQYXJlbnRDb21wb25lbnQsCiAgICAgIGNoaWxkcmVuOiBbCiAgICAgICAgewogICAgICAgICAgcGF0aDogJ2NoaWxkLW9uZScsCiAgICAgICAgICBjb21wb25lbnQ6IE5lc3RlZENoaWxkT25lCiAgICAgICAgfSwKICAgICAgICB7CiAgICAgICAgICBwYXRoOiAnY2hpbGQtdHdvJywKICAgICAgICAgIGNvbXBvbmVudDogTmVzdGVkQ2hpbGRUd28KICAgICAgICB9CiAgICAgIF0KICAgIH0KICBdCn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Vue from 'vue';
+import Router from 'vue-router';
+import NestedParentComponent from '@/components/NestedParentComponent.vue';
+import NestedChildOne from '@/components/NestedChildOne.vue';
+import NestedChildTwo from '@/components/NestedChildTwo.vue';
+
+Vue.use(Router);
+
+export default new Router({
+  routes: [
+    {
+      path: '/nested-parent',
+      component: NestedParentComponent,
+      children: [
+        {
+          path: 'child-one',
+          component: NestedChildOne
+        },
+        {
+          path: 'child-two',
+          component: NestedChildTwo
+        }
+      ]
+    }
+  ]
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Las rutas anidadas en Vue Router nos permiten estructurar nuestras aplicaciones de manera jerárquica y modular. Al entender cómo definir y utilizar rutas anidadas, podemos crear aplicaciones más organizadas y fáciles de mantener. En el siguiente módulo, exploraremos las guardias de navegación, que nos permitirán controlar el acceso a nuestras rutas y mejorar la seguridad y la experiencia del usuario.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-dynamic-routing' title="Rutas Dinámicas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-05-navigation-guards' title="Guardias de Navegación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

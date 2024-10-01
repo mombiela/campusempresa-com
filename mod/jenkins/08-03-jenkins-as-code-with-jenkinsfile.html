@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jenkins como Código con Jenkinsfile</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/08-03-jenkins-as-code-with-jenkinsfile" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/08-03-jenkins-as-code-with-jenkinsfile" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/08-03-jenkins-as-code-with-jenkinsfile" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/jenkins/08-03-jenkins-as-code-with-jenkinsfile" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/jenkins/08-03-jenkins-as-code-with-jenkinsfile" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-jenkins-and-kubernetes' title="Jenkins y Kubernetes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Jenkins como Código con Jenkinsfile</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-scaling-jenkins' title="Escalando Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos cómo utilizar Jenkinsfile para definir pipelines de Jenkins como código. Jenkinsfile permite a los desarrolladores versionar, revisar y mantener sus pipelines de manera similar a cómo gestionan su código fuente. Este enfoque facilita la colaboración y la automatización en proyectos de desarrollo de software.</p>
+</div><h1>¿Qué es un Jenkinsfile?</h1>
+<div class='content'><p>Un Jenkinsfile es un archivo de texto que contiene la definición de una pipeline de Jenkins. Este archivo se almacena en el repositorio de código fuente junto con el código del proyecto, lo que permite que la pipeline sea versionada y gestionada como cualquier otro archivo de código.</p>
+</div><h2>Ventajas de usar Jenkinsfile</h2>
+<div class='content'><ul>
+<li><strong>Versionamiento</strong>: Almacenar la pipeline en el repositorio de código permite versionarla junto con el código del proyecto.</li>
+<li><strong>Revisiones de Código</strong>: Los cambios en la pipeline pueden ser revisados y aprobados mediante el mismo proceso de revisión de código que se utiliza para el código fuente.</li>
+<li><strong>Portabilidad</strong>: Facilita la replicación de la configuración de Jenkins en diferentes entornos.</li>
+<li><strong>Automatización</strong>: Permite la automatización completa del proceso de construcción, prueba y despliegue.</li>
+</ul>
+</div><h1>Sintaxis de Jenkinsfile</h1>
+<div class='content'><p>Jenkinsfile puede escribirse en dos estilos diferentes:</p>
+<ol>
+<li><strong>Declarativo</strong>: Proporciona una sintaxis más simple y estructurada.</li>
+<li><strong>Scriptado</strong>: Ofrece mayor flexibilidad y control, pero es más complejo.</li>
+</ol>
+</div><h2>Ejemplo de Jenkinsfile Declarativo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CgogICAgc3RhZ2VzIHsKICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkaW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBwYXJhIGNvbnN0cnVpciBlbCBwcm95ZWN0bwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdUZXN0JykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBlY2hvICdUZXN0aW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBwYXJhIGVqZWN1dGFyIGxhcyBwcnVlYmFzCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBwYXJhIGRlc3BsZWdhciBlbCBwcm95ZWN0bwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                // Aqu&iacute; ir&iacute;an los comandos para construir el proyecto
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                // Aqu&iacute; ir&iacute;an los comandos para ejecutar las pruebas
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                // Aqu&iacute; ir&iacute;an los comandos para desplegar el proyecto
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Ejemplo de Jenkinsfile Scriptado</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bm9kZSB7CiAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBwYXJhIGNvbnN0cnVpciBlbCBwcm95ZWN0bwogICAgfQogICAgc3RhZ2UoJ1Rlc3QnKSB7CiAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAvLyBBcXXDrSBpcsOtYW4gbG9zIGNvbWFuZG9zIHBhcmEgZWplY3V0YXIgbGFzIHBydWViYXMKICAgIH0KICAgIHN0YWdlKCdEZXBsb3knKSB7CiAgICAgICAgZWNobyAnRGVwbG95aW5nLi4uJwogICAgICAgIC8vIEFxdcOtIGlyw61hbiBsb3MgY29tYW5kb3MgcGFyYSBkZXNwbGVnYXIgZWwgcHJveWVjdG8KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>node {
+    stage('Build') {
+        echo 'Building...'
+        // Aqu&iacute; ir&iacute;an los comandos para construir el proyecto
+    }
+    stage('Test') {
+        echo 'Testing...'
+        // Aqu&iacute; ir&iacute;an los comandos para ejecutar las pruebas
+    }
+    stage('Deploy') {
+        echo 'Deploying...'
+        // Aqu&iacute; ir&iacute;an los comandos para desplegar el proyecto
+    }
+}</pre></div><div class='content'></div><h1>Creando un Jenkinsfile</h1>
+<div class='content'></div><h2>Paso 1: Crear el archivo Jenkinsfile</h2>
+<div class='content'><ol>
+<li>En el directorio raíz de tu proyecto, crea un archivo llamado <code>Jenkinsfile</code>.</li>
+<li>Abre el archivo en tu editor de texto favorito.</li>
+</ol>
+</div><h2>Paso 2: Definir la pipeline</h2>
+<div class='content'><p>Utiliza la sintaxis declarativa o scriptada para definir las etapas de tu pipeline. A continuación, se muestra un ejemplo de una pipeline declarativa básica:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CgogICAgc3RhZ2VzIHsKICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkaW5nLi4uJwogICAgICAgICAgICAgICAgc2ggJ21ha2UgYnVpbGQnIC8vIENvbWFuZG8gcGFyYSBjb25zdHJ1aXIgZWwgcHJveWVjdG8KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgIHNoICdtYWtlIHRlc3QnIC8vIENvbWFuZG8gcGFyYSBlamVjdXRhciBsYXMgcHJ1ZWJhcwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdEZXBsb3knKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0RlcGxveWluZy4uLicKICAgICAgICAgICAgICAgIHNoICdtYWtlIGRlcGxveScgLy8gQ29tYW5kbyBwYXJhIGRlc3BsZWdhciBlbCBwcm95ZWN0bwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'make build' // Comando para construir el proyecto
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'make test' // Comando para ejecutar las pruebas
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'make deploy' // Comando para desplegar el proyecto
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Paso 3: Configurar el trabajo en Jenkins</h2>
+<div class='content'><ol>
+<li>Abre Jenkins y crea un nuevo trabajo de tipo &quot;Pipeline&quot;.</li>
+<li>En la sección &quot;Pipeline&quot;, selecciona &quot;Pipeline script from SCM&quot;.</li>
+<li>Configura el repositorio de código fuente y la ubicación del Jenkinsfile.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear una Pipeline Básica</h2>
+<div class='content'><ol>
+<li>Crea un nuevo repositorio de Git y clona el repositorio en tu máquina local.</li>
+<li>En el directorio raíz del repositorio, crea un archivo llamado <code>Jenkinsfile</code>.</li>
+<li>Define una pipeline declarativa con las siguientes etapas:
+<ul>
+<li><strong>Build</strong>: Imprime &quot;Building...&quot; y ejecuta un comando de construcción.</li>
+<li><strong>Test</strong>: Imprime &quot;Testing...&quot; y ejecuta un comando de prueba.</li>
+<li><strong>Deploy</strong>: Imprime &quot;Deploying...&quot; y ejecuta un comando de despliegue.</li>
+</ul>
+</li>
+<li>Sube el archivo <code>Jenkinsfile</code> al repositorio de Git.</li>
+<li>Configura un nuevo trabajo de Jenkins para utilizar el Jenkinsfile desde el repositorio.</li>
+</ol>
+</div><h2>Solución del Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CgogICAgc3RhZ2VzIHsKICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkaW5nLi4uJwogICAgICAgICAgICAgICAgc2ggJ2VjaG8gIlNpbXVsYXRpbmcgYnVpbGQgY29tbWFuZCInIC8vIFNpbXVsYWNpw7NuIGRlbCBjb21hbmRvIGRlIGNvbnN0cnVjY2nDs24KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgIHNoICdlY2hvICJTaW11bGF0aW5nIHRlc3QgY29tbWFuZCInIC8vIFNpbXVsYWNpw7NuIGRlbCBjb21hbmRvIGRlIHBydWViYQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgICAgIHN0YWdlKCdEZXBsb3knKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0RlcGxveWluZy4uLicKICAgICAgICAgICAgICAgIHNoICdlY2hvICJTaW11bGF0aW5nIGRlcGxveSBjb21tYW5kIicgLy8gU2ltdWxhY2nDs24gZGVsIGNvbWFuZG8gZGUgZGVzcGxpZWd1ZQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building...'
+                sh 'echo &quot;Simulating build command&quot;' // Simulaci&oacute;n del comando de construcci&oacute;n
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Testing...'
+                sh 'echo &quot;Simulating test command&quot;' // Simulaci&oacute;n del comando de prueba
+            }
+        }
+        stage('Deploy') {
+            steps {
+                echo 'Deploying...'
+                sh 'echo &quot;Simulating deploy command&quot;' // Simulaci&oacute;n del comando de despliegue
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido qué es un Jenkinsfile y cómo utilizarlo para definir pipelines de Jenkins como código. Hemos explorado la sintaxis declarativa y scriptada, y hemos creado un Jenkinsfile básico. Este enfoque permite una mejor gestión y automatización de las pipelines, facilitando la colaboración y el mantenimiento en proyectos de desarrollo de software.</p>
+<p>En el próximo tema, profundizaremos en cómo escalar Jenkins para manejar cargas de trabajo más grandes y complejas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-jenkins-and-kubernetes' title="Jenkins y Kubernetes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-scaling-jenkins' title="Escalando Jenkins">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

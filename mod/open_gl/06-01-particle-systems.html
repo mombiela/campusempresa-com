@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistemas de Partículas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/06-01-particle-systems" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/06-01-particle-systems" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/06-01-particle-systems" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/06-01-particle-systems" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/06-01-particle-systems" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-profiling-debugging' title="Perfilado y Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Sistemas de Partículas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-post-processing' title="Efectos de Post-Procesamiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los sistemas de partículas son una técnica avanzada de renderizado utilizada para simular fenómenos complejos como fuego, humo, lluvia, nieve, explosiones y otros efectos visuales que consisten en una gran cantidad de pequeñas partículas. En este módulo, aprenderemos cómo crear y gestionar sistemas de partículas en OpenGL.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Partícula</strong>: Una pequeña entidad que representa una parte del efecto visual.</li>
+<li><strong>Emisor de Partículas</strong>: El origen desde donde se generan las partículas.</li>
+<li><strong>Vida de la Partícula</strong>: El tiempo durante el cual una partícula existe antes de desaparecer.</li>
+<li><strong>Propiedades de la Partícula</strong>: Atributos como posición, velocidad, color, tamaño y vida útil.</li>
+</ol>
+</div><h1>Configuración del Sistema de Partículas</h1>
+<div class='content'></div><h2>Paso 1: Definir la Estructura de una Partícula</h2>
+<div class='content'><p>Primero, definimos una estructura para representar una partícula en nuestro sistema.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFBhcnRpY2xlIHsKICAgIGdsbTo6dmVjMyBwb3NpdGlvbjsKICAgIGdsbTo6dmVjMyB2ZWxvY2l0eTsKICAgIGdsbTo6dmVjNCBjb2xvcjsKICAgIGZsb2F0IGxpZmU7Cn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct Particle {
+    glm::vec3 position;
+    glm::vec3 velocity;
+    glm::vec4 color;
+    float life;
+};</pre></div><div class='content'></div><h2>Paso 2: Crear el Emisor de Partículas</h2>
+<div class='content'><p>El emisor de partículas es responsable de generar nuevas partículas y actualizar las existentes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUGFydGljbGVFbWl0dGVyIHsKcHVibGljOgogICAgc3RkOjp2ZWN0b3I8UGFydGljbGU+IHBhcnRpY2xlczsKICAgIHVuc2lnbmVkIGludCBtYXhQYXJ0aWNsZXM7CiAgICBnbG06OnZlYzMgcG9zaXRpb247CgogICAgUGFydGljbGVFbWl0dGVyKHVuc2lnbmVkIGludCBtYXhQYXJ0aWNsZXMsIGdsbTo6dmVjMyBwb3NpdGlvbikKICAgICAgICA6IG1heFBhcnRpY2xlcyhtYXhQYXJ0aWNsZXMpLCBwb3NpdGlvbihwb3NpdGlvbikgewogICAgICAgIHBhcnRpY2xlcy5yZXNpemUobWF4UGFydGljbGVzKTsKICAgIH0KCiAgICB2b2lkIHVwZGF0ZShmbG9hdCBkZWx0YVRpbWUpOwogICAgdm9pZCByZW5kZXIoKTsKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class ParticleEmitter {
+public:
+    std::vector&lt;Particle&gt; particles;
+    unsigned int maxParticles;
+    glm::vec3 position;
+
+    ParticleEmitter(unsigned int maxParticles, glm::vec3 position)
+        : maxParticles(maxParticles), position(position) {
+        particles.resize(maxParticles);
+    }
+
+    void update(float deltaTime);
+    void render();
+};</pre></div><div class='content'></div><h2>Paso 3: Inicializar las Partículas</h2>
+<div class='content'><p>Inicializamos las partículas con valores predeterminados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBQYXJ0aWNsZUVtaXR0ZXI6OnVwZGF0ZShmbG9hdCBkZWx0YVRpbWUpIHsKICAgIGZvciAoYXV0byYgcGFydGljbGUgOiBwYXJ0aWNsZXMpIHsKICAgICAgICBpZiAocGFydGljbGUubGlmZSA+IDAuMGYpIHsKICAgICAgICAgICAgcGFydGljbGUubGlmZSAtPSBkZWx0YVRpbWU7CiAgICAgICAgICAgIGlmIChwYXJ0aWNsZS5saWZlID4gMC4wZikgewogICAgICAgICAgICAgICAgcGFydGljbGUucG9zaXRpb24gKz0gcGFydGljbGUudmVsb2NpdHkgKiBkZWx0YVRpbWU7CiAgICAgICAgICAgICAgICBwYXJ0aWNsZS5jb2xvci5hIC09IGRlbHRhVGltZSAqIDIuNWY7IC8vIERlc3ZhbmVjaW1pZW50bwogICAgICAgICAgICB9CiAgICAgICAgfSBlbHNlIHsKICAgICAgICAgICAgLy8gUmV1dGlsaXphciBsYSBwYXJ0w61jdWxhCiAgICAgICAgICAgIHBhcnRpY2xlLnBvc2l0aW9uID0gcG9zaXRpb247CiAgICAgICAgICAgIHBhcnRpY2xlLnZlbG9jaXR5ID0gZ2xtOjp2ZWMzKAogICAgICAgICAgICAgICAgKChyYW5kKCkgJSAxMDApIC0gNTApIC8gMTAuMGYsCiAgICAgICAgICAgICAgICAoKHJhbmQoKSAlIDEwMCkgLSA1MCkgLyAxMC4wZiwKICAgICAgICAgICAgICAgICgocmFuZCgpICUgMTAwKSAtIDUwKSAvIDEwLjBmCiAgICAgICAgICAgICk7CiAgICAgICAgICAgIHBhcnRpY2xlLmNvbG9yID0gZ2xtOjp2ZWM0KDEuMGYsIDEuMGYsIDEuMGYsIDEuMGYpOwogICAgICAgICAgICBwYXJ0aWNsZS5saWZlID0gMS4wZjsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void ParticleEmitter::update(float deltaTime) {
+    for (auto&amp; particle : particles) {
+        if (particle.life &gt; 0.0f) {
+            particle.life -= deltaTime;
+            if (particle.life &gt; 0.0f) {
+                particle.position += particle.velocity * deltaTime;
+                particle.color.a -= deltaTime * 2.5f; // Desvanecimiento
+            }
+        } else {
+            // Reutilizar la part&iacute;cula
+            particle.position = position;
+            particle.velocity = glm::vec3(
+                ((rand() % 100) - 50) / 10.0f,
+                ((rand() % 100) - 50) / 10.0f,
+                ((rand() % 100) - 50) / 10.0f
+            );
+            particle.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+            particle.life = 1.0f;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Paso 4: Renderizar las Partículas</h2>
+<div class='content'><p>Para renderizar las partículas, utilizamos un shader que maneje la transparencia y el desvanecimiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBQYXJ0aWNsZUVtaXR0ZXI6OnJlbmRlcigpIHsKICAgIGZvciAoY29uc3QgYXV0byYgcGFydGljbGUgOiBwYXJ0aWNsZXMpIHsKICAgICAgICBpZiAocGFydGljbGUubGlmZSA+IDAuMGYpIHsKICAgICAgICAgICAgLy8gUmVuZGVyaXphciBsYSBwYXJ0w61jdWxhCiAgICAgICAgICAgIC8vIEFxdcOtIHNlIGFzdW1lIHF1ZSB0aWVuZXMgdW4gc2hhZGVyIHkgdW4gVkFPIGNvbmZpZ3VyYWRvIHBhcmEgbGFzIHBhcnTDrWN1bGFzCiAgICAgICAgICAgIHNoYWRlci51c2UoKTsKICAgICAgICAgICAgc2hhZGVyLnNldFZlYzMoInBvc2l0aW9uIiwgcGFydGljbGUucG9zaXRpb24pOwogICAgICAgICAgICBzaGFkZXIuc2V0VmVjNCgiY29sb3IiLCBwYXJ0aWNsZS5jb2xvcik7CiAgICAgICAgICAgIGdsQmluZFZlcnRleEFycmF5KHBhcnRpY2xlVkFPKTsKICAgICAgICAgICAgZ2xEcmF3QXJyYXlzKEdMX1BPSU5UUywgMCwgMSk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void ParticleEmitter::render() {
+    for (const auto&amp; particle : particles) {
+        if (particle.life &gt; 0.0f) {
+            // Renderizar la part&iacute;cula
+            // Aqu&iacute; se asume que tienes un shader y un VAO configurado para las part&iacute;culas
+            shader.use();
+            shader.setVec3(&quot;position&quot;, particle.position);
+            shader.setVec4(&quot;color&quot;, particle.color);
+            glBindVertexArray(particleVAO);
+            glDrawArrays(GL_POINTS, 0, 1);
+        }
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Sistema de Partículas Básico</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar un sistema de partículas que simule una fuente de fuego.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Definir la estructura de la partícula.</li>
+<li>Crear un emisor de partículas.</li>
+<li>Inicializar y actualizar las partículas.</li>
+<li>Renderizar las partículas con un shader adecuado.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGVmaW5pciBsYSBlc3RydWN0dXJhIGRlIGxhIHBhcnTDrWN1bGEKc3RydWN0IFBhcnRpY2xlIHsKICAgIGdsbTo6dmVjMyBwb3NpdGlvbjsKICAgIGdsbTo6dmVjMyB2ZWxvY2l0eTsKICAgIGdsbTo6dmVjNCBjb2xvcjsKICAgIGZsb2F0IGxpZmU7Cn07CgovLyBDcmVhciBlbCBlbWlzb3IgZGUgcGFydMOtY3VsYXMKY2xhc3MgUGFydGljbGVFbWl0dGVyIHsKcHVibGljOgogICAgc3RkOjp2ZWN0b3I8UGFydGljbGU+IHBhcnRpY2xlczsKICAgIHVuc2lnbmVkIGludCBtYXhQYXJ0aWNsZXM7CiAgICBnbG06OnZlYzMgcG9zaXRpb247CgogICAgUGFydGljbGVFbWl0dGVyKHVuc2lnbmVkIGludCBtYXhQYXJ0aWNsZXMsIGdsbTo6dmVjMyBwb3NpdGlvbikKICAgICAgICA6IG1heFBhcnRpY2xlcyhtYXhQYXJ0aWNsZXMpLCBwb3NpdGlvbihwb3NpdGlvbikgewogICAgICAgIHBhcnRpY2xlcy5yZXNpemUobWF4UGFydGljbGVzKTsKICAgIH0KCiAgICB2b2lkIHVwZGF0ZShmbG9hdCBkZWx0YVRpbWUpIHsKICAgICAgICBmb3IgKGF1dG8mIHBhcnRpY2xlIDogcGFydGljbGVzKSB7CiAgICAgICAgICAgIGlmIChwYXJ0aWNsZS5saWZlID4gMC4wZikgewogICAgICAgICAgICAgICAgcGFydGljbGUubGlmZSAtPSBkZWx0YVRpbWU7CiAgICAgICAgICAgICAgICBpZiAocGFydGljbGUubGlmZSA+IDAuMGYpIHsKICAgICAgICAgICAgICAgICAgICBwYXJ0aWNsZS5wb3NpdGlvbiArPSBwYXJ0aWNsZS52ZWxvY2l0eSAqIGRlbHRhVGltZTsKICAgICAgICAgICAgICAgICAgICBwYXJ0aWNsZS5jb2xvci5hIC09IGRlbHRhVGltZSAqIDIuNWY7IC8vIERlc3ZhbmVjaW1pZW50bwogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9IGVsc2UgewogICAgICAgICAgICAgICAgLy8gUmV1dGlsaXphciBsYSBwYXJ0w61jdWxhCiAgICAgICAgICAgICAgICBwYXJ0aWNsZS5wb3NpdGlvbiA9IHBvc2l0aW9uOwogICAgICAgICAgICAgICAgcGFydGljbGUudmVsb2NpdHkgPSBnbG06OnZlYzMoCiAgICAgICAgICAgICAgICAgICAgKChyYW5kKCkgJSAxMDApIC0gNTApIC8gMTAuMGYsCiAgICAgICAgICAgICAgICAgICAgKChyYW5kKCkgJSAxMDApIC0gNTApIC8gMTAuMGYsCiAgICAgICAgICAgICAgICAgICAgKChyYW5kKCkgJSAxMDApIC0gNTApIC8gMTAuMGYKICAgICAgICAgICAgICAgICk7CiAgICAgICAgICAgICAgICBwYXJ0aWNsZS5jb2xvciA9IGdsbTo6dmVjNCgxLjBmLCAwLjVmLCAwLjBmLCAxLjBmKTsgLy8gQ29sb3IgZGUgZnVlZ28KICAgICAgICAgICAgICAgIHBhcnRpY2xlLmxpZmUgPSAxLjBmOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQoKICAgIHZvaWQgcmVuZGVyKCkgewogICAgICAgIGZvciAoY29uc3QgYXV0byYgcGFydGljbGUgOiBwYXJ0aWNsZXMpIHsKICAgICAgICAgICAgaWYgKHBhcnRpY2xlLmxpZmUgPiAwLjBmKSB7CiAgICAgICAgICAgICAgICAvLyBSZW5kZXJpemFyIGxhIHBhcnTDrWN1bGEKICAgICAgICAgICAgICAgIHNoYWRlci51c2UoKTsKICAgICAgICAgICAgICAgIHNoYWRlci5zZXRWZWMzKCJwb3NpdGlvbiIsIHBhcnRpY2xlLnBvc2l0aW9uKTsKICAgICAgICAgICAgICAgIHNoYWRlci5zZXRWZWM0KCJjb2xvciIsIHBhcnRpY2xlLmNvbG9yKTsKICAgICAgICAgICAgICAgIGdsQmluZFZlcnRleEFycmF5KHBhcnRpY2xlVkFPKTsKICAgICAgICAgICAgICAgIGdsRHJhd0FycmF5cyhHTF9QT0lOVFMsIDAsIDEpOwogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Definir la estructura de la part&iacute;cula
+struct Particle {
+    glm::vec3 position;
+    glm::vec3 velocity;
+    glm::vec4 color;
+    float life;
+};
+
+// Crear el emisor de part&iacute;culas
+class ParticleEmitter {
+public:
+    std::vector&lt;Particle&gt; particles;
+    unsigned int maxParticles;
+    glm::vec3 position;
+
+    ParticleEmitter(unsigned int maxParticles, glm::vec3 position)
+        : maxParticles(maxParticles), position(position) {
+        particles.resize(maxParticles);
+    }
+
+    void update(float deltaTime) {
+        for (auto&amp; particle : particles) {
+            if (particle.life &gt; 0.0f) {
+                particle.life -= deltaTime;
+                if (particle.life &gt; 0.0f) {
+                    particle.position += particle.velocity * deltaTime;
+                    particle.color.a -= deltaTime * 2.5f; // Desvanecimiento
+                }
+            } else {
+                // Reutilizar la part&iacute;cula
+                particle.position = position;
+                particle.velocity = glm::vec3(
+                    ((rand() % 100) - 50) / 10.0f,
+                    ((rand() % 100) - 50) / 10.0f,
+                    ((rand() % 100) - 50) / 10.0f
+                );
+                particle.color = glm::vec4(1.0f, 0.5f, 0.0f, 1.0f); // Color de fuego
+                particle.life = 1.0f;
+            }
+        }
+    }
+
+    void render() {
+        for (const auto&amp; particle : particles) {
+            if (particle.life &gt; 0.0f) {
+                // Renderizar la part&iacute;cula
+                shader.use();
+                shader.setVec3(&quot;position&quot;, particle.position);
+                shader.setVec4(&quot;color&quot;, particle.color);
+                glBindVertexArray(particleVAO);
+                glDrawArrays(GL_POINTS, 0, 1);
+            }
+        }
+    }
+};</pre></div><div class='content'></div><h1>Retroalimentación y Consejos</h1>
+<div class='content'><ul>
+<li><strong>Errores Comunes</strong>:
+<ul>
+<li>No actualizar correctamente la vida de las partículas, lo que puede hacer que las partículas nunca desaparezcan.</li>
+<li>No inicializar correctamente las propiedades de las partículas, lo que puede resultar en comportamientos inesperados.</li>
+</ul>
+</li>
+<li><strong>Consejos</strong>:
+<ul>
+<li>Experimenta con diferentes valores de velocidad y color para lograr el efecto deseado.</li>
+<li>Utiliza texturas para las partículas para mejorar el realismo del efecto.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido a crear un sistema de partículas básico en OpenGL. Hemos cubierto la definición de partículas, la creación de un emisor de partículas, la inicialización y actualización de partículas, y la renderización de partículas. Con estos conocimientos, puedes crear efectos visuales complejos y realistas en tus aplicaciones gráficas. En el próximo módulo, exploraremos efectos de post-procesamiento para mejorar aún más la calidad visual de tus proyectos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-profiling-debugging' title="Perfilado y Depuración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-post-processing' title="Efectos de Post-Procesamiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

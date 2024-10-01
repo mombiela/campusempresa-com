@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uniones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/03-02-unions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/03-02-unions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/03-02-unions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/graphql/03-02-unions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/03-02-unions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-interfaces' title="Interfaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Uniones</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-enums' title="Enums">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En GraphQL, las uniones (unions) son una forma poderosa de definir un tipo que puede ser uno de varios tipos diferentes. Esto es útil cuando tienes un campo que puede devolver diferentes tipos de objetos y quieres que tu esquema sea flexible y expresivo.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Definición de Uniones</strong>: Una unión es un tipo especial en GraphQL que permite que un campo pueda retornar uno de varios tipos posibles.</li>
+<li><strong>Uso de Uniones</strong>: Las uniones se utilizan cuando un campo puede devolver diferentes tipos de objetos que no comparten una interfaz común.</li>
+<li><strong>Resolución de Uniones</strong>: Los resolvers deben ser capaces de determinar qué tipo de objeto se está devolviendo para una unión.</li>
+</ul>
+</div><h1>Definición de Uniones</h1>
+<div class='content'><p>Para definir una unión en GraphQL, utilizamos la palabra clave <code>union</code> seguida del nombre de la unión y los tipos que puede incluir. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5pb24gU2VhcmNoUmVzdWx0ID0gVXNlciB8IFBvc3QgfCBDb21tZW50"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>union SearchResult = User | Post | Comment</pre></div><div class='content'><p>En este ejemplo, <code>SearchResult</code> es una unión que puede ser un <code>User</code>, un <code>Post</code> o un <code>Comment</code>.</p>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que estamos construyendo una API para una red social y queremos implementar una búsqueda que pueda devolver usuarios, publicaciones o comentarios. Primero, definimos los tipos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBVc2VyIHsKICBpZDogSUQhCiAgbmFtZTogU3RyaW5nIQp9Cgp0eXBlIFBvc3QgewogIGlkOiBJRCEKICB0aXRsZTogU3RyaW5nIQogIGNvbnRlbnQ6IFN0cmluZyEKfQoKdHlwZSBDb21tZW50IHsKICBpZDogSUQhCiAgdGV4dDogU3RyaW5nIQogIGF1dGhvcjogVXNlciEKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type User {
+  id: ID!
+  name: String!
+}
+
+type Post {
+  id: ID!
+  title: String!
+  content: String!
+}
+
+type Comment {
+  id: ID!
+  text: String!
+  author: User!
+}</pre></div><div class='content'><p>Luego, definimos la unión:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dW5pb24gU2VhcmNoUmVzdWx0ID0gVXNlciB8IFBvc3QgfCBDb21tZW50"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>union SearchResult = User | Post | Comment</pre></div><div class='content'><p>Finalmente, definimos una consulta que utiliza esta unión:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHlwZSBRdWVyeSB7CiAgc2VhcmNoKHRlcm06IFN0cmluZyEpOiBbU2VhcmNoUmVzdWx0IV0hCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>type Query {
+  search(term: String!): [SearchResult!]!
+}</pre></div><div class='content'></div><h1>Resolver para Uniones</h1>
+<div class='content'><p>Cuando se utiliza una unión, el resolver debe ser capaz de determinar el tipo de objeto que se está devolviendo. Aquí hay un ejemplo de cómo se puede implementar esto en JavaScript utilizando Apollo Server:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCB9ID0gcmVxdWlyZSgnYXBvbGxvLXNlcnZlcicpOwoKLy8gRGVmaW5pY2nDs24gZGVsIGVzcXVlbWEKY29uc3QgdHlwZURlZnMgPSBncWxgCiAgdHlwZSBVc2VyIHsKICAgIGlkOiBJRCEKICAgIG5hbWU6IFN0cmluZyEKICB9CgogIHR5cGUgUG9zdCB7CiAgICBpZDogSUQhCiAgICB0aXRsZTogU3RyaW5nIQogICAgY29udGVudDogU3RyaW5nIQogIH0KCiAgdHlwZSBDb21tZW50IHsKICAgIGlkOiBJRCEKICAgIHRleHQ6IFN0cmluZyEKICAgIGF1dGhvcjogVXNlciEKICB9CgogIHVuaW9uIFNlYXJjaFJlc3VsdCA9IFVzZXIgfCBQb3N0IHwgQ29tbWVudAoKICB0eXBlIFF1ZXJ5IHsKICAgIHNlYXJjaCh0ZXJtOiBTdHJpbmchKTogW1NlYXJjaFJlc3VsdCFdIQogIH0KYDsKCi8vIERhdG9zIGRlIGVqZW1wbG8KY29uc3QgdXNlcnMgPSBbCiAgeyBpZDogJzEnLCBuYW1lOiAnQWxpY2UnIH0sCiAgeyBpZDogJzInLCBuYW1lOiAnQm9iJyB9LApdOwoKY29uc3QgcG9zdHMgPSBbCiAgeyBpZDogJzEnLCB0aXRsZTogJ0dyYXBoUUwgUm9ja3MnLCBjb250ZW50OiAnR3JhcGhRTCBpcyBhd2Vzb21lIScgfSwKICB7IGlkOiAnMicsIHRpdGxlOiAnQXBvbGxvIFNlcnZlcicsIGNvbnRlbnQ6ICdBcG9sbG8gU2VydmVyIGlzIGdyZWF0IScgfSwKXTsKCmNvbnN0IGNvbW1lbnRzID0gWwogIHsgaWQ6ICcxJywgdGV4dDogJ0dyZWF0IHBvc3QhJywgYXV0aG9yOiB1c2Vyc1swXSB9LAogIHsgaWQ6ICcyJywgdGV4dDogJ1ZlcnkgaW5mb3JtYXRpdmUuJywgYXV0aG9yOiB1c2Vyc1sxXSB9LApdOwoKLy8gUmVzb2x2ZXIKY29uc3QgcmVzb2x2ZXJzID0gewogIFF1ZXJ5OiB7CiAgICBzZWFyY2g6IChwYXJlbnQsIGFyZ3MpID0+IHsKICAgICAgY29uc3QgdGVybSA9IGFyZ3MudGVybS50b0xvd2VyQ2FzZSgpOwogICAgICBjb25zdCB1c2VyUmVzdWx0cyA9IHVzZXJzLmZpbHRlcih1c2VyID0+IHVzZXIubmFtZS50b0xvd2VyQ2FzZSgpLmluY2x1ZGVzKHRlcm0pKTsKICAgICAgY29uc3QgcG9zdFJlc3VsdHMgPSBwb3N0cy5maWx0ZXIocG9zdCA9PiBwb3N0LnRpdGxlLnRvTG93ZXJDYXNlKCkuaW5jbHVkZXModGVybSkpOwogICAgICBjb25zdCBjb21tZW50UmVzdWx0cyA9IGNvbW1lbnRzLmZpbHRlcihjb21tZW50ID0+IGNvbW1lbnQudGV4dC50b0xvd2VyQ2FzZSgpLmluY2x1ZGVzKHRlcm0pKTsKICAgICAgcmV0dXJuIFsuLi51c2VyUmVzdWx0cywgLi4ucG9zdFJlc3VsdHMsIC4uLmNvbW1lbnRSZXN1bHRzXTsKICAgIH0sCiAgfSwKICBTZWFyY2hSZXN1bHQ6IHsKICAgIF9fcmVzb2x2ZVR5cGUob2JqKSB7CiAgICAgIGlmIChvYmoubmFtZSkgewogICAgICAgIHJldHVybiAnVXNlcic7CiAgICAgIH0KICAgICAgaWYgKG9iai50aXRsZSkgewogICAgICAgIHJldHVybiAnUG9zdCc7CiAgICAgIH0KICAgICAgaWYgKG9iai50ZXh0KSB7CiAgICAgICAgcmV0dXJuICdDb21tZW50JzsKICAgICAgfQogICAgICByZXR1cm4gbnVsbDsKICAgIH0sCiAgfSwKfTsKCi8vIENyZWFjacOzbiBkZWwgc2Vydmlkb3IKY29uc3Qgc2VydmVyID0gbmV3IEFwb2xsb1NlcnZlcih7IHR5cGVEZWZzLCByZXNvbHZlcnMgfSk7CgovLyBJbmljaW8gZGVsIHNlcnZpZG9yCnNlcnZlci5saXN0ZW4oKS50aGVuKCh7IHVybCB9KSA9PiB7CiAgY29uc29sZS5sb2coYPCfmoAgU2VydmVyIHJlYWR5IGF0ICR7dXJsfWApOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { ApolloServer, gql } = require('apollo-server');
+
+// Definici&oacute;n del esquema
+const typeDefs = gql`
+  type User {
+    id: ID!
+    name: String!
+  }
+
+  type Post {
+    id: ID!
+    title: String!
+    content: String!
+  }
+
+  type Comment {
+    id: ID!
+    text: String!
+    author: User!
+  }
+
+  union SearchResult = User | Post | Comment
+
+  type Query {
+    search(term: String!): [SearchResult!]!
+  }
+`;
+
+// Datos de ejemplo
+const users = [
+  { id: '1', name: 'Alice' },
+  { id: '2', name: 'Bob' },
+];
+
+const posts = [
+  { id: '1', title: 'GraphQL Rocks', content: 'GraphQL is awesome!' },
+  { id: '2', title: 'Apollo Server', content: 'Apollo Server is great!' },
+];
+
+const comments = [
+  { id: '1', text: 'Great post!', author: users[0] },
+  { id: '2', text: 'Very informative.', author: users[1] },
+];
+
+// Resolver
+const resolvers = {
+  Query: {
+    search: (parent, args) =&gt; {
+      const term = args.term.toLowerCase();
+      const userResults = users.filter(user =&gt; user.name.toLowerCase().includes(term));
+      const postResults = posts.filter(post =&gt; post.title.toLowerCase().includes(term));
+      const commentResults = comments.filter(comment =&gt; comment.text.toLowerCase().includes(term));
+      return [...userResults, ...postResults, ...commentResults];
+    },
+  },
+  SearchResult: {
+    __resolveType(obj) {
+      if (obj.name) {
+        return 'User';
+      }
+      if (obj.title) {
+        return 'Post';
+      }
+      if (obj.text) {
+        return 'Comment';
+      }
+      return null;
+    },
+  },
+};
+
+// Creaci&oacute;n del servidor
+const server = new ApolloServer({ typeDefs, resolvers });
+
+// Inicio del servidor
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Define una unión llamada <code>Content</code> que pueda ser un <code>Article</code> o un <code>Video</code>.</li>
+<li>Crea los tipos <code>Article</code> y <code>Video</code> con los siguientes campos:
+<ul>
+<li><code>Article</code>: <code>id</code>, <code>title</code>, <code>body</code></li>
+<li><code>Video</code>: <code>id</code>, <code>title</code>, <code>url</code></li>
+</ul>
+</li>
+<li>Define una consulta llamada <code>getContent</code> que devuelva una lista de <code>Content</code>.</li>
+<li>Implementa los resolvers necesarios para manejar la unión <code>Content</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZWZpbmljacOzbiBkZWwgZXNxdWVtYQp0eXBlIEFydGljbGUgewogIGlkOiBJRCEKICB0aXRsZTogU3RyaW5nIQogIGJvZHk6IFN0cmluZyEKfQoKdHlwZSBWaWRlbyB7CiAgaWQ6IElEIQogIHRpdGxlOiBTdHJpbmchCiAgdXJsOiBTdHJpbmchCn0KCnVuaW9uIENvbnRlbnQgPSBBcnRpY2xlIHwgVmlkZW8KCnR5cGUgUXVlcnkgewogIGdldENvbnRlbnQ6IFtDb250ZW50IV0hCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Definici&oacute;n del esquema
+type Article {
+  id: ID!
+  title: String!
+  body: String!
+}
+
+type Video {
+  id: ID!
+  title: String!
+  url: String!
+}
+
+union Content = Article | Video
+
+type Query {
+  getContent: [Content!]!
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGF0b3MgZGUgZWplbXBsbwpjb25zdCBhcnRpY2xlcyA9IFsKICB7IGlkOiAnMScsIHRpdGxlOiAnR3JhcGhRTCBUdXRvcmlhbCcsIGJvZHk6ICdMZWFybiBHcmFwaFFMIHN0ZXAgYnkgc3RlcC4nIH0sCiAgeyBpZDogJzInLCB0aXRsZTogJ0FkdmFuY2VkIEdyYXBoUUwnLCBib2R5OiAnRGVlcCBkaXZlIGludG8gR3JhcGhRTC4nIH0sCl07Cgpjb25zdCB2aWRlb3MgPSBbCiAgeyBpZDogJzEnLCB0aXRsZTogJ0dyYXBoUUwgQmFzaWNzJywgdXJsOiAnaHR0cDovL2V4YW1wbGUuY29tL2dyYXBocWwtYmFzaWNzJyB9LAogIHsgaWQ6ICcyJywgdGl0bGU6ICdHcmFwaFFMIEFkdmFuY2VkJywgdXJsOiAnaHR0cDovL2V4YW1wbGUuY29tL2dyYXBocWwtYWR2YW5jZWQnIH0sCl07CgovLyBSZXNvbHZlcgpjb25zdCByZXNvbHZlcnMgPSB7CiAgUXVlcnk6IHsKICAgIGdldENvbnRlbnQ6ICgpID0+IHsKICAgICAgcmV0dXJuIFsuLi5hcnRpY2xlcywgLi4udmlkZW9zXTsKICAgIH0sCiAgfSwKICBDb250ZW50OiB7CiAgICBfX3Jlc29sdmVUeXBlKG9iaikgewogICAgICBpZiAob2JqLmJvZHkpIHsKICAgICAgICByZXR1cm4gJ0FydGljbGUnOwogICAgICB9CiAgICAgIGlmIChvYmoudXJsKSB7CiAgICAgICAgcmV0dXJuICdWaWRlbyc7CiAgICAgIH0KICAgICAgcmV0dXJuIG51bGw7CiAgICB9LAogIH0sCn07CgovLyBDcmVhY2nDs24gZGVsIHNlcnZpZG9yCmNvbnN0IHNlcnZlciA9IG5ldyBBcG9sbG9TZXJ2ZXIoeyB0eXBlRGVmcywgcmVzb2x2ZXJzIH0pOwoKLy8gSW5pY2lvIGRlbCBzZXJ2aWRvcgpzZXJ2ZXIubGlzdGVuKCkudGhlbigoeyB1cmwgfSkgPT4gewogIGNvbnNvbGUubG9nKGDwn5qAIFNlcnZlciByZWFkeSBhdCAke3VybH1gKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Datos de ejemplo
+const articles = [
+  { id: '1', title: 'GraphQL Tutorial', body: 'Learn GraphQL step by step.' },
+  { id: '2', title: 'Advanced GraphQL', body: 'Deep dive into GraphQL.' },
+];
+
+const videos = [
+  { id: '1', title: 'GraphQL Basics', url: 'http://example.com/graphql-basics' },
+  { id: '2', title: 'GraphQL Advanced', url: 'http://example.com/graphql-advanced' },
+];
+
+// Resolver
+const resolvers = {
+  Query: {
+    getContent: () =&gt; {
+      return [...articles, ...videos];
+    },
+  },
+  Content: {
+    __resolveType(obj) {
+      if (obj.body) {
+        return 'Article';
+      }
+      if (obj.url) {
+        return 'Video';
+      }
+      return null;
+    },
+  },
+};
+
+// Creaci&oacute;n del servidor
+const server = new ApolloServer({ typeDefs, resolvers });
+
+// Inicio del servidor
+server.listen().then(({ url }) =&gt; {
+  console.log(`🚀 Server ready at ${url}`);
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Las uniones en GraphQL son una herramienta poderosa para manejar tipos de datos flexibles y variados. Permiten que un campo pueda devolver diferentes tipos de objetos, lo que hace que tu API sea más expresiva y adaptable a diferentes necesidades. Asegúrate de definir claramente los tipos que pueden formar parte de una unión y de implementar resolvers que puedan determinar correctamente el tipo de objeto que se está devolviendo.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-interfaces' title="Interfaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-enums' title="Enums">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

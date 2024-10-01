@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Técnicas de Sombreado Avanzadas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/04-02-advanced-shading" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/04-02-advanced-shading" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/04-02-advanced-shading" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/04-02-advanced-shading" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/04-02-advanced-shading" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-framebuffers-renderbuffers' title="Framebuffers y Renderbuffers">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Técnicas de Sombreado Avanzadas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-instanced-rendering' title="Renderizado Instanciado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, exploraremos técnicas avanzadas de sombreado en OpenGL. Estas técnicas permiten crear efectos visuales más complejos y realistas, mejorando significativamente la calidad gráfica de tus aplicaciones.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-los-shaders">Introducción a los Shaders</a></li>
+<li><a href="#shaders-de-fragmentos-avanzados">Shaders de Fragmentos Avanzados</a></li>
+<li><a href="#shaders-de-vértices-avanzados">Shaders de Vértices Avanzados</a></li>
+<li><a href="#shaders-de-geometría">Shaders de Geometría</a></li>
+<li><a href="#ejemplo-práctico-sombreado-phong">Ejemplo Práctico: Sombreado Phong</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción a los Shaders</h1>
+<div class='content'><p>Los shaders son programas que se ejecutan en la GPU y se utilizan para controlar el proceso de renderizado. Los dos tipos más comunes de shaders son:</p>
+<ul>
+<li><strong>Vertex Shaders</strong>: Procesan cada vértice individualmente.</li>
+<li><strong>Fragment Shaders</strong>: Procesan cada fragmento (o píxel) individualmente.</li>
+</ul>
+<p>En esta sección, nos centraremos en técnicas avanzadas para ambos tipos de shaders, así como en los shaders de geometría.</p>
+</div><h1>Shaders de Fragmentos Avanzados</h1>
+<div class='content'></div><h2>Sombreado Phong</h2>
+<div class='content'><p>El sombreado Phong es una técnica que proporciona un modelo de iluminación más realista al calcular la iluminación en cada fragmento. A continuación, se muestra un ejemplo de un fragment shader que implementa el sombreado Phong:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKaW4gdmVjMyBGcmFnUG9zOyAgCmluIHZlYzMgTm9ybWFsOyAgCmluIHZlYzIgVGV4Q29vcmRzOwoKb3V0IHZlYzQgRnJhZ0NvbG9yOwoKdW5pZm9ybSB2ZWMzIGxpZ2h0UG9zOyAKdW5pZm9ybSB2ZWMzIHZpZXdQb3M7IAp1bmlmb3JtIHZlYzMgbGlnaHRDb2xvcjsKdW5pZm9ybSB2ZWMzIG9iamVjdENvbG9yOwoKdm9pZCBtYWluKCkKewogICAgLy8gUHJvcGllZGFkZXMgYW1iaWVudGFsZXMKICAgIGZsb2F0IGFtYmllbnRTdHJlbmd0aCA9IDAuMTsKICAgIHZlYzMgYW1iaWVudCA9IGFtYmllbnRTdHJlbmd0aCAqIGxpZ2h0Q29sb3I7CiAgICAKICAgIC8vIFByb3BpZWRhZGVzIGRpZnVzYXMKICAgIHZlYzMgbm9ybSA9IG5vcm1hbGl6ZShOb3JtYWwpOwogICAgdmVjMyBsaWdodERpciA9IG5vcm1hbGl6ZShsaWdodFBvcyAtIEZyYWdQb3MpOwogICAgZmxvYXQgZGlmZiA9IG1heChkb3Qobm9ybSwgbGlnaHREaXIpLCAwLjApOwogICAgdmVjMyBkaWZmdXNlID0gZGlmZiAqIGxpZ2h0Q29sb3I7CiAgICAKICAgIC8vIFByb3BpZWRhZGVzIGVzcGVjdWxhcmVzCiAgICBmbG9hdCBzcGVjdWxhclN0cmVuZ3RoID0gMC41OwogICAgdmVjMyB2aWV3RGlyID0gbm9ybWFsaXplKHZpZXdQb3MgLSBGcmFnUG9zKTsKICAgIHZlYzMgcmVmbGVjdERpciA9IHJlZmxlY3QoLWxpZ2h0RGlyLCBub3JtKTsgIAogICAgZmxvYXQgc3BlYyA9IHBvdyhtYXgoZG90KHZpZXdEaXIsIHJlZmxlY3REaXIpLCAwLjApLCAzMik7CiAgICB2ZWMzIHNwZWN1bGFyID0gc3BlY3VsYXJTdHJlbmd0aCAqIHNwZWMgKiBsaWdodENvbG9yOyAgCiAgICAKICAgIHZlYzMgcmVzdWx0ID0gKGFtYmllbnQgKyBkaWZmdXNlICsgc3BlY3VsYXIpICogb2JqZWN0Q29sb3I7CiAgICBGcmFnQ29sb3IgPSB2ZWM0KHJlc3VsdCwgMS4wKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+in vec3 FragPos;  
+in vec3 Normal;  
+in vec2 TexCoords;
+
+out vec4 FragColor;
+
+uniform vec3 lightPos; 
+uniform vec3 viewPos; 
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+
+void main()
+{
+    // Propiedades ambientales
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+    
+    // Propiedades difusas
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    
+    // Propiedades especulares
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;  
+    
+    vec3 result = (ambient + diffuse + specular) * objectColor;
+    FragColor = vec4(result, 1.0);
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Propiedades Ambientales</strong>: La luz ambiental es una luz constante que ilumina todos los objetos de manera uniforme.</li>
+<li><strong>Propiedades Difusas</strong>: La luz difusa depende de la orientación de la superficie con respecto a la fuente de luz.</li>
+<li><strong>Propiedades Especulares</strong>: La luz especular simula los reflejos brillantes en la superficie del objeto.</li>
+</ol>
+</div><h1>Shaders de Vértices Avanzados</h1>
+<div class='content'></div><h2>Desplazamiento de Vértices</h2>
+<div class='content'><p>El desplazamiento de vértices es una técnica que permite modificar la posición de los vértices en el vertex shader. Esto se puede utilizar para crear efectos como ondas en el agua o terrenos deformados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0KGxvY2F0aW9uID0gMCkgaW4gdmVjMyBhUG9zOwpsYXlvdXQobG9jYXRpb24gPSAxKSBpbiB2ZWMzIGFOb3JtYWw7CmxheW91dChsb2NhdGlvbiA9IDIpIGluIHZlYzIgYVRleENvb3JkczsKCm91dCB2ZWMzIEZyYWdQb3M7Cm91dCB2ZWMzIE5vcm1hbDsKb3V0IHZlYzIgVGV4Q29vcmRzOwoKdW5pZm9ybSBtYXQ0IG1vZGVsOwp1bmlmb3JtIG1hdDQgdmlldzsKdW5pZm9ybSBtYXQ0IHByb2plY3Rpb247CnVuaWZvcm0gZmxvYXQgdGltZTsKCnZvaWQgbWFpbigpCnsKICAgIHZlYzMgbmV3UG9zID0gYVBvcyArIHZlYzMoMC4wLCBzaW4oYVBvcy54ICogMTAuMCArIHRpbWUpICogMC4xLCAwLjApOwogICAgRnJhZ1BvcyA9IHZlYzMobW9kZWwgKiB2ZWM0KG5ld1BvcywgMS4wKSk7CiAgICBOb3JtYWwgPSBtYXQzKHRyYW5zcG9zZShpbnZlcnNlKG1vZGVsKSkpICogYU5vcm1hbDsgIAogICAgVGV4Q29vcmRzID0gYVRleENvb3JkczsKICAgIAogICAgZ2xfUG9zaXRpb24gPSBwcm9qZWN0aW9uICogdmlldyAqIHZlYzQoRnJhZ1BvcywgMS4wKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aNormal;
+layout(location = 2) in vec2 aTexCoords;
+
+out vec3 FragPos;
+out vec3 Normal;
+out vec2 TexCoords;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform float time;
+
+void main()
+{
+    vec3 newPos = aPos + vec3(0.0, sin(aPos.x * 10.0 + time) * 0.1, 0.0);
+    FragPos = vec3(model * vec4(newPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
+    TexCoords = aTexCoords;
+    
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Desplazamiento de Vértices</strong>: La posición de los vértices se modifica utilizando una función seno para crear un efecto de onda.</li>
+<li><strong>Transformaciones</strong>: Se aplican las transformaciones de modelo, vista y proyección para posicionar correctamente los vértices en el espacio 3D.</li>
+</ol>
+</div><h1>Shaders de Geometría</h1>
+<div class='content'><p>Los shaders de geometría permiten generar nuevos vértices a partir de los vértices existentes. Esto es útil para efectos como la generación de sombras volumétricas o la creación de geometría adicional.</p>
+</div><h2>Ejemplo de Shader de Geometría</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0KHRyaWFuZ2xlcykgaW47CmxheW91dCh0cmlhbmdsZV9zdHJpcCwgbWF4X3ZlcnRpY2VzID0gMykgb3V0OwoKaW4gdmVjMyBOb3JtYWxbXTsKb3V0IHZlYzMgRnJhZ05vcm1hbDsKCnZvaWQgbWFpbigpCnsKICAgIGZvcihpbnQgaSA9IDA7IGkgPCAzOyBpKyspCiAgICB7CiAgICAgICAgRnJhZ05vcm1hbCA9IE5vcm1hbFtpXTsKICAgICAgICBnbF9Qb3NpdGlvbiA9IGdsX2luW2ldLmdsX1Bvc2l0aW9uOwogICAgICAgIEVtaXRWZXJ0ZXgoKTsKICAgIH0KICAgIEVuZFByaW1pdGl2ZSgpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+
+in vec3 Normal[];
+out vec3 FragNormal;
+
+void main()
+{
+    for(int i = 0; i &lt; 3; i++)
+    {
+        FragNormal = Normal[i];
+        gl_Position = gl_in[i].gl_Position;
+        EmitVertex();
+    }
+    EndPrimitive();
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Entrada y Salida</strong>: El shader de geometría toma triángulos como entrada y genera un triángulo strip como salida.</li>
+<li><strong>EmitVertex y EndPrimitive</strong>: Estas funciones se utilizan para emitir los vértices y finalizar la primitiva.</li>
+</ol>
+</div><h1>Ejemplo Práctico: Sombreado Phong</h1>
+<div class='content'><p>Vamos a combinar lo aprendido en un ejemplo práctico que implementa el sombreado Phong en un objeto 3D.</p>
+</div><h2>Vertex Shader</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0KGxvY2F0aW9uID0gMCkgaW4gdmVjMyBhUG9zOwpsYXlvdXQobG9jYXRpb24gPSAxKSBpbiB2ZWMzIGFOb3JtYWw7CgpvdXQgdmVjMyBGcmFnUG9zOwpvdXQgdmVjMyBOb3JtYWw7Cgp1bmlmb3JtIG1hdDQgbW9kZWw7CnVuaWZvcm0gbWF0NCB2aWV3Owp1bmlmb3JtIG1hdDQgcHJvamVjdGlvbjsKCnZvaWQgbWFpbigpCnsKICAgIEZyYWdQb3MgPSB2ZWMzKG1vZGVsICogdmVjNChhUG9zLCAxLjApKTsKICAgIE5vcm1hbCA9IG1hdDModHJhbnNwb3NlKGludmVyc2UobW9kZWwpKSkgKiBhTm9ybWFsOyAgCiAgICAKICAgIGdsX1Bvc2l0aW9uID0gcHJvamVjdGlvbiAqIHZpZXcgKiB2ZWM0KEZyYWdQb3MsIDEuMCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aNormal;
+
+out vec3 FragPos;
+out vec3 Normal;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    FragPos = vec3(model * vec4(aPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
+    
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}</pre></div><div class='content'></div><h2>Fragment Shader</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKaW4gdmVjMyBGcmFnUG9zOyAgCmluIHZlYzMgTm9ybWFsOyAgCgpvdXQgdmVjNCBGcmFnQ29sb3I7Cgp1bmlmb3JtIHZlYzMgbGlnaHRQb3M7IAp1bmlmb3JtIHZlYzMgdmlld1BvczsgCnVuaWZvcm0gdmVjMyBsaWdodENvbG9yOwp1bmlmb3JtIHZlYzMgb2JqZWN0Q29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBmbG9hdCBhbWJpZW50U3RyZW5ndGggPSAwLjE7CiAgICB2ZWMzIGFtYmllbnQgPSBhbWJpZW50U3RyZW5ndGggKiBsaWdodENvbG9yOwogICAgCiAgICB2ZWMzIG5vcm0gPSBub3JtYWxpemUoTm9ybWFsKTsKICAgIHZlYzMgbGlnaHREaXIgPSBub3JtYWxpemUobGlnaHRQb3MgLSBGcmFnUG9zKTsKICAgIGZsb2F0IGRpZmYgPSBtYXgoZG90KG5vcm0sIGxpZ2h0RGlyKSwgMC4wKTsKICAgIHZlYzMgZGlmZnVzZSA9IGRpZmYgKiBsaWdodENvbG9yOwogICAgCiAgICBmbG9hdCBzcGVjdWxhclN0cmVuZ3RoID0gMC41OwogICAgdmVjMyB2aWV3RGlyID0gbm9ybWFsaXplKHZpZXdQb3MgLSBGcmFnUG9zKTsKICAgIHZlYzMgcmVmbGVjdERpciA9IHJlZmxlY3QoLWxpZ2h0RGlyLCBub3JtKTsgIAogICAgZmxvYXQgc3BlYyA9IHBvdyhtYXgoZG90KHZpZXdEaXIsIHJlZmxlY3REaXIpLCAwLjApLCAzMik7CiAgICB2ZWMzIHNwZWN1bGFyID0gc3BlY3VsYXJTdHJlbmd0aCAqIHNwZWMgKiBsaWdodENvbG9yOyAgCiAgICAKICAgIHZlYzMgcmVzdWx0ID0gKGFtYmllbnQgKyBkaWZmdXNlICsgc3BlY3VsYXIpICogb2JqZWN0Q29sb3I7CiAgICBGcmFnQ29sb3IgPSB2ZWM0KHJlc3VsdCwgMS4wKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+in vec3 FragPos;  
+in vec3 Normal;  
+
+out vec4 FragColor;
+
+uniform vec3 lightPos; 
+uniform vec3 viewPos; 
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+
+void main()
+{
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+    
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+    
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;  
+    
+    vec3 result = (ambient + diffuse + specular) * objectColor;
+    FragColor = vec4(result, 1.0);
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Vertex Shader</strong>: Calcula la posición del fragmento y la normal transformada.</li>
+<li><strong>Fragment Shader</strong>: Implementa el modelo de iluminación Phong para calcular la luz ambiental, difusa y especular.</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'><ol>
+<li><strong>Implementar Sombreado Gouraud</strong>: Modifica el ejemplo anterior para implementar el sombreado Gouraud, donde la iluminación se calcula en el vertex shader y se interpola en el fragment shader.</li>
+<li><strong>Efecto de Onda en el Agua</strong>: Utiliza el desplazamiento de vértices para crear un efecto de onda en una superficie plana.</li>
+<li><strong>Shader de Geometría para Generar Normales</strong>: Escribe un shader de geometría que genere normales para cada triángulo de un objeto.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Sombreado Gouraud</strong>:</p>
+<p><strong>Vertex Shader</strong>:</p>
+<pre><code class="language-glsl">#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aNormal;
+
+out vec3 FragColor;
+
+uniform vec3 lightPos; 
+uniform vec3 viewPos; 
+uniform vec3 lightColor;
+uniform vec3 objectColor;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+void main()
+{
+    vec3 FragPos = vec3(model * vec4(aPos, 1.0));
+    vec3 Normal = mat3(transpose(inverse(model))) * aNormal;  
+
+    float ambientStrength = 0.1;
+    vec3 ambient = ambientStrength * lightColor;
+
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(lightPos - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * lightColor;
+
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(viewPos - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * lightColor;  
+
+    vec3 result = (ambient + diffuse + specular) * objectColor;
+    FragColor = result;
+
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}
+</code></pre>
+<p><strong>Fragment Shader</strong>:</p>
+<pre><code class="language-glsl">#version 330 core
+in vec3 FragColor;
+out vec4 color;
+
+void main()
+{
+    color = vec4(FragColor, 1.0);
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Efecto de Onda en el Agua</strong>:</p>
+<p><strong>Vertex Shader</strong>:</p>
+<pre><code class="language-glsl">#version 330 core
+layout(location = 0) in vec3 aPos;
+layout(location = 1) in vec3 aNormal;
+
+out vec3 FragPos;
+out vec3 Normal;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform float time;
+
+void main()
+{
+    vec3 newPos = aPos + vec3(0.0, sin(aPos.x * 10.0 + time) * 0.1, 0.0);
+    FragPos = vec3(model * vec4(newPos, 1.0));
+    Normal = mat3(transpose(inverse(model))) * aNormal;  
+
+    gl_Position = projection * view * vec4(FragPos, 1.0);
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Shader de Geometría para Generar Normales</strong>:</p>
+<p><strong>Geometry Shader</strong>:</p>
+<pre><code class="language-glsl">#version 330 core
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 3) out;
+
+out vec3 Normal;
+
+void main()
+{
+    vec3 U = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+    vec3 V = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+    vec3 normal = normalize(cross(U, V));
+
+    for(int i = 0; i &lt; 3; i++)
+    {
+        Normal = normal;
+        gl_Position = gl_in[i].gl_Position;
+        EmitVertex();
+    }
+    EndPrimitive();
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos explorado técnicas avanzadas de sombreado en OpenGL, incluyendo el sombreado Phong, el desplazamiento de vértices y los shaders de geometría. Estas técnicas permiten crear efectos visuales más complejos y realistas, mejorando significativamente la calidad gráfica de tus aplicaciones.</p>
+<p>En el próximo módulo, profundizaremos en el renderizado instanciado, una técnica que permite renderizar múltiples instancias de un objeto de manera eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-01-framebuffers-renderbuffers' title="Framebuffers y Renderbuffers">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-03-instanced-rendering' title="Renderizado Instanciado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

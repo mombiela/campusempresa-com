@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Datos de Formularios</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/php/05-01-handling-form-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/php/05-01-handling-form-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/php/05-01-handling-form-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/php/05-01-handling-form-data" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/php/05-01-handling-form-data" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-array-functions' title="Funciones de Arrays">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de Datos de Formularios</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-form-validation' title="Validación de Formularios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo manejar datos enviados desde formularios HTML utilizando PHP. Los formularios son una parte esencial de muchas aplicaciones web, ya que permiten a los usuarios enviar datos al servidor para su procesamiento.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Formularios HTML</strong>: Estructura básica de un formulario en HTML.</li>
+<li><strong>Métodos de Envío</strong>: <code>GET</code> y <code>POST</code>.</li>
+<li><strong>Superglobales</strong>: <code>$_GET</code> y <code>$_POST</code>.</li>
+<li><strong>Validación Básica</strong>: Comprobación de datos enviados.</li>
+<li><strong>Seguridad</strong>: Prevención de ataques comunes como la inyección de código.</li>
+</ol>
+</div><h1>1. Formularios HTML</h1>
+<div class='content'><p>Un formulario HTML básico puede verse así:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGZvcm0gYWN0aW9uPSJwcm9jZXNzX2Zvcm0ucGhwIiBtZXRob2Q9InBvc3QiPgogICAgPGxhYmVsIGZvcj0ibmFtZSI+Tm9tYnJlOjwvbGFiZWw+CiAgICA8aW5wdXQgdHlwZT0idGV4dCIgaWQ9Im5hbWUiIG5hbWU9Im5hbWUiPgogICAgPGxhYmVsIGZvcj0iZW1haWwiPkNvcnJlbyBFbGVjdHLDs25pY286PC9sYWJlbD4KICAgIDxpbnB1dCB0eXBlPSJlbWFpbCIgaWQ9ImVtYWlsIiBuYW1lPSJlbWFpbCI+CiAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iRW52aWFyIj4KPC9mb3JtPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;form action=&quot;process_form.php&quot; method=&quot;post&quot;&gt;
+    &lt;label for=&quot;name&quot;&gt;Nombre:&lt;/label&gt;
+    &lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot;&gt;
+    &lt;label for=&quot;email&quot;&gt;Correo Electr&oacute;nico:&lt;/label&gt;
+    &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot;&gt;
+    &lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+&lt;/form&gt;</pre></div><div class='content'></div><h2>Explicación:</h2>
+<div class='content'><ul>
+<li><code>action</code>: Especifica la URL a la que se enviarán los datos del formulario.</li>
+<li><code>method</code>: Define el método de envío (<code>GET</code> o <code>POST</code>).</li>
+<li><code>input</code>: Campos de entrada para el usuario.</li>
+</ul>
+</div><h1>2. Métodos de Envío</h1>
+<div class='content'></div><h2>GET</h2>
+<div class='content'><ul>
+<li>Los datos se envían como parte de la URL.</li>
+<li>No es seguro para enviar información sensible.</li>
+<li>Ejemplo de URL: <code>process_form.php?name=John&amp;email=john@example.com</code></li>
+</ul>
+</div><h2>POST</h2>
+<div class='content'><ul>
+<li>Los datos se envían en el cuerpo de la solicitud HTTP.</li>
+<li>Es más seguro que <code>GET</code> para enviar información sensible.</li>
+<li>No se muestra en la URL.</li>
+</ul>
+</div><h1>3. Superglobales</h1>
+<div class='content'><p>PHP proporciona superglobales para acceder a los datos enviados por formularios.</p>
+</div><h2>$_GET</h2>
+<div class='content'><ul>
+<li>Contiene datos enviados mediante el método <code>GET</code>.</li>
+<li>Ejemplo: <code>$_GET['name']</code></li>
+</ul>
+</div><h2>$_POST</h2>
+<div class='content'><ul>
+<li>Contiene datos enviados mediante el método <code>POST</code>.</li>
+<li>Ejemplo: <code>$_POST['name']</code></li>
+</ul>
+</div><h1>4. Validación Básica</h1>
+<div class='content'><p>Es importante validar los datos recibidos para asegurarse de que son correctos y seguros.</p>
+</div><h2>Ejemplo de Validación</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKCRfU0VSVkVSWyJSRVFVRVNUX01FVEhPRCJdID09ICJQT1NUIikgewogICAgJG5hbWUgPSBodG1sc3BlY2lhbGNoYXJzKCRfUE9TVFsnbmFtZSddKTsKICAgICRlbWFpbCA9IGh0bWxzcGVjaWFsY2hhcnMoJF9QT1NUWydlbWFpbCddKTsKCiAgICBpZiAoZW1wdHkoJG5hbWUpIHx8IGVtcHR5KCRlbWFpbCkpIHsKICAgICAgICBlY2hvICJUb2RvcyBsb3MgY2FtcG9zIHNvbiBvYmxpZ2F0b3Jpb3MuIjsKICAgIH0gZWxzZSB7CiAgICAgICAgZWNobyAiTm9tYnJlOiAiIC4gJG5hbWUgLiAiPGJyPiI7CiAgICAgICAgZWNobyAiQ29ycmVvIEVsZWN0csOzbmljbzogIiAuICRlbWFpbDsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    $name = htmlspecialchars($_POST['name']);
+    $email = htmlspecialchars($_POST['email']);
+
+    if (empty($name) || empty($email)) {
+        echo &quot;Todos los campos son obligatorios.&quot;;
+    } else {
+        echo &quot;Nombre: &quot; . $name . &quot;&lt;br&gt;&quot;;
+        echo &quot;Correo Electr&oacute;nico: &quot; . $email;
+    }
+}</pre></div><div class='content'></div><h2>Explicación:</h2>
+<div class='content'><ul>
+<li><code>$_SERVER[&quot;REQUEST_METHOD&quot;]</code>: Comprueba el método de la solicitud.</li>
+<li><code>htmlspecialchars()</code>: Convierte caracteres especiales en entidades HTML para prevenir inyección de código.</li>
+<li><code>empty()</code>: Comprueba si una variable está vacía.</li>
+</ul>
+</div><h1>5. Seguridad</h1>
+<div class='content'></div><h2>Prevención de Inyección de Código</h2>
+<div class='content'><p>Utiliza <code>htmlspecialchars()</code> para convertir caracteres especiales en entidades HTML.</p>
+</div><h2>Ejemplo:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JG5hbWUgPSBodG1sc3BlY2lhbGNoYXJzKCRfUE9TVFsnbmFtZSddKTsKJGVtYWlsID0gaHRtbHNwZWNpYWxjaGFycygkX1BPU1RbJ2VtYWlsJ10pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$name = htmlspecialchars($_POST['name']);
+$email = htmlspecialchars($_POST['email']);</pre></div><div class='content'></div><h2>Prevención de Ataques CSRF</h2>
+<div class='content'><p>Utiliza tokens CSRF para asegurar que las solicitudes provienen de usuarios legítimos.</p>
+</div><h2>Ejemplo de Token CSRF:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2Vzc2lvbl9zdGFydCgpOwokdG9rZW4gPSBiaW4yaGV4KHJhbmRvbV9ieXRlcygzMikpOwokX1NFU1NJT05bJ3Rva2VuJ10gPSAkdG9rZW47"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>session_start();
+$token = bin2hex(random_bytes(32));
+$_SESSION['token'] = $token;</pre></div><div class='content'><p>En el formulario HTML:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGlucHV0IHR5cGU9ImhpZGRlbiIgbmFtZT0idG9rZW4iIHZhbHVlPSI8P3BocCBlY2hvICR0b2tlbjsgPz4iPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;input type=&quot;hidden&quot; name=&quot;token&quot; value=&quot;&lt;?php echo $token; ?&gt;&quot;&gt;</pre></div><div class='content'><p>En el procesamiento del formulario:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKCRfUE9TVFsndG9rZW4nXSAhPT0gJF9TRVNTSU9OWyd0b2tlbiddKSB7CiAgICBkaWUoIkNTUkYgdG9rZW4gdmFsaWRhdGlvbiBmYWlsZWQiKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if ($_POST['token'] !== $_SESSION['token']) {
+    die(&quot;CSRF token validation failed&quot;);
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Formulario de Contacto</h2>
+<div class='content'><ol>
+<li>Crea un archivo HTML con un formulario que tenga campos para nombre, correo electrónico y mensaje.</li>
+<li>Crea un archivo PHP que procese los datos del formulario y los muestre en la pantalla.</li>
+<li>Asegúrate de validar los datos y utilizar <code>htmlspecialchars()</code> para prevenir inyección de código.</li>
+</ol>
+</div><h2>Solución:</h2>
+<div class='content'><p><strong>contact_form.html</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVzIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+Rm9ybXVsYXJpbyBkZSBDb250YWN0bzwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8Zm9ybSBhY3Rpb249InByb2Nlc3NfY29udGFjdC5waHAiIG1ldGhvZD0icG9zdCI+CiAgICAgICAgPGxhYmVsIGZvcj0ibmFtZSI+Tm9tYnJlOjwvbGFiZWw+CiAgICAgICAgPGlucHV0IHR5cGU9InRleHQiIGlkPSJuYW1lIiBuYW1lPSJuYW1lIiByZXF1aXJlZD4KICAgICAgICA8bGFiZWwgZm9yPSJlbWFpbCI+Q29ycmVvIEVsZWN0csOzbmljbzo8L2xhYmVsPgogICAgICAgIDxpbnB1dCB0eXBlPSJlbWFpbCIgaWQ9ImVtYWlsIiBuYW1lPSJlbWFpbCIgcmVxdWlyZWQ+CiAgICAgICAgPGxhYmVsIGZvcj0ibWVzc2FnZSI+TWVuc2FqZTo8L2xhYmVsPgogICAgICAgIDx0ZXh0YXJlYSBpZD0ibWVzc2FnZSIgbmFtZT0ibWVzc2FnZSIgcmVxdWlyZWQ+PC90ZXh0YXJlYT4KICAgICAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iRW52aWFyIj4KICAgIDwvZm9ybT4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Formulario de Contacto&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;form action=&quot;process_contact.php&quot; method=&quot;post&quot;&gt;
+        &lt;label for=&quot;name&quot;&gt;Nombre:&lt;/label&gt;
+        &lt;input type=&quot;text&quot; id=&quot;name&quot; name=&quot;name&quot; required&gt;
+        &lt;label for=&quot;email&quot;&gt;Correo Electr&oacute;nico:&lt;/label&gt;
+        &lt;input type=&quot;email&quot; id=&quot;email&quot; name=&quot;email&quot; required&gt;
+        &lt;label for=&quot;message&quot;&gt;Mensaje:&lt;/label&gt;
+        &lt;textarea id=&quot;message&quot; name=&quot;message&quot; required&gt;&lt;/textarea&gt;
+        &lt;input type=&quot;submit&quot; value=&quot;Enviar&quot;&gt;
+    &lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><p><strong>process_contact.php</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PD9waHAKaWYgKCRfU0VSVkVSWyJSRVFVRVNUX01FVEhPRCJdID09ICJQT1NUIikgewogICAgJG5hbWUgPSBodG1sc3BlY2lhbGNoYXJzKCRfUE9TVFsnbmFtZSddKTsKICAgICRlbWFpbCA9IGh0bWxzcGVjaWFsY2hhcnMoJF9QT1NUWydlbWFpbCddKTsKICAgICRtZXNzYWdlID0gaHRtbHNwZWNpYWxjaGFycygkX1BPU1RbJ21lc3NhZ2UnXSk7CgogICAgaWYgKGVtcHR5KCRuYW1lKSB8fCBlbXB0eSgkZW1haWwpIHx8IGVtcHR5KCRtZXNzYWdlKSkgewogICAgICAgIGVjaG8gIlRvZG9zIGxvcyBjYW1wb3Mgc29uIG9ibGlnYXRvcmlvcy4iOwogICAgfSBlbHNlIHsKICAgICAgICBlY2hvICJOb21icmU6ICIgLiAkbmFtZSAuICI8YnI+IjsKICAgICAgICBlY2hvICJDb3JyZW8gRWxlY3Ryw7NuaWNvOiAiIC4gJGVtYWlsIC4gIjxicj4iOwogICAgICAgIGVjaG8gIk1lbnNhamU6ICIgLiAkbWVzc2FnZTsKICAgIH0KfQo/Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;?php
+if ($_SERVER[&quot;REQUEST_METHOD&quot;] == &quot;POST&quot;) {
+    $name = htmlspecialchars($_POST['name']);
+    $email = htmlspecialchars($_POST['email']);
+    $message = htmlspecialchars($_POST['message']);
+
+    if (empty($name) || empty($email) || empty($message)) {
+        echo &quot;Todos los campos son obligatorios.&quot;;
+    } else {
+        echo &quot;Nombre: &quot; . $name . &quot;&lt;br&gt;&quot;;
+        echo &quot;Correo Electr&oacute;nico: &quot; . $email . &quot;&lt;br&gt;&quot;;
+        echo &quot;Mensaje: &quot; . $message;
+    }
+}
+?&gt;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, has aprendido cómo manejar datos de formularios en PHP utilizando los métodos <code>GET</code> y <code>POST</code>, cómo validar y sanitizar los datos recibidos, y cómo implementar medidas de seguridad básicas. Estos conocimientos son fundamentales para cualquier aplicación web que requiera interacción del usuario.</p>
+<p>En la próxima lección, profundizaremos en la <strong>Validación de Formularios</strong>, donde aprenderás técnicas avanzadas para asegurar que los datos ingresados por los usuarios sean correctos y seguros.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-04-array-functions' title="Funciones de Arrays">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-form-validation' title="Validación de Formularios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoescalado de Clúster</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/09-03-cluster-autoscaling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/09-03-cluster-autoscaling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/09-03-cluster-autoscaling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/09-03-cluster-autoscaling" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/09-03-cluster-autoscaling" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-vertical-pod-autoscaling' title="Autoescalado Vertical de Pods">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Autoescalado de Clúster</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-performance-tuning' title="Ajuste de Rendimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El autoescalado de clúster en Kubernetes es una funcionalidad avanzada que permite ajustar automáticamente el tamaño del clúster en función de la demanda de recursos. Esta capacidad es crucial para mantener la eficiencia y la disponibilidad de las aplicaciones, especialmente en entornos dinámicos y de alta carga.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Cluster Autoscaler</strong>: Es el componente principal que se encarga de ajustar el tamaño del clúster. Añade o elimina nodos en función de las necesidades de recursos.</li>
+<li><strong>Node Pools</strong>: Conjuntos de nodos que pueden ser escalados de manera independiente.</li>
+<li><strong>Escalado Horizontal</strong>: Añadir o eliminar nodos en el clúster.</li>
+<li><strong>Escalado Vertical</strong>: Ajustar los recursos (CPU, memoria) de los nodos existentes (no cubierto por el Cluster Autoscaler).</li>
+</ol>
+</div><h1>¿Cómo Funciona el Autoescalado de Clúster?</h1>
+<div class='content'><p>El Cluster Autoscaler monitorea continuamente los recursos del clúster y toma decisiones basadas en las siguientes condiciones:</p>
+<ul>
+<li><strong>Añadir Nodos</strong>: Si hay pods pendientes que no pueden ser programados debido a la falta de recursos, el Cluster Autoscaler añadirá nodos.</li>
+<li><strong>Eliminar Nodos</strong>: Si un nodo está infrautilizado y sus pods pueden ser reprogramados en otros nodos, el Cluster Autoscaler eliminará ese nodo.</li>
+</ul>
+</div><h1>Configuración del Cluster Autoscaler</h1>
+<div class='content'></div><h2>Prerrequisitos</h2>
+<div class='content'><ul>
+<li>Un clúster de Kubernetes en funcionamiento.</li>
+<li>Permisos adecuados para modificar el clúster y sus nodos.</li>
+<li>Herramientas de línea de comandos como <code>kubectl</code> y acceso a la consola de administración del proveedor de nube (si se usa un clúster gestionado).</li>
+</ul>
+</div><h2>Paso a Paso</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalación del Cluster Autoscaler</strong>:</p>
+<ul>
+<li>En clústeres gestionados (como GKE, EKS, AKS), el Cluster Autoscaler suele estar disponible como una opción de configuración.</li>
+<li>Para clústeres autogestionados, se puede instalar el Cluster Autoscaler mediante un manifiesto de Kubernetes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuración del Cluster Autoscaler</strong>:</p>
+<ul>
+<li>Definir los límites de escalado (mínimo y máximo número de nodos).</li>
+<li>Configurar las políticas de escalado.</li>
+</ul>
+</li>
+</ol>
+<h4>Ejemplo de Manifiesto para Cluster Autoscaler</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IGNsdXN0ZXItYXV0b3NjYWxlcgogIG5hbWVzcGFjZToga3ViZS1zeXN0ZW0Kc3BlYzoKICByZXBsaWNhczogMQogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGFwcDogY2x1c3Rlci1hdXRvc2NhbGVyCiAgdGVtcGxhdGU6CiAgICBtZXRhZGF0YToKICAgICAgbGFiZWxzOgogICAgICAgIGFwcDogY2x1c3Rlci1hdXRvc2NhbGVyCiAgICBzcGVjOgogICAgICBjb250YWluZXJzOgogICAgICAtIG5hbWU6IGNsdXN0ZXItYXV0b3NjYWxlcgogICAgICAgIGltYWdlOiBrOHMuZ2NyLmlvL2NsdXN0ZXItYXV0b3NjYWxlcjp2MS4yMC4wCiAgICAgICAgY29tbWFuZDoKICAgICAgICAtIC4vY2x1c3Rlci1hdXRvc2NhbGVyCiAgICAgICAgLSAtLXY9NAogICAgICAgIC0gLS1zdGRlcnJ0aHJlc2hvbGQ9aW5mbwogICAgICAgIC0gLS1jbG91ZC1wcm92aWRlcj1nY2UKICAgICAgICAtIC0tbm9kZXM9MToxMDpteS1ub2RlLXBvb2wKICAgICAgICByZXNvdXJjZXM6CiAgICAgICAgICBsaW1pdHM6CiAgICAgICAgICAgIGNwdTogMTAwbQogICAgICAgICAgICBtZW1vcnk6IDMwME1pCiAgICAgICAgICByZXF1ZXN0czoKICAgICAgICAgICAgY3B1OiAxMDBtCiAgICAgICAgICAgIG1lbW9yeTogMzAwTWkKICAgICAgICBlbnY6CiAgICAgICAgLSBuYW1lOiBHT09HTEVfQVBQTElDQVRJT05fQ1JFREVOVElBTFMKICAgICAgICAgIHZhbHVlOiAvZXRjL2djcC9zZXJ2aWNlLWFjY291bnQuanNvbgogICAgICAgIHZvbHVtZU1vdW50czoKICAgICAgICAtIG5hbWU6IHNzbC1jZXJ0cwogICAgICAgICAgbW91bnRQYXRoOiAvZXRjL3NzbC9jZXJ0cy9jYS1jZXJ0aWZpY2F0ZXMuY3J0CiAgICAgICAgICByZWFkT25seTogdHJ1ZQogICAgICAgIC0gbmFtZTogZ2NwLXNlcnZpY2UtYWNjb3VudAogICAgICAgICAgbW91bnRQYXRoOiAvZXRjL2djcAogICAgICAgICAgcmVhZE9ubHk6IHRydWUKICAgICAgdm9sdW1lczoKICAgICAgLSBuYW1lOiBzc2wtY2VydHMKICAgICAgICBob3N0UGF0aDoKICAgICAgICAgIHBhdGg6IC9ldGMvc3NsL2NlcnRzL2NhLWNlcnRpZmljYXRlcy5jcnQKICAgICAgLSBuYW1lOiBnY3Atc2VydmljZS1hY2NvdW50CiAgICAgICAgc2VjcmV0OgogICAgICAgICAgc2VjcmV0TmFtZTogbXktZ2NwLXNlcnZpY2UtYWNjb3VudA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cluster-autoscaler
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cluster-autoscaler
+  template:
+    metadata:
+      labels:
+        app: cluster-autoscaler
+    spec:
+      containers:
+      - name: cluster-autoscaler
+        image: k8s.gcr.io/cluster-autoscaler:v1.20.0
+        command:
+        - ./cluster-autoscaler
+        - --v=4
+        - --stderrthreshold=info
+        - --cloud-provider=gce
+        - --nodes=1:10:my-node-pool
+        resources:
+          limits:
+            cpu: 100m
+            memory: 300Mi
+          requests:
+            cpu: 100m
+            memory: 300Mi
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/gcp/service-account.json
+        volumeMounts:
+        - name: ssl-certs
+          mountPath: /etc/ssl/certs/ca-certificates.crt
+          readOnly: true
+        - name: gcp-service-account
+          mountPath: /etc/gcp
+          readOnly: true
+      volumes:
+      - name: ssl-certs
+        hostPath:
+          path: /etc/ssl/certs/ca-certificates.crt
+      - name: gcp-service-account
+        secret:
+          secretName: my-gcp-service-account</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar un Cluster Autoscaler en un clúster gestionado</strong>:</p>
+<ul>
+<li>Si estás usando GKE, EKS o AKS, habilita el Cluster Autoscaler desde la consola de administración del proveedor de nube.</li>
+<li>Define los límites de escalado (mínimo y máximo número de nodos).</li>
+</ul>
+</li>
+<li>
+<p><strong>Verificar el Funcionamiento</strong>:</p>
+<ul>
+<li>Despliega una aplicación que consuma muchos recursos para forzar el escalado.</li>
+<li>Observa cómo el Cluster Autoscaler añade nodos para satisfacer la demanda.</li>
+<li>Reduce la carga y observa cómo el Cluster Autoscaler elimina nodos infrautilizados.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución del Ejercicio</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Habilitar el Cluster Autoscaler en GKE</strong>:</p>
+<pre><code class="language-bash">gcloud container clusters update my-cluster <br>     --enable-autoscaling <br>     --min-nodes=1 <br>     --max-nodes=10 <br>     --zone=us-central1-a
+</code></pre>
+</li>
+<li>
+<p><strong>Desplegar una Aplicación de Alta Carga</strong>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: high-load-app
+spec:
+  replicas: 10
+  selector:
+    matchLabels:
+      app: high-load-app
+  template:
+    metadata:
+      labels:
+        app: high-load-app
+    spec:
+      containers:
+      - name: high-load-app
+        image: busybox
+        command: [&quot;sh&quot;, &quot;-c&quot;, &quot;while true; do echo 'High Load'; sleep 10; done&quot;]
+        resources:
+          requests:
+            cpu: &quot;500m&quot;
+            memory: &quot;512Mi&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar el Escalado</strong>:</p>
+<ul>
+<li>Usa <code>kubectl get nodes</code> para ver los nodos añadidos.</li>
+<li>Usa <code>kubectl get pods</code> para ver los pods distribuidos en los nuevos nodos.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El autoescalado de clúster es una herramienta poderosa para gestionar la capacidad y la eficiencia de los recursos en Kubernetes. Permite a los administradores de clústeres mantener un equilibrio entre la disponibilidad de recursos y el costo, ajustando automáticamente el tamaño del clúster según la demanda. Con una configuración adecuada, el Cluster Autoscaler puede mejorar significativamente la resiliencia y la eficiencia operativa de las aplicaciones desplegadas en Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-vertical-pod-autoscaling' title="Autoescalado Vertical de Pods">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-performance-tuning' title="Ajuste de Rendimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

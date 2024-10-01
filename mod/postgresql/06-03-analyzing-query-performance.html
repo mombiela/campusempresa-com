@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis del Rendimiento de Consultas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/06-03-analyzing-query-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/06-03-analyzing-query-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/06-03-analyzing-query-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/06-03-analyzing-query-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/06-03-analyzing-query-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-indexing-strategies' title="Estrategias de Indexación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Análisis del Rendimiento de Consultas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-vacuuming-and-maintenance' title="Vacuuming y Mantenimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El análisis del rendimiento de consultas es una habilidad crucial para cualquier administrador de bases de datos o desarrollador que trabaje con PostgreSQL. Este proceso implica identificar y solucionar problemas de rendimiento en las consultas SQL para asegurar que las aplicaciones funcionen de manera eficiente. En esta sección, aprenderemos a utilizar herramientas y técnicas para analizar y optimizar el rendimiento de las consultas en PostgreSQL.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Plan de Ejecución</strong>: Un plan de ejecución es una representación detallada de cómo PostgreSQL ejecuta una consulta. Incluye información sobre los pasos que el motor de base de datos toma para recuperar los datos solicitados.</li>
+<li><strong>EXPLAIN</strong>: El comando <code>EXPLAIN</code> en PostgreSQL se utiliza para obtener el plan de ejecución de una consulta sin ejecutarla.</li>
+<li><strong>EXPLAIN ANALYZE</strong>: Similar a <code>EXPLAIN</code>, pero ejecuta la consulta y proporciona tiempos de ejecución reales y estimados.</li>
+<li><strong>Costos de Consulta</strong>: Los costos de consulta son estimaciones que PostgreSQL utiliza para determinar la eficiencia de diferentes planes de ejecución. Incluyen costos de inicio y costos totales.</li>
+<li><strong>Buffers</strong>: Los buffers indican la cantidad de memoria utilizada durante la ejecución de una consulta.</li>
+</ol>
+</div><h1>Herramientas y Comandos</h1>
+<div class='content'></div><h2>EXPLAIN</h2>
+<div class='content'><p>El comando <code>EXPLAIN</code> se utiliza para obtener el plan de ejecución de una consulta. Este comando no ejecuta la consulta, sino que muestra cómo PostgreSQL planea ejecutarla.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>EXPLAIN ANALYZE</h2>
+<div class='content'><p>El comando <code>EXPLAIN ANALYZE</code> ejecuta la consulta y proporciona un plan de ejecución junto con los tiempos de ejecución reales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gZW1wbG95ZWVzIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>pg_stat_statements</h2>
+<div class='content'><p>La extensión <code>pg_stat_statements</code> recopila estadísticas sobre el rendimiento de las consultas. Debe habilitarse en el archivo de configuración de PostgreSQL (<code>postgresql.conf</code>).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIEVYVEVOU0lPTiBwZ19zdGF0X3N0YXRlbWVudHM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE EXTENSION pg_stat_statements;</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que tenemos una tabla <code>employees</code> con la siguiente estructura:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGVtcGxveWVlcyAoCiAgICBpZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBuYW1lIFZBUkNIQVIoMTAwKSwKICAgIGRlcGFydG1lbnQgVkFSQ0hBUig1MCksCiAgICBzYWxhcnkgTlVNRVJJQwopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    department VARCHAR(50),
+    salary NUMERIC
+);</pre></div><div class='content'><p>Y queremos analizar el rendimiento de la siguiente consulta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBlbXBsb3llZXMgV0hFUkUgZGVwYXJ0bWVudCA9ICdTYWxlcyc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'></div><h2>Paso 1: Obtener el Plan de Ejecución</h2>
+<div class='content'><p>Primero, utilizamos el comando <code>EXPLAIN</code> para obtener el plan de ejecución.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'><p>Salida esperada:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U2VxIFNjYW4gb24gZW1wbG95ZWVzICAoY29zdD0wLjAwLi4zNS41MCByb3dzPTEwIHdpZHRoPTEwMCkKICBGaWx0ZXI6IChkZXBhcnRtZW50ID0gJ1NhbGVzJzo6dGV4dCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Seq Scan on employees  (cost=0.00..35.50 rows=10 width=100)
+  Filter: (department = 'Sales'::text)</pre></div><div class='content'></div><h2>Paso 2: Analizar el Plan de Ejecución</h2>
+<div class='content'><p>El plan de ejecución muestra que PostgreSQL está utilizando un escaneo secuencial (<code>Seq Scan</code>) para buscar en la tabla <code>employees</code>. Esto puede ser ineficiente si la tabla es grande.</p>
+</div><h2>Paso 3: Mejorar el Rendimiento</h2>
+<div class='content'><p>Para mejorar el rendimiento, podemos crear un índice en la columna <code>department</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXBhcnRtZW50IE9OIGVtcGxveWVlcyhkZXBhcnRtZW50KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_department ON employees(department);</pre></div><div class='content'></div><h2>Paso 4: Volver a Obtener el Plan de Ejecución</h2>
+<div class='content'><p>Después de crear el índice, volvemos a obtener el plan de ejecución.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBTRUxFQ1QgKiBGUk9NIGVtcGxveWVlcyBXSEVSRSBkZXBhcnRtZW50ID0gJ1NhbGVzJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'><p>Salida esperada:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Qml0bWFwIEhlYXAgU2NhbiBvbiBlbXBsb3llZXMgIChjb3N0PTQuMjkuLjEyLjUwIHJvd3M9MTAgd2lkdGg9MTAwKQogIFJlY2hlY2sgQ29uZDogKGRlcGFydG1lbnQgPSAnU2FsZXMnOjp0ZXh0KQogIC0+ICBCaXRtYXAgSW5kZXggU2NhbiBvbiBpZHhfZGVwYXJ0bWVudCAgKGNvc3Q9MC4wMC4uNC4yOSByb3dzPTEwIHdpZHRoPTApCiAgICAgICAgSW5kZXggQ29uZDogKGRlcGFydG1lbnQgPSAnU2FsZXMnOjp0ZXh0KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Bitmap Heap Scan on employees  (cost=4.29..12.50 rows=10 width=100)
+  Recheck Cond: (department = 'Sales'::text)
+  -&gt;  Bitmap Index Scan on idx_department  (cost=0.00..4.29 rows=10 width=0)
+        Index Cond: (department = 'Sales'::text)</pre></div><div class='content'></div><h2>Paso 5: Obtener Tiempos de Ejecución Reales</h2>
+<div class='content'><p>Finalmente, utilizamos <code>EXPLAIN ANALYZE</code> para obtener los tiempos de ejecución reales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gZW1wbG95ZWVzIFdIRVJFIGRlcGFydG1lbnQgPSAnU2FsZXMnOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM employees WHERE department = 'Sales';</pre></div><div class='content'><p>Salida esperada:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Qml0bWFwIEhlYXAgU2NhbiBvbiBlbXBsb3llZXMgIChjb3N0PTQuMjkuLjEyLjUwIHJvd3M9MTAgd2lkdGg9MTAwKSAoYWN0dWFsIHRpbWU9MC4wMzAuLjAuMDUwIHJvd3M9MTAgbG9vcHM9MSkKICBSZWNoZWNrIENvbmQ6IChkZXBhcnRtZW50ID0gJ1NhbGVzJzo6dGV4dCkKICBIZWFwIEJsb2NrczogZXhhY3Q9MQogIC0+ICBCaXRtYXAgSW5kZXggU2NhbiBvbiBpZHhfZGVwYXJ0bWVudCAgKGNvc3Q9MC4wMC4uNC4yOSByb3dzPTEwIHdpZHRoPTApIChhY3R1YWwgdGltZT0wLjAyMC4uMC4wMjAgcm93cz0xMCBsb29wcz0xKQogICAgICAgIEluZGV4IENvbmQ6IChkZXBhcnRtZW50ID0gJ1NhbGVzJzo6dGV4dCkKUGxhbm5pbmcgVGltZTogMC4xMDAgbXMKRXhlY3V0aW9uIFRpbWU6IDAuMTAwIG1z"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Bitmap Heap Scan on employees  (cost=4.29..12.50 rows=10 width=100) (actual time=0.030..0.050 rows=10 loops=1)
+  Recheck Cond: (department = 'Sales'::text)
+  Heap Blocks: exact=1
+  -&gt;  Bitmap Index Scan on idx_department  (cost=0.00..4.29 rows=10 width=0) (actual time=0.020..0.020 rows=10 loops=1)
+        Index Cond: (department = 'Sales'::text)
+Planning Time: 0.100 ms
+Execution Time: 0.100 ms</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1</h2>
+<div class='content'><p>Dada la siguiente tabla <code>orders</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIG9yZGVycyAoCiAgICBvcmRlcl9pZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBjdXN0b21lcl9pZCBJTlQsCiAgICBvcmRlcl9kYXRlIERBVEUsCiAgICB0b3RhbF9hbW91bnQgTlVNRVJJQwopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE orders (
+    order_id SERIAL PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    total_amount NUMERIC
+);</pre></div><div class='content'><ol>
+<li>Inserta 1000 registros en la tabla <code>orders</code>.</li>
+<li>Analiza el rendimiento de la siguiente consulta:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBvcmRlcnMgV0hFUkUgb3JkZXJfZGF0ZSA9ICcyMDIzLTAxLTAxJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM orders WHERE order_date = '2023-01-01';</pre></div><div class='content'><ol start="3">
+<li>Crea un índice en la columna <code>order_date</code>.</li>
+<li>Vuelve a analizar el rendimiento de la consulta.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Inserción de registros:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("SU5TRVJUIElOVE8gb3JkZXJzIChjdXN0b21lcl9pZCwgb3JkZXJfZGF0ZSwgdG90YWxfYW1vdW50KQpTRUxFQ1QgKFJBTkRPTSgpICogMTAwKTo6SU5ULCAKICAgICAgIChDVVJSRU5UX0RBVEUgLSAoUkFORE9NKCkgKiAzNjUpOjpJTlQpLCAKICAgICAgIChSQU5ET00oKSAqIDEwMDApOjpOVU1FUklDCkZST00gZ2VuZXJhdGVfc2VyaWVzKDEsIDEwMDApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>INSERT INTO orders (customer_id, order_date, total_amount)
+SELECT (RANDOM() * 100)::INT, 
+       (CURRENT_DATE - (RANDOM() * 365)::INT), 
+       (RANDOM() * 1000)::NUMERIC
+FROM generate_series(1, 1000);</pre></div><div class='content'><ol start="2">
+<li>Análisis del rendimiento inicial:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gb3JkZXJzIFdIRVJFIG9yZGVyX2RhdGUgPSAnMjAyMy0wMS0wMSc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM orders WHERE order_date = '2023-01-01';</pre></div><div class='content'><ol start="3">
+<li>Creación del índice:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9vcmRlcl9kYXRlIE9OIG9yZGVycyhvcmRlcl9kYXRlKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_order_date ON orders(order_date);</pre></div><div class='content'><ol start="4">
+<li>Análisis del rendimiento después de crear el índice:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gb3JkZXJzIFdIRVJFIG9yZGVyX2RhdGUgPSAnMjAyMy0wMS0wMSc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM orders WHERE order_date = '2023-01-01';</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido a utilizar herramientas y técnicas para analizar y optimizar el rendimiento de las consultas en PostgreSQL. Hemos visto cómo utilizar <code>EXPLAIN</code> y <code>EXPLAIN ANALYZE</code> para obtener planes de ejecución y tiempos de ejecución reales, y cómo mejorar el rendimiento de las consultas mediante la creación de índices. Con estas habilidades, estarás mejor preparado para identificar y solucionar problemas de rendimiento en tus bases de datos PostgreSQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-02-indexing-strategies' title="Estrategias de Indexación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-04-vacuuming-and-maintenance' title="Vacuuming y Mantenimiento">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

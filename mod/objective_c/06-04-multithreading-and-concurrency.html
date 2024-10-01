@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multihilo y Concurrencia</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/objective_c/06-04-multithreading-and-concurrency" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/objective_c/06-04-multithreading-and-concurrency" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/objective_c/06-04-multithreading-and-concurrency" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/objective_c/06-04-multithreading-and-concurrency" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/objective_c/06-04-multithreading-and-concurrency" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-blocks-and-closures' title="Bloques y Closures">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Multihilo y Concurrencia</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-file-handling' title="Manejo de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos sobre el multihilo y la concurrencia en Objective-C. Estos conceptos son cruciales para desarrollar aplicaciones eficientes y responsivas, especialmente cuando se manejan tareas que pueden bloquear el hilo principal, como operaciones de red o procesamiento intensivo de datos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Hilos (Threads)</strong>: Un hilo es la unidad más pequeña de procesamiento que puede ser programada por un sistema operativo.</li>
+<li><strong>Concurrencia</strong>: La capacidad de un sistema para ejecutar múltiples tareas al mismo tiempo.</li>
+<li><strong>GCD (Grand Central Dispatch)</strong>: Una tecnología de Apple que facilita la ejecución de tareas en paralelo.</li>
+<li><strong>NSOperation y NSOperationQueue</strong>: Clases de alto nivel para gestionar operaciones concurrentes.</li>
+</ol>
+</div><h1>Hilos en Objective-C</h1>
+<div class='content'></div><h2>Creación de Hilos</h2>
+<div class='content'><p>En Objective-C, puedes crear hilos manualmente utilizando la clase <code>NSThread</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSBjcmVhY2nDs24gZGUgdW4gaGlsbwpOU1RocmVhZCAqdGhyZWFkID0gW1tOU1RocmVhZCBhbGxvY10gaW5pdFdpdGhUYXJnZXQ6c2VsZiBzZWxlY3RvcjpAc2VsZWN0b3IobXlUaHJlYWRNZXRob2QpIG9iamVjdDpuaWxdOwpbdGhyZWFkIHN0YXJ0XTsKCi8vIE3DqXRvZG8gcXVlIHNlIGVqZWN1dGFyw6EgZW4gZWwgaGlsbwotICh2b2lkKW15VGhyZWFkTWV0aG9kIHsKICAgIEBhdXRvcmVsZWFzZXBvb2wgewogICAgICAgIC8vIEPDs2RpZ28gcXVlIHNlIGVqZWN1dGFyw6EgZW4gZWwgaGlsbwogICAgICAgIE5TTG9nKEAiSGlsbyBlbiBlamVjdWNpw7NuIik7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de creaci&oacute;n de un hilo
+NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(myThreadMethod) object:nil];
+[thread start];
+
+// M&eacute;todo que se ejecutar&aacute; en el hilo
+- (void)myThreadMethod {
+    @autoreleasepool {
+        // C&oacute;digo que se ejecutar&aacute; en el hilo
+        NSLog(@&quot;Hilo en ejecuci&oacute;n&quot;);
+    }
+}</pre></div><div class='content'></div><h2>Bloques y GCD</h2>
+<div class='content'><p>Grand Central Dispatch (GCD) es una tecnología que facilita la ejecución de tareas en paralelo utilizando colas de despacho.</p>
+<h4>Colas de Despacho</h4>
+<ul>
+<li><strong>Serial Dispatch Queue</strong>: Ejecuta tareas en orden, una a la vez.</li>
+<li><strong>Concurrent Dispatch Queue</strong>: Ejecuta múltiples tareas en paralelo.</li>
+</ul>
+<h4>Ejemplo de GCD</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ29sYSBkZSBkZXNwYWNobyBnbG9iYWwgY29uY3VycmVudGUKZGlzcGF0Y2hfcXVldWVfdCBxdWV1ZSA9IGRpc3BhdGNoX2dldF9nbG9iYWxfcXVldWUoRElTUEFUQ0hfUVVFVUVfUFJJT1JJVFlfREVGQVVMVCwgMCk7CgovLyBFbnZpYXIgdW5hIHRhcmVhIGEgbGEgY29sYQpkaXNwYXRjaF9hc3luYyhxdWV1ZSwgXnsKICAgIC8vIEPDs2RpZ28gcXVlIHNlIGVqZWN1dGFyw6EgZW4gcGFyYWxlbG8KICAgIE5TTG9nKEAiVGFyZWEgZW4gZWplY3VjacOzbiBlbiBjb2xhIGNvbmN1cnJlbnRlIik7Cn0pOwoKLy8gQ29sYSBkZSBkZXNwYWNobyBzZXJpYWwKZGlzcGF0Y2hfcXVldWVfdCBzZXJpYWxRdWV1ZSA9IGRpc3BhdGNoX3F1ZXVlX2NyZWF0ZSgiY29tLmV4YW1wbGUubXlTZXJpYWxRdWV1ZSIsIERJU1BBVENIX1FVRVVFX1NFUklBTCk7CgovLyBFbnZpYXIgdW5hIHRhcmVhIGEgbGEgY29sYSBzZXJpYWwKZGlzcGF0Y2hfYXN5bmMoc2VyaWFsUXVldWUsIF57CiAgICAvLyBDw7NkaWdvIHF1ZSBzZSBlamVjdXRhcsOhIGVuIG9yZGVuCiAgICBOU0xvZyhAIlRhcmVhIGVuIGVqZWN1Y2nDs24gZW4gY29sYSBzZXJpYWwiKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Cola de despacho global concurrente
+dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+// Enviar una tarea a la cola
+dispatch_async(queue, ^{
+    // C&oacute;digo que se ejecutar&aacute; en paralelo
+    NSLog(@&quot;Tarea en ejecuci&oacute;n en cola concurrente&quot;);
+});
+
+// Cola de despacho serial
+dispatch_queue_t serialQueue = dispatch_queue_create(&quot;com.example.mySerialQueue&quot;, DISPATCH_QUEUE_SERIAL);
+
+// Enviar una tarea a la cola serial
+dispatch_async(serialQueue, ^{
+    // C&oacute;digo que se ejecutar&aacute; en orden
+    NSLog(@&quot;Tarea en ejecuci&oacute;n en cola serial&quot;);
+});</pre></div><div class='content'></div><h2>NSOperation y NSOperationQueue</h2>
+<div class='content'><p><code>NSOperation</code> y <code>NSOperationQueue</code> proporcionan una abstracción de alto nivel para gestionar operaciones concurrentes.</p>
+<h4>Ejemplo de NSOperation</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ3JlYXIgdW5hIG9wZXJhY2nDs24KTlNPcGVyYXRpb24gKm9wZXJhdGlvbiA9IFtOU0Jsb2NrT3BlcmF0aW9uIGJsb2NrT3BlcmF0aW9uV2l0aEJsb2NrOl57CiAgICAvLyBDw7NkaWdvIHF1ZSBzZSBlamVjdXRhcsOhIGVuIGxhIG9wZXJhY2nDs24KICAgIE5TTG9nKEAiT3BlcmFjacOzbiBlbiBlamVjdWNpw7NuIik7Cn1dOwoKLy8gQ3JlYXIgdW5hIGNvbGEgZGUgb3BlcmFjaW9uZXMKTlNPcGVyYXRpb25RdWV1ZSAqb3BlcmF0aW9uUXVldWUgPSBbW05TT3BlcmF0aW9uUXVldWUgYWxsb2NdIGluaXRdOwoKLy8gQcOxYWRpciBsYSBvcGVyYWNpw7NuIGEgbGEgY29sYQpbb3BlcmF0aW9uUXVldWUgYWRkT3BlcmF0aW9uOm9wZXJhdGlvbl07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Crear una operaci&oacute;n
+NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+    // C&oacute;digo que se ejecutar&aacute; en la operaci&oacute;n
+    NSLog(@&quot;Operaci&oacute;n en ejecuci&oacute;n&quot;);
+}];
+
+// Crear una cola de operaciones
+NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
+
+// A&ntilde;adir la operaci&oacute;n a la cola
+[operationQueue addOperation:operation];</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Hilo</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear un hilo utilizando <code>NSThread</code> y ejecutar un método en ese hilo.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Define un método que imprima un mensaje en la consola.</li>
+<li>Crea un hilo utilizando <code>NSThread</code> y ejecuta el método en ese hilo.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LSAodm9pZClwcmludE1lc3NhZ2UgewogICAgQGF1dG9yZWxlYXNlcG9vbCB7CiAgICAgICAgTlNMb2coQCJNZW5zYWplIGRlc2RlIGVsIGhpbG8iKTsKICAgIH0KfQoKLSAodm9pZCljcmVhdGVUaHJlYWQgewogICAgTlNUaHJlYWQgKnRocmVhZCA9IFtbTlNUaHJlYWQgYWxsb2NdIGluaXRXaXRoVGFyZ2V0OnNlbGYgc2VsZWN0b3I6QHNlbGVjdG9yKHByaW50TWVzc2FnZSkgb2JqZWN0Om5pbF07CiAgICBbdGhyZWFkIHN0YXJ0XTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>- (void)printMessage {
+    @autoreleasepool {
+        NSLog(@&quot;Mensaje desde el hilo&quot;);
+    }
+}
+
+- (void)createThread {
+    NSThread *thread = [[NSThread alloc] initWithTarget:self selector:@selector(printMessage) object:nil];
+    [thread start];
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Utilizar GCD para Ejecutar Tareas en Paralelo</h2>
+<div class='content'><p><strong>Objetivo</strong>: Utilizar GCD para ejecutar dos tareas en paralelo.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Define dos bloques de código que impriman mensajes diferentes en la consola.</li>
+<li>Utiliza <code>dispatch_async</code> para enviar estos bloques a una cola concurrente global.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlzcGF0Y2hfcXVldWVfdCBxdWV1ZSA9IGRpc3BhdGNoX2dldF9nbG9iYWxfcXVldWUoRElTUEFUQ0hfUVVFVUVfUFJJT1JJVFlfREVGQVVMVCwgMCk7CgpkaXNwYXRjaF9hc3luYyhxdWV1ZSwgXnsKICAgIE5TTG9nKEAiVGFyZWEgMSBlbiBlamVjdWNpw7NuIik7Cn0pOwoKZGlzcGF0Y2hfYXN5bmMocXVldWUsIF57CiAgICBOU0xvZyhAIlRhcmVhIDIgZW4gZWplY3VjacOzbiIpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+
+dispatch_async(queue, ^{
+    NSLog(@&quot;Tarea 1 en ejecuci&oacute;n&quot;);
+});
+
+dispatch_async(queue, ^{
+    NSLog(@&quot;Tarea 2 en ejecuci&oacute;n&quot;);
+});</pre></div><div class='content'></div><h2>Ejercicio 3: Utilizar NSOperation y NSOperationQueue</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear y ejecutar una operación utilizando <code>NSOperation</code> y <code>NSOperationQueue</code>.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Define un bloque de código que imprima un mensaje en la consola.</li>
+<li>Crea una operación utilizando <code>NSBlockOperation</code>.</li>
+<li>Añade la operación a una cola de operaciones.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TlNPcGVyYXRpb24gKm9wZXJhdGlvbiA9IFtOU0Jsb2NrT3BlcmF0aW9uIGJsb2NrT3BlcmF0aW9uV2l0aEJsb2NrOl57CiAgICBOU0xvZyhAIk9wZXJhY2nDs24gZW4gZWplY3VjacOzbiIpOwp9XTsKCk5TT3BlcmF0aW9uUXVldWUgKm9wZXJhdGlvblF1ZXVlID0gW1tOU09wZXJhdGlvblF1ZXVlIGFsbG9jXSBpbml0XTsKW29wZXJhdGlvblF1ZXVlIGFkZE9wZXJhdGlvbjpvcGVyYXRpb25dOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NSOperation *operation = [NSBlockOperation blockOperationWithBlock:^{
+    NSLog(@&quot;Operaci&oacute;n en ejecuci&oacute;n&quot;);
+}];
+
+NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
+[operationQueue addOperation:operation];</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de multihilo y concurrencia en Objective-C. Aprendimos a crear hilos utilizando <code>NSThread</code>, a ejecutar tareas en paralelo utilizando GCD, y a gestionar operaciones concurrentes con <code>NSOperation</code> y <code>NSOperationQueue</code>. Estos conocimientos son fundamentales para desarrollar aplicaciones eficientes y responsivas.</p>
+<p>En el próximo módulo, exploraremos cómo trabajar con datos, incluyendo el manejo de archivos y la serialización/deserialización de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-blocks-and-closures' title="Bloques y Closures">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-file-handling' title="Manejo de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

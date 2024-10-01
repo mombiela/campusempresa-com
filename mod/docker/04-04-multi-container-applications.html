@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicaciones Multi-Contenedor</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/docker/04-04-multi-container-applications" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/docker/04-04-multi-container-applications" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/docker/04-04-multi-container-applications" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/docker/04-04-multi-container-applications" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/docker/04-04-multi-container-applications" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-docker-compose-commands' title="Comandos de Docker Compose">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Aplicaciones Multi-Contenedor</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-05-environment-variables-in-docker-compose' title="Variables de Entorno en Docker Compose">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo gestionar aplicaciones que requieren múltiples contenedores utilizando Docker Compose. Las aplicaciones modernas a menudo están compuestas por varios servicios que necesitan comunicarse entre sí, y Docker Compose facilita la definición y gestión de estos servicios.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Comprender la necesidad de aplicaciones multi-contenedor.</li>
+<li>Aprender a definir múltiples servicios en un archivo <code>docker-compose.yml</code>.</li>
+<li>Ejecutar y gestionar aplicaciones multi-contenedor con Docker Compose.</li>
+<li>Ejemplos prácticos de aplicaciones multi-contenedor.</li>
+</ul>
+</div><h1>¿Por Qué Aplicaciones Multi-Contenedor?</h1>
+<div class='content'><p>Las aplicaciones modernas suelen estar compuestas por varios servicios independientes que trabajan juntos. Por ejemplo, una aplicación web puede tener:</p>
+<ul>
+<li>Un servidor web (como Nginx o Apache).</li>
+<li>Una base de datos (como MySQL o PostgreSQL).</li>
+<li>Un servicio de caché (como Redis o Memcached).</li>
+</ul>
+<p>Docker Compose permite definir y ejecutar estos servicios de manera coordinada, simplificando la gestión y el despliegue de aplicaciones complejas.</p>
+</div><h1>Definiendo Servicios en `docker-compose.yml`</h1>
+<div class='content'><p>El archivo <code>docker-compose.yml</code> es donde se definen los servicios que componen tu aplicación. A continuación, se muestra un ejemplo básico de un archivo <code>docker-compose.yml</code> para una aplicación web con un servidor web y una base de datos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIHdlYjoKICAgIGltYWdlOiBuZ2lueDpsYXRlc3QKICAgIHBvcnRzOgogICAgICAtICI4MDo4MCIKICAgIHZvbHVtZXM6CiAgICAgIC0gLi9odG1sOi91c3Ivc2hhcmUvbmdpbngvaHRtbAogIGRiOgogICAgaW1hZ2U6IG15c3FsOjUuNwogICAgZW52aXJvbm1lbnQ6CiAgICAgIE1ZU1FMX1JPT1RfUEFTU1dPUkQ6IGV4YW1wbGUKICAgICAgTVlTUUxfREFUQUJBU0U6IGV4YW1wbGVkYgogICAgICBNWVNRTF9VU0VSOiB1c2VyCiAgICAgIE1ZU1FMX1BBU1NXT1JEOiBwYXNzd29yZAogICAgdm9sdW1lczoKICAgICAgLSBkYl9kYXRhOi92YXIvbGliL215c3FsCgp2b2x1bWVzOgogIGRiX2RhdGE6"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - &quot;80:80&quot;
+    volumes:
+      - ./html:/usr/share/nginx/html
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:</pre></div><div class='content'></div><h2>Explicación del Archivo</h2>
+<div class='content'><ul>
+<li><strong>version</strong>: Especifica la versión del formato de archivo de Docker Compose.</li>
+<li><strong>services</strong>: Define los servicios que componen la aplicación.
+<ul>
+<li><strong>web</strong>: Define el servicio del servidor web.
+<ul>
+<li><strong>image</strong>: Especifica la imagen de Docker a utilizar.</li>
+<li><strong>ports</strong>: Mapea el puerto 80 del contenedor al puerto 80 del host.</li>
+<li><strong>volumes</strong>: Mapea el directorio local <code>./html</code> al directorio del contenedor <code>/usr/share/nginx/html</code>.</li>
+</ul>
+</li>
+<li><strong>db</strong>: Define el servicio de la base de datos.
+<ul>
+<li><strong>image</strong>: Especifica la imagen de Docker a utilizar.</li>
+<li><strong>environment</strong>: Define variables de entorno para configurar la base de datos.</li>
+<li><strong>volumes</strong>: Mapea un volumen Docker llamado <code>db_data</code> al directorio del contenedor <code>/var/lib/mysql</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>volumes</strong>: Define volúmenes Docker que pueden ser utilizados por los servicios.</li>
+</ul>
+</div><h1>Ejecutando Aplicaciones Multi-Contenedor</h1>
+<div class='content'><p>Para ejecutar la aplicación definida en el archivo <code>docker-compose.yml</code>, utiliza el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up</pre></div><div class='content'><p>Este comando:</p>
+<ul>
+<li>Descargará las imágenes de Docker especificadas si no están disponibles localmente.</li>
+<li>Creará y ejecutará los contenedores definidos en el archivo <code>docker-compose.yml</code>.</li>
+<li>Mostrará los logs de los contenedores en la terminal.</li>
+</ul>
+<p>Para ejecutar los contenedores en segundo plano (detached mode), utiliza el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXAgLWQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up -d</pre></div><div class='content'></div><h1>Gestionando Aplicaciones Multi-Contenedor</h1>
+<div class='content'></div><h2>Ver el Estado de los Servicios</h2>
+<div class='content'><p>Para ver el estado de los servicios, utiliza el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgcHM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose ps</pre></div><div class='content'></div><h2>Detener los Servicios</h2>
+<div class='content'><p>Para detener los servicios, utiliza el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgZG93bg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose down</pre></div><div class='content'><p>Este comando detendrá y eliminará los contenedores, redes y volúmenes definidos en el archivo <code>docker-compose.yml</code>.</p>
+</div><h1>Ejemplo Práctico: Aplicación Web con Nginx y MySQL</h1>
+<div class='content'><p>Vamos a crear una aplicación web simple que utiliza Nginx como servidor web y MySQL como base de datos.</p>
+</div><h2>Paso 1: Crear la Estructura del Proyecto</h2>
+<div class='content'><p>Crea la siguiente estructura de directorios y archivos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlhcHAvCuKUnOKUgOKUgCBkb2NrZXItY29tcG9zZS55bWwK4pSU4pSA4pSAIGh0bWwvCiAgICDilJTilIDilIAgaW5kZXguaHRtbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>myapp/
+├── docker-compose.yml
+└── html/
+    └── index.html</pre></div><div class='content'></div><h2>Paso 2: Definir el Archivo `docker-compose.yml`</h2>
+<div class='content'><p>Crea el archivo <code>docker-compose.yml</code> con el siguiente contenido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIHdlYjoKICAgIGltYWdlOiBuZ2lueDpsYXRlc3QKICAgIHBvcnRzOgogICAgICAtICI4MDo4MCIKICAgIHZvbHVtZXM6CiAgICAgIC0gLi9odG1sOi91c3Ivc2hhcmUvbmdpbngvaHRtbAogIGRiOgogICAgaW1hZ2U6IG15c3FsOjUuNwogICAgZW52aXJvbm1lbnQ6CiAgICAgIE1ZU1FMX1JPT1RfUEFTU1dPUkQ6IGV4YW1wbGUKICAgICAgTVlTUUxfREFUQUJBU0U6IGV4YW1wbGVkYgogICAgICBNWVNRTF9VU0VSOiB1c2VyCiAgICAgIE1ZU1FMX1BBU1NXT1JEOiBwYXNzd29yZAogICAgdm9sdW1lczoKICAgICAgLSBkYl9kYXRhOi92YXIvbGliL215c3FsCgp2b2x1bWVzOgogIGRiX2RhdGE6"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - &quot;80:80&quot;
+    volumes:
+      - ./html:/usr/share/nginx/html
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:</pre></div><div class='content'></div><h2>Paso 3: Crear el Archivo `index.html`</h2>
+<div class='content'><p>Crea el archivo <code>index.html</code> en el directorio <code>html</code> con el siguiente contenido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDx0aXRsZT5NeSBBcHA8L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPldlbGNvbWUgdG8gTXkgQXBwITwvaDE+CjwvYm9keT4KPC9odG1sPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My App&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to My App!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Paso 4: Ejecutar la Aplicación</h2>
+<div class='content'><p>Navega al directorio <code>myapp</code> y ejecuta el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up</pre></div><div class='content'><p>Abre un navegador web y navega a <code>http://localhost</code>. Deberías ver la página web con el mensaje &quot;Welcome to My App!&quot;.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una aplicación multi-contenedor que incluya un servidor web (Nginx) y un servicio de caché (Redis). El servidor web debe servir una página HTML que muestre un mensaje de bienvenida.</p>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Crea la estructura del proyecto:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlhcHAvCuKUnOKUgOKUgCBkb2NrZXItY29tcG9zZS55bWwK4pSU4pSA4pSAIGh0bWwvCiAgICDilJTilIDilIAgaW5kZXguaHRtbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>myapp/
+├── docker-compose.yml
+└── html/
+    └── index.html</pre></div><div class='content'><ol start="2">
+<li>Define el archivo <code>docker-compose.yml</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmVyc2lvbjogJzMnCnNlcnZpY2VzOgogIHdlYjoKICAgIGltYWdlOiBuZ2lueDpsYXRlc3QKICAgIHBvcnRzOgogICAgICAtICI4MDo4MCIKICAgIHZvbHVtZXM6CiAgICAgIC0gLi9odG1sOi91c3Ivc2hhcmUvbmdpbngvaHRtbAogIGNhY2hlOgogICAgaW1hZ2U6IHJlZGlzOmxhdGVzdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>version: '3'
+services:
+  web:
+    image: nginx:latest
+    ports:
+      - &quot;80:80&quot;
+    volumes:
+      - ./html:/usr/share/nginx/html
+  cache:
+    image: redis:latest</pre></div><div class='content'><ol start="3">
+<li>Crea el archivo <code>index.html</code> en el directorio <code>html</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8aGVhZD4KICAgIDx0aXRsZT5NeSBBcHAgd2l0aCBSZWRpczwvdGl0bGU+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDE+V2VsY29tZSB0byBNeSBBcHAgd2l0aCBSZWRpcyE8L2gxPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;My App with Redis&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to My App with Redis!&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><ol start="4">
+<li>Ejecuta la aplicación:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZG9ja2VyLWNvbXBvc2UgdXA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>docker-compose up</pre></div><div class='content'><p>Abre un navegador web y navega a <code>http://localhost</code>. Deberías ver la página web con el mensaje &quot;Welcome to My App with Redis!&quot;.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo definir y gestionar aplicaciones multi-contenedor utilizando Docker Compose. Hemos visto cómo crear un archivo <code>docker-compose.yml</code> para definir múltiples servicios y cómo ejecutar y gestionar estos servicios. Con estos conocimientos, puedes empezar a construir y desplegar aplicaciones más complejas utilizando Docker Compose.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-docker-compose-commands' title="Comandos de Docker Compose">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-05-environment-variables-in-docker-compose' title="Variables de Entorno en Docker Compose">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

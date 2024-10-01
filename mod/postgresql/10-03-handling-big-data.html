@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Big Data</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/10-03-handling-big-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/10-03-handling-big-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/10-03-handling-big-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/10-03-handling-big-data" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/10-03-handling-big-data" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-data-warehousing-with-postgresql' title="Almacenamiento de Datos con PostgreSQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de Big Data</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-postgresql-in-microservices-architecture' title="PostgreSQL en Arquitectura de Microservicios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos cómo PostgreSQL puede ser utilizado para manejar grandes volúmenes de datos, comúnmente conocido como Big Data. Veremos técnicas y herramientas que pueden ayudar a optimizar el rendimiento y la eficiencia al trabajar con conjuntos de datos masivos.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-al-big-data">Introducción al Big Data</a></li>
+<li><a href="#particionamiento-de-tablas">Particionamiento de Tablas</a></li>
+<li><a href="#indexación-avanzada">Indexación Avanzada</a></li>
+<li><a href="#optimización-de-consultas">Optimización de Consultas</a></li>
+<li><a href="#uso-de-herramientas-externas">Uso de Herramientas Externas</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción al Big Data</h1>
+<div class='content'><p>Big Data se refiere a conjuntos de datos que son tan grandes o complejos que las aplicaciones tradicionales de procesamiento de datos no son adecuadas para manejarlos. PostgreSQL, aunque es una base de datos relacional, tiene varias características que lo hacen adecuado para manejar Big Data.</p>
+</div><h2>Características Clave de PostgreSQL para Big Data</h2>
+<div class='content'><ul>
+<li><strong>Escalabilidad Horizontal y Vertical</strong>: PostgreSQL puede escalar tanto verticalmente (mejorando el hardware) como horizontalmente (distribuyendo la carga entre múltiples servidores).</li>
+<li><strong>Particionamiento de Tablas</strong>: Permite dividir grandes tablas en partes más pequeñas y manejables.</li>
+<li><strong>Indexación Avanzada</strong>: Soporta varios tipos de índices que pueden mejorar significativamente el rendimiento de las consultas.</li>
+<li><strong>Soporte para JSON y NoSQL</strong>: Permite almacenar y consultar datos en formato JSON, lo que es útil para datos semi-estructurados.</li>
+</ul>
+</div><h1>Particionamiento de Tablas</h1>
+<div class='content'><p>El particionamiento de tablas es una técnica que divide una tabla grande en partes más pequeñas y manejables llamadas particiones. Esto puede mejorar el rendimiento de las consultas y la gestión de datos.</p>
+</div><h2>Tipos de Particionamiento</h2>
+<div class='content'><ol>
+<li><strong>Particionamiento por Rango</strong>: Divide la tabla en particiones basadas en un rango de valores.</li>
+<li><strong>Particionamiento por Lista</strong>: Divide la tabla en particiones basadas en una lista de valores.</li>
+<li><strong>Particionamiento por Hash</strong>: Divide la tabla en particiones basadas en un valor hash.</li>
+</ol>
+</div><h2>Ejemplo de Particionamiento por Rango</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIHZlbnRhcyAoCiAgICBpZCBTRVJJQUwgUFJJTUFSWSBLRVksCiAgICBmZWNoYSBEQVRFIE5PVCBOVUxMLAogICAgbW9udG8gREVDSU1BTCgxMCwgMikgTk9UIE5VTEwKKSBQQVJUSVRJT04gQlkgUkFOR0UgKGZlY2hhKTsKCkNSRUFURSBUQUJMRSB2ZW50YXNfMjAyMSBQQVJUSVRJT04gT0YgdmVudGFzCiAgICBGT1IgVkFMVUVTIEZST00gKCcyMDIxLTAxLTAxJykgVE8gKCcyMDIyLTAxLTAxJyk7CgpDUkVBVEUgVEFCTEUgdmVudGFzXzIwMjIgUEFSVElUSU9OIE9GIHZlbnRhcwogICAgRk9SIFZBTFVFUyBGUk9NICgnMjAyMi0wMS0wMScpIFRPICgnMjAyMy0wMS0wMScpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE ventas (
+    id SERIAL PRIMARY KEY,
+    fecha DATE NOT NULL,
+    monto DECIMAL(10, 2) NOT NULL
+) PARTITION BY RANGE (fecha);
+
+CREATE TABLE ventas_2021 PARTITION OF ventas
+    FOR VALUES FROM ('2021-01-01') TO ('2022-01-01');
+
+CREATE TABLE ventas_2022 PARTITION OF ventas
+    FOR VALUES FROM ('2022-01-01') TO ('2023-01-01');</pre></div><div class='content'><p>En este ejemplo, la tabla <code>ventas</code> se particiona en dos tablas: <code>ventas_2021</code> y <code>ventas_2022</code>, basadas en el rango de fechas.</p>
+</div><h1>Indexación Avanzada</h1>
+<div class='content'><p>La indexación es crucial para mejorar el rendimiento de las consultas en grandes volúmenes de datos. PostgreSQL soporta varios tipos de índices:</p>
+<ul>
+<li><strong>B-tree</strong>: El tipo de índice más común, adecuado para la mayoría de las consultas.</li>
+<li><strong>Hash</strong>: Útil para igualdad de consultas.</li>
+<li><strong>GIN (Generalized Inverted Index)</strong>: Ideal para búsquedas de texto completo y datos JSON.</li>
+<li><strong>GiST (Generalized Search Tree)</strong>: Útil para datos geoespaciales y otros tipos de datos complejos.</li>
+</ul>
+</div><h2>Ejemplo de Creación de un Índice GIN</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF92ZW50YXNfbW9udG8gT04gdmVudGFzIFVTSU5HIEdJTiAobW9udG8pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_ventas_monto ON ventas USING GIN (monto);</pre></div><div class='content'><p>Este índice GIN puede ser útil para consultas que buscan rangos de valores en la columna <code>monto</code>.</p>
+</div><h1>Optimización de Consultas</h1>
+<div class='content'><p>Optimizar consultas es esencial para manejar Big Data eficientemente. Aquí hay algunas técnicas:</p>
+<ul>
+<li><strong>Uso de EXPLAIN</strong>: La palabra clave <code>EXPLAIN</code> muestra el plan de ejecución de una consulta, lo que ayuda a identificar cuellos de botella.</li>
+<li>**Evitar SELECT ***: Seleccionar solo las columnas necesarias reduce la cantidad de datos transferidos.</li>
+<li><strong>Uso de JOINs Eficientes</strong>: Asegurarse de que las columnas utilizadas en los JOINs estén indexadas.</li>
+</ul>
+</div><h2>Ejemplo de Uso de EXPLAIN</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTiBBTkFMWVpFIFNFTEVDVCAqIEZST00gdmVudGFzIFdIRVJFIG1vbnRvID4gMTAwMDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN ANALYZE SELECT * FROM ventas WHERE monto &gt; 1000;</pre></div><div class='content'><p>Este comando muestra el plan de ejecución y el tiempo que toma ejecutar la consulta.</p>
+</div><h1>Uso de Herramientas Externas</h1>
+<div class='content'><p>Además de las características internas de PostgreSQL, hay varias herramientas externas que pueden ayudar a manejar Big Data:</p>
+<ul>
+<li><strong>pg_partman</strong>: Una extensión para gestionar particionamiento de tablas.</li>
+<li><strong>Citus</strong>: Una extensión que convierte PostgreSQL en una base de datos distribuida.</li>
+<li><strong>TimescaleDB</strong>: Una extensión para manejar series temporales de datos.</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear y Particionar una Tabla</h2>
+<div class='content'><ol>
+<li>Crea una tabla llamada <code>logs</code> con las siguientes columnas: <code>id</code>, <code>timestamp</code>, <code>message</code>.</li>
+<li>Particiona la tabla <code>logs</code> por rango de <code>timestamp</code> en particiones mensuales.</li>
+</ol>
+</div><h2>Ejercicio 2: Crear Índices</h2>
+<div class='content'><ol>
+<li>Crea un índice B-tree en la columna <code>timestamp</code> de la tabla <code>logs</code>.</li>
+<li>Crea un índice GIN en la columna <code>message</code> de la tabla <code>logs</code>.</li>
+</ol>
+</div><h2>Ejercicio 3: Optimizar una Consulta</h2>
+<div class='content'><ol>
+<li>Usa <code>EXPLAIN</code> para analizar la siguiente consulta: <code>SELECT * FROM logs WHERE timestamp &gt; '2023-01-01'</code>.</li>
+<li>Optimiza la consulta basándote en el plan de ejecución.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos explorado cómo PostgreSQL puede ser utilizado para manejar Big Data mediante técnicas como el particionamiento de tablas, la indexación avanzada y la optimización de consultas. También hemos visto cómo herramientas externas pueden complementar las capacidades de PostgreSQL. Con estas técnicas, puedes manejar grandes volúmenes de datos de manera eficiente y efectiva.</p>
+<hr />
+<p>Al finalizar este tema, deberías tener una comprensión sólida de cómo manejar Big Data en PostgreSQL y estar preparado para aplicar estas técnicas en escenarios del mundo real.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='10-02-data-warehousing-with-postgresql' title="Almacenamiento de Datos con PostgreSQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-04-postgresql-in-microservices-architecture' title="PostgreSQL en Arquitectura de Microservicios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

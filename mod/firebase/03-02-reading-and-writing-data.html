@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectura y escritura de datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/firebase/03-02-reading-and-writing-data" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/firebase/03-02-reading-and-writing-data" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/firebase/03-02-reading-and-writing-data" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/firebase/03-02-reading-and-writing-data" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/firebase/03-02-reading-and-writing-data" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-introduction-to-realtime-database' title="Introducción a la base de datos en tiempo real">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Lectura y escritura de datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-data-structure-and-security-rules' title="Estructura de datos y reglas de seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo leer y escribir datos en la base de datos en tiempo real de Firebase. Este módulo es fundamental para cualquier aplicación que necesite almacenar y recuperar datos de manera eficiente y en tiempo real.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Referencia de la base de datos</strong>: Es el punto de entrada para interactuar con la base de datos.</li>
+<li><strong>Lectura de datos</strong>: Obtener datos almacenados en la base de datos.</li>
+<li><strong>Escritura de datos</strong>: Guardar o actualizar datos en la base de datos.</li>
+<li><strong>Eventos de datos</strong>: Escuchar cambios en los datos en tiempo real.</li>
+</ol>
+</div><h1>Configuración Inicial</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de haber configurado Firebase en tu proyecto. Si no lo has hecho, revisa el módulo &quot;Configuración de Firebase&quot;.</p>
+</div><h2>Importar Firebase</h2>
+<div class='content'><p>Primero, importa y configura Firebase en tu proyecto:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW1wb3J0YSBGaXJlYmFzZQppbXBvcnQgZmlyZWJhc2UgZnJvbSAnZmlyZWJhc2UvYXBwJzsKaW1wb3J0ICdmaXJlYmFzZS9kYXRhYmFzZSc7CgovLyBDb25maWd1cmEgRmlyZWJhc2UKY29uc3QgZmlyZWJhc2VDb25maWcgPSB7CiAgYXBpS2V5OiAiVFVfQVBJX0tFWSIsCiAgYXV0aERvbWFpbjogIlRVX0FVVEhfRE9NQUlOIiwKICBkYXRhYmFzZVVSTDogIlRVX0RBVEFCQVNFX1VSTCIsCiAgcHJvamVjdElkOiAiVFVfUFJPSkVDVF9JRCIsCiAgc3RvcmFnZUJ1Y2tldDogIlRVX1NUT1JBR0VfQlVDS0VUIiwKICBtZXNzYWdpbmdTZW5kZXJJZDogIlRVX01FU1NBR0lOR19TRU5ERVJfSUQiLAogIGFwcElkOiAiVFVfQVBQX0lEIgp9OwoKLy8gSW5pY2lhbGl6YSBGaXJlYmFzZQpmaXJlYmFzZS5pbml0aWFsaXplQXBwKGZpcmViYXNlQ29uZmlnKTsKCi8vIE9idMOpbiB1bmEgcmVmZXJlbmNpYSBhIGxhIGJhc2UgZGUgZGF0b3MKY29uc3QgZGF0YWJhc2UgPSBmaXJlYmFzZS5kYXRhYmFzZSgpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Importa Firebase
+import firebase from 'firebase/app';
+import 'firebase/database';
+
+// Configura Firebase
+const firebaseConfig = {
+  apiKey: &quot;TU_API_KEY&quot;,
+  authDomain: &quot;TU_AUTH_DOMAIN&quot;,
+  databaseURL: &quot;TU_DATABASE_URL&quot;,
+  projectId: &quot;TU_PROJECT_ID&quot;,
+  storageBucket: &quot;TU_STORAGE_BUCKET&quot;,
+  messagingSenderId: &quot;TU_MESSAGING_SENDER_ID&quot;,
+  appId: &quot;TU_APP_ID&quot;
+};
+
+// Inicializa Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Obt&eacute;n una referencia a la base de datos
+const database = firebase.database();</pre></div><div class='content'></div><h1>Escritura de Datos</h1>
+<div class='content'><p>Para escribir datos en la base de datos, utilizamos el método <code>set()</code> o <code>update()</code>.</p>
+</div><h2>Ejemplo: Guardar un usuario</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVmZXJlbmNpYSBhIGxhIHViaWNhY2nDs24gZG9uZGUgc2UgZ3VhcmRhcsOhIGVsIHVzdWFyaW8KY29uc3QgdXNlclJlZiA9IGRhdGFiYXNlLnJlZigndXNlcnMvMScpOwoKLy8gRGF0b3MgZGVsIHVzdWFyaW8KY29uc3QgdXNlckRhdGEgPSB7CiAgbmFtZTogJ0p1YW4gUMOpcmV6JywKICBlbWFpbDogJ2p1YW4ucGVyZXpAZXhhbXBsZS5jb20nLAogIGFnZTogMzAKfTsKCi8vIEd1YXJkYXIgZGF0b3MgZGVsIHVzdWFyaW8KdXNlclJlZi5zZXQodXNlckRhdGEpCiAgLnRoZW4oKCkgPT4gewogICAgY29uc29sZS5sb2coJ0RhdG9zIGd1YXJkYWRvcyBleGl0b3NhbWVudGUuJyk7CiAgfSkKICAuY2F0Y2goKGVycm9yKSA9PiB7CiAgICBjb25zb2xlLmVycm9yKCdFcnJvciBhbCBndWFyZGFyIGRhdG9zOicsIGVycm9yKTsKICB9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Referencia a la ubicaci&oacute;n donde se guardar&aacute; el usuario
+const userRef = database.ref('users/1');
+
+// Datos del usuario
+const userData = {
+  name: 'Juan P&eacute;rez',
+  email: 'juan.perez@example.com',
+  age: 30
+};
+
+// Guardar datos del usuario
+userRef.set(userData)
+  .then(() =&gt; {
+    console.log('Datos guardados exitosamente.');
+  })
+  .catch((error) =&gt; {
+    console.error('Error al guardar datos:', error);
+  });</pre></div><div class='content'></div><h2>Ejemplo: Actualizar datos del usuario</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVmZXJlbmNpYSBhIGxhIHViaWNhY2nDs24gZGVsIHVzdWFyaW8KY29uc3QgdXNlclJlZiA9IGRhdGFiYXNlLnJlZigndXNlcnMvMScpOwoKLy8gRGF0b3MgYSBhY3R1YWxpemFyCmNvbnN0IHVwZGF0ZXMgPSB7CiAgYWdlOiAzMQp9OwoKLy8gQWN0dWFsaXphciBkYXRvcyBkZWwgdXN1YXJpbwp1c2VyUmVmLnVwZGF0ZSh1cGRhdGVzKQogIC50aGVuKCgpID0+IHsKICAgIGNvbnNvbGUubG9nKCdEYXRvcyBhY3R1YWxpemFkb3MgZXhpdG9zYW1lbnRlLicpOwogIH0pCiAgLmNhdGNoKChlcnJvcikgPT4gewogICAgY29uc29sZS5lcnJvcignRXJyb3IgYWwgYWN0dWFsaXphciBkYXRvczonLCBlcnJvcik7CiAgfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Referencia a la ubicaci&oacute;n del usuario
+const userRef = database.ref('users/1');
+
+// Datos a actualizar
+const updates = {
+  age: 31
+};
+
+// Actualizar datos del usuario
+userRef.update(updates)
+  .then(() =&gt; {
+    console.log('Datos actualizados exitosamente.');
+  })
+  .catch((error) =&gt; {
+    console.error('Error al actualizar datos:', error);
+  });</pre></div><div class='content'></div><h1>Lectura de Datos</h1>
+<div class='content'><p>Para leer datos de la base de datos, utilizamos el método <code>once()</code> o <code>on()</code>.</p>
+</div><h2>Ejemplo: Leer datos una vez</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVmZXJlbmNpYSBhIGxhIHViaWNhY2nDs24gZGVsIHVzdWFyaW8KY29uc3QgdXNlclJlZiA9IGRhdGFiYXNlLnJlZigndXNlcnMvMScpOwoKLy8gTGVlciBkYXRvcyBkZWwgdXN1YXJpbyB1bmEgdmV6CnVzZXJSZWYub25jZSgndmFsdWUnKQogIC50aGVuKChzbmFwc2hvdCkgPT4gewogICAgY29uc3QgdXNlckRhdGEgPSBzbmFwc2hvdC52YWwoKTsKICAgIGNvbnNvbGUubG9nKCdEYXRvcyBkZWwgdXN1YXJpbzonLCB1c2VyRGF0YSk7CiAgfSkKICAuY2F0Y2goKGVycm9yKSA9PiB7CiAgICBjb25zb2xlLmVycm9yKCdFcnJvciBhbCBsZWVyIGRhdG9zOicsIGVycm9yKTsKICB9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Referencia a la ubicaci&oacute;n del usuario
+const userRef = database.ref('users/1');
+
+// Leer datos del usuario una vez
+userRef.once('value')
+  .then((snapshot) =&gt; {
+    const userData = snapshot.val();
+    console.log('Datos del usuario:', userData);
+  })
+  .catch((error) =&gt; {
+    console.error('Error al leer datos:', error);
+  });</pre></div><div class='content'></div><h2>Ejemplo: Escuchar cambios en los datos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVmZXJlbmNpYSBhIGxhIHViaWNhY2nDs24gZGVsIHVzdWFyaW8KY29uc3QgdXNlclJlZiA9IGRhdGFiYXNlLnJlZigndXNlcnMvMScpOwoKLy8gRXNjdWNoYXIgY2FtYmlvcyBlbiBsb3MgZGF0b3MgZGVsIHVzdWFyaW8KdXNlclJlZi5vbigndmFsdWUnLCAoc25hcHNob3QpID0+IHsKICBjb25zdCB1c2VyRGF0YSA9IHNuYXBzaG90LnZhbCgpOwogIGNvbnNvbGUubG9nKCdEYXRvcyBkZWwgdXN1YXJpbyBhY3R1YWxpemFkb3M6JywgdXNlckRhdGEpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Referencia a la ubicaci&oacute;n del usuario
+const userRef = database.ref('users/1');
+
+// Escuchar cambios en los datos del usuario
+userRef.on('value', (snapshot) =&gt; {
+  const userData = snapshot.val();
+  console.log('Datos del usuario actualizados:', userData);
+});</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Guardar y Leer Datos</h2>
+<div class='content'><ol>
+<li><strong>Guardar un nuevo usuario</strong>: Crea una función que guarde un nuevo usuario en la base de datos.</li>
+<li><strong>Leer datos del usuario</strong>: Crea una función que lea los datos del usuario guardado y los muestre en la consola.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRnVuY2nDs24gcGFyYSBndWFyZGFyIHVuIG51ZXZvIHVzdWFyaW8KZnVuY3Rpb24gc2F2ZVVzZXIodXNlcklkLCBuYW1lLCBlbWFpbCwgYWdlKSB7CiAgY29uc3QgdXNlclJlZiA9IGRhdGFiYXNlLnJlZigndXNlcnMvJyArIHVzZXJJZCk7CiAgY29uc3QgdXNlckRhdGEgPSB7CiAgICBuYW1lOiBuYW1lLAogICAgZW1haWw6IGVtYWlsLAogICAgYWdlOiBhZ2UKICB9OwogIHVzZXJSZWYuc2V0KHVzZXJEYXRhKQogICAgLnRoZW4oKCkgPT4gewogICAgICBjb25zb2xlLmxvZygnVXN1YXJpbyBndWFyZGFkbyBleGl0b3NhbWVudGUuJyk7CiAgICB9KQogICAgLmNhdGNoKChlcnJvcikgPT4gewogICAgICBjb25zb2xlLmVycm9yKCdFcnJvciBhbCBndWFyZGFyIHVzdWFyaW86JywgZXJyb3IpOwogICAgfSk7Cn0KCi8vIEZ1bmNpw7NuIHBhcmEgbGVlciBkYXRvcyBkZWwgdXN1YXJpbwpmdW5jdGlvbiByZWFkVXNlcih1c2VySWQpIHsKICBjb25zdCB1c2VyUmVmID0gZGF0YWJhc2UucmVmKCd1c2Vycy8nICsgdXNlcklkKTsKICB1c2VyUmVmLm9uY2UoJ3ZhbHVlJykKICAgIC50aGVuKChzbmFwc2hvdCkgPT4gewogICAgICBjb25zdCB1c2VyRGF0YSA9IHNuYXBzaG90LnZhbCgpOwogICAgICBjb25zb2xlLmxvZygnRGF0b3MgZGVsIHVzdWFyaW86JywgdXNlckRhdGEpOwogICAgfSkKICAgIC5jYXRjaCgoZXJyb3IpID0+IHsKICAgICAgY29uc29sZS5lcnJvcignRXJyb3IgYWwgbGVlciBkYXRvcyBkZWwgdXN1YXJpbzonLCBlcnJvcik7CiAgICB9KTsKfQoKLy8gR3VhcmRhciB1biBudWV2byB1c3VhcmlvCnNhdmVVc2VyKCcyJywgJ0FuYSBHw7NtZXonLCAnYW5hLmdvbWV6QGV4YW1wbGUuY29tJywgMjUpOwoKLy8gTGVlciBkYXRvcyBkZWwgdXN1YXJpbyBndWFyZGFkbwpyZWFkVXNlcignMicpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Funci&oacute;n para guardar un nuevo usuario
+function saveUser(userId, name, email, age) {
+  const userRef = database.ref('users/' + userId);
+  const userData = {
+    name: name,
+    email: email,
+    age: age
+  };
+  userRef.set(userData)
+    .then(() =&gt; {
+      console.log('Usuario guardado exitosamente.');
+    })
+    .catch((error) =&gt; {
+      console.error('Error al guardar usuario:', error);
+    });
+}
+
+// Funci&oacute;n para leer datos del usuario
+function readUser(userId) {
+  const userRef = database.ref('users/' + userId);
+  userRef.once('value')
+    .then((snapshot) =&gt; {
+      const userData = snapshot.val();
+      console.log('Datos del usuario:', userData);
+    })
+    .catch((error) =&gt; {
+      console.error('Error al leer datos del usuario:', error);
+    });
+}
+
+// Guardar un nuevo usuario
+saveUser('2', 'Ana G&oacute;mez', 'ana.gomez@example.com', 25);
+
+// Leer datos del usuario guardado
+readUser('2');</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo leer y escribir datos en la base de datos en tiempo real de Firebase. Hemos cubierto los conceptos clave, configurado Firebase, y explorado ejemplos prácticos de lectura y escritura de datos. Además, hemos realizado un ejercicio práctico para reforzar los conceptos aprendidos.</p>
+<p>En el próximo tema, profundizaremos en la estructura de datos y las reglas de seguridad para garantizar que nuestros datos estén organizados y protegidos adecuadamente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-introduction-to-realtime-database' title="Introducción a la base de datos en tiempo real">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-data-structure-and-security-rules' title="Estructura de datos y reglas de seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

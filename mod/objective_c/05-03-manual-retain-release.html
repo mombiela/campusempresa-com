@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retención y Liberación Manual</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/objective_c/05-03-manual-retain-release" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/objective_c/05-03-manual-retain-release" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/objective_c/05-03-manual-retain-release" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/objective_c/05-03-manual-retain-release" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/objective_c/05-03-manual-retain-release" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-automatic-reference-counting' title="Conteo Automático de Referencias (ARC)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Retención y Liberación Manual</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-memory-management-best-practices' title="Mejores Prácticas de Gestión de Memoria">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre la gestión manual de la memoria en Objective-C, específicamente a través de las operaciones de retención (<code>retain</code>) y liberación (<code>release</code>). Aunque el uso de ARC (Automatic Reference Counting) ha simplificado mucho la gestión de memoria, es fundamental entender cómo funciona la retención y liberación manual para mantener y trabajar con código legado o en situaciones donde ARC no es aplicable.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>1. Retención (`retain`)</h2>
+<div class='content'><ul>
+<li><strong>Propósito</strong>: Incrementa el contador de referencias de un objeto.</li>
+<li><strong>Uso</strong>: Se utiliza cuando quieres asegurarte de que un objeto no sea liberado mientras aún lo necesitas.</li>
+</ul>
+</div><h2>2. Liberación (`release`)</h2>
+<div class='content'><ul>
+<li><strong>Propósito</strong>: Decrementa el contador de referencias de un objeto.</li>
+<li><strong>Uso</strong>: Se utiliza cuando ya no necesitas un objeto, permitiendo que sea liberado si no hay más referencias a él.</li>
+</ul>
+</div><h2>3. Contador de Referencias</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: Un número que indica cuántas referencias activas hay a un objeto.</li>
+<li><strong>Importancia</strong>: Un objeto se libera automáticamente cuando su contador de referencias llega a cero.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Veamos un ejemplo práctico para entender cómo funcionan <code>retain</code> y <code>release</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2ltcG9ydCA8Rm91bmRhdGlvbi9Gb3VuZGF0aW9uLmg+CgppbnQgbWFpbihpbnQgYXJnYywgY29uc3QgY2hhciAqIGFyZ3ZbXSkgewogICAgQGF1dG9yZWxlYXNlcG9vbCB7CiAgICAgICAgLy8gQ3JlYXIgdW4gb2JqZXRvIE5TU3RyaW5nCiAgICAgICAgTlNTdHJpbmcgKm15U3RyaW5nID0gW1tOU1N0cmluZyBhbGxvY10gaW5pdFdpdGhTdHJpbmc6QCJIZWxsbywgT2JqZWN0aXZlLUMhIl07CiAgICAgICAgCiAgICAgICAgLy8gUmV0ZW5lciBlbCBvYmpldG8KICAgICAgICBbbXlTdHJpbmcgcmV0YWluXTsKICAgICAgICBOU0xvZyhAIlJldGFpbiBjb3VudCBhZnRlciByZXRhaW46ICVsdSIsIFtteVN0cmluZyByZXRhaW5Db3VudF0pOwogICAgICAgIAogICAgICAgIC8vIExpYmVyYXIgZWwgb2JqZXRvCiAgICAgICAgW215U3RyaW5nIHJlbGVhc2VdOwogICAgICAgIE5TTG9nKEAiUmV0YWluIGNvdW50IGFmdGVyIHJlbGVhc2U6ICVsdSIsIFtteVN0cmluZyByZXRhaW5Db3VudF0pOwogICAgICAgIAogICAgICAgIC8vIExpYmVyYXIgZWwgb2JqZXRvIG51ZXZhbWVudGUKICAgICAgICBbbXlTdHJpbmcgcmVsZWFzZV07CiAgICAgICAgLy8gRW4gZXN0ZSBwdW50bywgZWwgb2JqZXRvIGRlYmVyw61hIHNlciBsaWJlcmFkbyB5IG5vIGRlYmVyw61hbW9zIGFjY2VkZXIgYSDDqWwuCiAgICB9CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#import &lt;Foundation/Foundation.h&gt;
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // Crear un objeto NSString
+        NSString *myString = [[NSString alloc] initWithString:@&quot;Hello, Objective-C!&quot;];
+        
+        // Retener el objeto
+        [myString retain];
+        NSLog(@&quot;Retain count after retain: %lu&quot;, [myString retainCount]);
+        
+        // Liberar el objeto
+        [myString release];
+        NSLog(@&quot;Retain count after release: %lu&quot;, [myString retainCount]);
+        
+        // Liberar el objeto nuevamente
+        [myString release];
+        // En este punto, el objeto deber&iacute;a ser liberado y no deber&iacute;amos acceder a &eacute;l.
+    }
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Creación del Objeto</strong>:</p>
+<pre><code class="language-objective-c">NSString *myString = [[NSString alloc] initWithString:@&quot;Hello, Objective-C!&quot;];
+</code></pre>
+<ul>
+<li>Se crea un objeto <code>NSString</code> con una referencia inicial.</li>
+</ul>
+</li>
+<li>
+<p><strong>Retención del Objeto</strong>:</p>
+<pre><code class="language-objective-c">[myString retain];
+</code></pre>
+<ul>
+<li>Incrementa el contador de referencias del objeto <code>myString</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Liberación del Objeto</strong>:</p>
+<pre><code class="language-objective-c">[myString release];
+</code></pre>
+<ul>
+<li>Decrementa el contador de referencias del objeto <code>myString</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Liberación Adicional</strong>:</p>
+<pre><code class="language-objective-c">[myString release];
+</code></pre>
+<ul>
+<li>Decrementa nuevamente el contador de referencias. Si el contador llega a cero, el objeto se libera.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Gestión Manual de Memoria</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear un objeto <code>NSMutableArray</code>, agregar elementos, retener y liberar el objeto correctamente.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Crear un objeto <code>NSMutableArray</code>.</li>
+<li>Agregar tres elementos al array.</li>
+<li>Retener el objeto.</li>
+<li>Liberar el objeto dos veces.</li>
+</ol>
+<p><strong>Código Inicial</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2ltcG9ydCA8Rm91bmRhdGlvbi9Gb3VuZGF0aW9uLmg+CgppbnQgbWFpbihpbnQgYXJnYywgY29uc3QgY2hhciAqIGFyZ3ZbXSkgewogICAgQGF1dG9yZWxlYXNlcG9vbCB7CiAgICAgICAgLy8gQ3JlYXIgdW4gb2JqZXRvIE5TTXV0YWJsZUFycmF5CiAgICAgICAgTlNNdXRhYmxlQXJyYXkgKm15QXJyYXkgPSBbW05TTXV0YWJsZUFycmF5IGFsbG9jXSBpbml0XTsKICAgICAgICAKICAgICAgICAvLyBBZ3JlZ2FyIGVsZW1lbnRvcyBhbCBhcnJheQogICAgICAgIFtteUFycmF5IGFkZE9iamVjdDpAIkVsZW1lbnRvIDEiXTsKICAgICAgICBbbXlBcnJheSBhZGRPYmplY3Q6QCJFbGVtZW50byAyIl07CiAgICAgICAgW215QXJyYXkgYWRkT2JqZWN0OkAiRWxlbWVudG8gMyJdOwogICAgICAgIAogICAgICAgIC8vIFJldGVuZXIgZWwgb2JqZXRvCiAgICAgICAgLy8gW0FncmVnYXIgY8OzZGlnbyBhcXXDrV0KICAgICAgICAKICAgICAgICAvLyBMaWJlcmFyIGVsIG9iamV0bwogICAgICAgIC8vIFtBZ3JlZ2FyIGPDs2RpZ28gYXF1w61dCiAgICAgICAgCiAgICAgICAgLy8gTGliZXJhciBlbCBvYmpldG8gbnVldmFtZW50ZQogICAgICAgIC8vIFtBZ3JlZ2FyIGPDs2RpZ28gYXF1w61dCiAgICB9CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#import &lt;Foundation/Foundation.h&gt;
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // Crear un objeto NSMutableArray
+        NSMutableArray *myArray = [[NSMutableArray alloc] init];
+        
+        // Agregar elementos al array
+        [myArray addObject:@&quot;Elemento 1&quot;];
+        [myArray addObject:@&quot;Elemento 2&quot;];
+        [myArray addObject:@&quot;Elemento 3&quot;];
+        
+        // Retener el objeto
+        // [Agregar c&oacute;digo aqu&iacute;]
+        
+        // Liberar el objeto
+        // [Agregar c&oacute;digo aqu&iacute;]
+        
+        // Liberar el objeto nuevamente
+        // [Agregar c&oacute;digo aqu&iacute;]
+    }
+    return 0;
+}</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2ltcG9ydCA8Rm91bmRhdGlvbi9Gb3VuZGF0aW9uLmg+CgppbnQgbWFpbihpbnQgYXJnYywgY29uc3QgY2hhciAqIGFyZ3ZbXSkgewogICAgQGF1dG9yZWxlYXNlcG9vbCB7CiAgICAgICAgLy8gQ3JlYXIgdW4gb2JqZXRvIE5TTXV0YWJsZUFycmF5CiAgICAgICAgTlNNdXRhYmxlQXJyYXkgKm15QXJyYXkgPSBbW05TTXV0YWJsZUFycmF5IGFsbG9jXSBpbml0XTsKICAgICAgICAKICAgICAgICAvLyBBZ3JlZ2FyIGVsZW1lbnRvcyBhbCBhcnJheQogICAgICAgIFtteUFycmF5IGFkZE9iamVjdDpAIkVsZW1lbnRvIDEiXTsKICAgICAgICBbbXlBcnJheSBhZGRPYmplY3Q6QCJFbGVtZW50byAyIl07CiAgICAgICAgW215QXJyYXkgYWRkT2JqZWN0OkAiRWxlbWVudG8gMyJdOwogICAgICAgIAogICAgICAgIC8vIFJldGVuZXIgZWwgb2JqZXRvCiAgICAgICAgW215QXJyYXkgcmV0YWluXTsKICAgICAgICBOU0xvZyhAIlJldGFpbiBjb3VudCBhZnRlciByZXRhaW46ICVsdSIsIFtteUFycmF5IHJldGFpbkNvdW50XSk7CiAgICAgICAgCiAgICAgICAgLy8gTGliZXJhciBlbCBvYmpldG8KICAgICAgICBbbXlBcnJheSByZWxlYXNlXTsKICAgICAgICBOU0xvZyhAIlJldGFpbiBjb3VudCBhZnRlciByZWxlYXNlOiAlbHUiLCBbbXlBcnJheSByZXRhaW5Db3VudF0pOwogICAgICAgIAogICAgICAgIC8vIExpYmVyYXIgZWwgb2JqZXRvIG51ZXZhbWVudGUKICAgICAgICBbbXlBcnJheSByZWxlYXNlXTsKICAgICAgICAvLyBFbiBlc3RlIHB1bnRvLCBlbCBvYmpldG8gZGViZXLDrWEgc2VyIGxpYmVyYWRvIHkgbm8gZGViZXLDrWFtb3MgYWNjZWRlciBhIMOpbC4KICAgIH0KICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#import &lt;Foundation/Foundation.h&gt;
+
+int main(int argc, const char * argv[]) {
+    @autoreleasepool {
+        // Crear un objeto NSMutableArray
+        NSMutableArray *myArray = [[NSMutableArray alloc] init];
+        
+        // Agregar elementos al array
+        [myArray addObject:@&quot;Elemento 1&quot;];
+        [myArray addObject:@&quot;Elemento 2&quot;];
+        [myArray addObject:@&quot;Elemento 3&quot;];
+        
+        // Retener el objeto
+        [myArray retain];
+        NSLog(@&quot;Retain count after retain: %lu&quot;, [myArray retainCount]);
+        
+        // Liberar el objeto
+        [myArray release];
+        NSLog(@&quot;Retain count after release: %lu&quot;, [myArray retainCount]);
+        
+        // Liberar el objeto nuevamente
+        [myArray release];
+        // En este punto, el objeto deber&iacute;a ser liberado y no deber&iacute;amos acceder a &eacute;l.
+    }
+    return 0;
+}</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'></div><h2>Errores Comunes</h2>
+<div class='content'><ol>
+<li><strong>Liberar un objeto más veces de las necesarias</strong>: Esto puede causar errores de segmentación y fallos en la aplicación.</li>
+<li><strong>No liberar un objeto</strong>: Esto puede causar fugas de memoria, donde la memoria no se libera correctamente.</li>
+</ol>
+</div><h2>Consejos</h2>
+<div class='content'><ul>
+<li><strong>Usar <code>@autoreleasepool</code></strong>: Para gestionar la memoria de manera más eficiente en bloques de código.</li>
+<li><strong>Revisar el contador de referencias</strong>: Utilizar <code>retainCount</code> para depurar y asegurarse de que los objetos se retienen y liberan correctamente.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La gestión manual de la memoria en Objective-C mediante <code>retain</code> y <code>release</code> es una habilidad esencial, especialmente cuando se trabaja con código legado. Aunque ARC ha simplificado mucho este proceso, comprender estos conceptos te permitirá escribir código más eficiente y mantener aplicaciones más robustas. En el siguiente módulo, exploraremos las mejores prácticas de gestión de memoria para asegurarnos de que nuestras aplicaciones sean eficientes y libres de fugas de memoria.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-automatic-reference-counting' title="Conteo Automático de Referencias (ARC)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-memory-management-best-practices' title="Mejores Prácticas de Gestión de Memoria">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

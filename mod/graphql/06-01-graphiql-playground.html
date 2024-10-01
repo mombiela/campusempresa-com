@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphiQL y Playground</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/06-01-graphiql-playground" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/06-01-graphiql-playground" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/06-01-graphiql-playground" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/graphql/06-01-graphiql-playground" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/06-01-graphiql-playground" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-persisted-queries' title="Consultas Persistidas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">GraphiQL y Playground</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-apollo-client' title="Apollo Client">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>GraphiQL y Playground son herramientas interactivas que permiten a los desarrolladores explorar y probar sus APIs GraphQL de manera eficiente. Estas herramientas proporcionan una interfaz gráfica para escribir, ejecutar y depurar consultas y mutaciones de GraphQL.</p>
+</div><h1>¿Qué es GraphiQL?</h1>
+<div class='content'><p>GraphiQL es un IDE (Entorno de Desarrollo Integrado) de código abierto para GraphQL. Fue desarrollado por Facebook y es ampliamente utilizado para interactuar con APIs GraphQL. Algunas de sus características clave incluyen:</p>
+<ul>
+<li><strong>Autocompletado de consultas</strong>: Ayuda a escribir consultas más rápido y con menos errores.</li>
+<li><strong>Documentación en línea</strong>: Proporciona acceso a la documentación del esquema GraphQL directamente en la interfaz.</li>
+<li><strong>Historial de consultas</strong>: Permite revisar y reutilizar consultas anteriores.</li>
+</ul>
+</div><h2>Instalación y Configuración de GraphiQL</h2>
+<div class='content'><p>Para utilizar GraphiQL, primero necesitas tener un servidor GraphQL en funcionamiento. Aquí hay un ejemplo de cómo configurar GraphiQL en un servidor Express con <code>express-graphql</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gRGVmaW5pciBlbCBlc3F1ZW1hCmNvbnN0IHNjaGVtYSA9IGJ1aWxkU2NoZW1hKGAKICB0eXBlIFF1ZXJ5IHsKICAgIGhlbGxvOiBTdHJpbmcKICB9CmApOwoKLy8gRGVmaW5pciBsb3MgcmVzb2x2ZXJzCmNvbnN0IHJvb3QgPSB7CiAgaGVsbG86ICgpID0+ICdIZWxsbywgd29ybGQhJywKfTsKCi8vIENvbmZpZ3VyYXIgR3JhcGhpUUwKYXBwLnVzZSgnL2dyYXBocWwnLCBncmFwaHFsSFRUUCh7CiAgc2NoZW1hOiBzY2hlbWEsCiAgcm9vdFZhbHVlOiByb290LAogIGdyYXBoaXFsOiB0cnVlLAp9KSk7CgphcHAubGlzdGVuKDQwMDAsICgpID0+IGNvbnNvbGUubG9nKCdTZXJ2aWRvciBHcmFwaFFMIGVqZWN1dMOhbmRvc2UgZW4gaHR0cDovL2xvY2FsaG9zdDo0MDAwL2dyYXBocWwnKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+const app = express();
+
+// Definir el esquema
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// Definir los resolvers
+const root = {
+  hello: () =&gt; 'Hello, world!',
+};
+
+// Configurar GraphiQL
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Servidor GraphQL ejecut&aacute;ndose en http://localhost:4000/graphql'));</pre></div><div class='content'></div><h2>Uso de GraphiQL</h2>
+<div class='content'><ol>
+<li><strong>Abrir GraphiQL</strong>: Una vez que el servidor esté en funcionamiento, abre tu navegador y navega a <code>http://localhost:4000/graphql</code>.</li>
+<li><strong>Escribir una consulta</strong>: En el editor de GraphiQL, escribe una consulta como la siguiente:
+<pre><code class="language-graphql">{
+  hello
+}
+</code></pre>
+</li>
+<li><strong>Ejecutar la consulta</strong>: Haz clic en el botón de &quot;Play&quot; para ejecutar la consulta y ver la respuesta en el panel de resultados.</li>
+</ol>
+</div><h1>¿Qué es GraphQL Playground?</h1>
+<div class='content'><p>GraphQL Playground es otra herramienta popular para interactuar con APIs GraphQL. Fue desarrollada por Prisma y ofrece una experiencia de usuario mejorada con características adicionales como:</p>
+<ul>
+<li><strong>Múltiples pestañas</strong>: Permite trabajar con varias consultas al mismo tiempo.</li>
+<li><strong>Configuración avanzada</strong>: Soporta configuraciones avanzadas como encabezados HTTP personalizados.</li>
+<li><strong>Temas personalizables</strong>: Ofrece opciones de personalización de la interfaz.</li>
+</ul>
+</div><h2>Instalación y Configuración de GraphQL Playground</h2>
+<div class='content'><p>GraphQL Playground puede ser utilizado de manera similar a GraphiQL. Aquí hay un ejemplo de cómo configurarlo en un servidor Express:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKY29uc3QgeyBleHByZXNzOiBwbGF5Z3JvdW5kIH0gPSByZXF1aXJlKCdncmFwaHFsLXBsYXlncm91bmQvbWlkZGxld2FyZScpOwpjb25zdCBhcHAgPSBleHByZXNzKCk7CgovLyBEZWZpbmlyIGVsIGVzcXVlbWEKY29uc3Qgc2NoZW1hID0gYnVpbGRTY2hlbWEoYAogIHR5cGUgUXVlcnkgewogICAgaGVsbG86IFN0cmluZwogIH0KYCk7CgovLyBEZWZpbmlyIGxvcyByZXNvbHZlcnMKY29uc3Qgcm9vdCA9IHsKICBoZWxsbzogKCkgPT4gJ0hlbGxvLCB3b3JsZCEnLAp9OwoKLy8gQ29uZmlndXJhciBHcmFwaFFMIFBsYXlncm91bmQKYXBwLnVzZSgnL2dyYXBocWwnLCBncmFwaHFsSFRUUCh7CiAgc2NoZW1hOiBzY2hlbWEsCiAgcm9vdFZhbHVlOiByb290LAogIGdyYXBoaXFsOiBmYWxzZSwgLy8gRGVzYWN0aXZhciBHcmFwaGlRTAp9KSk7CgphcHAuZ2V0KCcvcGxheWdyb3VuZCcsIHBsYXlncm91bmQoeyBlbmRwb2ludDogJy9ncmFwaHFsJyB9KSk7CgphcHAubGlzdGVuKDQwMDAsICgpID0+IGNvbnNvbGUubG9nKCdTZXJ2aWRvciBHcmFwaFFMIGVqZWN1dMOhbmRvc2UgZW4gaHR0cDovL2xvY2FsaG9zdDo0MDAwL3BsYXlncm91bmQnKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+const { express: playground } = require('graphql-playground/middleware');
+const app = express();
+
+// Definir el esquema
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+// Definir los resolvers
+const root = {
+  hello: () =&gt; 'Hello, world!',
+};
+
+// Configurar GraphQL Playground
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: false, // Desactivar GraphiQL
+}));
+
+app.get('/playground', playground({ endpoint: '/graphql' }));
+
+app.listen(4000, () =&gt; console.log('Servidor GraphQL ejecut&aacute;ndose en http://localhost:4000/playground'));</pre></div><div class='content'></div><h2>Uso de GraphQL Playground</h2>
+<div class='content'><ol>
+<li><strong>Abrir GraphQL Playground</strong>: Una vez que el servidor esté en funcionamiento, abre tu navegador y navega a <code>http://localhost:4000/playground</code>.</li>
+<li><strong>Escribir una consulta</strong>: En el editor de GraphQL Playground, escribe una consulta como la siguiente:
+<pre><code class="language-graphql">{
+  hello
+}
+</code></pre>
+</li>
+<li><strong>Ejecutar la consulta</strong>: Haz clic en el botón de &quot;Play&quot; para ejecutar la consulta y ver la respuesta en el panel de resultados.</li>
+</ol>
+</div><h1>Comparación entre GraphiQL y GraphQL Playground</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>GraphiQL</th>
+<th>GraphQL Playground</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Autocompletado</td>
+<td>Sí</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Documentación en línea</td>
+<td>Sí</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Historial de consultas</td>
+<td>Sí</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Múltiples pestañas</td>
+<td>No</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Configuración avanzada</td>
+<td>Limitada</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Temas personalizables</td>
+<td>No</td>
+<td>Sí</td>
+</tr>
+<tr>
+<td>Desarrollador</td>
+<td>Facebook</td>
+<td>Prisma</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar y Usar GraphiQL</h2>
+<div class='content'><ol>
+<li>Configura un servidor GraphQL utilizando <code>express-graphql</code>.</li>
+<li>Habilita GraphiQL en tu servidor.</li>
+<li>Escribe y ejecuta una consulta simple en GraphiQL.</li>
+</ol>
+</div><h2>Ejercicio 2: Configurar y Usar GraphQL Playground</h2>
+<div class='content'><ol>
+<li>Configura un servidor GraphQL utilizando <code>express-graphql</code>.</li>
+<li>Habilita GraphQL Playground en tu servidor.</li>
+<li>Escribe y ejecuta una consulta simple en GraphQL Playground.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKY29uc3Qgc2NoZW1hID0gYnVpbGRTY2hlbWEoYAogIHR5cGUgUXVlcnkgewogICAgaGVsbG86IFN0cmluZwogIH0KYCk7Cgpjb25zdCByb290ID0gewogIGhlbGxvOiAoKSA9PiAnSGVsbG8sIHdvcmxkIScsCn07CgphcHAudXNlKCcvZ3JhcGhxbCcsIGdyYXBocWxIVFRQKHsKICBzY2hlbWE6IHNjaGVtYSwKICByb290VmFsdWU6IHJvb3QsCiAgZ3JhcGhpcWw6IHRydWUsCn0pKTsKCmFwcC5saXN0ZW4oNDAwMCwgKCkgPT4gY29uc29sZS5sb2coJ1NlcnZpZG9yIEdyYXBoUUwgZWplY3V0w6FuZG9zZSBlbiBodHRwOi8vbG9jYWxob3N0OjQwMDAvZ3JhcGhxbCcpKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+const app = express();
+
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+const root = {
+  hello: () =&gt; 'Hello, world!',
+};
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Servidor GraphQL ejecut&aacute;ndose en http://localhost:4000/graphql'));</pre></div><div class='content'><h4>Solución al Ejercicio 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBncmFwaHFsSFRUUCB9ID0gcmVxdWlyZSgnZXhwcmVzcy1ncmFwaHFsJyk7CmNvbnN0IHsgYnVpbGRTY2hlbWEgfSA9IHJlcXVpcmUoJ2dyYXBocWwnKTsKY29uc3QgeyBleHByZXNzOiBwbGF5Z3JvdW5kIH0gPSByZXF1aXJlKCdncmFwaHFsLXBsYXlncm91bmQvbWlkZGxld2FyZScpOwpjb25zdCBhcHAgPSBleHByZXNzKCk7Cgpjb25zdCBzY2hlbWEgPSBidWlsZFNjaGVtYShgCiAgdHlwZSBRdWVyeSB7CiAgICBoZWxsbzogU3RyaW5nCiAgfQpgKTsKCmNvbnN0IHJvb3QgPSB7CiAgaGVsbG86ICgpID0+ICdIZWxsbywgd29ybGQhJywKfTsKCmFwcC51c2UoJy9ncmFwaHFsJywgZ3JhcGhxbEhUVFAoewogIHNjaGVtYTogc2NoZW1hLAogIHJvb3RWYWx1ZTogcm9vdCwKICBncmFwaGlxbDogZmFsc2UsCn0pKTsKCmFwcC5nZXQoJy9wbGF5Z3JvdW5kJywgcGxheWdyb3VuZCh7IGVuZHBvaW50OiAnL2dyYXBocWwnIH0pKTsKCmFwcC5saXN0ZW4oNDAwMCwgKCkgPT4gY29uc29sZS5sb2coJ1NlcnZpZG9yIEdyYXBoUUwgZWplY3V0w6FuZG9zZSBlbiBodHRwOi8vbG9jYWxob3N0OjQwMDAvcGxheWdyb3VuZCcpKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+const { express: playground } = require('graphql-playground/middleware');
+const app = express();
+
+const schema = buildSchema(`
+  type Query {
+    hello: String
+  }
+`);
+
+const root = {
+  hello: () =&gt; 'Hello, world!',
+};
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: root,
+  graphiql: false,
+}));
+
+app.get('/playground', playground({ endpoint: '/graphql' }));
+
+app.listen(4000, () =&gt; console.log('Servidor GraphQL ejecut&aacute;ndose en http://localhost:4000/playground'));</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>GraphiQL y GraphQL Playground son herramientas esenciales para cualquier desarrollador que trabaje con GraphQL. Ambas ofrecen características robustas para escribir, ejecutar y depurar consultas y mutaciones de GraphQL. La elección entre una y otra dependerá de tus necesidades específicas y preferencias personales. Con estas herramientas, puedes mejorar significativamente tu flujo de trabajo y eficiencia al desarrollar APIs GraphQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-04-persisted-queries' title="Consultas Persistidas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-apollo-client' title="Apollo Client">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

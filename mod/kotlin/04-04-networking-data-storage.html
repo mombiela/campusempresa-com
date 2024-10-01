@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes y Almacenamiento de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kotlin/04-04-networking-data-storage" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kotlin/04-04-networking-data-storage" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kotlin/04-04-networking-data-storage" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kotlin/04-04-networking-data-storage" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kotlin/04-04-networking-data-storage" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-handling-user-input' title="Manejo de Entrada del Usuario">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Redes y Almacenamiento de Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-05-testing-debugging' title="Pruebas y Depuración">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo manejar la comunicación en red y el almacenamiento de datos en aplicaciones Android utilizando Kotlin. Estos son componentes esenciales para cualquier aplicación moderna que necesite interactuar con servicios web y almacenar información de manera persistente.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><strong>Introducción a la Comunicación en Red</strong></li>
+<li><strong>Realizando Solicitudes HTTP</strong></li>
+<li><strong>Parseo de Respuestas JSON</strong></li>
+<li><strong>Almacenamiento Local con SharedPreferences</strong></li>
+<li><strong>Uso de Bases de Datos con Room</strong></li>
+<li><strong>Ejercicios Prácticos</strong></li>
+</ol>
+</div><h1>1. Introducción a la Comunicación en Red</h1>
+<div class='content'><p>La comunicación en red es fundamental para aplicaciones que necesitan interactuar con servicios web. En Android, esto se puede lograr utilizando bibliotecas como Retrofit y OkHttp.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>HTTP (HyperText Transfer Protocol):</strong> Protocolo utilizado para la comunicación entre clientes y servidores.</li>
+<li><strong>API (Application Programming Interface):</strong> Conjunto de reglas que permiten la interacción entre diferentes sistemas de software.</li>
+</ul>
+</div><h1>2. Realizando Solicitudes HTTP</h1>
+<div class='content'><p>Retrofit es una biblioteca popular para realizar solicitudes HTTP en Android. Facilita la creación de solicitudes y el manejo de respuestas.</p>
+</div><h2>Configuración de Retrofit</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Agregar Dependencias:</strong></p>
+<pre><code class="language-kotlin">implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+</code></pre>
+</li>
+<li>
+<p><strong>Crear una Interfaz de API:</strong></p>
+<pre><code class="language-kotlin">interface ApiService {
+    @GET(&quot;posts&quot;)
+    suspend fun getPosts(): List&lt;Post&gt;
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Retrofit:</strong></p>
+<pre><code class="language-kotlin">val retrofit = Retrofit.Builder()
+    .baseUrl(&quot;https://jsonplaceholder.typicode.com/&quot;)
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
+
+val apiService = retrofit.create(ApiService::class.java)
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejemplo Práctico</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBjbGFzcyBQb3N0KHZhbCB1c2VySWQ6IEludCwgdmFsIGlkOiBJbnQsIHZhbCB0aXRsZTogU3RyaW5nLCB2YWwgYm9keTogU3RyaW5nKQoKc3VzcGVuZCBmdW4gZmV0Y2hQb3N0cygpIHsKICAgIHZhbCBwb3N0cyA9IGFwaVNlcnZpY2UuZ2V0UG9zdHMoKQogICAgcG9zdHMuZm9yRWFjaCB7CiAgICAgICAgcHJpbnRsbihpdCkKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data class Post(val userId: Int, val id: Int, val title: String, val body: String)
+
+suspend fun fetchPosts() {
+    val posts = apiService.getPosts()
+    posts.forEach {
+        println(it)
+    }
+}</pre></div><div class='content'></div><h1>3. Parseo de Respuestas JSON</h1>
+<div class='content'><p>Gson es una biblioteca que facilita la conversión entre JSON y objetos Kotlin.</p>
+</div><h2>Ejemplo de Parseo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGpzb24gPSAiIiIKICAgIFsKICAgICAgICB7InVzZXJJZCI6IDEsICJpZCI6IDEsICJ0aXRsZSI6ICJQb3N0IDEiLCAiYm9keSI6ICJDb250ZW50IDEifSwKICAgICAgICB7InVzZXJJZCI6IDEsICJpZCI6IDIsICJ0aXRsZSI6ICJQb3N0IDIiLCAiYm9keSI6ICJDb250ZW50IDIifQogICAgXQoiIiIKCnZhbCBwb3N0czogTGlzdDxQb3N0PiA9IEdzb24oKS5mcm9tSnNvbihqc29uLCBvYmplY3QgOiBUeXBlVG9rZW48TGlzdDxQb3N0Pj4oKSB7fS50eXBlKQpwb3N0cy5mb3JFYWNoIHsKICAgIHByaW50bG4oaXQpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val json = &quot;&quot;&quot;
+    [
+        {&quot;userId&quot;: 1, &quot;id&quot;: 1, &quot;title&quot;: &quot;Post 1&quot;, &quot;body&quot;: &quot;Content 1&quot;},
+        {&quot;userId&quot;: 1, &quot;id&quot;: 2, &quot;title&quot;: &quot;Post 2&quot;, &quot;body&quot;: &quot;Content 2&quot;}
+    ]
+&quot;&quot;&quot;
+
+val posts: List&lt;Post&gt; = Gson().fromJson(json, object : TypeToken&lt;List&lt;Post&gt;&gt;() {}.type)
+posts.forEach {
+    println(it)
+}</pre></div><div class='content'></div><h1>4. Almacenamiento Local con SharedPreferences</h1>
+<div class='content'><p>SharedPreferences es una forma sencilla de almacenar datos clave-valor.</p>
+</div><h2>Uso de SharedPreferences</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHNoYXJlZFByZWZlcmVuY2VzID0gZ2V0U2hhcmVkUHJlZmVyZW5jZXMoIk15UHJlZnMiLCBDb250ZXh0Lk1PREVfUFJJVkFURSkKdmFsIGVkaXRvciA9IHNoYXJlZFByZWZlcmVuY2VzLmVkaXQoKQoKLy8gR3VhcmRhciBkYXRvcwplZGl0b3IucHV0U3RyaW5nKCJ1c2VybmFtZSIsICJKb2huRG9lIikKZWRpdG9yLmFwcGx5KCkKCi8vIFJlY3VwZXJhciBkYXRvcwp2YWwgdXNlcm5hbWUgPSBzaGFyZWRQcmVmZXJlbmNlcy5nZXRTdHJpbmcoInVzZXJuYW1lIiwgbnVsbCkKcHJpbnRsbih1c2VybmFtZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val sharedPreferences = getSharedPreferences(&quot;MyPrefs&quot;, Context.MODE_PRIVATE)
+val editor = sharedPreferences.edit()
+
+// Guardar datos
+editor.putString(&quot;username&quot;, &quot;JohnDoe&quot;)
+editor.apply()
+
+// Recuperar datos
+val username = sharedPreferences.getString(&quot;username&quot;, null)
+println(username)</pre></div><div class='content'></div><h1>5. Uso de Bases de Datos con Room</h1>
+<div class='content'><p>Room es una biblioteca de persistencia que proporciona una capa de abstracción sobre SQLite.</p>
+</div><h2>Configuración de Room</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Agregar Dependencias:</strong></p>
+<pre><code class="language-kotlin">implementation &quot;androidx.room:room-runtime:2.3.0&quot;
+kapt &quot;androidx.room:room-compiler:2.3.0&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Definir Entidades:</strong></p>
+<pre><code class="language-kotlin">@Entity
+data class User(
+    @PrimaryKey val uid: Int,
+    @ColumnInfo(name = &quot;first_name&quot;) val firstName: String?,
+    @ColumnInfo(name = &quot;last_name&quot;) val lastName: String?
+)
+</code></pre>
+</li>
+<li>
+<p><strong>Crear DAO:</strong></p>
+<pre><code class="language-kotlin">@Dao
+interface UserDao {
+    @Query(&quot;SELECT * FROM user&quot;)
+    fun getAll(): List&lt;User&gt;
+
+    @Insert
+    fun insertAll(vararg users: User)
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar la Base de Datos:</strong></p>
+<pre><code class="language-kotlin">@Database(entities = [User::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun userDao(): UserDao
+}
+
+val db = Room.databaseBuilder(
+    applicationContext,
+    AppDatabase::class.java, &quot;database-name&quot;
+).build()
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejemplo Práctico</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHVzZXJEYW8gPSBkYi51c2VyRGFvKCkKCi8vIEluc2VydGFyIHVzdWFyaW9zCnVzZXJEYW8uaW5zZXJ0QWxsKFVzZXIoMSwgIkpvaG4iLCAiRG9lIikpCgovLyBPYnRlbmVyIHVzdWFyaW9zCnZhbCB1c2VycyA9IHVzZXJEYW8uZ2V0QWxsKCkKdXNlcnMuZm9yRWFjaCB7CiAgICBwcmludGxuKGl0KQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val userDao = db.userDao()
+
+// Insertar usuarios
+userDao.insertAll(User(1, &quot;John&quot;, &quot;Doe&quot;))
+
+// Obtener usuarios
+val users = userDao.getAll()
+users.forEach {
+    println(it)
+}</pre></div><div class='content'></div><h1>6. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Realizar una Solicitud HTTP</h2>
+<div class='content'><p><strong>Objetivo:</strong> Crear una aplicación que realice una solicitud HTTP para obtener una lista de posts y los muestre en un RecyclerView.</p>
+</div><h2>Ejercicio 2: Almacenamiento con SharedPreferences</h2>
+<div class='content'><p><strong>Objetivo:</strong> Crear una pantalla de configuración donde el usuario pueda guardar y recuperar su nombre de usuario utilizando SharedPreferences.</p>
+</div><h2>Ejercicio 3: Uso de Room para Almacenamiento de Datos</h2>
+<div class='content'><p><strong>Objetivo:</strong> Crear una aplicación que permita al usuario agregar, listar y eliminar contactos utilizando Room.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo manejar la comunicación en red y el almacenamiento de datos en aplicaciones Android utilizando Kotlin. Estos conocimientos son fundamentales para desarrollar aplicaciones robustas y eficientes. En el próximo módulo, exploraremos las mejores prácticas y temas avanzados para optimizar y asegurar nuestras aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-handling-user-input' title="Manejo de Entrada del Usuario">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-05-testing-debugging' title="Pruebas y Depuración">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

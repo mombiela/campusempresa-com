@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problemas Clásicos de Concurrencia</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sistemas_operativos/03-04-problemas-clasicos" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sistemas_operativos/03-04-problemes-classics" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sistemas_operativos/03-04-classic-problems" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sistemas_operativos/03-04-problemas-clasicos" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sistemas_operativos/03-04-problemas-clasicos" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-sincronizacion-exclusion-mutua' title="Sincronización y Exclusión Mutua">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Problemas Clásicos de Concurrencia</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-sistemas-archivos' title="Sistemas de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos algunos de los problemas clásicos de concurrencia que surgen en sistemas operativos. Estos problemas son fundamentales para entender cómo los sistemas operativos manejan múltiples procesos y hilos que compiten por recursos compartidos. Abordaremos los siguientes problemas:</p>
+<ol>
+<li><strong>El Problema del Productor-Consumidor</strong></li>
+<li><strong>El Problema de los Filósofos Comensales</strong></li>
+<li><strong>El Problema de los Lectores y Escritores</strong></li>
+</ol>
+</div><h1>1. El Problema del Productor-Consumidor</h1>
+<div class='content'></div><h2>Descripción</h2>
+<div class='content'><p>El problema del productor-consumidor, también conocido como el problema del buffer limitado, involucra dos tipos de procesos: productores y consumidores. Los productores generan datos y los colocan en un buffer, mientras que los consumidores toman datos del buffer para procesarlos. El desafío es asegurarse de que los productores no añadan datos a un buffer lleno y que los consumidores no intenten tomar datos de un buffer vacío.</p>
+</div><h2>Solución con Semáforos</h2>
+<div class='content'><p>Utilizaremos semáforos para sincronizar el acceso al buffer.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxwdGhyZWFkLmg+CiNpbmNsdWRlIDxzZW1hcGhvcmUuaD4KCiNkZWZpbmUgQlVGRkVSX1NJWkUgMTAKCmludCBidWZmZXJbQlVGRkVSX1NJWkVdOwppbnQgY291bnQgPSAwOwpzZW1fdCBlbXB0eSwgZnVsbCwgbXV0ZXg7Cgp2b2lkKiBwcm9kdWNlcih2b2lkKiBhcmcpIHsKICAgIGludCBpdGVtOwogICAgd2hpbGUgKDEpIHsKICAgICAgICBpdGVtID0gcmFuZCgpOyAvLyBQcm9kdWNlIHVuIMOtdGVtCiAgICAgICAgc2VtX3dhaXQoJmVtcHR5KTsgLy8gRGVjcmVtZW50YSBlbCBzZW3DoWZvcm8gZW1wdHkKICAgICAgICBzZW1fd2FpdCgmbXV0ZXgpOyAvLyBFbnRyYSBlbiBsYSBzZWNjacOzbiBjcsOtdGljYQogICAgICAgIGJ1ZmZlcltjb3VudCsrXSA9IGl0ZW07IC8vIEHDsWFkZSBlbCDDrXRlbSBhbCBidWZmZXIKICAgICAgICBzZW1fcG9zdCgmbXV0ZXgpOyAvLyBTYWxlIGRlIGxhIHNlY2Npw7NuIGNyw610aWNhCiAgICAgICAgc2VtX3Bvc3QoJmZ1bGwpOyAvLyBJbmNyZW1lbnRhIGVsIHNlbcOhZm9ybyBmdWxsCiAgICB9Cn0KCnZvaWQqIGNvbnN1bWVyKHZvaWQqIGFyZykgewogICAgaW50IGl0ZW07CiAgICB3aGlsZSAoMSkgewogICAgICAgIHNlbV93YWl0KCZmdWxsKTsgLy8gRGVjcmVtZW50YSBlbCBzZW3DoWZvcm8gZnVsbAogICAgICAgIHNlbV93YWl0KCZtdXRleCk7IC8vIEVudHJhIGVuIGxhIHNlY2Npw7NuIGNyw610aWNhCiAgICAgICAgaXRlbSA9IGJ1ZmZlclstLWNvdW50XTsgLy8gVG9tYSB1biDDrXRlbSBkZWwgYnVmZmVyCiAgICAgICAgc2VtX3Bvc3QoJm11dGV4KTsgLy8gU2FsZSBkZSBsYSBzZWNjacOzbiBjcsOtdGljYQogICAgICAgIHNlbV9wb3N0KCZlbXB0eSk7IC8vIEluY3JlbWVudGEgZWwgc2Vtw6Fmb3JvIGVtcHR5CiAgICAgICAgLy8gQ29uc3VtZSBlbCDDrXRlbQogICAgfQp9CgppbnQgbWFpbigpIHsKICAgIHB0aHJlYWRfdCBwcm9kLCBjb25zOwogICAgc2VtX2luaXQoJmVtcHR5LCAwLCBCVUZGRVJfU0laRSk7CiAgICBzZW1faW5pdCgmZnVsbCwgMCwgMCk7CiAgICBzZW1faW5pdCgmbXV0ZXgsIDAsIDEpOwoKICAgIHB0aHJlYWRfY3JlYXRlKCZwcm9kLCBOVUxMLCBwcm9kdWNlciwgTlVMTCk7CiAgICBwdGhyZWFkX2NyZWF0ZSgmY29ucywgTlVMTCwgY29uc3VtZXIsIE5VTEwpOwoKICAgIHB0aHJlYWRfam9pbihwcm9kLCBOVUxMKTsKICAgIHB0aHJlYWRfam9pbihjb25zLCBOVUxMKTsKCiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+
+#define BUFFER_SIZE 10
+
+int buffer[BUFFER_SIZE];
+int count = 0;
+sem_t empty, full, mutex;
+
+void* producer(void* arg) {
+    int item;
+    while (1) {
+        item = rand(); // Produce un &iacute;tem
+        sem_wait(&amp;empty); // Decrementa el sem&aacute;foro empty
+        sem_wait(&amp;mutex); // Entra en la secci&oacute;n cr&iacute;tica
+        buffer[count++] = item; // A&ntilde;ade el &iacute;tem al buffer
+        sem_post(&amp;mutex); // Sale de la secci&oacute;n cr&iacute;tica
+        sem_post(&amp;full); // Incrementa el sem&aacute;foro full
+    }
+}
+
+void* consumer(void* arg) {
+    int item;
+    while (1) {
+        sem_wait(&amp;full); // Decrementa el sem&aacute;foro full
+        sem_wait(&amp;mutex); // Entra en la secci&oacute;n cr&iacute;tica
+        item = buffer[--count]; // Toma un &iacute;tem del buffer
+        sem_post(&amp;mutex); // Sale de la secci&oacute;n cr&iacute;tica
+        sem_post(&amp;empty); // Incrementa el sem&aacute;foro empty
+        // Consume el &iacute;tem
+    }
+}
+
+int main() {
+    pthread_t prod, cons;
+    sem_init(&amp;empty, 0, BUFFER_SIZE);
+    sem_init(&amp;full, 0, 0);
+    sem_init(&amp;mutex, 0, 1);
+
+    pthread_create(&amp;prod, NULL, producer, NULL);
+    pthread_create(&amp;cons, NULL, consumer, NULL);
+
+    pthread_join(prod, NULL);
+    pthread_join(cons, NULL);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Semáforos</strong>: <code>empty</code> controla el número de espacios vacíos en el buffer, <code>full</code> controla el número de ítems en el buffer, y <code>mutex</code> asegura la exclusión mutua.</li>
+<li><strong>Productor</strong>: Produce un ítem, espera si el buffer está lleno (<code>sem_wait(&amp;empty)</code>), entra en la sección crítica (<code>sem_wait(&amp;mutex)</code>), añade el ítem al buffer, y luego sale de la sección crítica y señala que hay un ítem más en el buffer (<code>sem_post(&amp;full)</code>).</li>
+<li><strong>Consumidor</strong>: Espera si el buffer está vacío (<code>sem_wait(&amp;full)</code>), entra en la sección crítica (<code>sem_wait(&amp;mutex)</code>), toma un ítem del buffer, y luego sale de la sección crítica y señala que hay un espacio vacío más en el buffer (<code>sem_post(&amp;empty)</code>).</li>
+</ul>
+</div><h1>2. El Problema de los Filósofos Comensales</h1>
+<div class='content'></div><h2>Descripción</h2>
+<div class='content'><p>El problema de los filósofos comensales involucra cinco filósofos que alternan entre pensar y comer. Cada filósofo necesita dos tenedores para comer, pero hay solo cinco tenedores disponibles. El desafío es evitar la condición de carrera y el bloqueo mutuo (deadlock).</p>
+</div><h2>Solución con Semáforos</h2>
+<div class='content'><p>Utilizaremos semáforos para controlar el acceso a los tenedores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxwdGhyZWFkLmg+CiNpbmNsdWRlIDxzZW1hcGhvcmUuaD4KCiNkZWZpbmUgTiA1CgpzZW1fdCBmb3Jrc1tOXTsKCnZvaWQqIHBoaWxvc29waGVyKHZvaWQqIG51bSkgewogICAgaW50IGlkID0gKihpbnQqKW51bTsKICAgIHdoaWxlICgxKSB7CiAgICAgICAgcHJpbnRmKCJGaWzDs3NvZm8gJWQgZXN0w6EgcGVuc2FuZG8uXG4iLCBpZCk7CiAgICAgICAgc2VtX3dhaXQoJmZvcmtzW2lkXSk7IC8vIFRvbWEgZWwgdGVuZWRvciBpenF1aWVyZG8KICAgICAgICBzZW1fd2FpdCgmZm9ya3NbKGlkICsgMSkgJSBOXSk7IC8vIFRvbWEgZWwgdGVuZWRvciBkZXJlY2hvCiAgICAgICAgcHJpbnRmKCJGaWzDs3NvZm8gJWQgZXN0w6EgY29taWVuZG8uXG4iLCBpZCk7CiAgICAgICAgc2VtX3Bvc3QoJmZvcmtzW2lkXSk7IC8vIFN1ZWx0YSBlbCB0ZW5lZG9yIGl6cXVpZXJkbwogICAgICAgIHNlbV9wb3N0KCZmb3Jrc1soaWQgKyAxKSAlIE5dKTsgLy8gU3VlbHRhIGVsIHRlbmVkb3IgZGVyZWNobwogICAgfQp9CgppbnQgbWFpbigpIHsKICAgIHB0aHJlYWRfdCBwaGlsb3NvcGhlcnNbTl07CiAgICBpbnQgaWRzW05dOwogICAgZm9yIChpbnQgaSA9IDA7IGkgPCBOOyBpKyspIHsKICAgICAgICBzZW1faW5pdCgmZm9ya3NbaV0sIDAsIDEpOwogICAgICAgIGlkc1tpXSA9IGk7CiAgICB9CgogICAgZm9yIChpbnQgaSA9IDA7IGkgPCBOOyBpKyspIHsKICAgICAgICBwdGhyZWFkX2NyZWF0ZSgmcGhpbG9zb3BoZXJzW2ldLCBOVUxMLCBwaGlsb3NvcGhlciwgJmlkc1tpXSk7CiAgICB9CgogICAgZm9yIChpbnQgaSA9IDA7IGkgPCBOOyBpKyspIHsKICAgICAgICBwdGhyZWFkX2pvaW4ocGhpbG9zb3BoZXJzW2ldLCBOVUxMKTsKICAgIH0KCiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+
+#define N 5
+
+sem_t forks[N];
+
+void* philosopher(void* num) {
+    int id = *(int*)num;
+    while (1) {
+        printf(&quot;Fil&oacute;sofo %d est&aacute; pensando.\n&quot;, id);
+        sem_wait(&amp;forks[id]); // Toma el tenedor izquierdo
+        sem_wait(&amp;forks[(id + 1) % N]); // Toma el tenedor derecho
+        printf(&quot;Fil&oacute;sofo %d est&aacute; comiendo.\n&quot;, id);
+        sem_post(&amp;forks[id]); // Suelta el tenedor izquierdo
+        sem_post(&amp;forks[(id + 1) % N]); // Suelta el tenedor derecho
+    }
+}
+
+int main() {
+    pthread_t philosophers[N];
+    int ids[N];
+    for (int i = 0; i &lt; N; i++) {
+        sem_init(&amp;forks[i], 0, 1);
+        ids[i] = i;
+    }
+
+    for (int i = 0; i &lt; N; i++) {
+        pthread_create(&amp;philosophers[i], NULL, philosopher, &amp;ids[i]);
+    }
+
+    for (int i = 0; i &lt; N; i++) {
+        pthread_join(philosophers[i], NULL);
+    }
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Semáforos</strong>: Cada tenedor es representado por un semáforo.</li>
+<li><strong>Filósofo</strong>: Cada filósofo toma primero el tenedor izquierdo (<code>sem_wait(&amp;forks[id])</code>) y luego el derecho (<code>sem_wait(&amp;forks[(id + 1) % N])</code>), come, y luego suelta los tenedores (<code>sem_post(&amp;forks[id])</code> y <code>sem_post(&amp;forks[(id + 1) % N])</code>).</li>
+</ul>
+</div><h1>3. El Problema de los Lectores y Escritores</h1>
+<div class='content'></div><h2>Descripción</h2>
+<div class='content'><p>El problema de los lectores y escritores involucra múltiples procesos que leen y escriben en una base de datos compartida. Los lectores pueden leer simultáneamente, pero los escritores necesitan acceso exclusivo. El desafío es evitar la condición de carrera y asegurar que los escritores no sean bloqueados indefinidamente.</p>
+</div><h2>Solución con Semáforos</h2>
+<div class='content'><p>Utilizaremos semáforos para sincronizar el acceso a la base de datos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CiNpbmNsdWRlIDxwdGhyZWFkLmg+CiNpbmNsdWRlIDxzZW1hcGhvcmUuaD4KCnNlbV90IHJ3X211dGV4LCBtdXRleDsKaW50IHJlYWRfY291bnQgPSAwOwoKdm9pZCogcmVhZGVyKHZvaWQqIGFyZykgewogICAgd2hpbGUgKDEpIHsKICAgICAgICBzZW1fd2FpdCgmbXV0ZXgpOwogICAgICAgIHJlYWRfY291bnQrKzsKICAgICAgICBpZiAocmVhZF9jb3VudCA9PSAxKSB7CiAgICAgICAgICAgIHNlbV93YWl0KCZyd19tdXRleCk7CiAgICAgICAgfQogICAgICAgIHNlbV9wb3N0KCZtdXRleCk7CiAgICAgICAgLy8gTGVlciBsYSBiYXNlIGRlIGRhdG9zCiAgICAgICAgc2VtX3dhaXQoJm11dGV4KTsKICAgICAgICByZWFkX2NvdW50LS07CiAgICAgICAgaWYgKHJlYWRfY291bnQgPT0gMCkgewogICAgICAgICAgICBzZW1fcG9zdCgmcndfbXV0ZXgpOwogICAgICAgIH0KICAgICAgICBzZW1fcG9zdCgmbXV0ZXgpOwogICAgfQp9Cgp2b2lkKiB3cml0ZXIodm9pZCogYXJnKSB7CiAgICB3aGlsZSAoMSkgewogICAgICAgIHNlbV93YWl0KCZyd19tdXRleCk7CiAgICAgICAgLy8gRXNjcmliaXIgZW4gbGEgYmFzZSBkZSBkYXRvcwogICAgICAgIHNlbV9wb3N0KCZyd19tdXRleCk7CiAgICB9Cn0KCmludCBtYWluKCkgewogICAgcHRocmVhZF90IHIxLCByMiwgdzE7CiAgICBzZW1faW5pdCgmcndfbXV0ZXgsIDAsIDEpOwogICAgc2VtX2luaXQoJm11dGV4LCAwLCAxKTsKCiAgICBwdGhyZWFkX2NyZWF0ZSgmcjEsIE5VTEwsIHJlYWRlciwgTlVMTCk7CiAgICBwdGhyZWFkX2NyZWF0ZSgmcjIsIE5VTEwsIHJlYWRlciwgTlVMTCk7CiAgICBwdGhyZWFkX2NyZWF0ZSgmdzEsIE5VTEwsIHdyaXRlciwgTlVMTCk7CgogICAgcHRocmVhZF9qb2luKHIxLCBOVUxMKTsKICAgIHB0aHJlYWRfam9pbihyMiwgTlVMTCk7CiAgICBwdGhyZWFkX2pvaW4odzEsIE5VTEwpOwoKICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+
+sem_t rw_mutex, mutex;
+int read_count = 0;
+
+void* reader(void* arg) {
+    while (1) {
+        sem_wait(&amp;mutex);
+        read_count++;
+        if (read_count == 1) {
+            sem_wait(&amp;rw_mutex);
+        }
+        sem_post(&amp;mutex);
+        // Leer la base de datos
+        sem_wait(&amp;mutex);
+        read_count--;
+        if (read_count == 0) {
+            sem_post(&amp;rw_mutex);
+        }
+        sem_post(&amp;mutex);
+    }
+}
+
+void* writer(void* arg) {
+    while (1) {
+        sem_wait(&amp;rw_mutex);
+        // Escribir en la base de datos
+        sem_post(&amp;rw_mutex);
+    }
+}
+
+int main() {
+    pthread_t r1, r2, w1;
+    sem_init(&amp;rw_mutex, 0, 1);
+    sem_init(&amp;mutex, 0, 1);
+
+    pthread_create(&amp;r1, NULL, reader, NULL);
+    pthread_create(&amp;r2, NULL, reader, NULL);
+    pthread_create(&amp;w1, NULL, writer, NULL);
+
+    pthread_join(r1, NULL);
+    pthread_join(r2, NULL);
+    pthread_join(w1, NULL);
+
+    return 0;
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Semáforos</strong>: <code>rw_mutex</code> controla el acceso exclusivo para los escritores, y <code>mutex</code> protege la variable <code>read_count</code>.</li>
+<li><strong>Lector</strong>: Incrementa <code>read_count</code> y si es el primer lector, bloquea a los escritores (<code>sem_wait(&amp;rw_mutex)</code>). Luego, decrementa <code>read_count</code> y si es el último lector, permite a los escritores (<code>sem_post(&amp;rw_mutex)</code>).</li>
+<li><strong>Escritor</strong>: Bloquea el acceso exclusivo (<code>sem_wait(&amp;rw_mutex)</code>) y luego escribe en la base de datos, liberando el acceso después (<code>sem_post(&amp;rw_mutex)</code>).</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto tres problemas clásicos de concurrencia: el problema del productor-consumidor, el problema de los filósofos comensales y el problema de los lectores y escritores. Cada uno de estos problemas ilustra desafíos comunes en la gestión de procesos concurrentes y cómo los semáforos pueden ser utilizados para sincronizar el acceso a recursos compartidos. Estos conceptos son fundamentales para entender cómo los sistemas operativos manejan la concurrencia y aseguran la integridad de los datos.</p>
+<p>A continuación, pasaremos a explorar las estructuras de archivos en el Módulo 4.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-sincronizacion-exclusion-mutua' title="Sincronización y Exclusión Mutua">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-sistemas-archivos' title="Sistemas de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

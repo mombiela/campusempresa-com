@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usando Roles en Playbooks</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/04-04-using-roles-in-playbooks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/04-04-using-roles-in-playbooks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/04-04-using-roles-in-playbooks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/ansible/04-04-using-roles-in-playbooks" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/04-04-using-roles-in-playbooks" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-role-directory-structure' title="Estructura del Directorio de Roles">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Usando Roles en Playbooks</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-handlers' title="Manejadores">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo integrar roles en nuestros playbooks de Ansible. Los roles son una forma de organizar y reutilizar tareas, variables, archivos y plantillas en Ansible. Al usar roles, podemos estructurar nuestros playbooks de manera más modular y mantenible.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Comprender la estructura básica de un rol.</li>
+<li>Aprender a incluir roles en un playbook.</li>
+<li>Configurar variables específicas para roles.</li>
+<li>Ejecutar un playbook que utiliza roles.</li>
+</ul>
+</div><h1>Estructura Básica de un Rol</h1>
+<div class='content'><p>Antes de usar roles en un playbook, es importante entender la estructura básica de un rol. Un rol en Ansible tiene una estructura de directorios específica:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cm9sZXMvCiAg4pSU4pSA4pSAIG5vbWJyZV9kZWxfcm9sLwogICAgICDilJzilIDilIAgdGFza3MvCiAgICAgIOKUgiAgIOKUlOKUgOKUgCBtYWluLnltbAogICAgICDilJzilIDilIAgaGFuZGxlcnMvCiAgICAgIOKUgiAgIOKUlOKUgOKUgCBtYWluLnltbAogICAgICDilJzilIDilIAgdGVtcGxhdGVzLwogICAgICDilJzilIDilIAgZmlsZXMvCiAgICAgIOKUnOKUgOKUgCB2YXJzLwogICAgICDilIIgICDilJTilIDilIAgbWFpbi55bWwKICAgICAg4pSc4pSA4pSAIGRlZmF1bHRzLwogICAgICDilIIgICDilJTilIDilIAgbWFpbi55bWwKICAgICAg4pSc4pSA4pSAIG1ldGEvCiAgICAgIOKUgiAgIOKUlOKUgOKUgCBtYWluLnltbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>roles/
+  └── nombre_del_rol/
+      ├── tasks/
+      │   └── main.yml
+      ├── handlers/
+      │   └── main.yml
+      ├── templates/
+      ├── files/
+      ├── vars/
+      │   └── main.yml
+      ├── defaults/
+      │   └── main.yml
+      ├── meta/
+      │   └── main.yml</pre></div><div class='content'><ul>
+<li><strong>tasks/main.yml</strong>: Contiene las tareas que se ejecutarán.</li>
+<li><strong>handlers/main.yml</strong>: Define los manejadores que se pueden notificar.</li>
+<li><strong>templates/</strong>: Almacena plantillas Jinja2.</li>
+<li><strong>files/</strong>: Almacena archivos que se pueden copiar.</li>
+<li><strong>vars/main.yml</strong>: Define variables específicas del rol.</li>
+<li><strong>defaults/main.yml</strong>: Define valores predeterminados para las variables.</li>
+<li><strong>meta/main.yml</strong>: Contiene metadatos sobre el rol, como dependencias.</li>
+</ul>
+</div><h1>Incluir Roles en un Playbook</h1>
+<div class='content'><p>Para usar un rol en un playbook, simplemente lo incluimos en la sección <code>roles</code> del playbook. Aquí hay un ejemplo de un playbook que utiliza un rol llamado <code>webserver</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCi0gbmFtZTogQ29uZmlndXJhciBTZXJ2aWRvciBXZWIKICBob3N0czogd2ViCiAgcm9sZXM6CiAgICAtIHdlYnNlcnZlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+- name: Configurar Servidor Web
+  hosts: web
+  roles:
+    - webserver</pre></div><div class='content'><p>En este ejemplo, el rol <code>webserver</code> se aplicará a todos los hosts en el grupo <code>web</code>.</p>
+</div><h1>Configurar Variables Específicas para Roles</h1>
+<div class='content'><p>Podemos definir variables específicas para roles en el playbook. Estas variables pueden ser utilizadas dentro del rol para personalizar su comportamiento. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCi0gbmFtZTogQ29uZmlndXJhciBTZXJ2aWRvciBXZWIKICBob3N0czogd2ViCiAgcm9sZXM6CiAgICAtIHJvbGU6IHdlYnNlcnZlcgogICAgICB2YXJzOgogICAgICAgIGh0dHBfcG9ydDogODAKICAgICAgICBtYXhfY2xpZW50czogMjAw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+- name: Configurar Servidor Web
+  hosts: web
+  roles:
+    - role: webserver
+      vars:
+        http_port: 80
+        max_clients: 200</pre></div><div class='content'><p>En este caso, estamos pasando las variables <code>http_port</code> y <code>max_clients</code> al rol <code>webserver</code>.</p>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un ejemplo práctico donde configuramos un servidor web utilizando un rol. Primero, creamos la estructura del rol <code>webserver</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cm9sZXMvCiAg4pSU4pSA4pSAIHdlYnNlcnZlci8KICAgICAg4pSc4pSA4pSAIHRhc2tzLwogICAgICDilIIgICDilJTilIDilIAgbWFpbi55bWwKICAgICAg4pSc4pSA4pSAIHRlbXBsYXRlcy8KICAgICAg4pSCICAg4pSU4pSA4pSAIGh0dHBkLmNvbmYuajIKICAgICAg4pSc4pSA4pSAIHZhcnMvCiAgICAgIOKUgiAgIOKUlOKUgOKUgCBtYWluLnltbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>roles/
+  └── webserver/
+      ├── tasks/
+      │   └── main.yml
+      ├── templates/
+      │   └── httpd.conf.j2
+      ├── vars/
+      │   └── main.yml</pre></div><div class='content'></div><h2>Contenido de `tasks/main.yml`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCi0gbmFtZTogSW5zdGFsYXIgQXBhY2hlCiAgYXB0OgogICAgbmFtZTogYXBhY2hlMgogICAgc3RhdGU6IHByZXNlbnQKCi0gbmFtZTogQ29waWFyIGFyY2hpdm8gZGUgY29uZmlndXJhY2nDs24KICB0ZW1wbGF0ZToKICAgIHNyYzogaHR0cGQuY29uZi5qMgogICAgZGVzdDogL2V0Yy9hcGFjaGUyL3NpdGVzLWF2YWlsYWJsZS8wMDAtZGVmYXVsdC5jb25mCgotIG5hbWU6IEhhYmlsaXRhciBzaXRpbwogIGNvbW1hbmQ6IGEyZW5zaXRlIDAwMC1kZWZhdWx0CgotIG5hbWU6IFJlaW5pY2lhciBBcGFjaGUKICBzZXJ2aWNlOgogICAgbmFtZTogYXBhY2hlMgogICAgc3RhdGU6IHJlc3RhcnRlZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+- name: Instalar Apache
+  apt:
+    name: apache2
+    state: present
+
+- name: Copiar archivo de configuraci&oacute;n
+  template:
+    src: httpd.conf.j2
+    dest: /etc/apache2/sites-available/000-default.conf
+
+- name: Habilitar sitio
+  command: a2ensite 000-default
+
+- name: Reiniciar Apache
+  service:
+    name: apache2
+    state: restarted</pre></div><div class='content'></div><h2>Contenido de `templates/httpd.conf.j2`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PFZpcnR1YWxIb3N0ICo6e3sgaHR0cF9wb3J0IH19PgogICAgRG9jdW1lbnRSb290IC92YXIvd3d3L2h0bWwKICAgIDxEaXJlY3RvcnkgL3Zhci93d3cvaHRtbD4KICAgICAgICBPcHRpb25zIEluZGV4ZXMgRm9sbG93U3ltTGlua3MKICAgICAgICBBbGxvd092ZXJyaWRlIE5vbmUKICAgICAgICBSZXF1aXJlIGFsbCBncmFudGVkCiAgICA8L0RpcmVjdG9yeT4KICAgIEVycm9yTG9nICR7QVBBQ0hFX0xPR19ESVJ9L2Vycm9yLmxvZwogICAgQ3VzdG9tTG9nICR7QVBBQ0hFX0xPR19ESVJ9L2FjY2Vzcy5sb2cgY29tYmluZWQKPC9WaXJ0dWFsSG9zdD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;VirtualHost *:{{ http_port }}&gt;
+    DocumentRoot /var/www/html
+    &lt;Directory /var/www/html&gt;
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Require all granted
+    &lt;/Directory&gt;
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+&lt;/VirtualHost&gt;</pre></div><div class='content'></div><h2>Contenido de `vars/main.yml`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCmh0dHBfcG9ydDogODA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+http_port: 80</pre></div><div class='content'></div><h2>Playbook Principal</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCi0gbmFtZTogQ29uZmlndXJhciBTZXJ2aWRvciBXZWIKICBob3N0czogd2ViCiAgcm9sZXM6CiAgICAtIHJvbGU6IHdlYnNlcnZlcgogICAgICB2YXJzOgogICAgICAgIGh0dHBfcG9ydDogODA4MA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+- name: Configurar Servidor Web
+  hosts: web
+  roles:
+    - role: webserver
+      vars:
+        http_port: 8080</pre></div><div class='content'></div><h1>Ejecución del Playbook</h1>
+<div class='content'><p>Para ejecutar el playbook, utilizamos el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YW5zaWJsZS1wbGF5Ym9vayAtaSBpbnZlbnRhcmlvLmluaSBwbGF5Ym9vay55bWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ansible-playbook -i inventario.ini playbook.yml</pre></div><div class='content'><p>Donde <code>inventario.ini</code> es el archivo de inventario que define los hosts del grupo <code>web</code>.</p>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo usar roles en playbooks de Ansible. Hemos cubierto la estructura básica de un rol, cómo incluir roles en un playbook, cómo configurar variables específicas para roles y hemos visto un ejemplo práctico de un playbook que utiliza un rol para configurar un servidor web. Los roles nos permiten organizar y reutilizar nuestro código de manera eficiente, haciendo que nuestros playbooks sean más modulares y mantenibles.</p>
+<p>En el próximo módulo, profundizaremos en técnicas avanzadas de playbooks, incluyendo el uso de manejadores, plantillas y Ansible Vault.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-role-directory-structure' title="Estructura del Directorio de Roles">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-handlers' title="Manejadores">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

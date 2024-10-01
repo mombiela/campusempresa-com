@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desplegando en Heroku</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/11-03-deploying-heroku" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/11-03-deploying-heroku" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/11-03-deploying-heroku" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nodejs/11-03-deploying-heroku" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/11-03-deploying-heroku" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-using-pm2' title="Usando PM2 para la Gestión de Procesos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Desplegando en Heroku</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-ci-cd' title="Integración y Despliegue Continuos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás cómo desplegar una aplicación Node.js en Heroku, una plataforma como servicio (PaaS) que permite a los desarrolladores construir, ejecutar y operar aplicaciones completamente en la nube. Heroku es conocido por su simplicidad y facilidad de uso, lo que lo convierte en una excelente opción para desplegar aplicaciones Node.js.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-heroku">Introducción a Heroku</a></li>
+<li><a href="#preparación-de-la-aplicación">Preparación de la Aplicación</a></li>
+<li><a href="#configuración-de-heroku-cli">Configuración de Heroku CLI</a></li>
+<li><a href="#despliegue-de-la-aplicación">Despliegue de la Aplicación</a></li>
+<li><a href="#manejo-de-variables-de-entorno">Manejo de Variables de Entorno</a></li>
+<li><a href="#escalado-de-la-aplicación">Escalado de la Aplicación</a></li>
+<li><a href="#monitoreo-y-logs">Monitoreo y Logs</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+</ol>
+</div><h1>Introducción a Heroku</h1>
+<div class='content'><p>Heroku es una plataforma en la nube que permite a los desarrolladores desplegar, gestionar y escalar aplicaciones sin preocuparse por la infraestructura subyacente. Heroku soporta múltiples lenguajes de programación, incluyendo Node.js.</p>
+</div><h2>Ventajas de Usar Heroku</h2>
+<div class='content'><ul>
+<li><strong>Despliegue Rápido:</strong> Puedes desplegar tu aplicación con unos pocos comandos.</li>
+<li><strong>Escalabilidad:</strong> Escala tu aplicación fácilmente añadiendo más dynos (unidades de computación).</li>
+<li><strong>Add-ons:</strong> Amplía las capacidades de tu aplicación con servicios adicionales como bases de datos, monitoreo, etc.</li>
+<li><strong>Integración Continua:</strong> Soporte para CI/CD para un flujo de trabajo de desarrollo más eficiente.</li>
+</ul>
+</div><h1>Preparación de la Aplicación</h1>
+<div class='content'><p>Antes de desplegar tu aplicación en Heroku, asegúrate de que tu aplicación Node.js esté lista para producción. Aquí hay algunos pasos que debes seguir:</p>
+<ol>
+<li>
+<p><strong>Estructura del Proyecto:</strong>
+Asegúrate de que tu proyecto tenga una estructura clara y organizada. Un ejemplo básico de estructura de proyecto podría ser:</p>
+<pre><code>my-app/
+├── node_modules/
+├── public/
+├── src/
+│   ├── index.js
+│   └── ...
+├── .gitignore
+├── package.json
+└── README.md
+</code></pre>
+</li>
+<li>
+<p><strong>Archivo <code>package.json</code>:</strong>
+Asegúrate de que tu archivo <code>package.json</code> tenga un script de inicio definido. Heroku usará este script para arrancar tu aplicación.</p>
+<pre><code class="language-json">{
+  &quot;name&quot;: &quot;my-app&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;main&quot;: &quot;src/index.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;node src/index.js&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;express&quot;: &quot;^4.17.1&quot;
+  }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Archivo <code>.gitignore</code>:</strong>
+Asegúrate de tener un archivo <code>.gitignore</code> para excluir archivos y directorios innecesarios del control de versiones.</p>
+<pre><code>node_modules/
+.env
+</code></pre>
+</li>
+</ol>
+</div><h1>Configuración de Heroku CLI</h1>
+<div class='content'><p>Para interactuar con Heroku desde la línea de comandos, necesitas instalar y configurar Heroku CLI.</p>
+</div><h2>Instalación de Heroku CLI</h2>
+<div class='content'><p>Sigue las instrucciones en la <a href="https://devcenter.heroku.com/articles/heroku-cli">documentación oficial de Heroku</a> para instalar Heroku CLI en tu sistema operativo.</p>
+</div><h2>Inicio de Sesión en Heroku</h2>
+<div class='content'><p>Una vez instalado, abre tu terminal y ejecuta el siguiente comando para iniciar sesión en tu cuenta de Heroku:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGxvZ2lu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku login</pre></div><div class='content'><p>Esto abrirá una ventana del navegador donde podrás ingresar tus credenciales de Heroku.</p>
+</div><h1>Despliegue de la Aplicación</h1>
+<div class='content'></div><h2>Inicializar un Repositorio Git</h2>
+<div class='content'><p>Heroku utiliza Git para gestionar el despliegue de aplicaciones. Si aún no has inicializado un repositorio Git en tu proyecto, hazlo ahora:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGluaXQKZ2l0IGFkZCAuCmdpdCBjb21taXQgLW0gIkluaXRpYWwgY29tbWl0Ig=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git init
+git add .
+git commit -m &quot;Initial commit&quot;</pre></div><div class='content'></div><h2>Crear una Aplicación en Heroku</h2>
+<div class='content'><p>Crea una nueva aplicación en Heroku con el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGNyZWF0ZSBteS1hcHAtbmFtZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku create my-app-name</pre></div><div class='content'><p>Heroku asignará un nombre único a tu aplicación si no proporcionas uno.</p>
+</div><h2>Desplegar la Aplicación</h2>
+<div class='content'><p>Para desplegar tu aplicación, simplemente empuja tu código al repositorio remoto de Heroku:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IHB1c2ggaGVyb2t1IG1haW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git push heroku main</pre></div><div class='content'><p>Heroku detectará automáticamente que tu aplicación es una aplicación Node.js y ejecutará los pasos necesarios para desplegarla.</p>
+</div><h1>Manejo de Variables de Entorno</h1>
+<div class='content'><p>Las variables de entorno son esenciales para configurar tu aplicación en diferentes entornos (desarrollo, producción, etc.). Puedes configurar variables de entorno en Heroku usando el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGNvbmZpZzpzZXQgTVlfVkFSSUFCTEU9bXlfdmFsdWU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku config:set MY_VARIABLE=my_value</pre></div><div class='content'><p>Para ver todas las variables de entorno configuradas, usa:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGNvbmZpZw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku config</pre></div><div class='content'></div><h1>Escalado de la Aplicación</h1>
+<div class='content'><p>Heroku permite escalar tu aplicación añadiendo más dynos. Para escalar tu aplicación, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IHBzOnNjYWxlIHdlYj0y"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku ps:scale web=2</pre></div><div class='content'><p>Esto añadirá un segundo dyno a tu aplicación, permitiendo manejar más tráfico.</p>
+</div><h1>Monitoreo y Logs</h1>
+<div class='content'><p>Heroku proporciona herramientas para monitorear y ver los logs de tu aplicación. Para ver los logs en tiempo real, usa:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGxvZ3MgLS10YWls"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku logs --tail</pre></div><div class='content'><p>Para acceder al panel de monitoreo, visita el dashboard de Heroku y selecciona tu aplicación.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Objetivo</h2>
+<div class='content'><p>Desplegar una aplicación Node.js simple en Heroku.</p>
+</div><h2>Pasos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear una Aplicación Node.js Simple:</strong></p>
+<pre><code class="language-js">// src/index.js
+const express = require('express');
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get('/', (req, res) =&gt; {
+  res.send('Hello, Heroku!');
+});
+
+app.listen(PORT, () =&gt; {
+  console.log(`Server is running on port ${PORT}`);
+});
+</code></pre>
+</li>
+<li>
+<p><strong>Inicializar un Repositorio Git:</strong></p>
+<pre><code class="language-sh">git init
+git add .
+git commit -m &quot;Initial commit&quot;
+</code></pre>
+</li>
+<li>
+<p><strong>Crear una Aplicación en Heroku:</strong></p>
+<pre><code class="language-sh">heroku create my-simple-app
+</code></pre>
+</li>
+<li>
+<p><strong>Desplegar la Aplicación:</strong></p>
+<pre><code class="language-sh">git push heroku main
+</code></pre>
+</li>
+<li>
+<p><strong>Verificar el Despliegue:</strong></p>
+<p>Abre el navegador y visita <code>https://my-simple-app.herokuapp.com</code>. Deberías ver el mensaje &quot;Hello, Heroku!&quot;.</p>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><p>Si has seguido todos los pasos correctamente, tu aplicación debería estar desplegada y accesible en Heroku.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido cómo desplegar una aplicación Node.js en Heroku. Has cubierto desde la preparación de la aplicación hasta el manejo de variables de entorno, escalado y monitoreo. Ahora estás listo para desplegar tus propias aplicaciones en la nube usando Heroku. En el próximo módulo, exploraremos la integración y el despliegue continuos (CI/CD) para automatizar el proceso de despliegue.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='11-02-using-pm2' title="Usando PM2 para la Gestión de Procesos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='11-04-ci-cd' title="Integración y Despliegue Continuos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificaciones de Salud</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/03-04-health-checks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/03-04-health-checks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/03-04-health-checks" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/03-04-health-checks" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/03-04-health-checks" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-load-balancing' title="Balanceo de Carga">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Verificaciones de Salud</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-basic-security-practices' title="Prácticas Básicas de Seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las verificaciones de salud son una característica esencial en la configuración de un proxy inverso y balanceador de carga. Permiten a NGINX determinar si los servidores backend están disponibles y funcionando correctamente. Esto asegura que el tráfico solo se dirija a servidores que están en buen estado, mejorando la disponibilidad y la fiabilidad del servicio.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Verificación de Salud Activa</strong>: NGINX envía solicitudes periódicas a los servidores backend para verificar su estado.</li>
+<li><strong>Verificación de Salud Pasiva</strong>: NGINX monitorea las respuestas de los servidores backend a las solicitudes de los clientes y marca los servidores como inactivos si detecta errores.</li>
+<li><strong>Configuración de Verificaciones de Salud</strong>: Definir los parámetros y condiciones bajo los cuales NGINX considera que un servidor está saludable o no.</li>
+</ol>
+</div><h1>Configuración de Verificaciones de Salud Activa</h1>
+<div class='content'><p>Para configurar verificaciones de salud activa en NGINX, se utiliza el módulo <code>ngx_http_upstream_hc_module</code>. A continuación, se muestra un ejemplo de configuración básica:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIENvbmZpZ3VyYWNpw7NuIGRlIHZlcmlmaWNhY2nDs24gZGUgc2FsdWQgYWN0aXZhCiAgICAgICAgaGVhbHRoX2NoZWNrIGludGVydmFsPTVzIGZhaWxzPTMgcGFzc2VzPTI7CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Configuraci&oacute;n de verificaci&oacute;n de salud activa
+        health_check interval=5s fails=3 passes=2;
+    }
+
+    server {
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>upstream backend { ... }</code>: Define un grupo de servidores backend.</li>
+<li><code>server backend1.example.com;</code> y <code>server backend2.example.com;</code>: Lista de servidores backend.</li>
+<li><code>health_check interval=5s fails=3 passes=2;</code>: Configura la verificación de salud activa.
+<ul>
+<li><code>interval=5s</code>: NGINX enviará una solicitud de verificación de salud cada 5 segundos.</li>
+<li><code>fails=3</code>: Si un servidor falla 3 verificaciones consecutivas, será marcado como inactivo.</li>
+<li><code>passes=2</code>: Si un servidor pasa 2 verificaciones consecutivas después de haber sido marcado como inactivo, será marcado como activo nuevamente.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Configuración de Verificaciones de Salud Pasiva</h1>
+<div class='content'><p>Las verificaciones de salud pasiva no requieren configuración adicional, ya que NGINX las realiza automáticamente. Sin embargo, se pueden ajustar ciertos parámetros para controlar cómo NGINX maneja los errores de los servidores backend.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIENvbmZpZ3VyYWNpw7NuIGRlIHZlcmlmaWNhY2nDs24gZGUgc2FsdWQgcGFzaXZhCiAgICAgICAgcHJveHlfbmV4dF91cHN0cmVhbSBlcnJvciB0aW1lb3V0IGh0dHBfNTAwIGh0dHBfNTAyIGh0dHBfNTAzIGh0dHBfNTA0OwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Configuraci&oacute;n de verificaci&oacute;n de salud pasiva
+        proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+    }
+
+    server {
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>proxy_next_upstream error timeout http_500 http_502 http_503 http_504;</code>: Define las condiciones bajo las cuales NGINX considerará que un servidor backend ha fallado y pasará la solicitud al siguiente servidor disponible.
+<ul>
+<li><code>error</code>: Errores de conexión.</li>
+<li><code>timeout</code>: Tiempo de espera agotado.</li>
+<li><code>http_500</code>, <code>http_502</code>, <code>http_503</code>, <code>http_504</code>: Códigos de estado HTTP que indican errores del servidor.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de Verificación de Salud Activa</h2>
+<div class='content'><ol>
+<li>Configura un grupo de servidores backend con verificaciones de salud activa.</li>
+<li>Define un intervalo de verificación de 10 segundos.</li>
+<li>Marca un servidor como inactivo después de 2 fallos consecutivos.</li>
+<li>Marca un servidor como activo después de 1 verificación exitosa.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIENvbmZpZ3VyYWNpw7NuIGRlIHZlcmlmaWNhY2nDs24gZGUgc2FsdWQgYWN0aXZhCiAgICAgICAgaGVhbHRoX2NoZWNrIGludGVydmFsPTEwcyBmYWlscz0yIHBhc3Nlcz0xOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Configuraci&oacute;n de verificaci&oacute;n de salud activa
+        health_check interval=10s fails=2 passes=1;
+    }
+
+    server {
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Configuración de Verificación de Salud Pasiva</h2>
+<div class='content'><ol>
+<li>Configura un grupo de servidores backend.</li>
+<li>Define las condiciones para considerar un servidor como fallido en base a los códigos de estado HTTP 500, 502, 503 y 504.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwoKICAgICAgICAjIENvbmZpZ3VyYWNpw7NuIGRlIHZlcmlmaWNhY2nDs24gZGUgc2FsdWQgcGFzaXZhCiAgICAgICAgcHJveHlfbmV4dF91cHN0cmVhbSBlcnJvciB0aW1lb3V0IGh0dHBfNTAwIGh0dHBfNTAyIGh0dHBfNTAzIGh0dHBfNTA0OwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+
+        # Configuraci&oacute;n de verificaci&oacute;n de salud pasiva
+        proxy_next_upstream error timeout http_500 http_502 http_503 http_504;
+    }
+
+    server {
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las verificaciones de salud en NGINX, tanto activas como pasivas. Las verificaciones de salud son cruciales para asegurar que el tráfico solo se dirija a servidores backend que están funcionando correctamente. Hemos visto cómo configurar estas verificaciones y hemos practicado con ejemplos prácticos. En el próximo módulo, exploraremos prácticas básicas de seguridad para proteger nuestro servidor NGINX.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-load-balancing' title="Balanceo de Carga">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-basic-security-practices' title="Prácticas Básicas de Seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

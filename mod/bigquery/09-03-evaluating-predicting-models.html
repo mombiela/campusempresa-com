@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación y Predicción con Modelos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/09-03-evaluating-predicting-models" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/09-03-evaluating-predicting-models" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/09-03-evaluating-predicting-models" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bigquery/09-03-evaluating-predicting-models" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/09-03-evaluating-predicting-models" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-creating-training-models' title="Creación y Entrenamiento de Modelos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Evaluación y Predicción con Modelos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-advanced-bqml-features' title="Características Avanzadas de BQML">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo evaluar la calidad de los modelos de Machine Learning creados con BigQuery ML (BQML) y cómo utilizar estos modelos para hacer predicciones. La evaluación de modelos es crucial para entender su rendimiento y hacer ajustes necesarios. La predicción, por otro lado, es el objetivo final de la mayoría de los modelos de Machine Learning.</p>
+</div><h1>1. Evaluación de Modelos</h1>
+<div class='content'></div><h2>1.1. Métricas de Evaluación</h2>
+<div class='content'><p>BigQuery ML proporciona varias métricas para evaluar la calidad de los modelos. Las métricas varían según el tipo de modelo (regresión, clasificación, etc.). Aquí hay algunas métricas comunes:</p>
+<ul>
+<li>
+<p><strong>Regresión</strong>:</p>
+<ul>
+<li><strong>RMSE (Root Mean Squared Error)</strong>: Mide la diferencia entre los valores predichos y los valores reales.</li>
+<li><strong>MAE (Mean Absolute Error)</strong>: Promedio de las diferencias absolutas entre los valores predichos y los valores reales.</li>
+<li><strong>R² (Coeficiente de Determinación)</strong>: Indica qué tan bien los valores predichos explican la variabilidad de los valores reales.</li>
+</ul>
+</li>
+<li>
+<p><strong>Clasificación</strong>:</p>
+<ul>
+<li><strong>Accuracy (Precisión)</strong>: Proporción de predicciones correctas.</li>
+<li><strong>Precision (Precisión)</strong>: Proporción de verdaderos positivos entre los positivos predichos.</li>
+<li><strong>Recall (Sensibilidad)</strong>: Proporción de verdaderos positivos entre los positivos reales.</li>
+<li><strong>F1 Score</strong>: Media armónica de la precisión y la sensibilidad.</li>
+</ul>
+</li>
+</ul>
+</div><h2>1.2. Evaluación de un Modelo de Regresión</h2>
+<div class='content'><p>Para evaluar un modelo de regresión, utilizamos la función <code>ML.EVALUATE</code>. Aquí hay un ejemplo práctico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRXZhbHVhciB1biBtb2RlbG8gZGUgcmVncmVzacOzbgpTRUxFQ1QKICAqCkZST00KICBNTC5FVkFMVUFURShNT0RFTCBgbXlfZGF0YXNldC5teV9yZWdyZXNzaW9uX21vZGVsYCwgKAogICAgU0VMRUNUCiAgICAgIGZlYXR1cmUxLAogICAgICBmZWF0dXJlMiwKICAgICAgdGFyZ2V0CiAgICBGUk9NCiAgICAgIGBteV9kYXRhc2V0Lm15X3RhYmxlYAogICkpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Evaluar un modelo de regresi&oacute;n
+SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `my_dataset.my_regression_model`, (
+    SELECT
+      feature1,
+      feature2,
+      target
+    FROM
+      `my_dataset.my_table`
+  ));</pre></div><div class='content'></div><h2>1.3. Evaluación de un Modelo de Clasificación</h2>
+<div class='content'><p>Para evaluar un modelo de clasificación, también utilizamos la función <code>ML.EVALUATE</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRXZhbHVhciB1biBtb2RlbG8gZGUgY2xhc2lmaWNhY2nDs24KU0VMRUNUCiAgKgpGUk9NCiAgTUwuRVZBTFVBVEUoTU9ERUwgYG15X2RhdGFzZXQubXlfY2xhc3NpZmljYXRpb25fbW9kZWxgLCAoCiAgICBTRUxFQ1QKICAgICAgZmVhdHVyZTEsCiAgICAgIGZlYXR1cmUyLAogICAgICBsYWJlbAogICAgRlJPTQogICAgICBgbXlfZGF0YXNldC5teV90YWJsZWAKICApKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Evaluar un modelo de clasificaci&oacute;n
+SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `my_dataset.my_classification_model`, (
+    SELECT
+      feature1,
+      feature2,
+      label
+    FROM
+      `my_dataset.my_table`
+  ));</pre></div><div class='content'></div><h1>2. Predicción con Modelos</h1>
+<div class='content'></div><h2>2.1. Predicción con un Modelo de Regresión</h2>
+<div class='content'><p>Para hacer predicciones con un modelo de regresión, utilizamos la función <code>ML.PREDICT</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSGFjZXIgcHJlZGljY2lvbmVzIGNvbiB1biBtb2RlbG8gZGUgcmVncmVzacOzbgpTRUxFQ1QKICAqCkZST00KICBNTC5QUkVESUNUKE1PREVMIGBteV9kYXRhc2V0Lm15X3JlZ3Jlc3Npb25fbW9kZWxgLCAoCiAgICBTRUxFQ1QKICAgICAgZmVhdHVyZTEsCiAgICAgIGZlYXR1cmUyCiAgICBGUk9NCiAgICAgIGBteV9kYXRhc2V0Lm5ld19kYXRhYAogICkpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Hacer predicciones con un modelo de regresi&oacute;n
+SELECT
+  *
+FROM
+  ML.PREDICT(MODEL `my_dataset.my_regression_model`, (
+    SELECT
+      feature1,
+      feature2
+    FROM
+      `my_dataset.new_data`
+  ));</pre></div><div class='content'></div><h2>2.2. Predicción con un Modelo de Clasificación</h2>
+<div class='content'><p>Para hacer predicciones con un modelo de clasificación, también utilizamos la función <code>ML.PREDICT</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSGFjZXIgcHJlZGljY2lvbmVzIGNvbiB1biBtb2RlbG8gZGUgY2xhc2lmaWNhY2nDs24KU0VMRUNUCiAgKgpGUk9NCiAgTUwuUFJFRElDVChNT0RFTCBgbXlfZGF0YXNldC5teV9jbGFzc2lmaWNhdGlvbl9tb2RlbGAsICgKICAgIFNFTEVDVAogICAgICBmZWF0dXJlMSwKICAgICAgZmVhdHVyZTIKICAgIEZST00KICAgICAgYG15X2RhdGFzZXQubmV3X2RhdGFgCiAgKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Hacer predicciones con un modelo de clasificaci&oacute;n
+SELECT
+  *
+FROM
+  ML.PREDICT(MODEL `my_dataset.my_classification_model`, (
+    SELECT
+      feature1,
+      feature2
+    FROM
+      `my_dataset.new_data`
+  ));</pre></div><div class='content'></div><h1>3. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Evaluar un Modelo de Regresión</h2>
+<div class='content'><ol>
+<li>Crea un modelo de regresión utilizando un conjunto de datos de tu elección.</li>
+<li>Evalúa el modelo utilizando la función <code>ML.EVALUATE</code>.</li>
+<li>Interpreta las métricas de evaluación obtenidas.</li>
+</ol>
+</div><h2>Ejercicio 2: Hacer Predicciones con un Modelo de Clasificación</h2>
+<div class='content'><ol>
+<li>Crea un modelo de clasificación utilizando un conjunto de datos de tu elección.</li>
+<li>Utiliza la función <code>ML.PREDICT</code> para hacer predicciones con un nuevo conjunto de datos.</li>
+<li>Analiza las predicciones obtenidas.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXIgdW4gbW9kZWxvIGRlIHJlZ3Jlc2nDs24KQ1JFQVRFIE9SIFJFUExBQ0UgTU9ERUwgYG15X2RhdGFzZXQubXlfcmVncmVzc2lvbl9tb2RlbGAKT1BUSU9OUyhtb2RlbF90eXBlPSdsaW5lYXJfcmVnJykgQVMKU0VMRUNUCiAgZmVhdHVyZTEsCiAgZmVhdHVyZTIsCiAgdGFyZ2V0CkZST00KICBgbXlfZGF0YXNldC5teV90YWJsZWA7CgotLSBFdmFsdWFyIGVsIG1vZGVsbyBkZSByZWdyZXNpw7NuClNFTEVDVAogICoKRlJPTQogIE1MLkVWQUxVQVRFKE1PREVMIGBteV9kYXRhc2V0Lm15X3JlZ3Jlc3Npb25fbW9kZWxgLCAoCiAgICBTRUxFQ1QKICAgICAgZmVhdHVyZTEsCiAgICAgIGZlYXR1cmUyLAogICAgICB0YXJnZXQKICAgIEZST00KICAgICAgYG15X2RhdGFzZXQubXlfdGFibGVgCiAgKSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Crear un modelo de regresi&oacute;n
+CREATE OR REPLACE MODEL `my_dataset.my_regression_model`
+OPTIONS(model_type='linear_reg') AS
+SELECT
+  feature1,
+  feature2,
+  target
+FROM
+  `my_dataset.my_table`;
+
+-- Evaluar el modelo de regresi&oacute;n
+SELECT
+  *
+FROM
+  ML.EVALUATE(MODEL `my_dataset.my_regression_model`, (
+    SELECT
+      feature1,
+      feature2,
+      target
+    FROM
+      `my_dataset.my_table`
+  ));</pre></div><div class='content'><h4>Solución al Ejercicio 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXIgdW4gbW9kZWxvIGRlIGNsYXNpZmljYWNpw7NuCkNSRUFURSBPUiBSRVBMQUNFIE1PREVMIGBteV9kYXRhc2V0Lm15X2NsYXNzaWZpY2F0aW9uX21vZGVsYApPUFRJT05TKG1vZGVsX3R5cGU9J2xvZ2lzdGljX3JlZycpIEFTClNFTEVDVAogIGZlYXR1cmUxLAogIGZlYXR1cmUyLAogIGxhYmVsCkZST00KICBgbXlfZGF0YXNldC5teV90YWJsZWA7CgotLSBIYWNlciBwcmVkaWNjaW9uZXMgY29uIGVsIG1vZGVsbyBkZSBjbGFzaWZpY2FjacOzbgpTRUxFQ1QKICAqCkZST00KICBNTC5QUkVESUNUKE1PREVMIGBteV9kYXRhc2V0Lm15X2NsYXNzaWZpY2F0aW9uX21vZGVsYCwgKAogICAgU0VMRUNUCiAgICAgIGZlYXR1cmUxLAogICAgICBmZWF0dXJlMgogICAgRlJPTQogICAgICBgbXlfZGF0YXNldC5uZXdfZGF0YWAKICApKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Crear un modelo de clasificaci&oacute;n
+CREATE OR REPLACE MODEL `my_dataset.my_classification_model`
+OPTIONS(model_type='logistic_reg') AS
+SELECT
+  feature1,
+  feature2,
+  label
+FROM
+  `my_dataset.my_table`;
+
+-- Hacer predicciones con el modelo de clasificaci&oacute;n
+SELECT
+  *
+FROM
+  ML.PREDICT(MODEL `my_dataset.my_classification_model`, (
+    SELECT
+      feature1,
+      feature2
+    FROM
+      `my_dataset.new_data`
+  ));</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo evaluar la calidad de los modelos de Machine Learning en BigQuery ML utilizando diversas métricas de evaluación. También hemos visto cómo hacer predicciones con estos modelos. La evaluación y predicción son pasos cruciales en el ciclo de vida de un modelo de Machine Learning, y dominar estas técnicas te permitirá construir modelos más precisos y útiles. En el próximo tema, exploraremos características avanzadas de BQML para llevar tus habilidades al siguiente nivel.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-creating-training-models' title="Creación y Entrenamiento de Modelos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-advanced-bqml-features' title="Características Avanzadas de BQML">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

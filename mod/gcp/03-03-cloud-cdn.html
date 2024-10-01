@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud CDN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/gcp/03-03-cloud-cdn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/gcp/03-03-cloud-cdn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/gcp/03-03-cloud-cdn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/gcp/03-03-cloud-cdn" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/gcp/03-03-cloud-cdn" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-cloud-load-balancing' title="Balanceo de carga en la nube">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Cloud CDN</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-iam' title="Gestión de identidad y acceso (IAM)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a Cloud CDN</h1>
+<div class='content'><p>Cloud CDN (Content Delivery Network) es un servicio de Google Cloud Platform que permite distribuir contenido de manera rápida y eficiente a usuarios de todo el mundo. Utiliza la infraestructura global de Google para almacenar en caché contenido en ubicaciones cercanas a los usuarios finales, reduciendo la latencia y mejorando la experiencia del usuario.</p>
+</div><h2>Objetivos de esta sección:</h2>
+<div class='content'><ol>
+<li>Comprender qué es Cloud CDN y sus beneficios.</li>
+<li>Aprender a configurar Cloud CDN para un proyecto en GCP.</li>
+<li>Conocer las mejores prácticas y casos de uso comunes.</li>
+<li>Realizar ejercicios prácticos para reforzar los conceptos aprendidos.</li>
+</ol>
+</div><h1>¿Qué es Cloud CDN?</h1>
+<div class='content'><p>Cloud CDN utiliza la red global de Google para almacenar en caché contenido estático en ubicaciones distribuidas geográficamente. Esto permite que los usuarios accedan al contenido desde un servidor cercano, reduciendo el tiempo de carga y mejorando la experiencia del usuario.</p>
+</div><h2>Beneficios de Cloud CDN:</h2>
+<div class='content'><ul>
+<li><strong>Reducción de la latencia:</strong> Almacena en caché el contenido en ubicaciones cercanas a los usuarios finales.</li>
+<li><strong>Escalabilidad:</strong> Maneja grandes volúmenes de tráfico sin problemas.</li>
+<li><strong>Seguridad:</strong> Integra con Google Cloud Armor para proteger contra ataques DDoS.</li>
+<li><strong>Costo-efectividad:</strong> Reduce los costos de ancho de banda al disminuir la carga en los servidores de origen.</li>
+</ul>
+</div><h1>Configuración de Cloud CDN</h1>
+<div class='content'></div><h2>Paso 1: Crear un bucket de Cloud Storage</h2>
+<div class='content'><p>Primero, necesitamos un bucket de Cloud Storage para almacenar nuestro contenido estático.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3N1dGlsIG1iIGdzOi8vbXktc3RhdGljLWNvbnRlbnQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gsutil mb gs://my-static-content</pre></div><div class='content'></div><h2>Paso 2: Subir contenido al bucket</h2>
+<div class='content'><p>Sube los archivos estáticos al bucket.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3N1dGlsIGNwIGluZGV4Lmh0bWwgZ3M6Ly9teS1zdGF0aWMtY29udGVudA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gsutil cp index.html gs://my-static-content</pre></div><div class='content'></div><h2>Paso 3: Configurar un backend bucket</h2>
+<div class='content'><p>En la consola de GCP, navega a <strong>Network Services &gt; Cloud CDN</strong> y sigue estos pasos:</p>
+<ol>
+<li>
+<p><strong>Crear un backend bucket:</strong></p>
+<ul>
+<li>Ve a <strong>Cloud CDN</strong> y selecciona <strong>Backend Buckets</strong>.</li>
+<li>Haz clic en <strong>Create Backend Bucket</strong>.</li>
+<li>Asigna un nombre y selecciona el bucket de Cloud Storage que creaste.</li>
+</ul>
+</li>
+<li>
+<p><strong>Habilitar Cloud CDN:</strong></p>
+<ul>
+<li>Marca la casilla <strong>Enable Cloud CDN</strong>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 4: Configurar un balanceador de carga HTTP(S)</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un balanceador de carga:</strong></p>
+<ul>
+<li>Ve a <strong>Network Services &gt; Load balancing</strong>.</li>
+<li>Haz clic en <strong>Create load balancer</strong> y selecciona <strong>HTTP(S) Load Balancing</strong>.</li>
+<li>Configura el balanceador de carga con el backend bucket que creaste.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el frontend:</strong></p>
+<ul>
+<li>Asigna una dirección IP y configura el dominio.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo de configuración de balanceador de carga</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzb3VyY2VzOgotIG5hbWU6IG15LWxvYWQtYmFsYW5jZXIKICB0eXBlOiBjb21wdXRlLnYxLnVybE1hcAogIHByb3BlcnRpZXM6CiAgICBkZWZhdWx0U2VydmljZTogJChyZWYubXktYmFja2VuZC1idWNrZXQuc2VsZkxpbmspCi0gbmFtZTogbXktYmFja2VuZC1idWNrZXQKICB0eXBlOiBjb21wdXRlLnYxLmJhY2tlbmRCdWNrZXQKICBwcm9wZXJ0aWVzOgogICAgbmFtZTogbXktYmFja2VuZC1idWNrZXQKICAgIGJ1Y2tldE5hbWU6IG15LXN0YXRpYy1jb250ZW50CiAgICBlbmFibGVDZG46IHRydWU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>resources:
+- name: my-load-balancer
+  type: compute.v1.urlMap
+  properties:
+    defaultService: $(ref.my-backend-bucket.selfLink)
+- name: my-backend-bucket
+  type: compute.v1.backendBucket
+  properties:
+    name: my-backend-bucket
+    bucketName: my-static-content
+    enableCdn: true</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de Cloud CDN</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un bucket de Cloud Storage:</strong></p>
+<ul>
+<li>Usa <code>gsutil</code> para crear un bucket y subir contenido estático.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar un backend bucket:</strong></p>
+<ul>
+<li>En la consola de GCP, crea un backend bucket y habilita Cloud CDN.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar un balanceador de carga HTTP(S):</strong></p>
+<ul>
+<li>Configura un balanceador de carga que utilice el backend bucket.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución del Ejercicio 1</h2>
+<div class='content'><ol>
+<li><strong>Crear un bucket de Cloud Storage:</strong></li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z3N1dGlsIG1iIGdzOi8vbXktc3RhdGljLWNvbnRlbnQKZ3N1dGlsIGNwIGluZGV4Lmh0bWwgZ3M6Ly9teS1zdGF0aWMtY29udGVudA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gsutil mb gs://my-static-content
+gsutil cp index.html gs://my-static-content</pre></div><div class='content'><ol start="2">
+<li>
+<p><strong>Configurar un backend bucket:</strong></p>
+<ul>
+<li>En la consola de GCP, navega a <strong>Network Services &gt; Cloud CDN</strong>.</li>
+<li>Crea un backend bucket y habilita Cloud CDN.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar un balanceador de carga HTTP(S):</strong></p>
+<ul>
+<li>En la consola de GCP, navega a <strong>Network Services &gt; Load balancing</strong>.</li>
+<li>Crea un balanceador de carga HTTP(S) y configura el frontend.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre Cloud CDN y cómo puede mejorar la entrega de contenido estático al reducir la latencia y mejorar la experiencia del usuario. Hemos configurado un bucket de Cloud Storage, un backend bucket y un balanceador de carga HTTP(S) para habilitar Cloud CDN. Además, hemos realizado un ejercicio práctico para reforzar los conceptos aprendidos.</p>
+<p>En la siguiente sección, exploraremos <strong>Gestión de identidad y acceso (IAM)</strong>, donde aprenderemos a gestionar permisos y roles en GCP.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-cloud-load-balancing' title="Balanceo de carga en la nube">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-iam' title="Gestión de identidad y acceso (IAM)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

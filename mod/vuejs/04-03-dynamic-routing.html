@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rutas Dinámicas</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vuejs/04-03-dynamic-routing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vuejs/04-03-dynamic-routing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vuejs/04-03-dynamic-routing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/vuejs/04-03-dynamic-routing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/vuejs/04-03-dynamic-routing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-setting-up-vue-router' title="Configuración de Vue Router">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Rutas Dinámicas</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-nested-routes' title="Rutas Anidadas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En aplicaciones web, a menudo necesitamos manejar rutas que contienen parámetros variables. Por ejemplo, en una aplicación de blog, podríamos tener una ruta para mostrar un artículo específico basado en su ID. Vue Router facilita la creación de estas rutas dinámicas, permitiendo que nuestras aplicaciones sean más flexibles y dinámicas.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Rutas Dinámicas</strong>: Rutas que contienen parámetros variables.</li>
+<li><strong>Parámetros de Ruta</strong>: Valores dinámicos que se pasan a través de la URL.</li>
+<li><strong>Acceso a Parámetros de Ruta</strong>: Cómo acceder a estos parámetros dentro de los componentes.</li>
+</ol>
+</div><h1>Configuración de Rutas Dinámicas</h1>
+<div class='content'><p>Para configurar una ruta dinámica, utilizamos los dos puntos (<code>:</code>) seguido del nombre del parámetro en la definición de la ruta. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcm91dGVyL2luZGV4LmpzCmltcG9ydCBWdWUgZnJvbSAndnVlJzsKaW1wb3J0IFJvdXRlciBmcm9tICd2dWUtcm91dGVyJzsKaW1wb3J0IFVzZXJQcm9maWxlIGZyb20gJ0AvY29tcG9uZW50cy9Vc2VyUHJvZmlsZS52dWUnOwoKVnVlLnVzZShSb3V0ZXIpOwoKZXhwb3J0IGRlZmF1bHQgbmV3IFJvdXRlcih7CiAgcm91dGVzOiBbCiAgICB7CiAgICAgIHBhdGg6ICcvdXNlci86aWQnLAogICAgICBuYW1lOiAnVXNlclByb2ZpbGUnLAogICAgICBjb21wb25lbnQ6IFVzZXJQcm9maWxlCiAgICB9CiAgXQp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// router/index.js
+import Vue from 'vue';
+import Router from 'vue-router';
+import UserProfile from '@/components/UserProfile.vue';
+
+Vue.use(Router);
+
+export default new Router({
+  routes: [
+    {
+      path: '/user/:id',
+      name: 'UserProfile',
+      component: UserProfile
+    }
+  ]
+});</pre></div><div class='content'><p>En este ejemplo, <code>:id</code> es un parámetro de ruta dinámico. Cualquier valor que siga <code>/user/</code> en la URL se capturará como el parámetro <code>id</code>.</p>
+</div><h1>Acceso a Parámetros de Ruta</h1>
+<div class='content'><p>Dentro del componente <code>UserProfile</code>, podemos acceder al parámetro <code>id</code> utilizando <code>this.$route.params.id</code>. Aquí hay un ejemplo de cómo podríamos usarlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY29tcG9uZW50cy9Vc2VyUHJvZmlsZS52dWUKPHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDE+UGVyZmlsIGRlbCBVc3VhcmlvPC9oMT4KICAgIDxwPklEIGRlbCBVc3VhcmlvOiB7eyB1c2VySWQgfX08L3A+CiAgPC9kaXY+CjwvdGVtcGxhdGU+Cgo8c2NyaXB0PgpleHBvcnQgZGVmYXVsdCB7CiAgZGF0YSgpIHsKICAgIHJldHVybiB7CiAgICAgIHVzZXJJZDogdGhpcy4kcm91dGUucGFyYW1zLmlkCiAgICB9OwogIH0sCiAgd2F0Y2g6IHsKICAgICckcm91dGUucGFyYW1zLmlkJyhuZXdJZCkgewogICAgICB0aGlzLnVzZXJJZCA9IG5ld0lkOwogICAgfQogIH0KfTsKPC9zY3JpcHQ+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// components/UserProfile.vue
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;h1&gt;Perfil del Usuario&lt;/h1&gt;
+    &lt;p&gt;ID del Usuario: {{ userId }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      userId: this.$route.params.id
+    };
+  },
+  watch: {
+    '$route.params.id'(newId) {
+      this.userId = newId;
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'><p>En este ejemplo, <code>userId</code> se inicializa con el valor del parámetro de ruta <code>id</code>. Además, utilizamos un observador (<code>watcher</code>) para actualizar <code>userId</code> si el parámetro de ruta cambia.</p>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear una aplicación simple que muestra perfiles de usuario basados en un ID dinámico.</p>
+</div><h2>Paso 1: Configuración del Proyecto</h2>
+<div class='content'><p>Asegúrate de tener un proyecto Vue configurado con Vue Router. Si no lo tienes, puedes crear uno utilizando Vue CLI:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dnVlIGNyZWF0ZSBkeW5hbWljLXJvdXRpbmctZXhhbXBsZQpjZCBkeW5hbWljLXJvdXRpbmctZXhhbXBsZQp2dWUgYWRkIHJvdXRlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>vue create dynamic-routing-example
+cd dynamic-routing-example
+vue add router</pre></div><div class='content'></div><h2>Paso 2: Definir la Ruta Dinámica</h2>
+<div class='content'><p>Edita <code>router/index.js</code> para incluir una ruta dinámica para los perfiles de usuario:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcm91dGVyL2luZGV4LmpzCmltcG9ydCBWdWUgZnJvbSAndnVlJzsKaW1wb3J0IFJvdXRlciBmcm9tICd2dWUtcm91dGVyJzsKaW1wb3J0IEhvbWUgZnJvbSAnQC9jb21wb25lbnRzL0hvbWUudnVlJzsKaW1wb3J0IFVzZXJQcm9maWxlIGZyb20gJ0AvY29tcG9uZW50cy9Vc2VyUHJvZmlsZS52dWUnOwoKVnVlLnVzZShSb3V0ZXIpOwoKZXhwb3J0IGRlZmF1bHQgbmV3IFJvdXRlcih7CiAgcm91dGVzOiBbCiAgICB7CiAgICAgIHBhdGg6ICcvJywKICAgICAgbmFtZTogJ0hvbWUnLAogICAgICBjb21wb25lbnQ6IEhvbWUKICAgIH0sCiAgICB7CiAgICAgIHBhdGg6ICcvdXNlci86aWQnLAogICAgICBuYW1lOiAnVXNlclByb2ZpbGUnLAogICAgICBjb21wb25lbnQ6IFVzZXJQcm9maWxlCiAgICB9CiAgXQp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// router/index.js
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from '@/components/Home.vue';
+import UserProfile from '@/components/UserProfile.vue';
+
+Vue.use(Router);
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/user/:id',
+      name: 'UserProfile',
+      component: UserProfile
+    }
+  ]
+});</pre></div><div class='content'></div><h2>Paso 3: Crear el Componente `UserProfile`</h2>
+<div class='content'><p>Crea un nuevo archivo <code>UserProfile.vue</code> en la carpeta <code>components</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY29tcG9uZW50cy9Vc2VyUHJvZmlsZS52dWUKPHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDE+UGVyZmlsIGRlbCBVc3VhcmlvPC9oMT4KICAgIDxwPklEIGRlbCBVc3VhcmlvOiB7eyB1c2VySWQgfX08L3A+CiAgPC9kaXY+CjwvdGVtcGxhdGU+Cgo8c2NyaXB0PgpleHBvcnQgZGVmYXVsdCB7CiAgZGF0YSgpIHsKICAgIHJldHVybiB7CiAgICAgIHVzZXJJZDogdGhpcy4kcm91dGUucGFyYW1zLmlkCiAgICB9OwogIH0sCiAgd2F0Y2g6IHsKICAgICckcm91dGUucGFyYW1zLmlkJyhuZXdJZCkgewogICAgICB0aGlzLnVzZXJJZCA9IG5ld0lkOwogICAgfQogIH0KfTsKPC9zY3JpcHQ+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// components/UserProfile.vue
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;h1&gt;Perfil del Usuario&lt;/h1&gt;
+    &lt;p&gt;ID del Usuario: {{ userId }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      userId: this.$route.params.id
+    };
+  },
+  watch: {
+    '$route.params.id'(newId) {
+      this.userId = newId;
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'></div><h2>Paso 4: Probar la Aplicación</h2>
+<div class='content'><p>Ejecuta tu aplicación:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIHJ1biBzZXJ2ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm run serve</pre></div><div class='content'><p>Navega a <code>http://localhost:8080/user/123</code> y deberías ver el ID del usuario mostrado en la página.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Añadir Más Parámetros de Ruta</h2>
+<div class='content'><ol>
+<li>Modifica la ruta dinámica para incluir un segundo parámetro, <code>name</code>.</li>
+<li>Actualiza el componente <code>UserProfile</code> para mostrar tanto el <code>id</code> como el <code>name</code>.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcm91dGVyL2luZGV4LmpzCmltcG9ydCBWdWUgZnJvbSAndnVlJzsKaW1wb3J0IFJvdXRlciBmcm9tICd2dWUtcm91dGVyJzsKaW1wb3J0IEhvbWUgZnJvbSAnQC9jb21wb25lbnRzL0hvbWUudnVlJzsKaW1wb3J0IFVzZXJQcm9maWxlIGZyb20gJ0AvY29tcG9uZW50cy9Vc2VyUHJvZmlsZS52dWUnOwoKVnVlLnVzZShSb3V0ZXIpOwoKZXhwb3J0IGRlZmF1bHQgbmV3IFJvdXRlcih7CiAgcm91dGVzOiBbCiAgICB7CiAgICAgIHBhdGg6ICcvJywKICAgICAgbmFtZTogJ0hvbWUnLAogICAgICBjb21wb25lbnQ6IEhvbWUKICAgIH0sCiAgICB7CiAgICAgIHBhdGg6ICcvdXNlci86aWQvOm5hbWUnLAogICAgICBuYW1lOiAnVXNlclByb2ZpbGUnLAogICAgICBjb21wb25lbnQ6IFVzZXJQcm9maWxlCiAgICB9CiAgXQp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// router/index.js
+import Vue from 'vue';
+import Router from 'vue-router';
+import Home from '@/components/Home.vue';
+import UserProfile from '@/components/UserProfile.vue';
+
+Vue.use(Router);
+
+export default new Router({
+  routes: [
+    {
+      path: '/',
+      name: 'Home',
+      component: Home
+    },
+    {
+      path: '/user/:id/:name',
+      name: 'UserProfile',
+      component: UserProfile
+    }
+  ]
+});</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gY29tcG9uZW50cy9Vc2VyUHJvZmlsZS52dWUKPHRlbXBsYXRlPgogIDxkaXY+CiAgICA8aDE+UGVyZmlsIGRlbCBVc3VhcmlvPC9oMT4KICAgIDxwPklEIGRlbCBVc3VhcmlvOiB7eyB1c2VySWQgfX08L3A+CiAgICA8cD5Ob21icmUgZGVsIFVzdWFyaW86IHt7IHVzZXJOYW1lIH19PC9wPgogIDwvZGl2Pgo8L3RlbXBsYXRlPgoKPHNjcmlwdD4KZXhwb3J0IGRlZmF1bHQgewogIGRhdGEoKSB7CiAgICByZXR1cm4gewogICAgICB1c2VySWQ6IHRoaXMuJHJvdXRlLnBhcmFtcy5pZCwKICAgICAgdXNlck5hbWU6IHRoaXMuJHJvdXRlLnBhcmFtcy5uYW1lCiAgICB9OwogIH0sCiAgd2F0Y2g6IHsKICAgICckcm91dGUucGFyYW1zLmlkJyhuZXdJZCkgewogICAgICB0aGlzLnVzZXJJZCA9IG5ld0lkOwogICAgfSwKICAgICckcm91dGUucGFyYW1zLm5hbWUnKG5ld05hbWUpIHsKICAgICAgdGhpcy51c2VyTmFtZSA9IG5ld05hbWU7CiAgICB9CiAgfQp9Owo8L3NjcmlwdD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// components/UserProfile.vue
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;h1&gt;Perfil del Usuario&lt;/h1&gt;
+    &lt;p&gt;ID del Usuario: {{ userId }}&lt;/p&gt;
+    &lt;p&gt;Nombre del Usuario: {{ userName }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default {
+  data() {
+    return {
+      userId: this.$route.params.id,
+      userName: this.$route.params.name
+    };
+  },
+  watch: {
+    '$route.params.id'(newId) {
+      this.userId = newId;
+    },
+    '$route.params.name'(newName) {
+      this.userName = newName;
+    }
+  }
+};
+&lt;/script&gt;</pre></div><div class='content'><p>Navega a <code>http://localhost:8080/user/123/John</code> y deberías ver tanto el ID como el nombre del usuario mostrados en la página.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las rutas dinámicas en Vue Router son una herramienta poderosa para crear aplicaciones web flexibles y dinámicas. Al comprender cómo definir y acceder a parámetros de ruta, puedes construir aplicaciones que respondan a una amplia variedad de necesidades de navegación. En el próximo módulo, exploraremos las rutas anidadas, que te permitirán crear estructuras de navegación más complejas y organizadas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-setting-up-vue-router' title="Configuración de Vue Router">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-nested-routes' title="Rutas Anidadas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

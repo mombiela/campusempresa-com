@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renderizando Plantillas con Jinja2</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/02-03-rendering-templates" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/02-03-rendering-templates" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/02-03-rendering-templates" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flask/02-03-rendering-templates" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/02-03-rendering-templates" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-handling-http-methods' title="Manejo de Métodos HTTP">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Renderizando Plantillas con Jinja2</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-static-files' title="Trabajando con Archivos Estáticos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo renderizar plantillas HTML utilizando Jinja2, el motor de plantillas que viene integrado con Flask. Jinja2 nos permite crear plantillas dinámicas que pueden incluir variables, bucles y condicionales, lo que facilita la creación de contenido HTML dinámico.</p>
+</div><h1>¿Qué es Jinja2?</h1>
+<div class='content'><p>Jinja2 es un motor de plantillas para Python que permite a los desarrolladores separar la lógica de la aplicación del diseño de la interfaz de usuario. Con Jinja2, podemos insertar variables y lógica de control directamente en nuestros archivos HTML.</p>
+</div><h2>Características de Jinja2:</h2>
+<div class='content'><ul>
+<li><strong>Variables</strong>: Permite insertar variables en las plantillas.</li>
+<li><strong>Filtros</strong>: Permite modificar el valor de las variables.</li>
+<li><strong>Estructuras de Control</strong>: Soporta bucles y condicionales.</li>
+<li><strong>Macros</strong>: Permite definir fragmentos reutilizables de plantillas.</li>
+</ul>
+</div><h1>Configuración Básica</h1>
+<div class='content'><p>Antes de comenzar a trabajar con plantillas, necesitamos asegurarnos de que Flask esté configurado para encontrarlas. Por defecto, Flask busca las plantillas en un directorio llamado <code>templates</code> en el directorio raíz de la aplicación.</p>
+</div><h2>Estructura de Directorios</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bXlfZmxhc2tfYXBwLwrilIIK4pSc4pSA4pSAIGFwcC5weQrilJzilIDilIAgdGVtcGxhdGVzLwrilIIgICDilJzilIDilIAgaW5kZXguaHRtbArilIIgICDilJTilIDilIAgYWJvdXQuaHRtbArilJTilIDilIAgc3RhdGljLwogICAg4pSc4pSA4pSAIGNzcy8KICAgIOKUnOKUgOKUgCBqcy8KICAgIOKUlOKUgOKUgCBpbWFnZXMv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>my_flask_app/
+│
+├── app.py
+├── templates/
+│   ├── index.html
+│   └── about.html
+└── static/
+    ├── css/
+    ├── js/
+    └── images/</pre></div><div class='content'></div><h1>Creando una Plantilla Básica</h1>
+<div class='content'><p>Vamos a crear una plantilla HTML básica llamada <code>index.html</code> en el directorio <code>templates</code>.</p>
+</div><h2>`templates/index.html`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+e3sgdGl0bGUgfX08L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPkJpZW52ZW5pZG8gYSB7eyB0aXRsZSB9fTwvaDE+CiAgICA8cD57eyBtZXNzYWdlIH19PC9wPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;{{ title }}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Bienvenido a {{ title }}&lt;/h1&gt;
+    &lt;p&gt;{{ message }}&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><p>En esta plantilla, estamos utilizando dos variables: <code>title</code> y <code>message</code>. Estas variables serán proporcionadas por nuestra aplicación Flask.</p>
+</div><h1>Renderizando la Plantilla en Flask</h1>
+<div class='content'><p>Para renderizar una plantilla en Flask, utilizamos la función <code>render_template</code> proporcionada por Flask.</p>
+</div><h2>`app.py`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlbmRlcl90ZW1wbGF0ZQoKYXBwID0gRmxhc2soX19uYW1lX18pCgpAYXBwLnJvdXRlKCcvJykKZGVmIGhvbWUoKToKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ2luZGV4Lmh0bWwnLCB0aXRsZT0nTWkgQXBsaWNhY2nDs24gRmxhc2snLCBtZXNzYWdlPSfCoUhvbGEsIE11bmRvIScpCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html', title='Mi Aplicaci&oacute;n Flask', message='&iexcl;Hola, Mundo!')
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><p>En este ejemplo, la función <code>home</code> renderiza la plantilla <code>index.html</code> y pasa las variables <code>title</code> y <code>message</code> a la plantilla.</p>
+</div><h1>Uso de Variables en Plantillas</h1>
+<div class='content'><p>Las variables en Jinja2 se delimitan con <code>{{ }}</code>. Puedes pasar cualquier tipo de dato a las plantillas, incluyendo cadenas, números, listas y diccionarios.</p>
+</div><h2>Ejemplo con Listas y Diccionarios</h2>
+<div class='content'><p>Vamos a modificar nuestra plantilla y nuestra ruta para trabajar con listas y diccionarios.</p>
+</div><h2>`templates/index.html`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+e3sgdGl0bGUgfX08L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPkJpZW52ZW5pZG8gYSB7eyB0aXRsZSB9fTwvaDE+CiAgICA8cD57eyBtZXNzYWdlIH19PC9wPgogICAgPGgyPlVzdWFyaW9zOjwvaDI+CiAgICA8dWw+CiAgICAgICAgeyUgZm9yIHVzZXIgaW4gdXNlcnMgJX0KICAgICAgICAgICAgPGxpPnt7IHVzZXIubmFtZSB9fSAtIHt7IHVzZXIuZW1haWwgfX08L2xpPgogICAgICAgIHslIGVuZGZvciAlfQogICAgPC91bD4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;{{ title }}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Bienvenido a {{ title }}&lt;/h1&gt;
+    &lt;p&gt;{{ message }}&lt;/p&gt;
+    &lt;h2&gt;Usuarios:&lt;/h2&gt;
+    &lt;ul&gt;
+        {% for user in users %}
+            &lt;li&gt;{{ user.name }} - {{ user.email }}&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>`app.py`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlbmRlcl90ZW1wbGF0ZQoKYXBwID0gRmxhc2soX19uYW1lX18pCgpAYXBwLnJvdXRlKCcvJykKZGVmIGhvbWUoKToKICAgIHVzZXJzID0gWwogICAgICAgIHsnbmFtZSc6ICdBbGljZScsICdlbWFpbCc6ICdhbGljZUBleGFtcGxlLmNvbSd9LAogICAgICAgIHsnbmFtZSc6ICdCb2InLCAnZW1haWwnOiAnYm9iQGV4YW1wbGUuY29tJ30sCiAgICAgICAgeyduYW1lJzogJ0NoYXJsaWUnLCAnZW1haWwnOiAnY2hhcmxpZUBleGFtcGxlLmNvbSd9CiAgICBdCiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCdpbmRleC5odG1sJywgdGl0bGU9J01pIEFwbGljYWNpw7NuIEZsYXNrJywgbWVzc2FnZT0nwqFIb2xhLCBNdW5kbyEnLCB1c2Vycz11c2VycykKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKGRlYnVnPVRydWUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    users = [
+        {'name': 'Alice', 'email': 'alice@example.com'},
+        {'name': 'Bob', 'email': 'bob@example.com'},
+        {'name': 'Charlie', 'email': 'charlie@example.com'}
+    ]
+    return render_template('index.html', title='Mi Aplicaci&oacute;n Flask', message='&iexcl;Hola, Mundo!', users=users)
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'><p>En este ejemplo, estamos pasando una lista de diccionarios a la plantilla y utilizando un bucle <code>for</code> para iterar sobre los usuarios y mostrarlos en una lista HTML.</p>
+</div><h1>Estructuras de Control en Jinja2</h1>
+<div class='content'><p>Jinja2 soporta varias estructuras de control, como condicionales y bucles.</p>
+</div><h2>Condicionales</h2>
+<div class='content'><p>Podemos utilizar condicionales para mostrar contenido basado en ciertas condiciones.</p>
+</div><h2>`templates/index.html`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+e3sgdGl0bGUgfX08L3RpdGxlPgo8L2hlYWQ+Cjxib2R5PgogICAgPGgxPkJpZW52ZW5pZG8gYSB7eyB0aXRsZSB9fTwvaDE+CiAgICA8cD57eyBtZXNzYWdlIH19PC9wPgogICAgPGgyPlVzdWFyaW9zOjwvaDI+CiAgICA8dWw+CiAgICAgICAgeyUgZm9yIHVzZXIgaW4gdXNlcnMgJX0KICAgICAgICAgICAgPGxpPnt7IHVzZXIubmFtZSB9fSAtIHt7IHVzZXIuZW1haWwgfX08L2xpPgogICAgICAgIHslIGVsc2UgJX0KICAgICAgICAgICAgPGxpPk5vIGhheSB1c3VhcmlvcyBkaXNwb25pYmxlcy48L2xpPgogICAgICAgIHslIGVuZGZvciAlfQogICAgPC91bD4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;{{ title }}&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Bienvenido a {{ title }}&lt;/h1&gt;
+    &lt;p&gt;{{ message }}&lt;/p&gt;
+    &lt;h2&gt;Usuarios:&lt;/h2&gt;
+    &lt;ul&gt;
+        {% for user in users %}
+            &lt;li&gt;{{ user.name }} - {{ user.email }}&lt;/li&gt;
+        {% else %}
+            &lt;li&gt;No hay usuarios disponibles.&lt;/li&gt;
+        {% endfor %}
+    &lt;/ul&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><p>En este ejemplo, si la lista <code>users</code> está vacía, se mostrará el mensaje &quot;No hay usuarios disponibles.&quot;</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear una Página de Acerca de</h2>
+<div class='content'><ol>
+<li>Crea una nueva plantilla llamada <code>about.html</code> en el directorio <code>templates</code>.</li>
+<li>La plantilla debe incluir un título y un párrafo con información sobre la aplicación.</li>
+<li>Crea una nueva ruta en <code>app.py</code> para renderizar la plantilla <code>about.html</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><h2>`templates/about.html`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+QWNlcmNhIGRlPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5BY2VyY2EgZGU8L2gxPgogICAgPHA+RXN0YSBlcyB1bmEgYXBsaWNhY2nDs24gd2ViIGNyZWFkYSBjb24gRmxhc2suPC9wPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;title&gt;Acerca de&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Acerca de&lt;/h1&gt;
+    &lt;p&gt;Esta es una aplicaci&oacute;n web creada con Flask.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'></div><h2>`app.py`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlbmRlcl90ZW1wbGF0ZQoKYXBwID0gRmxhc2soX19uYW1lX18pCgpAYXBwLnJvdXRlKCcvJykKZGVmIGhvbWUoKToKICAgIHVzZXJzID0gWwogICAgICAgIHsnbmFtZSc6ICdBbGljZScsICdlbWFpbCc6ICdhbGljZUBleGFtcGxlLmNvbSd9LAogICAgICAgIHsnbmFtZSc6ICdCb2InLCAnZW1haWwnOiAnYm9iQGV4YW1wbGUuY29tJ30sCiAgICAgICAgeyduYW1lJzogJ0NoYXJsaWUnLCAnZW1haWwnOiAnY2hhcmxpZUBleGFtcGxlLmNvbSd9CiAgICBdCiAgICByZXR1cm4gcmVuZGVyX3RlbXBsYXRlKCdpbmRleC5odG1sJywgdGl0bGU9J01pIEFwbGljYWNpw7NuIEZsYXNrJywgbWVzc2FnZT0nwqFIb2xhLCBNdW5kbyEnLCB1c2Vycz11c2VycykKCkBhcHAucm91dGUoJy9hYm91dCcpCmRlZiBhYm91dCgpOgogICAgcmV0dXJuIHJlbmRlcl90ZW1wbGF0ZSgnYWJvdXQuaHRtbCcpCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, render_template
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    users = [
+        {'name': 'Alice', 'email': 'alice@example.com'},
+        {'name': 'Bob', 'email': 'bob@example.com'},
+        {'name': 'Charlie', 'email': 'charlie@example.com'}
+    ]
+    return render_template('index.html', title='Mi Aplicaci&oacute;n Flask', message='&iexcl;Hola, Mundo!', users=users)
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo utilizar Jinja2 para renderizar plantillas en Flask. Hemos visto cómo pasar variables a las plantillas, utilizar estructuras de control y crear contenido dinámico. En el próximo módulo, exploraremos cómo trabajar con archivos estáticos en Flask.</p>
+<p>¡Continúa practicando y experimentando con Jinja2 para dominar la creación de plantillas dinámicas en tus aplicaciones Flask!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-handling-http-methods' title="Manejo de Métodos HTTP">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-static-files' title="Trabajando con Archivos Estáticos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

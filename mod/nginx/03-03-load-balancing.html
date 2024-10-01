@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balanceo de Carga</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/03-03-load-balancing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/03-03-load-balancing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/03-03-load-balancing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/03-03-load-balancing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/03-03-load-balancing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-configuring-reverse-proxy' title="Configurando un Proxy Inverso">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Balanceo de Carga</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-health-checks' title="Verificaciones de Salud">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El balanceo de carga es una técnica fundamental para distribuir el tráfico de red entre varios servidores, asegurando que ningún servidor se sobrecargue y que los recursos se utilicen de manera eficiente. NGINX es una herramienta poderosa para implementar balanceo de carga debido a su flexibilidad y rendimiento.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Balanceo de Carga</strong>: Distribuir el tráfico de red entre varios servidores para optimizar el uso de recursos, maximizar el rendimiento y evitar la sobrecarga de un solo servidor.</li>
+<li><strong>Backend Servers</strong>: Los servidores que reciben el tráfico distribuido por el balanceador de carga.</li>
+<li><strong>Algoritmos de Balanceo de Carga</strong>: Métodos utilizados para determinar cómo se distribuye el tráfico entre los servidores backend.</li>
+</ol>
+</div><h1>Algoritmos de Balanceo de Carga</h1>
+<div class='content'><p>NGINX soporta varios algoritmos de balanceo de carga. Los más comunes son:</p>
+<ol>
+<li><strong>Round Robin</strong>: Distribuye las solicitudes de manera secuencial entre los servidores.</li>
+<li><strong>Least Connections</strong>: Envía la solicitud al servidor con la menor cantidad de conexiones activas.</li>
+<li><strong>IP Hash</strong>: Asigna solicitudes a servidores basándose en la dirección IP del cliente.</li>
+</ol>
+</div><h1>Configuración Básica de Balanceo de Carga</h1>
+<div class='content'><p>A continuación, se muestra cómo configurar NGINX para balancear la carga utilizando el algoritmo Round Robin.</p>
+</div><h2>Paso 1: Definir los Servidores Backend</h2>
+<div class='content'><p>Primero, definimos los servidores backend en el archivo de configuración de NGINX (<code>nginx.conf</code>).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwogICAgICAgIHNlcnZlciBiYWNrZW5kMy5leGFtcGxlLmNvbTsKICAgIH0KCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+        server backend3.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>upstream backend</strong>: Define un grupo de servidores backend.</li>
+<li><strong>server backend1.example.com</strong>: Lista de servidores backend.</li>
+<li><strong>proxy_pass http://backend</strong>: Redirige las solicitudes al grupo de servidores definido.</li>
+</ul>
+</div><h2>Paso 2: Usar el Algoritmo Least Connections</h2>
+<div class='content'><p>Para usar el algoritmo Least Connections, simplemente añadimos la directiva <code>least_conn</code> en la definición del grupo de servidores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQzLmV4YW1wbGUuY29tOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        least_conn;
+        server backend1.example.com;
+        server backend2.example.com;
+        server backend3.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Paso 3: Usar el Algoritmo IP Hash</h2>
+<div class='content'><p>Para usar el algoritmo IP Hash, añadimos la directiva <code>ip_hash</code> en la definición del grupo de servidores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBpcF9oYXNoOwogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQzLmV4YW1wbGUuY29tOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        ip_hash;
+        server backend1.example.com;
+        server backend2.example.com;
+        server backend3.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar Balanceo de Carga con Round Robin</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar NGINX para balancear la carga entre tres servidores backend utilizando el algoritmo Round Robin.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Edita el archivo <code>nginx.conf</code>.</li>
+<li>Define un grupo de servidores backend.</li>
+<li>Configura NGINX para redirigir las solicitudes al grupo de servidores utilizando Round Robin.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDEuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQyLmV4YW1wbGUuY29tOwogICAgICAgIHNlcnZlciBiYWNrZW5kMy5leGFtcGxlLmNvbTsKICAgIH0KCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmQ7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        server backend1.example.com;
+        server backend2.example.com;
+        server backend3.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Configurar Balanceo de Carga con Least Connections</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar NGINX para balancear la carga entre tres servidores backend utilizando el algoritmo Least Connections.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Edita el archivo <code>nginx.conf</code>.</li>
+<li>Define un grupo de servidores backend.</li>
+<li>Configura NGINX para redirigir las solicitudes al grupo de servidores utilizando Least Connections.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kIHsKICAgICAgICBsZWFzdF9jb25uOwogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICAgICAgc2VydmVyIGJhY2tlbmQzLmV4YW1wbGUuY29tOwogICAgfQoKICAgIHNlcnZlciB7CiAgICAgICAgbGlzdGVuIDgwOwoKICAgICAgICBsb2NhdGlvbiAvIHsKICAgICAgICAgICAgcHJveHlfcGFzcyBodHRwOi8vYmFja2VuZDsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend {
+        least_conn;
+        server backend1.example.com;
+        server backend2.example.com;
+        server backend3.example.com;
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://backend;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Error: &quot;502 Bad Gateway&quot;</strong>:</p>
+<ul>
+<li><strong>Causa</strong>: Los servidores backend no están disponibles o NGINX no puede conectarse a ellos.</li>
+<li><strong>Solución</strong>: Verifica que los servidores backend estén en funcionamiento y que NGINX pueda conectarse a ellos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Error: &quot;Connection Refused&quot;</strong>:</p>
+<ul>
+<li><strong>Causa</strong>: El puerto en el que NGINX intenta conectarse no está abierto en el servidor backend.</li>
+<li><strong>Solución</strong>: Asegúrate de que el puerto correcto esté abierto y que el servidor backend esté escuchando en ese puerto.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar NGINX para balancear la carga entre varios servidores backend utilizando diferentes algoritmos. El balanceo de carga es esencial para mejorar la disponibilidad y el rendimiento de las aplicaciones web. En el próximo módulo, exploraremos las verificaciones de salud para asegurarnos de que NGINX solo envíe tráfico a servidores que estén en buen estado.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-configuring-reverse-proxy' title="Configurando un Proxy Inverso">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-health-checks' title="Verificaciones de Salud">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas de Extremo a Extremo con Cypress</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/vuejs/08-02-end-to-end-testing-cypress" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/vuejs/08-02-end-to-end-testing-cypress" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/vuejs/08-02-end-to-end-testing-cypress" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/vuejs/08-02-end-to-end-testing-cypress" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/vuejs/08-02-end-to-end-testing-cypress" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-unit-testing-vue-test-utils' title="Pruebas Unitarias con Vue Test Utils">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Pruebas de Extremo a Extremo con Cypress</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-mocking-dependencies' title="Simulación de Dependencias">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las pruebas de extremo a extremo (E2E) son cruciales para garantizar que una aplicación funcione correctamente desde la perspectiva del usuario. Cypress es una herramienta poderosa y moderna para realizar pruebas E2E en aplicaciones web. En esta sección, aprenderás cómo configurar y utilizar Cypress para probar aplicaciones Vue.js.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#qué-es-cypress">¿Qué es Cypress?</a></li>
+<li><a href="#configuración-de-cypress">Configuración de Cypress</a></li>
+<li><a href="#escribiendo-tu-primera-prueba-e2e">Escribiendo tu Primera Prueba E2E</a></li>
+<li><a href="#interacción-con-elementos">Interacción con Elementos</a></li>
+<li><a href="#pruebas-de-navegación">Pruebas de Navegación</a></li>
+<li><a href="#pruebas-de-formularios">Pruebas de Formularios</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>¿Qué es Cypress?</h1>
+<div class='content'><p>Cypress es una herramienta de pruebas de extremo a extremo que permite a los desarrolladores escribir pruebas rápidas, fáciles y confiables para aplicaciones web. Algunas de sus características clave incluyen:</p>
+<ul>
+<li><strong>Tiempo Real</strong>: Cypress ejecuta pruebas en tiempo real, lo que permite ver los resultados instantáneamente.</li>
+<li><strong>Depuración Fácil</strong>: Cypress proporciona herramientas de depuración integradas.</li>
+<li><strong>Automatización Completa</strong>: Permite automatizar interacciones complejas del usuario.</li>
+</ul>
+</div><h1>Configuración de Cypress</h1>
+<div class='content'><p>Para comenzar a usar Cypress en tu proyecto Vue.js, sigue estos pasos:</p>
+<ol>
+<li>
+<p><strong>Instalar Cypress</strong>:</p>
+<pre><code class="language-bash">npm install cypress --save-dev
+</code></pre>
+</li>
+<li>
+<p><strong>Abrir Cypress</strong>:</p>
+<pre><code class="language-bash">npx cypress open
+</code></pre>
+<p>Esto abrirá la interfaz de usuario de Cypress, donde podrás ver y ejecutar tus pruebas.</p>
+</li>
+<li>
+<p><strong>Estructura de Archivos</strong>:
+Cypress creará una estructura de directorios en tu proyecto. Los archivos de prueba se colocan en <code>cypress/integration</code>.</p>
+</li>
+</ol>
+</div><h1>Escribiendo tu Primera Prueba E2E</h1>
+<div class='content'><p>Vamos a escribir una prueba simple para verificar que la página principal de nuestra aplicación Vue.js se carga correctamente.</p>
+<ol>
+<li>
+<p><strong>Crear un Archivo de Prueba</strong>:
+Crea un archivo llamado <code>home.spec.js</code> en <code>cypress/integration</code>.</p>
+</li>
+<li>
+<p><strong>Escribir la Prueba</strong>:</p>
+<pre><code class="language-javascript">describe('Página Principal', () =&gt; {
+  it('debería cargar correctamente', () =&gt; {
+    cy.visit('/');
+    cy.contains('h1', 'Bienvenido a Vue.js');
+  });
+});
+</code></pre>
+<ul>
+<li><code>describe</code>: Define un conjunto de pruebas.</li>
+<li><code>it</code>: Define una prueba individual.</li>
+<li><code>cy.visit('/')</code>: Navega a la URL especificada.</li>
+<li><code>cy.contains('h1', 'Bienvenido a Vue.js')</code>: Verifica que la página contiene un elemento <code>h1</code> con el texto 'Bienvenido a Vue.js'.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Interacción con Elementos</h1>
+<div class='content'><p>Cypress permite interactuar con elementos de la página de manera sencilla. Aquí hay algunos ejemplos:</p>
+<ol>
+<li>
+<p><strong>Hacer Clic en un Botón</strong>:</p>
+<pre><code class="language-javascript">cy.get('button').click();
+</code></pre>
+</li>
+<li>
+<p><strong>Escribir en un Campo de Texto</strong>:</p>
+<pre><code class="language-javascript">cy.get('input[name=&quot;username&quot;]').type('mi_usuario');
+</code></pre>
+</li>
+<li>
+<p><strong>Seleccionar un Elemento de un Menú Desplegable</strong>:</p>
+<pre><code class="language-javascript">cy.get('select').select('opcion1');
+</code></pre>
+</li>
+</ol>
+</div><h1>Pruebas de Navegación</h1>
+<div class='content'><p>Las pruebas de navegación son esenciales para asegurarse de que las rutas de tu aplicación funcionan correctamente.</p>
+<ol>
+<li><strong>Verificar la Navegación a una Nueva Página</strong>:
+<pre><code class="language-javascript">describe('Navegación', () =&gt; {
+  it('debería navegar a la página de acerca de', () =&gt; {
+    cy.visit('/');
+    cy.get('a[href=&quot;/about&quot;]').click();
+    cy.url().should('include', '/about');
+    cy.contains('h1', 'Acerca de Nosotros');
+  });
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Pruebas de Formularios</h1>
+<div class='content'><p>Las pruebas de formularios aseguran que los datos se envían y procesan correctamente.</p>
+<ol>
+<li><strong>Probar el Envío de un Formulario</strong>:
+<pre><code class="language-javascript">describe('Formulario de Contacto', () =&gt; {
+  it('debería enviar el formulario correctamente', () =&gt; {
+    cy.visit('/contact');
+    cy.get('input[name=&quot;name&quot;]').type('Juan Pérez');
+    cy.get('input[name=&quot;email&quot;]').type('juan@example.com');
+    cy.get('textarea[name=&quot;message&quot;]').type('Hola, este es un mensaje de prueba.');
+    cy.get('form').submit();
+    cy.contains('Gracias por tu mensaje');
+  });
+});
+</code></pre>
+</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Verificar el Contenido de una Página</h2>
+<div class='content'><p><strong>Objetivo</strong>: Escribir una prueba que verifique que la página de inicio contiene un párrafo con el texto &quot;Esta es una aplicación Vue.js&quot;.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVzY3JpYmUoJ1DDoWdpbmEgZGUgSW5pY2lvJywgKCkgPT4gewogIGl0KCdkZWJlcsOtYSBjb250ZW5lciBlbCB0ZXh0byBjb3JyZWN0bycsICgpID0+IHsKICAgIGN5LnZpc2l0KCcvJyk7CiAgICBjeS5jb250YWlucygncCcsICdFc3RhIGVzIHVuYSBhcGxpY2FjacOzbiBWdWUuanMnKTsKICB9KTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>describe('P&aacute;gina de Inicio', () =&gt; {
+  it('deber&iacute;a contener el texto correcto', () =&gt; {
+    cy.visit('/');
+    cy.contains('p', 'Esta es una aplicaci&oacute;n Vue.js');
+  });
+});</pre></div><div class='content'></div><h2>Ejercicio 2: Probar la Interacción con un Botón</h2>
+<div class='content'><p><strong>Objetivo</strong>: Escribir una prueba que haga clic en un botón y verifique que un mensaje de éxito aparece.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVzY3JpYmUoJ0ludGVyYWNjacOzbiBjb24gQm90w7NuJywgKCkgPT4gewogIGl0KCdkZWJlcsOtYSBtb3N0cmFyIHVuIG1lbnNhamUgZGUgw6l4aXRvIGFsIGhhY2VyIGNsaWMgZW4gZWwgYm90w7NuJywgKCkgPT4gewogICAgY3kudmlzaXQoJy8nKTsKICAgIGN5LmdldCgnYnV0dG9uI3N1Y2Nlc3MtYnRuJykuY2xpY2soKTsKICAgIGN5LmNvbnRhaW5zKCdwJywgJ09wZXJhY2nDs24gZXhpdG9zYScpOwogIH0pOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>describe('Interacci&oacute;n con Bot&oacute;n', () =&gt; {
+  it('deber&iacute;a mostrar un mensaje de &eacute;xito al hacer clic en el bot&oacute;n', () =&gt; {
+    cy.visit('/');
+    cy.get('button#success-btn').click();
+    cy.contains('p', 'Operaci&oacute;n exitosa');
+  });
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de las pruebas de extremo a extremo con Cypress en aplicaciones Vue.js. Aprendiste a configurar Cypress, escribir pruebas básicas, interactuar con elementos, probar la navegación y formularios, y realizar ejercicios prácticos. Con estas habilidades, estarás bien preparado para asegurar la calidad y funcionalidad de tus aplicaciones Vue.js mediante pruebas E2E.</p>
+<p>En el siguiente módulo, exploraremos conceptos avanzados de Vue.js, incluyendo funciones de renderizado y optimización del rendimiento. ¡Sigue adelante y sigue aprendiendo!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-unit-testing-vue-test-utils' title="Pruebas Unitarias con Vue Test Utils">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-mocking-dependencies' title="Simulación de Dependencias">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

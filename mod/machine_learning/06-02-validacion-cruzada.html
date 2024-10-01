@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validación cruzada</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/06-02-validacion-cruzada" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/06-02-validacion-cruzada" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/06-02-cross-validation" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/machine_learning/06-02-validacion-cruzada" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/machine_learning/06-02-validacion-cruzada" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-metricas-evaluacion' title="Métricas de evaluación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Validación cruzada</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-curva-roc-auc' title="Curva ROC y AUC">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La validación cruzada es una técnica fundamental en el Machine Learning para evaluar la capacidad de generalización de un modelo. Permite estimar el rendimiento del modelo en datos no vistos, ayudando a evitar problemas como el overfitting y el underfitting.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Generalización</strong>: La capacidad de un modelo para desempeñarse bien en datos no vistos.</li>
+<li><strong>Overfitting</strong>: Cuando un modelo se ajusta demasiado a los datos de entrenamiento, capturando ruido y patrones irrelevantes.</li>
+<li><strong>Underfitting</strong>: Cuando un modelo es demasiado simple y no captura los patrones subyacentes en los datos.</li>
+</ol>
+</div><h1>Tipos de Validación Cruzada</h1>
+<div class='content'></div><h2>1. Validación Cruzada Simple (Holdout)</h2>
+<div class='content'><p>Dividir el conjunto de datos en dos partes: una para entrenamiento y otra para prueba.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgdHJhaW5fdGVzdF9zcGxpdAoKIyBTdXBvbmdhbW9zIHF1ZSBYIGVzIG51ZXN0cm8gY29uanVudG8gZGUgY2FyYWN0ZXLDrXN0aWNhcyB5IHkgZXMgbnVlc3RybyBjb25qdW50byBkZSBldGlxdWV0YXMKWF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjIsIHJhbmRvbV9zdGF0ZT00Mik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.model_selection import train_test_split
+
+# Supongamos que X es nuestro conjunto de caracter&iacute;sticas y y es nuestro conjunto de etiquetas
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)</pre></div><div class='content'></div><h2>2. K-Fold Cross-Validation</h2>
+<div class='content'><p>Dividir los datos en K subconjuntos (folds). Entrenar el modelo K veces, cada vez utilizando un fold diferente como conjunto de prueba y los K-1 folds restantes como conjunto de entrenamiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgS0ZvbGQKZnJvbSBza2xlYXJuLmxpbmVhcl9tb2RlbCBpbXBvcnQgTGluZWFyUmVncmVzc2lvbgpmcm9tIHNrbGVhcm4ubWV0cmljcyBpbXBvcnQgbWVhbl9zcXVhcmVkX2Vycm9yCgprZiA9IEtGb2xkKG5fc3BsaXRzPTUpCm1vZGVsID0gTGluZWFyUmVncmVzc2lvbigpCgptc2Vfc2NvcmVzID0gW10KCmZvciB0cmFpbl9pbmRleCwgdGVzdF9pbmRleCBpbiBrZi5zcGxpdChYKToKICAgIFhfdHJhaW4sIFhfdGVzdCA9IFhbdHJhaW5faW5kZXhdLCBYW3Rlc3RfaW5kZXhdCiAgICB5X3RyYWluLCB5X3Rlc3QgPSB5W3RyYWluX2luZGV4XSwgeVt0ZXN0X2luZGV4XQogICAgCiAgICBtb2RlbC5maXQoWF90cmFpbiwgeV90cmFpbikKICAgIHByZWRpY3Rpb25zID0gbW9kZWwucHJlZGljdChYX3Rlc3QpCiAgICBtc2UgPSBtZWFuX3NxdWFyZWRfZXJyb3IoeV90ZXN0LCBwcmVkaWN0aW9ucykKICAgIG1zZV9zY29yZXMuYXBwZW5kKG1zZSkKCmF2ZXJhZ2VfbXNlID0gc3VtKG1zZV9zY29yZXMpIC8gbGVuKG1zZV9zY29yZXMpCnByaW50KGYiQXZlcmFnZSBNU0U6IHthdmVyYWdlX21zZX0iKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.model_selection import KFold
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+kf = KFold(n_splits=5)
+model = LinearRegression()
+
+mse_scores = []
+
+for train_index, test_index in kf.split(X):
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    mse = mean_squared_error(y_test, predictions)
+    mse_scores.append(mse)
+
+average_mse = sum(mse_scores) / len(mse_scores)
+print(f&quot;Average MSE: {average_mse}&quot;)</pre></div><div class='content'></div><h2>3. Stratified K-Fold Cross-Validation</h2>
+<div class='content'><p>Similar a K-Fold, pero mantiene la proporción de clases en cada fold, útil para problemas de clasificación con clases desbalanceadas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgU3RyYXRpZmllZEtGb2xkCgpza2YgPSBTdHJhdGlmaWVkS0ZvbGQobl9zcGxpdHM9NSkKbW9kZWwgPSBMaW5lYXJSZWdyZXNzaW9uKCkKCm1zZV9zY29yZXMgPSBbXQoKZm9yIHRyYWluX2luZGV4LCB0ZXN0X2luZGV4IGluIHNrZi5zcGxpdChYLCB5KToKICAgIFhfdHJhaW4sIFhfdGVzdCA9IFhbdHJhaW5faW5kZXhdLCBYW3Rlc3RfaW5kZXhdCiAgICB5X3RyYWluLCB5X3Rlc3QgPSB5W3RyYWluX2luZGV4XSwgeVt0ZXN0X2luZGV4XQogICAgCiAgICBtb2RlbC5maXQoWF90cmFpbiwgeV90cmFpbikKICAgIHByZWRpY3Rpb25zID0gbW9kZWwucHJlZGljdChYX3Rlc3QpCiAgICBtc2UgPSBtZWFuX3NxdWFyZWRfZXJyb3IoeV90ZXN0LCBwcmVkaWN0aW9ucykKICAgIG1zZV9zY29yZXMuYXBwZW5kKG1zZSkKCmF2ZXJhZ2VfbXNlID0gc3VtKG1zZV9zY29yZXMpIC8gbGVuKG1zZV9zY29yZXMpCnByaW50KGYiQXZlcmFnZSBNU0U6IHthdmVyYWdlX21zZX0iKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.model_selection import StratifiedKFold
+
+skf = StratifiedKFold(n_splits=5)
+model = LinearRegression()
+
+mse_scores = []
+
+for train_index, test_index in skf.split(X, y):
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    mse = mean_squared_error(y_test, predictions)
+    mse_scores.append(mse)
+
+average_mse = sum(mse_scores) / len(mse_scores)
+print(f&quot;Average MSE: {average_mse}&quot;)</pre></div><div class='content'></div><h2>4. Leave-One-Out Cross-Validation (LOOCV)</h2>
+<div class='content'><p>Cada observación se utiliza una vez como conjunto de prueba y el resto como conjunto de entrenamiento. Es computacionalmente costoso pero útil para conjuntos de datos pequeños.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgTGVhdmVPbmVPdXQKCmxvbyA9IExlYXZlT25lT3V0KCkKbW9kZWwgPSBMaW5lYXJSZWdyZXNzaW9uKCkKCm1zZV9zY29yZXMgPSBbXQoKZm9yIHRyYWluX2luZGV4LCB0ZXN0X2luZGV4IGluIGxvby5zcGxpdChYKToKICAgIFhfdHJhaW4sIFhfdGVzdCA9IFhbdHJhaW5faW5kZXhdLCBYW3Rlc3RfaW5kZXhdCiAgICB5X3RyYWluLCB5X3Rlc3QgPSB5W3RyYWluX2luZGV4XSwgeVt0ZXN0X2luZGV4XQogICAgCiAgICBtb2RlbC5maXQoWF90cmFpbiwgeV90cmFpbikKICAgIHByZWRpY3Rpb25zID0gbW9kZWwucHJlZGljdChYX3Rlc3QpCiAgICBtc2UgPSBtZWFuX3NxdWFyZWRfZXJyb3IoeV90ZXN0LCBwcmVkaWN0aW9ucykKICAgIG1zZV9zY29yZXMuYXBwZW5kKG1zZSkKCmF2ZXJhZ2VfbXNlID0gc3VtKG1zZV9zY29yZXMpIC8gbGVuKG1zZV9zY29yZXMpCnByaW50KGYiQXZlcmFnZSBNU0U6IHthdmVyYWdlX21zZX0iKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.model_selection import LeaveOneOut
+
+loo = LeaveOneOut()
+model = LinearRegression()
+
+mse_scores = []
+
+for train_index, test_index in loo.split(X):
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    mse = mean_squared_error(y_test, predictions)
+    mse_scores.append(mse)
+
+average_mse = sum(mse_scores) / len(mse_scores)
+print(f&quot;Average MSE: {average_mse}&quot;)</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar K-Fold Cross-Validation</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar K-Fold Cross-Validation para un modelo de regresión lineal.</li>
+<li><strong>Datos</strong>: Utilizar el conjunto de datos <code>diabetes</code> de <code>sklearn</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBsb2FkX2RpYWJldGVzCmZyb20gc2tsZWFybi5saW5lYXJfbW9kZWwgaW1wb3J0IExpbmVhclJlZ3Jlc3Npb24KZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgS0ZvbGQKZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IG1lYW5fc3F1YXJlZF9lcnJvcgoKIyBDYXJnYXIgZGF0b3MKZGlhYmV0ZXMgPSBsb2FkX2RpYWJldGVzKCkKWCwgeSA9IGRpYWJldGVzLmRhdGEsIGRpYWJldGVzLnRhcmdldAoKIyBDb25maWd1cmFyIEstRm9sZAprZiA9IEtGb2xkKG5fc3BsaXRzPTUpCm1vZGVsID0gTGluZWFyUmVncmVzc2lvbigpCgptc2Vfc2NvcmVzID0gW10KCiMgSW1wbGVtZW50YXIgSy1Gb2xkIENyb3NzLVZhbGlkYXRpb24KZm9yIHRyYWluX2luZGV4LCB0ZXN0X2luZGV4IGluIGtmLnNwbGl0KFgpOgogICAgWF90cmFpbiwgWF90ZXN0ID0gWFt0cmFpbl9pbmRleF0sIFhbdGVzdF9pbmRleF0KICAgIHlfdHJhaW4sIHlfdGVzdCA9IHlbdHJhaW5faW5kZXhdLCB5W3Rlc3RfaW5kZXhdCiAgICAKICAgIG1vZGVsLmZpdChYX3RyYWluLCB5X3RyYWluKQogICAgcHJlZGljdGlvbnMgPSBtb2RlbC5wcmVkaWN0KFhfdGVzdCkKICAgIG1zZSA9IG1lYW5fc3F1YXJlZF9lcnJvcih5X3Rlc3QsIHByZWRpY3Rpb25zKQogICAgbXNlX3Njb3Jlcy5hcHBlbmQobXNlKQoKYXZlcmFnZV9tc2UgPSBzdW0obXNlX3Njb3JlcykgLyBsZW4obXNlX3Njb3JlcykKcHJpbnQoZiJBdmVyYWdlIE1TRToge2F2ZXJhZ2VfbXNlfSIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.datasets import load_diabetes
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import KFold
+from sklearn.metrics import mean_squared_error
+
+# Cargar datos
+diabetes = load_diabetes()
+X, y = diabetes.data, diabetes.target
+
+# Configurar K-Fold
+kf = KFold(n_splits=5)
+model = LinearRegression()
+
+mse_scores = []
+
+# Implementar K-Fold Cross-Validation
+for train_index, test_index in kf.split(X):
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    mse = mean_squared_error(y_test, predictions)
+    mse_scores.append(mse)
+
+average_mse = sum(mse_scores) / len(mse_scores)
+print(f&quot;Average MSE: {average_mse}&quot;)</pre></div><div class='content'></div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYXJnYXIgZGF0b3MKZGlhYmV0ZXMgPSBsb2FkX2RpYWJldGVzKCkKWCwgeSA9IGRpYWJldGVzLmRhdGEsIGRpYWJldGVzLnRhcmdldAoKIyBDb25maWd1cmFyIEstRm9sZAprZiA9IEtGb2xkKG5fc3BsaXRzPTUpCm1vZGVsID0gTGluZWFyUmVncmVzc2lvbigpCgptc2Vfc2NvcmVzID0gW10KCiMgSW1wbGVtZW50YXIgSy1Gb2xkIENyb3NzLVZhbGlkYXRpb24KZm9yIHRyYWluX2luZGV4LCB0ZXN0X2luZGV4IGluIGtmLnNwbGl0KFgpOgogICAgWF90cmFpbiwgWF90ZXN0ID0gWFt0cmFpbl9pbmRleF0sIFhbdGVzdF9pbmRleF0KICAgIHlfdHJhaW4sIHlfdGVzdCA9IHlbdHJhaW5faW5kZXhdLCB5W3Rlc3RfaW5kZXhdCiAgICAKICAgIG1vZGVsLmZpdChYX3RyYWluLCB5X3RyYWluKQogICAgcHJlZGljdGlvbnMgPSBtb2RlbC5wcmVkaWN0KFhfdGVzdCkKICAgIG1zZSA9IG1lYW5fc3F1YXJlZF9lcnJvcih5X3Rlc3QsIHByZWRpY3Rpb25zKQogICAgbXNlX3Njb3Jlcy5hcHBlbmQobXNlKQoKYXZlcmFnZV9tc2UgPSBzdW0obXNlX3Njb3JlcykgLyBsZW4obXNlX3Njb3JlcykKcHJpbnQoZiJBdmVyYWdlIE1TRToge2F2ZXJhZ2VfbXNlfSIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Cargar datos
+diabetes = load_diabetes()
+X, y = diabetes.data, diabetes.target
+
+# Configurar K-Fold
+kf = KFold(n_splits=5)
+model = LinearRegression()
+
+mse_scores = []
+
+# Implementar K-Fold Cross-Validation
+for train_index, test_index in kf.split(X):
+    X_train, X_test = X[train_index], X[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    
+    model.fit(X_train, y_train)
+    predictions = model.predict(X_test)
+    mse = mean_squared_error(y_test, predictions)
+    mse_scores.append(mse)
+
+average_mse = sum(mse_scores) / len(mse_scores)
+print(f&quot;Average MSE: {average_mse}&quot;)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La validación cruzada es una técnica esencial para evaluar la capacidad de generalización de los modelos de Machine Learning. Permite obtener una estimación más precisa del rendimiento del modelo en datos no vistos y ayuda a seleccionar el modelo más adecuado. En esta sección, hemos cubierto varios tipos de validación cruzada y proporcionado ejemplos prácticos para su implementación.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-metricas-evaluacion' title="Métricas de evaluación">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-curva-roc-auc' title="Curva ROC y AUC">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

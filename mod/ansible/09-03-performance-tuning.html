@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuste de Rendimiento</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/09-03-performance-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/09-03-performance-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/09-03-performance-tuning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/ansible/09-03-performance-tuning" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/09-03-performance-tuning" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-security-best-practices' title="Mejores Prácticas de Seguridad">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ajuste de Rendimiento</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-testing-ansible-code' title="Pruebas de Código Ansible">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El ajuste de rendimiento en Ansible es crucial para asegurar que las automatizaciones se ejecuten de manera eficiente y rápida, especialmente en entornos grandes y complejos. En esta sección, exploraremos diversas técnicas y configuraciones que pueden ayudar a optimizar el rendimiento de tus playbooks y tareas de Ansible.</p>
+</div><h1>1. Paralelismo y Conexiones</h1>
+<div class='content'></div><h2>1.1. Configuración de Paralelismo</h2>
+<div class='content'><p>Ansible permite ejecutar tareas en múltiples hosts en paralelo. La configuración predeterminada es ejecutar tareas en 5 hosts a la vez, pero esto se puede ajustar según las necesidades de tu infraestructura.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbZGVmYXVsdHNdCmZvcmtzID0gMTA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[defaults]
+forks = 10</pre></div><div class='content'><ul>
+<li><strong>forks</strong>: Este parámetro define el número de procesos paralelos que Ansible puede ejecutar. Aumentar este número puede mejorar el rendimiento, pero también puede aumentar la carga en el controlador de Ansible y en los hosts gestionados.</li>
+</ul>
+</div><h2>1.2. Control de Conexiones</h2>
+<div class='content'><p>El tipo de conexión y su configuración también pueden afectar el rendimiento. Ansible utiliza SSH por defecto, pero hay opciones para optimizar estas conexiones.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbc3NoX2Nvbm5lY3Rpb25dCnBpcGVsaW5pbmcgPSBUcnVlCmNvbnRyb2xfcGF0aCA9ICUoZGlyZWN0b3J5KXMvJSVoLSUlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[ssh_connection]
+pipelining = True
+control_path = %(directory)s/%%h-%%r</pre></div><div class='content'><ul>
+<li><strong>pipelining</strong>: Habilitar el pipelining puede reducir el número de conexiones SSH necesarias para ejecutar tareas, mejorando así el rendimiento.</li>
+<li><strong>control_path</strong>: Ajustar el control_path puede ayudar a evitar problemas con rutas de socket demasiado largas en sistemas Unix.</li>
+</ul>
+</div><h1>2. Optimización de Playbooks</h1>
+<div class='content'></div><h2>2.1. Uso de Fact Caching</h2>
+<div class='content'><p>El almacenamiento en caché de hechos (facts) puede reducir el tiempo necesario para recopilar información sobre los hosts gestionados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbZGVmYXVsdHNdCmdhdGhlcmluZyA9IHNtYXJ0CmZhY3RfY2FjaGluZyA9IGpzb25maWxlCmZhY3RfY2FjaGluZ19jb25uZWN0aW9uID0gL3RtcC9hbnNpYmxlX2NhY2hlCmZhY3RfY2FjaGluZ190aW1lb3V0ID0gODY0MDA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[defaults]
+gathering = smart
+fact_caching = jsonfile
+fact_caching_connection = /tmp/ansible_cache
+fact_caching_timeout = 86400</pre></div><div class='content'><ul>
+<li><strong>gathering</strong>: La opción &quot;smart&quot; permite a Ansible decidir cuándo es necesario recopilar hechos.</li>
+<li><strong>fact_caching</strong>: Especifica el método de almacenamiento en caché (por ejemplo, jsonfile).</li>
+<li><strong>fact_caching_connection</strong>: Define la ubicación del archivo de caché.</li>
+<li><strong>fact_caching_timeout</strong>: Establece el tiempo de vida de los hechos en caché.</li>
+</ul>
+</div><h2>2.2. Minimizar el Uso de `when`</h2>
+<div class='content'><p>El uso excesivo de condicionales <code>when</code> puede ralentizar la ejecución de playbooks. Siempre que sea posible, organiza las tareas de manera que minimices el uso de condicionales.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGFza3M6CiAgLSBuYW1lOiBJbnN0YWxsIHBhY2thZ2UKICAgIHl1bToKICAgICAgbmFtZTogaHR0cGQKICAgICAgc3RhdGU6IHByZXNlbnQKICAgIHdoZW46IGFuc2libGVfb3NfZmFtaWx5ID09ICJSZWRIYXQi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>tasks:
+  - name: Install package
+    yum:
+      name: httpd
+      state: present
+    when: ansible_os_family == &quot;RedHat&quot;</pre></div><div class='content'><p>En lugar de usar múltiples condicionales, considera agrupar tareas similares y aplicar condicionales a bloques de tareas.</p>
+</div><h1>3. Uso de Callbacks y Plugins</h1>
+<div class='content'></div><h2>3.1. Callbacks</h2>
+<div class='content'><p>Los callbacks pueden proporcionar información útil sobre el rendimiento de tus playbooks. Ansible incluye varios callbacks que se pueden habilitar para obtener métricas detalladas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbZGVmYXVsdHNdCmNhbGxiYWNrX3doaXRlbGlzdCA9IHByb2ZpbGVfdGFza3M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[defaults]
+callback_whitelist = profile_tasks</pre></div><div class='content'><ul>
+<li><strong>profile_tasks</strong>: Este callback proporciona información sobre el tiempo que toma cada tarea, lo que puede ayudarte a identificar cuellos de botella.</li>
+</ul>
+</div><h2>3.2. Plugins de Estrategia</h2>
+<div class='content'><p>Los plugins de estrategia pueden cambiar la forma en que Ansible ejecuta las tareas. Por ejemplo, la estrategia &quot;free&quot; permite que las tareas se ejecuten en cualquier orden, lo que puede mejorar el rendimiento en ciertos escenarios.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBhbnNpYmxlLmNmZwpbZGVmYXVsdHNdCnN0cmF0ZWd5ID0gZnJlZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># ansible.cfg
+[defaults]
+strategy = free</pre></div><div class='content'><ul>
+<li><strong>free</strong>: Permite que las tareas se ejecuten tan pronto como los hosts estén disponibles, en lugar de esperar a que todos los hosts completen la tarea actual.</li>
+</ul>
+</div><h1>4. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Ajuste de Paralelismo</h2>
+<div class='content'><ol>
+<li>Modifica el archivo <code>ansible.cfg</code> para aumentar el número de forks a 20.</li>
+<li>Ejecuta un playbook en un entorno con al menos 10 hosts y mide el tiempo de ejecución.</li>
+<li>Compara el tiempo de ejecución con la configuración predeterminada de 5 forks.</li>
+</ol>
+</div><h2>Ejercicio 2: Habilitación de Fact Caching</h2>
+<div class='content'><ol>
+<li>Configura el almacenamiento en caché de hechos utilizando el método <code>jsonfile</code>.</li>
+<li>Ejecuta un playbook que recopile hechos de los hosts gestionados.</li>
+<li>Verifica que los hechos se almacenan en la ubicación especificada y mide el tiempo de ejecución con y sin caché.</li>
+</ol>
+</div><h2>Ejercicio 3: Uso de Callbacks</h2>
+<div class='content'><ol>
+<li>Habilita el callback <code>profile_tasks</code> en el archivo <code>ansible.cfg</code>.</li>
+<li>Ejecuta un playbook y revisa la salida para identificar las tareas que toman más tiempo.</li>
+<li>Optimiza las tareas identificadas y vuelve a ejecutar el playbook para medir las mejoras en el rendimiento.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El ajuste de rendimiento en Ansible es una combinación de configuraciones adecuadas y buenas prácticas en la escritura de playbooks. Al ajustar el paralelismo, optimizar las conexiones, utilizar el almacenamiento en caché de hechos y emplear callbacks y plugins de estrategia, puedes mejorar significativamente la eficiencia de tus automatizaciones. Asegúrate de probar y medir los cambios para encontrar la configuración óptima para tu entorno específico.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-security-best-practices' title="Mejores Prácticas de Seguridad">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-testing-ansible-code' title="Pruebas de Código Ansible">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

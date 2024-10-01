@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enrutamiento</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/04-04-routing" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/04-04-routing" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/04-04-routing" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nodejs/04-04-routing" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/04-04-routing" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-serving-static-files' title="Sirviendo Archivos Estáticos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Enrutamiento</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-npm' title="Introducción a NPM">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El enrutamiento es un concepto fundamental en el desarrollo de aplicaciones web. En Node.js, especialmente cuando se utiliza el framework Express.js, el enrutamiento permite definir cómo una aplicación responde a una solicitud de un cliente en un punto final específico, que es una URI (o ruta) y un método HTTP específico (GET, POST, etc.).</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Ruta</strong>: Una ruta es una combinación de una URL y un método HTTP (GET, POST, PUT, DELETE, etc.).</li>
+<li><strong>Controlador de Ruta</strong>: Una función que se ejecuta cuando se accede a una ruta específica.</li>
+<li><strong>Parámetros de Ruta</strong>: Variables en la ruta que pueden capturar valores específicos de la URL.</li>
+<li><strong>Middleware</strong>: Funciones que tienen acceso al objeto de solicitud (req), al objeto de respuesta (res) y a la siguiente función de middleware en el ciclo de solicitud/respuesta de la aplicación.</li>
+</ol>
+</div><h1>Configuración Básica de Rutas en Express.js</h1>
+<div class='content'></div><h2>Instalación de Express.js</h2>
+<div class='content'><p>Antes de comenzar, asegúrate de tener Express.js instalado en tu proyecto. Si no lo tienes, puedes instalarlo usando npm:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgZXhwcmVzcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install express</pre></div><div class='content'></div><h2>Creación de un Servidor Básico con Rutas</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo básico de cómo configurar un servidor Express.js con algunas rutas simples:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gSW1wb3J0YXIgZWwgbcOzZHVsbyBleHByZXNzCmNvbnN0IGV4cHJlc3MgPSByZXF1aXJlKCdleHByZXNzJyk7CgovLyBDcmVhciB1bmEgaW5zdGFuY2lhIGRlIGxhIGFwbGljYWNpw7NuIEV4cHJlc3MKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKLy8gRGVmaW5pciB1bmEgcnV0YSBHRVQgZW4gbGEgcmHDrXoKYXBwLmdldCgnLycsIChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKCfCoUhvbGEsIG11bmRvIScpOwp9KTsKCi8vIERlZmluaXIgdW5hIHJ1dGEgR0VUIGVuIC9hYm91dAphcHAuZ2V0KCcvYWJvdXQnLCAocmVxLCByZXMpID0+IHsKICByZXMuc2VuZCgnQWNlcmNhIGRlIG5vc290cm9zJyk7Cn0pOwoKLy8gRGVmaW5pciB1bmEgcnV0YSBHRVQgY29uIHVuIHBhcsOhbWV0cm8gZGUgcnV0YQphcHAuZ2V0KCcvdXNlci86aWQnLCAocmVxLCByZXMpID0+IHsKICBjb25zdCB1c2VySWQgPSByZXEucGFyYW1zLmlkOwogIHJlcy5zZW5kKGBVc3VhcmlvIElEOiAke3VzZXJJZH1gKTsKfSk7CgovLyBJbmljaWFyIGVsIHNlcnZpZG9yIGVuIGVsIHB1ZXJ0byAzMDAwCmNvbnN0IFBPUlQgPSAzMDAwOwphcHAubGlzdGVuKFBPUlQsICgpID0+IHsKICBjb25zb2xlLmxvZyhgU2Vydmlkb3IgZXNjdWNoYW5kbyBlbiBlbCBwdWVydG8gJHtQT1JUfWApOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Importar el m&oacute;dulo express
+const express = require('express');
+
+// Crear una instancia de la aplicaci&oacute;n Express
+const app = express();
+
+// Definir una ruta GET en la ra&iacute;z
+app.get('/', (req, res) =&gt; {
+  res.send('&iexcl;Hola, mundo!');
+});
+
+// Definir una ruta GET en /about
+app.get('/about', (req, res) =&gt; {
+  res.send('Acerca de nosotros');
+});
+
+// Definir una ruta GET con un par&aacute;metro de ruta
+app.get('/user/:id', (req, res) =&gt; {
+  const userId = req.params.id;
+  res.send(`Usuario ID: ${userId}`);
+});
+
+// Iniciar el servidor en el puerto 3000
+const PORT = 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Importar Express</strong>: <code>const express = require('express');</code></p>
+<ul>
+<li>Importa el módulo Express para poder utilizarlo en la aplicación.</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear una Aplicación Express</strong>: <code>const app = express();</code></p>
+<ul>
+<li>Crea una instancia de la aplicación Express.</li>
+</ul>
+</li>
+<li>
+<p><strong>Definir Rutas</strong>:</p>
+<ul>
+<li><code>app.get('/', (req, res) =&gt; { ... });</code>: Define una ruta GET en la raíz (<code>/</code>) que responde con &quot;¡Hola, mundo!&quot;.</li>
+<li><code>app.get('/about', (req, res) =&gt; { ... });</code>: Define una ruta GET en <code>/about</code> que responde con &quot;Acerca de nosotros&quot;.</li>
+<li><code>app.get('/user/:id', (req, res) =&gt; { ... });</code>: Define una ruta GET con un parámetro de ruta (<code>:id</code>). El valor del parámetro se puede acceder a través de <code>req.params.id</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Iniciar el Servidor</strong>: <code>app.listen(PORT, () =&gt; { ... });</code></p>
+<ul>
+<li>Inicia el servidor en el puerto especificado (3000 en este caso) y muestra un mensaje en la consola cuando el servidor está listo.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo de Rutas con Diferentes Métodos HTTP</h1>
+<div class='content'><p>Express.js permite definir rutas para diferentes métodos HTTP. Aquí hay un ejemplo que muestra cómo hacerlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUnV0YSBHRVQKYXBwLmdldCgnL2RhdGEnLCAocmVxLCByZXMpID0+IHsKICByZXMuc2VuZCgnTcOpdG9kbyBHRVQnKTsKfSk7CgovLyBSdXRhIFBPU1QKYXBwLnBvc3QoJy9kYXRhJywgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnNlbmQoJ03DqXRvZG8gUE9TVCcpOwp9KTsKCi8vIFJ1dGEgUFVUCmFwcC5wdXQoJy9kYXRhJywgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnNlbmQoJ03DqXRvZG8gUFVUJyk7Cn0pOwoKLy8gUnV0YSBERUxFVEUKYXBwLmRlbGV0ZSgnL2RhdGEnLCAocmVxLCByZXMpID0+IHsKICByZXMuc2VuZCgnTcOpdG9kbyBERUxFVEUnKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ruta GET
+app.get('/data', (req, res) =&gt; {
+  res.send('M&eacute;todo GET');
+});
+
+// Ruta POST
+app.post('/data', (req, res) =&gt; {
+  res.send('M&eacute;todo POST');
+});
+
+// Ruta PUT
+app.put('/data', (req, res) =&gt; {
+  res.send('M&eacute;todo PUT');
+});
+
+// Ruta DELETE
+app.delete('/data', (req, res) =&gt; {
+  res.send('M&eacute;todo DELETE');
+});</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear Rutas Básicas</h2>
+<div class='content'><ol>
+<li>Crea una nueva aplicación Express.</li>
+<li>Define las siguientes rutas:
+<ul>
+<li>Una ruta GET en <code>/</code> que responda con &quot;Página de inicio&quot;.</li>
+<li>Una ruta GET en <code>/contact</code> que responda con &quot;Página de contacto&quot;.</li>
+<li>Una ruta GET en <code>/user/:name</code> que responda con &quot;Hola, [nombre]&quot;, donde <code>[nombre]</code> es el valor del parámetro de ruta.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKYXBwLmdldCgnLycsIChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKCdQw6FnaW5hIGRlIGluaWNpbycpOwp9KTsKCmFwcC5nZXQoJy9jb250YWN0JywgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnNlbmQoJ1DDoWdpbmEgZGUgY29udGFjdG8nKTsKfSk7CgphcHAuZ2V0KCcvdXNlci86bmFtZScsIChyZXEsIHJlcykgPT4gewogIGNvbnN0IHVzZXJOYW1lID0gcmVxLnBhcmFtcy5uYW1lOwogIHJlcy5zZW5kKGBIb2xhLCAke3VzZXJOYW1lfWApOwp9KTsKCmNvbnN0IFBPUlQgPSAzMDAwOwphcHAubGlzdGVuKFBPUlQsICgpID0+IHsKICBjb25zb2xlLmxvZyhgU2Vydmlkb3IgZXNjdWNoYW5kbyBlbiBlbCBwdWVydG8gJHtQT1JUfWApOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const app = express();
+
+app.get('/', (req, res) =&gt; {
+  res.send('P&aacute;gina de inicio');
+});
+
+app.get('/contact', (req, res) =&gt; {
+  res.send('P&aacute;gina de contacto');
+});
+
+app.get('/user/:name', (req, res) =&gt; {
+  const userName = req.params.name;
+  res.send(`Hola, ${userName}`);
+});
+
+const PORT = 3000;
+app.listen(PORT, () =&gt; {
+  console.log(`Servidor escuchando en el puerto ${PORT}`);
+});</pre></div><div class='content'></div><h2>Ejercicio 2: Rutas con Diferentes Métodos HTTP</h2>
+<div class='content'><ol>
+<li>Define una ruta POST en <code>/submit</code> que responda con &quot;Formulario enviado&quot;.</li>
+<li>Define una ruta PUT en <code>/update</code> que responda con &quot;Datos actualizados&quot;.</li>
+<li>Define una ruta DELETE en <code>/delete</code> que responda con &quot;Datos eliminados&quot;.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwLnBvc3QoJy9zdWJtaXQnLCAocmVxLCByZXMpID0+IHsKICByZXMuc2VuZCgnRm9ybXVsYXJpbyBlbnZpYWRvJyk7Cn0pOwoKYXBwLnB1dCgnL3VwZGF0ZScsIChyZXEsIHJlcykgPT4gewogIHJlcy5zZW5kKCdEYXRvcyBhY3R1YWxpemFkb3MnKTsKfSk7CgphcHAuZGVsZXRlKCcvZGVsZXRlJywgKHJlcSwgcmVzKSA9PiB7CiAgcmVzLnNlbmQoJ0RhdG9zIGVsaW1pbmFkb3MnKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>app.post('/submit', (req, res) =&gt; {
+  res.send('Formulario enviado');
+});
+
+app.put('/update', (req, res) =&gt; {
+  res.send('Datos actualizados');
+});
+
+app.delete('/delete', (req, res) =&gt; {
+  res.send('Datos eliminados');
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El enrutamiento en Express.js es una herramienta poderosa que permite definir cómo una aplicación responde a las solicitudes del cliente en diferentes puntos finales. Al comprender y utilizar rutas, parámetros de ruta y diferentes métodos HTTP, puedes crear aplicaciones web robustas y dinámicas. En el próximo módulo, exploraremos cómo manejar errores y utilizar middleware para mejorar aún más nuestras aplicaciones Express.js.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-serving-static-files' title="Sirviendo Archivos Estáticos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-introduction-to-npm' title="Introducción a NPM">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

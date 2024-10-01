@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Callbacks y Programación Asíncrona</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/02-03-callbacks-async" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/02-03-callbacks-async" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/02-03-callbacks-async" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nodejs/02-03-callbacks-async" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/02-03-callbacks-async" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-event-loop' title="Event Loop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Callbacks y Programación Asíncrona</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-modules-require' title="Módulos y require()">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En Node.js, la programación asíncrona es fundamental debido a su naturaleza no bloqueante. Esto permite que las operaciones de E/S (entrada/salida) no detengan la ejecución del programa mientras esperan una respuesta. En este módulo, aprenderemos sobre los callbacks, una de las formas más comunes de manejar la asincronía en Node.js.</p>
+</div><h1>¿Qué es un Callback?</h1>
+<div class='content'><p>Un callback es una función que se pasa como argumento a otra función y se ejecuta después de que la primera función ha completado su tarea. Los callbacks son una forma de asegurarse de que cierto código no se ejecute hasta que se haya completado una operación asíncrona.</p>
+</div><h2>Ejemplo Básico de Callback</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gZmV0Y2hEYXRhKGNhbGxiYWNrKSB7CiAgICBzZXRUaW1lb3V0KCgpID0+IHsKICAgICAgICBjb25zdCBkYXRhID0geyBuYW1lOiAiSm9obiIsIGFnZTogMzAgfTsKICAgICAgICBjYWxsYmFjayhkYXRhKTsKICAgIH0sIDIwMDApOwp9CgpmdW5jdGlvbiBkaXNwbGF5RGF0YShkYXRhKSB7CiAgICBjb25zb2xlLmxvZygiRGF0YSByZWNlaXZlZDoiLCBkYXRhKTsKfQoKZmV0Y2hEYXRhKGRpc3BsYXlEYXRhKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function fetchData(callback) {
+    setTimeout(() =&gt; {
+        const data = { name: &quot;John&quot;, age: 30 };
+        callback(data);
+    }, 2000);
+}
+
+function displayData(data) {
+    console.log(&quot;Data received:&quot;, data);
+}
+
+fetchData(displayData);</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>fetchData</code> es una función que simula una operación asíncrona usando <code>setTimeout</code>.</li>
+<li><code>displayData</code> es la función callback que se ejecuta una vez que <code>fetchData</code> ha completado su tarea.</li>
+</ul>
+</div><h1>Callbacks en Node.js</h1>
+<div class='content'><p>Node.js utiliza callbacks extensivamente para manejar operaciones asíncronas como la lectura de archivos, las solicitudes HTTP, etc.</p>
+</div><h2>Ejemplo de Callback en Node.js</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwoKZnMucmVhZEZpbGUoJ2V4YW1wbGUudHh0JywgJ3V0ZjgnLCAoZXJyLCBkYXRhKSA9PiB7CiAgICBpZiAoZXJyKSB7CiAgICAgICAgY29uc29sZS5lcnJvcigiRXJyb3IgcmVhZGluZyBmaWxlOiIsIGVycik7CiAgICAgICAgcmV0dXJuOwogICAgfQogICAgY29uc29sZS5sb2coIkZpbGUgY29udGVudDoiLCBkYXRhKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+
+fs.readFile('example.txt', 'utf8', (err, data) =&gt; {
+    if (err) {
+        console.error(&quot;Error reading file:&quot;, err);
+        return;
+    }
+    console.log(&quot;File content:&quot;, data);
+});</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li><code>fs.readFile</code> es una función asíncrona que lee el contenido de un archivo.</li>
+<li>El tercer argumento es una función callback que se ejecuta una vez que la operación de lectura se ha completado.</li>
+</ul>
+</div><h1>Manejo de Errores en Callbacks</h1>
+<div class='content'><p>Es una práctica común en Node.js que el primer argumento de un callback sea un posible error. Esto permite manejar errores de manera efectiva.</p>
+</div><h2>Ejemplo de Manejo de Errores</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwoKZnMucmVhZEZpbGUoJ25vbmV4aXN0ZW50LnR4dCcsICd1dGY4JywgKGVyciwgZGF0YSkgPT4gewogICAgaWYgKGVycikgewogICAgICAgIGNvbnNvbGUuZXJyb3IoIkVycm9yIHJlYWRpbmcgZmlsZToiLCBlcnIpOwogICAgICAgIHJldHVybjsKICAgIH0KICAgIGNvbnNvbGUubG9nKCJGaWxlIGNvbnRlbnQ6IiwgZGF0YSk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+
+fs.readFile('nonexistent.txt', 'utf8', (err, data) =&gt; {
+    if (err) {
+        console.error(&quot;Error reading file:&quot;, err);
+        return;
+    }
+    console.log(&quot;File content:&quot;, data);
+});</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li>Si el archivo <code>nonexistent.txt</code> no existe, el callback recibe un objeto de error en <code>err</code>.</li>
+<li>El código dentro del bloque <code>if (err)</code> maneja el error apropiadamente.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Leer y Escribir Archivos con Callbacks</h2>
+<div class='content'><ol>
+<li>Crea un archivo llamado <code>input.txt</code> con algún contenido de texto.</li>
+<li>Escribe un programa en Node.js que lea el contenido de <code>input.txt</code> y lo escriba en un nuevo archivo llamado <code>output.txt</code>.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwoKZnMucmVhZEZpbGUoJ2lucHV0LnR4dCcsICd1dGY4JywgKGVyciwgZGF0YSkgPT4gewogICAgaWYgKGVycikgewogICAgICAgIGNvbnNvbGUuZXJyb3IoIkVycm9yIHJlYWRpbmcgaW5wdXQgZmlsZToiLCBlcnIpOwogICAgICAgIHJldHVybjsKICAgIH0KICAgIGZzLndyaXRlRmlsZSgnb3V0cHV0LnR4dCcsIGRhdGEsIChlcnIpID0+IHsKICAgICAgICBpZiAoZXJyKSB7CiAgICAgICAgICAgIGNvbnNvbGUuZXJyb3IoIkVycm9yIHdyaXRpbmcgdG8gb3V0cHV0IGZpbGU6IiwgZXJyKTsKICAgICAgICAgICAgcmV0dXJuOwogICAgICAgIH0KICAgICAgICBjb25zb2xlLmxvZygiRmlsZSBoYXMgYmVlbiB3cml0dGVuIHN1Y2Nlc3NmdWxseS4iKTsKICAgIH0pOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+
+fs.readFile('input.txt', 'utf8', (err, data) =&gt; {
+    if (err) {
+        console.error(&quot;Error reading input file:&quot;, err);
+        return;
+    }
+    fs.writeFile('output.txt', data, (err) =&gt; {
+        if (err) {
+            console.error(&quot;Error writing to output file:&quot;, err);
+            return;
+        }
+        console.log(&quot;File has been written successfully.&quot;);
+    });
+});</pre></div><div class='content'></div><h2>Ejercicio 2: Realizar una Solicitud HTTP</h2>
+<div class='content'><ol>
+<li>Utiliza el módulo <code>http</code> de Node.js para realizar una solicitud GET a <code>https://jsonplaceholder.typicode.com/posts/1</code>.</li>
+<li>Imprime la respuesta en la consola.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgaHR0cCA9IHJlcXVpcmUoJ2h0dHAnKTsKCmh0dHAuZ2V0KCdodHRwOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cy8xJywgKHJlcykgPT4gewogICAgbGV0IGRhdGEgPSAnJzsKCiAgICByZXMub24oJ2RhdGEnLCAoY2h1bmspID0+IHsKICAgICAgICBkYXRhICs9IGNodW5rOwogICAgfSk7CgogICAgcmVzLm9uKCdlbmQnLCAoKSA9PiB7CiAgICAgICAgY29uc29sZS5sb2coIlJlc3BvbnNlIHJlY2VpdmVkOiIsIGRhdGEpOwogICAgfSk7Cn0pLm9uKCdlcnJvcicsIChlcnIpID0+IHsKICAgIGNvbnNvbGUuZXJyb3IoIkVycm9yIG1ha2luZyBIVFRQIHJlcXVlc3Q6IiwgZXJyKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const http = require('http');
+
+http.get('http://jsonplaceholder.typicode.com/posts/1', (res) =&gt; {
+    let data = '';
+
+    res.on('data', (chunk) =&gt; {
+        data += chunk;
+    });
+
+    res.on('end', () =&gt; {
+        console.log(&quot;Response received:&quot;, data);
+    });
+}).on('error', (err) =&gt; {
+    console.error(&quot;Error making HTTP request:&quot;, err);
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los callbacks y su importancia en la programación asíncrona en Node.js. Los callbacks son una herramienta poderosa para manejar operaciones asíncronas, pero también pueden llevar a un código difícil de mantener si no se usan correctamente (conocido como &quot;callback hell&quot;). En los próximos módulos, exploraremos otras formas de manejar la asincronía, como las Promesas y <code>async/await</code>.</p>
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li><strong>Callback</strong>: Una función que se pasa como argumento a otra función y se ejecuta después de que la primera función ha completado su tarea.</li>
+<li><strong>Manejo de Errores</strong>: Es común que el primer argumento de un callback sea un posible error.</li>
+<li><strong>Ejemplos Prácticos</strong>: Leer y escribir archivos, realizar solicitudes HTTP.</li>
+</ul>
+<p>Prepárate para el siguiente tema donde profundizaremos en los módulos y el uso de <code>require()</code> en Node.js.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-event-loop' title="Event Loop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-modules-require' title="Módulos y require()">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

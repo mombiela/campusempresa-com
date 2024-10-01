@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reflexión</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/go/06-02-reflection" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/go/06-02-reflection" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/go/06-02-reflection" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/go/06-02-reflection" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/go/06-02-reflection" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-interfaces' title="Interfaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Reflexión</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-testing' title="Pruebas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La reflexión en Go es una poderosa característica que permite a los programas inspeccionar y manipular objetos en tiempo de ejecución. Esto es particularmente útil para tareas como la serialización, la validación de datos y la creación de frameworks. En este módulo, exploraremos los conceptos básicos de la reflexión, cómo usar el paquete <code>reflect</code> y algunos ejemplos prácticos.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li>¿Qué es la reflexión?</li>
+<li>El paquete <code>reflect</code></li>
+<li>Inspección de tipos</li>
+<li>Manipulación de valores</li>
+<li>Ejemplos prácticos</li>
+<li>Ejercicios</li>
+</ol>
+</div><h1>1. ¿Qué es la reflexión?</h1>
+<div class='content'><p>La reflexión es la capacidad de un programa para examinar su propia estructura, especialmente los tipos. En Go, esto se logra mediante el paquete <code>reflect</code>, que permite inspeccionar y modificar los valores y tipos en tiempo de ejecución.</p>
+</div><h1>2. El paquete `reflect`</h1>
+<div class='content'><p>El paquete <code>reflect</code> es la base de la reflexión en Go. Proporciona varias funciones y tipos que permiten trabajar con la reflexión. Los dos tipos más importantes en este paquete son <code>reflect.Type</code> y <code>reflect.Value</code>.</p>
+<ul>
+<li><code>reflect.Type</code>: Representa el tipo de un valor.</li>
+<li><code>reflect.Value</code>: Representa el valor en sí mismo.</li>
+</ul>
+</div><h1>3. Inspección de tipos</h1>
+<div class='content'><p>Para inspeccionar el tipo de un valor, utilizamos la función <code>reflect.TypeOf</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgpmdW5jIG1haW4oKSB7CiAgICB2YXIgeCBmbG9hdDY0ID0gMy40CiAgICBmbXQuUHJpbnRsbigidHlwZToiLCByZWZsZWN0LlR5cGVPZih4KSkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    fmt.Println(&quot;type:&quot;, reflect.TypeOf(x))
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>reflect.TypeOf(x)</code>: Devuelve el tipo del valor <code>x</code>, en este caso <code>float64</code>.</li>
+</ul>
+</div><h1>4. Manipulación de valores</h1>
+<div class='content'><p>Para manipular valores, utilizamos la función <code>reflect.ValueOf</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgpmdW5jIG1haW4oKSB7CiAgICB2YXIgeCBmbG9hdDY0ID0gMy40CiAgICB2IDo9IHJlZmxlY3QuVmFsdWVPZih4KQogICAgZm10LlByaW50bG4oInZhbHVlOiIsIHYpCiAgICBmbXQuUHJpbnRsbigidHlwZToiLCB2LlR5cGUoKSkKICAgIGZtdC5QcmludGxuKCJraW5kOiIsIHYuS2luZCgpKQogICAgZm10LlByaW50bG4oImZsb2F0IHZhbHVlOiIsIHYuRmxvYXQoKSkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    v := reflect.ValueOf(x)
+    fmt.Println(&quot;value:&quot;, v)
+    fmt.Println(&quot;type:&quot;, v.Type())
+    fmt.Println(&quot;kind:&quot;, v.Kind())
+    fmt.Println(&quot;float value:&quot;, v.Float())
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>reflect.ValueOf(x)</code>: Devuelve un <code>reflect.Value</code> que contiene el valor de <code>x</code>.</li>
+<li><code>v.Type()</code>: Devuelve el tipo del valor.</li>
+<li><code>v.Kind()</code>: Devuelve el &quot;kind&quot; del valor, que es una categoría más general que el tipo (por ejemplo, <code>float64</code> es de kind <code>float</code>).</li>
+<li><code>v.Float()</code>: Devuelve el valor como un <code>float64</code>.</li>
+</ul>
+</div><h1>5. Ejemplos prácticos</h1>
+<div class='content'></div><h2>Ejemplo 1: Modificación de un valor</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgpmdW5jIG1haW4oKSB7CiAgICB2YXIgeCBmbG9hdDY0ID0gMy40CiAgICBwIDo9IHJlZmxlY3QuVmFsdWVPZigmeCkKICAgIHYgOj0gcC5FbGVtKCkKICAgIHYuU2V0RmxvYXQoNy4xKQogICAgZm10LlByaW50bG4oeCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func main() {
+    var x float64 = 3.4
+    p := reflect.ValueOf(&amp;x)
+    v := p.Elem()
+    v.SetFloat(7.1)
+    fmt.Println(x)
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>reflect.ValueOf(&amp;x)</code>: Obtenemos un <code>reflect.Value</code> que contiene un puntero a <code>x</code>.</li>
+<li><code>p.Elem()</code>: Obtenemos el valor al que apunta el puntero.</li>
+<li><code>v.SetFloat(7.1)</code>: Modificamos el valor a <code>7.1</code>.</li>
+</ul>
+</div><h2>Ejemplo 2: Iteración sobre los campos de una struct</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgp0eXBlIFBlcnNvbiBzdHJ1Y3QgewogICAgTmFtZSBzdHJpbmcKICAgIEFnZSAgaW50Cn0KCmZ1bmMgbWFpbigpIHsKICAgIHAgOj0gUGVyc29ueyJBbGljZSIsIDMwfQogICAgdiA6PSByZWZsZWN0LlZhbHVlT2YocCkKICAgIGZvciBpIDo9IDA7IGkgPCB2Lk51bUZpZWxkKCk7IGkrKyB7CiAgICAgICAgZm10LlByaW50ZigiRmllbGQgJWQ6ICV2XG4iLCBpLCB2LkZpZWxkKGkpKQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+type Person struct {
+    Name string
+    Age  int
+}
+
+func main() {
+    p := Person{&quot;Alice&quot;, 30}
+    v := reflect.ValueOf(p)
+    for i := 0; i &lt; v.NumField(); i++ {
+        fmt.Printf(&quot;Field %d: %v\n&quot;, i, v.Field(i))
+    }
+}</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><code>reflect.ValueOf(p)</code>: Obtenemos un <code>reflect.Value</code> que contiene la struct <code>p</code>.</li>
+<li><code>v.NumField()</code>: Devuelve el número de campos en la struct.</li>
+<li><code>v.Field(i)</code>: Devuelve el valor del campo <code>i</code>.</li>
+</ul>
+</div><h1>6. Ejercicios</h1>
+<div class='content'></div><h2>Ejercicio 1: Inspección de tipos</h2>
+<div class='content'><p>Escribe un programa que tome una variable de cualquier tipo y use la reflexión para imprimir su tipo y valor.</p>
+</div><h2>Ejercicio 2: Modificación de valores</h2>
+<div class='content'><p>Escribe un programa que tome un puntero a una variable de tipo <code>int</code> y use la reflexión para modificar su valor.</p>
+</div><h2>Ejercicio 3: Iteración sobre una struct</h2>
+<div class='content'><p>Escribe un programa que tome una struct con al menos tres campos de diferentes tipos y use la reflexión para imprimir los nombres y valores de sus campos.</p>
+</div><h1>Soluciones</h1>
+<div class='content'></div><h2>Solución 1: Inspección de tipos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgpmdW5jIGluc3BlY3RUeXBlQW5kVmFsdWUoeCBpbnRlcmZhY2V7fSkgewogICAgdiA6PSByZWZsZWN0LlZhbHVlT2YoeCkKICAgIGZtdC5QcmludGxuKCJUeXBlOiIsIHYuVHlwZSgpKQogICAgZm10LlByaW50bG4oIlZhbHVlOiIsIHYpCn0KCmZ1bmMgbWFpbigpIHsKICAgIHZhciB4IGZsb2F0NjQgPSAzLjQKICAgIGluc3BlY3RUeXBlQW5kVmFsdWUoeCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func inspectTypeAndValue(x interface{}) {
+    v := reflect.ValueOf(x)
+    fmt.Println(&quot;Type:&quot;, v.Type())
+    fmt.Println(&quot;Value:&quot;, v)
+}
+
+func main() {
+    var x float64 = 3.4
+    inspectTypeAndValue(x)
+}</pre></div><div class='content'></div><h2>Solución 2: Modificación de valores</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgpmdW5jIG1vZGlmeVZhbHVlKHggaW50ZXJmYWNle30pIHsKICAgIHAgOj0gcmVmbGVjdC5WYWx1ZU9mKHgpCiAgICBpZiBwLktpbmQoKSA9PSByZWZsZWN0LlB0ciAmJiAhcC5FbGVtKCkuQ2FuU2V0KCkgewogICAgICAgIGZtdC5QcmludGxuKCJDYW5ub3Qgc2V0IHZhbHVlIikKICAgICAgICByZXR1cm4KICAgIH0KICAgIHYgOj0gcC5FbGVtKCkKICAgIGlmIHYuS2luZCgpID09IHJlZmxlY3QuSW50IHsKICAgICAgICB2LlNldEludCg0MikKICAgIH0KfQoKZnVuYyBtYWluKCkgewogICAgdmFyIHggaW50ID0gMTAKICAgIG1vZGlmeVZhbHVlKCZ4KQogICAgZm10LlByaW50bG4oeCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+func modifyValue(x interface{}) {
+    p := reflect.ValueOf(x)
+    if p.Kind() == reflect.Ptr &amp;&amp; !p.Elem().CanSet() {
+        fmt.Println(&quot;Cannot set value&quot;)
+        return
+    }
+    v := p.Elem()
+    if v.Kind() == reflect.Int {
+        v.SetInt(42)
+    }
+}
+
+func main() {
+    var x int = 10
+    modifyValue(&amp;x)
+    fmt.Println(x)
+}</pre></div><div class='content'></div><h2>Solución 3: Iteración sobre una struct</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBtYWluCgppbXBvcnQgKAogICAgImZtdCIKICAgICJyZWZsZWN0IgopCgp0eXBlIEV4YW1wbGUgc3RydWN0IHsKICAgIE5hbWUgIHN0cmluZwogICAgQWdlICAgaW50CiAgICBTY29yZSBmbG9hdDY0Cn0KCmZ1bmMgcHJpbnRTdHJ1Y3RGaWVsZHMocyBpbnRlcmZhY2V7fSkgewogICAgdiA6PSByZWZsZWN0LlZhbHVlT2YocykKICAgIHQgOj0gdi5UeXBlKCkKICAgIGZvciBpIDo9IDA7IGkgPCB2Lk51bUZpZWxkKCk7IGkrKyB7CiAgICAgICAgZm10LlByaW50ZigiRmllbGQgJXM6ICV2XG4iLCB0LkZpZWxkKGkpLk5hbWUsIHYuRmllbGQoaSkpCiAgICB9Cn0KCmZ1bmMgbWFpbigpIHsKICAgIGUgOj0gRXhhbXBsZXsiQWxpY2UiLCAzMCwgOTUuNX0KICAgIHByaW50U3RydWN0RmllbGRzKGUpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package main
+
+import (
+    &quot;fmt&quot;
+    &quot;reflect&quot;
+)
+
+type Example struct {
+    Name  string
+    Age   int
+    Score float64
+}
+
+func printStructFields(s interface{}) {
+    v := reflect.ValueOf(s)
+    t := v.Type()
+    for i := 0; i &lt; v.NumField(); i++ {
+        fmt.Printf(&quot;Field %s: %v\n&quot;, t.Field(i).Name, v.Field(i))
+    }
+}
+
+func main() {
+    e := Example{&quot;Alice&quot;, 30, 95.5}
+    printStructFields(e)
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos explorado la reflexión en Go, aprendiendo a inspeccionar y manipular tipos y valores en tiempo de ejecución utilizando el paquete <code>reflect</code>. La reflexión es una herramienta poderosa que puede ser utilizada para una variedad de tareas avanzadas en programación. Con los ejemplos y ejercicios proporcionados, deberías tener una buena comprensión de cómo aplicar la reflexión en tus propios proyectos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-interfaces' title="Interfaces">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-testing' title="Pruebas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

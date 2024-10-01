@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ServerSocket</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/java/09-03-serversocket" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/java/09-03-serversocket" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/java/09-03-serversocket" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/java/09-03-serversocket" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/java/09-03-serversocket" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-sockets' title="Sockets">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">ServerSocket</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-datagramsocket-and-datagrampacket' title="DatagramSocket y DatagramPacket">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, aprenderemos sobre <code>ServerSocket</code>, una clase fundamental en Java para la creación de aplicaciones de red que actúan como servidores. Un <code>ServerSocket</code> espera conexiones entrantes de clientes y establece una comunicación bidireccional con ellos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>ServerSocket</strong>: Una clase que implementa un servidor de sockets. Permite que una aplicación acepte conexiones de clientes.</li>
+<li><strong>Socket</strong>: Una clase que representa una conexión de red entre dos máquinas.</li>
+<li><strong>Puerto</strong>: Un número que identifica un proceso específico en una máquina. Los puertos permiten que múltiples servicios de red se ejecuten simultáneamente en una sola máquina.</li>
+</ol>
+</div><h1>Creación de un ServerSocket</h1>
+<div class='content'><p>Para crear un <code>ServerSocket</code>, necesitas especificar un puerto en el que el servidor escuchará las conexiones entrantes. Aquí hay un ejemplo básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uKjsKaW1wb3J0IGphdmEubmV0Lio7CgpwdWJsaWMgY2xhc3MgU2ltcGxlU2VydmVyIHsKICAgIHB1YmxpYyBzdGF0aWMgdm9pZCBtYWluKFN0cmluZ1tdIGFyZ3MpIHsKICAgICAgICBpbnQgcG9ydCA9IDEyMzQ7IC8vIFB1ZXJ0byBlbiBlbCBxdWUgZWwgc2Vydmlkb3IgZXNjdWNoYXLDoQogICAgICAgIHRyeSAoU2VydmVyU29ja2V0IHNlcnZlclNvY2tldCA9IG5ldyBTZXJ2ZXJTb2NrZXQocG9ydCkpIHsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJTZXJ2aWRvciBlc2N1Y2hhbmRvIGVuIGVsIHB1ZXJ0byAiICsgcG9ydCk7CiAgICAgICAgICAgIAogICAgICAgICAgICAvLyBFc3BlcmEgYSBxdWUgdW4gY2xpZW50ZSBzZSBjb25lY3RlCiAgICAgICAgICAgIFNvY2tldCBjbGllbnRTb2NrZXQgPSBzZXJ2ZXJTb2NrZXQuYWNjZXB0KCk7CiAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiQ2xpZW50ZSBjb25lY3RhZG8iKTsKCiAgICAgICAgICAgIC8vIEZsdWpvIGRlIGVudHJhZGEgcGFyYSByZWNpYmlyIGRhdG9zIGRlbCBjbGllbnRlCiAgICAgICAgICAgIEJ1ZmZlcmVkUmVhZGVyIGluID0gbmV3IEJ1ZmZlcmVkUmVhZGVyKG5ldyBJbnB1dFN0cmVhbVJlYWRlcihjbGllbnRTb2NrZXQuZ2V0SW5wdXRTdHJlYW0oKSkpOwogICAgICAgICAgICAvLyBGbHVqbyBkZSBzYWxpZGEgcGFyYSBlbnZpYXIgZGF0b3MgYWwgY2xpZW50ZQogICAgICAgICAgICBQcmludFdyaXRlciBvdXQgPSBuZXcgUHJpbnRXcml0ZXIoY2xpZW50U29ja2V0LmdldE91dHB1dFN0cmVhbSgpLCB0cnVlKTsKCiAgICAgICAgICAgIFN0cmluZyBpbnB1dExpbmU7CiAgICAgICAgICAgIHdoaWxlICgoaW5wdXRMaW5lID0gaW4ucmVhZExpbmUoKSkgIT0gbnVsbCkgewogICAgICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJSZWNpYmlkbzogIiArIGlucHV0TGluZSk7CiAgICAgICAgICAgICAgICBvdXQucHJpbnRsbigiRWNobzogIiArIGlucHV0TGluZSk7IC8vIEVudsOtYSB1bmEgcmVzcHVlc3RhIGFsIGNsaWVudGUKICAgICAgICAgICAgfQogICAgICAgIH0gY2F0Y2ggKElPRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJFcnJvciBlbiBlbCBzZXJ2aWRvcjogIiArIGUuZ2V0TWVzc2FnZSgpKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.*;
+import java.net.*;
+
+public class SimpleServer {
+    public static void main(String[] args) {
+        int port = 1234; // Puerto en el que el servidor escuchar&aacute;
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println(&quot;Servidor escuchando en el puerto &quot; + port);
+            
+            // Espera a que un cliente se conecte
+            Socket clientSocket = serverSocket.accept();
+            System.out.println(&quot;Cliente conectado&quot;);
+
+            // Flujo de entrada para recibir datos del cliente
+            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            // Flujo de salida para enviar datos al cliente
+            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                System.out.println(&quot;Recibido: &quot; + inputLine);
+                out.println(&quot;Echo: &quot; + inputLine); // Env&iacute;a una respuesta al cliente
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;Error en el servidor: &quot; + e.getMessage());
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importaciones</strong>: Importamos las clases necesarias para manejar la entrada/salida y la red.</li>
+<li><strong>Creación del ServerSocket</strong>: Creamos un <code>ServerSocket</code> que escucha en el puerto 1234.</li>
+<li><strong>Aceptación de Conexiones</strong>: El método <code>accept()</code> espera hasta que un cliente se conecte y devuelve un <code>Socket</code> para la comunicación.</li>
+<li><strong>Flujos de Entrada y Salida</strong>: Utilizamos <code>BufferedReader</code> para leer datos del cliente y <code>PrintWriter</code> para enviar datos al cliente.</li>
+<li><strong>Bucle de Comunicación</strong>: Leemos líneas de texto del cliente y enviamos una respuesta de eco.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Servidor de Eco</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear un servidor que reciba mensajes de un cliente y los devuelva (eco).</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Crea una clase <code>EchoServer</code>.</li>
+<li>Configura un <code>ServerSocket</code> en el puerto 5678.</li>
+<li>Acepta conexiones de clientes.</li>
+<li>Lee mensajes del cliente y envíalos de vuelta.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uKjsKaW1wb3J0IGphdmEubmV0Lio7CgpwdWJsaWMgY2xhc3MgRWNob1NlcnZlciB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgaW50IHBvcnQgPSA1Njc4OwogICAgICAgIHRyeSAoU2VydmVyU29ja2V0IHNlcnZlclNvY2tldCA9IG5ldyBTZXJ2ZXJTb2NrZXQocG9ydCkpIHsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJFY2hvU2VydmVyIGVzY3VjaGFuZG8gZW4gZWwgcHVlcnRvICIgKyBwb3J0KTsKICAgICAgICAgICAgCiAgICAgICAgICAgIHdoaWxlICh0cnVlKSB7CiAgICAgICAgICAgICAgICBTb2NrZXQgY2xpZW50U29ja2V0ID0gc2VydmVyU29ja2V0LmFjY2VwdCgpOwogICAgICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJDbGllbnRlIGNvbmVjdGFkbyIpOwoKICAgICAgICAgICAgICAgIEJ1ZmZlcmVkUmVhZGVyIGluID0gbmV3IEJ1ZmZlcmVkUmVhZGVyKG5ldyBJbnB1dFN0cmVhbVJlYWRlcihjbGllbnRTb2NrZXQuZ2V0SW5wdXRTdHJlYW0oKSkpOwogICAgICAgICAgICAgICAgUHJpbnRXcml0ZXIgb3V0ID0gbmV3IFByaW50V3JpdGVyKGNsaWVudFNvY2tldC5nZXRPdXRwdXRTdHJlYW0oKSwgdHJ1ZSk7CgogICAgICAgICAgICAgICAgU3RyaW5nIGlucHV0TGluZTsKICAgICAgICAgICAgICAgIHdoaWxlICgoaW5wdXRMaW5lID0gaW4ucmVhZExpbmUoKSkgIT0gbnVsbCkgewogICAgICAgICAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiUmVjaWJpZG86ICIgKyBpbnB1dExpbmUpOwogICAgICAgICAgICAgICAgICAgIG91dC5wcmludGxuKCJFY2hvOiAiICsgaW5wdXRMaW5lKTsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0gY2F0Y2ggKElPRXhjZXB0aW9uIGUpIHsKICAgICAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJFcnJvciBlbiBlbCBzZXJ2aWRvcjogIiArIGUuZ2V0TWVzc2FnZSgpKTsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.*;
+import java.net.*;
+
+public class EchoServer {
+    public static void main(String[] args) {
+        int port = 5678;
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println(&quot;EchoServer escuchando en el puerto &quot; + port);
+            
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                System.out.println(&quot;Cliente conectado&quot;);
+
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    System.out.println(&quot;Recibido: &quot; + inputLine);
+                    out.println(&quot;Echo: &quot; + inputLine);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(&quot;Error en el servidor: &quot; + e.getMessage());
+        }
+    }
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Crear un Cliente para el Servidor de Eco</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear un cliente que se conecte al <code>EchoServer</code> y envíe mensajes.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Crea una clase <code>EchoClient</code>.</li>
+<li>Conéctate al servidor en <code>localhost</code> y puerto 5678.</li>
+<li>Envía mensajes al servidor y muestra las respuestas.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGphdmEuaW8uKjsKaW1wb3J0IGphdmEubmV0Lio7CgpwdWJsaWMgY2xhc3MgRWNob0NsaWVudCB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB7CiAgICAgICAgU3RyaW5nIGhvc3RuYW1lID0gImxvY2FsaG9zdCI7CiAgICAgICAgaW50IHBvcnQgPSA1Njc4OwoKICAgICAgICB0cnkgKFNvY2tldCBzb2NrZXQgPSBuZXcgU29ja2V0KGhvc3RuYW1lLCBwb3J0KSkgewogICAgICAgICAgICBQcmludFdyaXRlciBvdXQgPSBuZXcgUHJpbnRXcml0ZXIoc29ja2V0LmdldE91dHB1dFN0cmVhbSgpLCB0cnVlKTsKICAgICAgICAgICAgQnVmZmVyZWRSZWFkZXIgaW4gPSBuZXcgQnVmZmVyZWRSZWFkZXIobmV3IElucHV0U3RyZWFtUmVhZGVyKHNvY2tldC5nZXRJbnB1dFN0cmVhbSgpKSk7CiAgICAgICAgICAgIEJ1ZmZlcmVkUmVhZGVyIHN0ZEluID0gbmV3IEJ1ZmZlcmVkUmVhZGVyKG5ldyBJbnB1dFN0cmVhbVJlYWRlcihTeXN0ZW0uaW4pKTsKCiAgICAgICAgICAgIFN0cmluZyB1c2VySW5wdXQ7CiAgICAgICAgICAgIHdoaWxlICgodXNlcklucHV0ID0gc3RkSW4ucmVhZExpbmUoKSkgIT0gbnVsbCkgewogICAgICAgICAgICAgICAgb3V0LnByaW50bG4odXNlcklucHV0KTsKICAgICAgICAgICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiUmVzcHVlc3RhIGRlbCBzZXJ2aWRvcjogIiArIGluLnJlYWRMaW5lKCkpOwogICAgICAgICAgICB9CiAgICAgICAgfSBjYXRjaCAoVW5rbm93bkhvc3RFeGNlcHRpb24gZSkgewogICAgICAgICAgICBTeXN0ZW0uZXJyLnByaW50bG4oIk5vIHNlIGNvbm9jZSBlbCBob3N0ICIgKyBob3N0bmFtZSk7CiAgICAgICAgfSBjYXRjaCAoSU9FeGNlcHRpb24gZSkgewogICAgICAgICAgICBTeXN0ZW0uZXJyLnByaW50bG4oIkVycm9yIGRlIEkvTyBlbiBsYSBjb25leGnDs24gY29uICIgKyBob3N0bmFtZSk7CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import java.io.*;
+import java.net.*;
+
+public class EchoClient {
+    public static void main(String[] args) {
+        String hostname = &quot;localhost&quot;;
+        int port = 5678;
+
+        try (Socket socket = new Socket(hostname, port)) {
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+
+            String userInput;
+            while ((userInput = stdIn.readLine()) != null) {
+                out.println(userInput);
+                System.out.println(&quot;Respuesta del servidor: &quot; + in.readLine());
+            }
+        } catch (UnknownHostException e) {
+            System.err.println(&quot;No se conoce el host &quot; + hostname);
+        } catch (IOException e) {
+            System.err.println(&quot;Error de I/O en la conexi&oacute;n con &quot; + hostname);
+        }
+    }
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta lección, hemos aprendido a:</p>
+<ul>
+<li>Crear un <code>ServerSocket</code> para aceptar conexiones de clientes.</li>
+<li>Utilizar <code>Socket</code> para la comunicación bidireccional.</li>
+<li>Implementar un servidor de eco simple y un cliente que se conecta a él.</li>
+</ul>
+<p>Con estos conocimientos, estás preparado para construir aplicaciones de red más complejas en Java. En la siguiente lección, exploraremos <code>DatagramSocket</code> y <code>DatagramPacket</code> para la comunicación basada en UDP.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-sockets' title="Sockets">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-datagramsocket-and-datagrampacket' title="DatagramSocket y DatagramPacket">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

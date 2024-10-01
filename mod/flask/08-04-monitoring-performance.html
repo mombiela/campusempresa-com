@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoreo y Optimización del Rendimiento</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/08-04-monitoring-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/08-04-monitoring-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/08-04-monitoring-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flask/08-04-monitoring-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/08-04-monitoring-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-deploying-aws' title="Despliegue en AWS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Monitoreo y Optimización del Rendimiento</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-unit-testing' title="Pruebas Unitarias con Flask">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás cómo monitorear y optimizar el rendimiento de tus aplicaciones Flask en un entorno de producción. El monitoreo y la optimización son cruciales para asegurar que tu aplicación funcione de manera eficiente y pueda escalar según sea necesario.</p>
+</div><h1>1. Introducción al Monitoreo</h1>
+<div class='content'></div><h2>¿Por qué es importante el monitoreo?</h2>
+<div class='content'><ul>
+<li><strong>Detección temprana de problemas</strong>: Permite identificar y resolver problemas antes de que afecten a los usuarios.</li>
+<li><strong>Mejora continua</strong>: Proporciona datos que pueden usarse para mejorar el rendimiento y la estabilidad de la aplicación.</li>
+<li><strong>Escalabilidad</strong>: Ayuda a entender cómo se comporta la aplicación bajo diferentes cargas, facilitando la planificación de la capacidad.</li>
+</ul>
+</div><h2>Herramientas de monitoreo populares</h2>
+<div class='content'><ul>
+<li><strong>Prometheus</strong>: Sistema de monitoreo y alerta de código abierto.</li>
+<li><strong>Grafana</strong>: Plataforma de análisis y monitoreo de código abierto.</li>
+<li><strong>New Relic</strong>: Plataforma de monitoreo de aplicaciones y rendimiento.</li>
+<li><strong>Datadog</strong>: Plataforma de monitoreo y análisis de datos en la nube.</li>
+</ul>
+</div><h1>2. Configuración de Prometheus y Grafana</h1>
+<div class='content'></div><h2>Instalación de Prometheus</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Descargar Prometheus</strong>:</p>
+<pre><code class="language-bash">wget https://github.com/prometheus/prometheus/releases/download/v2.26.0/prometheus-2.26.0.linux-amd64.tar.gz
+tar xvfz prometheus-2.26.0.linux-amd64.tar.gz
+cd prometheus-2.26.0.linux-amd64
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Prometheus</strong>:</p>
+<ul>
+<li>Edita el archivo <code>prometheus.yml</code> para añadir tu aplicación Flask como un objetivo.</li>
+</ul>
+<pre><code class="language-yaml">scrape_configs:
+  - job_name: 'flask_app'
+    static_configs:
+      - targets: ['localhost:5000']
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Prometheus</strong>:</p>
+<pre><code class="language-bash">./prometheus --config.file=prometheus.yml
+</code></pre>
+</li>
+</ol>
+</div><h2>Instalación de Grafana</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Descargar e instalar Grafana</strong>:</p>
+<pre><code class="language-bash">sudo apt-get install -y adduser libfontconfig1
+wget https://dl.grafana.com/oss/release/grafana_7.5.2_amd64.deb
+sudo dpkg -i grafana_7.5.2_amd64.deb
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Grafana</strong>:</p>
+<pre><code class="language-bash">sudo systemctl start grafana-server
+sudo systemctl enable grafana-server
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Grafana</strong>:</p>
+<ul>
+<li>Accede a Grafana en <code>http://localhost:3000</code> y añade Prometheus como una fuente de datos.</li>
+</ul>
+</li>
+</ol>
+</div><h1>3. Monitoreo de Métricas en Flask</h1>
+<div class='content'></div><h2>Integración de Prometheus con Flask</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar la biblioteca <code>prometheus_client</code></strong>:</p>
+<pre><code class="language-bash">pip install prometheus_client
+</code></pre>
+</li>
+<li>
+<p><strong>Añadir métricas a tu aplicación Flask</strong>:</p>
+<pre><code class="language-python">from flask import Flask
+from prometheus_client import Counter, generate_latest, CollectorRegistry, CONTENT_TYPE_LATEST
+
+app = Flask(__name__)
+
+REQUEST_COUNT = Counter('request_count', 'App Request Count', ['method', 'endpoint'])
+
+@app.before_request
+def before_request():
+    REQUEST_COUNT.labels(method=request.method, endpoint=request.path).inc()
+
+@app.route('/metrics')
+def metrics():
+    registry = CollectorRegistry()
+    registry.register(REQUEST_COUNT)
+    return generate_latest(registry), 200, {'Content-Type': CONTENT_TYPE_LATEST}
+
+if __name__ == '__main__':
+    app.run()
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Prometheus para recolectar métricas</strong>:</p>
+<ul>
+<li>Asegúrate de que Prometheus esté configurado para recolectar métricas desde el endpoint <code>/metrics</code> de tu aplicación Flask.</li>
+</ul>
+</li>
+</ol>
+</div><h1>4. Optimización del Rendimiento</h1>
+<div class='content'></div><h2>Identificación de Cuellos de Botella</h2>
+<div class='content'><ul>
+<li><strong>Profiling</strong>: Utiliza herramientas como <code>cProfile</code> para identificar partes lentas del código.</li>
+<li><strong>Logging</strong>: Implementa un sistema de logging para rastrear el rendimiento de diferentes partes de tu aplicación.</li>
+</ul>
+</div><h2>Mejores Prácticas para Optimización</h2>
+<div class='content'><ul>
+<li><strong>Caching</strong>: Utiliza técnicas de caching para reducir la carga en el servidor.</li>
+<li><strong>Optimización de Consultas a la Base de Datos</strong>: Asegúrate de que las consultas a la base de datos estén optimizadas.</li>
+<li><strong>Uso de CDN</strong>: Utiliza una Red de Distribución de Contenidos (CDN) para servir archivos estáticos.</li>
+<li><strong>Escalabilidad Horizontal</strong>: Considera la posibilidad de escalar tu aplicación horizontalmente añadiendo más instancias.</li>
+</ul>
+</div><h2>Ejemplo de Caching con Flask-Caching</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar Flask-Caching</strong>:</p>
+<pre><code class="language-bash">pip install Flask-Caching
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Flask-Caching</strong>:</p>
+<pre><code class="language-python">from flask import Flask
+from flask_caching import Cache
+
+app = Flask(__name__)
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
+
+@app.route('/')
+@cache.cached(timeout=60)
+def index():
+    return &quot;Hello, World!&quot;
+
+if __name__ == '__main__':
+    app.run()
+</code></pre>
+</li>
+</ol>
+</div><h1>5. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de Prometheus y Grafana</h2>
+<div class='content'><ul>
+<li><strong>Objetivo</strong>: Configurar Prometheus y Grafana para monitorear una aplicación Flask.</li>
+<li><strong>Instrucciones</strong>:
+<ol>
+<li>Instala Prometheus y Grafana en tu entorno de desarrollo.</li>
+<li>Configura Prometheus para recolectar métricas desde tu aplicación Flask.</li>
+<li>Configura Grafana para visualizar las métricas recolectadas por Prometheus.</li>
+</ol>
+</li>
+</ul>
+</div><h2>Ejercicio 2: Implementación de Caching</h2>
+<div class='content'><ul>
+<li><strong>Objetivo</strong>: Implementar caching en una aplicación Flask para mejorar el rendimiento.</li>
+<li><strong>Instrucciones</strong>:
+<ol>
+<li>Instala y configura Flask-Caching en tu aplicación.</li>
+<li>Añade caching a una o más rutas de tu aplicación.</li>
+<li>Mide el impacto del caching en el rendimiento de la aplicación.</li>
+</ol>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo monitorear y optimizar el rendimiento de tus aplicaciones Flask. Has configurado herramientas de monitoreo como Prometheus y Grafana, y has implementado técnicas de optimización como el caching. Estas habilidades te ayudarán a mantener tus aplicaciones funcionando de manera eficiente y a escalar según sea necesario. En el próximo módulo, exploraremos cómo realizar pruebas y seguir mejores prácticas en el desarrollo con Flask.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-deploying-aws' title="Despliegue en AWS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-unit-testing' title="Pruebas Unitarias con Flask">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

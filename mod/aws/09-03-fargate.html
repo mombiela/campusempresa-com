@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Fargate</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/aws/09-03-fargate" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/aws/09-03-fargate" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/aws/09-03-fargate" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/aws/09-03-fargate" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/aws/09-03-fargate" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-elastic-beanstalk' title="AWS Elastic Beanstalk">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">AWS Fargate</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-organizations' title="AWS Organizations">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>AWS Fargate es un motor de cómputo para Amazon ECS (Elastic Container Service) y Amazon EKS (Elastic Kubernetes Service) que permite ejecutar contenedores sin tener que gestionar servidores o clústeres de instancias de EC2. Con Fargate, puedes centrarte en diseñar y construir tus aplicaciones en lugar de gestionar la infraestructura subyacente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Contenedores</strong>: Un contenedor es una unidad estándar de software que empaqueta el código y todas sus dependencias para que la aplicación se ejecute de manera rápida y confiable en diferentes entornos informáticos.</li>
+<li><strong>Amazon ECS</strong>: Un servicio de orquestación de contenedores que facilita la ejecución, detención y gestión de contenedores en un clúster.</li>
+<li><strong>Amazon EKS</strong>: Un servicio de Kubernetes gestionado que facilita la ejecución de Kubernetes en AWS sin necesidad de instalar y operar su propio clúster de Kubernetes.</li>
+<li><strong>Task Definition</strong>: Un archivo JSON que describe una o más contenedores que forman tu aplicación.</li>
+<li><strong>Service</strong>: Permite ejecutar y mantener un número especificado de tareas simultáneamente en un clúster.</li>
+</ol>
+</div><h1>Ventajas de AWS Fargate</h1>
+<div class='content'><ul>
+<li><strong>Sin gestión de servidores</strong>: No necesitas aprovisionar, configurar ni escalar clústeres de máquinas virtuales.</li>
+<li><strong>Escalabilidad automática</strong>: Fargate escala automáticamente la infraestructura subyacente para satisfacer las necesidades de tu aplicación.</li>
+<li><strong>Seguridad mejorada</strong>: Cada tarea de Fargate se ejecuta en su propio entorno aislado, mejorando la seguridad.</li>
+<li><strong>Costos optimizados</strong>: Pagas solo por los recursos que tus contenedores utilizan.</li>
+</ul>
+</div><h1>Configuración de AWS Fargate</h1>
+<div class='content'></div><h2>Paso 1: Crear una Task Definition</h2>
+<div class='content'><ol>
+<li><strong>Accede a la consola de Amazon ECS</strong>.</li>
+<li><strong>Navega a &quot;Task Definitions&quot;</strong> y haz clic en &quot;Create new Task Definition&quot;.</li>
+<li><strong>Selecciona &quot;Fargate&quot;</strong> como tipo de lanzamiento.</li>
+<li><strong>Configura los detalles de la Task Definition</strong>:
+<ul>
+<li><strong>Nombre</strong>: Asigna un nombre a tu Task Definition.</li>
+<li><strong>Contenedor</strong>: Añade un contenedor especificando la imagen de Docker y los recursos (CPU y memoria) que necesita.</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJmYW1pbHkiOiAibXktZmFyZ2F0ZS10YXNrIiwKICAibmV0d29ya01vZGUiOiAiYXdzdnBjIiwKICAiY29udGFpbmVyRGVmaW5pdGlvbnMiOiBbCiAgICB7CiAgICAgICJuYW1lIjogIm15LWNvbnRhaW5lciIsCiAgICAgICJpbWFnZSI6ICJuZ2lueCIsCiAgICAgICJjcHUiOiAyNTYsCiAgICAgICJtZW1vcnkiOiA1MTIsCiAgICAgICJlc3NlbnRpYWwiOiB0cnVlLAogICAgICAicG9ydE1hcHBpbmdzIjogWwogICAgICAgIHsKICAgICAgICAgICJjb250YWluZXJQb3J0IjogODAsCiAgICAgICAgICAiaG9zdFBvcnQiOiA4MAogICAgICAgIH0KICAgICAgXQogICAgfQogIF0sCiAgInJlcXVpcmVzQ29tcGF0aWJpbGl0aWVzIjogWyJGQVJHQVRFIl0sCiAgImNwdSI6ICIyNTYiLAogICJtZW1vcnkiOiAiNTEyIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;family&quot;: &quot;my-fargate-task&quot;,
+  &quot;networkMode&quot;: &quot;awsvpc&quot;,
+  &quot;containerDefinitions&quot;: [
+    {
+      &quot;name&quot;: &quot;my-container&quot;,
+      &quot;image&quot;: &quot;nginx&quot;,
+      &quot;cpu&quot;: 256,
+      &quot;memory&quot;: 512,
+      &quot;essential&quot;: true,
+      &quot;portMappings&quot;: [
+        {
+          &quot;containerPort&quot;: 80,
+          &quot;hostPort&quot;: 80
+        }
+      ]
+    }
+  ],
+  &quot;requiresCompatibilities&quot;: [&quot;FARGATE&quot;],
+  &quot;cpu&quot;: &quot;256&quot;,
+  &quot;memory&quot;: &quot;512&quot;
+}</pre></div><div class='content'></div><h2>Paso 2: Crear un Clúster</h2>
+<div class='content'><ol>
+<li><strong>Accede a la consola de Amazon ECS</strong>.</li>
+<li><strong>Navega a &quot;Clusters&quot;</strong> y haz clic en &quot;Create Cluster&quot;.</li>
+<li><strong>Selecciona &quot;Networking only&quot;</strong> (Fargate) y sigue las instrucciones para crear el clúster.</li>
+</ol>
+</div><h2>Paso 3: Crear un Servicio</h2>
+<div class='content'><ol>
+<li><strong>Accede a la consola de Amazon ECS</strong>.</li>
+<li><strong>Navega a &quot;Clusters&quot;</strong> y selecciona el clúster que creaste.</li>
+<li><strong>Haz clic en &quot;Create&quot;</strong> y selecciona &quot;Service&quot;.</li>
+<li><strong>Configura los detalles del servicio</strong>:
+<ul>
+<li><strong>Launch type</strong>: Selecciona &quot;Fargate&quot;.</li>
+<li><strong>Task Definition</strong>: Selecciona la Task Definition que creaste.</li>
+<li><strong>Cluster</strong>: Selecciona tu clúster.</li>
+<li><strong>Service name</strong>: Asigna un nombre al servicio.</li>
+<li><strong>Number of tasks</strong>: Especifica el número de tareas que deseas ejecutar.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 4: Configurar la Red y Seguridad</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configura la red</strong>:</p>
+<ul>
+<li><strong>VPC</strong>: Selecciona la VPC donde deseas ejecutar tus tareas.</li>
+<li><strong>Subnets</strong>: Selecciona las subredes.</li>
+<li><strong>Security groups</strong>: Selecciona o crea un grupo de seguridad que permita el tráfico necesario.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configura la asignación de IP</strong>:</p>
+<ul>
+<li><strong>Auto-assign public IP</strong>: Selecciona &quot;ENABLED&quot; si deseas que las tareas tengan una IP pública.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 5: Lanzar el Servicio</h2>
+<div class='content'><ol>
+<li><strong>Revisa la configuración</strong> y haz clic en &quot;Create Service&quot;.</li>
+<li><strong>Monitorea el estado del servicio</strong> en la consola de Amazon ECS.</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Ejercicio: Desplegar una Aplicación Web con AWS Fargate</h2>
+<div class='content'><p><strong>Objetivo</strong>: Desplegar una aplicación web simple utilizando AWS Fargate.</p>
+<p><strong>Pasos</strong>:</p>
+<ol>
+<li><strong>Crear una Task Definition</strong> para un contenedor Nginx.</li>
+<li><strong>Crear un Clúster</strong> de Fargate.</li>
+<li><strong>Crear un Servicio</strong> que ejecute la Task Definition en el clúster.</li>
+<li><strong>Configurar la Red y Seguridad</strong> para permitir el tráfico HTTP.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+<ol>
+<li>
+<p><strong>Task Definition</strong>:</p>
+<ul>
+<li>Nombre: <code>web-app-task</code></li>
+<li>Contenedor: <code>nginx</code></li>
+<li>CPU: <code>256</code></li>
+<li>Memoria: <code>512</code></li>
+<li>Puerto: <code>80</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Clúster</strong>:</p>
+<ul>
+<li>Nombre: <code>web-app-cluster</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Servicio</strong>:</p>
+<ul>
+<li>Nombre: <code>web-app-service</code></li>
+<li>Número de tareas: <code>1</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Red y Seguridad</strong>:</p>
+<ul>
+<li>VPC: <code>default</code></li>
+<li>Subnets: <code>default</code></li>
+<li>Security group: Permitir tráfico HTTP (puerto 80)</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJmYW1pbHkiOiAid2ViLWFwcC10YXNrIiwKICAibmV0d29ya01vZGUiOiAiYXdzdnBjIiwKICAiY29udGFpbmVyRGVmaW5pdGlvbnMiOiBbCiAgICB7CiAgICAgICJuYW1lIjogIm5naW54IiwKICAgICAgImltYWdlIjogIm5naW54IiwKICAgICAgImNwdSI6IDI1NiwKICAgICAgIm1lbW9yeSI6IDUxMiwKICAgICAgImVzc2VudGlhbCI6IHRydWUsCiAgICAgICJwb3J0TWFwcGluZ3MiOiBbCiAgICAgICAgewogICAgICAgICAgImNvbnRhaW5lclBvcnQiOiA4MCwKICAgICAgICAgICJob3N0UG9ydCI6IDgwCiAgICAgICAgfQogICAgICBdCiAgICB9CiAgXSwKICAicmVxdWlyZXNDb21wYXRpYmlsaXRpZXMiOiBbIkZBUkdBVEUiXSwKICAiY3B1IjogIjI1NiIsCiAgIm1lbW9yeSI6ICI1MTIiCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;family&quot;: &quot;web-app-task&quot;,
+  &quot;networkMode&quot;: &quot;awsvpc&quot;,
+  &quot;containerDefinitions&quot;: [
+    {
+      &quot;name&quot;: &quot;nginx&quot;,
+      &quot;image&quot;: &quot;nginx&quot;,
+      &quot;cpu&quot;: 256,
+      &quot;memory&quot;: 512,
+      &quot;essential&quot;: true,
+      &quot;portMappings&quot;: [
+        {
+          &quot;containerPort&quot;: 80,
+          &quot;hostPort&quot;: 80
+        }
+      ]
+    }
+  ],
+  &quot;requiresCompatibilities&quot;: [&quot;FARGATE&quot;],
+  &quot;cpu&quot;: &quot;256&quot;,
+  &quot;memory&quot;: &quot;512&quot;
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>AWS Fargate simplifica la ejecución de contenedores al eliminar la necesidad de gestionar la infraestructura subyacente. Con Fargate, puedes centrarte en desarrollar y desplegar tus aplicaciones sin preocuparte por la gestión de servidores. En este módulo, aprendiste a crear una Task Definition, un clúster y un servicio en Fargate, y a configurar la red y la seguridad para tu aplicación.</p>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><p>En el siguiente tema, exploraremos <strong>AWS Organizations</strong>, que te permitirá gestionar y consolidar múltiples cuentas de AWS de manera centralizada.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-elastic-beanstalk' title="AWS Elastic Beanstalk">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-organizations' title="AWS Organizations">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

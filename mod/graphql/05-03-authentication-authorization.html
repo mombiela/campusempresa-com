@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación y Autorización</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/05-03-authentication-authorization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/05-03-authentication-authorization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/05-03-authentication-authorization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/graphql/05-03-authentication-authorization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/05-03-authentication-authorization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-rate-limiting' title="Limitación de Tasa">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Autenticación y Autorización</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-persisted-queries' title="Consultas Persistidas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo implementar autenticación y autorización en un servidor GraphQL. Estos conceptos son fundamentales para asegurar que solo los usuarios autorizados puedan acceder a ciertos datos y realizar ciertas acciones en tu aplicación.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Autenticación</h2>
+<div class='content'><p>La autenticación es el proceso de verificar la identidad de un usuario. En otras palabras, es cómo sabemos quién es el usuario. Esto generalmente se realiza mediante el uso de credenciales como nombres de usuario y contraseñas, tokens de acceso, etc.</p>
+</div><h2>Autorización</h2>
+<div class='content'><p>La autorización es el proceso de verificar si un usuario autenticado tiene permiso para realizar una acción específica o acceder a ciertos datos. Esto se basa en roles y permisos asignados al usuario.</p>
+</div><h1>Implementación de Autenticación y Autorización en GraphQL</h1>
+<div class='content'></div><h2>1. Configuración del Servidor</h2>
+<div class='content'><p>Primero, necesitamos configurar nuestro servidor GraphQL para manejar la autenticación. En este ejemplo, usaremos JSON Web Tokens (JWT) para la autenticación.</p>
+<h4>Instalación de Dependencias</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwganNvbndlYnRva2VuIGV4cHJlc3MgZXhwcmVzcy1qd3Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install jsonwebtoken express express-jwt</pre></div><div class='content'><h4>Configuración del Middleware de Autenticación</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCB9ID0gcmVxdWlyZSgnYXBvbGxvLXNlcnZlci1leHByZXNzJyk7CmNvbnN0IGp3dCA9IHJlcXVpcmUoJ2V4cHJlc3Mtand0Jyk7CmNvbnN0IGpzb253ZWJ0b2tlbiA9IHJlcXVpcmUoJ2pzb253ZWJ0b2tlbicpOwoKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKY29uc3QgYXV0aE1pZGRsZXdhcmUgPSBqd3QoewogIHNlY3JldDogJ3lvdXJfc2VjcmV0X2tleScsCiAgY3JlZGVudGlhbHNSZXF1aXJlZDogZmFsc2UsCiAgYWxnb3JpdGhtczogWydIUzI1NiddLAp9KTsKCmFwcC51c2UoYXV0aE1pZGRsZXdhcmUpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const { ApolloServer, gql } = require('apollo-server-express');
+const jwt = require('express-jwt');
+const jsonwebtoken = require('jsonwebtoken');
+
+const app = express();
+
+const authMiddleware = jwt({
+  secret: 'your_secret_key',
+  credentialsRequired: false,
+  algorithms: ['HS256'],
+});
+
+app.use(authMiddleware);</pre></div><div class='content'></div><h2>2. Definición del Esquema</h2>
+<div class='content'><p>Definimos nuestro esquema GraphQL con un tipo <code>User</code> y una consulta <code>me</code> que devuelve la información del usuario autenticado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgdHlwZURlZnMgPSBncWxgCiAgdHlwZSBVc2VyIHsKICAgIGlkOiBJRCEKICAgIHVzZXJuYW1lOiBTdHJpbmchCiAgICBlbWFpbDogU3RyaW5nIQogIH0KCiAgdHlwZSBRdWVyeSB7CiAgICBtZTogVXNlcgogIH0KYDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const typeDefs = gql`
+  type User {
+    id: ID!
+    username: String!
+    email: String!
+  }
+
+  type Query {
+    me: User
+  }
+`;</pre></div><div class='content'></div><h2>3. Implementación de Resolvers</h2>
+<div class='content'><p>Implementamos los resolvers para manejar la lógica de negocio. En este caso, el resolver <code>me</code> devolverá la información del usuario autenticado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcmVzb2x2ZXJzID0gewogIFF1ZXJ5OiB7CiAgICBtZTogKHBhcmVudCwgYXJncywgY29udGV4dCkgPT4gewogICAgICBpZiAoIWNvbnRleHQudXNlcikgewogICAgICAgIHRocm93IG5ldyBFcnJvcignTm90IGF1dGhlbnRpY2F0ZWQnKTsKICAgICAgfQogICAgICByZXR1cm4gY29udGV4dC51c2VyOwogICAgfSwKICB9LAp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const resolvers = {
+  Query: {
+    me: (parent, args, context) =&gt; {
+      if (!context.user) {
+        throw new Error('Not authenticated');
+      }
+      return context.user;
+    },
+  },
+};</pre></div><div class='content'></div><h2>4. Configuración del Contexto</h2>
+<div class='content'><p>Configuramos el contexto de Apollo Server para incluir la información del usuario autenticado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgc2VydmVyID0gbmV3IEFwb2xsb1NlcnZlcih7CiAgdHlwZURlZnMsCiAgcmVzb2x2ZXJzLAogIGNvbnRleHQ6ICh7IHJlcSB9KSA9PiB7CiAgICBjb25zdCB1c2VyID0gcmVxLnVzZXIgfHwgbnVsbDsKICAgIHJldHVybiB7IHVzZXIgfTsKICB9LAp9KTsKCnNlcnZlci5hcHBseU1pZGRsZXdhcmUoeyBhcHAgfSk7CgphcHAubGlzdGVuKHsgcG9ydDogNDAwMCB9LCAoKSA9PgogIGNvbnNvbGUubG9nKGBTZXJ2ZXIgcmVhZHkgYXQgaHR0cDovL2xvY2FsaG9zdDo0MDAwJHtzZXJ2ZXIuZ3JhcGhxbFBhdGh9YCkKKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) =&gt; {
+    const user = req.user || null;
+    return { user };
+  },
+});
+
+server.applyMiddleware({ app });
+
+app.listen({ port: 4000 }, () =&gt;
+  console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+);</pre></div><div class='content'></div><h2>5. Autorización Basada en Roles</h2>
+<div class='content'><p>Para implementar la autorización, podemos definir roles y permisos y verificar estos roles en nuestros resolvers.</p>
+<h4>Definición de Roles</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3Qgcm9sZXMgPSB7CiAgQURNSU46ICdBRE1JTicsCiAgVVNFUjogJ1VTRVInLAp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const roles = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+};</pre></div><div class='content'><h4>Verificación de Roles en Resolvers</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgcmVzb2x2ZXJzID0gewogIFF1ZXJ5OiB7CiAgICBtZTogKHBhcmVudCwgYXJncywgY29udGV4dCkgPT4gewogICAgICBpZiAoIWNvbnRleHQudXNlcikgewogICAgICAgIHRocm93IG5ldyBFcnJvcignTm90IGF1dGhlbnRpY2F0ZWQnKTsKICAgICAgfQogICAgICByZXR1cm4gY29udGV4dC51c2VyOwogICAgfSwKICAgIGFkbWluRGF0YTogKHBhcmVudCwgYXJncywgY29udGV4dCkgPT4gewogICAgICBpZiAoIWNvbnRleHQudXNlciB8fCBjb250ZXh0LnVzZXIucm9sZSAhPT0gcm9sZXMuQURNSU4pIHsKICAgICAgICB0aHJvdyBuZXcgRXJyb3IoJ05vdCBhdXRob3JpemVkJyk7CiAgICAgIH0KICAgICAgcmV0dXJuIHsgc2VjcmV0RGF0YTogJ1RoaXMgaXMgYWRtaW4gZGF0YScgfTsKICAgIH0sCiAgfSwKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const resolvers = {
+  Query: {
+    me: (parent, args, context) =&gt; {
+      if (!context.user) {
+        throw new Error('Not authenticated');
+      }
+      return context.user;
+    },
+    adminData: (parent, args, context) =&gt; {
+      if (!context.user || context.user.role !== roles.ADMIN) {
+        throw new Error('Not authorized');
+      }
+      return { secretData: 'This is admin data' };
+    },
+  },
+};</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Autenticación</h2>
+<div class='content'><ol>
+<li>Configura un servidor GraphQL con autenticación usando JWT.</li>
+<li>Define un esquema con un tipo <code>User</code> y una consulta <code>me</code>.</li>
+<li>Implementa los resolvers para manejar la autenticación y devolver la información del usuario autenticado.</li>
+</ol>
+</div><h2>Ejercicio 2: Implementar Autorización</h2>
+<div class='content'><ol>
+<li>Define roles y permisos en tu aplicación.</li>
+<li>Implementa la lógica de autorización en los resolvers para restringir el acceso a ciertas consultas y mutaciones basadas en los roles del usuario.</li>
+</ol>
+</div><h2>Solución del Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUGFzbyAxOiBDb25maWd1cmFjacOzbiBkZWwgc2Vydmlkb3IKY29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgeyBBcG9sbG9TZXJ2ZXIsIGdxbCB9ID0gcmVxdWlyZSgnYXBvbGxvLXNlcnZlci1leHByZXNzJyk7CmNvbnN0IGp3dCA9IHJlcXVpcmUoJ2V4cHJlc3Mtand0Jyk7CmNvbnN0IGpzb253ZWJ0b2tlbiA9IHJlcXVpcmUoJ2pzb253ZWJ0b2tlbicpOwoKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKY29uc3QgYXV0aE1pZGRsZXdhcmUgPSBqd3QoewogIHNlY3JldDogJ3lvdXJfc2VjcmV0X2tleScsCiAgY3JlZGVudGlhbHNSZXF1aXJlZDogZmFsc2UsCiAgYWxnb3JpdGhtczogWydIUzI1NiddLAp9KTsKCmFwcC51c2UoYXV0aE1pZGRsZXdhcmUpOwoKLy8gUGFzbyAyOiBEZWZpbmljacOzbiBkZWwgZXNxdWVtYQpjb25zdCB0eXBlRGVmcyA9IGdxbGAKICB0eXBlIFVzZXIgewogICAgaWQ6IElEIQogICAgdXNlcm5hbWU6IFN0cmluZyEKICAgIGVtYWlsOiBTdHJpbmchCiAgfQoKICB0eXBlIFF1ZXJ5IHsKICAgIG1lOiBVc2VyCiAgfQpgOwoKLy8gUGFzbyAzOiBJbXBsZW1lbnRhY2nDs24gZGUgcmVzb2x2ZXJzCmNvbnN0IHJlc29sdmVycyA9IHsKICBRdWVyeTogewogICAgbWU6IChwYXJlbnQsIGFyZ3MsIGNvbnRleHQpID0+IHsKICAgICAgaWYgKCFjb250ZXh0LnVzZXIpIHsKICAgICAgICB0aHJvdyBuZXcgRXJyb3IoJ05vdCBhdXRoZW50aWNhdGVkJyk7CiAgICAgIH0KICAgICAgcmV0dXJuIGNvbnRleHQudXNlcjsKICAgIH0sCiAgfSwKfTsKCi8vIFBhc28gNDogQ29uZmlndXJhY2nDs24gZGVsIGNvbnRleHRvCmNvbnN0IHNlcnZlciA9IG5ldyBBcG9sbG9TZXJ2ZXIoewogIHR5cGVEZWZzLAogIHJlc29sdmVycywKICBjb250ZXh0OiAoeyByZXEgfSkgPT4gewogICAgY29uc3QgdXNlciA9IHJlcS51c2VyIHx8IG51bGw7CiAgICByZXR1cm4geyB1c2VyIH07CiAgfSwKfSk7CgpzZXJ2ZXIuYXBwbHlNaWRkbGV3YXJlKHsgYXBwIH0pOwoKYXBwLmxpc3Rlbih7IHBvcnQ6IDQwMDAgfSwgKCkgPT4KICBjb25zb2xlLmxvZyhgU2VydmVyIHJlYWR5IGF0IGh0dHA6Ly9sb2NhbGhvc3Q6NDAwMCR7c2VydmVyLmdyYXBocWxQYXRofWApCik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Paso 1: Configuraci&oacute;n del servidor
+const express = require('express');
+const { ApolloServer, gql } = require('apollo-server-express');
+const jwt = require('express-jwt');
+const jsonwebtoken = require('jsonwebtoken');
+
+const app = express();
+
+const authMiddleware = jwt({
+  secret: 'your_secret_key',
+  credentialsRequired: false,
+  algorithms: ['HS256'],
+});
+
+app.use(authMiddleware);
+
+// Paso 2: Definici&oacute;n del esquema
+const typeDefs = gql`
+  type User {
+    id: ID!
+    username: String!
+    email: String!
+  }
+
+  type Query {
+    me: User
+  }
+`;
+
+// Paso 3: Implementaci&oacute;n de resolvers
+const resolvers = {
+  Query: {
+    me: (parent, args, context) =&gt; {
+      if (!context.user) {
+        throw new Error('Not authenticated');
+      }
+      return context.user;
+    },
+  },
+};
+
+// Paso 4: Configuraci&oacute;n del contexto
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req }) =&gt; {
+    const user = req.user || null;
+    return { user };
+  },
+});
+
+server.applyMiddleware({ app });
+
+app.listen({ port: 4000 }, () =&gt;
+  console.log(`Server ready at http://localhost:4000${server.graphqlPath}`)
+);</pre></div><div class='content'></div><h2>Solución del Ejercicio 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUGFzbyAxOiBEZWZpbmljacOzbiBkZSByb2xlcwpjb25zdCByb2xlcyA9IHsKICBBRE1JTjogJ0FETUlOJywKICBVU0VSOiAnVVNFUicsCn07CgovLyBQYXNvIDI6IFZlcmlmaWNhY2nDs24gZGUgcm9sZXMgZW4gcmVzb2x2ZXJzCmNvbnN0IHJlc29sdmVycyA9IHsKICBRdWVyeTogewogICAgbWU6IChwYXJlbnQsIGFyZ3MsIGNvbnRleHQpID0+IHsKICAgICAgaWYgKCFjb250ZXh0LnVzZXIpIHsKICAgICAgICB0aHJvdyBuZXcgRXJyb3IoJ05vdCBhdXRoZW50aWNhdGVkJyk7CiAgICAgIH0KICAgICAgcmV0dXJuIGNvbnRleHQudXNlcjsKICAgIH0sCiAgICBhZG1pbkRhdGE6IChwYXJlbnQsIGFyZ3MsIGNvbnRleHQpID0+IHsKICAgICAgaWYgKCFjb250ZXh0LnVzZXIgfHwgY29udGV4dC51c2VyLnJvbGUgIT09IHJvbGVzLkFETUlOKSB7CiAgICAgICAgdGhyb3cgbmV3IEVycm9yKCdOb3QgYXV0aG9yaXplZCcpOwogICAgICB9CiAgICAgIHJldHVybiB7IHNlY3JldERhdGE6ICdUaGlzIGlzIGFkbWluIGRhdGEnIH07CiAgICB9LAogIH0sCn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Paso 1: Definici&oacute;n de roles
+const roles = {
+  ADMIN: 'ADMIN',
+  USER: 'USER',
+};
+
+// Paso 2: Verificaci&oacute;n de roles en resolvers
+const resolvers = {
+  Query: {
+    me: (parent, args, context) =&gt; {
+      if (!context.user) {
+        throw new Error('Not authenticated');
+      }
+      return context.user;
+    },
+    adminData: (parent, args, context) =&gt; {
+      if (!context.user || context.user.role !== roles.ADMIN) {
+        throw new Error('Not authorized');
+      }
+      return { secretData: 'This is admin data' };
+    },
+  },
+};</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo implementar autenticación y autorización en un servidor GraphQL. La autenticación nos permite verificar la identidad de los usuarios, mientras que la autorización nos permite controlar el acceso a los recursos y acciones basados en roles y permisos. Estos conceptos son esenciales para construir aplicaciones seguras y robustas.</p>
+<p>En el siguiente módulo, exploraremos cómo optimizar las consultas en GraphQL para mejorar el rendimiento de nuestras aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-rate-limiting' title="Limitación de Tasa">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-persisted-queries' title="Consultas Persistidas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

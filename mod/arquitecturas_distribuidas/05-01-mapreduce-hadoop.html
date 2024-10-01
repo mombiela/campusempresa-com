@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MapReduce y Hadoop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/arquitecturas_distribuidas/05-01-mapreduce-hadoop" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/arquitecturas_distribuidas/05-01-mapreduce-hadoop" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/arquitecturas_distribuidas/05-01-mapreduce-hadoop" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/arquitecturas_distribuidas/05-01-mapreduce-hadoop" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/arquitecturas_distribuidas/05-01-mapreduce-hadoop" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-caches' title="Cachés Distribuidos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">MapReduce y Hadoop</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-spark-computacion' title="Spark y Computación en Memoria">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, exploraremos el paradigma de programación MapReduce y su implementación más conocida, Hadoop. MapReduce es un modelo de programación diseñado para procesar grandes volúmenes de datos de manera distribuida y paralela. Hadoop es un marco de trabajo que permite el procesamiento distribuido de grandes conjuntos de datos utilizando el modelo MapReduce.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Comprender el paradigma de programación MapReduce.</li>
+<li>Conocer la arquitectura y componentes de Hadoop.</li>
+<li>Aprender a escribir y ejecutar trabajos de MapReduce en Hadoop.</li>
+<li>Realizar ejercicios prácticos para consolidar los conocimientos adquiridos.</li>
+</ul>
+</div><h1>Conceptos Básicos de MapReduce</h1>
+<div class='content'></div><h2>Fases de MapReduce</h2>
+<div class='content'><p>MapReduce se divide en dos fases principales:</p>
+<ol>
+<li><strong>Map</strong>: Esta fase toma un conjunto de datos de entrada y los convierte en pares clave-valor intermedios.</li>
+<li><strong>Reduce</strong>: Esta fase toma los pares clave-valor intermedios y los procesa para generar el resultado final.</li>
+</ol>
+</div><h2>Ejemplo de MapReduce</h2>
+<div class='content'><p>Supongamos que queremos contar la frecuencia de palabras en un gran conjunto de documentos. El proceso sería el siguiente:</p>
+<ol>
+<li>
+<p><strong>Map</strong>:</p>
+<ul>
+<li>Entrada: Un documento de texto.</li>
+<li>Salida: Pares clave-valor donde la clave es una palabra y el valor es 1.</li>
+</ul>
+<pre><code class="language-plaintext">(word1, 1)
+(word2, 1)
+(word1, 1)
+</code></pre>
+</li>
+<li>
+<p><strong>Shuffle and Sort</strong>:</p>
+<ul>
+<li>Agrupa todas las claves iguales.</li>
+</ul>
+<pre><code class="language-plaintext">(word1, [1, 1])
+(word2, [1])
+</code></pre>
+</li>
+<li>
+<p><strong>Reduce</strong>:</p>
+<ul>
+<li>Suma los valores para cada clave.</li>
+</ul>
+<pre><code class="language-plaintext">(word1, 2)
+(word2, 1)
+</code></pre>
+</li>
+</ol>
+</div><h1>Arquitectura de Hadoop</h1>
+<div class='content'><p>Hadoop consta de varios componentes clave:</p>
+<ol>
+<li><strong>Hadoop Distributed File System (HDFS)</strong>: Sistema de archivos distribuido que almacena datos en bloques distribuidos a través de múltiples nodos.</li>
+<li><strong>MapReduce Engine</strong>: Motor que ejecuta trabajos de MapReduce.</li>
+<li><strong>YARN (Yet Another Resource Negotiator)</strong>: Sistema de gestión de recursos que coordina la ejecución de trabajos.</li>
+</ol>
+</div><h2>Componentes de HDFS</h2>
+<div class='content'><ul>
+<li><strong>NameNode</strong>: Nodo maestro que gestiona la metadata del sistema de archivos.</li>
+<li><strong>DataNode</strong>: Nodos esclavos que almacenan los bloques de datos.</li>
+</ul>
+</div><h2>Componentes de YARN</h2>
+<div class='content'><ul>
+<li><strong>ResourceManager</strong>: Nodo maestro que gestiona los recursos del clúster.</li>
+<li><strong>NodeManager</strong>: Nodos esclavos que ejecutan contenedores de aplicaciones.</li>
+</ul>
+</div><h1>Escribiendo un Trabajo de MapReduce en Hadoop</h1>
+<div class='content'></div><h2>Ejemplo en Java</h2>
+<div class='content'><p>A continuación, se presenta un ejemplo de un trabajo de MapReduce en Java para contar palabras:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmNvbmYuQ29uZmlndXJhdGlvbjsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmZzLlBhdGg7CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5pby5JbnRXcml0YWJsZTsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmlvLlRleHQ7CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5tYXByZWR1Y2UuSm9iOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AubWFwcmVkdWNlLk1hcHBlcjsKaW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLm1hcHJlZHVjZS5SZWR1Y2VyOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AubWFwcmVkdWNlLmxpYi5pbnB1dC5GaWxlSW5wdXRGb3JtYXQ7CmltcG9ydCBvcmcuYXBhY2hlLmhhZG9vcC5tYXByZWR1Y2UubGliLm91dHB1dC5GaWxlT3V0cHV0Rm9ybWF0OwoKaW1wb3J0IGphdmEuaW8uSU9FeGNlcHRpb247CmltcG9ydCBqYXZhLnV0aWwuU3RyaW5nVG9rZW5pemVyOwoKcHVibGljIGNsYXNzIFdvcmRDb3VudCB7CgogICAgcHVibGljIHN0YXRpYyBjbGFzcyBUb2tlbml6ZXJNYXBwZXIgZXh0ZW5kcyBNYXBwZXI8T2JqZWN0LCBUZXh0LCBUZXh0LCBJbnRXcml0YWJsZT4gewogICAgICAgIHByaXZhdGUgZmluYWwgc3RhdGljIEludFdyaXRhYmxlIG9uZSA9IG5ldyBJbnRXcml0YWJsZSgxKTsKICAgICAgICBwcml2YXRlIFRleHQgd29yZCA9IG5ldyBUZXh0KCk7CgogICAgICAgIHB1YmxpYyB2b2lkIG1hcChPYmplY3Qga2V5LCBUZXh0IHZhbHVlLCBDb250ZXh0IGNvbnRleHQpIHRocm93cyBJT0V4Y2VwdGlvbiwgSW50ZXJydXB0ZWRFeGNlcHRpb24gewogICAgICAgICAgICBTdHJpbmdUb2tlbml6ZXIgaXRyID0gbmV3IFN0cmluZ1Rva2VuaXplcih2YWx1ZS50b1N0cmluZygpKTsKICAgICAgICAgICAgd2hpbGUgKGl0ci5oYXNNb3JlVG9rZW5zKCkpIHsKICAgICAgICAgICAgICAgIHdvcmQuc2V0KGl0ci5uZXh0VG9rZW4oKSk7CiAgICAgICAgICAgICAgICBjb250ZXh0LndyaXRlKHdvcmQsIG9uZSk7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CgogICAgcHVibGljIHN0YXRpYyBjbGFzcyBJbnRTdW1SZWR1Y2VyIGV4dGVuZHMgUmVkdWNlcjxUZXh0LCBJbnRXcml0YWJsZSwgVGV4dCwgSW50V3JpdGFibGU+IHsKICAgICAgICBwcml2YXRlIEludFdyaXRhYmxlIHJlc3VsdCA9IG5ldyBJbnRXcml0YWJsZSgpOwoKICAgICAgICBwdWJsaWMgdm9pZCByZWR1Y2UoVGV4dCBrZXksIEl0ZXJhYmxlPEludFdyaXRhYmxlPiB2YWx1ZXMsIENvbnRleHQgY29udGV4dCkgdGhyb3dzIElPRXhjZXB0aW9uLCBJbnRlcnJ1cHRlZEV4Y2VwdGlvbiB7CiAgICAgICAgICAgIGludCBzdW0gPSAwOwogICAgICAgICAgICBmb3IgKEludFdyaXRhYmxlIHZhbCA6IHZhbHVlcykgewogICAgICAgICAgICAgICAgc3VtICs9IHZhbC5nZXQoKTsKICAgICAgICAgICAgfQogICAgICAgICAgICByZXN1bHQuc2V0KHN1bSk7CiAgICAgICAgICAgIGNvbnRleHQud3JpdGUoa2V5LCByZXN1bHQpOwogICAgICAgIH0KICAgIH0KCiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB0aHJvd3MgRXhjZXB0aW9uIHsKICAgICAgICBDb25maWd1cmF0aW9uIGNvbmYgPSBuZXcgQ29uZmlndXJhdGlvbigpOwogICAgICAgIEpvYiBqb2IgPSBKb2IuZ2V0SW5zdGFuY2UoY29uZiwgIndvcmQgY291bnQiKTsKICAgICAgICBqb2Iuc2V0SmFyQnlDbGFzcyhXb3JkQ291bnQuY2xhc3MpOwogICAgICAgIGpvYi5zZXRNYXBwZXJDbGFzcyhUb2tlbml6ZXJNYXBwZXIuY2xhc3MpOwogICAgICAgIGpvYi5zZXRDb21iaW5lckNsYXNzKEludFN1bVJlZHVjZXIuY2xhc3MpOwogICAgICAgIGpvYi5zZXRSZWR1Y2VyQ2xhc3MoSW50U3VtUmVkdWNlci5jbGFzcyk7CiAgICAgICAgam9iLnNldE91dHB1dEtleUNsYXNzKFRleHQuY2xhc3MpOwogICAgICAgIGpvYi5zZXRPdXRwdXRWYWx1ZUNsYXNzKEludFdyaXRhYmxlLmNsYXNzKTsKICAgICAgICBGaWxlSW5wdXRGb3JtYXQuYWRkSW5wdXRQYXRoKGpvYiwgbmV3IFBhdGgoYXJnc1swXSkpOwogICAgICAgIEZpbGVPdXRwdXRGb3JtYXQuc2V0T3V0cHV0UGF0aChqb2IsIG5ldyBQYXRoKGFyZ3NbMV0pKTsKICAgICAgICBTeXN0ZW0uZXhpdChqb2Iud2FpdEZvckNvbXBsZXRpb24odHJ1ZSkgPyAwIDogMSk7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+import java.io.IOException;
+import java.util.StringTokenizer;
+
+public class WordCount {
+
+    public static class TokenizerMapper extends Mapper&lt;Object, Text, Text, IntWritable&gt; {
+        private final static IntWritable one = new IntWritable(1);
+        private Text word = new Text();
+
+        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+            StringTokenizer itr = new StringTokenizer(value.toString());
+            while (itr.hasMoreTokens()) {
+                word.set(itr.nextToken());
+                context.write(word, one);
+            }
+        }
+    }
+
+    public static class IntSumReducer extends Reducer&lt;Text, IntWritable, Text, IntWritable&gt; {
+        private IntWritable result = new IntWritable();
+
+        public void reduce(Text key, Iterable&lt;IntWritable&gt; values, Context context) throws IOException, InterruptedException {
+            int sum = 0;
+            for (IntWritable val : values) {
+                sum += val.get();
+            }
+            result.set(sum);
+            context.write(key, result);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, &quot;word count&quot;);
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(TokenizerMapper.class);
+        job.setCombinerClass(IntSumReducer.class);
+        job.setReducerClass(IntSumReducer.class);
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>TokenizerMapper</strong>: Lee líneas de texto y emite pares clave-valor donde la clave es una palabra y el valor es 1.</li>
+<li><strong>IntSumReducer</strong>: Suma los valores para cada clave (palabra) y emite el resultado.</li>
+<li><strong>main</strong>: Configura y ejecuta el trabajo de MapReduce.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Contar la Frecuencia de Palabras</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Implementar y ejecutar un trabajo de MapReduce para contar la frecuencia de palabras en un conjunto de documentos de texto.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li>Configura un clúster de Hadoop (puede ser un clúster local).</li>
+<li>Escribe el código de MapReduce en Java (puedes usar el ejemplo proporcionado).</li>
+<li>Compila y empaqueta el código en un archivo JAR.</li>
+<li>Ejecuta el trabajo de MapReduce en el clúster de Hadoop.</li>
+<li>Verifica los resultados.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li><strong>Configuración del Clúster</strong>: Sigue la documentación oficial de Hadoop para configurar un clúster local.</li>
+<li><strong>Código de MapReduce</strong>: Usa el ejemplo proporcionado anteriormente.</li>
+<li><strong>Compilación y Ejecución</strong>:
+<pre><code class="language-bash">javac -classpath `hadoop classpath` -d wordcount_classes WordCount.java
+jar -cvf wordcount.jar -C wordcount_classes/ .
+hadoop jar wordcount.jar WordCount /input /output
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido sobre el paradigma de programación MapReduce y su implementación en Hadoop. Hemos explorado la arquitectura de Hadoop y cómo escribir y ejecutar trabajos de MapReduce. Los ejercicios prácticos proporcionados ayudarán a consolidar los conocimientos adquiridos.</p>
+<p>En el próximo tema, exploraremos Spark y la computación en memoria, que ofrece una alternativa más rápida y flexible a MapReduce para ciertos tipos de procesamiento de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-caches' title="Cachés Distribuidos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-spark-computacion' title="Spark y Computación en Memoria">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

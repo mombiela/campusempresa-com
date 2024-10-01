@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimizando el Rendimiento de D3.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/d3_js/08-01-optimizing-performance" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/d3_js/08-01-optimizing-performance" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/d3_js/08-01-optimizing-performance" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/d3_js/08-01-optimizing-performance" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/d3_js/08-01-optimizing-performance" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-case-studies' title="Estudios de Caso y Ejemplos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Optimizando el Rendimiento de D3.js</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-handling-large-datasets' title="Manejando Grandes Conjuntos de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo optimizar el rendimiento de nuestras visualizaciones creadas con D3.js. La optimización es crucial cuando trabajamos con grandes conjuntos de datos o cuando queremos que nuestras visualizaciones sean rápidas y responsivas. A continuación, desglosaremos los conceptos clave y las técnicas para mejorar el rendimiento de D3.js.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Minimizar el DOM</strong>: Reducir la cantidad de elementos en el DOM puede mejorar significativamente el rendimiento.</li>
+<li><strong>Uso Eficiente de Escalas y Ejes</strong>: Configurar correctamente las escalas y ejes para evitar cálculos innecesarios.</li>
+<li><strong>Reducción de Re-renderizados</strong>: Evitar re-renderizados innecesarios de elementos.</li>
+<li><strong>Optimización de Transiciones y Animaciones</strong>: Hacer transiciones y animaciones más eficientes.</li>
+<li><strong>Manejo de Grandes Conjuntos de Datos</strong>: Técnicas para trabajar con grandes volúmenes de datos sin afectar el rendimiento.</li>
+</ol>
+</div><h1>Minimizar el DOM</h1>
+<div class='content'></div><h2>Concepto</h2>
+<div class='content'><p>Cada elemento en el DOM consume recursos del navegador. Cuantos más elementos haya, más lento será el rendimiento. Por lo tanto, es importante minimizar el número de elementos en el DOM.</p>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSBjcmVhY2nDs24gZGUgbcO6bHRpcGxlcyBlbGVtZW50b3MgaW5uZWNlc2FyaW9zCmQzLnNlbGVjdCgiYm9keSIpCiAgLnNlbGVjdEFsbCgiZGl2IikKICAuZGF0YShbMSwgMiwgMywgNCwgNV0pCiAgLmVudGVyKCkKICAuYXBwZW5kKCJkaXYiKQogIC50ZXh0KGQgPT4gZCk7CgovLyBPcHRpbWl6YWNpw7NuOiBVc2FyIHVuIHNvbG8gY29udGVuZWRvciBwYXJhIG3Dumx0aXBsZXMgZWxlbWVudG9zCmNvbnN0IGNvbnRhaW5lciA9IGQzLnNlbGVjdCgiYm9keSIpLmFwcGVuZCgiZGl2Iik7CmNvbnRhaW5lci5zZWxlY3RBbGwoInNwYW4iKQogIC5kYXRhKFsxLCAyLCAzLCA0LCA1XSkKICAuZW50ZXIoKQogIC5hcHBlbmQoInNwYW4iKQogIC50ZXh0KGQgPT4gZCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de creaci&oacute;n de m&uacute;ltiples elementos innecesarios
+d3.select(&quot;body&quot;)
+  .selectAll(&quot;div&quot;)
+  .data([1, 2, 3, 4, 5])
+  .enter()
+  .append(&quot;div&quot;)
+  .text(d =&gt; d);
+
+// Optimizaci&oacute;n: Usar un solo contenedor para m&uacute;ltiples elementos
+const container = d3.select(&quot;body&quot;).append(&quot;div&quot;);
+container.selectAll(&quot;span&quot;)
+  .data([1, 2, 3, 4, 5])
+  .enter()
+  .append(&quot;span&quot;)
+  .text(d =&gt; d);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><p>En el primer ejemplo, se crean múltiples <code>div</code> elementos, lo que puede ser innecesario. En el segundo ejemplo, se usa un solo <code>div</code> contenedor y se añaden <code>span</code> elementos dentro de él, reduciendo la cantidad de elementos en el DOM.</p>
+</div><h1>Uso Eficiente de Escalas y Ejes</h1>
+<div class='content'></div><h2>Concepto</h2>
+<div class='content'><p>Las escalas y ejes son fundamentales en D3.js, pero pueden ser costosos en términos de rendimiento si no se usan correctamente.</p>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSByZWNhbGN1bGFjacOzbiBpbm5lY2VzYXJpYSBkZSBlc2NhbGFzCmNvbnN0IGRhdGEgPSBbMTAsIDIwLCAzMCwgNDAsIDUwXTsKY29uc3QgeFNjYWxlID0gZDMuc2NhbGVMaW5lYXIoKQogIC5kb21haW4oWzAsIGQzLm1heChkYXRhKV0pCiAgLnJhbmdlKFswLCA1MDBdKTsKCi8vIE9wdGltaXphY2nDs246IENhbGN1bGFyIGxhIGVzY2FsYSB1bmEgdmV6IHkgcmV1dGlsaXphcmxhCmNvbnN0IG1heERhdGEgPSBkMy5tYXgoZGF0YSk7CmNvbnN0IG9wdGltaXplZFhTY2FsZSA9IGQzLnNjYWxlTGluZWFyKCkKICAuZG9tYWluKFswLCBtYXhEYXRhXSkKICAucmFuZ2UoWzAsIDUwMF0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de recalculaci&oacute;n innecesaria de escalas
+const data = [10, 20, 30, 40, 50];
+const xScale = d3.scaleLinear()
+  .domain([0, d3.max(data)])
+  .range([0, 500]);
+
+// Optimizaci&oacute;n: Calcular la escala una vez y reutilizarla
+const maxData = d3.max(data);
+const optimizedXScale = d3.scaleLinear()
+  .domain([0, maxData])
+  .range([0, 500]);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><p>En el primer ejemplo, la escala se recalcula cada vez que se usa. En el segundo ejemplo, la escala se calcula una vez y se reutiliza, mejorando el rendimiento.</p>
+</div><h1>Reducción de Re-renderizados</h1>
+<div class='content'></div><h2>Concepto</h2>
+<div class='content'><p>Re-renderizar elementos del DOM puede ser costoso. Es importante actualizar solo los elementos que han cambiado.</p>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSByZS1yZW5kZXJpemFkbyBpbm5lY2VzYXJpbwpkMy5zZWxlY3RBbGwoImNpcmNsZSIpCiAgLmRhdGEoWzEwLCAyMCwgMzAsIDQwLCA1MF0pCiAgLmVudGVyKCkKICAuYXBwZW5kKCJjaXJjbGUiKQogIC5hdHRyKCJyIiwgZCA9PiBkKTsKCi8vIE9wdGltaXphY2nDs246IEFjdHVhbGl6YXIgc29sbyBsb3MgZWxlbWVudG9zIHF1ZSBoYW4gY2FtYmlhZG8KY29uc3QgY2lyY2xlcyA9IGQzLnNlbGVjdEFsbCgiY2lyY2xlIikKICAuZGF0YShbMTAsIDIwLCAzMCwgNDAsIDUwXSk7CgpjaXJjbGVzLmVudGVyKCkKICAuYXBwZW5kKCJjaXJjbGUiKQogIC5hdHRyKCJyIiwgZCA9PiBkKTsKCmNpcmNsZXMuYXR0cigiciIsIGQgPT4gZCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de re-renderizado innecesario
+d3.selectAll(&quot;circle&quot;)
+  .data([10, 20, 30, 40, 50])
+  .enter()
+  .append(&quot;circle&quot;)
+  .attr(&quot;r&quot;, d =&gt; d);
+
+// Optimizaci&oacute;n: Actualizar solo los elementos que han cambiado
+const circles = d3.selectAll(&quot;circle&quot;)
+  .data([10, 20, 30, 40, 50]);
+
+circles.enter()
+  .append(&quot;circle&quot;)
+  .attr(&quot;r&quot;, d =&gt; d);
+
+circles.attr(&quot;r&quot;, d =&gt; d);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><p>En el primer ejemplo, todos los círculos se re-renderizan cada vez. En el segundo ejemplo, solo se actualizan los círculos que han cambiado, mejorando el rendimiento.</p>
+</div><h1>Optimización de Transiciones y Animaciones</h1>
+<div class='content'></div><h2>Concepto</h2>
+<div class='content'><p>Las transiciones y animaciones pueden ser costosas en términos de rendimiento. Es importante hacerlas lo más eficientes posible.</p>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSB0cmFuc2ljacOzbiBpbmVmaWNpZW50ZQpkMy5zZWxlY3RBbGwoImNpcmNsZSIpCiAgLnRyYW5zaXRpb24oKQogIC5kdXJhdGlvbigxMDAwKQogIC5hdHRyKCJyIiwgZCA9PiBkICogMik7CgovLyBPcHRpbWl6YWNpw7NuOiBVc2FyIHRyYW5zaWNpb25lcyBtw6FzIGVmaWNpZW50ZXMKZDMuc2VsZWN0QWxsKCJjaXJjbGUiKQogIC50cmFuc2l0aW9uKCJyZXNpemUiKQogIC5kdXJhdGlvbigxMDAwKQogIC5hdHRyKCJyIiwgZCA9PiBkICogMik7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de transici&oacute;n ineficiente
+d3.selectAll(&quot;circle&quot;)
+  .transition()
+  .duration(1000)
+  .attr(&quot;r&quot;, d =&gt; d * 2);
+
+// Optimizaci&oacute;n: Usar transiciones m&aacute;s eficientes
+d3.selectAll(&quot;circle&quot;)
+  .transition(&quot;resize&quot;)
+  .duration(1000)
+  .attr(&quot;r&quot;, d =&gt; d * 2);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><p>En el primer ejemplo, la transición se aplica a todos los círculos, lo que puede ser costoso. En el segundo ejemplo, se usa un nombre de transición para hacerla más eficiente.</p>
+</div><h1>Manejo de Grandes Conjuntos de Datos</h1>
+<div class='content'></div><h2>Concepto</h2>
+<div class='content'><p>Trabajar con grandes volúmenes de datos puede afectar el rendimiento. Es importante usar técnicas para manejar estos datos de manera eficiente.</p>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSBtYW5lam8gZGUgZ3JhbmRlcyBjb25qdW50b3MgZGUgZGF0b3MKY29uc3QgbGFyZ2VEYXRhID0gZDMucmFuZ2UoMTAwMDAwKS5tYXAoZCA9PiBNYXRoLnJhbmRvbSgpICogMTAwKTsKCi8vIE9wdGltaXphY2nDs246IFVzYXIgdMOpY25pY2FzIGRlIHJlZHVjY2nDs24gZGUgZGF0b3MKY29uc3Qgc2FtcGxlZERhdGEgPSBsYXJnZURhdGEuZmlsdGVyKChkLCBpKSA9PiBpICUgMTAgPT09IDApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de manejo de grandes conjuntos de datos
+const largeData = d3.range(100000).map(d =&gt; Math.random() * 100);
+
+// Optimizaci&oacute;n: Usar t&eacute;cnicas de reducci&oacute;n de datos
+const sampledData = largeData.filter((d, i) =&gt; i % 10 === 0);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><p>En el primer ejemplo, se trabaja con un gran conjunto de datos directamente. En el segundo ejemplo, se reduce el conjunto de datos mediante muestreo, mejorando el rendimiento.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea una visualización de un gráfico de barras con 1000 barras.</li>
+<li>Optimiza el gráfico para que sea eficiente en términos de rendimiento.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRGF0b3MKY29uc3QgZGF0YSA9IGQzLnJhbmdlKDEwMDApLm1hcChkID0+IE1hdGgucmFuZG9tKCkgKiAxMDApOwoKLy8gRXNjYWxhCmNvbnN0IHhTY2FsZSA9IGQzLnNjYWxlQmFuZCgpCiAgLmRvbWFpbihkMy5yYW5nZShkYXRhLmxlbmd0aCkpCiAgLnJhbmdlKFswLCAxMDAwXSkKICAucGFkZGluZygwLjEpOwoKY29uc3QgeVNjYWxlID0gZDMuc2NhbGVMaW5lYXIoKQogIC5kb21haW4oWzAsIGQzLm1heChkYXRhKV0pCiAgLnJhbmdlKFs1MDAsIDBdKTsKCi8vIFNWRwpjb25zdCBzdmcgPSBkMy5zZWxlY3QoImJvZHkiKS5hcHBlbmQoInN2ZyIpCiAgLmF0dHIoIndpZHRoIiwgMTAwMCkKICAuYXR0cigiaGVpZ2h0IiwgNTAwKTsKCi8vIEJhcnJhcwpzdmcuc2VsZWN0QWxsKCJyZWN0IikKICAuZGF0YShkYXRhKQogIC5lbnRlcigpCiAgLmFwcGVuZCgicmVjdCIpCiAgLmF0dHIoIngiLCAoZCwgaSkgPT4geFNjYWxlKGkpKQogIC5hdHRyKCJ5IiwgZCA9PiB5U2NhbGUoZCkpCiAgLmF0dHIoIndpZHRoIiwgeFNjYWxlLmJhbmR3aWR0aCgpKQogIC5hdHRyKCJoZWlnaHQiLCBkID0+IDUwMCAtIHlTY2FsZShkKSkKICAuYXR0cigiZmlsbCIsICJzdGVlbGJsdWUiKTsKCi8vIE9wdGltaXphY2nDs246IFVzYXIgdMOpY25pY2FzIGRlIHJlZHVjY2nDs24gZGUgZGF0b3MKY29uc3Qgc2FtcGxlZERhdGEgPSBkYXRhLmZpbHRlcigoZCwgaSkgPT4gaSAlIDEwID09PSAwKTsKCnN2Zy5zZWxlY3RBbGwoInJlY3QiKQogIC5kYXRhKHNhbXBsZWREYXRhKQogIC5lbnRlcigpCiAgLmFwcGVuZCgicmVjdCIpCiAgLmF0dHIoIngiLCAoZCwgaSkgPT4geFNjYWxlKGkpKQogIC5hdHRyKCJ5IiwgZCA9PiB5U2NhbGUoZCkpCiAgLmF0dHIoIndpZHRoIiwgeFNjYWxlLmJhbmR3aWR0aCgpKQogIC5hdHRyKCJoZWlnaHQiLCBkID0+IDUwMCAtIHlTY2FsZShkKSkKICAuYXR0cigiZmlsbCIsICJzdGVlbGJsdWUiKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Datos
+const data = d3.range(1000).map(d =&gt; Math.random() * 100);
+
+// Escala
+const xScale = d3.scaleBand()
+  .domain(d3.range(data.length))
+  .range([0, 1000])
+  .padding(0.1);
+
+const yScale = d3.scaleLinear()
+  .domain([0, d3.max(data)])
+  .range([500, 0]);
+
+// SVG
+const svg = d3.select(&quot;body&quot;).append(&quot;svg&quot;)
+  .attr(&quot;width&quot;, 1000)
+  .attr(&quot;height&quot;, 500);
+
+// Barras
+svg.selectAll(&quot;rect&quot;)
+  .data(data)
+  .enter()
+  .append(&quot;rect&quot;)
+  .attr(&quot;x&quot;, (d, i) =&gt; xScale(i))
+  .attr(&quot;y&quot;, d =&gt; yScale(d))
+  .attr(&quot;width&quot;, xScale.bandwidth())
+  .attr(&quot;height&quot;, d =&gt; 500 - yScale(d))
+  .attr(&quot;fill&quot;, &quot;steelblue&quot;);
+
+// Optimizaci&oacute;n: Usar t&eacute;cnicas de reducci&oacute;n de datos
+const sampledData = data.filter((d, i) =&gt; i % 10 === 0);
+
+svg.selectAll(&quot;rect&quot;)
+  .data(sampledData)
+  .enter()
+  .append(&quot;rect&quot;)
+  .attr(&quot;x&quot;, (d, i) =&gt; xScale(i))
+  .attr(&quot;y&quot;, d =&gt; yScale(d))
+  .attr(&quot;width&quot;, xScale.bandwidth())
+  .attr(&quot;height&quot;, d =&gt; 500 - yScale(d))
+  .attr(&quot;fill&quot;, &quot;steelblue&quot;);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><p>En la solución, primero se crea un gráfico de barras con 1000 barras. Luego, se optimiza el gráfico mediante muestreo de datos, reduciendo el número de barras y mejorando el rendimiento.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido varias técnicas para optimizar el rendimiento de nuestras visualizaciones con D3.js. Al minimizar el DOM, usar escalas y ejes de manera eficiente, reducir re-renderizados, optimizar transiciones y manejar grandes conjuntos de datos, podemos crear visualizaciones rápidas y responsivas. Estas técnicas son esenciales para trabajar con D3.js de manera efectiva y eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-case-studies' title="Estudios de Caso y Ejemplos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-handling-large-datasets' title="Manejando Grandes Conjuntos de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

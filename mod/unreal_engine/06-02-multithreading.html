@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multithreading</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/unreal_engine/06-02-multithreading" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/unreal_engine/06-02-multithreading" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/unreal_engine/06-02-multithreading" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/unreal_engine/06-02-multithreading" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/unreal_engine/06-02-multithreading" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-memory-management' title="Gestión de Memoria">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Multithreading</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-networking-and-multiplayer' title="Redes y Multijugador">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El multithreading es una técnica avanzada de programación que permite a un programa ejecutar múltiples hilos de ejecución simultáneamente. En el contexto de Unreal Engine, el multithreading puede mejorar significativamente el rendimiento de tu juego al permitir que tareas intensivas en recursos se ejecuten en paralelo. En esta sección, aprenderás los conceptos básicos del multithreading, cómo implementarlo en Unreal Engine y algunos consejos para evitar errores comunes.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Hilo (Thread)</strong>: Una unidad de ejecución dentro de un proceso. Cada hilo puede ejecutar tareas de manera independiente.</li>
+<li><strong>Proceso</strong>: Un programa en ejecución que puede contener múltiples hilos.</li>
+<li><strong>Sincronización</strong>: Mecanismos para coordinar la ejecución de hilos y evitar condiciones de carrera.</li>
+<li><strong>Condiciones de Carrera</strong>: Situaciones donde dos o más hilos acceden y modifican datos compartidos simultáneamente, causando resultados impredecibles.</li>
+</ol>
+</div><h1>Implementación de Multithreading en Unreal Engine</h1>
+<div class='content'></div><h2>Paso 1: Crear una Clase de Hilo</h2>
+<div class='content'><p>Primero, necesitas crear una clase que represente el hilo. Esta clase debe heredar de <code>FRunnable</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gTXlSdW5uYWJsZS5oCiNwcmFnbWEgb25jZQoKI2luY2x1ZGUgIkNvcmVNaW5pbWFsLmgiCiNpbmNsdWRlICJIQUwvUnVubmFibGUuaCIKCmNsYXNzIE1ZUFJPSkVDVF9BUEkgTXlSdW5uYWJsZSA6IHB1YmxpYyBGUnVubmFibGUKewpwdWJsaWM6CiAgICBNeVJ1bm5hYmxlKCk7CiAgICB2aXJ0dWFsIH5NeVJ1bm5hYmxlKCk7CgogICAgdmlydHVhbCBib29sIEluaXQoKSBvdmVycmlkZTsKICAgIHZpcnR1YWwgdWludDMyIFJ1bigpIG92ZXJyaWRlOwogICAgdmlydHVhbCB2b2lkIFN0b3AoKSBvdmVycmlkZTsKCnByaXZhdGU6CiAgICBGVGhyZWFkU2FmZUNvdW50ZXIgU3RvcFRhc2tDb3VudGVyOwp9Ow=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// MyRunnable.h
+#pragma once
+
+#include &quot;CoreMinimal.h&quot;
+#include &quot;HAL/Runnable.h&quot;
+
+class MYPROJECT_API MyRunnable : public FRunnable
+{
+public:
+    MyRunnable();
+    virtual ~MyRunnable();
+
+    virtual bool Init() override;
+    virtual uint32 Run() override;
+    virtual void Stop() override;
+
+private:
+    FThreadSafeCounter StopTaskCounter;
+};</pre></div><div class='content'></div><h2>Paso 2: Implementar la Clase de Hilo</h2>
+<div class='content'><p>Implementa los métodos de la clase <code>MyRunnable</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gTXlSdW5uYWJsZS5jcHAKI2luY2x1ZGUgIk15UnVubmFibGUuaCIKCk15UnVubmFibGU6Ok15UnVubmFibGUoKQp7Cn0KCk15UnVubmFibGU6On5NeVJ1bm5hYmxlKCkKewp9Cgpib29sIE15UnVubmFibGU6OkluaXQoKQp7CiAgICAvLyBJbmljaWFsaXphY2nDs24gZGVsIGhpbG8KICAgIHJldHVybiB0cnVlOwp9Cgp1aW50MzIgTXlSdW5uYWJsZTo6UnVuKCkKewogICAgLy8gQ8OzZGlnbyBxdWUgc2UgZWplY3V0YXLDoSBlbiBlbCBoaWxvCiAgICB3aGlsZSAoU3RvcFRhc2tDb3VudGVyLkdldFZhbHVlKCkgPT0gMCkKICAgIHsKICAgICAgICAvLyBSZWFsaXphIHRhcmVhcyBhcXXDrQogICAgfQogICAgcmV0dXJuIDA7Cn0KCnZvaWQgTXlSdW5uYWJsZTo6U3RvcCgpCnsKICAgIFN0b3BUYXNrQ291bnRlci5JbmNyZW1lbnQoKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// MyRunnable.cpp
+#include &quot;MyRunnable.h&quot;
+
+MyRunnable::MyRunnable()
+{
+}
+
+MyRunnable::~MyRunnable()
+{
+}
+
+bool MyRunnable::Init()
+{
+    // Inicializaci&oacute;n del hilo
+    return true;
+}
+
+uint32 MyRunnable::Run()
+{
+    // C&oacute;digo que se ejecutar&aacute; en el hilo
+    while (StopTaskCounter.GetValue() == 0)
+    {
+        // Realiza tareas aqu&iacute;
+    }
+    return 0;
+}
+
+void MyRunnable::Stop()
+{
+    StopTaskCounter.Increment();
+}</pre></div><div class='content'></div><h2>Paso 3: Crear y Ejecutar el Hilo</h2>
+<div class='content'><p>Ahora, necesitas crear y ejecutar el hilo en tu código principal.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gTXlBY3Rvci5jcHAKI2luY2x1ZGUgIk15QWN0b3IuaCIKI2luY2x1ZGUgIk15UnVubmFibGUuaCIKCnZvaWQgQU15QWN0b3I6OkJlZ2luUGxheSgpCnsKICAgIFN1cGVyOjpCZWdpblBsYXkoKTsKCiAgICAvLyBDcmVhciB5IGVqZWN1dGFyIGVsIGhpbG8KICAgIE15UnVubmFibGUqIFJ1bm5hYmxlID0gbmV3IE15UnVubmFibGUoKTsKICAgIEZSdW5uYWJsZVRocmVhZCogVGhyZWFkID0gRlJ1bm5hYmxlVGhyZWFkOjpDcmVhdGUoUnVubmFibGUsIFRFWFQoIk15UnVubmFibGVUaHJlYWQiKSwgMCwgVFByaV9Ob3JtYWwpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// MyActor.cpp
+#include &quot;MyActor.h&quot;
+#include &quot;MyRunnable.h&quot;
+
+void AMyActor::BeginPlay()
+{
+    Super::BeginPlay();
+
+    // Crear y ejecutar el hilo
+    MyRunnable* Runnable = new MyRunnable();
+    FRunnableThread* Thread = FRunnableThread::Create(Runnable, TEXT(&quot;MyRunnableThread&quot;), 0, TPri_Normal);
+}</pre></div><div class='content'></div><h2>Paso 4: Sincronización de Hilos</h2>
+<div class='content'><p>Para evitar condiciones de carrera, puedes usar mecanismos de sincronización como <code>FCriticalSection</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gTXlSdW5uYWJsZS5oCiNwcmFnbWEgb25jZQoKI2luY2x1ZGUgIkNvcmVNaW5pbWFsLmgiCiNpbmNsdWRlICJIQUwvUnVubmFibGUuaCIKI2luY2x1ZGUgIkhBTC9Dcml0aWNhbFNlY3Rpb24uaCIKCmNsYXNzIE1ZUFJPSkVDVF9BUEkgTXlSdW5uYWJsZSA6IHB1YmxpYyBGUnVubmFibGUKewpwdWJsaWM6CiAgICBNeVJ1bm5hYmxlKCk7CiAgICB2aXJ0dWFsIH5NeVJ1bm5hYmxlKCk7CgogICAgdmlydHVhbCBib29sIEluaXQoKSBvdmVycmlkZTsKICAgIHZpcnR1YWwgdWludDMyIFJ1bigpIG92ZXJyaWRlOwogICAgdmlydHVhbCB2b2lkIFN0b3AoKSBvdmVycmlkZTsKCnByaXZhdGU6CiAgICBGVGhyZWFkU2FmZUNvdW50ZXIgU3RvcFRhc2tDb3VudGVyOwogICAgRkNyaXRpY2FsU2VjdGlvbiBDcml0aWNhbFNlY3Rpb247Cn07"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// MyRunnable.h
+#pragma once
+
+#include &quot;CoreMinimal.h&quot;
+#include &quot;HAL/Runnable.h&quot;
+#include &quot;HAL/CriticalSection.h&quot;
+
+class MYPROJECT_API MyRunnable : public FRunnable
+{
+public:
+    MyRunnable();
+    virtual ~MyRunnable();
+
+    virtual bool Init() override;
+    virtual uint32 Run() override;
+    virtual void Stop() override;
+
+private:
+    FThreadSafeCounter StopTaskCounter;
+    FCriticalSection CriticalSection;
+};</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gTXlSdW5uYWJsZS5jcHAKI2luY2x1ZGUgIk15UnVubmFibGUuaCIKCnVpbnQzMiBNeVJ1bm5hYmxlOjpSdW4oKQp7CiAgICB3aGlsZSAoU3RvcFRhc2tDb3VudGVyLkdldFZhbHVlKCkgPT0gMCkKICAgIHsKICAgICAgICAvLyBCbG9xdWVhciBsYSBzZWNjacOzbiBjcsOtdGljYQogICAgICAgIEZTY29wZUxvY2sgTG9jaygmQ3JpdGljYWxTZWN0aW9uKTsKCiAgICAgICAgLy8gUmVhbGl6YSB0YXJlYXMgYXF1w60KICAgIH0KICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// MyRunnable.cpp
+#include &quot;MyRunnable.h&quot;
+
+uint32 MyRunnable::Run()
+{
+    while (StopTaskCounter.GetValue() == 0)
+    {
+        // Bloquear la secci&oacute;n cr&iacute;tica
+        FScopeLock Lock(&amp;CriticalSection);
+
+        // Realiza tareas aqu&iacute;
+    }
+    return 0;
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Hilo para Cargar Recursos</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear un hilo que cargue recursos en segundo plano para mejorar el rendimiento del juego.</p>
+<ol>
+<li><strong>Crear la clase de hilo</strong>: Crea una clase <code>ResourceLoader</code> que herede de <code>FRunnable</code>.</li>
+<li><strong>Implementar los métodos</strong>: Implementa los métodos <code>Init</code>, <code>Run</code> y <code>Stop</code>.</li>
+<li><strong>Ejecutar el hilo</strong>: En tu actor principal, crea y ejecuta el hilo <code>ResourceLoader</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVzb3VyY2VMb2FkZXIuaAojcHJhZ21hIG9uY2UKCiNpbmNsdWRlICJDb3JlTWluaW1hbC5oIgojaW5jbHVkZSAiSEFML1J1bm5hYmxlLmgiCgpjbGFzcyBNWVBST0pFQ1RfQVBJIFJlc291cmNlTG9hZGVyIDogcHVibGljIEZSdW5uYWJsZQp7CnB1YmxpYzoKICAgIFJlc291cmNlTG9hZGVyKCk7CiAgICB2aXJ0dWFsIH5SZXNvdXJjZUxvYWRlcigpOwoKICAgIHZpcnR1YWwgYm9vbCBJbml0KCkgb3ZlcnJpZGU7CiAgICB2aXJ0dWFsIHVpbnQzMiBSdW4oKSBvdmVycmlkZTsKICAgIHZpcnR1YWwgdm9pZCBTdG9wKCkgb3ZlcnJpZGU7Cgpwcml2YXRlOgogICAgRlRocmVhZFNhZmVDb3VudGVyIFN0b3BUYXNrQ291bnRlcjsKfTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// ResourceLoader.h
+#pragma once
+
+#include &quot;CoreMinimal.h&quot;
+#include &quot;HAL/Runnable.h&quot;
+
+class MYPROJECT_API ResourceLoader : public FRunnable
+{
+public:
+    ResourceLoader();
+    virtual ~ResourceLoader();
+
+    virtual bool Init() override;
+    virtual uint32 Run() override;
+    virtual void Stop() override;
+
+private:
+    FThreadSafeCounter StopTaskCounter;
+};</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gUmVzb3VyY2VMb2FkZXIuY3BwCiNpbmNsdWRlICJSZXNvdXJjZUxvYWRlci5oIgoKUmVzb3VyY2VMb2FkZXI6OlJlc291cmNlTG9hZGVyKCkKewp9CgpSZXNvdXJjZUxvYWRlcjo6flJlc291cmNlTG9hZGVyKCkKewp9Cgpib29sIFJlc291cmNlTG9hZGVyOjpJbml0KCkKewogICAgLy8gSW5pY2lhbGl6YWNpw7NuIGRlbCBoaWxvCiAgICByZXR1cm4gdHJ1ZTsKfQoKdWludDMyIFJlc291cmNlTG9hZGVyOjpSdW4oKQp7CiAgICAvLyBDw7NkaWdvIHF1ZSBzZSBlamVjdXRhcsOhIGVuIGVsIGhpbG8KICAgIHdoaWxlIChTdG9wVGFza0NvdW50ZXIuR2V0VmFsdWUoKSA9PSAwKQogICAgewogICAgICAgIC8vIENhcmdhciByZWN1cnNvcyBhcXXDrQogICAgfQogICAgcmV0dXJuIDA7Cn0KCnZvaWQgUmVzb3VyY2VMb2FkZXI6OlN0b3AoKQp7CiAgICBTdG9wVGFza0NvdW50ZXIuSW5jcmVtZW50KCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// ResourceLoader.cpp
+#include &quot;ResourceLoader.h&quot;
+
+ResourceLoader::ResourceLoader()
+{
+}
+
+ResourceLoader::~ResourceLoader()
+{
+}
+
+bool ResourceLoader::Init()
+{
+    // Inicializaci&oacute;n del hilo
+    return true;
+}
+
+uint32 ResourceLoader::Run()
+{
+    // C&oacute;digo que se ejecutar&aacute; en el hilo
+    while (StopTaskCounter.GetValue() == 0)
+    {
+        // Cargar recursos aqu&iacute;
+    }
+    return 0;
+}
+
+void ResourceLoader::Stop()
+{
+    StopTaskCounter.Increment();
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gTXlBY3Rvci5jcHAKI2luY2x1ZGUgIk15QWN0b3IuaCIKI2luY2x1ZGUgIlJlc291cmNlTG9hZGVyLmgiCgp2b2lkIEFNeUFjdG9yOjpCZWdpblBsYXkoKQp7CiAgICBTdXBlcjo6QmVnaW5QbGF5KCk7CgogICAgLy8gQ3JlYXIgeSBlamVjdXRhciBlbCBoaWxvCiAgICBSZXNvdXJjZUxvYWRlciogTG9hZGVyID0gbmV3IFJlc291cmNlTG9hZGVyKCk7CiAgICBGUnVubmFibGVUaHJlYWQqIFRocmVhZCA9IEZSdW5uYWJsZVRocmVhZDo6Q3JlYXRlKExvYWRlciwgVEVYVCgiUmVzb3VyY2VMb2FkZXJUaHJlYWQiKSwgMCwgVFByaV9Ob3JtYWwpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// MyActor.cpp
+#include &quot;MyActor.h&quot;
+#include &quot;ResourceLoader.h&quot;
+
+void AMyActor::BeginPlay()
+{
+    Super::BeginPlay();
+
+    // Crear y ejecutar el hilo
+    ResourceLoader* Loader = new ResourceLoader();
+    FRunnableThread* Thread = FRunnableThread::Create(Loader, TEXT(&quot;ResourceLoaderThread&quot;), 0, TPri_Normal);
+}</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ol>
+<li><strong>Condiciones de Carrera</strong>: Asegúrate de usar mecanismos de sincronización como <code>FCriticalSection</code> para evitar condiciones de carrera.</li>
+<li><strong>Fugas de Memoria</strong>: Siempre libera los recursos del hilo correctamente para evitar fugas de memoria.</li>
+<li><strong>Bloqueos</strong>: Evita bloqueos innecesarios que puedan afectar el rendimiento del juego.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El multithreading es una herramienta poderosa para mejorar el rendimiento de tu juego en Unreal Engine. Al seguir los pasos y consejos proporcionados en esta sección, podrás implementar hilos de manera efectiva y segura. En el próximo tema, exploraremos cómo gestionar redes y multijugador en Unreal Engine.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-memory-management' title="Gestión de Memoria">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-networking-and-multiplayer' title="Redes y Multijugador">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

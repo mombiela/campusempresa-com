@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Despliegue de un Clúster de Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/linux/08-05-deploying-a-kubernetes-cluster" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/linux/08-05-desplegament-d-un-cluster-de-kubernetes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/linux/08-05-deploying-a-kubernetes-cluster" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/linux/08-05-deploying-a-kubernetes-cluster" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/linux/08-05-deploying-a-kubernetes-cluster" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-creating-a-vpn-server' title="Creación de un Servidor VPN">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Despliegue de un Clúster de Kubernetes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Kubernetes es una plataforma de orquestación de contenedores que automatiza el despliegue, la gestión y la escalabilidad de aplicaciones en contenedores. En este módulo, aprenderás a desplegar un clúster de Kubernetes desde cero, utilizando herramientas y prácticas recomendadas.</p>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener:</p>
+<ul>
+<li>Conocimientos básicos de Linux y Docker.</li>
+<li>Un entorno de trabajo con al menos tres máquinas virtuales o físicas (una para el nodo maestro y dos para los nodos de trabajo).</li>
+<li>Acceso a Internet para descargar las herramientas necesarias.</li>
+</ul>
+</div><h1>Pasos para Desplegar un Clúster de Kubernetes</h1>
+<div class='content'></div><h2>1. Preparación del Entorno</h2>
+<div class='content'><h4>1.1. Configuración de las Máquinas</h4>
+<p>Asegúrate de que todas las máquinas tengan:</p>
+<ul>
+<li>Un sistema operativo Linux (preferiblemente Ubuntu 20.04 LTS).</li>
+<li>Acceso SSH configurado.</li>
+<li>Actualizaciones del sistema instaladas.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgdXBkYXRlCnN1ZG8gYXB0IHVwZ3JhZGUgLXk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt update
+sudo apt upgrade -y</pre></div><div class='content'><h4>1.2. Instalación de Docker</h4>
+<p>Kubernetes utiliza Docker como su motor de contenedores. Instala Docker en todas las máquinas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgaW5zdGFsbCAteSBkb2NrZXIuaW8Kc3VkbyBzeXN0ZW1jdGwgZW5hYmxlIGRvY2tlcgpzdWRvIHN5c3RlbWN0bCBzdGFydCBkb2NrZXI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt install -y docker.io
+sudo systemctl enable docker
+sudo systemctl start docker</pre></div><div class='content'></div><h2>2. Instalación de Kubernetes</h2>
+<div class='content'><h4>2.1. Instalación de kubeadm, kubelet y kubectl</h4>
+<p>Instala las herramientas necesarias en todas las máquinas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQgdXBkYXRlCnN1ZG8gYXB0IGluc3RhbGwgLXkgYXB0LXRyYW5zcG9ydC1odHRwcyBjYS1jZXJ0aWZpY2F0ZXMgY3VybApzdWRvIGN1cmwgLWZzU0wgaHR0cHM6Ly9wYWNrYWdlcy5jbG91ZC5nb29nbGUuY29tL2FwdC9kb2MvYXB0LWtleS5ncGcgfCBzdWRvIGFwdC1rZXkgYWRkIC0Kc3VkbyBhZGQtYXB0LXJlcG9zaXRvcnkgImRlYiBodHRwOi8vYXB0Lmt1YmVybmV0ZXMuaW8vIGt1YmVybmV0ZXMteGVuaWFsIG1haW4iCnN1ZG8gYXB0IHVwZGF0ZQpzdWRvIGFwdCBpbnN0YWxsIC15IGt1YmVsZXQga3ViZWFkbSBrdWJlY3RsCnN1ZG8gYXB0LW1hcmsgaG9sZCBrdWJlbGV0IGt1YmVhZG0ga3ViZWN0bA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl
+sudo curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo add-apt-repository &quot;deb http://apt.kubernetes.io/ kubernetes-xenial main&quot;
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+sudo apt-mark hold kubelet kubeadm kubectl</pre></div><div class='content'></div><h2>3. Inicialización del Nodo Maestro</h2>
+<div class='content'><h4>3.1. Inicialización del Clúster</h4>
+<p>En el nodo maestro, inicializa el clúster de Kubernetes:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBrdWJlYWRtIGluaXQgLS1wb2QtbmV0d29yay1jaWRyPTE5Mi4xNjguMC4wLzE2"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo kubeadm init --pod-network-cidr=192.168.0.0/16</pre></div><div class='content'><h4>3.2. Configuración del Usuario</h4>
+<p>Configura kubectl para el usuario no root:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgLXAgJEhPTUUvLmt1YmUKc3VkbyBjcCAtaSAvZXRjL2t1YmVybmV0ZXMvYWRtaW4uY29uZiAkSE9NRS8ua3ViZS9jb25maWcKc3VkbyBjaG93biAkKGlkIC11KTokKGlkIC1nKSAkSE9NRS8ua3ViZS9jb25maWc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config</pre></div><div class='content'><h4>3.3. Implementación de la Red de Pods</h4>
+<p>Instala un complemento de red para que los pods puedan comunicarse entre sí. Aquí usaremos Calico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBodHRwczovL2RvY3MucHJvamVjdGNhbGljby5vcmcvbWFuaWZlc3RzL2NhbGljby55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml</pre></div><div class='content'></div><h2>4. Adición de Nodos de Trabajo</h2>
+<div class='content'><h4>4.1. Obtener el Comando de Unión</h4>
+<p>En el nodo maestro, obtén el comando para unir los nodos de trabajo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWFkbSB0b2tlbiBjcmVhdGUgLS1wcmludC1qb2luLWNvbW1hbmQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubeadm token create --print-join-command</pre></div><div class='content'><h4>4.2. Unir los Nodos de Trabajo</h4>
+<p>En cada nodo de trabajo, ejecuta el comando obtenido en el paso anterior. Por ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBrdWJlYWRtIGpvaW4gPG1hc3Rlci1pcD46NjQ0MyAtLXRva2VuIDx0b2tlbj4gLS1kaXNjb3ZlcnktdG9rZW4tY2EtY2VydC1oYXNoIHNoYTI1Njo8aGFzaD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo kubeadm join &lt;master-ip&gt;:6443 --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;hash&gt;</pre></div><div class='content'></div><h2>5. Verificación del Clúster</h2>
+<div class='content'><h4>5.1. Verificar el Estado de los Nodos</h4>
+<p>En el nodo maestro, verifica que todos los nodos estén en estado &quot;Ready&quot;:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgbm9kZXM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get nodes</pre></div><div class='content'><h4>5.2. Despliegue de una Aplicación de Prueba</h4>
+<p>Despliega una aplicación de prueba para asegurarte de que el clúster funciona correctamente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBjcmVhdGUgZGVwbG95bWVudCBuZ2lueCAtLWltYWdlPW5naW54Cmt1YmVjdGwgZXhwb3NlIGRlcGxveW1lbnQgbmdpbnggLS1wb3J0PTgwIC0tdHlwZT1Ob2RlUG9ydA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl create deployment nginx --image=nginx
+kubectl expose deployment nginx --port=80 --type=NodePort</pre></div><div class='content'><p>Verifica que el servicio esté funcionando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgc2VydmljZXM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get services</pre></div><div class='content'><p>Accede a la aplicación de prueba utilizando la IP del nodo y el puerto asignado.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Despliega una Aplicación de Múltiples Contenedores</h2>
+<div class='content'><ol>
+<li>Crea un archivo YAML para una aplicación de múltiples contenedores.</li>
+<li>Despliega la aplicación en el clúster.</li>
+<li>Verifica que todos los contenedores estén funcionando correctamente.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IG11bHRpLWNvbnRhaW5lci1wb2QKc3BlYzoKICBjb250YWluZXJzOgogIC0gbmFtZTogbmdpbngtY29udGFpbmVyCiAgICBpbWFnZTogbmdpbngKICAgIHBvcnRzOgogICAgLSBjb250YWluZXJQb3J0OiA4MAogIC0gbmFtZTogYnVzeWJveC1jb250YWluZXIKICAgIGltYWdlOiBidXN5Ym94CiAgICBjb21tYW5kOiBbJ3NoJywgJy1jJywgJ2VjaG8gSGVsbG8gS3ViZXJuZXRlcyEgJiYgc2xlZXAgMzYwMCdd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: multi-container-pod
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+    ports:
+    - containerPort: 80
+  - name: busybox-container
+    image: busybox
+    command: ['sh', '-c', 'echo Hello Kubernetes! &amp;&amp; sleep 3600']</pre></div><div class='content'><p>Despliega el pod:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBtdWx0aS1jb250YWluZXItcG9kLnlhbWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f multi-container-pod.yaml</pre></div><div class='content'><p>Verifica el estado del pod:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgcG9kcw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get pods</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, has aprendido a desplegar un clúster de Kubernetes desde cero, configurar la red de pods y desplegar aplicaciones. Con esta base, puedes explorar más características avanzadas de Kubernetes y comenzar a orquestar aplicaciones complejas en contenedores.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-creating-a-vpn-server' title="Creación de un Servidor VPN">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

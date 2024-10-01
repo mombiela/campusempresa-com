@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejecución Eager</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/02-04-eager-execution" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/02-04-eager-execution" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/02-04-eager-execution" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/02-04-eager-execution" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/02-04-eager-execution" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-tensorflow-graphs' title="Grafos de TensorFlow">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ejecución Eager</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-loading-data' title="Cargando Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La ejecución eager es una característica de TensorFlow que permite la evaluación inmediata de operaciones, sin necesidad de construir gráficos de computación. Esto hace que el desarrollo y la depuración de modelos sean más intuitivos y fáciles de seguir.</p>
+</div><h1>¿Qué es la Ejecución Eager?</h1>
+<div class='content'><p>La ejecución eager es un modo de operación en TensorFlow que evalúa las operaciones de inmediato, devolviendo valores concretos en lugar de construir un gráfico de computación que se ejecuta más tarde. Esto es útil para:</p>
+<ul>
+<li><strong>Desarrollo y depuración</strong>: Permite inspeccionar los resultados de las operaciones inmediatamente.</li>
+<li><strong>Interactividad</strong>: Facilita el uso de TensorFlow en entornos interactivos como Jupyter Notebooks.</li>
+<li><strong>Simplicidad</strong>: Hace que el código sea más sencillo y más parecido a Python estándar.</li>
+</ul>
+</div><h1>Activando la Ejecución Eager</h1>
+<div class='content'><p>Para activar la ejecución eager en TensorFlow, simplemente se debe llamar a <code>tf.enable_eager_execution()</code> al inicio del script. A partir de TensorFlow 2.x, la ejecución eager está activada por defecto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQWN0aXZhciBlamVjdWNpw7NuIGVhZ2VyIChzb2xvIG5lY2VzYXJpbyBwYXJhIFRlbnNvckZsb3cgMS54KQojIHRmLmVuYWJsZV9lYWdlcl9leGVjdXRpb24oKQoKIyBWZXJpZmljYXIgc2kgbGEgZWplY3VjacOzbiBlYWdlciBlc3TDoSBhY3RpdmFkYQpwcmludCgiRWplY3VjacOzbiBFYWdlcjoiLCB0Zi5leGVjdXRpbmdfZWFnZXJseSgpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Activar ejecuci&oacute;n eager (solo necesario para TensorFlow 1.x)
+# tf.enable_eager_execution()
+
+# Verificar si la ejecuci&oacute;n eager est&aacute; activada
+print(&quot;Ejecuci&oacute;n Eager:&quot;, tf.executing_eagerly())</pre></div><div class='content'></div><h1>Operaciones Básicas con Ejecución Eager</h1>
+<div class='content'><p>Con la ejecución eager, las operaciones de TensorFlow se comportan como operaciones de Python estándar. Aquí hay algunos ejemplos básicos:</p>
+</div><h2>Creación de Tensores</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQ3JlYXIgdGVuc29yZXMKYSA9IHRmLmNvbnN0YW50KFtbMSwgMl0sIFszLCA0XV0pCmIgPSB0Zi5jb25zdGFudChbWzUsIDZdLCBbNywgOF1dKQoKcHJpbnQoIlRlbnNvciBhOlxuIiwgYSkKcHJpbnQoIlRlbnNvciBiOlxuIiwgYik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Crear tensores
+a = tf.constant([[1, 2], [3, 4]])
+b = tf.constant([[5, 6], [7, 8]])
+
+print(&quot;Tensor a:\n&quot;, a)
+print(&quot;Tensor b:\n&quot;, b)</pre></div><div class='content'></div><h2>Operaciones Matemáticas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBTdW1hIGRlIHRlbnNvcmVzCmMgPSB0Zi5hZGQoYSwgYikKcHJpbnQoIlN1bWEgZGUgYSB5IGI6XG4iLCBjKQoKIyBNdWx0aXBsaWNhY2nDs24gZGUgdGVuc29yZXMKZCA9IHRmLm11bHRpcGx5KGEsIGIpCnByaW50KCJNdWx0aXBsaWNhY2nDs24gZGUgYSB5IGI6XG4iLCBkKQoKIyBNYXRyaXogcHJvZHVjdG8KZSA9IHRmLm1hdG11bChhLCBiKQpwcmludCgiUHJvZHVjdG8gZGUgbWF0cmljZXMgZGUgYSB5IGI6XG4iLCBlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Suma de tensores
+c = tf.add(a, b)
+print(&quot;Suma de a y b:\n&quot;, c)
+
+# Multiplicaci&oacute;n de tensores
+d = tf.multiply(a, b)
+print(&quot;Multiplicaci&oacute;n de a y b:\n&quot;, d)
+
+# Matriz producto
+e = tf.matmul(a, b)
+print(&quot;Producto de matrices de a y b:\n&quot;, e)</pre></div><div class='content'></div><h2>Gradientes</h2>
+<div class='content'><p>La ejecución eager también facilita el cálculo de gradientes, lo cual es esencial para el entrenamiento de modelos de aprendizaje automático.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZWZpbmlyIHVuYSBmdW5jacOzbiBzaW1wbGUKZGVmIGYoeCk6CiAgICByZXR1cm4geCoqMgoKIyBDYWxjdWxhciBlbCBncmFkaWVudGUgZGUgZiBlbiB4ID0gMy4wCnggPSB0Zi5jb25zdGFudCgzLjApCndpdGggdGYuR3JhZGllbnRUYXBlKCkgYXMgdGFwZToKICAgIHRhcGUud2F0Y2goeCkKICAgIHkgPSBmKHgpCgpkeV9keCA9IHRhcGUuZ3JhZGllbnQoeSwgeCkKcHJpbnQoIkdyYWRpZW50ZSBkZSBmIGVuIHg9My4wOiIsIGR5X2R4KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Definir una funci&oacute;n simple
+def f(x):
+    return x**2
+
+# Calcular el gradiente de f en x = 3.0
+x = tf.constant(3.0)
+with tf.GradientTape() as tape:
+    tape.watch(x)
+    y = f(x)
+
+dy_dx = tape.gradient(y, x)
+print(&quot;Gradiente de f en x=3.0:&quot;, dy_dx)</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Operaciones Básicas</h2>
+<div class='content'><ol>
+<li>Crea dos tensores constantes <code>x</code> y <code>y</code> con valores de tu elección.</li>
+<li>Realiza las siguientes operaciones y muestra los resultados:
+<ul>
+<li>Suma</li>
+<li>Resta</li>
+<li>Multiplicación</li>
+<li>División</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgQ3JlYXIgdGVuc29yZXMgY29uc3RhbnRlcwp4ID0gdGYuY29uc3RhbnQoWzEwLCAyMCwgMzBdKQp5ID0gdGYuY29uc3RhbnQoWzEsIDIsIDNdKQoKIyBTdW1hCnN1bV9yZXN1bHQgPSB0Zi5hZGQoeCwgeSkKcHJpbnQoIlN1bWEgZGUgeCB5IHk6Iiwgc3VtX3Jlc3VsdCkKCiMgUmVzdGEKc3ViX3Jlc3VsdCA9IHRmLnN1YnRyYWN0KHgsIHkpCnByaW50KCJSZXN0YSBkZSB4IHkgeToiLCBzdWJfcmVzdWx0KQoKIyBNdWx0aXBsaWNhY2nDs24KbXVsX3Jlc3VsdCA9IHRmLm11bHRpcGx5KHgsIHkpCnByaW50KCJNdWx0aXBsaWNhY2nDs24gZGUgeCB5IHk6IiwgbXVsX3Jlc3VsdCkKCiMgRGl2aXNpw7NuCmRpdl9yZXN1bHQgPSB0Zi5kaXZpZGUoeCwgeSkKcHJpbnQoIkRpdmlzacOzbiBkZSB4IHkgeToiLCBkaXZfcmVzdWx0KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Crear tensores constantes
+x = tf.constant([10, 20, 30])
+y = tf.constant([1, 2, 3])
+
+# Suma
+sum_result = tf.add(x, y)
+print(&quot;Suma de x y y:&quot;, sum_result)
+
+# Resta
+sub_result = tf.subtract(x, y)
+print(&quot;Resta de x y y:&quot;, sub_result)
+
+# Multiplicaci&oacute;n
+mul_result = tf.multiply(x, y)
+print(&quot;Multiplicaci&oacute;n de x y y:&quot;, mul_result)
+
+# Divisi&oacute;n
+div_result = tf.divide(x, y)
+print(&quot;Divisi&oacute;n de x y y:&quot;, div_result)</pre></div><div class='content'></div><h2>Ejercicio 2: Gradientes</h2>
+<div class='content'><ol>
+<li>Define una función <code>g(x) = x^3 - 4x + 1</code>.</li>
+<li>Calcula el gradiente de <code>g</code> en <code>x = 2.0</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKCiMgRGVmaW5pciBsYSBmdW5jacOzbiBnKHgpCmRlZiBnKHgpOgogICAgcmV0dXJuIHgqKjMgLSA0KnggKyAxCgojIENhbGN1bGFyIGVsIGdyYWRpZW50ZSBkZSBnIGVuIHggPSAyLjAKeCA9IHRmLmNvbnN0YW50KDIuMCkKd2l0aCB0Zi5HcmFkaWVudFRhcGUoKSBhcyB0YXBlOgogICAgdGFwZS53YXRjaCh4KQogICAgeSA9IGcoeCkKCmR5X2R4ID0gdGFwZS5ncmFkaWVudCh5LCB4KQpwcmludCgiR3JhZGllbnRlIGRlIGcgZW4geD0yLjA6IiwgZHlfZHgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+
+# Definir la funci&oacute;n g(x)
+def g(x):
+    return x**3 - 4*x + 1
+
+# Calcular el gradiente de g en x = 2.0
+x = tf.constant(2.0)
+with tf.GradientTape() as tape:
+    tape.watch(x)
+    y = g(x)
+
+dy_dx = tape.gradient(y, x)
+print(&quot;Gradiente de g en x=2.0:&quot;, dy_dx)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La ejecución eager en TensorFlow simplifica el desarrollo y la depuración de modelos al permitir la evaluación inmediata de operaciones. Esto hace que el código sea más intuitivo y fácil de seguir, especialmente para aquellos que están comenzando con TensorFlow. En el siguiente módulo, exploraremos cómo manejar datos en TensorFlow, lo cual es crucial para el entrenamiento de modelos de aprendizaje automático.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-tensorflow-graphs' title="Grafos de TensorFlow">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-loading-data' title="Cargando Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

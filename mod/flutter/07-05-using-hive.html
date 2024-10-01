@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usando Hive para Almacenamiento Local</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flutter/07-05-using-hive" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flutter/07-05-using-hive" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flutter/07-05-using-hive" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flutter/07-05-using-hive" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flutter/07-05-using-hive" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-sqlite-database' title="Base de Datos SQLite">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Usando Hive para Almacenamiento Local</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-animations-in-flutter' title="Animaciones en Flutter">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Hive es una base de datos rápida y ligera para Flutter que permite almacenar datos de manera local en el dispositivo. Es una excelente opción para aplicaciones que necesitan persistencia de datos sin la complejidad de una base de datos SQL.</p>
+</div><h1>¿Qué es Hive?</h1>
+<div class='content'><p>Hive es una base de datos NoSQL para Flutter que se destaca por su simplicidad y rendimiento. Es ideal para almacenar datos estructurados y no estructurados, y es fácil de usar con una API intuitiva.</p>
+</div><h2>Características de Hive:</h2>
+<div class='content'><ul>
+<li><strong>Rápido y ligero</strong>: Hive es conocido por su velocidad y bajo consumo de recursos.</li>
+<li><strong>NoSQL</strong>: Al ser una base de datos NoSQL, no requiere un esquema fijo.</li>
+<li><strong>Soporte para Flutter y Dart</strong>: Hive está diseñado específicamente para Flutter y Dart.</li>
+<li><strong>Fácil de usar</strong>: La API de Hive es simple y fácil de aprender.</li>
+</ul>
+</div><h1>Configuración de Hive</h1>
+<div class='content'></div><h2>Paso 1: Agregar Dependencias</h2>
+<div class='content'><p>Primero, necesitas agregar las dependencias de Hive en tu archivo <code>pubspec.yaml</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzOgogIGhpdmU6IF4yLjAuMAogIGhpdmVfZmx1dHRlcjogXjEuMC4wCgpkZXZfZGVwZW5kZW5jaWVzOgogIGhpdmVfZ2VuZXJhdG9yOiBeMS4wLjAKICBidWlsZF9ydW5uZXI6IF4yLjAuMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies:
+  hive: ^2.0.0
+  hive_flutter: ^1.0.0
+
+dev_dependencies:
+  hive_generator: ^1.0.0
+  build_runner: ^2.0.0</pre></div><div class='content'></div><h2>Paso 2: Inicializar Hive</h2>
+<div class='content'><p>Antes de usar Hive, debes inicializarlo. Esto generalmente se hace en el método <code>main</code> de tu aplicación:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAncGFja2FnZTpoaXZlL2hpdmUuZGFydCc7CmltcG9ydCAncGFja2FnZTpoaXZlX2ZsdXR0ZXIvaGl2ZV9mbHV0dGVyLmRhcnQnOwoKdm9pZCBtYWluKCkgYXN5bmMgewogIGF3YWl0IEhpdmUuaW5pdEZsdXR0ZXIoKTsKICBydW5BcHAoTXlBcHAoKSk7Cn0KCmNsYXNzIE15QXBwIGV4dGVuZHMgU3RhdGVsZXNzV2lkZ2V0IHsKICBAb3ZlcnJpZGUKICBXaWRnZXQgYnVpbGQoQnVpbGRDb250ZXh0IGNvbnRleHQpIHsKICAgIHJldHVybiBNYXRlcmlhbEFwcCgKICAgICAgaG9tZTogU2NhZmZvbGQoCiAgICAgICAgYXBwQmFyOiBBcHBCYXIodGl0bGU6IFRleHQoJ0hpdmUgRXhhbXBsZScpKSwKICAgICAgICBib2R5OiBDZW50ZXIoY2hpbGQ6IFRleHQoJ0hlbGxvLCBIaXZlIScpKSwKICAgICAgKSwKICAgICk7CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+
+void main() async {
+  await Hive.initFlutter();
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Hive Example')),
+        body: Center(child: Text('Hello, Hive!')),
+      ),
+    );
+  }
+}</pre></div><div class='content'></div><h2>Paso 3: Definir un Modelo</h2>
+<div class='content'><p>Para almacenar datos en Hive, necesitas definir un modelo. Puedes usar anotaciones para generar el código necesario:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmhpdmUvaGl2ZS5kYXJ0JzsKCnBhcnQgJ3BlcnNvbi5nLmRhcnQnOwoKQEhpdmVUeXBlKHR5cGVJZDogMCkKY2xhc3MgUGVyc29uIGV4dGVuZHMgSGl2ZU9iamVjdCB7CiAgQEhpdmVGaWVsZCgwKQogIFN0cmluZyBuYW1lOwoKICBASGl2ZUZpZWxkKDEpCiAgaW50IGFnZTsKCiAgUGVyc29uKHtyZXF1aXJlZCB0aGlzLm5hbWUsIHJlcXVpcmVkIHRoaXMuYWdlfSk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:hive/hive.dart';
+
+part 'person.g.dart';
+
+@HiveType(typeId: 0)
+class Person extends HiveObject {
+  @HiveField(0)
+  String name;
+
+  @HiveField(1)
+  int age;
+
+  Person({required this.name, required this.age});
+}</pre></div><div class='content'><p>Luego, ejecuta el siguiente comando para generar el archivo <code>person.g.dart</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zmx1dHRlciBwYWNrYWdlcyBwdWIgcnVuIGJ1aWxkX3J1bm5lciBidWlsZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>flutter packages pub run build_runner build</pre></div><div class='content'></div><h2>Paso 4: Registrar el Adaptador</h2>
+<div class='content'><p>Antes de usar el modelo, debes registrar el adaptador:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBtYWluKCkgYXN5bmMgewogIGF3YWl0IEhpdmUuaW5pdEZsdXR0ZXIoKTsKICBIaXZlLnJlZ2lzdGVyQWRhcHRlcihQZXJzb25BZGFwdGVyKCkpOwogIHJ1bkFwcChNeUFwcCgpKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(PersonAdapter());
+  runApp(MyApp());
+}</pre></div><div class='content'></div><h1>Uso de Hive</h1>
+<div class='content'></div><h2>Abrir una Caja</h2>
+<div class='content'><p>En Hive, los datos se almacenan en cajas. Debes abrir una caja antes de poder usarla:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBtYWluKCkgYXN5bmMgewogIGF3YWl0IEhpdmUuaW5pdEZsdXR0ZXIoKTsKICBIaXZlLnJlZ2lzdGVyQWRhcHRlcihQZXJzb25BZGFwdGVyKCkpOwogIHZhciBib3ggPSBhd2FpdCBIaXZlLm9wZW5Cb3goJ215Qm94Jyk7CiAgcnVuQXBwKE15QXBwKCkpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(PersonAdapter());
+  var box = await Hive.openBox('myBox');
+  runApp(MyApp());
+}</pre></div><div class='content'></div><h2>Operaciones CRUD</h2>
+<div class='content'><h4>Crear y Leer Datos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBhZGRQZXJzb24oQm94IGJveCkgewogIHZhciBwZXJzb24gPSBQZXJzb24obmFtZTogJ0pvaG4gRG9lJywgYWdlOiAzMCk7CiAgYm94LmFkZChwZXJzb24pOwp9Cgp2b2lkIGdldFBlcnNvbihCb3ggYm94KSB7CiAgdmFyIHBlcnNvbiA9IGJveC5nZXRBdCgwKSBhcyBQZXJzb247CiAgcHJpbnQoJ05hbWU6ICR7cGVyc29uLm5hbWV9LCBBZ2U6ICR7cGVyc29uLmFnZX0nKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void addPerson(Box box) {
+  var person = Person(name: 'John Doe', age: 30);
+  box.add(person);
+}
+
+void getPerson(Box box) {
+  var person = box.getAt(0) as Person;
+  print('Name: ${person.name}, Age: ${person.age}');
+}</pre></div><div class='content'><h4>Actualizar Datos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCB1cGRhdGVQZXJzb24oQm94IGJveCkgewogIHZhciBwZXJzb24gPSBib3guZ2V0QXQoMCkgYXMgUGVyc29uOwogIHBlcnNvbi5uYW1lID0gJ0phbmUgRG9lJzsKICBwZXJzb24uc2F2ZSgpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void updatePerson(Box box) {
+  var person = box.getAt(0) as Person;
+  person.name = 'Jane Doe';
+  person.save();
+}</pre></div><div class='content'><h4>Eliminar Datos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBkZWxldGVQZXJzb24oQm94IGJveCkgewogIGJveC5kZWxldGVBdCgwKTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void deletePerson(Box box) {
+  box.deleteAt(0);
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear una Aplicación de Lista de Tareas</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Crear una aplicación simple de lista de tareas usando Hive para almacenar las tareas.</li>
+<li><strong>Requisitos</strong>:
+<ul>
+<li>Definir un modelo <code>Task</code> con campos <code>title</code> y <code>isCompleted</code>.</li>
+<li>Implementar funciones para agregar, leer, actualizar y eliminar tareas.</li>
+<li>Mostrar las tareas en una lista en la interfaz de usuario.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>Definir el Modelo</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmhpdmUvaGl2ZS5kYXJ0JzsKCnBhcnQgJ3Rhc2suZy5kYXJ0JzsKCkBIaXZlVHlwZSh0eXBlSWQ6IDEpCmNsYXNzIFRhc2sgZXh0ZW5kcyBIaXZlT2JqZWN0IHsKICBASGl2ZUZpZWxkKDApCiAgU3RyaW5nIHRpdGxlOwoKICBASGl2ZUZpZWxkKDEpCiAgYm9vbCBpc0NvbXBsZXRlZDsKCiAgVGFzayh7cmVxdWlyZWQgdGhpcy50aXRsZSwgdGhpcy5pc0NvbXBsZXRlZCA9IGZhbHNlfSk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:hive/hive.dart';
+
+part 'task.g.dart';
+
+@HiveType(typeId: 1)
+class Task extends HiveObject {
+  @HiveField(0)
+  String title;
+
+  @HiveField(1)
+  bool isCompleted;
+
+  Task({required this.title, this.isCompleted = false});
+}</pre></div><div class='content'><h4>Registrar el Adaptador y Abrir la Caja</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dm9pZCBtYWluKCkgYXN5bmMgewogIGF3YWl0IEhpdmUuaW5pdEZsdXR0ZXIoKTsKICBIaXZlLnJlZ2lzdGVyQWRhcHRlcihUYXNrQWRhcHRlcigpKTsKICB2YXIgYm94ID0gYXdhaXQgSGl2ZS5vcGVuQm94KCd0YXNrQm94Jyk7CiAgcnVuQXBwKE15QXBwKCkpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>void main() async {
+  await Hive.initFlutter();
+  Hive.registerAdapter(TaskAdapter());
+  var box = await Hive.openBox('taskBox');
+  runApp(MyApp());
+}</pre></div><div class='content'><h4>Implementar la Interfaz de Usuario</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTXlBcHAgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIE1hdGVyaWFsQXBwKAogICAgICBob21lOiBUYXNrUGFnZSgpLAogICAgKTsKICB9Cn0KCmNsYXNzIFRhc2tQYWdlIGV4dGVuZHMgU3RhdGVmdWxXaWRnZXQgewogIEBvdmVycmlkZQogIF9UYXNrUGFnZVN0YXRlIGNyZWF0ZVN0YXRlKCkgPT4gX1Rhc2tQYWdlU3RhdGUoKTsKfQoKY2xhc3MgX1Rhc2tQYWdlU3RhdGUgZXh0ZW5kcyBTdGF0ZTxUYXNrUGFnZT4gewogIGZpbmFsIF90YXNrQm94ID0gSGl2ZS5ib3goJ3Rhc2tCb3gnKTsKICBmaW5hbCBfY29udHJvbGxlciA9IFRleHRFZGl0aW5nQ29udHJvbGxlcigpOwoKICB2b2lkIF9hZGRUYXNrKFN0cmluZyB0aXRsZSkgewogICAgZmluYWwgdGFzayA9IFRhc2sodGl0bGU6IHRpdGxlKTsKICAgIF90YXNrQm94LmFkZCh0YXNrKTsKICB9CgogIHZvaWQgX3RvZ2dsZVRhc2tDb21wbGV0aW9uKGludCBpbmRleCkgewogICAgZmluYWwgdGFzayA9IF90YXNrQm94LmdldEF0KGluZGV4KSBhcyBUYXNrOwogICAgdGFzay5pc0NvbXBsZXRlZCA9ICF0YXNrLmlzQ29tcGxldGVkOwogICAgdGFzay5zYXZlKCk7CiAgfQoKICB2b2lkIF9kZWxldGVUYXNrKGludCBpbmRleCkgewogICAgX3Rhc2tCb3guZGVsZXRlQXQoaW5kZXgpOwogIH0KCiAgQG92ZXJyaWRlCiAgV2lkZ2V0IGJ1aWxkKEJ1aWxkQ29udGV4dCBjb250ZXh0KSB7CiAgICByZXR1cm4gU2NhZmZvbGQoCiAgICAgIGFwcEJhcjogQXBwQmFyKHRpdGxlOiBUZXh0KCdUYXNrIExpc3QnKSksCiAgICAgIGJvZHk6IENvbHVtbigKICAgICAgICBjaGlsZHJlbjogWwogICAgICAgICAgVGV4dEZpZWxkKAogICAgICAgICAgICBjb250cm9sbGVyOiBfY29udHJvbGxlciwKICAgICAgICAgICAgZGVjb3JhdGlvbjogSW5wdXREZWNvcmF0aW9uKGxhYmVsVGV4dDogJ05ldyBUYXNrJyksCiAgICAgICAgICAgIG9uU3VibWl0dGVkOiAodmFsdWUpIHsKICAgICAgICAgICAgICBfYWRkVGFzayh2YWx1ZSk7CiAgICAgICAgICAgICAgX2NvbnRyb2xsZXIuY2xlYXIoKTsKICAgICAgICAgICAgfSwKICAgICAgICAgICksCiAgICAgICAgICBFeHBhbmRlZCgKICAgICAgICAgICAgY2hpbGQ6IFZhbHVlTGlzdGVuYWJsZUJ1aWxkZXIoCiAgICAgICAgICAgICAgdmFsdWVMaXN0ZW5hYmxlOiBfdGFza0JveC5saXN0ZW5hYmxlKCksCiAgICAgICAgICAgICAgYnVpbGRlcjogKGNvbnRleHQsIEJveCBib3gsIF8pIHsKICAgICAgICAgICAgICAgIGlmIChib3guaXNFbXB0eSkgewogICAgICAgICAgICAgICAgICByZXR1cm4gQ2VudGVyKGNoaWxkOiBUZXh0KCdObyB0YXNrcyB5ZXQuJykpOwogICAgICAgICAgICAgICAgfQoKICAgICAgICAgICAgICAgIHJldHVybiBMaXN0Vmlldy5idWlsZGVyKAogICAgICAgICAgICAgICAgICBpdGVtQ291bnQ6IGJveC5sZW5ndGgsCiAgICAgICAgICAgICAgICAgIGl0ZW1CdWlsZGVyOiAoY29udGV4dCwgaW5kZXgpIHsKICAgICAgICAgICAgICAgICAgICBmaW5hbCB0YXNrID0gYm94LmdldEF0KGluZGV4KSBhcyBUYXNrOwogICAgICAgICAgICAgICAgICAgIHJldHVybiBMaXN0VGlsZSgKICAgICAgICAgICAgICAgICAgICAgIHRpdGxlOiBUZXh0KAogICAgICAgICAgICAgICAgICAgICAgICB0YXNrLnRpdGxlLAogICAgICAgICAgICAgICAgICAgICAgICBzdHlsZTogVGV4dFN0eWxlKAogICAgICAgICAgICAgICAgICAgICAgICAgIGRlY29yYXRpb246IHRhc2suaXNDb21wbGV0ZWQKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPyBUZXh0RGVjb3JhdGlvbi5saW5lVGhyb3VnaAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICA6IFRleHREZWNvcmF0aW9uLm5vbmUsCiAgICAgICAgICAgICAgICAgICAgICAgICksCiAgICAgICAgICAgICAgICAgICAgICApLAogICAgICAgICAgICAgICAgICAgICAgdHJhaWxpbmc6IENoZWNrYm94KAogICAgICAgICAgICAgICAgICAgICAgICB2YWx1ZTogdGFzay5pc0NvbXBsZXRlZCwKICAgICAgICAgICAgICAgICAgICAgICAgb25DaGFuZ2VkOiAoXykgPT4gX3RvZ2dsZVRhc2tDb21wbGV0aW9uKGluZGV4KSwKICAgICAgICAgICAgICAgICAgICAgICksCiAgICAgICAgICAgICAgICAgICAgICBvbkxvbmdQcmVzczogKCkgPT4gX2RlbGV0ZVRhc2soaW5kZXgpLAogICAgICAgICAgICAgICAgICAgICk7CiAgICAgICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICAgICApOwogICAgICAgICAgICAgIH0sCiAgICAgICAgICAgICksCiAgICAgICAgICApLAogICAgICAgIF0sCiAgICAgICksCiAgICApOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: TaskPage(),
+    );
+  }
+}
+
+class TaskPage extends StatefulWidget {
+  @override
+  _TaskPageState createState() =&gt; _TaskPageState();
+}
+
+class _TaskPageState extends State&lt;TaskPage&gt; {
+  final _taskBox = Hive.box('taskBox');
+  final _controller = TextEditingController();
+
+  void _addTask(String title) {
+    final task = Task(title: title);
+    _taskBox.add(task);
+  }
+
+  void _toggleTaskCompletion(int index) {
+    final task = _taskBox.getAt(index) as Task;
+    task.isCompleted = !task.isCompleted;
+    task.save();
+  }
+
+  void _deleteTask(int index) {
+    _taskBox.deleteAt(index);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Task List')),
+      body: Column(
+        children: [
+          TextField(
+            controller: _controller,
+            decoration: InputDecoration(labelText: 'New Task'),
+            onSubmitted: (value) {
+              _addTask(value);
+              _controller.clear();
+            },
+          ),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: _taskBox.listenable(),
+              builder: (context, Box box, _) {
+                if (box.isEmpty) {
+                  return Center(child: Text('No tasks yet.'));
+                }
+
+                return ListView.builder(
+                  itemCount: box.length,
+                  itemBuilder: (context, index) {
+                    final task = box.getAt(index) as Task;
+                    return ListTile(
+                      title: Text(
+                        task.title,
+                        style: TextStyle(
+                          decoration: task.isCompleted
+                              ? TextDecoration.lineThrough
+                              : TextDecoration.none,
+                        ),
+                      ),
+                      trailing: Checkbox(
+                        value: task.isCompleted,
+                        onChanged: (_) =&gt; _toggleTaskCompletion(index),
+                      ),
+                      onLongPress: () =&gt; _deleteTask(index),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Hive es una herramienta poderosa y fácil de usar para el almacenamiento local en aplicaciones Flutter. En este módulo, aprendiste cómo configurar Hive, definir modelos, realizar operaciones CRUD y crear una aplicación práctica de lista de tareas. Con estos conocimientos, puedes implementar almacenamiento local eficiente en tus aplicaciones Flutter.</p>
+<p>En el próximo módulo, exploraremos conceptos avanzados de Flutter, incluyendo animaciones y optimización de rendimiento. ¡Sigue adelante y sigue aprendiendo!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-sqlite-database' title="Base de Datos SQLite">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-animations-in-flutter' title="Animaciones en Flutter">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

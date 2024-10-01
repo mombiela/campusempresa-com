@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatización de Flujos de Trabajo con Cloud Functions</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/08-03-automating-workflows" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/08-03-automating-workflows" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/08-03-automating-workflows" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bigquery/08-03-automating-workflows" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/08-03-automating-workflows" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-using-dataflow' title="Uso de BigQuery con Dataflow">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Automatización de Flujos de Trabajo con Cloud Functions</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-scheduling-queries' title="Programación de Consultas con Cloud Scheduler">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, aprenderemos cómo automatizar flujos de trabajo en BigQuery utilizando Google Cloud Functions. Las Cloud Functions son funciones ligeras y de propósito general que se ejecutan en la nube en respuesta a eventos. Son ideales para tareas de automatización debido a su capacidad para integrarse con otros servicios de Google Cloud y su facilidad de uso.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Comprender qué son las Cloud Functions y cómo funcionan.</li>
+<li>Aprender a crear y desplegar una Cloud Function.</li>
+<li>Integrar Cloud Functions con BigQuery para automatizar tareas.</li>
+<li>Ejemplos prácticos de automatización de flujos de trabajo.</li>
+</ul>
+</div><h1>¿Qué son las Cloud Functions?</h1>
+<div class='content'><p>Google Cloud Functions es un servicio de computación sin servidor que permite ejecutar código en respuesta a eventos sin necesidad de gestionar servidores. Algunas características clave incluyen:</p>
+<ul>
+<li><strong>Ejecución basada en eventos</strong>: Las funciones se activan en respuesta a eventos de otros servicios de Google Cloud, como cambios en Cloud Storage, mensajes en Pub/Sub, o eventos HTTP.</li>
+<li><strong>Escalabilidad automática</strong>: Las funciones escalan automáticamente según la demanda.</li>
+<li><strong>Pago por uso</strong>: Solo pagas por el tiempo de ejecución de la función.</li>
+</ul>
+</div><h1>Creación y Despliegue de una Cloud Function</h1>
+<div class='content'></div><h2>Paso 1: Configuración del Entorno</h2>
+<div class='content'><p>Antes de crear una Cloud Function, asegúrate de tener configurado tu entorno de Google Cloud:</p>
+<ol>
+<li><strong>Instala la CLI de Google Cloud</strong>: Si no la tienes instalada, sigue las instrucciones en <a href="https://cloud.google.com/sdk/docs/install">Google Cloud SDK</a>.</li>
+<li><strong>Autentícate en Google Cloud</strong>: Ejecuta <code>gcloud auth login</code> para autenticarte.</li>
+<li><strong>Selecciona tu proyecto</strong>: Usa <code>gcloud config set project [PROJECT_ID]</code> para seleccionar tu proyecto.</li>
+</ol>
+</div><h2>Paso 2: Escribir la Función</h2>
+<div class='content'><p>Vamos a escribir una función simple que ejecuta una consulta en BigQuery y guarda los resultados en una tabla.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGdvb2dsZS5jbG91ZC5iaWdxdWVyeSBhcyBiaWdxdWVyeQoKZGVmIHJ1bl9xdWVyeShldmVudCwgY29udGV4dCk6CiAgICBjbGllbnQgPSBiaWdxdWVyeS5DbGllbnQoKQogICAgCiAgICBxdWVyeSA9ICIiIgogICAgU0VMRUNUIG5hbWUsIENPVU5UKCopIGFzIG5hbWVfY291bnQKICAgIEZST00gYG15X2RhdGFzZXQubXlfdGFibGVgCiAgICBHUk9VUCBCWSBuYW1lCiAgICAiIiIKICAgIAogICAgam9iID0gY2xpZW50LnF1ZXJ5KHF1ZXJ5KQogICAgcmVzdWx0cyA9IGpvYi5yZXN1bHQoKQogICAgCiAgICBkZXN0aW5hdGlvbl90YWJsZSA9IGNsaWVudC5kYXRhc2V0KCdteV9kYXRhc2V0JykudGFibGUoJ3Jlc3VsdHNfdGFibGUnKQogICAgam9iX2NvbmZpZyA9IGJpZ3F1ZXJ5LlF1ZXJ5Sm9iQ29uZmlnKGRlc3RpbmF0aW9uPWRlc3RpbmF0aW9uX3RhYmxlKQogICAgCiAgICBqb2IgPSBjbGllbnQucXVlcnkocXVlcnksIGpvYl9jb25maWc9am9iX2NvbmZpZykKICAgIGpvYi5yZXN1bHQoKSAgIyBFc3BlcmEgYSBxdWUgZWwgdHJhYmFqbyB0ZXJtaW5lLgogICAgCiAgICBwcmludChmIlF1ZXJ5IHJlc3VsdHMgbG9hZGVkIHRvIHRhYmxlIHtkZXN0aW5hdGlvbl90YWJsZX0iKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import google.cloud.bigquery as bigquery
+
+def run_query(event, context):
+    client = bigquery.Client()
+    
+    query = &quot;&quot;&quot;
+    SELECT name, COUNT(*) as name_count
+    FROM `my_dataset.my_table`
+    GROUP BY name
+    &quot;&quot;&quot;
+    
+    job = client.query(query)
+    results = job.result()
+    
+    destination_table = client.dataset('my_dataset').table('results_table')
+    job_config = bigquery.QueryJobConfig(destination=destination_table)
+    
+    job = client.query(query, job_config=job_config)
+    job.result()  # Espera a que el trabajo termine.
+    
+    print(f&quot;Query results loaded to table {destination_table}&quot;)</pre></div><div class='content'></div><h2>Paso 3: Desplegar la Función</h2>
+<div class='content'><p>Para desplegar la función, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2Nsb3VkIGZ1bmN0aW9ucyBkZXBsb3kgcnVuX3F1ZXJ5IFwKLS1ydW50aW1lIHB5dGhvbjM5IFwKLS10cmlnZ2VyLWh0dHAgXAotLWFsbG93LXVuYXV0aGVudGljYXRlZA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcloud functions deploy run_query \
+--runtime python39 \
+--trigger-http \
+--allow-unauthenticated</pre></div><div class='content'><p>Este comando despliega la función <code>run_query</code> con Python 3.9, activada por solicitudes HTTP y permite el acceso no autenticado.</p>
+</div><h1>Integración con BigQuery</h1>
+<div class='content'></div><h2>Ejemplo Práctico: Automatización de una Tarea de Limpieza de Datos</h2>
+<div class='content'><p>Supongamos que queremos automatizar una tarea de limpieza de datos que se ejecuta cada vez que se carga un nuevo archivo en Cloud Storage.</p>
+<ol>
+<li><strong>Escribir la Función</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGdvb2dsZS5jbG91ZC5iaWdxdWVyeSBhcyBiaWdxdWVyeQppbXBvcnQgZ29vZ2xlLmNsb3VkLnN0b3JhZ2UgYXMgc3RvcmFnZQoKZGVmIGNsZWFuX2RhdGEoZXZlbnQsIGNvbnRleHQpOgogICAgY2xpZW50ID0gYmlncXVlcnkuQ2xpZW50KCkKICAgIHN0b3JhZ2VfY2xpZW50ID0gc3RvcmFnZS5DbGllbnQoKQogICAgCiAgICBidWNrZXRfbmFtZSA9IGV2ZW50WydidWNrZXQnXQogICAgZmlsZV9uYW1lID0gZXZlbnRbJ25hbWUnXQogICAgCiAgICAjIExlZXIgZGF0b3MgZGVsIGFyY2hpdm8KICAgIGJ1Y2tldCA9IHN0b3JhZ2VfY2xpZW50LmJ1Y2tldChidWNrZXRfbmFtZSkKICAgIGJsb2IgPSBidWNrZXQuYmxvYihmaWxlX25hbWUpCiAgICBkYXRhID0gYmxvYi5kb3dubG9hZF9hc19zdHJpbmcoKQogICAgCiAgICAjIFByb2Nlc2FyIHkgbGltcGlhciBkYXRvcyAoZWplbXBsbyBzaW1wbGUpCiAgICBjbGVhbmVkX2RhdGEgPSBkYXRhLmRlY29kZSgndXRmLTgnKS5yZXBsYWNlKCdvbGRfdmFsdWUnLCAnbmV3X3ZhbHVlJykKICAgIAogICAgIyBHdWFyZGFyIGRhdG9zIGxpbXBpb3MgZW4gQmlnUXVlcnkKICAgIHRhYmxlX2lkID0gJ215X2RhdGFzZXQuY2xlYW5lZF90YWJsZScKICAgIGpvYl9jb25maWcgPSBiaWdxdWVyeS5Mb2FkSm9iQ29uZmlnKAogICAgICAgIHNvdXJjZV9mb3JtYXQ9YmlncXVlcnkuU291cmNlRm9ybWF0LkNTViwKICAgICAgICBza2lwX2xlYWRpbmdfcm93cz0xLAogICAgICAgIGF1dG9kZXRlY3Q9VHJ1ZSwKICAgICkKICAgIAogICAgam9iID0gY2xpZW50LmxvYWRfdGFibGVfZnJvbV9maWxlKAogICAgICAgIGNsZWFuZWRfZGF0YSwgdGFibGVfaWQsIGpvYl9jb25maWc9am9iX2NvbmZpZwogICAgKQogICAgCiAgICBqb2IucmVzdWx0KCkgICMgRXNwZXJhIGEgcXVlIGVsIHRyYWJham8gdGVybWluZS4KICAgIAogICAgcHJpbnQoZiJEYXRhIGNsZWFuZWQgYW5kIGxvYWRlZCB0byB0YWJsZSB7dGFibGVfaWR9Iik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import google.cloud.bigquery as bigquery
+import google.cloud.storage as storage
+
+def clean_data(event, context):
+    client = bigquery.Client()
+    storage_client = storage.Client()
+    
+    bucket_name = event['bucket']
+    file_name = event['name']
+    
+    # Leer datos del archivo
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    data = blob.download_as_string()
+    
+    # Procesar y limpiar datos (ejemplo simple)
+    cleaned_data = data.decode('utf-8').replace('old_value', 'new_value')
+    
+    # Guardar datos limpios en BigQuery
+    table_id = 'my_dataset.cleaned_table'
+    job_config = bigquery.LoadJobConfig(
+        source_format=bigquery.SourceFormat.CSV,
+        skip_leading_rows=1,
+        autodetect=True,
+    )
+    
+    job = client.load_table_from_file(
+        cleaned_data, table_id, job_config=job_config
+    )
+    
+    job.result()  # Espera a que el trabajo termine.
+    
+    print(f&quot;Data cleaned and loaded to table {table_id}&quot;)</pre></div><div class='content'><ol start="2">
+<li><strong>Desplegar la Función</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2Nsb3VkIGZ1bmN0aW9ucyBkZXBsb3kgY2xlYW5fZGF0YSBcCi0tcnVudGltZSBweXRob24zOSBcCi0tdHJpZ2dlci1yZXNvdXJjZSBbQlVDS0VUX05BTUVdIFwKLS10cmlnZ2VyLWV2ZW50IGdvb2dsZS5zdG9yYWdlLm9iamVjdC5maW5hbGl6ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcloud functions deploy clean_data \
+--runtime python39 \
+--trigger-resource [BUCKET_NAME] \
+--trigger-event google.storage.object.finalize</pre></div><div class='content'><p>Este comando despliega la función <code>clean_data</code>, que se activa cada vez que se carga un nuevo archivo en el bucket especificado.</p>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear una Cloud Function para Ejecutar una Consulta</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear una Cloud Function que ejecute una consulta en BigQuery y guarde los resultados en una tabla.</p>
+<ol>
+<li>Escribe una función que ejecute una consulta simple en BigQuery.</li>
+<li>Despliega la función usando la CLI de Google Cloud.</li>
+<li>Prueba la función enviando una solicitud HTTP.</li>
+</ol>
+</div><h2>Ejercicio 2: Automatizar la Limpieza de Datos</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear una Cloud Function que se active al cargar un archivo en Cloud Storage, limpie los datos y los guarde en BigQuery.</p>
+<ol>
+<li>Escribe una función que lea datos de un archivo en Cloud Storage.</li>
+<li>Limpia los datos (puedes usar cualquier lógica de limpieza que prefieras).</li>
+<li>Guarda los datos limpios en una tabla de BigQuery.</li>
+<li>Despliega la función y prueba cargando un archivo en el bucket.</li>
+</ol>
+</div><h1>Soluciones</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGdvb2dsZS5jbG91ZC5iaWdxdWVyeSBhcyBiaWdxdWVyeQoKZGVmIHJ1bl9xdWVyeShldmVudCwgY29udGV4dCk6CiAgICBjbGllbnQgPSBiaWdxdWVyeS5DbGllbnQoKQogICAgCiAgICBxdWVyeSA9ICIiIgogICAgU0VMRUNUIG5hbWUsIENPVU5UKCopIGFzIG5hbWVfY291bnQKICAgIEZST00gYG15X2RhdGFzZXQubXlfdGFibGVgCiAgICBHUk9VUCBCWSBuYW1lCiAgICAiIiIKICAgIAogICAgam9iID0gY2xpZW50LnF1ZXJ5KHF1ZXJ5KQogICAgcmVzdWx0cyA9IGpvYi5yZXN1bHQoKQogICAgCiAgICBkZXN0aW5hdGlvbl90YWJsZSA9IGNsaWVudC5kYXRhc2V0KCdteV9kYXRhc2V0JykudGFibGUoJ3Jlc3VsdHNfdGFibGUnKQogICAgam9iX2NvbmZpZyA9IGJpZ3F1ZXJ5LlF1ZXJ5Sm9iQ29uZmlnKGRlc3RpbmF0aW9uPWRlc3RpbmF0aW9uX3RhYmxlKQogICAgCiAgICBqb2IgPSBjbGllbnQucXVlcnkocXVlcnksIGpvYl9jb25maWc9am9iX2NvbmZpZykKICAgIGpvYi5yZXN1bHQoKSAgIyBFc3BlcmEgYSBxdWUgZWwgdHJhYmFqbyB0ZXJtaW5lLgogICAgCiAgICBwcmludChmIlF1ZXJ5IHJlc3VsdHMgbG9hZGVkIHRvIHRhYmxlIHtkZXN0aW5hdGlvbl90YWJsZX0iKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import google.cloud.bigquery as bigquery
+
+def run_query(event, context):
+    client = bigquery.Client()
+    
+    query = &quot;&quot;&quot;
+    SELECT name, COUNT(*) as name_count
+    FROM `my_dataset.my_table`
+    GROUP BY name
+    &quot;&quot;&quot;
+    
+    job = client.query(query)
+    results = job.result()
+    
+    destination_table = client.dataset('my_dataset').table('results_table')
+    job_config = bigquery.QueryJobConfig(destination=destination_table)
+    
+    job = client.query(query, job_config=job_config)
+    job.result()  # Espera a que el trabajo termine.
+    
+    print(f&quot;Query results loaded to table {destination_table}&quot;)</pre></div><div class='content'></div><h2>Solución al Ejercicio 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGdvb2dsZS5jbG91ZC5iaWdxdWVyeSBhcyBiaWdxdWVyeQppbXBvcnQgZ29vZ2xlLmNsb3VkLnN0b3JhZ2UgYXMgc3RvcmFnZQoKZGVmIGNsZWFuX2RhdGEoZXZlbnQsIGNvbnRleHQpOgogICAgY2xpZW50ID0gYmlncXVlcnkuQ2xpZW50KCkKICAgIHN0b3JhZ2VfY2xpZW50ID0gc3RvcmFnZS5DbGllbnQoKQogICAgCiAgICBidWNrZXRfbmFtZSA9IGV2ZW50WydidWNrZXQnXQogICAgZmlsZV9uYW1lID0gZXZlbnRbJ25hbWUnXQogICAgCiAgICAjIExlZXIgZGF0b3MgZGVsIGFyY2hpdm8KICAgIGJ1Y2tldCA9IHN0b3JhZ2VfY2xpZW50LmJ1Y2tldChidWNrZXRfbmFtZSkKICAgIGJsb2IgPSBidWNrZXQuYmxvYihmaWxlX25hbWUpCiAgICBkYXRhID0gYmxvYi5kb3dubG9hZF9hc19zdHJpbmcoKQogICAgCiAgICAjIFByb2Nlc2FyIHkgbGltcGlhciBkYXRvcyAoZWplbXBsbyBzaW1wbGUpCiAgICBjbGVhbmVkX2RhdGEgPSBkYXRhLmRlY29kZSgndXRmLTgnKS5yZXBsYWNlKCdvbGRfdmFsdWUnLCAnbmV3X3ZhbHVlJykKICAgIAogICAgIyBHdWFyZGFyIGRhdG9zIGxpbXBpb3MgZW4gQmlnUXVlcnkKICAgIHRhYmxlX2lkID0gJ215X2RhdGFzZXQuY2xlYW5lZF90YWJsZScKICAgIGpvYl9jb25maWcgPSBiaWdxdWVyeS5Mb2FkSm9iQ29uZmlnKAogICAgICAgIHNvdXJjZV9mb3JtYXQ9YmlncXVlcnkuU291cmNlRm9ybWF0LkNTViwKICAgICAgICBza2lwX2xlYWRpbmdfcm93cz0xLAogICAgICAgIGF1dG9kZXRlY3Q9VHJ1ZSwKICAgICkKICAgIAogICAgam9iID0gY2xpZW50LmxvYWRfdGFibGVfZnJvbV9maWxlKAogICAgICAgIGNsZWFuZWRfZGF0YSwgdGFibGVfaWQsIGpvYl9jb25maWc9am9iX2NvbmZpZwogICAgKQogICAgCiAgICBqb2IucmVzdWx0KCkgICMgRXNwZXJhIGEgcXVlIGVsIHRyYWJham8gdGVybWluZS4KICAgIAogICAgcHJpbnQoZiJEYXRhIGNsZWFuZWQgYW5kIGxvYWRlZCB0byB0YWJsZSB7dGFibGVfaWR9Iik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import google.cloud.bigquery as bigquery
+import google.cloud.storage as storage
+
+def clean_data(event, context):
+    client = bigquery.Client()
+    storage_client = storage.Client()
+    
+    bucket_name = event['bucket']
+    file_name = event['name']
+    
+    # Leer datos del archivo
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(file_name)
+    data = blob.download_as_string()
+    
+    # Procesar y limpiar datos (ejemplo simple)
+    cleaned_data = data.decode('utf-8').replace('old_value', 'new_value')
+    
+    # Guardar datos limpios en BigQuery
+    table_id = 'my_dataset.cleaned_table'
+    job_config = bigquery.LoadJobConfig(
+        source_format=bigquery.SourceFormat.CSV,
+        skip_leading_rows=1,
+        autodetect=True,
+    )
+    
+    job = client.load_table_from_file(
+        cleaned_data, table_id, job_config=job_config
+    )
+    
+    job.result()  # Espera a que el trabajo termine.
+    
+    print(f&quot;Data cleaned and loaded to table {table_id}&quot;)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido cómo utilizar Google Cloud Functions para automatizar flujos de trabajo en BigQuery. Hemos cubierto desde la creación y despliegue de una función simple hasta la integración con BigQuery para tareas más complejas como la limpieza de datos. Con estas habilidades, puedes automatizar una variedad de tareas en tu entorno de BigQuery, mejorando la eficiencia y reduciendo la intervención manual.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-using-dataflow' title="Uso de BigQuery con Dataflow">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-scheduling-queries' title="Programación de Consultas con Cloud Scheduler">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

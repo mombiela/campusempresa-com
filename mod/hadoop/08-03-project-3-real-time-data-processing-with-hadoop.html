@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto 3: Procesamiento de Datos en Tiempo Real con Hadoop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/08-03-project-3-real-time-data-processing-with-hadoop" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/08-03-project-3-real-time-data-processing-with-hadoop" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/08-03-project-3-real-time-data-processing-with-hadoop" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/hadoop/08-03-project-3-real-time-data-processing-with-hadoop" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/08-03-project-3-real-time-data-processing-with-hadoop" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-project-2-building-a-data-pipeline-with-hadoop-ecosystem' title="Proyecto 2: Construyendo una Canalización de Datos con el Ecosistema Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Proyecto 3: Procesamiento de Datos en Tiempo Real con Hadoop</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-project-4-machine-learning-with-hadoop' title="Proyecto 4: Aprendizaje Automático con Hadoop">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este proyecto, aprenderás a utilizar las herramientas del ecosistema Hadoop para procesar datos en tiempo real. El procesamiento de datos en tiempo real es crucial para aplicaciones que requieren análisis y respuestas inmediatas, como la detección de fraudes, la monitorización de redes y la analítica de redes sociales.</p>
+</div><h1>Objetivos del Proyecto</h1>
+<div class='content'><ol>
+<li><strong>Configurar un entorno de procesamiento de datos en tiempo real.</strong></li>
+<li><strong>Utilizar Apache Kafka para la ingesta de datos en tiempo real.</strong></li>
+<li><strong>Procesar los datos en tiempo real utilizando Apache Storm.</strong></li>
+<li><strong>Almacenar y analizar los datos procesados con Apache HBase.</strong></li>
+</ol>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><p>Antes de comenzar este proyecto, asegúrate de tener conocimientos básicos sobre:</p>
+<ul>
+<li><strong>Apache Kafka</strong></li>
+<li><strong>Apache Storm</strong></li>
+<li><strong>Apache HBase</strong></li>
+<li><strong>Hadoop y su ecosistema</strong></li>
+</ul>
+</div><h1>Paso 1: Configuración del Entorno</h1>
+<div class='content'></div><h2>Instalación de Apache Kafka</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Descargar Apache Kafka:</strong></p>
+<pre><code class="language-sh">wget https://downloads.apache.org/kafka/2.8.0/kafka_2.13-2.8.0.tgz
+tar -xzf kafka_2.13-2.8.0.tgz
+cd kafka_2.13-2.8.0
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el servidor Zookeeper:</strong></p>
+<pre><code class="language-sh">bin/zookeeper-server-start.sh config/zookeeper.properties
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el servidor Kafka:</strong></p>
+<pre><code class="language-sh">bin/kafka-server-start.sh config/server.properties
+</code></pre>
+</li>
+</ol>
+</div><h2>Instalación de Apache Storm</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Descargar Apache Storm:</strong></p>
+<pre><code class="language-sh">wget https://downloads.apache.org/storm/apache-storm-2.3.0/apache-storm-2.3.0.tar.gz
+tar -xzf apache-storm-2.3.0.tar.gz
+cd apache-storm-2.3.0
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el servidor Nimbus:</strong></p>
+<pre><code class="language-sh">bin/storm nimbus
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el supervisor:</strong></p>
+<pre><code class="language-sh">bin/storm supervisor
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar la interfaz de usuario:</strong></p>
+<pre><code class="language-sh">bin/storm ui
+</code></pre>
+</li>
+</ol>
+</div><h2>Instalación de Apache HBase</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Descargar Apache HBase:</strong></p>
+<pre><code class="language-sh">wget https://downloads.apache.org/hbase/2.4.7/hbase-2.4.7-bin.tar.gz
+tar -xzf hbase-2.4.7-bin.tar.gz
+cd hbase-2.4.7
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar HBase:</strong></p>
+<pre><code class="language-sh">bin/start-hbase.sh
+</code></pre>
+</li>
+</ol>
+</div><h1>Paso 2: Ingesta de Datos en Tiempo Real con Apache Kafka</h1>
+<div class='content'></div><h2>Crear un Tópico en Kafka</h2>
+<div class='content'><ol>
+<li><strong>Crear un tópico llamado <code>real-time-data</code>:</strong>
+<pre><code class="language-sh">bin/kafka-topics.sh --create --topic real-time-data --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+</code></pre>
+</li>
+</ol>
+</div><h2>Productor de Datos</h2>
+<div class='content'><ol>
+<li><strong>Crear un productor de datos en Python:</strong>
+<pre><code class="language-python">from kafka import KafkaProducer
+import json
+import time
+
+producer = KafkaProducer(bootstrap_servers='localhost:9092',
+                         value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+
+while True:
+    data = {'timestamp': time.time(), 'value': random.randint(0, 100)}
+    producer.send('real-time-data', data)
+    time.sleep(1)
+</code></pre>
+</li>
+</ol>
+</div><h1>Paso 3: Procesamiento de Datos en Tiempo Real con Apache Storm</h1>
+<div class='content'></div><h2>Topología de Storm</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear una topología de Storm en Java:</strong></p>
+<pre><code class="language-java">import org.apache.storm.Config;
+import org.apache.storm.LocalCluster;
+import org.apache.storm.kafka.KafkaSpout;
+import org.apache.storm.kafka.SpoutConfig;
+import org.apache.storm.kafka.StringScheme;
+import org.apache.storm.spout.SchemeAsMultiScheme;
+import org.apache.storm.topology.TopologyBuilder;
+import org.apache.storm.tuple.Fields;
+import org.apache.storm.tuple.Values;
+import org.apache.storm.kafka.ZkHosts;
+
+public class RealTimeProcessingTopology {
+    public static void main(String[] args) {
+        String zkConnString = &quot;localhost:2181&quot;;
+        String topicName = &quot;real-time-data&quot;;
+
+        ZkHosts zkHosts = new ZkHosts(zkConnString);
+        SpoutConfig kafkaConfig = new SpoutConfig(zkHosts, topicName, &quot;&quot;, &quot;storm&quot;);
+        kafkaConfig.scheme = new SchemeAsMultiScheme(new StringScheme());
+
+        TopologyBuilder builder = new TopologyBuilder();
+        builder.setSpout(&quot;kafka-spout&quot;, new KafkaSpout(kafkaConfig), 1);
+        builder.setBolt(&quot;process-bolt&quot;, new ProcessBolt(), 1).shuffleGrouping(&quot;kafka-spout&quot;);
+
+        Config config = new Config();
+        LocalCluster cluster = new LocalCluster();
+        cluster.submitTopology(&quot;RealTimeProcessingTopology&quot;, config, builder.createTopology());
+    }
+}
+</code></pre>
+</li>
+<li>
+<p><strong>Crear el Bolt de procesamiento:</strong></p>
+<pre><code class="language-java">import org.apache.storm.task.OutputCollector;
+import org.apache.storm.task.TopologyContext;
+import org.apache.storm.topology.BasicOutputCollector;
+import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.topology.base.BaseBasicBolt;
+import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
+
+import java.util.Map;
+
+public class ProcessBolt extends BaseBasicBolt {
+    @Override
+    public void execute(Tuple input, BasicOutputCollector collector) {
+        String value = input.getStringByField(&quot;str&quot;);
+        // Procesar el valor
+        collector.emit(new Values(value));
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+        declarer.declare(new Fields(&quot;processed-value&quot;));
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Paso 4: Almacenamiento y Análisis de Datos con Apache HBase</h1>
+<div class='content'></div><h2>Crear una Tabla en HBase</h2>
+<div class='content'><ol>
+<li><strong>Crear una tabla llamada <code>real_time_data</code>:</strong>
+<pre><code class="language-sh">hbase shell
+create 'real_time_data', 'cf'
+</code></pre>
+</li>
+</ol>
+</div><h2>Guardar Datos en HBase</h2>
+<div class='content'><ol>
+<li><strong>Modificar el Bolt de procesamiento para guardar datos en HBase:</strong>
+<pre><code class="language-java">import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.storm.task.OutputCollector;
+import org.apache.storm.task.TopologyContext;
+import org.apache.storm.topology.BasicOutputCollector;
+import org.apache.storm.topology.OutputFieldsDeclarer;
+import org.apache.storm.topology.base.BaseBasicBolt;
+import org.apache.storm.tuple.Tuple;
+
+import java.io.IOException;
+import java.util.Map;
+
+public class HBaseBolt extends BaseBasicBolt {
+    private Connection connection;
+    private Table table;
+
+    @Override
+    public void prepare(Map stormConf, TopologyContext context) {
+        try {
+            org.apache.hadoop.conf.Configuration config = HBaseConfiguration.create();
+            connection = ConnectionFactory.createConnection(config);
+            table = connection.getTable(TableName.valueOf(&quot;real_time_data&quot;));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void execute(Tuple input, BasicOutputCollector collector) {
+        String value = input.getStringByField(&quot;processed-value&quot;);
+        Put put = new Put(Bytes.toBytes(System.currentTimeMillis()));
+        put.addColumn(Bytes.toBytes(&quot;cf&quot;), Bytes.toBytes(&quot;value&quot;), Bytes.toBytes(value));
+        try {
+            table.put(put);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void declareOutputFields(OutputFieldsDeclarer declarer) {
+    }
+
+    @Override
+    public void cleanup() {
+        try {
+            table.close();
+            connection.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este proyecto, has aprendido a configurar un entorno de procesamiento de datos en tiempo real utilizando Apache Kafka, Apache Storm y Apache HBase. Has creado un flujo de trabajo completo desde la ingesta de datos en tiempo real hasta su procesamiento y almacenamiento. Este conocimiento es fundamental para desarrollar aplicaciones que requieren análisis y respuestas inmediatas.</p>
+</div><h2>Resumen de Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Apache Kafka:</strong> Plataforma de mensajería distribuida para la ingesta de datos en tiempo real.</li>
+<li><strong>Apache Storm:</strong> Sistema de procesamiento de flujos en tiempo real.</li>
+<li><strong>Apache HBase:</strong> Base de datos NoSQL distribuida para el almacenamiento de grandes volúmenes de datos.</li>
+</ul>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><ul>
+<li><strong>Optimización del rendimiento:</strong> Investigar técnicas para optimizar el rendimiento de Kafka, Storm y HBase.</li>
+<li><strong>Seguridad:</strong> Implementar medidas de seguridad para proteger los datos en tránsito y en reposo.</li>
+<li><strong>Escalabilidad:</strong> Explorar cómo escalar cada componente para manejar mayores volúmenes de datos.</li>
+</ul>
+<p>¡Felicidades por completar este proyecto! Ahora estás listo para aplicar estos conocimientos en aplicaciones del mundo real.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-project-2-building-a-data-pipeline-with-hadoop-ecosystem' title="Proyecto 2: Construyendo una Canalización de Datos con el Ecosistema Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-project-4-machine-learning-with-hadoop' title="Proyecto 4: Aprendizaje Automático con Hadoop">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

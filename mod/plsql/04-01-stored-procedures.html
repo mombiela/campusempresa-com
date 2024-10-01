@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Procedimientos Almacenados</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/04-01-stored-procedures" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/04-01-stored-procedures" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/04-01-stored-procedures" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/plsql/04-01-stored-procedures" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/04-01-stored-procedures" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-forall-statement' title="Sentencia FORALL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Procedimientos Almacenados</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-functions' title="Funciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los procedimientos almacenados son subprogramas que se almacenan en la base de datos y se pueden ejecutar en cualquier momento. Son útiles para encapsular lógica de negocio, mejorar el rendimiento y la reutilización del código.</p>
+</div><h2>¿Qué es un Procedimiento Almacenado?</h2>
+<div class='content'><p>Un procedimiento almacenado es un conjunto de sentencias SQL y PL/SQL que se almacenan en la base de datos y se pueden ejecutar como una unidad. Los procedimientos almacenados pueden aceptar parámetros de entrada y salida, y pueden devolver valores.</p>
+</div><h2>Ventajas de los Procedimientos Almacenados</h2>
+<div class='content'><ul>
+<li><strong>Reutilización del Código</strong>: Los procedimientos almacenados pueden ser llamados desde múltiples aplicaciones.</li>
+<li><strong>Seguridad</strong>: Permiten controlar el acceso a los datos mediante la encapsulación de la lógica de negocio.</li>
+<li><strong>Rendimiento</strong>: Reducen el tráfico de red y mejoran el rendimiento al ejecutar lógica en el servidor de la base de datos.</li>
+<li><strong>Mantenimiento</strong>: Facilitan el mantenimiento y la actualización del código.</li>
+</ul>
+</div><h1>Sintaxis Básica</h1>
+<div class='content'><p>La sintaxis básica para crear un procedimiento almacenado en PL/SQL es la siguiente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIHByb2NlZHVyZV9uYW1lICgKICAgIHBhcmFtZXRlcjEgSU4gZGF0YXR5cGUsCiAgICBwYXJhbWV0ZXIyIE9VVCBkYXRhdHlwZQopIElTCiAgICAtLSBEZWNsYXJhY2nDs24gZGUgdmFyaWFibGVzCkJFR0lOCiAgICAtLSBDdWVycG8gZGVsIHByb2NlZGltaWVudG8KICAgIC0tIFNlbnRlbmNpYXMgU1FMIHkgUEwvU1FMCkVYQ0VQVElPTgogICAgLS0gTWFuZWpvIGRlIGV4Y2VwY2lvbmVzCkVORCBwcm9jZWR1cmVfbmFtZTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE procedure_name (
+    parameter1 IN datatype,
+    parameter2 OUT datatype
+) IS
+    -- Declaraci&oacute;n de variables
+BEGIN
+    -- Cuerpo del procedimiento
+    -- Sentencias SQL y PL/SQL
+EXCEPTION
+    -- Manejo de excepciones
+END procedure_name;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Vamos a crear un procedimiento almacenado simple que inserta un registro en una tabla de empleados.</p>
+<h4>Paso 1: Crear la Tabla de Empleados</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGVtcGxveWVlcyAoCiAgICBlbXBsb3llZV9pZCBOVU1CRVIgUFJJTUFSWSBLRVksCiAgICBmaXJzdF9uYW1lIFZBUkNIQVIyKDUwKSwKICAgIGxhc3RfbmFtZSBWQVJDSEFSMig1MCksCiAgICBoaXJlX2RhdGUgREFURQopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE employees (
+    employee_id NUMBER PRIMARY KEY,
+    first_name VARCHAR2(50),
+    last_name VARCHAR2(50),
+    hire_date DATE
+);</pre></div><div class='content'><h4>Paso 2: Crear el Procedimiento Almacenado</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIGFkZF9lbXBsb3llZSAoCiAgICBwX2VtcGxveWVlX2lkIElOIE5VTUJFUiwKICAgIHBfZmlyc3RfbmFtZSBJTiBWQVJDSEFSMiwKICAgIHBfbGFzdF9uYW1lIElOIFZBUkNIQVIyLAogICAgcF9oaXJlX2RhdGUgSU4gREFURQopIElTCkJFR0lOCiAgICBJTlNFUlQgSU5UTyBlbXBsb3llZXMgKGVtcGxveWVlX2lkLCBmaXJzdF9uYW1lLCBsYXN0X25hbWUsIGhpcmVfZGF0ZSkKICAgIFZBTFVFUyAocF9lbXBsb3llZV9pZCwgcF9maXJzdF9uYW1lLCBwX2xhc3RfbmFtZSwgcF9oaXJlX2RhdGUpOwpFWENFUFRJT04KICAgIFdIRU4gT1RIRVJTIFRIRU4KICAgICAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnRXJyb3I6ICcgfHwgU1FMRVJSTSk7CkVORCBhZGRfZW1wbG95ZWU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE add_employee (
+    p_employee_id IN NUMBER,
+    p_first_name IN VARCHAR2,
+    p_last_name IN VARCHAR2,
+    p_hire_date IN DATE
+) IS
+BEGIN
+    INSERT INTO employees (employee_id, first_name, last_name, hire_date)
+    VALUES (p_employee_id, p_first_name, p_last_name, p_hire_date);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END add_employee;</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>CREATE OR REPLACE PROCEDURE</strong>: Crea un nuevo procedimiento o reemplaza uno existente con el mismo nombre.</li>
+<li><strong>add_employee</strong>: Nombre del procedimiento.</li>
+<li><strong>Parámetros</strong>: <code>p_employee_id</code>, <code>p_first_name</code>, <code>p_last_name</code>, <code>p_hire_date</code> son los parámetros de entrada.</li>
+<li><strong>BEGIN...END</strong>: Delimita el cuerpo del procedimiento.</li>
+<li><strong>INSERT INTO</strong>: Sentencia SQL que inserta un nuevo registro en la tabla <code>employees</code>.</li>
+<li><strong>EXCEPTION</strong>: Manejo de excepciones para capturar y mostrar errores.</li>
+</ul>
+</div><h2>Ejecución del Procedimiento</h2>
+<div class='content'><p>Para ejecutar el procedimiento almacenado, utilizamos la sentencia <code>EXECUTE</code> o <code>CALL</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhFQ1VURSBhZGRfZW1wbG95ZWUoMSwgJ0pvaG4nLCAnRG9lJywgU1lTREFURSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXECUTE add_employee(1, 'John', 'Doe', SYSDATE);</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Procedimiento para Actualizar Registros</h2>
+<div class='content'><p>Crea un procedimiento almacenado llamado <code>update_employee</code> que actualice el nombre y apellido de un empleado basado en su <code>employee_id</code>.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIHVwZGF0ZV9lbXBsb3llZSAoCiAgICBwX2VtcGxveWVlX2lkIElOIE5VTUJFUiwKICAgIHBfZmlyc3RfbmFtZSBJTiBWQVJDSEFSMiwKICAgIHBfbGFzdF9uYW1lIElOIFZBUkNIQVIyCikgSVMKQkVHSU4KICAgIFVQREFURSBlbXBsb3llZXMKICAgIFNFVCBmaXJzdF9uYW1lID0gcF9maXJzdF9uYW1lLCBsYXN0X25hbWUgPSBwX2xhc3RfbmFtZQogICAgV0hFUkUgZW1wbG95ZWVfaWQgPSBwX2VtcGxveWVlX2lkOwpFWENFUFRJT04KICAgIFdIRU4gT1RIRVJTIFRIRU4KICAgICAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnRXJyb3I6ICcgfHwgU1FMRVJSTSk7CkVORCB1cGRhdGVfZW1wbG95ZWU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE update_employee (
+    p_employee_id IN NUMBER,
+    p_first_name IN VARCHAR2,
+    p_last_name IN VARCHAR2
+) IS
+BEGIN
+    UPDATE employees
+    SET first_name = p_first_name, last_name = p_last_name
+    WHERE employee_id = p_employee_id;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END update_employee;</pre></div><div class='content'></div><h2>Ejercicio 2: Crear un Procedimiento para Eliminar Registros</h2>
+<div class='content'><p>Crea un procedimiento almacenado llamado <code>delete_employee</code> que elimine un registro de la tabla <code>employees</code> basado en su <code>employee_id</code>.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIGRlbGV0ZV9lbXBsb3llZSAoCiAgICBwX2VtcGxveWVlX2lkIElOIE5VTUJFUgopIElTCkJFR0lOCiAgICBERUxFVEUgRlJPTSBlbXBsb3llZXMKICAgIFdIRVJFIGVtcGxveWVlX2lkID0gcF9lbXBsb3llZV9pZDsKRVhDRVBUSU9OCiAgICBXSEVOIE9USEVSUyBUSEVOCiAgICAgICAgREJNU19PVVRQVVQuUFVUX0xJTkUoJ0Vycm9yOiAnIHx8IFNRTEVSUk0pOwpFTkQgZGVsZXRlX2VtcGxveWVlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE delete_employee (
+    p_employee_id IN NUMBER
+) IS
+BEGIN
+    DELETE FROM employees
+    WHERE employee_id = p_employee_id;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error: ' || SQLERRM);
+END delete_employee;</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los procedimientos almacenados en PL/SQL, su sintaxis básica y cómo crearlos y ejecutarlos. También hemos visto ejemplos prácticos y ejercicios para reforzar los conceptos aprendidos. Los procedimientos almacenados son una herramienta poderosa para encapsular lógica de negocio y mejorar el rendimiento y la seguridad de nuestras aplicaciones.</p>
+<p>En el próximo tema, exploraremos las funciones en PL/SQL, que son similares a los procedimientos almacenados pero con algunas diferencias clave.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-forall-statement' title="Sentencia FORALL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-functions' title="Funciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

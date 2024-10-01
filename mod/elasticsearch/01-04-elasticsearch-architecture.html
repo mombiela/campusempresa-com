@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura de Elasticsearch</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/01-04-elasticsearch-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/01-04-elasticsearch-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/01-04-elasticsearch-architecture" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/elasticsearch/01-04-elasticsearch-architecture" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/01-04-elasticsearch-architecture" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-03-basic-concepts' title="Conceptos Básicos: Nodos, Clústeres e Índices">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Arquitectura de Elasticsearch</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-01-indexing-data' title="Indexando Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Elasticsearch es un motor de búsqueda y análisis distribuido, diseñado para manejar grandes volúmenes de datos en tiempo real. Su arquitectura está diseñada para ser escalable, flexible y eficiente. En esta sección, exploraremos los componentes clave de la arquitectura de Elasticsearch y cómo interactúan entre sí.</p>
+</div><h1>Componentes Clave</h1>
+<div class='content'></div><h2>1. Nodos</h2>
+<div class='content'><p>Un nodo es una instancia de Elasticsearch que almacena datos y participa en las operaciones de indexación y búsqueda. Los nodos pueden ser de diferentes tipos, cada uno con un rol específico:</p>
+<ul>
+<li><strong>Nodo Maestro (Master Node):</strong> Responsable de la gestión del clúster, como la creación/eliminación de índices y la gestión de la asignación de fragmentos.</li>
+<li><strong>Nodo de Datos (Data Node):</strong> Almacena los datos y realiza operaciones relacionadas con ellos, como búsquedas y agregaciones.</li>
+<li><strong>Nodo Coordinador (Coordinating Node):</strong> Maneja las solicitudes de búsqueda y distribución de estas a los nodos de datos, agregando los resultados.</li>
+<li><strong>Nodo de Ingesta (Ingest Node):</strong> Realiza preprocesamiento de documentos antes de que sean indexados.</li>
+</ul>
+</div><h2>2. Clúster</h2>
+<div class='content'><p>Un clúster es un conjunto de uno o más nodos que trabajan juntos. Cada clúster tiene un nombre único que lo identifica. Los clústeres permiten la escalabilidad horizontal, ya que se pueden añadir más nodos para manejar mayores volúmenes de datos y cargas de trabajo.</p>
+</div><h2>3. Índices</h2>
+<div class='content'><p>Un índice es una colección de documentos que comparten características similares. En Elasticsearch, los índices son la unidad principal de organización de datos. Cada índice tiene un nombre único y puede contener múltiples tipos de documentos.</p>
+</div><h2>4. Fragmentos (Shards)</h2>
+<div class='content'><p>Los índices se dividen en fragmentos para distribuir la carga de trabajo y permitir la escalabilidad. Hay dos tipos de fragmentos:</p>
+<ul>
+<li><strong>Fragmentos Primarios (Primary Shards):</strong> Contienen los datos originales del índice.</li>
+<li><strong>Fragmentos Réplica (Replica Shards):</strong> Copias de los fragmentos primarios que proporcionan redundancia y alta disponibilidad.</li>
+</ul>
+</div><h2>5. Documentos</h2>
+<div class='content'><p>Un documento es la unidad básica de información que se puede indexar. Cada documento es un objeto JSON que contiene datos estructurados. Los documentos se almacenan en índices y se identifican de manera única por un ID.</p>
+</div><h1>Diagrama de Arquitectura</h1>
+<div class='content'><p>A continuación, se presenta un diagrama simplificado de la arquitectura de Elasticsearch:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ky0tLS0tLS0tLS0tLS0tLS0tLS0rCnwgICAgIENsw7pzdGVyICAgICAgIHwKfCAgICAgICAgICAgICAgICAgICB8CnwgKy0tLS0tLS0tLS0tLS0tLSsgfAp8IHwgICAgIE5vZG8gMSAgICB8IHwKfCB8IChNYXN0ZXIvRGF0YSkgfCB8CnwgKy0tLS0tLS0tLS0tLS0tLSsgfAp8ICAgICAgICAgICAgICAgICAgIHwKfCArLS0tLS0tLS0tLS0tLS0tKyB8CnwgfCAgICAgTm9kbyAyICAgIHwgfAp8IHwgICAgKERhdGEpICAgICB8IHwKfCArLS0tLS0tLS0tLS0tLS0tKyB8CnwgICAgICAgICAgICAgICAgICAgfAp8ICstLS0tLS0tLS0tLS0tLS0rIHwKfCB8ICAgICBOb2RvIDMgICAgfCB8CnwgfCAoQ29vcmRpbmF0aW5nKXwgfAp8ICstLS0tLS0tLS0tLS0tLS0rIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0r"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>+-------------------+
+|     Cl&uacute;ster       |
+|                   |
+| +---------------+ |
+| |     Nodo 1    | |
+| | (Master/Data) | |
+| +---------------+ |
+|                   |
+| +---------------+ |
+| |     Nodo 2    | |
+| |    (Data)     | |
+| +---------------+ |
+|                   |
+| +---------------+ |
+| |     Nodo 3    | |
+| | (Coordinating)| |
+| +---------------+ |
++-------------------+</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Configuración de un Clúster</h2>
+<div class='content'><p>Supongamos que queremos configurar un clúster con tres nodos: un nodo maestro, un nodo de datos y un nodo coordinador. A continuación, se muestra cómo se podría configurar cada nodo en el archivo <code>elasticsearch.yml</code>:</p>
+<h4>Nodo Maestro</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2x1c3Rlci5uYW1lOiBteS1jbHVzdGVyCm5vZGUubmFtZTogbWFzdGVyLW5vZGUKbm9kZS5tYXN0ZXI6IHRydWUKbm9kZS5kYXRhOiBmYWxzZQpub2RlLmluZ2VzdDogZmFsc2UKbmV0d29yay5ob3N0OiAwLjAuMC4wCmRpc2NvdmVyeS5zZWVkX2hvc3RzOiBbIm5vZGUxIiwgIm5vZGUyIiwgIm5vZGUzIl0KY2x1c3Rlci5pbml0aWFsX21hc3Rlcl9ub2RlczogWyJtYXN0ZXItbm9kZSJd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cluster.name: my-cluster
+node.name: master-node
+node.master: true
+node.data: false
+node.ingest: false
+network.host: 0.0.0.0
+discovery.seed_hosts: [&quot;node1&quot;, &quot;node2&quot;, &quot;node3&quot;]
+cluster.initial_master_nodes: [&quot;master-node&quot;]</pre></div><div class='content'><h4>Nodo de Datos</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2x1c3Rlci5uYW1lOiBteS1jbHVzdGVyCm5vZGUubmFtZTogZGF0YS1ub2RlCm5vZGUubWFzdGVyOiBmYWxzZQpub2RlLmRhdGE6IHRydWUKbm9kZS5pbmdlc3Q6IGZhbHNlCm5ldHdvcmsuaG9zdDogMC4wLjAuMApkaXNjb3Zlcnkuc2VlZF9ob3N0czogWyJub2RlMSIsICJub2RlMiIsICJub2RlMyJd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cluster.name: my-cluster
+node.name: data-node
+node.master: false
+node.data: true
+node.ingest: false
+network.host: 0.0.0.0
+discovery.seed_hosts: [&quot;node1&quot;, &quot;node2&quot;, &quot;node3&quot;]</pre></div><div class='content'><h4>Nodo Coordinador</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2x1c3Rlci5uYW1lOiBteS1jbHVzdGVyCm5vZGUubmFtZTogY29vcmRpbmF0aW5nLW5vZGUKbm9kZS5tYXN0ZXI6IGZhbHNlCm5vZGUuZGF0YTogZmFsc2UKbm9kZS5pbmdlc3Q6IGZhbHNlCm5ldHdvcmsuaG9zdDogMC4wLjAuMApkaXNjb3Zlcnkuc2VlZF9ob3N0czogWyJub2RlMSIsICJub2RlMiIsICJub2RlMyJd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cluster.name: my-cluster
+node.name: coordinating-node
+node.master: false
+node.data: false
+node.ingest: false
+network.host: 0.0.0.0
+discovery.seed_hosts: [&quot;node1&quot;, &quot;node2&quot;, &quot;node3&quot;]</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de un Clúster Básico</h2>
+<div class='content'><p><strong>Objetivo:</strong> Configurar un clúster de Elasticsearch con tres nodos: un nodo maestro, un nodo de datos y un nodo coordinador.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Instala Elasticsearch en tres máquinas diferentes o en tres instancias de contenedores.</li>
+<li>Configura cada nodo según los ejemplos proporcionados anteriormente.</li>
+<li>Inicia cada nodo y verifica que el clúster se haya formado correctamente utilizando la API de clúster de Elasticsearch.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+<ol>
+<li>Instala Elasticsearch en cada máquina.</li>
+<li>Configura los archivos <code>elasticsearch.yml</code> en cada nodo según los ejemplos.</li>
+<li>Inicia Elasticsearch en cada nodo:
+<pre><code class="language-bash">./bin/elasticsearch
+</code></pre>
+</li>
+<li>Verifica el estado del clúster:
+<pre><code class="language-bash">curl -X GET &quot;localhost:9200/_cluster/health?pretty&quot;
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos explorado la arquitectura de Elasticsearch, incluyendo sus componentes clave como nodos, clústeres, índices, fragmentos y documentos. También hemos visto cómo configurar un clúster básico de Elasticsearch. Con esta comprensión, estarás mejor preparado para trabajar con Elasticsearch de manera efectiva y escalar tus aplicaciones según sea necesario. En el próximo módulo, comenzaremos a indexar y buscar datos en Elasticsearch.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-03-basic-concepts' title="Conceptos Básicos: Nodos, Clústeres e Índices">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-01-indexing-data' title="Indexando Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

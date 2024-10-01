@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro y Depuración</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flask/06-04-logging-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flask/06-04-logging-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flask/06-04-logging-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flask/06-04-logging-debugging" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flask/06-04-logging-debugging" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-custom-error-pages' title="Páginas de Error Personalizadas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Registro y Depuración</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-intro-restful-apis' title="Introducción a las APIs RESTful">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo implementar el registro (logging) y la depuración (debugging) en una aplicación Flask. Estas herramientas son esenciales para identificar y solucionar problemas en tu aplicación, así como para mantener un registro de eventos importantes.</p>
+</div><h1>1. Introducción al Registro (Logging)</h1>
+<div class='content'><p>El registro es el proceso de capturar información sobre eventos que ocurren en tu aplicación. Esta información puede ser útil para depurar problemas, monitorear el rendimiento y mantener un historial de actividades.</p>
+</div><h2>1.1. Configuración Básica de Logging en Flask</h2>
+<div class='content'><p>Flask utiliza el módulo <code>logging</code> de Python para manejar el registro. A continuación, se muestra cómo configurar el registro básico en una aplicación Flask.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGxvZ2dpbmcKZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKIyBDb25maWd1cmFjacOzbiBiw6FzaWNhIGRlIGxvZ2dpbmcKbG9nZ2luZy5iYXNpY0NvbmZpZyhsZXZlbD1sb2dnaW5nLkRFQlVHKQoKQGFwcC5yb3V0ZSgnLycpCmRlZiBob21lKCk6CiAgICBhcHAubG9nZ2VyLmluZm8oJ1DDoWdpbmEgcHJpbmNpcGFsIGFjY2VkaWRhJykKICAgIHJldHVybiAnSG9sYSwgRmxhc2shJwoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import logging
+from flask import Flask
+
+app = Flask(__name__)
+
+# Configuraci&oacute;n b&aacute;sica de logging
+logging.basicConfig(level=logging.DEBUG)
+
+@app.route('/')
+def home():
+    app.logger.info('P&aacute;gina principal accedida')
+    return 'Hola, Flask!'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>import logging</code>: Importa el módulo de logging de Python.</li>
+<li><code>logging.basicConfig(level=logging.DEBUG)</code>: Configura el nivel de registro. En este caso, se establece en <code>DEBUG</code>, lo que significa que se registrarán todos los mensajes de nivel DEBUG y superiores.</li>
+<li><code>app.logger.info('Página principal accedida')</code>: Registra un mensaje de información cuando se accede a la página principal.</li>
+</ul>
+</div><h2>Niveles de Logging</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Nivel</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DEBUG</td>
+<td>Información detallada, típicamente de interés solo cuando se diagnostica un problema.</td>
+</tr>
+<tr>
+<td>INFO</td>
+<td>Confirmación de que las cosas están funcionando como se espera.</td>
+</tr>
+<tr>
+<td>WARNING</td>
+<td>Una indicación de que algo inesperado sucedió, o indicación de algún problema en el futuro cercano (por ejemplo, ‘disk space low’). El software sigue funcionando como se espera.</td>
+</tr>
+<tr>
+<td>ERROR</td>
+<td>Debido a un problema más grave, el software no ha podido realizar alguna función.</td>
+</tr>
+<tr>
+<td>CRITICAL</td>
+<td>Un error grave, indicando que el programa mismo puede no ser capaz de continuar ejecutándose.</td>
+</tr>
+</tbody>
+</table>
+</div><h1>2. Registro Avanzado</h1>
+<div class='content'><p>Para aplicaciones más complejas, es posible que desees configurar el registro de manera más detallada, como registrar en archivos, configurar diferentes niveles de registro para diferentes partes de la aplicación, etc.</p>
+</div><h2>2.1. Registro en Archivos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGxvZ2dpbmcKZnJvbSBsb2dnaW5nLmhhbmRsZXJzIGltcG9ydCBSb3RhdGluZ0ZpbGVIYW5kbGVyCmZyb20gZmxhc2sgaW1wb3J0IEZsYXNrCgphcHAgPSBGbGFzayhfX25hbWVfXykKCiMgQ29uZmlndXJhY2nDs24gZGUgbG9nZ2luZyBjb24gYXJjaGl2byByb3RhdGl2bwpoYW5kbGVyID0gUm90YXRpbmdGaWxlSGFuZGxlcignYXBwLmxvZycsIG1heEJ5dGVzPTEwMDAwLCBiYWNrdXBDb3VudD0zKQpoYW5kbGVyLnNldExldmVsKGxvZ2dpbmcuSU5GTykKZm9ybWF0dGVyID0gbG9nZ2luZy5Gb3JtYXR0ZXIoJyUoYXNjdGltZSlzIC0gJShuYW1lKXMgLSAlKGxldmVsbmFtZSlzIC0gJShtZXNzYWdlKXMnKQpoYW5kbGVyLnNldEZvcm1hdHRlcihmb3JtYXR0ZXIpCmFwcC5sb2dnZXIuYWRkSGFuZGxlcihoYW5kbGVyKQoKQGFwcC5yb3V0ZSgnLycpCmRlZiBob21lKCk6CiAgICBhcHAubG9nZ2VyLmluZm8oJ1DDoWdpbmEgcHJpbmNpcGFsIGFjY2VkaWRhJykKICAgIHJldHVybiAnSG9sYSwgRmxhc2shJwoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import logging
+from logging.handlers import RotatingFileHandler
+from flask import Flask
+
+app = Flask(__name__)
+
+# Configuraci&oacute;n de logging con archivo rotativo
+handler = RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+app.logger.addHandler(handler)
+
+@app.route('/')
+def home():
+    app.logger.info('P&aacute;gina principal accedida')
+    return 'Hola, Flask!'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>RotatingFileHandler('app.log', maxBytes=10000, backupCount=3)</code>: Crea un manejador de archivo rotativo que guarda los registros en <code>app.log</code>, con un tamaño máximo de 10,000 bytes por archivo y hasta 3 archivos de respaldo.</li>
+<li><code>formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')</code>: Define el formato de los mensajes de registro.</li>
+<li><code>handler.setFormatter(formatter)</code>: Asigna el formato al manejador.</li>
+<li><code>app.logger.addHandler(handler)</code>: Añade el manejador a la aplicación Flask.</li>
+</ul>
+</div><h1>3. Depuración (Debugging)</h1>
+<div class='content'><p>La depuración es el proceso de identificar y corregir errores en tu aplicación. Flask proporciona varias herramientas para facilitar este proceso.</p>
+</div><h2>3.1. Modo de Depuración</h2>
+<div class='content'><p>El modo de depuración en Flask proporciona información detallada sobre errores y permite la recarga automática de la aplicación cuando se realizan cambios en el código.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnLycpCmRlZiBob21lKCk6CiAgICByZXR1cm4gJ0hvbGEsIEZsYXNrIScKCmlmIF9fbmFtZV9fID09ICdfX21haW5fXyc6CiAgICBhcHAucnVuKGRlYnVnPVRydWUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'Hola, Flask!'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>app.run(debug=True)</code>: Activa el modo de depuración. Esto habilita la recarga automática y muestra un rastreo detallado de errores en el navegador.</li>
+</ul>
+</div><h2>3.2. Uso de PDB para Depuración</h2>
+<div class='content'><p>PDB (Python Debugger) es una herramienta de depuración interactiva que permite inspeccionar el estado de tu aplicación en tiempo de ejecución.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnLycpCmRlZiBob21lKCk6CiAgICBpbXBvcnQgcGRiOyBwZGIuc2V0X3RyYWNlKCkgICMgUHVudG8gZGUgaW50ZXJydXBjacOzbgogICAgcmV0dXJuICdIb2xhLCBGbGFzayEnCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    import pdb; pdb.set_trace()  # Punto de interrupci&oacute;n
+    return 'Hola, Flask!'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>import pdb; pdb.set_trace()</code>: Inserta un punto de interrupción en el código. Cuando se accede a la ruta, la ejecución se detendrá en este punto y se abrirá una consola interactiva para inspeccionar el estado de la aplicación.</li>
+</ul>
+</div><h1>4. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de Logging</h2>
+<div class='content'><p>Configura el registro en tu aplicación Flask para que registre mensajes de nivel <code>WARNING</code> y superiores en un archivo llamado <code>warnings.log</code>.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGxvZ2dpbmcKZnJvbSBsb2dnaW5nLmhhbmRsZXJzIGltcG9ydCBSb3RhdGluZ0ZpbGVIYW5kbGVyCmZyb20gZmxhc2sgaW1wb3J0IEZsYXNrCgphcHAgPSBGbGFzayhfX25hbWVfXykKCiMgQ29uZmlndXJhY2nDs24gZGUgbG9nZ2luZyBjb24gYXJjaGl2byByb3RhdGl2bwpoYW5kbGVyID0gUm90YXRpbmdGaWxlSGFuZGxlcignd2FybmluZ3MubG9nJywgbWF4Qnl0ZXM9MTAwMDAsIGJhY2t1cENvdW50PTMpCmhhbmRsZXIuc2V0TGV2ZWwobG9nZ2luZy5XQVJOSU5HKQpmb3JtYXR0ZXIgPSBsb2dnaW5nLkZvcm1hdHRlcignJShhc2N0aW1lKXMgLSAlKG5hbWUpcyAtICUobGV2ZWxuYW1lKXMgLSAlKG1lc3NhZ2UpcycpCmhhbmRsZXIuc2V0Rm9ybWF0dGVyKGZvcm1hdHRlcikKYXBwLmxvZ2dlci5hZGRIYW5kbGVyKGhhbmRsZXIpCgpAYXBwLnJvdXRlKCcvJykKZGVmIGhvbWUoKToKICAgIGFwcC5sb2dnZXIud2FybmluZygnQWR2ZXJ0ZW5jaWE6IFDDoWdpbmEgcHJpbmNpcGFsIGFjY2VkaWRhJykKICAgIHJldHVybiAnSG9sYSwgRmxhc2shJwoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGFwcC5ydW4oZGVidWc9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import logging
+from logging.handlers import RotatingFileHandler
+from flask import Flask
+
+app = Flask(__name__)
+
+# Configuraci&oacute;n de logging con archivo rotativo
+handler = RotatingFileHandler('warnings.log', maxBytes=10000, backupCount=3)
+handler.setLevel(logging.WARNING)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+app.logger.addHandler(handler)
+
+@app.route('/')
+def home():
+    app.logger.warning('Advertencia: P&aacute;gina principal accedida')
+    return 'Hola, Flask!'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h2>Ejercicio 2: Uso de PDB</h2>
+<div class='content'><p>Inserta un punto de interrupción en una ruta de tu aplicación Flask y utiliza PDB para inspeccionar el estado de la aplicación cuando se accede a esa ruta.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2sKCmFwcCA9IEZsYXNrKF9fbmFtZV9fKQoKQGFwcC5yb3V0ZSgnLycpCmRlZiBob21lKCk6CiAgICBpbXBvcnQgcGRiOyBwZGIuc2V0X3RyYWNlKCkgICMgUHVudG8gZGUgaW50ZXJydXBjacOzbgogICAgcmV0dXJuICdIb2xhLCBGbGFzayEnCgppZiBfX25hbWVfXyA9PSAnX19tYWluX18nOgogICAgYXBwLnJ1bihkZWJ1Zz1UcnVlKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    import pdb; pdb.set_trace()  # Punto de interrupci&oacute;n
+    return 'Hola, Flask!'
+
+if __name__ == '__main__':
+    app.run(debug=True)</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido cómo implementar el registro y la depuración en una aplicación Flask. Estas herramientas son esenciales para identificar y solucionar problemas, así como para mantener un registro de eventos importantes. Con el conocimiento adquirido, estarás mejor preparado para manejar errores y mantener tu aplicación funcionando sin problemas.</p>
+<p>En el próximo módulo, exploraremos cómo crear y manejar APIs RESTful con Flask.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-custom-error-pages' title="Páginas de Error Personalizadas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-intro-restful-apis' title="Introducción a las APIs RESTful">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

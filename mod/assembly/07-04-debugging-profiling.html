@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depuración y Perfilado del Código en Ensamblador</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/assembly/07-04-debugging-profiling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/assembly/07-04-debugging-profiling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/assembly/07-04-debugging-profiling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/assembly/07-04-debugging-profiling" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/assembly/07-04-debugging-profiling" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-interfacing-hardware' title="Interfaz con Hardware">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Depuración y Perfilado del Código en Ensamblador</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-project-proposal' title="Propuesta y Planificación del Proyecto">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La depuración y el perfilado son procesos esenciales en el desarrollo de software, especialmente en el lenguaje ensamblador, donde los errores pueden ser difíciles de detectar y corregir. En esta sección, aprenderás a utilizar herramientas y técnicas para depurar y perfilar tu código en ensamblador, mejorando así su eficiencia y funcionalidad.</p>
+</div><h1>1. Introducción a la Depuración</h1>
+<div class='content'></div><h2>¿Qué es la Depuración?</h2>
+<div class='content'><p>La depuración es el proceso de identificar y corregir errores en el código. En ensamblador, esto puede incluir errores de lógica, errores de sintaxis, y problemas de rendimiento.</p>
+</div><h2>Herramientas de Depuración</h2>
+<div class='content'><p>Algunas herramientas comunes para la depuración de código en ensamblador incluyen:</p>
+<ul>
+<li><strong>GDB (GNU Debugger)</strong>: Un depurador potente que soporta múltiples lenguajes, incluyendo ensamblador.</li>
+<li><strong>LLDB</strong>: El depurador de LLVM, que también soporta ensamblador.</li>
+<li><strong>OllyDbg</strong>: Un depurador de código ensamblador para Windows.</li>
+</ul>
+</div><h2>Configuración del Entorno de Depuración</h2>
+<div class='content'><p>Para utilizar GDB con ensamblador, sigue estos pasos:</p>
+<ol>
+<li><strong>Compila tu código con información de depuración</strong>:
+<pre><code class="language-bash">nasm -f elf -g -F dwarf your_program.asm
+ld -m elf_i386 -o your_program your_program.o
+</code></pre>
+</li>
+<li><strong>Inicia GDB</strong>:
+<pre><code class="language-bash">gdb your_program
+</code></pre>
+</li>
+</ol>
+</div><h1>2. Técnicas de Depuración</h1>
+<div class='content'></div><h2>Puntos de Interrupción (Breakpoints)</h2>
+<div class='content'><p>Los puntos de interrupción te permiten pausar la ejecución del programa en una línea específica para inspeccionar el estado del programa.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("KGdkYikgYnJlYWsgbWFpbgooZ2RiKSBydW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>(gdb) break main
+(gdb) run</pre></div><div class='content'></div><h2>Inspección de Registros y Memoria</h2>
+<div class='content'><p>Puedes inspeccionar los registros y la memoria para entender el estado del programa.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("KGdkYikgaW5mbyByZWdpc3RlcnMKKGdkYikgeC8xMHggJGVzcA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>(gdb) info registers
+(gdb) x/10x $esp</pre></div><div class='content'></div><h2>Seguimiento de la Ejecución (Stepping)</h2>
+<div class='content'><p>El seguimiento te permite ejecutar el programa línea por línea.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("KGdkYikgc3RlcAooZ2RiKSBuZXh0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>(gdb) step
+(gdb) next</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tienes el siguiente código en ensamblador:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VjdGlvbiAuZGF0YQogICAgbXNnIGRiICdIZWxsbywgV29ybGQhJywgMAoKc2VjdGlvbiAudGV4dAogICAgZ2xvYmFsIF9zdGFydAoKX3N0YXJ0OgogICAgbW92IGVheCwgNAogICAgbW92IGVieCwgMQogICAgbW92IGVjeCwgbXNnCiAgICBtb3YgZWR4LCAxMwogICAgaW50IDB4ODAKCiAgICBtb3YgZWF4LCAxCiAgICB4b3IgZWJ4LCBlYngKICAgIGludCAweDgw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>section .data
+    msg db 'Hello, World!', 0
+
+section .text
+    global _start
+
+_start:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, 13
+    int 0x80
+
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80</pre></div><div class='content'><p>Para depurarlo con GDB:</p>
+<ol>
+<li><strong>Compila el código</strong>:
+<pre><code class="language-bash">nasm -f elf -g -F dwarf hello.asm
+ld -m elf_i386 -o hello hello.o
+</code></pre>
+</li>
+<li><strong>Inicia GDB y establece un punto de interrupción</strong>:
+<pre><code class="language-gdb">gdb hello
+(gdb) break _start
+(gdb) run
+</code></pre>
+</li>
+</ol>
+</div><h1>3. Introducción al Perfilado</h1>
+<div class='content'></div><h2>¿Qué es el Perfilado?</h2>
+<div class='content'><p>El perfilado es el proceso de analizar el rendimiento del código para identificar cuellos de botella y optimizar el uso de recursos.</p>
+</div><h2>Herramientas de Perfilado</h2>
+<div class='content'><ul>
+<li><strong>gprof</strong>: Una herramienta de perfilado para programas compilados con GCC.</li>
+<li><strong>perf</strong>: Una herramienta de perfilado para Linux que puede analizar el rendimiento a nivel de sistema.</li>
+</ul>
+</div><h2>Uso de gprof</h2>
+<div class='content'><p>Para utilizar gprof, sigue estos pasos:</p>
+<ol>
+<li><strong>Compila tu código con soporte para perfilado</strong>:
+<pre><code class="language-bash">gcc -pg -o your_program your_program.c
+</code></pre>
+</li>
+<li><strong>Ejecuta tu programa</strong>:
+<pre><code class="language-bash">./your_program
+</code></pre>
+</li>
+<li><strong>Genera el informe de perfilado</strong>:
+<pre><code class="language-bash">gprof your_program gmon.out &gt; analysis.txt
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tienes un programa en C que llama a una función en ensamblador:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHN0ZGlvLmg+CgpleHRlcm4gdm9pZCBhc21fZnVuY3Rpb24oKTsKCmludCBtYWluKCkgewogICAgYXNtX2Z1bmN0aW9uKCk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;stdio.h&gt;
+
+extern void asm_function();
+
+int main() {
+    asm_function();
+    return 0;
+}</pre></div><div class='content'><p>Y el código en ensamblador:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VjdGlvbiAudGV4dAogICAgZ2xvYmFsIGFzbV9mdW5jdGlvbgoKYXNtX2Z1bmN0aW9uOgogICAgOyBDw7NkaWdvIGRlIGVuc2FtYmxhZG9yCiAgICByZXQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>section .text
+    global asm_function
+
+asm_function:
+    ; C&oacute;digo de ensamblador
+    ret</pre></div><div class='content'><p>Para perfilarlo:</p>
+<ol>
+<li><strong>Compila el código con soporte para perfilado</strong>:
+<pre><code class="language-bash">gcc -pg -o program main.c asm_function.o
+</code></pre>
+</li>
+<li><strong>Ejecuta el programa</strong>:
+<pre><code class="language-bash">./program
+</code></pre>
+</li>
+<li><strong>Genera el informe de perfilado</strong>:
+<pre><code class="language-bash">gprof program gmon.out &gt; analysis.txt
+</code></pre>
+</li>
+</ol>
+</div><h1>4. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Depuración Básica</h2>
+<div class='content'><ol>
+<li>Escribe un programa en ensamblador que imprima &quot;Hola, Mundo!&quot;.</li>
+<li>Compílalo y depúralo usando GDB.</li>
+<li>Establece un punto de interrupción en la instrucción <code>int 0x80</code> y verifica los registros antes y después de la llamada al sistema.</li>
+</ol>
+</div><h2>Ejercicio 2: Perfilado de Código</h2>
+<div class='content'><ol>
+<li>Escribe un programa en C que llame a una función en ensamblador que realice una operación aritmética intensiva.</li>
+<li>Compílalo con soporte para perfilado.</li>
+<li>Utiliza gprof para generar un informe de perfilado y analiza los resultados.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+<ol>
+<li><strong>Código en ensamblador</strong>:
+<pre><code class="language-asm">section .data
+    msg db 'Hola, Mundo!', 0
+
+section .text
+    global _start
+
+_start:
+    mov eax, 4
+    mov ebx, 1
+    mov ecx, msg
+    mov edx, 12
+    int 0x80
+
+    mov eax, 1
+    xor ebx, ebx
+    int 0x80
+</code></pre>
+</li>
+<li><strong>Compilación y depuración</strong>:
+<pre><code class="language-bash">nasm -f elf -g -F dwarf hola.asm
+ld -m elf_i386 -o hola hola.o
+gdb hola
+(gdb) break _start
+(gdb) run
+(gdb) info registers
+(gdb) step
+</code></pre>
+</li>
+</ol>
+<h4>Solución al Ejercicio 2</h4>
+<ol>
+<li><strong>Código en C</strong>:
+<pre><code class="language-c">#include &lt;stdio.h&gt;
+
+extern void asm_function();
+
+int main() {
+    asm_function();
+    return 0;
+}
+</code></pre>
+</li>
+<li><strong>Código en ensamblador</strong>:
+<pre><code class="language-asm">section .text
+    global asm_function
+
+asm_function:
+    ; Operación aritmética intensiva
+    mov eax, 0
+    mov ecx, 1000000
+loop_start:
+    add eax, ecx
+    loop loop_start
+    ret
+</code></pre>
+</li>
+<li><strong>Compilación y perfilado</strong>:
+<pre><code class="language-bash">gcc -pg -o program main.c asm_function.o
+./program
+gprof program gmon.out &gt; analysis.txt
+</code></pre>
+</li>
+</ol>
+</div><h1>5. Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido las técnicas y herramientas esenciales para depurar y perfilar código en ensamblador. La depuración te permite identificar y corregir errores, mientras que el perfilado te ayuda a optimizar el rendimiento de tu código. Con estas habilidades, estarás mejor preparado para desarrollar programas en ensamblador de manera eficiente y efectiva.</p>
+<p>En el próximo módulo, aplicaremos estos conocimientos en proyectos prácticos, como la creación de un cargador de arranque simple y un núcleo básico de sistema operativo. ¡Sigue adelante y sigue practicando!</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-03-interfacing-hardware' title="Interfaz con Hardware">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-01-project-proposal' title="Propuesta y Planificación del Proyecto">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

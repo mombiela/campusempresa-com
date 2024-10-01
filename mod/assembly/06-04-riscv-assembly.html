@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lenguaje Ensamblador RISC-V</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/assembly/06-04-riscv-assembly" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/assembly/06-04-riscv-assembly" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/assembly/06-04-riscv-assembly" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/assembly/06-04-riscv-assembly" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/assembly/06-04-riscv-assembly" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-mips-assembly' title="Lenguaje Ensamblador MIPS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Lenguaje Ensamblador RISC-V</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-simple-bootloader' title="Escribiendo un Cargador de Arranque Simple">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>RISC-V es una arquitectura de conjunto de instrucciones (ISA) abierta y libre, diseñada para ser escalable y eficiente. A diferencia de otras arquitecturas propietarias como x86 y ARM, RISC-V permite a los desarrolladores y fabricantes personalizar y extender la ISA según sus necesidades específicas.</p>
+</div><h2>Objetivos del Módulo</h2>
+<div class='content'><ul>
+<li>Comprender los conceptos básicos de la arquitectura RISC-V.</li>
+<li>Aprender la sintaxis y estructura del lenguaje ensamblador RISC-V.</li>
+<li>Escribir y ejecutar programas simples en ensamblador RISC-V.</li>
+<li>Familiarizarse con las instrucciones básicas y el manejo de registros en RISC-V.</li>
+</ul>
+</div><h1>Conceptos Básicos de RISC-V</h1>
+<div class='content'></div><h2>Características Principales</h2>
+<div class='content'><ul>
+<li><strong>ISA Abierta y Libre</strong>: Cualquiera puede usar y modificar RISC-V sin necesidad de licencias.</li>
+<li><strong>Escalabilidad</strong>: Desde microcontroladores simples hasta supercomputadoras.</li>
+<li><strong>Simplicidad y Eficiencia</strong>: Diseñada para ser fácil de implementar y eficiente en términos de energía y rendimiento.</li>
+</ul>
+</div><h2>Registros en RISC-V</h2>
+<div class='content'><p>RISC-V tiene 32 registros de propósito general, cada uno de 32 bits (en la variante RV32I). Los registros se nombran de <code>x0</code> a <code>x31</code> y tienen nombres alternativos para facilitar su uso.</p>
+<table>
+<thead>
+<tr>
+<th>Registro</th>
+<th>Nombre Alternativo</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>x0</td>
+<td>zero</td>
+<td>Siempre contiene el valor 0</td>
+</tr>
+<tr>
+<td>x1</td>
+<td>ra</td>
+<td>Dirección de retorno</td>
+</tr>
+<tr>
+<td>x2</td>
+<td>sp</td>
+<td>Puntero de pila</td>
+</tr>
+<tr>
+<td>x3</td>
+<td>gp</td>
+<td>Puntero global</td>
+</tr>
+<tr>
+<td>x4</td>
+<td>tp</td>
+<td>Puntero de hilo</td>
+</tr>
+<tr>
+<td>x5-x7</td>
+<td>t0-t2</td>
+<td>Temporales</td>
+</tr>
+<tr>
+<td>x8</td>
+<td>s0/fp</td>
+<td>Guardado/Marco de pila</td>
+</tr>
+<tr>
+<td>x9</td>
+<td>s1</td>
+<td>Guardado</td>
+</tr>
+<tr>
+<td>x10-x11</td>
+<td>a0-a1</td>
+<td>Argumentos/Valores de retorno</td>
+</tr>
+<tr>
+<td>x12-x17</td>
+<td>a2-a7</td>
+<td>Argumentos</td>
+</tr>
+<tr>
+<td>x18-x27</td>
+<td>s2-s11</td>
+<td>Guardados</td>
+</tr>
+<tr>
+<td>x28-x31</td>
+<td>t3-t6</td>
+<td>Temporales</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Sintaxis y Estructura Básica</h1>
+<div class='content'></div><h2>Formato de Instrucción</h2>
+<div class='content'><p>Las instrucciones en RISC-V tienen un formato simple y consistente. Aquí hay un ejemplo de una instrucción de suma:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YWRkIHgxLCB4MiwgeDM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>add x1, x2, x3</pre></div><div class='content'><p>Esta instrucción suma los valores de <code>x2</code> y <code>x3</code> y almacena el resultado en <code>x1</code>.</p>
+</div><h2>Tipos de Instrucciones</h2>
+<div class='content'><p>RISC-V tiene varios tipos de instrucciones, incluyendo:</p>
+<ul>
+<li><strong>Aritméticas</strong>: <code>add</code>, <code>sub</code>, <code>mul</code>, etc.</li>
+<li><strong>Lógicas</strong>: <code>and</code>, <code>or</code>, <code>xor</code>, etc.</li>
+<li><strong>De Carga y Almacenamiento</strong>: <code>lw</code> (load word), <code>sw</code> (store word), etc.</li>
+<li><strong>De Control de Flujo</strong>: <code>beq</code> (branch if equal), <code>bne</code> (branch if not equal), etc.</li>
+</ul>
+</div><h1>Escribiendo Tu Primer Programa en RISC-V</h1>
+<div class='content'></div><h2>Ejemplo: Suma de Dos Números</h2>
+<div class='content'><p>Vamos a escribir un programa simple que suma dos números y almacena el resultado en un registro.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LnNlY3Rpb24gLmRhdGEKbnVtMTogLndvcmQgNQpudW0yOiAud29yZCAxMAoKLnNlY3Rpb24gLnRleHQKLmdsb2JsIF9zdGFydAoKX3N0YXJ0OgogICAgbGEgeDUsIG51bTEgICAgICAgIyBDYXJnYXIgbGEgZGlyZWNjacOzbiBkZSBudW0xIGVuIHg1CiAgICBsdyB4NiwgMCh4NSkgICAgICAjIENhcmdhciBlbCB2YWxvciBkZSBudW0xIGVuIHg2CiAgICBsYSB4NywgbnVtMiAgICAgICAjIENhcmdhciBsYSBkaXJlY2Npw7NuIGRlIG51bTIgZW4geDcKICAgIGx3IHg4LCAwKHg3KSAgICAgICMgQ2FyZ2FyIGVsIHZhbG9yIGRlIG51bTIgZW4geDgKICAgIGFkZCB4OSwgeDYsIHg4ICAgICMgU3VtYXIgeDYgeSB4OCwgYWxtYWNlbmFyIGVuIHg5CgogICAgIyBTYWxpciBkZWwgcHJvZ3JhbWEKICAgIGxpIHgxMCwgMTAgICAgICAgICMgQ8OzZGlnbyBkZSBzYWxpZGEgcGFyYSBlY2FsbAogICAgZWNhbGw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>.section .data
+num1: .word 5
+num2: .word 10
+
+.section .text
+.globl _start
+
+_start:
+    la x5, num1       # Cargar la direcci&oacute;n de num1 en x5
+    lw x6, 0(x5)      # Cargar el valor de num1 en x6
+    la x7, num2       # Cargar la direcci&oacute;n de num2 en x7
+    lw x8, 0(x7)      # Cargar el valor de num2 en x8
+    add x9, x6, x8    # Sumar x6 y x8, almacenar en x9
+
+    # Salir del programa
+    li x10, 10        # C&oacute;digo de salida para ecall
+    ecall</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Sección de Datos</strong>: Define dos variables <code>num1</code> y <code>num2</code> con valores 5 y 10 respectivamente.</li>
+<li><strong>Sección de Texto</strong>: Contiene el código ejecutable.</li>
+<li><strong>Instrucciones</strong>:
+<ul>
+<li><code>la x5, num1</code>: Carga la dirección de <code>num1</code> en el registro <code>x5</code>.</li>
+<li><code>lw x6, 0(x5)</code>: Carga el valor de <code>num1</code> en el registro <code>x6</code>.</li>
+<li><code>la x7, num2</code>: Carga la dirección de <code>num2</code> en el registro <code>x7</code>.</li>
+<li><code>lw x8, 0(x7)</code>: Carga el valor de <code>num2</code> en el registro <code>x8</code>.</li>
+<li><code>add x9, x6, x8</code>: Suma los valores de <code>x6</code> y <code>x8</code> y almacena el resultado en <code>x9</code>.</li>
+<li><code>li x10, 10</code>: Carga el código de salida en <code>x10</code>.</li>
+<li><code>ecall</code>: Llama al sistema para salir del programa.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Multiplicación de Dos Números</h2>
+<div class='content'><p>Escribe un programa en ensamblador RISC-V que multiplique dos números y almacene el resultado en un registro.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LnNlY3Rpb24gLmRhdGEKbnVtMTogLndvcmQgMwpudW0yOiAud29yZCA0Cgouc2VjdGlvbiAudGV4dAouZ2xvYmwgX3N0YXJ0Cgpfc3RhcnQ6CiAgICBsYSB4NSwgbnVtMSAgICAgICAjIENhcmdhciBsYSBkaXJlY2Npw7NuIGRlIG51bTEgZW4geDUKICAgIGx3IHg2LCAwKHg1KSAgICAgICMgQ2FyZ2FyIGVsIHZhbG9yIGRlIG51bTEgZW4geDYKICAgIGxhIHg3LCBudW0yICAgICAgICMgQ2FyZ2FyIGxhIGRpcmVjY2nDs24gZGUgbnVtMiBlbiB4NwogICAgbHcgeDgsIDAoeDcpICAgICAgIyBDYXJnYXIgZWwgdmFsb3IgZGUgbnVtMiBlbiB4OAogICAgbXVsIHg5LCB4NiwgeDggICAgIyBNdWx0aXBsaWNhciB4NiB5IHg4LCBhbG1hY2VuYXIgZW4geDkKCiAgICAjIFNhbGlyIGRlbCBwcm9ncmFtYQogICAgbGkgeDEwLCAxMCAgICAgICAgIyBDw7NkaWdvIGRlIHNhbGlkYSBwYXJhIGVjYWxsCiAgICBlY2FsbA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>.section .data
+num1: .word 3
+num2: .word 4
+
+.section .text
+.globl _start
+
+_start:
+    la x5, num1       # Cargar la direcci&oacute;n de num1 en x5
+    lw x6, 0(x5)      # Cargar el valor de num1 en x6
+    la x7, num2       # Cargar la direcci&oacute;n de num2 en x7
+    lw x8, 0(x7)      # Cargar el valor de num2 en x8
+    mul x9, x6, x8    # Multiplicar x6 y x8, almacenar en x9
+
+    # Salir del programa
+    li x10, 10        # C&oacute;digo de salida para ecall
+    ecall</pre></div><div class='content'></div><h2>Ejercicio 2: Comparación de Dos Números</h2>
+<div class='content'><p>Escribe un programa en ensamblador RISC-V que compare dos números y almacene el resultado (1 si son iguales, 0 si no) en un registro.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LnNlY3Rpb24gLmRhdGEKbnVtMTogLndvcmQgNwpudW0yOiAud29yZCA3Cgouc2VjdGlvbiAudGV4dAouZ2xvYmwgX3N0YXJ0Cgpfc3RhcnQ6CiAgICBsYSB4NSwgbnVtMSAgICAgICAjIENhcmdhciBsYSBkaXJlY2Npw7NuIGRlIG51bTEgZW4geDUKICAgIGx3IHg2LCAwKHg1KSAgICAgICMgQ2FyZ2FyIGVsIHZhbG9yIGRlIG51bTEgZW4geDYKICAgIGxhIHg3LCBudW0yICAgICAgICMgQ2FyZ2FyIGxhIGRpcmVjY2nDs24gZGUgbnVtMiBlbiB4NwogICAgbHcgeDgsIDAoeDcpICAgICAgIyBDYXJnYXIgZWwgdmFsb3IgZGUgbnVtMiBlbiB4OAogICAgYmVxIHg2LCB4OCwgZXF1YWwgIyBTaSB4NiA9PSB4OCwgc2FsdGFyIGEgZXF1YWwKICAgIGxpIHg5LCAwICAgICAgICAgICMgU2kgbm8gc29uIGlndWFsZXMsIGFsbWFjZW5hciAwIGVuIHg5CiAgICBqIGVuZCAgICAgICAgICAgICAjIFNhbHRhciBhbCBmaW5hbAoKZXF1YWw6CiAgICBsaSB4OSwgMSAgICAgICAgICAjIFNpIHNvbiBpZ3VhbGVzLCBhbG1hY2VuYXIgMSBlbiB4OQoKZW5kOgogICAgIyBTYWxpciBkZWwgcHJvZ3JhbWEKICAgIGxpIHgxMCwgMTAgICAgICAgICMgQ8OzZGlnbyBkZSBzYWxpZGEgcGFyYSBlY2FsbAogICAgZWNhbGw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>.section .data
+num1: .word 7
+num2: .word 7
+
+.section .text
+.globl _start
+
+_start:
+    la x5, num1       # Cargar la direcci&oacute;n de num1 en x5
+    lw x6, 0(x5)      # Cargar el valor de num1 en x6
+    la x7, num2       # Cargar la direcci&oacute;n de num2 en x7
+    lw x8, 0(x7)      # Cargar el valor de num2 en x8
+    beq x6, x8, equal # Si x6 == x8, saltar a equal
+    li x9, 0          # Si no son iguales, almacenar 0 en x9
+    j end             # Saltar al final
+
+equal:
+    li x9, 1          # Si son iguales, almacenar 1 en x9
+
+end:
+    # Salir del programa
+    li x10, 10        # C&oacute;digo de salida para ecall
+    ecall</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos explorado los conceptos básicos del lenguaje ensamblador RISC-V, incluyendo su arquitectura, registros y sintaxis. También hemos escrito y ejecutado programas simples para entender mejor cómo funciona RISC-V. Con esta base, estás preparado para profundizar en temas más avanzados y aplicar tus conocimientos en proyectos más complejos.</p>
+</div><h2>Próximos Pasos</h2>
+<div class='content'><ul>
+<li>Practicar con más ejercicios para fortalecer tu comprensión.</li>
+<li>Explorar las instrucciones avanzadas y optimizaciones en RISC-V.</li>
+<li>Aplicar tus conocimientos en proyectos prácticos y del mundo real.</li>
+</ul>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-mips-assembly' title="Lenguaje Ensamblador MIPS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-simple-bootloader' title="Escribiendo un Cargador de Arranque Simple">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

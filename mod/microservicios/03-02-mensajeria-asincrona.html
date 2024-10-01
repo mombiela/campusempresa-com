@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mensajería Asíncrona</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/microservicios/03-02-mensajeria-asincrona" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/microservicios/03-02-mensajeria-asincrona" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/microservicios/03-02-asynchronous-messaging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/microservicios/03-02-mensajeria-asincrona" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/microservicios/03-02-mensajeria-asincrona" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-apis-restful' title="APIs RESTful">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mensajería Asíncrona</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-protocolos-comunicacion' title="Protocolos de Comunicación: gRPC, GraphQL">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La mensajería asíncrona es un componente crucial en la arquitectura de microservicios. Permite que los servicios se comuniquen entre sí sin necesidad de esperar una respuesta inmediata, lo que mejora la escalabilidad y la resiliencia del sistema.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>1. Comunicación Asíncrona</h2>
+<div class='content'><ul>
+<li><strong>Definición</strong>: La comunicación asíncrona permite que los servicios envíen mensajes y continúen con su procesamiento sin esperar una respuesta inmediata.</li>
+<li><strong>Ventajas</strong>:
+<ul>
+<li><strong>Desacoplamiento</strong>: Los servicios no dependen de la disponibilidad inmediata de otros servicios.</li>
+<li><strong>Escalabilidad</strong>: Facilita la gestión de cargas de trabajo variables.</li>
+<li><strong>Resiliencia</strong>: Mejora la tolerancia a fallos, ya que los mensajes pueden ser reintentados en caso de errores.</li>
+</ul>
+</li>
+</ul>
+</div><h2>2. Mensajería</h2>
+<div class='content'><ul>
+<li><strong>Colas de Mensajes</strong>: Sistemas que almacenan mensajes hasta que el receptor esté listo para procesarlos (ej. RabbitMQ, Amazon SQS).</li>
+<li><strong>Topics</strong>: Sistemas de publicación/suscripción donde los mensajes se envían a múltiples suscriptores (ej. Apache Kafka).</li>
+</ul>
+</div><h2>3. Patrones de Comunicación</h2>
+<div class='content'><ul>
+<li><strong>Fire-and-Forget</strong>: El emisor envía un mensaje y no espera una respuesta.</li>
+<li><strong>Request-Reply</strong>: El emisor envía un mensaje y espera una respuesta, pero de manera asíncrona.</li>
+<li><strong>Publish-Subscribe</strong>: Un emisor publica mensajes a un canal, y múltiples receptores pueden suscribirse para recibir esos mensajes.</li>
+</ul>
+</div><h1>Ejemplo Práctico: Implementación con RabbitMQ</h1>
+<div class='content'></div><h2>Instalación de RabbitMQ</h2>
+<div class='content'><p>Para instalar RabbitMQ, sigue estos pasos:</p>
+<ol>
+<li>
+<p><strong>Docker</strong>:</p>
+<pre><code class="language-bash">docker run -d --name rabbitmq -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+</code></pre>
+</li>
+<li>
+<p><strong>Acceso a la Interfaz de Administración</strong>:</p>
+<ul>
+<li>URL: <code>http://localhost:15672</code></li>
+<li>Usuario: <code>guest</code></li>
+<li>Contraseña: <code>guest</code></li>
+</ul>
+</li>
+</ol>
+</div><h2>Configuración del Productor y Consumidor</h2>
+<div class='content'><h4>Productor (Producer)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBpa2EKCiMgQ29uZXhpw7NuIGEgUmFiYml0TVEKY29ubmVjdGlvbiA9IHBpa2EuQmxvY2tpbmdDb25uZWN0aW9uKHBpa2EuQ29ubmVjdGlvblBhcmFtZXRlcnMoJ2xvY2FsaG9zdCcpKQpjaGFubmVsID0gY29ubmVjdGlvbi5jaGFubmVsKCkKCiMgRGVjbGFyYWNpw7NuIGRlIGxhIGNvbGEKY2hhbm5lbC5xdWV1ZV9kZWNsYXJlKHF1ZXVlPSdoZWxsbycpCgojIEVudsOtbyBkZSB1biBtZW5zYWplCmNoYW5uZWwuYmFzaWNfcHVibGlzaChleGNoYW5nZT0nJywKICAgICAgICAgICAgICAgICAgICAgIHJvdXRpbmdfa2V5PSdoZWxsbycsCiAgICAgICAgICAgICAgICAgICAgICBib2R5PSdIZWxsbyBXb3JsZCEnKQpwcmludCgiIFt4XSBTZW50ICdIZWxsbyBXb3JsZCEnIikKCiMgQ2llcnJlIGRlIGxhIGNvbmV4acOzbgpjb25uZWN0aW9uLmNsb3NlKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pika
+
+# Conexi&oacute;n a RabbitMQ
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+# Declaraci&oacute;n de la cola
+channel.queue_declare(queue='hello')
+
+# Env&iacute;o de un mensaje
+channel.basic_publish(exchange='',
+                      routing_key='hello',
+                      body='Hello World!')
+print(&quot; [x] Sent 'Hello World!'&quot;)
+
+# Cierre de la conexi&oacute;n
+connection.close()</pre></div><div class='content'><h4>Consumidor (Consumer)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBpa2EKCiMgQ29uZXhpw7NuIGEgUmFiYml0TVEKY29ubmVjdGlvbiA9IHBpa2EuQmxvY2tpbmdDb25uZWN0aW9uKHBpa2EuQ29ubmVjdGlvblBhcmFtZXRlcnMoJ2xvY2FsaG9zdCcpKQpjaGFubmVsID0gY29ubmVjdGlvbi5jaGFubmVsKCkKCiMgRGVjbGFyYWNpw7NuIGRlIGxhIGNvbGEKY2hhbm5lbC5xdWV1ZV9kZWNsYXJlKHF1ZXVlPSdoZWxsbycpCgojIERlZmluaWNpw7NuIGRlIGxhIGZ1bmNpw7NuIGRlIGNhbGxiYWNrCmRlZiBjYWxsYmFjayhjaCwgbWV0aG9kLCBwcm9wZXJ0aWVzLCBib2R5KToKICAgIHByaW50KGYiIFt4XSBSZWNlaXZlZCB7Ym9keX0iKQoKIyBDb25maWd1cmFjacOzbiBkZWwgY29uc3VtaWRvcgpjaGFubmVsLmJhc2ljX2NvbnN1bWUocXVldWU9J2hlbGxvJywKICAgICAgICAgICAgICAgICAgICAgIG9uX21lc3NhZ2VfY2FsbGJhY2s9Y2FsbGJhY2ssCiAgICAgICAgICAgICAgICAgICAgICBhdXRvX2Fjaz1UcnVlKQoKcHJpbnQoJyBbKl0gV2FpdGluZyBmb3IgbWVzc2FnZXMuIFRvIGV4aXQgcHJlc3MgQ1RSTCtDJykKY2hhbm5lbC5zdGFydF9jb25zdW1pbmcoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pika
+
+# Conexi&oacute;n a RabbitMQ
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+
+# Declaraci&oacute;n de la cola
+channel.queue_declare(queue='hello')
+
+# Definici&oacute;n de la funci&oacute;n de callback
+def callback(ch, method, properties, body):
+    print(f&quot; [x] Received {body}&quot;)
+
+# Configuraci&oacute;n del consumidor
+channel.basic_consume(queue='hello',
+                      on_message_callback=callback,
+                      auto_ack=True)
+
+print(' [*] Waiting for messages. To exit press CTRL+C')
+channel.start_consuming()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Productor</strong>:</p>
+<ul>
+<li><strong>Conexión</strong>: Se establece una conexión con RabbitMQ.</li>
+<li><strong>Declaración de la Cola</strong>: Se asegura que la cola <code>hello</code> exista.</li>
+<li><strong>Envío de Mensaje</strong>: Se publica un mensaje en la cola <code>hello</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Consumidor</strong>:</p>
+<ul>
+<li><strong>Conexión</strong>: Se establece una conexión con RabbitMQ.</li>
+<li><strong>Declaración de la Cola</strong>: Se asegura que la cola <code>hello</code> exista.</li>
+<li><strong>Callback</strong>: Función que se ejecuta cuando se recibe un mensaje.</li>
+<li><strong>Consumo de Mensajes</strong>: Se configura el consumidor para recibir mensajes de la cola <code>hello</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar un Sistema de Notificaciones</h2>
+<div class='content'><p><strong>Descripción</strong>: Implementa un sistema de notificaciones donde un servicio de pedidos envía una notificación a un servicio de notificaciones cada vez que se crea un nuevo pedido.</p>
+<ol>
+<li><strong>Productor</strong>: Servicio de pedidos que envía un mensaje con los detalles del pedido.</li>
+<li><strong>Consumidor</strong>: Servicio de notificaciones que recibe y procesa el mensaje.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>Productor (Servicio de Pedidos)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBpa2EKCmRlZiBzZW5kX29yZGVyX25vdGlmaWNhdGlvbihvcmRlcl9pZCwgb3JkZXJfZGV0YWlscyk6CiAgICBjb25uZWN0aW9uID0gcGlrYS5CbG9ja2luZ0Nvbm5lY3Rpb24ocGlrYS5Db25uZWN0aW9uUGFyYW1ldGVycygnbG9jYWxob3N0JykpCiAgICBjaGFubmVsID0gY29ubmVjdGlvbi5jaGFubmVsKCkKICAgIGNoYW5uZWwucXVldWVfZGVjbGFyZShxdWV1ZT0nb3JkZXJfbm90aWZpY2F0aW9ucycpCiAgICBtZXNzYWdlID0gZiJPcmRlciBJRDoge29yZGVyX2lkfSwgRGV0YWlsczoge29yZGVyX2RldGFpbHN9IgogICAgY2hhbm5lbC5iYXNpY19wdWJsaXNoKGV4Y2hhbmdlPScnLAogICAgICAgICAgICAgICAgICAgICAgICAgIHJvdXRpbmdfa2V5PSdvcmRlcl9ub3RpZmljYXRpb25zJywKICAgICAgICAgICAgICAgICAgICAgICAgICBib2R5PW1lc3NhZ2UpCiAgICBwcmludChmIiBbeF0gU2VudCB7bWVzc2FnZX0iKQogICAgY29ubmVjdGlvbi5jbG9zZSgpCgojIEVqZW1wbG8gZGUgdXNvCnNlbmRfb3JkZXJfbm90aWZpY2F0aW9uKDEyMywgIlByb2R1Y3Q6IEJvb2ssIFF1YW50aXR5OiAxIik="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pika
+
+def send_order_notification(order_id, order_details):
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue='order_notifications')
+    message = f&quot;Order ID: {order_id}, Details: {order_details}&quot;
+    channel.basic_publish(exchange='',
+                          routing_key='order_notifications',
+                          body=message)
+    print(f&quot; [x] Sent {message}&quot;)
+    connection.close()
+
+# Ejemplo de uso
+send_order_notification(123, &quot;Product: Book, Quantity: 1&quot;)</pre></div><div class='content'><h4>Consumidor (Servicio de Notificaciones)</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHBpa2EKCmRlZiBjYWxsYmFjayhjaCwgbWV0aG9kLCBwcm9wZXJ0aWVzLCBib2R5KToKICAgIHByaW50KGYiIFt4XSBSZWNlaXZlZCB7Ym9keX0iKQogICAgIyBBcXXDrSBzZSBwcm9jZXNhcsOtYSBsYSBub3RpZmljYWNpw7NuLCBwb3IgZWplbXBsbywgZW52aWFuZG8gdW4gZW1haWwKCmNvbm5lY3Rpb24gPSBwaWthLkJsb2NraW5nQ29ubmVjdGlvbihwaWthLkNvbm5lY3Rpb25QYXJhbWV0ZXJzKCdsb2NhbGhvc3QnKSkKY2hhbm5lbCA9IGNvbm5lY3Rpb24uY2hhbm5lbCgpCmNoYW5uZWwucXVldWVfZGVjbGFyZShxdWV1ZT0nb3JkZXJfbm90aWZpY2F0aW9ucycpCmNoYW5uZWwuYmFzaWNfY29uc3VtZShxdWV1ZT0nb3JkZXJfbm90aWZpY2F0aW9ucycsCiAgICAgICAgICAgICAgICAgICAgICBvbl9tZXNzYWdlX2NhbGxiYWNrPWNhbGxiYWNrLAogICAgICAgICAgICAgICAgICAgICAgYXV0b19hY2s9VHJ1ZSkKCnByaW50KCcgWypdIFdhaXRpbmcgZm9yIG1lc3NhZ2VzLiBUbyBleGl0IHByZXNzIENUUkwrQycpCmNoYW5uZWwuc3RhcnRfY29uc3VtaW5nKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import pika
+
+def callback(ch, method, properties, body):
+    print(f&quot; [x] Received {body}&quot;)
+    # Aqu&iacute; se procesar&iacute;a la notificaci&oacute;n, por ejemplo, enviando un email
+
+connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+channel = connection.channel()
+channel.queue_declare(queue='order_notifications')
+channel.basic_consume(queue='order_notifications',
+                      on_message_callback=callback,
+                      auto_ack=True)
+
+print(' [*] Waiting for messages. To exit press CTRL+C')
+channel.start_consuming()</pre></div><div class='content'></div><h2>Retroalimentación y Consejos</h2>
+<div class='content'><ul>
+<li><strong>Errores Comunes</strong>:
+<ul>
+<li><strong>Conexión Fallida</strong>: Asegúrate de que RabbitMQ esté en ejecución y accesible.</li>
+<li><strong>Cola No Declarada</strong>: Asegúrate de que tanto el productor como el consumidor declaren la misma cola.</li>
+</ul>
+</li>
+<li><strong>Consejos</strong>:
+<ul>
+<li><strong>Persistencia de Mensajes</strong>: Configura la cola y los mensajes como persistentes para evitar la pérdida de datos en caso de fallos.</li>
+<li><strong>Escalabilidad</strong>: Considera el uso de múltiples consumidores para procesar mensajes en paralelo.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>La mensajería asíncrona es una técnica poderosa para construir sistemas de microservicios escalables y resilientes. Al utilizar colas de mensajes y patrones de comunicación asíncrona, los servicios pueden interactuar de manera eficiente sin depender de la disponibilidad inmediata de otros servicios. En el siguiente módulo, exploraremos los diferentes protocolos de comunicación utilizados en microservicios, como gRPC y GraphQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-apis-restful' title="APIs RESTful">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-protocolos-comunicacion' title="Protocolos de Comunicación: gRPC, GraphQL">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

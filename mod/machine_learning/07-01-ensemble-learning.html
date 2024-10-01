@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ensemble Learning</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/07-01-ensemble-learning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/07-01-ensemble-learning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/07-01-ensemble-learning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/machine_learning/07-01-ensemble-learning" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/machine_learning/07-01-ensemble-learning" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-overfitting-underfitting' title="Overfitting y underfitting">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Ensemble Learning</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-gradient-boosting' title="Gradient Boosting">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Ensemble Learning es una técnica en Machine Learning que combina múltiples modelos (a menudo llamados &quot;modelos base&quot; o &quot;modelos débiles&quot;) para producir un modelo más robusto y preciso. La idea principal es que al combinar varios modelos, se pueden compensar los errores individuales de cada uno, mejorando así el rendimiento general.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ol>
+<li><strong>Modelos Base</strong>: Los modelos individuales que se combinan en un ensemble.</li>
+<li><strong>Bagging</strong>: Técnica que implica entrenar múltiples modelos en diferentes subconjuntos de datos y promediar sus predicciones.</li>
+<li><strong>Boosting</strong>: Técnica que ajusta secuencialmente modelos, poniendo más peso en los errores de los modelos anteriores.</li>
+<li><strong>Stacking</strong>: Técnica que combina las predicciones de múltiples modelos mediante otro modelo (meta-modelo).</li>
+</ol>
+</div><h1>Tipos de Ensemble Learning</h1>
+<div class='content'></div><h2>Bagging (Bootstrap Aggregating)</h2>
+<div class='content'><p>Bagging es una técnica que mejora la precisión del modelo al reducir la variabilidad. Se basa en la idea de entrenar múltiples modelos en diferentes subconjuntos de datos y luego promediar sus predicciones.</p>
+<h4>Ejemplo: Random Forest</h4>
+<p>Random Forest es un ejemplo popular de bagging que utiliza múltiples árboles de decisión.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBSYW5kb21Gb3Jlc3RDbGFzc2lmaWVyCmZyb20gc2tsZWFybi5kYXRhc2V0cyBpbXBvcnQgbG9hZF9pcmlzCmZyb20gc2tsZWFybi5tb2RlbF9zZWxlY3Rpb24gaW1wb3J0IHRyYWluX3Rlc3Rfc3BsaXQKZnJvbSBza2xlYXJuLm1ldHJpY3MgaW1wb3J0IGFjY3VyYWN5X3Njb3JlCgojIENhcmdhciBkYXRvcwppcmlzID0gbG9hZF9pcmlzKCkKWCwgeSA9IGlyaXMuZGF0YSwgaXJpcy50YXJnZXQKCiMgRGl2aWRpciBkYXRvcyBlbiBlbnRyZW5hbWllbnRvIHkgcHJ1ZWJhClhfdHJhaW4sIFhfdGVzdCwgeV90cmFpbiwgeV90ZXN0ID0gdHJhaW5fdGVzdF9zcGxpdChYLCB5LCB0ZXN0X3NpemU9MC4zLCByYW5kb21fc3RhdGU9NDIpCgojIEVudHJlbmFyIGVsIG1vZGVsbwpjbGYgPSBSYW5kb21Gb3Jlc3RDbGFzc2lmaWVyKG5fZXN0aW1hdG9ycz0xMDAsIHJhbmRvbV9zdGF0ZT00MikKY2xmLmZpdChYX3RyYWluLCB5X3RyYWluKQoKIyBIYWNlciBwcmVkaWNjaW9uZXMKeV9wcmVkID0gY2xmLnByZWRpY3QoWF90ZXN0KQoKIyBFdmFsdWFyIGVsIG1vZGVsbwphY2N1cmFjeSA9IGFjY3VyYWN5X3Njb3JlKHlfdGVzdCwgeV9wcmVkKQpwcmludChmJ0FjY3VyYWN5OiB7YWNjdXJhY3l9Jyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.ensemble import RandomForestClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Cargar datos
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Dividir datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Entrenar el modelo
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+clf.fit(X_train, y_train)
+
+# Hacer predicciones
+y_pred = clf.predict(X_test)
+
+# Evaluar el modelo
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy}')</pre></div><div class='content'></div><h2>Boosting</h2>
+<div class='content'><p>Boosting ajusta secuencialmente modelos, poniendo más peso en los errores de los modelos anteriores. Esto permite que el modelo final sea más preciso.</p>
+<h4>Ejemplo: AdaBoost</h4>
+<p>AdaBoost es un ejemplo de boosting que ajusta secuencialmente árboles de decisión.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBBZGFCb29zdENsYXNzaWZpZXIKZnJvbSBza2xlYXJuLmRhdGFzZXRzIGltcG9ydCBsb2FkX2lyaXMKZnJvbSBza2xlYXJuLm1vZGVsX3NlbGVjdGlvbiBpbXBvcnQgdHJhaW5fdGVzdF9zcGxpdApmcm9tIHNrbGVhcm4ubWV0cmljcyBpbXBvcnQgYWNjdXJhY3lfc2NvcmUKCiMgQ2FyZ2FyIGRhdG9zCmlyaXMgPSBsb2FkX2lyaXMoKQpYLCB5ID0gaXJpcy5kYXRhLCBpcmlzLnRhcmdldAoKIyBEaXZpZGlyIGRhdG9zIGVuIGVudHJlbmFtaWVudG8geSBwcnVlYmEKWF90cmFpbiwgWF90ZXN0LCB5X3RyYWluLCB5X3Rlc3QgPSB0cmFpbl90ZXN0X3NwbGl0KFgsIHksIHRlc3Rfc2l6ZT0wLjMsIHJhbmRvbV9zdGF0ZT00MikKCiMgRW50cmVuYXIgZWwgbW9kZWxvCmNsZiA9IEFkYUJvb3N0Q2xhc3NpZmllcihuX2VzdGltYXRvcnM9NTAsIHJhbmRvbV9zdGF0ZT00MikKY2xmLmZpdChYX3RyYWluLCB5X3RyYWluKQoKIyBIYWNlciBwcmVkaWNjaW9uZXMKeV9wcmVkID0gY2xmLnByZWRpY3QoWF90ZXN0KQoKIyBFdmFsdWFyIGVsIG1vZGVsbwphY2N1cmFjeSA9IGFjY3VyYWN5X3Njb3JlKHlfdGVzdCwgeV9wcmVkKQpwcmludChmJ0FjY3VyYWN5OiB7YWNjdXJhY3l9Jyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.ensemble import AdaBoostClassifier
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Cargar datos
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Dividir datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Entrenar el modelo
+clf = AdaBoostClassifier(n_estimators=50, random_state=42)
+clf.fit(X_train, y_train)
+
+# Hacer predicciones
+y_pred = clf.predict(X_test)
+
+# Evaluar el modelo
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy}')</pre></div><div class='content'></div><h2>Stacking</h2>
+<div class='content'><p>Stacking combina las predicciones de múltiples modelos mediante otro modelo (meta-modelo). Los modelos base hacen predicciones y el meta-modelo aprende a combinar estas predicciones para mejorar el rendimiento.</p>
+<h4>Ejemplo: StackingClassifier</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBTdGFja2luZ0NsYXNzaWZpZXIKZnJvbSBza2xlYXJuLmxpbmVhcl9tb2RlbCBpbXBvcnQgTG9naXN0aWNSZWdyZXNzaW9uCmZyb20gc2tsZWFybi50cmVlIGltcG9ydCBEZWNpc2lvblRyZWVDbGFzc2lmaWVyCmZyb20gc2tsZWFybi5zdm0gaW1wb3J0IFNWQwpmcm9tIHNrbGVhcm4uZGF0YXNldHMgaW1wb3J0IGxvYWRfaXJpcwpmcm9tIHNrbGVhcm4ubW9kZWxfc2VsZWN0aW9uIGltcG9ydCB0cmFpbl90ZXN0X3NwbGl0CmZyb20gc2tsZWFybi5tZXRyaWNzIGltcG9ydCBhY2N1cmFjeV9zY29yZQoKIyBDYXJnYXIgZGF0b3MKaXJpcyA9IGxvYWRfaXJpcygpClgsIHkgPSBpcmlzLmRhdGEsIGlyaXMudGFyZ2V0CgojIERpdmlkaXIgZGF0b3MgZW4gZW50cmVuYW1pZW50byB5IHBydWViYQpYX3RyYWluLCBYX3Rlc3QsIHlfdHJhaW4sIHlfdGVzdCA9IHRyYWluX3Rlc3Rfc3BsaXQoWCwgeSwgdGVzdF9zaXplPTAuMywgcmFuZG9tX3N0YXRlPTQyKQoKIyBEZWZpbmlyIG1vZGVsb3MgYmFzZQplc3RpbWF0b3JzID0gWwogICAgKCdkdCcsIERlY2lzaW9uVHJlZUNsYXNzaWZpZXIocmFuZG9tX3N0YXRlPTQyKSksCiAgICAoJ3N2bScsIFNWQyhwcm9iYWJpbGl0eT1UcnVlLCByYW5kb21fc3RhdGU9NDIpKQpdCgojIERlZmluaXIgbWV0YS1tb2RlbG8KY2xmID0gU3RhY2tpbmdDbGFzc2lmaWVyKGVzdGltYXRvcnM9ZXN0aW1hdG9ycywgZmluYWxfZXN0aW1hdG9yPUxvZ2lzdGljUmVncmVzc2lvbigpKQoKIyBFbnRyZW5hciBlbCBtb2RlbG8KY2xmLmZpdChYX3RyYWluLCB5X3RyYWluKQoKIyBIYWNlciBwcmVkaWNjaW9uZXMKeV9wcmVkID0gY2xmLnByZWRpY3QoWF90ZXN0KQoKIyBFdmFsdWFyIGVsIG1vZGVsbwphY2N1cmFjeSA9IGFjY3VyYWN5X3Njb3JlKHlfdGVzdCwgeV9wcmVkKQpwcmludChmJ0FjY3VyYWN5OiB7YWNjdXJhY3l9Jyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.ensemble import StackingClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.svm import SVC
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Cargar datos
+iris = load_iris()
+X, y = iris.data, iris.target
+
+# Dividir datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Definir modelos base
+estimators = [
+    ('dt', DecisionTreeClassifier(random_state=42)),
+    ('svm', SVC(probability=True, random_state=42))
+]
+
+# Definir meta-modelo
+clf = StackingClassifier(estimators=estimators, final_estimator=LogisticRegression())
+
+# Entrenar el modelo
+clf.fit(X_train, y_train)
+
+# Hacer predicciones
+y_pred = clf.predict(X_test)
+
+# Evaluar el modelo
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy}')</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Bagging con Árboles de Decisión</h2>
+<div class='content'><p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Cargar el conjunto de datos <code>wine</code> de <code>sklearn.datasets</code>.</li>
+<li>Dividir los datos en conjuntos de entrenamiento y prueba.</li>
+<li>Entrenar un modelo de Bagging con <code>DecisionTreeClassifier</code>.</li>
+<li>Evaluar el modelo en el conjunto de prueba.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBCYWdnaW5nQ2xhc3NpZmllcgpmcm9tIHNrbGVhcm4udHJlZSBpbXBvcnQgRGVjaXNpb25UcmVlQ2xhc3NpZmllcgpmcm9tIHNrbGVhcm4uZGF0YXNldHMgaW1wb3J0IGxvYWRfd2luZQpmcm9tIHNrbGVhcm4ubW9kZWxfc2VsZWN0aW9uIGltcG9ydCB0cmFpbl90ZXN0X3NwbGl0CmZyb20gc2tsZWFybi5tZXRyaWNzIGltcG9ydCBhY2N1cmFjeV9zY29yZQoKIyBDYXJnYXIgZGF0b3MKd2luZSA9IGxvYWRfd2luZSgpClgsIHkgPSB3aW5lLmRhdGEsIHdpbmUudGFyZ2V0CgojIERpdmlkaXIgZGF0b3MgZW4gZW50cmVuYW1pZW50byB5IHBydWViYQpYX3RyYWluLCBYX3Rlc3QsIHlfdHJhaW4sIHlfdGVzdCA9IHRyYWluX3Rlc3Rfc3BsaXQoWCwgeSwgdGVzdF9zaXplPTAuMywgcmFuZG9tX3N0YXRlPTQyKQoKIyBFbnRyZW5hciBlbCBtb2RlbG8KY2xmID0gQmFnZ2luZ0NsYXNzaWZpZXIoYmFzZV9lc3RpbWF0b3I9RGVjaXNpb25UcmVlQ2xhc3NpZmllcigpLCBuX2VzdGltYXRvcnM9MTAwLCByYW5kb21fc3RhdGU9NDIpCmNsZi5maXQoWF90cmFpbiwgeV90cmFpbikKCiMgSGFjZXIgcHJlZGljY2lvbmVzCnlfcHJlZCA9IGNsZi5wcmVkaWN0KFhfdGVzdCkKCiMgRXZhbHVhciBlbCBtb2RlbG8KYWNjdXJhY3kgPSBhY2N1cmFjeV9zY29yZSh5X3Rlc3QsIHlfcHJlZCkKcHJpbnQoZidBY2N1cmFjeToge2FjY3VyYWN5fScp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.ensemble import BaggingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.datasets import load_wine
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Cargar datos
+wine = load_wine()
+X, y = wine.data, wine.target
+
+# Dividir datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Entrenar el modelo
+clf = BaggingClassifier(base_estimator=DecisionTreeClassifier(), n_estimators=100, random_state=42)
+clf.fit(X_train, y_train)
+
+# Hacer predicciones
+y_pred = clf.predict(X_test)
+
+# Evaluar el modelo
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy}')</pre></div><div class='content'></div><h2>Ejercicio 2: Implementar Gradient Boosting</h2>
+<div class='content'><p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Cargar el conjunto de datos <code>breast_cancer</code> de <code>sklearn.datasets</code>.</li>
+<li>Dividir los datos en conjuntos de entrenamiento y prueba.</li>
+<li>Entrenar un modelo de <code>GradientBoostingClassifier</code>.</li>
+<li>Evaluar el modelo en el conjunto de prueba.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBza2xlYXJuLmVuc2VtYmxlIGltcG9ydCBHcmFkaWVudEJvb3N0aW5nQ2xhc3NpZmllcgpmcm9tIHNrbGVhcm4uZGF0YXNldHMgaW1wb3J0IGxvYWRfYnJlYXN0X2NhbmNlcgpmcm9tIHNrbGVhcm4ubW9kZWxfc2VsZWN0aW9uIGltcG9ydCB0cmFpbl90ZXN0X3NwbGl0CmZyb20gc2tsZWFybi5tZXRyaWNzIGltcG9ydCBhY2N1cmFjeV9zY29yZQoKIyBDYXJnYXIgZGF0b3MKY2FuY2VyID0gbG9hZF9icmVhc3RfY2FuY2VyKCkKWCwgeSA9IGNhbmNlci5kYXRhLCBjYW5jZXIudGFyZ2V0CgojIERpdmlkaXIgZGF0b3MgZW4gZW50cmVuYW1pZW50byB5IHBydWViYQpYX3RyYWluLCBYX3Rlc3QsIHlfdHJhaW4sIHlfdGVzdCA9IHRyYWluX3Rlc3Rfc3BsaXQoWCwgeSwgdGVzdF9zaXplPTAuMywgcmFuZG9tX3N0YXRlPTQyKQoKIyBFbnRyZW5hciBlbCBtb2RlbG8KY2xmID0gR3JhZGllbnRCb29zdGluZ0NsYXNzaWZpZXIobl9lc3RpbWF0b3JzPTEwMCwgcmFuZG9tX3N0YXRlPTQyKQpjbGYuZml0KFhfdHJhaW4sIHlfdHJhaW4pCgojIEhhY2VyIHByZWRpY2Npb25lcwp5X3ByZWQgPSBjbGYucHJlZGljdChYX3Rlc3QpCgojIEV2YWx1YXIgZWwgbW9kZWxvCmFjY3VyYWN5ID0gYWNjdXJhY3lfc2NvcmUoeV90ZXN0LCB5X3ByZWQpCnByaW50KGYnQWNjdXJhY3k6IHthY2N1cmFjeX0nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+
+# Cargar datos
+cancer = load_breast_cancer()
+X, y = cancer.data, cancer.target
+
+# Dividir datos en entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Entrenar el modelo
+clf = GradientBoostingClassifier(n_estimators=100, random_state=42)
+clf.fit(X_train, y_train)
+
+# Hacer predicciones
+y_pred = clf.predict(X_test)
+
+# Evaluar el modelo
+accuracy = accuracy_score(y_test, y_pred)
+print(f'Accuracy: {accuracy}')</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Ensemble Learning es una poderosa técnica en Machine Learning que combina múltiples modelos para mejorar el rendimiento y la precisión. Las técnicas más comunes incluyen Bagging, Boosting y Stacking, cada una con sus propias ventajas y aplicaciones. A través de ejemplos prácticos y ejercicios, hemos visto cómo implementar estas técnicas utilizando bibliotecas populares como <code>scikit-learn</code>.</p>
+</div><h2>Resumen de Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Bagging</strong>: Reduce la variabilidad al entrenar múltiples modelos en diferentes subconjuntos de datos.</li>
+<li><strong>Boosting</strong>: Mejora la precisión ajustando secuencialmente modelos, poniendo más peso en los errores de los modelos anteriores.</li>
+<li><strong>Stacking</strong>: Combina las predicciones de múltiples modelos mediante un meta-modelo.</li>
+</ul>
+</div><h2>Preparación para el Siguiente Tema</h2>
+<div class='content'><p>En el próximo tema, exploraremos <strong>Gradient Boosting</strong>, una técnica avanzada de boosting que ha demostrado ser muy efectiva en una variedad de tareas de Machine Learning.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-overfitting-underfitting' title="Overfitting y underfitting">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-gradient-boosting' title="Gradient Boosting">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

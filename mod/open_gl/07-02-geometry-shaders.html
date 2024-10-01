@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shaders de Geometría</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/07-02-geometry-shaders" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/07-02-geometry-shaders" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/07-02-geometry-shaders" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/07-02-geometry-shaders" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/07-02-geometry-shaders" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-compute-shaders' title="Shaders de Cómputo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Shaders de Geometría</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-multi-pass-rendering' title="Renderizado Multi-paso">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los shaders de geometría son una etapa adicional en el pipeline de renderizado de OpenGL que permite la manipulación de primitivas geométricas (puntos, líneas, triángulos) después de que han sido procesadas por el vertex shader y antes de ser rasterizadas. Esta capacidad permite la creación de efectos avanzados como la generación de geometría adicional, la subdivisión de primitivas y la creación de efectos de sombra.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Pipeline de Shaders de Geometría</strong>:</p>
+<ul>
+<li><strong>Vertex Shader</strong>: Procesa vértices individuales.</li>
+<li><strong>Geometry Shader</strong>: Toma una primitiva completa (punto, línea, triángulo) y puede emitir nuevas primitivas.</li>
+<li><strong>Fragment Shader</strong>: Procesa fragmentos generados por la rasterización de primitivas.</li>
+</ul>
+</li>
+<li>
+<p><strong>Entrada y Salida</strong>:</p>
+<ul>
+<li><strong>Entrada</strong>: Primitivas geométricas (puntos, líneas, triángulos).</li>
+<li><strong>Salida</strong>: Nuevas primitivas geométricas que pueden ser diferentes de las primitivas de entrada.</li>
+</ul>
+</li>
+<li>
+<p><strong>Uso Común</strong>:</p>
+<ul>
+<li>Generación de geometría adicional (e.g., creación de sombras volumétricas).</li>
+<li>Modificación de la geometría existente (e.g., desplazamiento de vértices).</li>
+<li>Creación de efectos visuales avanzados (e.g., explosiones, efectos de partículas).</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico: Dibujando una Línea desde un Punto</h1>
+<div class='content'></div><h2>Paso 1: Configuración del Entorno</h2>
+<div class='content'><p>Asegúrate de tener un entorno de desarrollo configurado con OpenGL. Puedes seguir las instrucciones del módulo &quot;Configuración de tu Entorno de Desarrollo&quot; para configurar tu entorno.</p>
+</div><h2>Paso 2: Código del Vertex Shader</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0KGxvY2F0aW9uID0gMCkgaW4gdmVjMyBhUG9zOwoKdm9pZCBtYWluKCkKewogICAgZ2xfUG9zaXRpb24gPSB2ZWM0KGFQb3MsIDEuMCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout(location = 0) in vec3 aPos;
+
+void main()
+{
+    gl_Position = vec4(aPos, 1.0);
+}</pre></div><div class='content'></div><h2>Paso 3: Código del Geometry Shader</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0KHBvaW50cykgaW47CmxheW91dChsaW5lX3N0cmlwLCBtYXhfdmVydGljZXMgPSAyKSBvdXQ7Cgp2b2lkIG1haW4oKQp7CiAgICAvLyBFbWl0ZSBlbCBwdW50byBvcmlnaW5hbAogICAgZ2xfUG9zaXRpb24gPSBnbF9pblswXS5nbF9Qb3NpdGlvbjsKICAgIEVtaXRWZXJ0ZXgoKTsKCiAgICAvLyBFbWl0ZSB1biBudWV2byB2w6lydGljZSBkZXNwbGF6YWRvCiAgICBnbF9Qb3NpdGlvbiA9IGdsX2luWzBdLmdsX1Bvc2l0aW9uICsgdmVjNCgwLjEsIDAuMSwgMC4wLCAwLjApOwogICAgRW1pdFZlcnRleCgpOwoKICAgIEVuZFByaW1pdGl2ZSgpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout(points) in;
+layout(line_strip, max_vertices = 2) out;
+
+void main()
+{
+    // Emite el punto original
+    gl_Position = gl_in[0].gl_Position;
+    EmitVertex();
+
+    // Emite un nuevo v&eacute;rtice desplazado
+    gl_Position = gl_in[0].gl_Position + vec4(0.1, 0.1, 0.0, 0.0);
+    EmitVertex();
+
+    EndPrimitive();
+}</pre></div><div class='content'></div><h2>Paso 4: Código del Fragment Shader</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKb3V0IHZlYzQgRnJhZ0NvbG9yOwoKdm9pZCBtYWluKCkKewogICAgRnJhZ0NvbG9yID0gdmVjNCgxLjAsIDEuMCwgMS4wLCAxLjApOyAvLyBDb2xvciBibGFuY28KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(1.0, 1.0, 1.0, 1.0); // Color blanco
+}</pre></div><div class='content'></div><h2>Paso 5: Código de Configuración en C++</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ2FyZ2FyIHkgY29tcGlsYXIgc2hhZGVycwpHTHVpbnQgdmVydGV4U2hhZGVyID0gZ2xDcmVhdGVTaGFkZXIoR0xfVkVSVEVYX1NIQURFUik7CmdsU2hhZGVyU291cmNlKHZlcnRleFNoYWRlciwgMSwgJnZlcnRleFNoYWRlclNvdXJjZSwgTlVMTCk7CmdsQ29tcGlsZVNoYWRlcih2ZXJ0ZXhTaGFkZXIpOwoKR0x1aW50IGdlb21ldHJ5U2hhZGVyID0gZ2xDcmVhdGVTaGFkZXIoR0xfR0VPTUVUUllfU0hBREVSKTsKZ2xTaGFkZXJTb3VyY2UoZ2VvbWV0cnlTaGFkZXIsIDEsICZnZW9tZXRyeVNoYWRlclNvdXJjZSwgTlVMTCk7CmdsQ29tcGlsZVNoYWRlcihnZW9tZXRyeVNoYWRlcik7CgpHTHVpbnQgZnJhZ21lbnRTaGFkZXIgPSBnbENyZWF0ZVNoYWRlcihHTF9GUkFHTUVOVF9TSEFERVIpOwpnbFNoYWRlclNvdXJjZShmcmFnbWVudFNoYWRlciwgMSwgJmZyYWdtZW50U2hhZGVyU291cmNlLCBOVUxMKTsKZ2xDb21waWxlU2hhZGVyKGZyYWdtZW50U2hhZGVyKTsKCi8vIFZpbmN1bGFyIHNoYWRlcnMgZW4gdW4gcHJvZ3JhbWEKR0x1aW50IHNoYWRlclByb2dyYW0gPSBnbENyZWF0ZVByb2dyYW0oKTsKZ2xBdHRhY2hTaGFkZXIoc2hhZGVyUHJvZ3JhbSwgdmVydGV4U2hhZGVyKTsKZ2xBdHRhY2hTaGFkZXIoc2hhZGVyUHJvZ3JhbSwgZ2VvbWV0cnlTaGFkZXIpOwpnbEF0dGFjaFNoYWRlcihzaGFkZXJQcm9ncmFtLCBmcmFnbWVudFNoYWRlcik7CmdsTGlua1Byb2dyYW0oc2hhZGVyUHJvZ3JhbSk7CgovLyBVc2FyIGVsIHByb2dyYW1hIGRlIHNoYWRlcnMKZ2xVc2VQcm9ncmFtKHNoYWRlclByb2dyYW0pOwoKLy8gQ29uZmlndXJhciBkYXRvcyBkZSB2w6lydGljZXMKZmxvYXQgcG9pbnRzW10gPSB7CiAgICAwLjBmLCAwLjBmLCAwLjBmIC8vIFVuIHNvbG8gcHVudG8gZW4gZWwgb3JpZ2VuCn07CgpHTHVpbnQgVkJPLCBWQU87CmdsR2VuVmVydGV4QXJyYXlzKDEsICZWQU8pOwpnbEdlbkJ1ZmZlcnMoMSwgJlZCTyk7CgpnbEJpbmRWZXJ0ZXhBcnJheShWQU8pOwoKZ2xCaW5kQnVmZmVyKEdMX0FSUkFZX0JVRkZFUiwgVkJPKTsKZ2xCdWZmZXJEYXRhKEdMX0FSUkFZX0JVRkZFUiwgc2l6ZW9mKHBvaW50cyksIHBvaW50cywgR0xfU1RBVElDX0RSQVcpOwoKZ2xWZXJ0ZXhBdHRyaWJQb2ludGVyKDAsIDMsIEdMX0ZMT0FULCBHTF9GQUxTRSwgMyAqIHNpemVvZihmbG9hdCksICh2b2lkKikwKTsKZ2xFbmFibGVWZXJ0ZXhBdHRyaWJBcnJheSgwKTsKCi8vIFJlbmRlciBsb29wCndoaWxlICghZ2xmd1dpbmRvd1Nob3VsZENsb3NlKHdpbmRvdykpCnsKICAgIC8vIFJlbmRlcml6YXIKICAgIGdsQ2xlYXIoR0xfQ09MT1JfQlVGRkVSX0JJVCk7CgogICAgZ2xCaW5kVmVydGV4QXJyYXkoVkFPKTsKICAgIGdsRHJhd0FycmF5cyhHTF9QT0lOVFMsIDAsIDEpOwoKICAgIGdsZndTd2FwQnVmZmVycyh3aW5kb3cpOwogICAgZ2xmd1BvbGxFdmVudHMoKTsKfQoKLy8gTGltcGlhcgpnbERlbGV0ZVZlcnRleEFycmF5cygxLCAmVkFPKTsKZ2xEZWxldGVCdWZmZXJzKDEsICZWQk8pOwpnbERlbGV0ZVByb2dyYW0oc2hhZGVyUHJvZ3JhbSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Cargar y compilar shaders
+GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+glShaderSource(vertexShader, 1, &amp;vertexShaderSource, NULL);
+glCompileShader(vertexShader);
+
+GLuint geometryShader = glCreateShader(GL_GEOMETRY_SHADER);
+glShaderSource(geometryShader, 1, &amp;geometryShaderSource, NULL);
+glCompileShader(geometryShader);
+
+GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+glShaderSource(fragmentShader, 1, &amp;fragmentShaderSource, NULL);
+glCompileShader(fragmentShader);
+
+// Vincular shaders en un programa
+GLuint shaderProgram = glCreateProgram();
+glAttachShader(shaderProgram, vertexShader);
+glAttachShader(shaderProgram, geometryShader);
+glAttachShader(shaderProgram, fragmentShader);
+glLinkProgram(shaderProgram);
+
+// Usar el programa de shaders
+glUseProgram(shaderProgram);
+
+// Configurar datos de v&eacute;rtices
+float points[] = {
+    0.0f, 0.0f, 0.0f // Un solo punto en el origen
+};
+
+GLuint VBO, VAO;
+glGenVertexArrays(1, &amp;VAO);
+glGenBuffers(1, &amp;VBO);
+
+glBindVertexArray(VAO);
+
+glBindBuffer(GL_ARRAY_BUFFER, VBO);
+glBufferData(GL_ARRAY_BUFFER, sizeof(points), points, GL_STATIC_DRAW);
+
+glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+glEnableVertexAttribArray(0);
+
+// Render loop
+while (!glfwWindowShouldClose(window))
+{
+    // Renderizar
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    glBindVertexArray(VAO);
+    glDrawArrays(GL_POINTS, 0, 1);
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
+}
+
+// Limpiar
+glDeleteVertexArrays(1, &amp;VAO);
+glDeleteBuffers(1, &amp;VBO);
+glDeleteProgram(shaderProgram);</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Generación de un Cuadrado desde un Punto</h2>
+<div class='content'><p><strong>Objetivo</strong>: Modificar el geometry shader para que genere un cuadrado a partir de un solo punto.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Modifica el geometry shader para que emita cuatro vértices formando un cuadrado.</li>
+<li>Asegúrate de que el cuadrado esté centrado en el punto de entrada.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I3ZlcnNpb24gMzMwIGNvcmUKbGF5b3V0KHBvaW50cykgaW47CmxheW91dCh0cmlhbmdsZV9zdHJpcCwgbWF4X3ZlcnRpY2VzID0gNCkgb3V0OwoKdm9pZCBtYWluKCkKewogICAgdmVjNCBvZmZzZXQgPSB2ZWM0KDAuMSwgMC4xLCAwLjAsIDAuMCk7CgogICAgLy8gRW1pdGUgbG9zIGN1YXRybyB2w6lydGljZXMgZGVsIGN1YWRyYWRvCiAgICBnbF9Qb3NpdGlvbiA9IGdsX2luWzBdLmdsX1Bvc2l0aW9uICsgdmVjNCgtb2Zmc2V0LngsIC1vZmZzZXQueSwgMC4wLCAwLjApOwogICAgRW1pdFZlcnRleCgpOwoKICAgIGdsX1Bvc2l0aW9uID0gZ2xfaW5bMF0uZ2xfUG9zaXRpb24gKyB2ZWM0KG9mZnNldC54LCAtb2Zmc2V0LnksIDAuMCwgMC4wKTsKICAgIEVtaXRWZXJ0ZXgoKTsKCiAgICBnbF9Qb3NpdGlvbiA9IGdsX2luWzBdLmdsX1Bvc2l0aW9uICsgdmVjNCgtb2Zmc2V0LngsIG9mZnNldC55LCAwLjAsIDAuMCk7CiAgICBFbWl0VmVydGV4KCk7CgogICAgZ2xfUG9zaXRpb24gPSBnbF9pblswXS5nbF9Qb3NpdGlvbiArIHZlYzQob2Zmc2V0LngsIG9mZnNldC55LCAwLjAsIDAuMCk7CiAgICBFbWl0VmVydGV4KCk7CgogICAgRW5kUHJpbWl0aXZlKCk7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#version 330 core
+layout(points) in;
+layout(triangle_strip, max_vertices = 4) out;
+
+void main()
+{
+    vec4 offset = vec4(0.1, 0.1, 0.0, 0.0);
+
+    // Emite los cuatro v&eacute;rtices del cuadrado
+    gl_Position = gl_in[0].gl_Position + vec4(-offset.x, -offset.y, 0.0, 0.0);
+    EmitVertex();
+
+    gl_Position = gl_in[0].gl_Position + vec4(offset.x, -offset.y, 0.0, 0.0);
+    EmitVertex();
+
+    gl_Position = gl_in[0].gl_Position + vec4(-offset.x, offset.y, 0.0, 0.0);
+    EmitVertex();
+
+    gl_Position = gl_in[0].gl_Position + vec4(offset.x, offset.y, 0.0, 0.0);
+    EmitVertex();
+
+    EndPrimitive();
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Los shaders de geometría son una herramienta poderosa en OpenGL que permite la manipulación avanzada de primitivas geométricas. Con ellos, puedes generar geometría adicional, modificar la geometría existente y crear efectos visuales complejos. En este módulo, hemos cubierto los conceptos básicos y proporcionado ejemplos prácticos para ayudarte a comenzar a utilizar shaders de geometría en tus proyectos.</p>
+<p>En el siguiente módulo, exploraremos el renderizado multi-paso, una técnica avanzada que permite la creación de efectos visuales aún más complejos mediante el uso de múltiples pases de renderizado.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-compute-shaders' title="Shaders de Cómputo">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-multi-pass-rendering' title="Renderizado Multi-paso">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

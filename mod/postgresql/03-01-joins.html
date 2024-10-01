@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joins</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/03-01-joins" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/03-01-joins" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/03-01-joins" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/postgresql/03-01-joins" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/postgresql/03-01-joins" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-05-deleting-data' title="Eliminando Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Joins</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-subqueries' title="Subconsultas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En SQL, un &quot;join&quot; es una operación que permite combinar filas de dos o más tablas basándose en una columna relacionada entre ellas. Los joins son fundamentales para trabajar con bases de datos relacionales, ya que permiten extraer datos distribuidos en múltiples tablas de manera eficiente y coherente.</p>
+</div><h1>Tipos de Joins</h1>
+<div class='content'><p>Existen varios tipos de joins en SQL, cada uno con su propósito y uso específico. Los más comunes son:</p>
+<ol>
+<li><strong>INNER JOIN</strong>: Devuelve las filas que tienen coincidencias en ambas tablas.</li>
+<li><strong>LEFT JOIN (o LEFT OUTER JOIN)</strong>: Devuelve todas las filas de la tabla izquierda y las filas coincidentes de la tabla derecha. Si no hay coincidencia, los resultados de la tabla derecha serán NULL.</li>
+<li><strong>RIGHT JOIN (o RIGHT OUTER JOIN)</strong>: Devuelve todas las filas de la tabla derecha y las filas coincidentes de la tabla izquierda. Si no hay coincidencia, los resultados de la tabla izquierda serán NULL.</li>
+<li><strong>FULL JOIN (o FULL OUTER JOIN)</strong>: Devuelve todas las filas cuando hay una coincidencia en una de las tablas. Si no hay coincidencia, las filas no coincidentes también se incluirán con valores NULL en las columnas de la tabla que no coincide.</li>
+<li><strong>CROSS JOIN</strong>: Devuelve el producto cartesiano de las dos tablas, es decir, todas las combinaciones posibles de filas.</li>
+</ol>
+</div><h1>INNER JOIN</h1>
+<div class='content'><p>El <code>INNER JOIN</code> es el tipo de join más común. Solo devuelve las filas que tienen coincidencias en ambas tablas.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbmFzCkZST00gdGFibGExCklOTkVSIEpPSU4gdGFibGEyCk9OIHRhYmxhMS5jb2x1bW5hX2NvbXVuID0gdGFibGEyLmNvbHVtbmFfY29tdW47"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT columnas
+FROM tabla1
+INNER JOIN tabla2
+ON tabla1.columna_comun = tabla2.columna_comun;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tenemos dos tablas: <code>clientes</code> y <code>pedidos</code>.</p>
+<p><strong>Tabla <code>clientes</code>:</strong></p>
+<table>
+<thead>
+<tr>
+<th>id_cliente</th>
+<th>nombre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Juan</td>
+</tr>
+<tr>
+<td>2</td>
+<td>María</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Pedro</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tabla <code>pedidos</code>:</strong></p>
+<table>
+<thead>
+<tr>
+<th>id_pedido</th>
+<th>id_cliente</th>
+<th>producto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>101</td>
+<td>1</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>102</td>
+<td>2</td>
+<td>Tablet</td>
+</tr>
+<tr>
+<td>103</td>
+<td>1</td>
+<td>Teléfono</td>
+</tr>
+</tbody>
+</table>
+<p>Queremos obtener una lista de todos los clientes y sus pedidos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNsaWVudGVzLm5vbWJyZSwgcGVkaWRvcy5wcm9kdWN0bwpGUk9NIGNsaWVudGVzCklOTkVSIEpPSU4gcGVkaWRvcwpPTiBjbGllbnRlcy5pZF9jbGllbnRlID0gcGVkaWRvcy5pZF9jbGllbnRlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT clientes.nombre, pedidos.producto
+FROM clientes
+INNER JOIN pedidos
+ON clientes.id_cliente = pedidos.id_cliente;</pre></div><div class='content'><p><strong>Resultado:</strong></p>
+<table>
+<thead>
+<tr>
+<th>nombre</th>
+<th>producto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Juan</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>Juan</td>
+<td>Teléfono</td>
+</tr>
+<tr>
+<td>María</td>
+<td>Tablet</td>
+</tr>
+</tbody>
+</table>
+</div><h1>LEFT JOIN</h1>
+<div class='content'><p>El <code>LEFT JOIN</code> devuelve todas las filas de la tabla izquierda y las filas coincidentes de la tabla derecha. Si no hay coincidencia, los resultados de la tabla derecha serán NULL.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbmFzCkZST00gdGFibGExCkxFRlQgSk9JTiB0YWJsYTIKT04gdGFibGExLmNvbHVtbmFfY29tdW4gPSB0YWJsYTIuY29sdW1uYV9jb211bjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT columnas
+FROM tabla1
+LEFT JOIN tabla2
+ON tabla1.columna_comun = tabla2.columna_comun;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Queremos obtener una lista de todos los clientes y sus pedidos, incluyendo aquellos clientes que no tienen pedidos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNsaWVudGVzLm5vbWJyZSwgcGVkaWRvcy5wcm9kdWN0bwpGUk9NIGNsaWVudGVzCkxFRlQgSk9JTiBwZWRpZG9zCk9OIGNsaWVudGVzLmlkX2NsaWVudGUgPSBwZWRpZG9zLmlkX2NsaWVudGU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT clientes.nombre, pedidos.producto
+FROM clientes
+LEFT JOIN pedidos
+ON clientes.id_cliente = pedidos.id_cliente;</pre></div><div class='content'><p><strong>Resultado:</strong></p>
+<table>
+<thead>
+<tr>
+<th>nombre</th>
+<th>producto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Juan</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>Juan</td>
+<td>Teléfono</td>
+</tr>
+<tr>
+<td>María</td>
+<td>Tablet</td>
+</tr>
+<tr>
+<td>Pedro</td>
+<td>NULL</td>
+</tr>
+</tbody>
+</table>
+</div><h1>RIGHT JOIN</h1>
+<div class='content'><p>El <code>RIGHT JOIN</code> devuelve todas las filas de la tabla derecha y las filas coincidentes de la tabla izquierda. Si no hay coincidencia, los resultados de la tabla izquierda serán NULL.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbmFzCkZST00gdGFibGExClJJR0hUIEpPSU4gdGFibGEyCk9OIHRhYmxhMS5jb2x1bW5hX2NvbXVuID0gdGFibGEyLmNvbHVtbmFfY29tdW47"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT columnas
+FROM tabla1
+RIGHT JOIN tabla2
+ON tabla1.columna_comun = tabla2.columna_comun;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Queremos obtener una lista de todos los pedidos y los nombres de los clientes que los realizaron, incluyendo aquellos pedidos que no tienen un cliente asociado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNsaWVudGVzLm5vbWJyZSwgcGVkaWRvcy5wcm9kdWN0bwpGUk9NIGNsaWVudGVzClJJR0hUIEpPSU4gcGVkaWRvcwpPTiBjbGllbnRlcy5pZF9jbGllbnRlID0gcGVkaWRvcy5pZF9jbGllbnRlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT clientes.nombre, pedidos.producto
+FROM clientes
+RIGHT JOIN pedidos
+ON clientes.id_cliente = pedidos.id_cliente;</pre></div><div class='content'><p><strong>Resultado:</strong></p>
+<table>
+<thead>
+<tr>
+<th>nombre</th>
+<th>producto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Juan</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>María</td>
+<td>Tablet</td>
+</tr>
+<tr>
+<td>Juan</td>
+<td>Teléfono</td>
+</tr>
+</tbody>
+</table>
+</div><h1>FULL JOIN</h1>
+<div class='content'><p>El <code>FULL JOIN</code> devuelve todas las filas cuando hay una coincidencia en una de las tablas. Si no hay coincidencia, las filas no coincidentes también se incluirán con valores NULL en las columnas de la tabla que no coincide.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbmFzCkZST00gdGFibGExCkZVTEwgSk9JTiB0YWJsYTIKT04gdGFibGExLmNvbHVtbmFfY29tdW4gPSB0YWJsYTIuY29sdW1uYV9jb211bjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT columnas
+FROM tabla1
+FULL JOIN tabla2
+ON tabla1.columna_comun = tabla2.columna_comun;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Queremos obtener una lista completa de todos los clientes y todos los pedidos, incluyendo aquellos clientes sin pedidos y aquellos pedidos sin clientes.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNsaWVudGVzLm5vbWJyZSwgcGVkaWRvcy5wcm9kdWN0bwpGUk9NIGNsaWVudGVzCkZVTEwgSk9JTiBwZWRpZG9zCk9OIGNsaWVudGVzLmlkX2NsaWVudGUgPSBwZWRpZG9zLmlkX2NsaWVudGU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT clientes.nombre, pedidos.producto
+FROM clientes
+FULL JOIN pedidos
+ON clientes.id_cliente = pedidos.id_cliente;</pre></div><div class='content'><p><strong>Resultado:</strong></p>
+<table>
+<thead>
+<tr>
+<th>nombre</th>
+<th>producto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Juan</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>María</td>
+<td>Tablet</td>
+</tr>
+<tr>
+<td>Juan</td>
+<td>Teléfono</td>
+</tr>
+<tr>
+<td>Pedro</td>
+<td>NULL</td>
+</tr>
+</tbody>
+</table>
+</div><h1>CROSS JOIN</h1>
+<div class='content'><p>El <code>CROSS JOIN</code> devuelve el producto cartesiano de las dos tablas, es decir, todas las combinaciones posibles de filas.</p>
+</div><h2>Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNvbHVtbmFzCkZST00gdGFibGExCkNST1NTIEpPSU4gdGFibGEyOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT columnas
+FROM tabla1
+CROSS JOIN tabla2;</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Queremos obtener todas las combinaciones posibles de clientes y productos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGNsaWVudGVzLm5vbWJyZSwgcGVkaWRvcy5wcm9kdWN0bwpGUk9NIGNsaWVudGVzCkNST1NTIEpPSU4gcGVkaWRvczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT clientes.nombre, pedidos.producto
+FROM clientes
+CROSS JOIN pedidos;</pre></div><div class='content'><p><strong>Resultado:</strong></p>
+<table>
+<thead>
+<tr>
+<th>nombre</th>
+<th>producto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Juan</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>Juan</td>
+<td>Tablet</td>
+</tr>
+<tr>
+<td>Juan</td>
+<td>Teléfono</td>
+</tr>
+<tr>
+<td>María</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>María</td>
+<td>Tablet</td>
+</tr>
+<tr>
+<td>María</td>
+<td>Teléfono</td>
+</tr>
+<tr>
+<td>Pedro</td>
+<td>Laptop</td>
+</tr>
+<tr>
+<td>Pedro</td>
+<td>Tablet</td>
+</tr>
+<tr>
+<td>Pedro</td>
+<td>Teléfono</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: INNER JOIN</h2>
+<div class='content'><p>Dada la siguiente estructura de tablas:</p>
+<p><strong>Tabla <code>empleados</code>:</strong></p>
+<table>
+<thead>
+<tr>
+<th>id_empleado</th>
+<th>nombre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Ana</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Luis</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Marta</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Tabla <code>departamentos</code>:</strong></p>
+<table>
+<thead>
+<tr>
+<th>id_departamento</th>
+<th>id_empleado</th>
+<th>departamento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>Ventas</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>Soporte</td>
+</tr>
+</tbody>
+</table>
+<p>Escribe una consulta que devuelva los nombres de los empleados y sus departamentos.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGVtcGxlYWRvcy5ub21icmUsIGRlcGFydGFtZW50b3MuZGVwYXJ0YW1lbnRvCkZST00gZW1wbGVhZG9zCklOTkVSIEpPSU4gZGVwYXJ0YW1lbnRvcwpPTiBlbXBsZWFkb3MuaWRfZW1wbGVhZG8gPSBkZXBhcnRhbWVudG9zLmlkX2VtcGxlYWRvOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT empleados.nombre, departamentos.departamento
+FROM empleados
+INNER JOIN departamentos
+ON empleados.id_empleado = departamentos.id_empleado;</pre></div><div class='content'><p><strong>Resultado:</strong></p>
+<table>
+<thead>
+<tr>
+<th>nombre</th>
+<th>departamento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ana</td>
+<td>Ventas</td>
+</tr>
+<tr>
+<td>Ana</td>
+<td>Soporte</td>
+</tr>
+<tr>
+<td>Luis</td>
+<td>Marketing</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ejercicio 2: LEFT JOIN</h2>
+<div class='content'><p>Dada la misma estructura de tablas, escribe una consulta que devuelva todos los empleados y sus departamentos, incluyendo aquellos empleados que no tienen un departamento asignado.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUIGVtcGxlYWRvcy5ub21icmUsIGRlcGFydGFtZW50b3MuZGVwYXJ0YW1lbnRvCkZST00gZW1wbGVhZG9zCkxFRlQgSk9JTiBkZXBhcnRhbWVudG9zCk9OIGVtcGxlYWRvcy5pZF9lbXBsZWFkbyA9IGRlcGFydGFtZW50b3MuaWRfZW1wbGVhZG87"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT empleados.nombre, departamentos.departamento
+FROM empleados
+LEFT JOIN departamentos
+ON empleados.id_empleado = departamentos.id_empleado;</pre></div><div class='content'><p><strong>Resultado:</strong></p>
+<table>
+<thead>
+<tr>
+<th>nombre</th>
+<th>departamento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Ana</td>
+<td>Ventas</td>
+</tr>
+<tr>
+<td>Ana</td>
+<td>Soporte</td>
+</tr>
+<tr>
+<td>Luis</td>
+<td>Marketing</td>
+</tr>
+<tr>
+<td>Marta</td>
+<td>NULL</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los joins son una herramienta poderosa en SQL que permiten combinar datos de múltiples tablas de manera eficiente. Comprender los diferentes tipos de joins y cómo utilizarlos es esencial para trabajar con bases de datos relacionales. En esta sección, hemos cubierto los conceptos básicos y avanzados de los joins, proporcionando ejemplos prácticos y ejercicios para reforzar el aprendizaje. Con esta base, estarás preparado para realizar consultas más complejas y obtener información valiosa de tus bases de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-05-deleting-data' title="Eliminando Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-subqueries' title="Subconsultas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

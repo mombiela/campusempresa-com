@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes en Swift</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/swift/06-04-networking-in-swift" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/swift/06-04-networking-in-swift" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/swift/06-04-networking-in-swift" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/swift/06-04-networking-in-swift" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/swift/06-04-networking-in-swift" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-storyboards-and-interface-builder' title="Storyboards y Interface Builder">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Redes en Swift</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-05-core-data' title="Core Data">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás cómo manejar la comunicación en red dentro de tus aplicaciones Swift. Este es un aspecto crucial del desarrollo de aplicaciones modernas, ya que la mayoría de las aplicaciones necesitan interactuar con servicios web para obtener datos o enviar información.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-las-redes-en-swift">Introducción a las Redes en Swift</a></li>
+<li><a href="#realizando-solicitudes-http">Realizando Solicitudes HTTP</a></li>
+<li><a href="#manejo-de-respuestas-http">Manejo de Respuestas HTTP</a></li>
+<li><a href="#parseo-de-json">Parseo de JSON</a></li>
+<li><a href="#ejemplo-práctico-consumir-una-api-rest">Ejemplo Práctico: Consumir una API REST</a></li>
+<li><a href="#errores-comunes-y-soluciones">Errores Comunes y Soluciones</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+</ol>
+</div><h1>Introducción a las Redes en Swift</h1>
+<div class='content'><p>Swift proporciona varias formas de manejar la comunicación en red. La más común y recomendada es usar <code>URLSession</code>, una API poderosa y flexible que permite realizar solicitudes HTTP y manejar respuestas de manera eficiente.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>URLSession</strong>: Una clase que proporciona una API para realizar solicitudes HTTP.</li>
+<li><strong>Data Task</strong>: Una tarea que se utiliza para enviar y recibir datos mediante HTTP.</li>
+<li><strong>JSON</strong>: Un formato común para intercambiar datos entre un cliente y un servidor.</li>
+</ul>
+</div><h1>Realizando Solicitudes HTTP</h1>
+<div class='content'><p>Para realizar una solicitud HTTP en Swift, utilizamos <code>URLSession</code>. Aquí hay un ejemplo básico de cómo hacer una solicitud GET:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IEZvdW5kYXRpb24KCi8vIDEuIENyZWFyIGxhIFVSTApndWFyZCBsZXQgdXJsID0gVVJMKHN0cmluZzogImh0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2RhdGEiKSBlbHNlIHsKICAgIHByaW50KCJVUkwgaW52w6FsaWRhIikKICAgIHJldHVybgp9CgovLyAyLiBDcmVhciBsYSBzb2xpY2l0dWQKbGV0IHJlcXVlc3QgPSBVUkxSZXF1ZXN0KHVybDogdXJsKQoKLy8gMy4gQ3JlYXIgbGEgc2VzacOzbgpsZXQgc2Vzc2lvbiA9IFVSTFNlc3Npb24uc2hhcmVkCgovLyA0LiBDcmVhciBsYSB0YXJlYQpsZXQgdGFzayA9IHNlc3Npb24uZGF0YVRhc2sod2l0aDogcmVxdWVzdCkgeyBkYXRhLCByZXNwb25zZSwgZXJyb3IgaW4KICAgIC8vIDUuIE1hbmVqYXIgbGEgcmVzcHVlc3RhCiAgICBpZiBsZXQgZXJyb3IgPSBlcnJvciB7CiAgICAgICAgcHJpbnQoIkVycm9yOiBcKGVycm9yLmxvY2FsaXplZERlc2NyaXB0aW9uKSIpCiAgICAgICAgcmV0dXJuCiAgICB9CiAgICAKICAgIGd1YXJkIGxldCBkYXRhID0gZGF0YSBlbHNlIHsKICAgICAgICBwcmludCgiTm8gc2UgcmVjaWJpw7MgZGF0b3MiKQogICAgICAgIHJldHVybgogICAgfQogICAgCiAgICAvLyBBcXXDrSBwdWVkZXMgbWFuZWphciBsb3MgZGF0b3MgcmVjaWJpZG9zCiAgICBwcmludCgiRGF0b3MgcmVjaWJpZG9zOiBcKGRhdGEpIikKfQoKLy8gNi4gSW5pY2lhciBsYSB0YXJlYQp0YXNrLnJlc3VtZSgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Foundation
+
+// 1. Crear la URL
+guard let url = URL(string: &quot;https://api.example.com/data&quot;) else {
+    print(&quot;URL inv&aacute;lida&quot;)
+    return
+}
+
+// 2. Crear la solicitud
+let request = URLRequest(url: url)
+
+// 3. Crear la sesi&oacute;n
+let session = URLSession.shared
+
+// 4. Crear la tarea
+let task = session.dataTask(with: request) { data, response, error in
+    // 5. Manejar la respuesta
+    if let error = error {
+        print(&quot;Error: \(error.localizedDescription)&quot;)
+        return
+    }
+    
+    guard let data = data else {
+        print(&quot;No se recibi&oacute; datos&quot;)
+        return
+    }
+    
+    // Aqu&iacute; puedes manejar los datos recibidos
+    print(&quot;Datos recibidos: \(data)&quot;)
+}
+
+// 6. Iniciar la tarea
+task.resume()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Crear la URL</strong>: Asegúrate de que la URL sea válida.</li>
+<li><strong>Crear la solicitud</strong>: Utilizamos <code>URLRequest</code> para crear una solicitud HTTP.</li>
+<li><strong>Crear la sesión</strong>: <code>URLSession.shared</code> proporciona una sesión compartida que podemos usar para realizar solicitudes.</li>
+<li><strong>Crear la tarea</strong>: <code>dataTask(with:)</code> crea una tarea que se ejecutará para enviar la solicitud y recibir la respuesta.</li>
+<li><strong>Manejar la respuesta</strong>: En el closure, manejamos cualquier error y los datos recibidos.</li>
+<li><strong>Iniciar la tarea</strong>: <code>task.resume()</code> inicia la tarea.</li>
+</ol>
+</div><h1>Manejo de Respuestas HTTP</h1>
+<div class='content'><p>Es importante manejar adecuadamente las respuestas HTTP para asegurarse de que la solicitud fue exitosa y los datos recibidos son válidos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bGV0IHRhc2sgPSBzZXNzaW9uLmRhdGFUYXNrKHdpdGg6IHJlcXVlc3QpIHsgZGF0YSwgcmVzcG9uc2UsIGVycm9yIGluCiAgICBpZiBsZXQgZXJyb3IgPSBlcnJvciB7CiAgICAgICAgcHJpbnQoIkVycm9yOiBcKGVycm9yLmxvY2FsaXplZERlc2NyaXB0aW9uKSIpCiAgICAgICAgcmV0dXJuCiAgICB9CiAgICAKICAgIGd1YXJkIGxldCBodHRwUmVzcG9uc2UgPSByZXNwb25zZSBhcz8gSFRUUFVSTFJlc3BvbnNlLCAoMjAwLi4uMjk5KS5jb250YWlucyhodHRwUmVzcG9uc2Uuc3RhdHVzQ29kZSkgZWxzZSB7CiAgICAgICAgcHJpbnQoIlJlc3B1ZXN0YSBpbnbDoWxpZGEiKQogICAgICAgIHJldHVybgogICAgfQogICAgCiAgICBndWFyZCBsZXQgZGF0YSA9IGRhdGEgZWxzZSB7CiAgICAgICAgcHJpbnQoIk5vIHNlIHJlY2liacOzIGRhdG9zIikKICAgICAgICByZXR1cm4KICAgIH0KICAgIAogICAgLy8gQXF1w60gcHVlZGVzIG1hbmVqYXIgbG9zIGRhdG9zIHJlY2liaWRvcwogICAgcHJpbnQoIkRhdG9zIHJlY2liaWRvczogXChkYXRhKSIpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>let task = session.dataTask(with: request) { data, response, error in
+    if let error = error {
+        print(&quot;Error: \(error.localizedDescription)&quot;)
+        return
+    }
+    
+    guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+        print(&quot;Respuesta inv&aacute;lida&quot;)
+        return
+    }
+    
+    guard let data = data else {
+        print(&quot;No se recibi&oacute; datos&quot;)
+        return
+    }
+    
+    // Aqu&iacute; puedes manejar los datos recibidos
+    print(&quot;Datos recibidos: \(data)&quot;)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Verificar el error</strong>: Primero, verificamos si hubo un error en la solicitud.</li>
+<li><strong>Verificar la respuesta HTTP</strong>: Nos aseguramos de que la respuesta sea un <code>HTTPURLResponse</code> y que el código de estado esté en el rango 200-299, lo que indica éxito.</li>
+<li><strong>Verificar los datos</strong>: Nos aseguramos de que los datos no sean nulos antes de proceder.</li>
+</ul>
+</div><h1>Parseo de JSON</h1>
+<div class='content'><p>La mayoría de las veces, los datos recibidos estarán en formato JSON. Swift proporciona el tipo <code>Codable</code> para facilitar el parseo de JSON.</p>
+</div><h2>Ejemplo de Parseo de JSON</h2>
+<div class='content'><p>Supongamos que recibimos el siguiente JSON:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICAgIm5hbWUiOiAiSm9obiBEb2UiLAogICAgImFnZSI6IDMwCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+    &quot;name&quot;: &quot;John Doe&quot;,
+    &quot;age&quot;: 30
+}</pre></div><div class='content'><p>Podemos definir una estructura para representarlo y usar <code>JSONDecoder</code> para parsearlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IEZvdW5kYXRpb24KCnN0cnVjdCBQZXJzb246IENvZGFibGUgewogICAgbGV0IG5hbWU6IFN0cmluZwogICAgbGV0IGFnZTogSW50Cn0KCmxldCB0YXNrID0gc2Vzc2lvbi5kYXRhVGFzayh3aXRoOiByZXF1ZXN0KSB7IGRhdGEsIHJlc3BvbnNlLCBlcnJvciBpbgogICAgaWYgbGV0IGVycm9yID0gZXJyb3IgewogICAgICAgIHByaW50KCJFcnJvcjogXChlcnJvci5sb2NhbGl6ZWREZXNjcmlwdGlvbikiKQogICAgICAgIHJldHVybgogICAgfQogICAgCiAgICBndWFyZCBsZXQgaHR0cFJlc3BvbnNlID0gcmVzcG9uc2UgYXM/IEhUVFBVUkxSZXNwb25zZSwgKDIwMC4uLjI5OSkuY29udGFpbnMoaHR0cFJlc3BvbnNlLnN0YXR1c0NvZGUpIGVsc2UgewogICAgICAgIHByaW50KCJSZXNwdWVzdGEgaW52w6FsaWRhIikKICAgICAgICByZXR1cm4KICAgIH0KICAgIAogICAgZ3VhcmQgbGV0IGRhdGEgPSBkYXRhIGVsc2UgewogICAgICAgIHByaW50KCJObyBzZSByZWNpYmnDsyBkYXRvcyIpCiAgICAgICAgcmV0dXJuCiAgICB9CiAgICAKICAgIGRvIHsKICAgICAgICBsZXQgcGVyc29uID0gdHJ5IEpTT05EZWNvZGVyKCkuZGVjb2RlKFBlcnNvbi5zZWxmLCBmcm9tOiBkYXRhKQogICAgICAgIHByaW50KCJOb21icmU6IFwocGVyc29uLm5hbWUpLCBFZGFkOiBcKHBlcnNvbi5hZ2UpIikKICAgIH0gY2F0Y2ggewogICAgICAgIHByaW50KCJFcnJvciBhbCBwYXJzZWFyIEpTT046IFwoZXJyb3IubG9jYWxpemVkRGVzY3JpcHRpb24pIikKICAgIH0KfQoKdGFzay5yZXN1bWUoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Foundation
+
+struct Person: Codable {
+    let name: String
+    let age: Int
+}
+
+let task = session.dataTask(with: request) { data, response, error in
+    if let error = error {
+        print(&quot;Error: \(error.localizedDescription)&quot;)
+        return
+    }
+    
+    guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+        print(&quot;Respuesta inv&aacute;lida&quot;)
+        return
+    }
+    
+    guard let data = data else {
+        print(&quot;No se recibi&oacute; datos&quot;)
+        return
+    }
+    
+    do {
+        let person = try JSONDecoder().decode(Person.self, from: data)
+        print(&quot;Nombre: \(person.name), Edad: \(person.age)&quot;)
+    } catch {
+        print(&quot;Error al parsear JSON: \(error.localizedDescription)&quot;)
+    }
+}
+
+task.resume()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Definir la estructura</strong>: <code>Person</code> es una estructura que conforma el protocolo <code>Codable</code>.</li>
+<li><strong>Parsear los datos</strong>: Usamos <code>JSONDecoder</code> para convertir los datos JSON en una instancia de <code>Person</code>.</li>
+</ul>
+</div><h1>Ejemplo Práctico: Consumir una API REST</h1>
+<div class='content'><p>Vamos a crear una aplicación que consuma una API REST pública para obtener una lista de usuarios.</p>
+</div><h2>Paso 1: Definir la Estructura de Datos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3RydWN0IFVzZXI6IENvZGFibGUgewogICAgbGV0IGlkOiBJbnQKICAgIGxldCBuYW1lOiBTdHJpbmcKICAgIGxldCB1c2VybmFtZTogU3RyaW5nCiAgICBsZXQgZW1haWw6IFN0cmluZwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>struct User: Codable {
+    let id: Int
+    let name: String
+    let username: String
+    let email: String
+}</pre></div><div class='content'></div><h2>Paso 2: Realizar la Solicitud</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IEZvdW5kYXRpb24KCmd1YXJkIGxldCB1cmwgPSBVUkwoc3RyaW5nOiAiaHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3VzZXJzIikgZWxzZSB7CiAgICBwcmludCgiVVJMIGludsOhbGlkYSIpCiAgICByZXR1cm4KfQoKbGV0IHJlcXVlc3QgPSBVUkxSZXF1ZXN0KHVybDogdXJsKQpsZXQgc2Vzc2lvbiA9IFVSTFNlc3Npb24uc2hhcmVkCgpsZXQgdGFzayA9IHNlc3Npb24uZGF0YVRhc2sod2l0aDogcmVxdWVzdCkgeyBkYXRhLCByZXNwb25zZSwgZXJyb3IgaW4KICAgIGlmIGxldCBlcnJvciA9IGVycm9yIHsKICAgICAgICBwcmludCgiRXJyb3I6IFwoZXJyb3IubG9jYWxpemVkRGVzY3JpcHRpb24pIikKICAgICAgICByZXR1cm4KICAgIH0KICAgIAogICAgZ3VhcmQgbGV0IGh0dHBSZXNwb25zZSA9IHJlc3BvbnNlIGFzPyBIVFRQVVJMUmVzcG9uc2UsICgyMDAuLi4yOTkpLmNvbnRhaW5zKGh0dHBSZXNwb25zZS5zdGF0dXNDb2RlKSBlbHNlIHsKICAgICAgICBwcmludCgiUmVzcHVlc3RhIGludsOhbGlkYSIpCiAgICAgICAgcmV0dXJuCiAgICB9CiAgICAKICAgIGd1YXJkIGxldCBkYXRhID0gZGF0YSBlbHNlIHsKICAgICAgICBwcmludCgiTm8gc2UgcmVjaWJpw7MgZGF0b3MiKQogICAgICAgIHJldHVybgogICAgfQogICAgCiAgICBkbyB7CiAgICAgICAgbGV0IHVzZXJzID0gdHJ5IEpTT05EZWNvZGVyKCkuZGVjb2RlKFtVc2VyXS5zZWxmLCBmcm9tOiBkYXRhKQogICAgICAgIGZvciB1c2VyIGluIHVzZXJzIHsKICAgICAgICAgICAgcHJpbnQoIk5vbWJyZTogXCh1c2VyLm5hbWUpLCBVc3VhcmlvOiBcKHVzZXIudXNlcm5hbWUpLCBFbWFpbDogXCh1c2VyLmVtYWlsKSIpCiAgICAgICAgfQogICAgfSBjYXRjaCB7CiAgICAgICAgcHJpbnQoIkVycm9yIGFsIHBhcnNlYXIgSlNPTjogXChlcnJvci5sb2NhbGl6ZWREZXNjcmlwdGlvbikiKQogICAgfQp9Cgp0YXNrLnJlc3VtZSgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import Foundation
+
+guard let url = URL(string: &quot;https://jsonplaceholder.typicode.com/users&quot;) else {
+    print(&quot;URL inv&aacute;lida&quot;)
+    return
+}
+
+let request = URLRequest(url: url)
+let session = URLSession.shared
+
+let task = session.dataTask(with: request) { data, response, error in
+    if let error = error {
+        print(&quot;Error: \(error.localizedDescription)&quot;)
+        return
+    }
+    
+    guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+        print(&quot;Respuesta inv&aacute;lida&quot;)
+        return
+    }
+    
+    guard let data = data else {
+        print(&quot;No se recibi&oacute; datos&quot;)
+        return
+    }
+    
+    do {
+        let users = try JSONDecoder().decode([User].self, from: data)
+        for user in users {
+            print(&quot;Nombre: \(user.name), Usuario: \(user.username), Email: \(user.email)&quot;)
+        }
+    } catch {
+        print(&quot;Error al parsear JSON: \(error.localizedDescription)&quot;)
+    }
+}
+
+task.resume()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Definir la estructura <code>User</code></strong>: Representa a un usuario con propiedades que coinciden con el JSON.</li>
+<li><strong>Realizar la solicitud</strong>: Similar a los ejemplos anteriores, pero esta vez decodificamos una lista de usuarios.</li>
+</ul>
+</div><h1>Errores Comunes y Soluciones</h1>
+<div class='content'></div><h2>Error: URL inválida</h2>
+<div class='content'><ul>
+<li><strong>Solución</strong>: Asegúrate de que la URL esté correctamente formateada y sea válida.</li>
+</ul>
+</div><h2>Error: No se recibió datos</h2>
+<div class='content'><ul>
+<li><strong>Solución</strong>: Verifica que el servidor esté respondiendo correctamente y que la URL sea correcta.</li>
+</ul>
+</div><h2>Error al parsear JSON</h2>
+<div class='content'><ul>
+<li><strong>Solución</strong>: Asegúrate de que la estructura de datos en Swift coincida con el formato del JSON recibido.</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Realizar una Solicitud POST</h2>
+<div class='content'><p>Crea una función que realice una solicitud POST a una API y envíe datos en formato JSON.</p>
+</div><h2>Ejercicio 2: Manejar Errores de Red</h2>
+<div class='content'><p>Modifica el ejemplo práctico para manejar diferentes tipos de errores de red, como la falta de conexión a Internet.</p>
+</div><h2>Ejercicio 3: Parsear JSON Anidado</h2>
+<div class='content'><p>Crea una estructura Swift para parsear un JSON anidado y escribe una función que realice la solicitud y maneje la respuesta.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo manejar la comunicación en red en Swift utilizando <code>URLSession</code>. Has visto cómo realizar solicitudes HTTP, manejar respuestas, y parsear JSON. Estos son conceptos fundamentales que te permitirán crear aplicaciones que interactúan con servicios web de manera eficiente. En el próximo módulo, profundizaremos en el uso de Core Data para el almacenamiento persistente de datos en tus aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-storyboards-and-interface-builder' title="Storyboards y Interface Builder">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-05-core-data' title="Core Data">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

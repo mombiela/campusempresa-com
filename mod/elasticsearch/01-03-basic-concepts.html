@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conceptos Básicos: Nodos, Clústeres e Índices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/01-03-basic-concepts" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/01-03-basic-concepts" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/01-03-basic-concepts" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/elasticsearch/01-03-basic-concepts" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/01-03-basic-concepts" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-installing-elasticsearch' title="Instalando Elasticsearch">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Conceptos Básicos: Nodos, Clústeres e Índices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-elasticsearch-architecture' title="Arquitectura de Elasticsearch">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta sección, aprenderemos sobre los conceptos fundamentales de Elasticsearch: nodos, clústeres e índices. Estos conceptos son esenciales para entender cómo funciona Elasticsearch y cómo se organiza la información dentro de él.</p>
+</div><h1>Nodos</h1>
+<div class='content'></div><h2>¿Qué es un Nodo?</h2>
+<div class='content'><p>Un nodo es una instancia de Elasticsearch que almacena datos y participa en las operaciones de indexación y búsqueda. Cada nodo es una parte del clúster y puede ser configurado para cumplir diferentes roles.</p>
+</div><h2>Tipos de Nodos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Nodo Maestro (Master Node):</strong></p>
+<ul>
+<li>Responsable de las tareas administrativas del clúster, como la creación y eliminación de índices y la gestión de los nodos.</li>
+<li>Un clúster puede tener múltiples nodos maestros, pero solo uno es el nodo maestro activo en un momento dado.</li>
+</ul>
+</li>
+<li>
+<p><strong>Nodo de Datos (Data Node):</strong></p>
+<ul>
+<li>Almacena los datos y realiza operaciones relacionadas con ellos, como búsquedas y agregaciones.</li>
+<li>Es el tipo de nodo más común y puede haber muchos en un clúster.</li>
+</ul>
+</li>
+<li>
+<p><strong>Nodo Coordinador (Coordinating Node):</strong></p>
+<ul>
+<li>No almacena datos ni actúa como nodo maestro.</li>
+<li>Distribuye las solicitudes de búsqueda y agregación a los nodos de datos y combina los resultados.</li>
+</ul>
+</li>
+<li>
+<p><strong>Nodo de Ingesta (Ingest Node):</strong></p>
+<ul>
+<li>Realiza operaciones de preprocesamiento en los documentos antes de que sean indexados, como el enriquecimiento de datos.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo de Configuración de Nodo</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb25maWd1cmFjacOzbiBiw6FzaWNhIGRlIHVuIG5vZG8gZW4gZWxhc3RpY3NlYXJjaC55bWwKbm9kZS5uYW1lOiAibm9kZS0xIgpub2RlLm1hc3RlcjogdHJ1ZQpub2RlLmRhdGE6IHRydWUKbm9kZS5pbmdlc3Q6IHRydWU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Configuraci&oacute;n b&aacute;sica de un nodo en elasticsearch.yml
+node.name: &quot;node-1&quot;
+node.master: true
+node.data: true
+node.ingest: true</pre></div><div class='content'></div><h1>Clústeres</h1>
+<div class='content'></div><h2>¿Qué es un Clúster?</h2>
+<div class='content'><p>Un clúster es un conjunto de uno o más nodos que trabajan juntos para almacenar datos y proporcionar capacidades de búsqueda. Un clúster se identifica por un nombre único, y todos los nodos que pertenecen al mismo clúster deben compartir este nombre.</p>
+</div><h2>Ventajas de un Clúster</h2>
+<div class='content'><ul>
+<li><strong>Alta Disponibilidad:</strong> Si un nodo falla, otros nodos pueden tomar su lugar.</li>
+<li><strong>Escalabilidad:</strong> Se pueden añadir más nodos para manejar mayores volúmenes de datos y cargas de trabajo.</li>
+</ul>
+</div><h2>Ejemplo de Configuración de Clúster</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb25maWd1cmFjacOzbiBiw6FzaWNhIGRlIHVuIGNsw7pzdGVyIGVuIGVsYXN0aWNzZWFyY2gueW1sCmNsdXN0ZXIubmFtZTogIm15LWNsdXN0ZXIiCm5vZGUubmFtZTogIm5vZGUtMSI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Configuraci&oacute;n b&aacute;sica de un cl&uacute;ster en elasticsearch.yml
+cluster.name: &quot;my-cluster&quot;
+node.name: &quot;node-1&quot;</pre></div><div class='content'></div><h1>Índices</h1>
+<div class='content'></div><h2>¿Qué es un Índice?</h2>
+<div class='content'><p>Un índice es una colección de documentos que comparten características similares. En Elasticsearch, un índice es similar a una base de datos en un sistema de gestión de bases de datos relacionales.</p>
+</div><h2>Componentes de un Índice</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Documentos:</strong></p>
+<ul>
+<li>La unidad básica de información que puede ser indexada. Cada documento es un objeto JSON.</li>
+<li>Ejemplo de documento:
+<pre><code class="language-json">{
+  &quot;user&quot;: &quot;john_doe&quot;,
+  &quot;message&quot;: &quot;Elasticsearch es genial&quot;,
+  &quot;timestamp&quot;: &quot;2023-10-01T12:00:00&quot;
+}
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Tipos (Types):</strong></p>
+<ul>
+<li>En versiones anteriores de Elasticsearch, los documentos dentro de un índice podían ser categorizados en tipos. Sin embargo, esta característica ha sido eliminada en versiones recientes.</li>
+</ul>
+</li>
+<li>
+<p><strong>Shards y Réplicas:</strong></p>
+<ul>
+<li><strong>Shards:</strong> Un índice puede ser dividido en múltiples shards (fragmentos). Cada shard es un índice completo y puede ser almacenado en cualquier nodo del clúster.</li>
+<li><strong>Réplicas:</strong> Copias de los shards primarios que proporcionan redundancia y alta disponibilidad.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo de Creación de Índice</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1biDDrW5kaWNlIGxsYW1hZG8gIm15LWluZGV4IiBjb24gMyBzaGFyZHMgeSAyIHLDqXBsaWNhcwpQVVQgL215LWluZGV4CnsKICAic2V0dGluZ3MiOiB7CiAgICAibnVtYmVyX29mX3NoYXJkcyI6IDMsCiAgICAibnVtYmVyX29mX3JlcGxpY2FzIjogMgogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear un &iacute;ndice llamado &quot;my-index&quot; con 3 shards y 2 r&eacute;plicas
+PUT /my-index
+{
+  &quot;settings&quot;: {
+    &quot;number_of_shards&quot;: 3,
+    &quot;number_of_replicas&quot;: 2
+  }
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de Elasticsearch: nodos, clústeres e índices. Estos elementos son fundamentales para entender cómo Elasticsearch organiza y maneja los datos. A continuación, exploraremos cómo indexar datos en Elasticsearch.</p>
+</div><h2>Puntos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Nodos:</strong> Instancias de Elasticsearch que pueden tener diferentes roles (maestro, datos, coordinador, ingesta).</li>
+<li><strong>Clústeres:</strong> Conjunto de nodos que trabajan juntos para almacenar y buscar datos.</li>
+<li><strong>Índices:</strong> Colecciones de documentos que pueden ser divididas en shards y réplicas para mejorar la escalabilidad y la disponibilidad.</li>
+</ul>
+<p>Con estos conceptos en mente, estamos listos para avanzar al siguiente tema: <strong>Indexando Datos</strong>.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-installing-elasticsearch' title="Instalando Elasticsearch">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-elasticsearch-architecture' title="Arquitectura de Elasticsearch">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

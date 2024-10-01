@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envío de notificaciones</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/firebase/06-02-sending-notifications" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/firebase/06-02-sending-notifications" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/firebase/06-02-sending-notifications" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/firebase/06-02-sending-notifications" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/firebase/06-02-sending-notifications" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-to-cloud-messaging' title="Introducción a la mensajería en la nube">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Envío de notificaciones</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-handling-notifications' title="Manejo de notificaciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo enviar notificaciones utilizando Firebase Cloud Messaging (FCM). Las notificaciones son una herramienta poderosa para mantener a los usuarios comprometidos y actualizados con la información relevante de tu aplicación. Vamos a cubrir los siguientes puntos:</p>
+<ol>
+<li><strong>Configuración inicial de FCM</strong></li>
+<li><strong>Envío de notificaciones desde la consola de Firebase</strong></li>
+<li><strong>Envío de notificaciones desde el servidor</strong></li>
+<li><strong>Personalización de notificaciones</strong></li>
+</ol>
+</div><h1>1. Configuración inicial de FCM</h1>
+<div class='content'><p>Antes de enviar notificaciones, es necesario configurar Firebase Cloud Messaging en tu proyecto. Sigue estos pasos:</p>
+</div><h2>Paso 1: Agregar Firebase a tu proyecto</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un proyecto en Firebase Console</strong>:</p>
+<ul>
+<li>Ve a <a href="https://console.firebase.google.com/">Firebase Console</a>.</li>
+<li>Haz clic en &quot;Agregar proyecto&quot; y sigue las instrucciones para crear un nuevo proyecto.</li>
+</ul>
+</li>
+<li>
+<p><strong>Agregar la aplicación a Firebase</strong>:</p>
+<ul>
+<li>Selecciona tu proyecto y haz clic en &quot;Agregar aplicación&quot; (iOS, Android o Web).</li>
+<li>Sigue las instrucciones para registrar tu aplicación y descargar el archivo de configuración (<code>google-services.json</code> para Android o <code>GoogleService-Info.plist</code> para iOS).</li>
+</ul>
+</li>
+<li>
+<p><strong>Incluir el archivo de configuración en tu proyecto</strong>:</p>
+<ul>
+<li>Para Android, coloca <code>google-services.json</code> en el directorio <code>app/</code>.</li>
+<li>Para iOS, arrastra <code>GoogleService-Info.plist</code> a tu proyecto en Xcode.</li>
+</ul>
+</li>
+<li>
+<p><strong>Agregar dependencias de Firebase</strong>:</p>
+<ul>
+<li>Para Android, agrega las siguientes dependencias en tu archivo <code>build.gradle</code>:
+<pre><code class="language-groovy">implementation 'com.google.firebase:firebase-messaging:23.0.0'
+</code></pre>
+</li>
+<li>Para iOS, usa CocoaPods para instalar Firebase Messaging:
+<pre><code class="language-ruby">pod 'Firebase/Messaging'
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 2: Configurar permisos</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Android</strong>:</p>
+<ul>
+<li>Asegúrate de que tu <code>AndroidManifest.xml</code> contenga los permisos necesarios:
+<pre><code class="language-xml">&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.WAKE_LOCK&quot;/&gt;
+&lt;uses-permission android:name=&quot;android.permission.RECEIVE_BOOT_COMPLETED&quot;/&gt;
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>iOS</strong>:</p>
+<ul>
+<li>Solicita permiso para recibir notificaciones en tu <code>AppDelegate</code>:
+<pre><code class="language-swift">import Firebase
+import UserNotifications
+
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -&gt; Bool {
+        FirebaseApp.configure()
+
+        UNUserNotificationCenter.current().delegate = self
+        let authOptions: UNAuthorizationOptions = [.alert, .badge, .sound]
+        UNUserNotificationCenter.current().requestAuthorization(options: authOptions, completionHandler: {_, _ in })
+
+        application.registerForRemoteNotifications()
+
+        return true
+    }
+}
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>2. Envío de notificaciones desde la consola de Firebase</h1>
+<div class='content'><p>La forma más sencilla de enviar notificaciones es a través de la consola de Firebase. Sigue estos pasos:</p>
+<ol>
+<li>
+<p><strong>Acceder a la consola de Firebase</strong>:</p>
+<ul>
+<li>Ve a <a href="https://console.firebase.google.com/">Firebase Console</a>.</li>
+<li>Selecciona tu proyecto.</li>
+</ul>
+</li>
+<li>
+<p><strong>Navegar a Cloud Messaging</strong>:</p>
+<ul>
+<li>En el menú de la izquierda, selecciona &quot;Cloud Messaging&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear un nuevo mensaje</strong>:</p>
+<ul>
+<li>Haz clic en &quot;Enviar tu primer mensaje&quot; o &quot;Nuevo mensaje&quot;.</li>
+<li>Completa los campos necesarios:
+<ul>
+<li><strong>Título</strong>: El título de la notificación.</li>
+<li><strong>Texto</strong>: El cuerpo de la notificación.</li>
+<li><strong>Segmentación</strong>: Selecciona los destinatarios (todos los usuarios, usuarios específicos, etc.).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Enviar el mensaje</strong>:</p>
+<ul>
+<li>Haz clic en &quot;Siguiente&quot; y luego en &quot;Revisar&quot;.</li>
+<li>Revisa los detalles y haz clic en &quot;Publicar&quot;.</li>
+</ul>
+</li>
+</ol>
+</div><h1>3. Envío de notificaciones desde el servidor</h1>
+<div class='content'><p>Para enviar notificaciones desde tu servidor, necesitas hacer una solicitud HTTP POST a la API de FCM. Aquí tienes un ejemplo en Node.js:</p>
+</div><h2>Paso 1: Obtener la clave del servidor</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Acceder a la configuración del proyecto</strong>:</p>
+<ul>
+<li>En la consola de Firebase, ve a &quot;Configuración del proyecto&quot;.</li>
+<li>Selecciona la pestaña &quot;Cloud Messaging&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Copiar la clave del servidor</strong>:</p>
+<ul>
+<li>Copia la clave del servidor (Server key).</li>
+</ul>
+</li>
+</ol>
+</div><h2>Paso 2: Enviar la notificación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar dependencias</strong>:</p>
+<ul>
+<li>Asegúrate de tener <code>axios</code> instalado:
+<pre><code class="language-bash">npm install axios
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Enviar la solicitud</strong>:</p>
+<ul>
+<li>Aquí tienes un ejemplo de cómo enviar una notificación:
+<pre><code class="language-javascript">const axios = require('axios');
+
+const sendNotification = async () =&gt; {
+    const serverKey = 'YOUR_SERVER_KEY';
+    const fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+
+    const message = {
+        to: 'DEVICE_TOKEN',
+        notification: {
+            title: 'Hello',
+            body: 'World'
+        }
+    };
+
+    try {
+        const response = await axios.post(fcmUrl, message, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `key=${serverKey}`
+            }
+        });
+        console.log('Notification sent successfully:', response.data);
+    } catch (error) {
+        console.error('Error sending notification:', error);
+    }
+};
+
+sendNotification();
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>4. Personalización de notificaciones</h1>
+<div class='content'><p>Puedes personalizar las notificaciones para mejorar la experiencia del usuario. Aquí hay algunas opciones:</p>
+<ol>
+<li>
+<p><strong>Iconos y sonidos personalizados</strong>:</p>
+<ul>
+<li>Puedes especificar un icono y un sonido personalizados en el objeto <code>notification</code>:
+<pre><code class="language-javascript">const message = {
+    to: 'DEVICE_TOKEN',
+    notification: {
+        title: 'Hello',
+        body: 'World',
+        icon: 'your_icon_name',
+        sound: 'your_sound_name'
+    }
+};
+</code></pre>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>Datos adicionales</strong>:</p>
+<ul>
+<li>Puedes enviar datos adicionales en el objeto <code>data</code>:
+<pre><code class="language-javascript">const message = {
+    to: 'DEVICE_TOKEN',
+    notification: {
+        title: 'Hello',
+        body: 'World'
+    },
+    data: {
+        key1: 'value1',
+        key2: 'value2'
+    }
+};
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Enviar una notificación desde la consola de Firebase</h2>
+<div class='content'><ol>
+<li>Accede a la consola de Firebase y selecciona tu proyecto.</li>
+<li>Navega a Cloud Messaging y crea un nuevo mensaje.</li>
+<li>Completa los campos con un título y un texto de tu elección.</li>
+<li>Envía la notificación y verifica que se reciba en tu dispositivo.</li>
+</ol>
+</div><h2>Ejercicio 2: Enviar una notificación desde el servidor</h2>
+<div class='content'><ol>
+<li>Configura un servidor Node.js y asegúrate de tener <code>axios</code> instalado.</li>
+<li>Usa el código proporcionado para enviar una notificación a un dispositivo específico.</li>
+<li>Personaliza la notificación con un icono y un sonido personalizados.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+<ol>
+<li>Accede a la consola de Firebase y selecciona tu proyecto.</li>
+<li>Navega a Cloud Messaging y haz clic en &quot;Nuevo mensaje&quot;.</li>
+<li>Completa los campos:
+<ul>
+<li><strong>Título</strong>: &quot;Notificación de prueba&quot;</li>
+<li><strong>Texto</strong>: &quot;Esta es una notificación de prueba&quot;</li>
+</ul>
+</li>
+<li>Haz clic en &quot;Siguiente&quot;, revisa los detalles y haz clic en &quot;Publicar&quot;.</li>
+</ol>
+<h4>Solución al Ejercicio 2</h4>
+<ol>
+<li>Configura un servidor Node.js y asegúrate de tener <code>axios</code> instalado.</li>
+<li>Usa el siguiente código para enviar una notificación:
+<pre><code class="language-javascript">const axios = require('axios');
+
+const sendNotification = async () =&gt; {
+    const serverKey = 'YOUR_SERVER_KEY';
+    const fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+
+    const message = {
+        to: 'DEVICE_TOKEN',
+        notification: {
+            title: 'Notificación de prueba',
+            body: 'Esta es una notificación de prueba',
+            icon: 'your_icon_name',
+            sound: 'your_sound_name'
+        }
+    };
+
+    try {
+        const response = await axios.post(fcmUrl, message, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `key=${serverKey}`
+            }
+        });
+        console.log('Notification sent successfully:', response.data);
+    } catch (error) {
+        console.error('Error sending notification:', error);
+    }
+};
+
+sendNotification();
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo enviar notificaciones utilizando Firebase Cloud Messaging. Hemos cubierto la configuración inicial, el envío de notificaciones desde la consola de Firebase y desde el servidor, así como la personalización de las notificaciones. Con estos conocimientos, puedes mantener a tus usuarios informados y comprometidos con tu aplicación. En el próximo tema, aprenderemos cómo manejar las notificaciones en la aplicación.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-to-cloud-messaging' title="Introducción a la mensajería en la nube">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-handling-notifications' title="Manejo de notificaciones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

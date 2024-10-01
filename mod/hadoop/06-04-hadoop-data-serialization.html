@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serialización de Datos en Hadoop</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/06-04-hadoop-data-serialization" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/06-04-hadoop-data-serialization" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/06-04-hadoop-data-serialization" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/hadoop/06-04-hadoop-data-serialization" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/hadoop/06-04-hadoop-data-serialization" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-hadoop-performance-tuning' title="Ajuste de Rendimiento de Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Serialización de Datos en Hadoop</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-hadoop-in-data-warehousing' title="Hadoop en Almacenamiento de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La serialización de datos es un proceso crucial en Hadoop, ya que permite convertir objetos en una secuencia de bytes que pueden ser fácilmente almacenados y transmitidos. En este módulo, exploraremos los conceptos fundamentales de la serialización de datos en Hadoop, las herramientas y bibliotecas utilizadas, y cómo implementar la serialización en tus aplicaciones Hadoop.</p>
+</div><h1>¿Qué es la Serialización de Datos?</h1>
+<div class='content'><p>La serialización de datos es el proceso de convertir un objeto en una secuencia de bytes para su almacenamiento o transmisión. La deserialización es el proceso inverso, donde la secuencia de bytes se convierte de nuevo en un objeto. Este proceso es esencial en sistemas distribuidos como Hadoop, donde los datos deben ser transferidos entre nodos y almacenados de manera eficiente.</p>
+</div><h2>Ventajas de la Serialización</h2>
+<div class='content'><ul>
+<li><strong>Eficiencia en el almacenamiento</strong>: Los datos serializados ocupan menos espacio.</li>
+<li><strong>Facilidad de transmisión</strong>: Los datos serializados pueden ser fácilmente transmitidos a través de la red.</li>
+<li><strong>Compatibilidad</strong>: Permite la interoperabilidad entre diferentes sistemas y lenguajes de programación.</li>
+</ul>
+</div><h1>Herramientas y Bibliotecas de Serialización en Hadoop</h1>
+<div class='content'><p>Hadoop soporta varias bibliotecas de serialización que facilitan el manejo de datos. A continuación, se describen algunas de las más utilizadas:</p>
+</div><h2>1. Writable</h2>
+<div class='content'><p>Writable es la interfaz de serialización nativa de Hadoop. Es eficiente y está diseñada específicamente para el entorno Hadoop.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuaGFkb29wLmlvLkludFdyaXRhYmxlOwppbXBvcnQgb3JnLmFwYWNoZS5oYWRvb3AuaW8uVGV4dDsKCnB1YmxpYyBjbGFzcyBXcml0YWJsZUV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgewogICAgICAgIEludFdyaXRhYmxlIGludFdyaXRhYmxlID0gbmV3IEludFdyaXRhYmxlKDQyKTsKICAgICAgICBUZXh0IHRleHRXcml0YWJsZSA9IG5ldyBUZXh0KCJIZWxsbywgSGFkb29wISIpOwoKICAgICAgICBTeXN0ZW0ub3V0LnByaW50bG4oIkludFdyaXRhYmxlOiAiICsgaW50V3JpdGFibGUuZ2V0KCkpOwogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiVGV4dFdyaXRhYmxlOiAiICsgdGV4dFdyaXRhYmxlLnRvU3RyaW5nKCkpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+
+public class WritableExample {
+    public static void main(String[] args) {
+        IntWritable intWritable = new IntWritable(42);
+        Text textWritable = new Text(&quot;Hello, Hadoop!&quot;);
+
+        System.out.println(&quot;IntWritable: &quot; + intWritable.get());
+        System.out.println(&quot;TextWritable: &quot; + textWritable.toString());
+    }
+}</pre></div><div class='content'></div><h2>2. Avro</h2>
+<div class='content'><p>Apache Avro es un sistema de serialización de datos que proporciona un formato de datos compacto y rápido. Es ampliamente utilizado en Hadoop debido a su eficiencia y flexibilidad.</p>
+<h4>Definición de un Esquema Avro</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ0eXBlIjogInJlY29yZCIsCiAgIm5hbWUiOiAiVXNlciIsCiAgImZpZWxkcyI6IFsKICAgIHsibmFtZSI6ICJuYW1lIiwgInR5cGUiOiAic3RyaW5nIn0sCiAgICB7Im5hbWUiOiAiYWdlIiwgInR5cGUiOiAiaW50In0KICBdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;type&quot;: &quot;record&quot;,
+  &quot;name&quot;: &quot;User&quot;,
+  &quot;fields&quot;: [
+    {&quot;name&quot;: &quot;name&quot;, &quot;type&quot;: &quot;string&quot;},
+    {&quot;name&quot;: &quot;age&quot;, &quot;type&quot;: &quot;int&quot;}
+  ]
+}</pre></div><div class='content'><h4>Serialización y Deserialización con Avro</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuYXZyby5TY2hlbWE7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljRGF0YTsKaW1wb3J0IG9yZy5hcGFjaGUuYXZyby5nZW5lcmljLkdlbmVyaWNSZWNvcmQ7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRGF0dW1SZWFkZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRGF0dW1Xcml0ZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRGVjb2RlckZhY3Rvcnk7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRW5jb2RlckZhY3Rvcnk7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uc3BlY2lmaWMuU3BlY2lmaWNEYXR1bVJlYWRlcjsKaW1wb3J0IG9yZy5hcGFjaGUuYXZyby5zcGVjaWZpYy5TcGVjaWZpY0RhdHVtV3JpdGVyOwoKaW1wb3J0IGphdmEuaW8uQnl0ZUFycmF5T3V0cHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBBdnJvRXhhbXBsZSB7CiAgICBwdWJsaWMgc3RhdGljIHZvaWQgbWFpbihTdHJpbmdbXSBhcmdzKSB0aHJvd3MgSU9FeGNlcHRpb24gewogICAgICAgIFN0cmluZyBzY2hlbWFKc29uID0gInsgXCJ0eXBlXCI6IFwicmVjb3JkXCIsIFwibmFtZVwiOiBcIlVzZXJcIiwgXCJmaWVsZHNcIjogWyB7XCJuYW1lXCI6IFwibmFtZVwiLCBcInR5cGVcIjogXCJzdHJpbmdcIn0sIHtcIm5hbWVcIjogXCJhZ2VcIiwgXCJ0eXBlXCI6IFwiaW50XCJ9IF0gfSI7CiAgICAgICAgU2NoZW1hIHNjaGVtYSA9IG5ldyBTY2hlbWEuUGFyc2VyKCkucGFyc2Uoc2NoZW1hSnNvbik7CgogICAgICAgIEdlbmVyaWNSZWNvcmQgdXNlciA9IG5ldyBHZW5lcmljRGF0YS5SZWNvcmQoc2NoZW1hKTsKICAgICAgICB1c2VyLnB1dCgibmFtZSIsICJKb2huIERvZSIpOwogICAgICAgIHVzZXIucHV0KCJhZ2UiLCAzMCk7CgogICAgICAgIC8vIFNlcmlhbGl6YWNpw7NuCiAgICAgICAgQnl0ZUFycmF5T3V0cHV0U3RyZWFtIG91dCA9IG5ldyBCeXRlQXJyYXlPdXRwdXRTdHJlYW0oKTsKICAgICAgICBEYXR1bVdyaXRlcjxHZW5lcmljUmVjb3JkPiB3cml0ZXIgPSBuZXcgU3BlY2lmaWNEYXR1bVdyaXRlcjw+KHNjaGVtYSk7CiAgICAgICAgRW5jb2RlckZhY3RvcnkuZ2V0KCkuYmluYXJ5RW5jb2RlcihvdXQsIG51bGwpLndyaXRlKHVzZXIsIHdyaXRlcik7CgogICAgICAgIGJ5dGVbXSBzZXJpYWxpemVkRGF0YSA9IG91dC50b0J5dGVBcnJheSgpOwoKICAgICAgICAvLyBEZXNlcmlhbGl6YWNpw7NuCiAgICAgICAgRGF0dW1SZWFkZXI8R2VuZXJpY1JlY29yZD4gcmVhZGVyID0gbmV3IFNwZWNpZmljRGF0dW1SZWFkZXI8PihzY2hlbWEpOwogICAgICAgIEdlbmVyaWNSZWNvcmQgZGVzZXJpYWxpemVkVXNlciA9IHJlYWRlci5yZWFkKG51bGwsIERlY29kZXJGYWN0b3J5LmdldCgpLmJpbmFyeURlY29kZXIoc2VyaWFsaXplZERhdGEsIG51bGwpKTsKCiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJEZXNlcmlhbGl6ZWQgVXNlcjogIiArIGRlc2VyaWFsaXplZFVzZXIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.avro.specific.SpecificDatumWriter;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+public class AvroExample {
+    public static void main(String[] args) throws IOException {
+        String schemaJson = &quot;{ \&quot;type\&quot;: \&quot;record\&quot;, \&quot;name\&quot;: \&quot;User\&quot;, \&quot;fields\&quot;: [ {\&quot;name\&quot;: \&quot;name\&quot;, \&quot;type\&quot;: \&quot;string\&quot;}, {\&quot;name\&quot;: \&quot;age\&quot;, \&quot;type\&quot;: \&quot;int\&quot;} ] }&quot;;
+        Schema schema = new Schema.Parser().parse(schemaJson);
+
+        GenericRecord user = new GenericData.Record(schema);
+        user.put(&quot;name&quot;, &quot;John Doe&quot;);
+        user.put(&quot;age&quot;, 30);
+
+        // Serializaci&oacute;n
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        DatumWriter&lt;GenericRecord&gt; writer = new SpecificDatumWriter&lt;&gt;(schema);
+        EncoderFactory.get().binaryEncoder(out, null).write(user, writer);
+
+        byte[] serializedData = out.toByteArray();
+
+        // Deserializaci&oacute;n
+        DatumReader&lt;GenericRecord&gt; reader = new SpecificDatumReader&lt;&gt;(schema);
+        GenericRecord deserializedUser = reader.read(null, DecoderFactory.get().binaryDecoder(serializedData, null));
+
+        System.out.println(&quot;Deserialized User: &quot; + deserializedUser);
+    }
+}</pre></div><div class='content'></div><h2>3. Protocol Buffers</h2>
+<div class='content'><p>Protocol Buffers (protobuf) es una biblioteca de serialización de datos desarrollada por Google. Es eficiente y soporta múltiples lenguajes de programación.</p>
+<h4>Definición de un Mensaje Protobuf</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3ludGF4ID0gInByb3RvMyI7CgptZXNzYWdlIFVzZXIgewogIHN0cmluZyBuYW1lID0gMTsKICBpbnQzMiBhZ2UgPSAyOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>syntax = &quot;proto3&quot;;
+
+message User {
+  string name = 1;
+  int32 age = 2;
+}</pre></div><div class='content'><h4>Serialización y Deserialización con Protobuf</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IGNvbS5leGFtcGxlLlVzZXJQcm90b3MuVXNlcjsKCnB1YmxpYyBjbGFzcyBQcm90b2J1ZkV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgdGhyb3dzIElPRXhjZXB0aW9uIHsKICAgICAgICAvLyBDcmVhciB1biBvYmpldG8gVXNlcgogICAgICAgIFVzZXIgdXNlciA9IFVzZXIubmV3QnVpbGRlcigpCiAgICAgICAgICAgICAgICAuc2V0TmFtZSgiSmFuZSBEb2UiKQogICAgICAgICAgICAgICAgLnNldEFnZSgyNSkKICAgICAgICAgICAgICAgIC5idWlsZCgpOwoKICAgICAgICAvLyBTZXJpYWxpemFjacOzbgogICAgICAgIGJ5dGVbXSBzZXJpYWxpemVkRGF0YSA9IHVzZXIudG9CeXRlQXJyYXkoKTsKCiAgICAgICAgLy8gRGVzZXJpYWxpemFjacOzbgogICAgICAgIFVzZXIgZGVzZXJpYWxpemVkVXNlciA9IFVzZXIucGFyc2VGcm9tKHNlcmlhbGl6ZWREYXRhKTsKCiAgICAgICAgU3lzdGVtLm91dC5wcmludGxuKCJEZXNlcmlhbGl6ZWQgVXNlcjogIiArIGRlc2VyaWFsaXplZFVzZXIpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import com.example.UserProtos.User;
+
+public class ProtobufExample {
+    public static void main(String[] args) throws IOException {
+        // Crear un objeto User
+        User user = User.newBuilder()
+                .setName(&quot;Jane Doe&quot;)
+                .setAge(25)
+                .build();
+
+        // Serializaci&oacute;n
+        byte[] serializedData = user.toByteArray();
+
+        // Deserializaci&oacute;n
+        User deserializedUser = User.parseFrom(serializedData);
+
+        System.out.println(&quot;Deserialized User: &quot; + deserializedUser);
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Serialización con Avro</h2>
+<div class='content'><ol>
+<li>Define un esquema Avro para un objeto <code>Product</code> con los campos <code>id</code> (int), <code>name</code> (string) y <code>price</code> (float).</li>
+<li>Escribe un programa Java que serialice y deserialice un objeto <code>Product</code> utilizando Avro.</li>
+</ol>
+<h4>Solución</h4>
+<p><strong>Definición del Esquema Avro</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJ0eXBlIjogInJlY29yZCIsCiAgIm5hbWUiOiAiUHJvZHVjdCIsCiAgImZpZWxkcyI6IFsKICAgIHsibmFtZSI6ICJpZCIsICJ0eXBlIjogImludCJ9LAogICAgeyJuYW1lIjogIm5hbWUiLCAidHlwZSI6ICJzdHJpbmcifSwKICAgIHsibmFtZSI6ICJwcmljZSIsICJ0eXBlIjogImZsb2F0In0KICBdCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;type&quot;: &quot;record&quot;,
+  &quot;name&quot;: &quot;Product&quot;,
+  &quot;fields&quot;: [
+    {&quot;name&quot;: &quot;id&quot;, &quot;type&quot;: &quot;int&quot;},
+    {&quot;name&quot;: &quot;name&quot;, &quot;type&quot;: &quot;string&quot;},
+    {&quot;name&quot;: &quot;price&quot;, &quot;type&quot;: &quot;float&quot;}
+  ]
+}</pre></div><div class='content'><p><strong>Programa Java</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG9yZy5hcGFjaGUuYXZyby5TY2hlbWE7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uZ2VuZXJpYy5HZW5lcmljRGF0YTsKaW1wb3J0IG9yZy5hcGFjaGUuYXZyby5nZW5lcmljLkdlbmVyaWNSZWNvcmQ7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRGF0dW1SZWFkZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRGF0dW1Xcml0ZXI7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRGVjb2RlckZhY3Rvcnk7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uaW8uRW5jb2RlckZhY3Rvcnk7CmltcG9ydCBvcmcuYXBhY2hlLmF2cm8uc3BlY2lmaWMuU3BlY2lmaWNEYXR1bVJlYWRlcjsKaW1wb3J0IG9yZy5hcGFjaGUuYXZyby5zcGVjaWZpYy5TcGVjaWZpY0RhdHVtV3JpdGVyOwoKaW1wb3J0IGphdmEuaW8uQnl0ZUFycmF5T3V0cHV0U3RyZWFtOwppbXBvcnQgamF2YS5pby5JT0V4Y2VwdGlvbjsKCnB1YmxpYyBjbGFzcyBBdnJvUHJvZHVjdEV4YW1wbGUgewogICAgcHVibGljIHN0YXRpYyB2b2lkIG1haW4oU3RyaW5nW10gYXJncykgdGhyb3dzIElPRXhjZXB0aW9uIHsKICAgICAgICBTdHJpbmcgc2NoZW1hSnNvbiA9ICJ7IFwidHlwZVwiOiBcInJlY29yZFwiLCBcIm5hbWVcIjogXCJQcm9kdWN0XCIsIFwiZmllbGRzXCI6IFsge1wibmFtZVwiOiBcImlkXCIsIFwidHlwZVwiOiBcImludFwifSwge1wibmFtZVwiOiBcIm5hbWVcIiwgXCJ0eXBlXCI6IFwic3RyaW5nXCJ9LCB7XCJuYW1lXCI6IFwicHJpY2VcIiwgXCJ0eXBlXCI6IFwiZmxvYXRcIn0gXSB9IjsKICAgICAgICBTY2hlbWEgc2NoZW1hID0gbmV3IFNjaGVtYS5QYXJzZXIoKS5wYXJzZShzY2hlbWFKc29uKTsKCiAgICAgICAgR2VuZXJpY1JlY29yZCBwcm9kdWN0ID0gbmV3IEdlbmVyaWNEYXRhLlJlY29yZChzY2hlbWEpOwogICAgICAgIHByb2R1Y3QucHV0KCJpZCIsIDEpOwogICAgICAgIHByb2R1Y3QucHV0KCJuYW1lIiwgIkxhcHRvcCIpOwogICAgICAgIHByb2R1Y3QucHV0KCJwcmljZSIsIDk5OS45OWYpOwoKICAgICAgICAvLyBTZXJpYWxpemFjacOzbgogICAgICAgIEJ5dGVBcnJheU91dHB1dFN0cmVhbSBvdXQgPSBuZXcgQnl0ZUFycmF5T3V0cHV0U3RyZWFtKCk7CiAgICAgICAgRGF0dW1Xcml0ZXI8R2VuZXJpY1JlY29yZD4gd3JpdGVyID0gbmV3IFNwZWNpZmljRGF0dW1Xcml0ZXI8PihzY2hlbWEpOwogICAgICAgIEVuY29kZXJGYWN0b3J5LmdldCgpLmJpbmFyeUVuY29kZXIob3V0LCBudWxsKS53cml0ZShwcm9kdWN0LCB3cml0ZXIpOwoKICAgICAgICBieXRlW10gc2VyaWFsaXplZERhdGEgPSBvdXQudG9CeXRlQXJyYXkoKTsKCiAgICAgICAgLy8gRGVzZXJpYWxpemFjacOzbgogICAgICAgIERhdHVtUmVhZGVyPEdlbmVyaWNSZWNvcmQ+IHJlYWRlciA9IG5ldyBTcGVjaWZpY0RhdHVtUmVhZGVyPD4oc2NoZW1hKTsKICAgICAgICBHZW5lcmljUmVjb3JkIGRlc2VyaWFsaXplZFByb2R1Y3QgPSByZWFkZXIucmVhZChudWxsLCBEZWNvZGVyRmFjdG9yeS5nZXQoKS5iaW5hcnlEZWNvZGVyKHNlcmlhbGl6ZWREYXRhLCBudWxsKSk7CgogICAgICAgIFN5c3RlbS5vdXQucHJpbnRsbigiRGVzZXJpYWxpemVkIFByb2R1Y3Q6ICIgKyBkZXNlcmlhbGl6ZWRQcm9kdWN0KTsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.DatumWriter;
+import org.apache.avro.io.DecoderFactory;
+import org.apache.avro.io.EncoderFactory;
+import org.apache.avro.specific.SpecificDatumReader;
+import org.apache.avro.specific.SpecificDatumWriter;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+public class AvroProductExample {
+    public static void main(String[] args) throws IOException {
+        String schemaJson = &quot;{ \&quot;type\&quot;: \&quot;record\&quot;, \&quot;name\&quot;: \&quot;Product\&quot;, \&quot;fields\&quot;: [ {\&quot;name\&quot;: \&quot;id\&quot;, \&quot;type\&quot;: \&quot;int\&quot;}, {\&quot;name\&quot;: \&quot;name\&quot;, \&quot;type\&quot;: \&quot;string\&quot;}, {\&quot;name\&quot;: \&quot;price\&quot;, \&quot;type\&quot;: \&quot;float\&quot;} ] }&quot;;
+        Schema schema = new Schema.Parser().parse(schemaJson);
+
+        GenericRecord product = new GenericData.Record(schema);
+        product.put(&quot;id&quot;, 1);
+        product.put(&quot;name&quot;, &quot;Laptop&quot;);
+        product.put(&quot;price&quot;, 999.99f);
+
+        // Serializaci&oacute;n
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        DatumWriter&lt;GenericRecord&gt; writer = new SpecificDatumWriter&lt;&gt;(schema);
+        EncoderFactory.get().binaryEncoder(out, null).write(product, writer);
+
+        byte[] serializedData = out.toByteArray();
+
+        // Deserializaci&oacute;n
+        DatumReader&lt;GenericRecord&gt; reader = new SpecificDatumReader&lt;&gt;(schema);
+        GenericRecord deserializedProduct = reader.read(null, DecoderFactory.get().binaryDecoder(serializedData, null));
+
+        System.out.println(&quot;Deserialized Product: &quot; + deserializedProduct);
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La serialización de datos es un componente esencial en el ecosistema Hadoop, permitiendo la eficiente transmisión y almacenamiento de datos. En este módulo, hemos explorado las herramientas y bibliotecas más comunes para la serialización en Hadoop, incluyendo Writable, Avro y Protocol Buffers. Además, hemos proporcionado ejemplos prácticos y un ejercicio para reforzar los conceptos aprendidos. Con esta base, estarás mejor preparado para manejar la serialización de datos en tus aplicaciones Hadoop y optimizar el rendimiento de tus sistemas distribuidos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-hadoop-performance-tuning' title="Ajuste de Rendimiento de Hadoop">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-hadoop-in-data-warehousing' title="Hadoop en Almacenamiento de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

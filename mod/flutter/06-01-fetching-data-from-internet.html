@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obteniendo Datos de Internet</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/flutter/06-01-fetching-data-from-internet" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/flutter/06-01-fetching-data-from-internet" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/flutter/06-01-fetching-data-from-internet" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/flutter/06-01-fetching-data-from-internet" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/flutter/06-01-fetching-data-from-internet" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-05-deep-linking' title="Deep Linking">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Obteniendo Datos de Internet</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-parsing-json-data' title="Parseo de Datos JSON">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En esta lección, aprenderemos cómo obtener datos de Internet en una aplicación Flutter. Este es un aspecto crucial para muchas aplicaciones modernas que dependen de datos en tiempo real o de servicios web para funcionar correctamente.</p>
+</div><h1>Objetivos de la Lección</h1>
+<div class='content'><ul>
+<li>Entender cómo realizar solicitudes HTTP en Flutter.</li>
+<li>Aprender a manejar respuestas HTTP.</li>
+<li>Implementar la obtención de datos desde una API REST.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Conocimientos básicos de Dart y Flutter.</li>
+<li>Familiaridad con los conceptos de programación asíncrona.</li>
+</ul>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-las-solicitudes-http">Introducción a las Solicitudes HTTP</a></li>
+<li><a href="#configuración-del-paquete-http">Configuración del Paquete HTTP</a></li>
+<li><a href="#realizando-una-solicitud-get">Realizando una Solicitud GET</a></li>
+<li><a href="#manejo-de-respuestas-http">Manejo de Respuestas HTTP</a></li>
+<li><a href="#ejemplo-práctico">Ejemplo Práctico</a></li>
+<li><a href="#ejercicio-práctico">Ejercicio Práctico</a></li>
+</ol>
+</div><h1>Introducción a las Solicitudes HTTP</h1>
+<div class='content'><p>HTTP (HyperText Transfer Protocol) es el protocolo utilizado para la comunicación entre clientes y servidores en la web. En Flutter, podemos realizar solicitudes HTTP para obtener datos de servidores remotos utilizando el paquete <code>http</code>.</p>
+</div><h1>Configuración del Paquete HTTP</h1>
+<div class='content'><p>Para realizar solicitudes HTTP en Flutter, primero necesitamos agregar el paquete <code>http</code> a nuestro proyecto.</p>
+<ol>
+<li>Abre el archivo <code>pubspec.yaml</code> de tu proyecto.</li>
+<li>Agrega la dependencia <code>http</code> en la sección <code>dependencies</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVwZW5kZW5jaWVzOgogIGZsdXR0ZXI6CiAgICBzZGs6IGZsdXR0ZXIKICBodHRwOiBeMC4xMy4z"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dependencies:
+  flutter:
+    sdk: flutter
+  http: ^0.13.3</pre></div><div class='content'><ol start="3">
+<li>Guarda el archivo y ejecuta <code>flutter pub get</code> para instalar la dependencia.</li>
+</ol>
+</div><h1>Realizando una Solicitud GET</h1>
+<div class='content'><p>Una solicitud GET se utiliza para obtener datos de un servidor. A continuación, se muestra cómo realizar una solicitud GET en Flutter:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAncGFja2FnZTpodHRwL2h0dHAuZGFydCcgYXMgaHR0cDsKCnZvaWQgbWFpbigpID0+IHJ1bkFwcChNeUFwcCgpKTsKCmNsYXNzIE15QXBwIGV4dGVuZHMgU3RhdGVsZXNzV2lkZ2V0IHsKICBAb3ZlcnJpZGUKICBXaWRnZXQgYnVpbGQoQnVpbGRDb250ZXh0IGNvbnRleHQpIHsKICAgIHJldHVybiBNYXRlcmlhbEFwcCgKICAgICAgaG9tZTogU2NhZmZvbGQoCiAgICAgICAgYXBwQmFyOiBBcHBCYXIoCiAgICAgICAgICB0aXRsZTogVGV4dCgnT2J0ZW5pZW5kbyBEYXRvcyBkZSBJbnRlcm5ldCcpLAogICAgICAgICksCiAgICAgICAgYm9keTogQ2VudGVyKAogICAgICAgICAgY2hpbGQ6IEZ1dHVyZUJ1aWxkZXIoCiAgICAgICAgICAgIGZ1dHVyZTogZmV0Y2hEYXRhKCksCiAgICAgICAgICAgIGJ1aWxkZXI6IChjb250ZXh0LCBzbmFwc2hvdCkgewogICAgICAgICAgICAgIGlmIChzbmFwc2hvdC5jb25uZWN0aW9uU3RhdGUgPT0gQ29ubmVjdGlvblN0YXRlLndhaXRpbmcpIHsKICAgICAgICAgICAgICAgIHJldHVybiBDaXJjdWxhclByb2dyZXNzSW5kaWNhdG9yKCk7CiAgICAgICAgICAgICAgfSBlbHNlIGlmIChzbmFwc2hvdC5oYXNFcnJvcikgewogICAgICAgICAgICAgICAgcmV0dXJuIFRleHQoJ0Vycm9yOiAke3NuYXBzaG90LmVycm9yfScpOwogICAgICAgICAgICAgIH0gZWxzZSB7CiAgICAgICAgICAgICAgICByZXR1cm4gVGV4dCgnRGF0b3M6ICR7c25hcHNob3QuZGF0YX0nKTsKICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0sCiAgICAgICAgICApLAogICAgICAgICksCiAgICAgICksCiAgICApOwogIH0KCiAgRnV0dXJlPFN0cmluZz4gZmV0Y2hEYXRhKCkgYXN5bmMgewogICAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBodHRwLmdldChVcmkucGFyc2UoJ2h0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cy8xJykpOwoKICAgIGlmIChyZXNwb25zZS5zdGF0dXNDb2RlID09IDIwMCkgewogICAgICByZXR1cm4gcmVzcG9uc2UuYm9keTsKICAgIH0gZWxzZSB7CiAgICAgIHRocm93IEV4Y2VwdGlvbignRXJyb3IgYWwgb2J0ZW5lciBkYXRvcycpOwogICAgfQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() =&gt; runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Obteniendo Datos de Internet'),
+        ),
+        body: Center(
+          child: FutureBuilder(
+            future: fetchData(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Text('Datos: ${snapshot.data}');
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future&lt;String&gt; fetchData() async {
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts/1'));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Error al obtener datos');
+    }
+  }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importaciones</strong>: Importamos los paquetes <code>flutter/material.dart</code> y <code>http</code>.</li>
+<li><strong>Main Function</strong>: La función <code>main</code> ejecuta la aplicación.</li>
+<li><strong>MyApp Class</strong>: Definimos una clase <code>MyApp</code> que extiende <code>StatelessWidget</code>.</li>
+<li><strong>FutureBuilder</strong>: Utilizamos <code>FutureBuilder</code> para manejar la solicitud asíncrona y mostrar los datos obtenidos.</li>
+<li><strong>fetchData Function</strong>: Definimos una función <code>fetchData</code> que realiza una solicitud GET a una URL y devuelve los datos obtenidos.</li>
+</ol>
+</div><h1>Manejo de Respuestas HTTP</h1>
+<div class='content'><p>Es importante manejar adecuadamente las respuestas HTTP para asegurarnos de que nuestra aplicación funcione correctamente incluso cuando ocurren errores.</p>
+</div><h2>Ejemplo de Manejo de Errores</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RnV0dXJlPFN0cmluZz4gZmV0Y2hEYXRhKCkgYXN5bmMgewogIHRyeSB7CiAgICBmaW5hbCByZXNwb25zZSA9IGF3YWl0IGh0dHAuZ2V0KFVyaS5wYXJzZSgnaHR0cHM6Ly9qc29ucGxhY2Vob2xkZXIudHlwaWNvZGUuY29tL3Bvc3RzLzEnKSk7CgogICAgaWYgKHJlc3BvbnNlLnN0YXR1c0NvZGUgPT0gMjAwKSB7CiAgICAgIHJldHVybiByZXNwb25zZS5ib2R5OwogICAgfSBlbHNlIHsKICAgICAgdGhyb3cgRXhjZXB0aW9uKCdFcnJvciBhbCBvYnRlbmVyIGRhdG9zOiAke3Jlc3BvbnNlLnN0YXR1c0NvZGV9Jyk7CiAgICB9CiAgfSBjYXRjaCAoZSkgewogICAgdGhyb3cgRXhjZXB0aW9uKCdFcnJvciBkZSByZWQ6ICRlJyk7CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Future&lt;String&gt; fetchData() async {
+  try {
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts/1'));
+
+    if (response.statusCode == 200) {
+      return response.body;
+    } else {
+      throw Exception('Error al obtener datos: ${response.statusCode}');
+    }
+  } catch (e) {
+    throw Exception('Error de red: $e');
+  }
+}</pre></div><div class='content'><p>En este ejemplo, utilizamos un bloque <code>try-catch</code> para manejar posibles errores de red.</p>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear una aplicación que obtenga una lista de publicaciones desde una API y las muestre en una lista.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAncGFja2FnZTpodHRwL2h0dHAuZGFydCcgYXMgaHR0cDsKaW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgPT4gcnVuQXBwKE15QXBwKCkpOwoKY2xhc3MgTXlBcHAgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIE1hdGVyaWFsQXBwKAogICAgICBob21lOiBTY2FmZm9sZCgKICAgICAgICBhcHBCYXI6IEFwcEJhcigKICAgICAgICAgIHRpdGxlOiBUZXh0KCdMaXN0YSBkZSBQdWJsaWNhY2lvbmVzJyksCiAgICAgICAgKSwKICAgICAgICBib2R5OiBQb3N0c0xpc3QoKSwKICAgICAgKSwKICAgICk7CiAgfQp9CgpjbGFzcyBQb3N0c0xpc3QgZXh0ZW5kcyBTdGF0ZWZ1bFdpZGdldCB7CiAgQG92ZXJyaWRlCiAgX1Bvc3RzTGlzdFN0YXRlIGNyZWF0ZVN0YXRlKCkgPT4gX1Bvc3RzTGlzdFN0YXRlKCk7Cn0KCmNsYXNzIF9Qb3N0c0xpc3RTdGF0ZSBleHRlbmRzIFN0YXRlPFBvc3RzTGlzdD4gewogIEZ1dHVyZTxMaXN0PFBvc3Q+PiBmZXRjaFBvc3RzKCkgYXN5bmMgewogICAgZmluYWwgcmVzcG9uc2UgPSBhd2FpdCBodHRwLmdldChVcmkucGFyc2UoJ2h0dHBzOi8vanNvbnBsYWNlaG9sZGVyLnR5cGljb2RlLmNvbS9wb3N0cycpKTsKCiAgICBpZiAocmVzcG9uc2Uuc3RhdHVzQ29kZSA9PSAyMDApIHsKICAgICAgTGlzdCBqc29uUmVzcG9uc2UgPSBqc29uLmRlY29kZShyZXNwb25zZS5ib2R5KTsKICAgICAgcmV0dXJuIGpzb25SZXNwb25zZS5tYXAoKHBvc3QpID0+IFBvc3QuZnJvbUpzb24ocG9zdCkpLnRvTGlzdCgpOwogICAgfSBlbHNlIHsKICAgICAgdGhyb3cgRXhjZXB0aW9uKCdFcnJvciBhbCBvYnRlbmVyIHB1YmxpY2FjaW9uZXMnKTsKICAgIH0KICB9CgogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIEZ1dHVyZUJ1aWxkZXI8TGlzdDxQb3N0Pj4oCiAgICAgIGZ1dHVyZTogZmV0Y2hQb3N0cygpLAogICAgICBidWlsZGVyOiAoY29udGV4dCwgc25hcHNob3QpIHsKICAgICAgICBpZiAoc25hcHNob3QuY29ubmVjdGlvblN0YXRlID09IENvbm5lY3Rpb25TdGF0ZS53YWl0aW5nKSB7CiAgICAgICAgICByZXR1cm4gQ2lyY3VsYXJQcm9ncmVzc0luZGljYXRvcigpOwogICAgICAgIH0gZWxzZSBpZiAoc25hcHNob3QuaGFzRXJyb3IpIHsKICAgICAgICAgIHJldHVybiBUZXh0KCdFcnJvcjogJHtzbmFwc2hvdC5lcnJvcn0nKTsKICAgICAgICB9IGVsc2UgewogICAgICAgICAgcmV0dXJuIExpc3RWaWV3LmJ1aWxkZXIoCiAgICAgICAgICAgIGl0ZW1Db3VudDogc25hcHNob3QuZGF0YSEubGVuZ3RoLAogICAgICAgICAgICBpdGVtQnVpbGRlcjogKGNvbnRleHQsIGluZGV4KSB7CiAgICAgICAgICAgICAgcmV0dXJuIExpc3RUaWxlKAogICAgICAgICAgICAgICAgdGl0bGU6IFRleHQoc25hcHNob3QuZGF0YSFbaW5kZXhdLnRpdGxlKSwKICAgICAgICAgICAgICAgIHN1YnRpdGxlOiBUZXh0KHNuYXBzaG90LmRhdGEhW2luZGV4XS5ib2R5KSwKICAgICAgICAgICAgICApOwogICAgICAgICAgICB9LAogICAgICAgICAgKTsKICAgICAgICB9CiAgICAgIH0sCiAgICApOwogIH0KfQoKY2xhc3MgUG9zdCB7CiAgZmluYWwgaW50IGlkOwogIGZpbmFsIFN0cmluZyB0aXRsZTsKICBmaW5hbCBTdHJpbmcgYm9keTsKCiAgUG9zdCh7cmVxdWlyZWQgdGhpcy5pZCwgcmVxdWlyZWQgdGhpcy50aXRsZSwgcmVxdWlyZWQgdGhpcy5ib2R5fSk7CgogIGZhY3RvcnkgUG9zdC5mcm9tSnNvbihNYXA8U3RyaW5nLCBkeW5hbWljPiBqc29uKSB7CiAgICByZXR1cm4gUG9zdCgKICAgICAgaWQ6IGpzb25bJ2lkJ10sCiAgICAgIHRpdGxlOiBqc29uWyd0aXRsZSddLAogICAgICBib2R5OiBqc29uWydib2R5J10sCiAgICApOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() =&gt; runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Lista de Publicaciones'),
+        ),
+        body: PostsList(),
+      ),
+    );
+  }
+}
+
+class PostsList extends StatefulWidget {
+  @override
+  _PostsListState createState() =&gt; _PostsListState();
+}
+
+class _PostsListState extends State&lt;PostsList&gt; {
+  Future&lt;List&lt;Post&gt;&gt; fetchPosts() async {
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/posts'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((post) =&gt; Post.fromJson(post)).toList();
+    } else {
+      throw Exception('Error al obtener publicaciones');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder&lt;List&lt;Post&gt;&gt;(
+      future: fetchPosts(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(snapshot.data![index].title),
+                subtitle: Text(snapshot.data![index].body),
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+}
+
+class Post {
+  final int id;
+  final String title;
+  final String body;
+
+  Post({required this.id, required this.title, required this.body});
+
+  factory Post.fromJson(Map&lt;String, dynamic&gt; json) {
+    return Post(
+      id: json['id'],
+      title: json['title'],
+      body: json['body'],
+    );
+  }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>fetchPosts Function</strong>: Realiza una solicitud GET para obtener una lista de publicaciones y las convierte en una lista de objetos <code>Post</code>.</li>
+<li><strong>Post Class</strong>: Define una clase <code>Post</code> con un método <code>fromJson</code> para convertir JSON en un objeto <code>Post</code>.</li>
+<li><strong>FutureBuilder</strong>: Utiliza <code>FutureBuilder</code> para manejar la solicitud asíncrona y mostrar la lista de publicaciones.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una aplicación Flutter que obtenga una lista de usuarios desde la API <code>https://jsonplaceholder.typicode.com/users</code> y los muestre en una lista. Cada elemento de la lista debe mostrar el nombre y el correo electrónico del usuario.</p>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7CmltcG9ydCAncGFja2FnZTpodHRwL2h0dHAuZGFydCcgYXMgaHR0cDsKaW1wb3J0ICdkYXJ0OmNvbnZlcnQnOwoKdm9pZCBtYWluKCkgPT4gcnVuQXBwKE15QXBwKCkpOwoKY2xhc3MgTXlBcHAgZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIEBvdmVycmlkZQogIFdpZGdldCBidWlsZChCdWlsZENvbnRleHQgY29udGV4dCkgewogICAgcmV0dXJuIE1hdGVyaWFsQXBwKAogICAgICBob21lOiBTY2FmZm9sZCgKICAgICAgICBhcHBCYXI6IEFwcEJhcigKICAgICAgICAgIHRpdGxlOiBUZXh0KCdMaXN0YSBkZSBVc3VhcmlvcycpLAogICAgICAgICksCiAgICAgICAgYm9keTogVXNlcnNMaXN0KCksCiAgICAgICksCiAgICApOwogIH0KfQoKY2xhc3MgVXNlcnNMaXN0IGV4dGVuZHMgU3RhdGVmdWxXaWRnZXQgewogIEBvdmVycmlkZQogIF9Vc2Vyc0xpc3RTdGF0ZSBjcmVhdGVTdGF0ZSgpID0+IF9Vc2Vyc0xpc3RTdGF0ZSgpOwp9CgpjbGFzcyBfVXNlcnNMaXN0U3RhdGUgZXh0ZW5kcyBTdGF0ZTxVc2Vyc0xpc3Q+IHsKICBGdXR1cmU8TGlzdDxVc2VyPj4gZmV0Y2hVc2VycygpIGFzeW5jIHsKICAgIGZpbmFsIHJlc3BvbnNlID0gYXdhaXQgaHR0cC5nZXQoVXJpLnBhcnNlKCdodHRwczovL2pzb25wbGFjZWhvbGRlci50eXBpY29kZS5jb20vdXNlcnMnKSk7CgogICAgaWYgKHJlc3BvbnNlLnN0YXR1c0NvZGUgPT0gMjAwKSB7CiAgICAgIExpc3QganNvblJlc3BvbnNlID0ganNvbi5kZWNvZGUocmVzcG9uc2UuYm9keSk7CiAgICAgIHJldHVybiBqc29uUmVzcG9uc2UubWFwKCh1c2VyKSA9PiBVc2VyLmZyb21Kc29uKHVzZXIpKS50b0xpc3QoKTsKICAgIH0gZWxzZSB7CiAgICAgIHRocm93IEV4Y2VwdGlvbignRXJyb3IgYWwgb2J0ZW5lciB1c3VhcmlvcycpOwogICAgfQogIH0KCiAgQG92ZXJyaWRlCiAgV2lkZ2V0IGJ1aWxkKEJ1aWxkQ29udGV4dCBjb250ZXh0KSB7CiAgICByZXR1cm4gRnV0dXJlQnVpbGRlcjxMaXN0PFVzZXI+PigKICAgICAgZnV0dXJlOiBmZXRjaFVzZXJzKCksCiAgICAgIGJ1aWxkZXI6IChjb250ZXh0LCBzbmFwc2hvdCkgewogICAgICAgIGlmIChzbmFwc2hvdC5jb25uZWN0aW9uU3RhdGUgPT0gQ29ubmVjdGlvblN0YXRlLndhaXRpbmcpIHsKICAgICAgICAgIHJldHVybiBDaXJjdWxhclByb2dyZXNzSW5kaWNhdG9yKCk7CiAgICAgICAgfSBlbHNlIGlmIChzbmFwc2hvdC5oYXNFcnJvcikgewogICAgICAgICAgcmV0dXJuIFRleHQoJ0Vycm9yOiAke3NuYXBzaG90LmVycm9yfScpOwogICAgICAgIH0gZWxzZSB7CiAgICAgICAgICByZXR1cm4gTGlzdFZpZXcuYnVpbGRlcigKICAgICAgICAgICAgaXRlbUNvdW50OiBzbmFwc2hvdC5kYXRhIS5sZW5ndGgsCiAgICAgICAgICAgIGl0ZW1CdWlsZGVyOiAoY29udGV4dCwgaW5kZXgpIHsKICAgICAgICAgICAgICByZXR1cm4gTGlzdFRpbGUoCiAgICAgICAgICAgICAgICB0aXRsZTogVGV4dChzbmFwc2hvdC5kYXRhIVtpbmRleF0ubmFtZSksCiAgICAgICAgICAgICAgICBzdWJ0aXRsZTogVGV4dChzbmFwc2hvdC5kYXRhIVtpbmRleF0uZW1haWwpLAogICAgICAgICAgICAgICk7CiAgICAgICAgICAgIH0sCiAgICAgICAgICApOwogICAgICAgIH0KICAgICAgfSwKICAgICk7CiAgfQp9CgpjbGFzcyBVc2VyIHsKICBmaW5hbCBpbnQgaWQ7CiAgZmluYWwgU3RyaW5nIG5hbWU7CiAgZmluYWwgU3RyaW5nIGVtYWlsOwoKICBVc2VyKHtyZXF1aXJlZCB0aGlzLmlkLCByZXF1aXJlZCB0aGlzLm5hbWUsIHJlcXVpcmVkIHRoaXMuZW1haWx9KTsKCiAgZmFjdG9yeSBVc2VyLmZyb21Kc29uKE1hcDxTdHJpbmcsIGR5bmFtaWM+IGpzb24pIHsKICAgIHJldHVybiBVc2VyKAogICAgICBpZDoganNvblsnaWQnXSwKICAgICAgbmFtZToganNvblsnbmFtZSddLAogICAgICBlbWFpbDoganNvblsnZW1haWwnXSwKICAgICk7CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
+void main() =&gt; runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Lista de Usuarios'),
+        ),
+        body: UsersList(),
+      ),
+    );
+  }
+}
+
+class UsersList extends StatefulWidget {
+  @override
+  _UsersListState createState() =&gt; _UsersListState();
+}
+
+class _UsersListState extends State&lt;UsersList&gt; {
+  Future&lt;List&lt;User&gt;&gt; fetchUsers() async {
+    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/users'));
+
+    if (response.statusCode == 200) {
+      List jsonResponse = json.decode(response.body);
+      return jsonResponse.map((user) =&gt; User.fromJson(user)).toList();
+    } else {
+      throw Exception('Error al obtener usuarios');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder&lt;List&lt;User&gt;&gt;(
+      future: fetchUsers(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          return ListView.builder(
+            itemCount: snapshot.data!.length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Text(snapshot.data![index].name),
+                subtitle: Text(snapshot.data![index].email),
+              );
+            },
+          );
+        }
+      },
+    );
+  }
+}
+
+class User {
+  final int id;
+  final String name;
+  final String email;
+
+  User({required this.id, required this.name, required this.email});
+
+  factory User.fromJson(Map&lt;String, dynamic&gt; json) {
+    return User(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+    );
+  }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>fetchUsers Function</strong>: Realiza una solicitud GET para obtener una lista de usuarios y las convierte en una lista de objetos <code>User</code>.</li>
+<li><strong>User Class</strong>: Define una clase <code>User</code> con un método <code>fromJson</code> para convertir JSON en un objeto <code>User</code>.</li>
+<li><strong>FutureBuilder</strong>: Utiliza <code>FutureBuilder</code> para manejar la solicitud asíncrona y mostrar la lista de usuarios.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido cómo obtener datos de Internet en una aplicación Flutter utilizando el paquete <code>http</code>. Hemos cubierto cómo realizar solicitudes GET, manejar respuestas HTTP y mostrar los datos obtenidos en la interfaz de usuario. Además, hemos implementado un ejemplo práctico y un ejercicio para reforzar los conceptos aprendidos.</p>
+<p>En la próxima lección, aprenderemos cómo parsear datos JSON obtenidos de una API.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-05-deep-linking' title="Deep Linking">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-02-parsing-json-data' title="Parseo de Datos JSON">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desplegando Aplicaciones Django</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/05-01-deploying-django-applications" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/05-01-deploying-django-applications" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/05-01-deploying-django-applications" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/django/05-01-deploying-django-applications" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/django/05-01-deploying-django-applications" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-05-performance-optimization' title="Optimización del Rendimiento">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Desplegando Aplicaciones Django</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-security-best-practices' title="Mejores Prácticas de Seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Desplegar una aplicación Django implica moverla desde tu entorno de desarrollo local a un servidor donde pueda ser accesible por los usuarios. Este proceso puede parecer intimidante al principio, pero con una comprensión clara de los pasos involucrados, se puede manejar de manera efectiva. En esta sección, cubriremos los conceptos básicos y avanzados del despliegue de aplicaciones Django.</p>
+</div><h1>1. Preparativos para el Despliegue</h1>
+<div class='content'><p>Antes de desplegar tu aplicación, hay varios pasos preliminares que debes seguir:</p>
+</div><h2>1.1. Configuración del Entorno de Producción</h2>
+<div class='content'><ul>
+<li><strong>Configuración de <code>settings.py</code></strong>: Django utiliza un archivo de configuración (<code>settings.py</code>) que debe ser ajustado para el entorno de producción.
+<ul>
+<li><strong>DEBUG</strong>: Asegúrate de que <code>DEBUG</code> esté configurado en <code>False</code>.</li>
+<li><strong>ALLOWED_HOSTS</strong>: Define los dominios y direcciones IP que pueden servir tu aplicación.</li>
+<li><strong>DATABASES</strong>: Configura la base de datos de producción.</li>
+<li><strong>STATIC_ROOT</strong>: Define el directorio donde se recopilarán los archivos estáticos.</li>
+</ul>
+</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBzZXR0aW5ncy5weQpERUJVRyA9IEZhbHNlCkFMTE9XRURfSE9TVFMgPSBbJ3R1LWRvbWluaW8uY29tJywgJ3d3dy50dS1kb21pbmlvLmNvbSddCgpEQVRBQkFTRVMgPSB7CiAgICAnZGVmYXVsdCc6IHsKICAgICAgICAnRU5HSU5FJzogJ2RqYW5nby5kYi5iYWNrZW5kcy5wb3N0Z3Jlc3FsJywKICAgICAgICAnTkFNRSc6ICdub21icmVfZGVfdHVfYmFzZV9kZV9kYXRvcycsCiAgICAgICAgJ1VTRVInOiAndHVfdXN1YXJpbycsCiAgICAgICAgJ1BBU1NXT1JEJzogJ3R1X2NvbnRyYXNlw7FhJywKICAgICAgICAnSE9TVCc6ICdsb2NhbGhvc3QnLAogICAgICAgICdQT1JUJzogJzU0MzInLAogICAgfQp9CgpTVEFUSUNfUk9PVCA9IG9zLnBhdGguam9pbihCQVNFX0RJUiwgJ3N0YXRpY2ZpbGVzJyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># settings.py
+DEBUG = False
+ALLOWED_HOSTS = ['tu-dominio.com', 'www.tu-dominio.com']
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'nombre_de_tu_base_de_datos',
+        'USER': 'tu_usuario',
+        'PASSWORD': 'tu_contrase&ntilde;a',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')</pre></div><div class='content'></div><h2>1.2. Recolección de Archivos Estáticos</h2>
+<div class='content'><ul>
+<li><strong>Comando <code>collectstatic</code></strong>: Este comando recopila todos los archivos estáticos en el directorio definido por <code>STATIC_ROOT</code>.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uIG1hbmFnZS5weSBjb2xsZWN0c3RhdGlj"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python manage.py collectstatic</pre></div><div class='content'></div><h2>1.3. Configuración de Variables de Entorno</h2>
+<div class='content'><ul>
+<li><strong>Variables Sensibles</strong>: Utiliza variables de entorno para manejar información sensible como claves secretas y configuraciones de base de datos.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXhwb3J0IERKQU5HT19TRUNSRVRfS0VZPSd0dV9jbGF2ZV9zZWNyZXRhJwpleHBvcnQgREpBTkdPX1NFVFRJTkdTX01PRFVMRT0ndHVfcHJveWVjdG8uc2V0dGluZ3Mn"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>export DJANGO_SECRET_KEY='tu_clave_secreta'
+export DJANGO_SETTINGS_MODULE='tu_proyecto.settings'</pre></div><div class='content'></div><h1>2. Elección del Servidor</h1>
+<div class='content'><p>Existen varias opciones para desplegar aplicaciones Django. Aquí cubriremos dos de las más populares: <strong>Heroku</strong> y <strong>DigitalOcean</strong>.</p>
+</div><h2>2.1. Despliegue en Heroku</h2>
+<div class='content'><p>Heroku es una plataforma como servicio (PaaS) que facilita el despliegue de aplicaciones web.</p>
+<h4>Pasos para Desplegar en Heroku</h4>
+<ol>
+<li><strong>Instalar Heroku CLI</strong>: Descarga e instala la herramienta de línea de comandos de Heroku.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCBodHRwczovL2NsaS1hc3NldHMuaGVyb2t1LmNvbS9pbnN0YWxsLnNoIHwgc2g="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl https://cli-assets.heroku.com/install.sh | sh</pre></div><div class='content'><ol start="2">
+<li><strong>Iniciar Sesión en Heroku</strong>: Autentícate en Heroku.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGxvZ2lu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku login</pre></div><div class='content'><ol start="3">
+<li><strong>Crear un Nuevo Proyecto en Heroku</strong>: Crea una nueva aplicación en Heroku.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGNyZWF0ZSBub21icmUtZGUtdHUtYXBsaWNhY2lvbg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku create nombre-de-tu-aplicacion</pre></div><div class='content'><ol start="4">
+<li><strong>Configurar el Archivo <code>Procfile</code></strong>: Define el comando que Heroku debe usar para ejecutar tu aplicación.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2ViOiBndW5pY29ybiB0dV9wcm95ZWN0by53c2dpIC0tbG9nLWZpbGUgLQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>web: gunicorn tu_proyecto.wsgi --log-file -</pre></div><div class='content'><ol start="5">
+<li><strong>Configurar el Archivo <code>requirements.txt</code></strong>: Asegúrate de que todas las dependencias estén listadas.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGZyZWV6ZSA+IHJlcXVpcmVtZW50cy50eHQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip freeze &gt; requirements.txt</pre></div><div class='content'><ol start="6">
+<li><strong>Configurar el Archivo <code>runtime.txt</code></strong>: Especifica la versión de Python.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHl0aG9uLTMuOS4x"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>python-3.9.1</pre></div><div class='content'><ol start="7">
+<li><strong>Desplegar la Aplicación</strong>: Usa Git para desplegar tu aplicación en Heroku.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGFkZCAuCmdpdCBjb21taXQgLW0gIlByZXBhcmFuZG8gcGFyYSBkZXNwbGllZ3VlIGVuIEhlcm9rdSIKZ2l0IHB1c2ggaGVyb2t1IG1hc3Rlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git add .
+git commit -m &quot;Preparando para despliegue en Heroku&quot;
+git push heroku master</pre></div><div class='content'><ol start="8">
+<li><strong>Migrar la Base de Datos</strong>: Ejecuta las migraciones en Heroku.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IHJ1biBweXRob24gbWFuYWdlLnB5IG1pZ3JhdGU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku run python manage.py migrate</pre></div><div class='content'></div><h2>2.2. Despliegue en DigitalOcean</h2>
+<div class='content'><p>DigitalOcean es un proveedor de infraestructura en la nube que ofrece servidores virtuales (droplets).</p>
+<h4>Pasos para Desplegar en DigitalOcean</h4>
+<ol>
+<li>
+<p><strong>Crear un Droplet</strong>: Inicia sesión en DigitalOcean y crea un nuevo droplet con Ubuntu.</p>
+</li>
+<li>
+<p><strong>Acceder al Droplet</strong>: Usa SSH para acceder a tu droplet.</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3NoIHJvb3RAdHVfZHJvcGxldF9pcA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ssh root@tu_droplet_ip</pre></div><div class='content'><ol start="3">
+<li><strong>Instalar Dependencias</strong>: Instala Python, pip, y otros paquetes necesarios.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXB0IHVwZGF0ZQphcHQgaW5zdGFsbCBweXRob24zLXBpcCBweXRob24zLWRldiBsaWJwcS1kZXYgbmdpbng="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apt update
+apt install python3-pip python3-dev libpq-dev nginx</pre></div><div class='content'><ol start="4">
+<li><strong>Configurar el Entorno Virtual</strong>: Crea y activa un entorno virtual.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwMyBpbnN0YWxsIHZpcnR1YWxlbnYKdmlydHVhbGVudiB2ZW52CnNvdXJjZSB2ZW52L2Jpbi9hY3RpdmF0ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip3 install virtualenv
+virtualenv venv
+source venv/bin/activate</pre></div><div class='content'><ol start="5">
+<li><strong>Instalar Dependencias del Proyecto</strong>: Instala las dependencias listadas en <code>requirements.txt</code>.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgLXIgcmVxdWlyZW1lbnRzLnR4dA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install -r requirements.txt</pre></div><div class='content'><ol start="6">
+<li><strong>Configurar Gunicorn</strong>: Instala y configura Gunicorn para servir tu aplicación.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgZ3VuaWNvcm4KZ3VuaWNvcm4gLS13b3JrZXJzIDMgdHVfcHJveWVjdG8ud3NnaTphcHBsaWNhdGlvbg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install gunicorn
+gunicorn --workers 3 tu_proyecto.wsgi:application</pre></div><div class='content'><ol start="7">
+<li><strong>Configurar Nginx</strong>: Configura Nginx para servir tu aplicación.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIHR1X2RvbWluaW8uY29tIHd3dy50dV9kb21pbmlvLmNvbTsKCiAgICBsb2NhdGlvbiAvIHsKICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly8xMjcuMC4wLjE6ODAwMDsKICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVJlYWwtSVAgJHJlbW90ZV9hZGRyOwogICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1Gb3J3YXJkZWQtRm9yICRwcm94eV9hZGRfeF9mb3J3YXJkZWRfZm9yOwogICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1Gb3J3YXJkZWQtUHJvdG8gJHNjaGVtZTsKICAgIH0KCiAgICBsb2NhdGlvbiAvc3RhdGljLyB7CiAgICAgICAgYWxpYXMgL3J1dGEvYS90dS9wcm95ZWN0by9zdGF0aWNmaWxlcy87CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name tu_dominio.com www.tu_dominio.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        alias /ruta/a/tu/proyecto/staticfiles/;
+    }
+}</pre></div><div class='content'><ol start="8">
+<li><strong>Reiniciar Nginx</strong>: Aplica los cambios y reinicia Nginx.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3lzdGVtY3RsIHJlc3RhcnQgbmdpbng="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>systemctl restart nginx</pre></div><div class='content'></div><h1>3. Conclusión</h1>
+<div class='content'><p>Desplegar una aplicación Django puede parecer complejo, pero siguiendo estos pasos puedes hacerlo de manera efectiva. Ya sea que elijas Heroku por su simplicidad o DigitalOcean por su flexibilidad, entender los fundamentos del despliegue te permitirá llevar tus aplicaciones Django a producción con confianza.</p>
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li><strong>Configuración del Entorno de Producción</strong>: Ajusta <code>settings.py</code>, recolecta archivos estáticos y configura variables de entorno.</li>
+<li><strong>Elección del Servidor</strong>: Heroku y DigitalOcean son opciones populares con diferentes ventajas.</li>
+<li><strong>Pasos de Despliegue</strong>: Sigue los pasos específicos para cada plataforma para desplegar tu aplicación.</li>
+</ul>
+<p>Con estos conocimientos, estás listo para desplegar tu aplicación Django y hacerla accesible al mundo. En el próximo tema, exploraremos las mejores prácticas de seguridad para mantener tu aplicación segura en producción.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-05-performance-optimization' title="Optimización del Rendimiento">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-02-security-best-practices' title="Mejores Prácticas de Seguridad">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

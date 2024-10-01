@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estado Remoto</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/terraform/03-03-remote-state" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/terraform/03-03-remote-state" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/terraform/03-03-remote-state" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/terraform/03-03-remote-state" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/terraform/03-03-remote-state" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-state-files' title="Archivos de Estado">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Estado Remoto</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-state-locking' title="Bloqueo de Estado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre el estado remoto en Terraform, una funcionalidad crucial para gestionar el estado de nuestra infraestructura de manera segura y colaborativa. El estado remoto permite almacenar el archivo de estado de Terraform en una ubicación centralizada, lo que facilita el trabajo en equipo y mejora la seguridad y la integridad del estado.</p>
+</div><h1>¿Qué es el Estado Remoto?</h1>
+<div class='content'><p>El estado remoto es una forma de almacenar el archivo de estado de Terraform en un backend remoto en lugar de en el sistema de archivos local. Esto es especialmente útil en entornos de trabajo en equipo, donde múltiples usuarios necesitan acceder y modificar la infraestructura.</p>
+</div><h2>Ventajas del Estado Remoto</h2>
+<div class='content'><ol>
+<li><strong>Colaboración</strong>: Permite que varios usuarios trabajen en la misma infraestructura sin conflictos.</li>
+<li><strong>Seguridad</strong>: Almacenar el estado en un backend seguro reduce el riesgo de pérdida o corrupción del archivo de estado.</li>
+<li><strong>Integridad</strong>: Asegura que todos los usuarios trabajen con la misma versión del estado.</li>
+<li><strong>Automatización</strong>: Facilita la integración con sistemas de CI/CD y otras herramientas de automatización.</li>
+</ol>
+</div><h1>Configuración del Estado Remoto</h1>
+<div class='content'><p>Para configurar el estado remoto, necesitamos especificar un backend en el archivo de configuración de Terraform. Los backends más comunes incluyen Amazon S3, Google Cloud Storage, Azure Blob Storage, y HashiCorp Consul.</p>
+</div><h2>Ejemplo: Configuración de Estado Remoto con Amazon S3</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo de cómo configurar el estado remoto utilizando Amazon S3.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ICAgICAgICAgPSAibWktYnVja2V0LXRlcnJhZm9ybSIKICAgIGtleSAgICAgICAgICAgID0gInJ1dGEvYWwvYXJjaGl2by90ZXJyYWZvcm0udGZzdGF0ZSIKICAgIHJlZ2lvbiAgICAgICAgID0gInVzLXdlc3QtMiIKICAgIGVuY3J5cHQgICAgICAgID0gdHJ1ZQogICAgZHluYW1vZGJfdGFibGUgPSAibWktdGFibGEtZHluYW1vZGIiCiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;mi-bucket-terraform&quot;
+    key            = &quot;ruta/al/archivo/terraform.tfstate&quot;
+    region         = &quot;us-west-2&quot;
+    encrypt        = true
+    dynamodb_table = &quot;mi-tabla-dynamodb&quot;
+  }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>bucket</code>: El nombre del bucket de S3 donde se almacenará el archivo de estado.</li>
+<li><code>key</code>: La ruta dentro del bucket donde se almacenará el archivo de estado.</li>
+<li><code>region</code>: La región de AWS donde se encuentra el bucket de S3.</li>
+<li><code>encrypt</code>: Indica si el archivo de estado debe ser cifrado.</li>
+<li><code>dynamodb_table</code>: (Opcional) El nombre de la tabla de DynamoDB utilizada para el bloqueo de estado.</li>
+</ul>
+</div><h2>Pasos para Configurar el Estado Remoto</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un Bucket de S3</strong>:</p>
+<ul>
+<li>Accede a la consola de AWS S3 y crea un nuevo bucket.</li>
+<li>Asegúrate de habilitar el cifrado si es necesario.</li>
+</ul>
+</li>
+<li>
+<p><strong>Crear una Tabla de DynamoDB (Opcional)</strong>:</p>
+<ul>
+<li>Accede a la consola de AWS DynamoDB y crea una nueva tabla.</li>
+<li>Utiliza <code>LockID</code> como la clave primaria.</li>
+</ul>
+</li>
+<li>
+<p><strong>Actualizar el Archivo de Configuración de Terraform</strong>:</p>
+<ul>
+<li>Añade el bloque <code>backend</code> en el archivo <code>main.tf</code> o en un archivo de configuración separado.</li>
+</ul>
+</li>
+<li>
+<p><strong>Inicializar el Backend</strong>:</p>
+<ul>
+<li>Ejecuta el comando <code>terraform init</code> para inicializar el backend remoto.</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIGluaXQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform init</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configuración de Estado Remoto con S3</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un Bucket de S3</strong>:</p>
+<ul>
+<li>Nombre del bucket: <code>mi-bucket-terraform</code></li>
+<li>Región: <code>us-west-2</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Crear una Tabla de DynamoDB</strong>:</p>
+<ul>
+<li>Nombre de la tabla: <code>mi-tabla-dynamodb</code></li>
+<li>Clave primaria: <code>LockID</code></li>
+</ul>
+</li>
+<li>
+<p><strong>Actualizar el Archivo de Configuración de Terraform</strong>:</p>
+<ul>
+<li>Añade el siguiente bloque en tu archivo <code>main.tf</code>:</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dGVycmFmb3JtIHsKICBiYWNrZW5kICJzMyIgewogICAgYnVja2V0ICAgICAgICAgPSAibWktYnVja2V0LXRlcnJhZm9ybSIKICAgIGtleSAgICAgICAgICAgID0gInJ1dGEvYWwvYXJjaGl2by90ZXJyYWZvcm0udGZzdGF0ZSIKICAgIHJlZ2lvbiAgICAgICAgID0gInVzLXdlc3QtMiIKICAgIGVuY3J5cHQgICAgICAgID0gdHJ1ZQogICAgZHluYW1vZGJfdGFibGUgPSAibWktdGFibGEtZHluYW1vZGIiCiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>terraform {
+  backend &quot;s3&quot; {
+    bucket         = &quot;mi-bucket-terraform&quot;
+    key            = &quot;ruta/al/archivo/terraform.tfstate&quot;
+    region         = &quot;us-west-2&quot;
+    encrypt        = true
+    dynamodb_table = &quot;mi-tabla-dynamodb&quot;
+  }
+}</pre></div><div class='content'><ol start="4">
+<li><strong>Inicializar el Backend</strong>:
+<ul>
+<li>Ejecuta el comando <code>terraform init</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciBlbCBidWNrZXQgZGUgUzMKYXdzIHMzYXBpIGNyZWF0ZS1idWNrZXQgLS1idWNrZXQgbWktYnVja2V0LXRlcnJhZm9ybSAtLXJlZ2lvbiB1cy13ZXN0LTIKCiMgQ3JlYXIgbGEgdGFibGEgZGUgRHluYW1vREIKYXdzIGR5bmFtb2RiIGNyZWF0ZS10YWJsZSBcCiAgICAtLXRhYmxlLW5hbWUgbWktdGFibGEtZHluYW1vZGIgXAogICAgLS1hdHRyaWJ1dGUtZGVmaW5pdGlvbnMgQXR0cmlidXRlTmFtZT1Mb2NrSUQsQXR0cmlidXRlVHlwZT1TIFwKICAgIC0ta2V5LXNjaGVtYSBBdHRyaWJ1dGVOYW1lPUxvY2tJRCxLZXlUeXBlPUhBU0ggXAogICAgLS1wcm92aXNpb25lZC10aHJvdWdocHV0IFJlYWRDYXBhY2l0eVVuaXRzPTUsV3JpdGVDYXBhY2l0eVVuaXRzPTUKCiMgSW5pY2lhbGl6YXIgZWwgYmFja2VuZAp0ZXJyYWZvcm0gaW5pdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear el bucket de S3
+aws s3api create-bucket --bucket mi-bucket-terraform --region us-west-2
+
+# Crear la tabla de DynamoDB
+aws dynamodb create-table \
+    --table-name mi-tabla-dynamodb \
+    --attribute-definitions AttributeName=LockID,AttributeType=S \
+    --key-schema AttributeName=LockID,KeyType=HASH \
+    --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5
+
+# Inicializar el backend
+terraform init</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El estado remoto es una funcionalidad esencial para gestionar la infraestructura de manera colaborativa y segura. Al almacenar el archivo de estado en un backend remoto, podemos asegurar la integridad y la seguridad de nuestra infraestructura, facilitando al mismo tiempo la colaboración entre múltiples usuarios. En el siguiente tema, exploraremos el bloqueo de estado, una característica que complementa el estado remoto para evitar conflictos durante las operaciones de Terraform.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-state-files' title="Archivos de Estado">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-state-locking' title="Bloqueo de Estado">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

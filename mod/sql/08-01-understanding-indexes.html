@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entendiendo los índices</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/08-01-understanding-indexes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/08-01-understanding-indexes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/08-01-understanding-indexes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sql/08-01-understanding-indexes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sql/08-01-understanding-indexes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-using-subqueries-select-from-where' title="Usando subconsultas en cláusulas SELECT, FROM y WHERE">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Entendiendo los índices</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-creating-managing-indexes' title="Creación y gestión de índices">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='index'></div><h2>Introducción</h2>
+<div class='index'><p>Los índices en SQL son estructuras de datos que mejoran la velocidad de las operaciones de consulta en una base de datos. Funcionan de manera similar a los índices en un libro, permitiendo un acceso rápido a los datos sin tener que escanear toda la tabla.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='index'><ol>
+<li><strong>Índice</strong>: Una estructura de datos que mejora la velocidad de recuperación de datos.</li>
+<li><strong>Clave de índice</strong>: La columna o columnas en las que se basa el índice.</li>
+<li><strong>Árbol B</strong>: Una estructura de datos comúnmente utilizada para implementar índices.</li>
+<li><strong>Índice único</strong>: Un índice que garantiza la unicidad de los valores en la columna indexada.</li>
+<li><strong>Índice compuesto</strong>: Un índice que incluye más de una columna.</li>
+</ol>
+</div><h2>Tipos de Índices</h2>
+<div class='index'><table>
+<thead>
+<tr>
+<th>Tipo de Índice</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Índice Primario</td>
+<td>Un índice único que se crea automáticamente cuando se define una clave primaria.</td>
+</tr>
+<tr>
+<td>Índice Único</td>
+<td>Garantiza que todos los valores en la columna indexada sean únicos.</td>
+</tr>
+<tr>
+<td>Índice No Único</td>
+<td>Permite valores duplicados en la columna indexada.</td>
+</tr>
+<tr>
+<td>Índice Compuesto</td>
+<td>Un índice que incluye más de una columna.</td>
+</tr>
+<tr>
+<td>Índice de Texto Completo</td>
+<td>Utilizado para búsquedas de texto en grandes volúmenes de datos textuales.</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ventajas de los Índices</h2>
+<div class='index'><ul>
+<li><strong>Mejora del rendimiento de las consultas</strong>: Los índices permiten un acceso más rápido a los datos.</li>
+<li><strong>Aceleración de las búsquedas</strong>: Especialmente útil en tablas grandes.</li>
+<li><strong>Optimización de las operaciones de JOIN</strong>: Los índices pueden mejorar el rendimiento de las operaciones JOIN.</li>
+</ul>
+</div><h2>Desventajas de los Índices</h2>
+<div class='index'><ul>
+<li><strong>Espacio de almacenamiento</strong>: Los índices ocupan espacio adicional en la base de datos.</li>
+<li><strong>Coste de mantenimiento</strong>: Las operaciones de inserción, actualización y eliminación pueden ser más lentas debido a la necesidad de actualizar los índices.</li>
+</ul>
+</div><h2>Ejemplo Práctico</h2>
+<div class='index'></div><h2>Creación de un Índice</h2>
+<div class='index'><p>Supongamos que tenemos una tabla <code>empleados</code> con las siguientes columnas: <code>id</code>, <code>nombre</code>, <code>departamento</code>, <code>salario</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGVtcGxlYWRvcyAoCiAgICBpZCBJTlQgUFJJTUFSWSBLRVksCiAgICBub21icmUgVkFSQ0hBUigxMDApLAogICAgZGVwYXJ0YW1lbnRvIFZBUkNIQVIoNTApLAogICAgc2FsYXJpbyBERUNJTUFMKDEwLCAyKQopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE empleados (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    departamento VARCHAR(50),
+    salario DECIMAL(10, 2)
+);</pre></div><div class='index'><p>Para mejorar la velocidad de las consultas que buscan empleados por <code>departamento</code>, podemos crear un índice en la columna <code>departamento</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXBhcnRhbWVudG8gT04gZW1wbGVhZG9zKGRlcGFydGFtZW50byk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_departamento ON empleados(departamento);</pre></div><div class='index'></div><h2>Uso del Índice en Consultas</h2>
+<div class='index'><p>Ahora, cuando ejecutamos una consulta que filtra por <code>departamento</code>, el índice <code>idx_departamento</code> se utilizará para acelerar la búsqueda.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBlbXBsZWFkb3MgV0hFUkUgZGVwYXJ0YW1lbnRvID0gJ1ZlbnRhcyc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM empleados WHERE departamento = 'Ventas';</pre></div><div class='index'></div><h2>Índice Compuesto</h2>
+<div class='index'><p>Si a menudo realizamos consultas que filtran por <code>departamento</code> y <code>salario</code>, podemos crear un índice compuesto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXB0b19zYWxhcmlvIE9OIGVtcGxlYWRvcyhkZXBhcnRhbWVudG8sIHNhbGFyaW8pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_depto_salario ON empleados(departamento, salario);</pre></div><div class='index'><p>Este índice mejorará el rendimiento de las consultas que utilizan ambas columnas en la cláusula <code>WHERE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBlbXBsZWFkb3MgV0hFUkUgZGVwYXJ0YW1lbnRvID0gJ1ZlbnRhcycgQU5EIHNhbGFyaW8gPiA1MDAwMDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM empleados WHERE departamento = 'Ventas' AND salario &gt; 50000;</pre></div><div class='index'></div><h2>Ejercicio Práctico</h2>
+<div class='index'></div><h2>Ejercicio 1: Creación de Índices</h2>
+<div class='index'><ol>
+<li>Crea una tabla llamada <code>productos</code> con las siguientes columnas: <code>id</code>, <code>nombre</code>, <code>categoria</code>, <code>precio</code>.</li>
+<li>Inserta algunos datos en la tabla <code>productos</code>.</li>
+<li>Crea un índice en la columna <code>categoria</code>.</li>
+<li>Realiza una consulta que filtre los productos por <code>categoria</code> y observa el rendimiento.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gUGFzbyAxOiBDcmVhciBsYSB0YWJsYSBwcm9kdWN0b3MKQ1JFQVRFIFRBQkxFIHByb2R1Y3RvcyAoCiAgICBpZCBJTlQgUFJJTUFSWSBLRVksCiAgICBub21icmUgVkFSQ0hBUigxMDApLAogICAgY2F0ZWdvcmlhIFZBUkNIQVIoNTApLAogICAgcHJlY2lvIERFQ0lNQUwoMTAsIDIpCik7CgotLSBQYXNvIDI6IEluc2VydGFyIGRhdG9zIGVuIGxhIHRhYmxhIHByb2R1Y3RvcwpJTlNFUlQgSU5UTyBwcm9kdWN0b3MgKGlkLCBub21icmUsIGNhdGVnb3JpYSwgcHJlY2lvKSBWQUxVRVMKKDEsICdQcm9kdWN0byBBJywgJ0VsZWN0csOzbmljYScsIDI5OS45OSksCigyLCAnUHJvZHVjdG8gQicsICdFbGVjdHLDs25pY2EnLCAxOTkuOTkpLAooMywgJ1Byb2R1Y3RvIEMnLCAnSG9nYXInLCA5OS45OSksCig0LCAnUHJvZHVjdG8gRCcsICdIb2dhcicsIDQ5Ljk5KTsKCi0tIFBhc28gMzogQ3JlYXIgdW4gw61uZGljZSBlbiBsYSBjb2x1bW5hIGNhdGVnb3JpYQpDUkVBVEUgSU5ERVggaWR4X2NhdGVnb3JpYSBPTiBwcm9kdWN0b3MoY2F0ZWdvcmlhKTsKCi0tIFBhc28gNDogUmVhbGl6YXIgdW5hIGNvbnN1bHRhIHF1ZSBmaWx0cmUgcG9yIGNhdGVnb3JpYQpTRUxFQ1QgKiBGUk9NIHByb2R1Y3RvcyBXSEVSRSBjYXRlZ29yaWEgPSAnRWxlY3Ryw7NuaWNhJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Paso 1: Crear la tabla productos
+CREATE TABLE productos (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    categoria VARCHAR(50),
+    precio DECIMAL(10, 2)
+);
+
+-- Paso 2: Insertar datos en la tabla productos
+INSERT INTO productos (id, nombre, categoria, precio) VALUES
+(1, 'Producto A', 'Electr&oacute;nica', 299.99),
+(2, 'Producto B', 'Electr&oacute;nica', 199.99),
+(3, 'Producto C', 'Hogar', 99.99),
+(4, 'Producto D', 'Hogar', 49.99);
+
+-- Paso 3: Crear un &iacute;ndice en la columna categoria
+CREATE INDEX idx_categoria ON productos(categoria);
+
+-- Paso 4: Realizar una consulta que filtre por categoria
+SELECT * FROM productos WHERE categoria = 'Electr&oacute;nica';</pre></div><div class='index'></div><h2>Conclusión</h2>
+<div class='index'><p>Los índices son herramientas poderosas para mejorar el rendimiento de las consultas en SQL. Sin embargo, es importante usarlos con cuidado, ya que también pueden aumentar el coste de almacenamiento y mantenimiento. En el próximo tema, aprenderemos cómo crear y gestionar índices de manera efectiva.</p>
+<hr />
+<p>En el siguiente tema, &quot;Creación y gestión de índices&quot;, profundizaremos en cómo crear diferentes tipos de índices y cómo mantenerlos para asegurar un rendimiento óptimo de la base de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-using-subqueries-select-from-where' title="Usando subconsultas en cláusulas SELECT, FROM y WHERE">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-creating-managing-indexes' title="Creación y gestión de índices">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

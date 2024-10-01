@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Framebuffers y Renderbuffers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/open_gl/04-01-framebuffers-renderbuffers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/open_gl/04-01-framebuffers-renderbuffers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/open_gl/04-01-framebuffers-renderbuffers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/open_gl/04-01-framebuffers-renderbuffers" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/open_gl/04-01-framebuffers-renderbuffers" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-depth-stencil-testing' title="Pruebas de Profundidad y Plantilla">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Framebuffers y Renderbuffers</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-advanced-shading' title="Técnicas de Sombreado Avanzadas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, exploraremos los conceptos de Framebuffers y Renderbuffers en OpenGL. Estos son componentes esenciales para el renderizado avanzado, permitiendo técnicas como el renderizado fuera de pantalla, efectos de post-procesamiento y más.</p>
+</div><h1>¿Qué es un Framebuffer?</h1>
+<div class='content'><p>Un Framebuffer es un contenedor que puede tener múltiples tipos de buffers adjuntos, como un buffer de color, un buffer de profundidad y un buffer de plantilla. Los Framebuffers permiten renderizar a destinos diferentes de la pantalla principal, lo cual es útil para técnicas avanzadas de renderizado.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Framebuffer</strong>: Un objeto que contiene varios tipos de buffers.</li>
+<li><strong>Buffer de Color</strong>: Almacena los valores de color de los píxeles.</li>
+<li><strong>Buffer de Profundidad</strong>: Almacena la información de profundidad (z-buffer).</li>
+<li><strong>Buffer de Plantilla</strong>: Almacena información de plantilla para operaciones de stencil.</li>
+</ul>
+</div><h1>¿Qué es un Renderbuffer?</h1>
+<div class='content'><p>Un Renderbuffer es un tipo de almacenamiento de buffer que puede ser utilizado como un destino de renderizado. A diferencia de las texturas, los Renderbuffers no pueden ser leídos directamente en los shaders, pero son más eficientes para ciertos tipos de operaciones de renderizado.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Renderbuffer</strong>: Un objeto de almacenamiento de buffer optimizado para operaciones de renderizado.</li>
+<li><strong>Textura</strong>: Puede ser utilizada tanto para renderizado como para lectura en shaders.</li>
+</ul>
+</div><h1>Creación y Uso de Framebuffers</h1>
+<div class='content'></div><h2>Paso 1: Crear un Framebuffer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0x1aW50IGZyYW1lYnVmZmVyOwpnbEdlbkZyYW1lYnVmZmVycygxLCAmZnJhbWVidWZmZXIpOwpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgZnJhbWVidWZmZXIpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GLuint framebuffer;
+glGenFramebuffers(1, &amp;framebuffer);
+glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);</pre></div><div class='content'></div><h2>Paso 2: Crear un Renderbuffer de Color y Adjuntarlo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0x1aW50IGNvbG9yUmVuZGVyYnVmZmVyOwpnbEdlblJlbmRlcmJ1ZmZlcnMoMSwgJmNvbG9yUmVuZGVyYnVmZmVyKTsKZ2xCaW5kUmVuZGVyYnVmZmVyKEdMX1JFTkRFUkJVRkZFUiwgY29sb3JSZW5kZXJidWZmZXIpOwpnbFJlbmRlcmJ1ZmZlclN0b3JhZ2UoR0xfUkVOREVSQlVGRkVSLCBHTF9SR0I4LCB3aWR0aCwgaGVpZ2h0KTsKZ2xGcmFtZWJ1ZmZlclJlbmRlcmJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgR0xfQ09MT1JfQVRUQUNITUVOVDAsIEdMX1JFTkRFUkJVRkZFUiwgY29sb3JSZW5kZXJidWZmZXIpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GLuint colorRenderbuffer;
+glGenRenderbuffers(1, &amp;colorRenderbuffer);
+glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8, width, height);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);</pre></div><div class='content'></div><h2>Paso 3: Crear un Renderbuffer de Profundidad y Adjuntarlo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0x1aW50IGRlcHRoUmVuZGVyYnVmZmVyOwpnbEdlblJlbmRlcmJ1ZmZlcnMoMSwgJmRlcHRoUmVuZGVyYnVmZmVyKTsKZ2xCaW5kUmVuZGVyYnVmZmVyKEdMX1JFTkRFUkJVRkZFUiwgZGVwdGhSZW5kZXJidWZmZXIpOwpnbFJlbmRlcmJ1ZmZlclN0b3JhZ2UoR0xfUkVOREVSQlVGRkVSLCBHTF9ERVBUSF9DT01QT05FTlQyNCwgd2lkdGgsIGhlaWdodCk7CmdsRnJhbWVidWZmZXJSZW5kZXJidWZmZXIoR0xfRlJBTUVCVUZGRVIsIEdMX0RFUFRIX0FUVEFDSE1FTlQsIEdMX1JFTkRFUkJVRkZFUiwgZGVwdGhSZW5kZXJidWZmZXIpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GLuint depthRenderbuffer;
+glGenRenderbuffers(1, &amp;depthRenderbuffer);
+glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);</pre></div><div class='content'></div><h2>Paso 4: Verificar el Framebuffer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKGdsQ2hlY2tGcmFtZWJ1ZmZlclN0YXR1cyhHTF9GUkFNRUJVRkZFUikgIT0gR0xfRlJBTUVCVUZGRVJfQ09NUExFVEUpIHsKICAgIHN0ZDo6Y2VyciA8PCAiRXJyb3I6IEZyYW1lYnVmZmVyIGlzIG5vdCBjb21wbGV0ZSEiIDw8IHN0ZDo6ZW5kbDsKfQpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgMCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    std::cerr &lt;&lt; &quot;Error: Framebuffer is not complete!&quot; &lt;&lt; std::endl;
+}
+glBindFramebuffer(GL_FRAMEBUFFER, 0);</pre></div><div class='content'></div><h1>Ejemplo Completo</h1>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0x1aW50IGZyYW1lYnVmZmVyOwpnbEdlbkZyYW1lYnVmZmVycygxLCAmZnJhbWVidWZmZXIpOwpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgZnJhbWVidWZmZXIpOwoKLy8gQ3JlYXIgeSBhZGp1bnRhciB1biBSZW5kZXJidWZmZXIgZGUgQ29sb3IKR0x1aW50IGNvbG9yUmVuZGVyYnVmZmVyOwpnbEdlblJlbmRlcmJ1ZmZlcnMoMSwgJmNvbG9yUmVuZGVyYnVmZmVyKTsKZ2xCaW5kUmVuZGVyYnVmZmVyKEdMX1JFTkRFUkJVRkZFUiwgY29sb3JSZW5kZXJidWZmZXIpOwpnbFJlbmRlcmJ1ZmZlclN0b3JhZ2UoR0xfUkVOREVSQlVGRkVSLCBHTF9SR0I4LCB3aWR0aCwgaGVpZ2h0KTsKZ2xGcmFtZWJ1ZmZlclJlbmRlcmJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgR0xfQ09MT1JfQVRUQUNITUVOVDAsIEdMX1JFTkRFUkJVRkZFUiwgY29sb3JSZW5kZXJidWZmZXIpOwoKLy8gQ3JlYXIgeSBhZGp1bnRhciB1biBSZW5kZXJidWZmZXIgZGUgUHJvZnVuZGlkYWQKR0x1aW50IGRlcHRoUmVuZGVyYnVmZmVyOwpnbEdlblJlbmRlcmJ1ZmZlcnMoMSwgJmRlcHRoUmVuZGVyYnVmZmVyKTsKZ2xCaW5kUmVuZGVyYnVmZmVyKEdMX1JFTkRFUkJVRkZFUiwgZGVwdGhSZW5kZXJidWZmZXIpOwpnbFJlbmRlcmJ1ZmZlclN0b3JhZ2UoR0xfUkVOREVSQlVGRkVSLCBHTF9ERVBUSF9DT01QT05FTlQyNCwgd2lkdGgsIGhlaWdodCk7CmdsRnJhbWVidWZmZXJSZW5kZXJidWZmZXIoR0xfRlJBTUVCVUZGRVIsIEdMX0RFUFRIX0FUVEFDSE1FTlQsIEdMX1JFTkRFUkJVRkZFUiwgZGVwdGhSZW5kZXJidWZmZXIpOwoKLy8gVmVyaWZpY2FyIGVsIEZyYW1lYnVmZmVyCmlmIChnbENoZWNrRnJhbWVidWZmZXJTdGF0dXMoR0xfRlJBTUVCVUZGRVIpICE9IEdMX0ZSQU1FQlVGRkVSX0NPTVBMRVRFKSB7CiAgICBzdGQ6OmNlcnIgPDwgIkVycm9yOiBGcmFtZWJ1ZmZlciBpcyBub3QgY29tcGxldGUhIiA8PCBzdGQ6OmVuZGw7Cn0KZ2xCaW5kRnJhbWVidWZmZXIoR0xfRlJBTUVCVUZGRVIsIDApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GLuint framebuffer;
+glGenFramebuffers(1, &amp;framebuffer);
+glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+// Crear y adjuntar un Renderbuffer de Color
+GLuint colorRenderbuffer;
+glGenRenderbuffers(1, &amp;colorRenderbuffer);
+glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
+glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB8, width, height);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
+
+// Crear y adjuntar un Renderbuffer de Profundidad
+GLuint depthRenderbuffer;
+glGenRenderbuffers(1, &amp;depthRenderbuffer);
+glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+
+// Verificar el Framebuffer
+if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    std::cerr &lt;&lt; &quot;Error: Framebuffer is not complete!&quot; &lt;&lt; std::endl;
+}
+glBindFramebuffer(GL_FRAMEBUFFER, 0);</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Framebuffer con Textura</h2>
+<div class='content'><ol>
+<li>Crea un Framebuffer.</li>
+<li>Adjunta una textura como el buffer de color.</li>
+<li>Adjunta un Renderbuffer como el buffer de profundidad.</li>
+<li>Verifica que el Framebuffer esté completo.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0x1aW50IGZyYW1lYnVmZmVyOwpnbEdlbkZyYW1lYnVmZmVycygxLCAmZnJhbWVidWZmZXIpOwpnbEJpbmRGcmFtZWJ1ZmZlcihHTF9GUkFNRUJVRkZFUiwgZnJhbWVidWZmZXIpOwoKLy8gQ3JlYXIgeSBhZGp1bnRhciB1bmEgVGV4dHVyYSBkZSBDb2xvcgpHTHVpbnQgdGV4dHVyZUNvbG9yYnVmZmVyOwpnbEdlblRleHR1cmVzKDEsICZ0ZXh0dXJlQ29sb3JidWZmZXIpOwpnbEJpbmRUZXh0dXJlKEdMX1RFWFRVUkVfMkQsIHRleHR1cmVDb2xvcmJ1ZmZlcik7CmdsVGV4SW1hZ2UyRChHTF9URVhUVVJFXzJELCAwLCBHTF9SR0IsIHdpZHRoLCBoZWlnaHQsIDAsIEdMX1JHQiwgR0xfVU5TSUdORURfQllURSwgTlVMTCk7CmdsVGV4UGFyYW1ldGVyaShHTF9URVhUVVJFXzJELCBHTF9URVhUVVJFX01JTl9GSUxURVIsIEdMX0xJTkVBUik7CmdsVGV4UGFyYW1ldGVyaShHTF9URVhUVVJFXzJELCBHTF9URVhUVVJFX01BR19GSUxURVIsIEdMX0xJTkVBUik7CmdsRnJhbWVidWZmZXJUZXh0dXJlMkQoR0xfRlJBTUVCVUZGRVIsIEdMX0NPTE9SX0FUVEFDSE1FTlQwLCBHTF9URVhUVVJFXzJELCB0ZXh0dXJlQ29sb3JidWZmZXIsIDApOwoKLy8gQ3JlYXIgeSBhZGp1bnRhciB1biBSZW5kZXJidWZmZXIgZGUgUHJvZnVuZGlkYWQKR0x1aW50IGRlcHRoUmVuZGVyYnVmZmVyOwpnbEdlblJlbmRlcmJ1ZmZlcnMoMSwgJmRlcHRoUmVuZGVyYnVmZmVyKTsKZ2xCaW5kUmVuZGVyYnVmZmVyKEdMX1JFTkRFUkJVRkZFUiwgZGVwdGhSZW5kZXJidWZmZXIpOwpnbFJlbmRlcmJ1ZmZlclN0b3JhZ2UoR0xfUkVOREVSQlVGRkVSLCBHTF9ERVBUSF9DT01QT05FTlQyNCwgd2lkdGgsIGhlaWdodCk7CmdsRnJhbWVidWZmZXJSZW5kZXJidWZmZXIoR0xfRlJBTUVCVUZGRVIsIEdMX0RFUFRIX0FUVEFDSE1FTlQsIEdMX1JFTkRFUkJVRkZFUiwgZGVwdGhSZW5kZXJidWZmZXIpOwoKLy8gVmVyaWZpY2FyIGVsIEZyYW1lYnVmZmVyCmlmIChnbENoZWNrRnJhbWVidWZmZXJTdGF0dXMoR0xfRlJBTUVCVUZGRVIpICE9IEdMX0ZSQU1FQlVGRkVSX0NPTVBMRVRFKSB7CiAgICBzdGQ6OmNlcnIgPDwgIkVycm9yOiBGcmFtZWJ1ZmZlciBpcyBub3QgY29tcGxldGUhIiA8PCBzdGQ6OmVuZGw7Cn0KZ2xCaW5kRnJhbWVidWZmZXIoR0xfRlJBTUVCVUZGRVIsIDApOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GLuint framebuffer;
+glGenFramebuffers(1, &amp;framebuffer);
+glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+// Crear y adjuntar una Textura de Color
+GLuint textureColorbuffer;
+glGenTextures(1, &amp;textureColorbuffer);
+glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+
+// Crear y adjuntar un Renderbuffer de Profundidad
+GLuint depthRenderbuffer;
+glGenRenderbuffers(1, &amp;depthRenderbuffer);
+glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
+glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
+
+// Verificar el Framebuffer
+if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    std::cerr &lt;&lt; &quot;Error: Framebuffer is not complete!&quot; &lt;&lt; std::endl;
+}
+glBindFramebuffer(GL_FRAMEBUFFER, 0);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre Framebuffers y Renderbuffers, su creación y uso en OpenGL. Estos conceptos son fundamentales para técnicas avanzadas de renderizado, permitiendo una mayor flexibilidad y control sobre el proceso de renderizado. En el siguiente tema, exploraremos técnicas de sombreado avanzadas que se benefician del uso de Framebuffers y Renderbuffers.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-depth-stencil-testing' title="Pruebas de Profundidad y Plantilla">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-advanced-shading' title="Técnicas de Sombreado Avanzadas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

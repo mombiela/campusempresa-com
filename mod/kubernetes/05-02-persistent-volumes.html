@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volúmenes Persistentes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/05-02-persistent-volumes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/05-02-persistent-volumes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/05-02-persistent-volumes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/05-02-persistent-volumes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/05-02-persistent-volumes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-volumes' title="Volúmenes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Volúmenes Persistentes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-persistent-volume-claims' title="Reclamaciones de Volúmenes Persistentes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos los volúmenes persistentes en Kubernetes, un componente esencial para gestionar el almacenamiento de datos que necesita sobrevivir a la vida útil de los pods. Aprenderemos qué son, cómo se configuran y cómo se utilizan en un clúster de Kubernetes.</p>
+</div><h1>¿Qué es un Volumen Persistente?</h1>
+<div class='content'><p>Un Volumen Persistente (PV) es un recurso de almacenamiento en un clúster de Kubernetes que ha sido aprovisionado por un administrador. Los PVs son independientes del ciclo de vida de los pods y proporcionan una forma de almacenar datos de manera duradera.</p>
+</div><h2>Características Clave de los PVs:</h2>
+<div class='content'><ul>
+<li><strong>Persistencia</strong>: Los datos almacenados en un PV persisten más allá de la vida útil de los pods.</li>
+<li><strong>Independencia</strong>: Los PVs son recursos del clúster y no están ligados a un pod específico.</li>
+<li><strong>Acceso</strong>: Los PVs pueden ser accedidos por uno o más pods, dependiendo del modo de acceso configurado.</li>
+</ul>
+</div><h1>Tipos de Volúmenes Persistentes</h1>
+<div class='content'><p>Kubernetes soporta varios tipos de volúmenes persistentes, incluyendo:</p>
+<ul>
+<li><strong>NFS (Network File System)</strong></li>
+<li><strong>iSCSI (Internet Small Computer Systems Interface)</strong></li>
+<li><strong>GlusterFS</strong></li>
+<li><strong>CephFS</strong></li>
+<li><strong>AWS EBS (Elastic Block Store)</strong></li>
+<li><strong>GCE PD (Google Compute Engine Persistent Disk)</strong></li>
+<li><strong>Azure Disk</strong></li>
+</ul>
+</div><h1>Configuración de un Volumen Persistente</h1>
+<div class='content'><p>Para configurar un PV, se debe definir un objeto de tipo <code>PersistentVolume</code> en un archivo YAML. A continuación, se muestra un ejemplo de configuración de un PV utilizando NFS:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZQptZXRhZGF0YToKICBuYW1lOiBwdi1uZnMKc3BlYzoKICBjYXBhY2l0eToKICAgIHN0b3JhZ2U6IDEwR2kKICBhY2Nlc3NNb2RlczoKICAgIC0gUmVhZFdyaXRlTWFueQogIG5mczoKICAgIHBhdGg6IC9wYXRoL3RvL25mcwogICAgc2VydmVyOiBuZnMtc2VydmVyLmV4YW1wbGUuY29t"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-nfs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /path/to/nfs
+    server: nfs-server.example.com</pre></div><div class='content'></div><h2>Explicación del Código:</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes.</li>
+<li><strong>kind</strong>: El tipo de recurso, en este caso <code>PersistentVolume</code>.</li>
+<li><strong>metadata</strong>: Información sobre el PV, como su nombre.</li>
+<li><strong>spec</strong>: Especificaciones del PV.
+<ul>
+<li><strong>capacity</strong>: La capacidad de almacenamiento del PV.</li>
+<li><strong>accessModes</strong>: Los modos de acceso permitidos (<code>ReadWriteOnce</code>, <code>ReadOnlyMany</code>, <code>ReadWriteMany</code>).</li>
+<li><strong>nfs</strong>: Configuración específica para el tipo de almacenamiento NFS.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Reclamaciones de Volúmenes Persistentes</h1>
+<div class='content'><p>Para que un pod utilice un PV, se debe crear una Reclamación de Volumen Persistente (PVC). Un PVC es una solicitud de almacenamiento por parte de un usuario. A continuación, se muestra un ejemplo de configuración de un PVC:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUGVyc2lzdGVudFZvbHVtZUNsYWltCm1ldGFkYXRhOgogIG5hbWU6IHB2Yy1uZnMKc3BlYzoKICBhY2Nlc3NNb2RlczoKICAgIC0gUmVhZFdyaXRlTWFueQogIHJlc291cmNlczoKICAgIHJlcXVlc3RzOgogICAgICBzdG9yYWdlOiA1R2k="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-nfs
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi</pre></div><div class='content'></div><h2>Explicación del Código:</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes.</li>
+<li><strong>kind</strong>: El tipo de recurso, en este caso <code>PersistentVolumeClaim</code>.</li>
+<li><strong>metadata</strong>: Información sobre el PVC, como su nombre.</li>
+<li><strong>spec</strong>: Especificaciones del PVC.
+<ul>
+<li><strong>accessModes</strong>: Los modos de acceso solicitados.</li>
+<li><strong>resources</strong>: Los recursos solicitados, como la cantidad de almacenamiento.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Uso de un PVC en un Pod</h1>
+<div class='content'><p>Una vez que se ha creado un PVC, se puede utilizar en un pod. A continuación, se muestra un ejemplo de cómo un pod puede utilizar un PVC:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IHBvZC11c2luZy1wdmMKc3BlYzoKICBjb250YWluZXJzOgogICAgLSBuYW1lOiBteS1jb250YWluZXIKICAgICAgaW1hZ2U6IG5naW54CiAgICAgIHZvbHVtZU1vdW50czoKICAgICAgICAtIG1vdW50UGF0aDogIi91c3Ivc2hhcmUvbmdpbngvaHRtbCIKICAgICAgICAgIG5hbWU6IG15LXB2YwogIHZvbHVtZXM6CiAgICAtIG5hbWU6IG15LXB2YwogICAgICBwZXJzaXN0ZW50Vm9sdW1lQ2xhaW06CiAgICAgICAgY2xhaW1OYW1lOiBwdmMtbmZz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-using-pvc
+spec:
+  containers:
+    - name: my-container
+      image: nginx
+      volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html&quot;
+          name: my-pvc
+  volumes:
+    - name: my-pvc
+      persistentVolumeClaim:
+        claimName: pvc-nfs</pre></div><div class='content'></div><h2>Explicación del Código:</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes.</li>
+<li><strong>kind</strong>: El tipo de recurso, en este caso <code>Pod</code>.</li>
+<li><strong>metadata</strong>: Información sobre el pod, como su nombre.</li>
+<li><strong>spec</strong>: Especificaciones del pod.
+<ul>
+<li><strong>containers</strong>: Lista de contenedores en el pod.
+<ul>
+<li><strong>name</strong>: Nombre del contenedor.</li>
+<li><strong>image</strong>: Imagen del contenedor.</li>
+<li><strong>volumeMounts</strong>: Lista de volúmenes montados en el contenedor.
+<ul>
+<li><strong>mountPath</strong>: Ruta en el contenedor donde se monta el volumen.</li>
+<li><strong>name</strong>: Nombre del volumen.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>volumes</strong>: Lista de volúmenes utilizados por el pod.
+<ul>
+<li><strong>name</strong>: Nombre del volumen.</li>
+<li><strong>persistentVolumeClaim</strong>: Especifica el PVC a utilizar.
+<ul>
+<li><strong>claimName</strong>: Nombre del PVC.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio:</h2>
+<div class='content'><ol>
+<li>Crea un <code>PersistentVolume</code> de 10Gi utilizando NFS.</li>
+<li>Crea un <code>PersistentVolumeClaim</code> que solicite 5Gi de almacenamiento.</li>
+<li>Crea un pod que utilice el PVC y monte el volumen en <code>/usr/share/nginx/html</code>.</li>
+</ol>
+</div><h2>Solución:</h2>
+<div class='content'><ol>
+<li>
+<p><strong>PersistentVolume (pv-nfs.yaml)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-nfs
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    path: /path/to/nfs
+    server: nfs-server.example.com
+</code></pre>
+</li>
+<li>
+<p><strong>PersistentVolumeClaim (pvc-nfs.yaml)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-nfs
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+</code></pre>
+</li>
+<li>
+<p><strong>Pod (pod-using-pvc.yaml)</strong>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-using-pvc
+spec:
+  containers:
+    - name: my-container
+      image: nginx
+      volumeMounts:
+        - mountPath: &quot;/usr/share/nginx/html&quot;
+          name: my-pvc
+  volumes:
+    - name: my-pvc
+      persistentVolumeClaim:
+        claimName: pvc-nfs
+</code></pre>
+</li>
+</ol>
+</div><h2>Pasos para Ejecutar:</h2>
+<div class='content'><ol>
+<li>
+<p>Aplica el <code>PersistentVolume</code>:</p>
+<pre><code class="language-sh">kubectl apply -f pv-nfs.yaml
+</code></pre>
+</li>
+<li>
+<p>Aplica el <code>PersistentVolumeClaim</code>:</p>
+<pre><code class="language-sh">kubectl apply -f pvc-nfs.yaml
+</code></pre>
+</li>
+<li>
+<p>Aplica el pod:</p>
+<pre><code class="language-sh">kubectl apply -f pod-using-pvc.yaml
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los volúmenes persistentes en Kubernetes, cómo configurarlos y utilizarlos en un clúster. Los PVs son esenciales para aplicaciones que requieren almacenamiento duradero y persistente. En el siguiente tema, exploraremos las Reclamaciones de Volúmenes Persistentes (PVCs) en mayor detalle y cómo se integran con los PVs para proporcionar almacenamiento a los pods.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-volumes' title="Volúmenes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-persistent-volume-claims' title="Reclamaciones de Volúmenes Persistentes">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

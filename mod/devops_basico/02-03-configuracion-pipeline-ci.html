@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración de un pipeline de CI</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/devops_basico/02-03-configuracion-pipeline-ci" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/devops_basico/02-03-configuracio-pipeline-ci" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/devops_basico/02-03-setting-up-ci-pipeline" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/devops_basico/02-03-configuracion-pipeline-ci" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/devops_basico/02-03-configuracion-pipeline-ci" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-herramientas-populares-ci' title="Herramientas populares de CI">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Configuración de un pipeline de CI</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-pruebas-automatizadas-ci' title="Pruebas automatizadas en CI">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo configurar un pipeline de Integración Continua (CI) desde cero. Un pipeline de CI es una serie de pasos automatizados que permiten a los desarrolladores integrar su código de manera continua y asegurarse de que el código es correcto y funcional antes de fusionarlo en la rama principal del repositorio.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><p>Al final de este tema, deberías ser capaz de:</p>
+<ol>
+<li>Entender los componentes básicos de un pipeline de CI.</li>
+<li>Configurar un pipeline de CI utilizando una herramienta popular.</li>
+<li>Ejecutar pruebas automatizadas dentro del pipeline.</li>
+<li>Integrar el pipeline con un sistema de control de versiones como Git.</li>
+</ol>
+</div><h1>Componentes Básicos de un Pipeline de CI</h1>
+<div class='content'><p>Un pipeline de CI generalmente incluye los siguientes pasos:</p>
+<ol>
+<li><strong>Compilación</strong>: Compilar el código fuente para asegurarse de que no hay errores de sintaxis.</li>
+<li><strong>Pruebas</strong>: Ejecutar pruebas automatizadas para verificar que el código funciona como se espera.</li>
+<li><strong>Análisis de Calidad del Código</strong>: Utilizar herramientas para analizar la calidad del código y detectar posibles problemas.</li>
+<li><strong>Empaquetado</strong>: Crear artefactos de construcción que pueden ser desplegados.</li>
+<li><strong>Notificaciones</strong>: Informar a los desarrolladores sobre el estado del pipeline.</li>
+</ol>
+</div><h1>Herramienta Popular: Jenkins</h1>
+<div class='content'><p>Jenkins es una de las herramientas más populares para configurar pipelines de CI. A continuación, configuraremos un pipeline básico utilizando Jenkins.</p>
+</div><h2>Instalación de Jenkins</h2>
+<div class='content'><ol>
+<li><strong>Descargar Jenkins</strong>: Ve al <a href="https://www.jenkins.io/download/">sitio oficial de Jenkins</a> y descarga la versión adecuada para tu sistema operativo.</li>
+<li><strong>Instalar Jenkins</strong>: Sigue las instrucciones de instalación específicas para tu sistema operativo.</li>
+<li><strong>Iniciar Jenkins</strong>: Una vez instalado, inicia Jenkins y accede a la interfaz web en <code>http://localhost:8080</code>.</li>
+</ol>
+</div><h2>Configuración de un Pipeline en Jenkins</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un Nuevo Proyecto</strong>:</p>
+<ul>
+<li>En la interfaz de Jenkins, haz clic en &quot;Nuevo Item&quot;.</li>
+<li>Selecciona &quot;Pipeline&quot; y dale un nombre a tu proyecto.</li>
+<li>Haz clic en &quot;OK&quot;.</li>
+</ul>
+</li>
+<li>
+<p><strong>Configurar el Pipeline</strong>:</p>
+<ul>
+<li>En la configuración del proyecto, desplázate hasta la sección &quot;Pipeline&quot;.</li>
+<li>Selecciona &quot;Pipeline script&quot; y añade el siguiente script básico:</li>
+</ul>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdDb21waWxhY2nDs24nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0NvbXBpbGFuZG8uLi4nCiAgICAgICAgICAgICAgICAvLyBBcXXDrSBpcsOtYW4gbG9zIGNvbWFuZG9zIHBhcmEgY29tcGlsYXIgdHUgcHJveWVjdG8KICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnUHJ1ZWJhcycpIHsKICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgZWNobyAnRWplY3V0YW5kbyBwcnVlYmFzLi4uJwogICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBwYXJhIGVqZWN1dGFyIHR1cyBwcnVlYmFzIGF1dG9tYXRpemFkYXMKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnQW7DoWxpc2lzIGRlIENhbGlkYWQgZGVsIEPDs2RpZ28nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0FuYWxpemFuZG8gbGEgY2FsaWRhZCBkZWwgY8OzZGlnby4uLicKICAgICAgICAgICAgICAgIC8vIEFxdcOtIGlyw61hbiBsb3MgY29tYW5kb3MgcGFyYSBhbmFsaXphciBsYSBjYWxpZGFkIGRlbCBjw7NkaWdvCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0VtcGFxdWV0YWRvJykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBlY2hvICdFbXBhcXVldGFuZG8uLi4nCiAgICAgICAgICAgICAgICAvLyBBcXXDrSBpcsOtYW4gbG9zIGNvbWFuZG9zIHBhcmEgZW1wYXF1ZXRhciB0dSBhcGxpY2FjacOzbgogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQogICAgcG9zdCB7CiAgICAgICAgYWx3YXlzIHsKICAgICAgICAgICAgZWNobyAnUGlwZWxpbmUgY29tcGxldGFkbycKICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBwYXJhIG5vdGlmaWNhciBhIGxvcyBkZXNhcnJvbGxhZG9yZXMKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Compilaci&oacute;n') {
+            steps {
+                echo 'Compilando...'
+                // Aqu&iacute; ir&iacute;an los comandos para compilar tu proyecto
+            }
+        }
+        stage('Pruebas') {
+            steps {
+                echo 'Ejecutando pruebas...'
+                // Aqu&iacute; ir&iacute;an los comandos para ejecutar tus pruebas automatizadas
+            }
+        }
+        stage('An&aacute;lisis de Calidad del C&oacute;digo') {
+            steps {
+                echo 'Analizando la calidad del c&oacute;digo...'
+                // Aqu&iacute; ir&iacute;an los comandos para analizar la calidad del c&oacute;digo
+            }
+        }
+        stage('Empaquetado') {
+            steps {
+                echo 'Empaquetando...'
+                // Aqu&iacute; ir&iacute;an los comandos para empaquetar tu aplicaci&oacute;n
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completado'
+            // Aqu&iacute; ir&iacute;an los comandos para notificar a los desarrolladores
+        }
+    }
+}</pre></div><div class='content'></div><h2>Ejemplo Práctico: Pipeline para un Proyecto Java</h2>
+<div class='content'><p>Supongamos que tienes un proyecto Java y quieres configurar un pipeline de CI para él. Aquí tienes un ejemplo de cómo podría verse el script del pipeline:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdDb21waWxhY2nDs24nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0NvbXBpbGFuZG8uLi4nCiAgICAgICAgICAgICAgICBzaCAnbXZuIGNsZWFuIGNvbXBpbGUnCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ1BydWViYXMnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0VqZWN1dGFuZG8gcHJ1ZWJhcy4uLicKICAgICAgICAgICAgICAgIHNoICdtdm4gdGVzdCcKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnQW7DoWxpc2lzIGRlIENhbGlkYWQgZGVsIEPDs2RpZ28nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0FuYWxpemFuZG8gbGEgY2FsaWRhZCBkZWwgY8OzZGlnby4uLicKICAgICAgICAgICAgICAgIHNoICdtdm4gc29uYXI6c29uYXInCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0VtcGFxdWV0YWRvJykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBlY2hvICdFbXBhcXVldGFuZG8uLi4nCiAgICAgICAgICAgICAgICBzaCAnbXZuIHBhY2thZ2UnCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CiAgICBwb3N0IHsKICAgICAgICBhbHdheXMgewogICAgICAgICAgICBlY2hvICdQaXBlbGluZSBjb21wbGV0YWRvJwogICAgICAgICAgICBtYWlsIHRvOiAnZGVzYXJyb2xsYWRvcmVzQGVqZW1wbG8uY29tJywKICAgICAgICAgICAgICAgICBzdWJqZWN0OiAiRXN0YWRvIGRlbCBQaXBlbGluZTogJHtjdXJyZW50QnVpbGQuY3VycmVudFJlc3VsdH0iLAogICAgICAgICAgICAgICAgIGJvZHk6ICJFbCBwaXBlbGluZSBoYSB0ZXJtaW5hZG8gY29uIGVsIGVzdGFkbzogJHtjdXJyZW50QnVpbGQuY3VycmVudFJlc3VsdH0iCiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Compilaci&oacute;n') {
+            steps {
+                echo 'Compilando...'
+                sh 'mvn clean compile'
+            }
+        }
+        stage('Pruebas') {
+            steps {
+                echo 'Ejecutando pruebas...'
+                sh 'mvn test'
+            }
+        }
+        stage('An&aacute;lisis de Calidad del C&oacute;digo') {
+            steps {
+                echo 'Analizando la calidad del c&oacute;digo...'
+                sh 'mvn sonar:sonar'
+            }
+        }
+        stage('Empaquetado') {
+            steps {
+                echo 'Empaquetando...'
+                sh 'mvn package'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completado'
+            mail to: 'desarrolladores@ejemplo.com',
+                 subject: &quot;Estado del Pipeline: ${currentBuild.currentResult}&quot;,
+                 body: &quot;El pipeline ha terminado con el estado: ${currentBuild.currentResult}&quot;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Script</h2>
+<div class='content'><ul>
+<li><strong>agent any</strong>: Indica que el pipeline puede ejecutarse en cualquier agente disponible.</li>
+<li><strong>stages</strong>: Define las diferentes etapas del pipeline.
+<ul>
+<li><strong>stage('Compilación')</strong>: Compila el código utilizando Maven.</li>
+<li><strong>stage('Pruebas')</strong>: Ejecuta las pruebas automatizadas.</li>
+<li><strong>stage('Análisis de Calidad del Código')</strong>: Analiza la calidad del código utilizando SonarQube.</li>
+<li><strong>stage('Empaquetado')</strong>: Empaqueta la aplicación.</li>
+</ul>
+</li>
+<li><strong>post</strong>: Define acciones que se ejecutan después de que todas las etapas hayan terminado.
+<ul>
+<li><strong>always</strong>: Envía un correo electrónico con el estado del pipeline.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<h2>Ejercicio 1: Configurar un Pipeline Básico</h2>
+<div class='content'><ol>
+<li>Instala Jenkins en tu máquina local.</li>
+<li>Crea un nuevo proyecto de pipeline en Jenkins.</li>
+<li>Configura el pipeline utilizando el script básico proporcionado anteriormente.</li>
+<li>Ejecuta el pipeline y verifica que todas las etapas se completan correctamente.</li>
+</ol>
+</div><h2>Ejercicio 2: Pipeline para un Proyecto Específico</h2>
+<div class='content'><ol>
+<li>Clona un proyecto Java desde un repositorio de GitHub.</li>
+<li>Modifica el script del pipeline para que compile, pruebe y empaquete el proyecto Java.</li>
+<li>Integra una herramienta de análisis de calidad del código como SonarQube.</li>
+<li>Configura notificaciones por correo electrónico para informar a los desarrolladores sobre el estado del pipeline.</li>
+</ol>
+</div><h1>Soluciones a los Ejercicios</h1>
+<h2>Solución al Ejercicio 1</h2>
+<div class='content'><ol>
+<li><strong>Instalación de Jenkins</strong>: Sigue las instrucciones de instalación proporcionadas en la sección de instalación.</li>
+<li><strong>Creación del Proyecto</strong>: Crea un nuevo proyecto de pipeline en Jenkins.</li>
+<li><strong>Configuración del Pipeline</strong>: Utiliza el siguiente script básico:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdDb21waWxhY2nDs24nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0NvbXBpbGFuZG8uLi4nCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ1BydWViYXMnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0VqZWN1dGFuZG8gcHJ1ZWJhcy4uLicKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnQW7DoWxpc2lzIGRlIENhbGlkYWQgZGVsIEPDs2RpZ28nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0FuYWxpemFuZG8gbGEgY2FsaWRhZCBkZWwgY8OzZGlnby4uLicKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnRW1wYXF1ZXRhZG8nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0VtcGFxdWV0YW5kby4uLicKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KICAgIHBvc3QgewogICAgICAgIGFsd2F5cyB7CiAgICAgICAgICAgIGVjaG8gJ1BpcGVsaW5lIGNvbXBsZXRhZG8nCiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Compilaci&oacute;n') {
+            steps {
+                echo 'Compilando...'
+            }
+        }
+        stage('Pruebas') {
+            steps {
+                echo 'Ejecutando pruebas...'
+            }
+        }
+        stage('An&aacute;lisis de Calidad del C&oacute;digo') {
+            steps {
+                echo 'Analizando la calidad del c&oacute;digo...'
+            }
+        }
+        stage('Empaquetado') {
+            steps {
+                echo 'Empaquetando...'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completado'
+        }
+    }
+}</pre></div><div class='content'><ol start="4">
+<li><strong>Ejecución del Pipeline</strong>: Ejecuta el pipeline y verifica que todas las etapas se completan correctamente.</li>
+</ol>
+</div><h2>Solución al Ejercicio 2</h2>
+<div class='content'><ol>
+<li><strong>Clonar el Proyecto</strong>: Clona un proyecto Java desde GitHub.</li>
+<li><strong>Modificar el Script del Pipeline</strong>: Utiliza el siguiente script:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdDb21waWxhY2nDs24nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0NvbXBpbGFuZG8uLi4nCiAgICAgICAgICAgICAgICBzaCAnbXZuIGNsZWFuIGNvbXBpbGUnCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ1BydWViYXMnKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0VqZWN1dGFuZG8gcHJ1ZWJhcy4uLicKICAgICAgICAgICAgICAgIHNoICdtdm4gdGVzdCcKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICBzdGFnZSgnQW7DoWxpc2lzIGRlIENhbGlkYWQgZGVsIEPDs2RpZ28nKSB7CiAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgIGVjaG8gJ0FuYWxpemFuZG8gbGEgY2FsaWRhZCBkZWwgY8OzZGlnby4uLicKICAgICAgICAgICAgICAgIHNoICdtdm4gc29uYXI6c29uYXInCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgc3RhZ2UoJ0VtcGFxdWV0YWRvJykgewogICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICBlY2hvICdFbXBhcXVldGFuZG8uLi4nCiAgICAgICAgICAgICAgICBzaCAnbXZuIHBhY2thZ2UnCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CiAgICBwb3N0IHsKICAgICAgICBhbHdheXMgewogICAgICAgICAgICBlY2hvICdQaXBlbGluZSBjb21wbGV0YWRvJwogICAgICAgICAgICBtYWlsIHRvOiAnZGVzYXJyb2xsYWRvcmVzQGVqZW1wbG8uY29tJywKICAgICAgICAgICAgICAgICBzdWJqZWN0OiAiRXN0YWRvIGRlbCBQaXBlbGluZTogJHtjdXJyZW50QnVpbGQuY3VycmVudFJlc3VsdH0iLAogICAgICAgICAgICAgICAgIGJvZHk6ICJFbCBwaXBlbGluZSBoYSB0ZXJtaW5hZG8gY29uIGVsIGVzdGFkbzogJHtjdXJyZW50QnVpbGQuY3VycmVudFJlc3VsdH0iCiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Compilaci&oacute;n') {
+            steps {
+                echo 'Compilando...'
+                sh 'mvn clean compile'
+            }
+        }
+        stage('Pruebas') {
+            steps {
+                echo 'Ejecutando pruebas...'
+                sh 'mvn test'
+            }
+        }
+        stage('An&aacute;lisis de Calidad del C&oacute;digo') {
+            steps {
+                echo 'Analizando la calidad del c&oacute;digo...'
+                sh 'mvn sonar:sonar'
+            }
+        }
+        stage('Empaquetado') {
+            steps {
+                echo 'Empaquetando...'
+                sh 'mvn package'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completado'
+            mail to: 'desarrolladores@ejemplo.com',
+                 subject: &quot;Estado del Pipeline: ${currentBuild.currentResult}&quot;,
+                 body: &quot;El pipeline ha terminado con el estado: ${currentBuild.currentResult}&quot;
+        }
+    }
+}</pre></div><div class='content'><ol start="3">
+<li><strong>Integrar SonarQube</strong>: Asegúrate de tener SonarQube configurado y ejecutando. Modifica el script para incluir el análisis de calidad del código.</li>
+<li><strong>Configurar Notificaciones</strong>: Configura Jenkins para enviar correos electrónicos con el estado del pipeline.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido cómo configurar un pipeline de CI utilizando Jenkins. Hemos cubierto los componentes básicos de un pipeline de CI, cómo instalar y configurar Jenkins, y cómo crear un pipeline para un proyecto Java. Los ejercicios prácticos te han proporcionado la oportunidad de aplicar lo aprendido y configurar tu propio pipeline de CI.</p>
+<p>En el siguiente tema, exploraremos las pruebas automatizadas en CI, donde aprenderás cómo integrar y ejecutar pruebas automatizadas dentro de tu pipeline de CI.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-02-herramientas-populares-ci' title="Herramientas populares de CI">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-04-pruebas-automatizadas-ci' title="Pruebas automatizadas en CI">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexión a una Base de Datos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/04-01-connecting-to-database" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/04-01-connecting-to-database" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/04-01-connecting-to-database" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/graphql/04-01-connecting-to-database" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/04-01-connecting-to-database" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-05-custom-scalars' title="Escalares Personalizados">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Conexión a una Base de Datos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-data-fetching-strategies' title="Estrategias de Obtención de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos cómo conectar un servidor GraphQL a una base de datos. Este es un paso crucial para cualquier aplicación que necesite almacenar y recuperar datos de manera eficiente. Exploraremos cómo configurar la conexión, realizar consultas y mutaciones, y manejar errores comunes.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Configurar una conexión a una base de datos desde un servidor GraphQL.</li>
+<li>Realizar consultas y mutaciones a la base de datos.</li>
+<li>Manejar errores comunes en la conexión a la base de datos.</li>
+</ul>
+</div><h1>1. Configuración de la Conexión a la Base de Datos</h1>
+<div class='content'></div><h2>Paso 1: Instalación de Dependencias</h2>
+<div class='content'><p>Para este ejemplo, utilizaremos Node.js con Express y una base de datos PostgreSQL. Necesitaremos instalar las siguientes dependencias:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgZXhwcmVzcyBleHByZXNzLWdyYXBocWwgZ3JhcGhxbCBwZyBwZy1oc3RvcmUgc2VxdWVsaXpl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install express express-graphql graphql pg pg-hstore sequelize</pre></div><div class='content'></div><h2>Paso 2: Configuración de Sequelize</h2>
+<div class='content'><p>Sequelize es un ORM (Object-Relational Mapping) para Node.js que facilita la interacción con bases de datos SQL. Configuraremos Sequelize para conectarnos a nuestra base de datos PostgreSQL.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gZGIuanMKY29uc3QgeyBTZXF1ZWxpemUgfSA9IHJlcXVpcmUoJ3NlcXVlbGl6ZScpOwoKY29uc3Qgc2VxdWVsaXplID0gbmV3IFNlcXVlbGl6ZSgnZGF0YWJhc2UnLCAndXNlcm5hbWUnLCAncGFzc3dvcmQnLCB7CiAgaG9zdDogJ2xvY2FsaG9zdCcsCiAgZGlhbGVjdDogJ3Bvc3RncmVzJywKfSk7Cgptb2R1bGUuZXhwb3J0cyA9IHNlcXVlbGl6ZTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// db.js
+const { Sequelize } = require('sequelize');
+
+const sequelize = new Sequelize('database', 'username', 'password', {
+  host: 'localhost',
+  dialect: 'postgres',
+});
+
+module.exports = sequelize;</pre></div><div class='content'></div><h2>Paso 3: Definición de Modelos</h2>
+<div class='content'><p>Definimos nuestros modelos de datos utilizando Sequelize. Por ejemplo, un modelo de <code>Usuario</code> podría verse así:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbW9kZWxzL1VzZXIuanMKY29uc3QgeyBEYXRhVHlwZXMgfSA9IHJlcXVpcmUoJ3NlcXVlbGl6ZScpOwpjb25zdCBzZXF1ZWxpemUgPSByZXF1aXJlKCcuLi9kYicpOwoKY29uc3QgVXNlciA9IHNlcXVlbGl6ZS5kZWZpbmUoJ1VzZXInLCB7CiAgaWQ6IHsKICAgIHR5cGU6IERhdGFUeXBlcy5JTlRFR0VSLAogICAgYXV0b0luY3JlbWVudDogdHJ1ZSwKICAgIHByaW1hcnlLZXk6IHRydWUsCiAgfSwKICBuYW1lOiB7CiAgICB0eXBlOiBEYXRhVHlwZXMuU1RSSU5HLAogICAgYWxsb3dOdWxsOiBmYWxzZSwKICB9LAogIGVtYWlsOiB7CiAgICB0eXBlOiBEYXRhVHlwZXMuU1RSSU5HLAogICAgYWxsb3dOdWxsOiBmYWxzZSwKICAgIHVuaXF1ZTogdHJ1ZSwKICB9LAp9KTsKCm1vZHVsZS5leHBvcnRzID0gVXNlcjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// models/User.js
+const { DataTypes } = require('sequelize');
+const sequelize = require('../db');
+
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+});
+
+module.exports = User;</pre></div><div class='content'></div><h2>Paso 4: Sincronización de la Base de Datos</h2>
+<div class='content'><p>Sincronizamos nuestros modelos con la base de datos para asegurarnos de que las tablas se crean correctamente.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc3luYy5qcwpjb25zdCBzZXF1ZWxpemUgPSByZXF1aXJlKCcuL2RiJyk7CmNvbnN0IFVzZXIgPSByZXF1aXJlKCcuL21vZGVscy9Vc2VyJyk7CgpzZXF1ZWxpemUuc3luYyh7IGZvcmNlOiB0cnVlIH0pLnRoZW4oKCkgPT4gewogIGNvbnNvbGUubG9nKCdEYXRhYmFzZSAmIHRhYmxlcyBjcmVhdGVkIScpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// sync.js
+const sequelize = require('./db');
+const User = require('./models/User');
+
+sequelize.sync({ force: true }).then(() =&gt; {
+  console.log('Database &amp; tables created!');
+});</pre></div><div class='content'></div><h1>2. Realización de Consultas y Mutaciones</h1>
+<div class='content'></div><h2>Consultas</h2>
+<div class='content'><p>Para realizar consultas, definimos resolvers que interactúan con nuestros modelos de Sequelize.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVzb2x2ZXJzLmpzCmNvbnN0IFVzZXIgPSByZXF1aXJlKCcuL21vZGVscy9Vc2VyJyk7Cgpjb25zdCByZXNvbHZlcnMgPSB7CiAgUXVlcnk6IHsKICAgIHVzZXJzOiBhc3luYyAoKSA9PiB7CiAgICAgIHJldHVybiBhd2FpdCBVc2VyLmZpbmRBbGwoKTsKICAgIH0sCiAgICB1c2VyOiBhc3luYyAoXywgeyBpZCB9KSA9PiB7CiAgICAgIHJldHVybiBhd2FpdCBVc2VyLmZpbmRCeVBrKGlkKTsKICAgIH0sCiAgfSwKfTsKCm1vZHVsZS5leHBvcnRzID0gcmVzb2x2ZXJzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// resolvers.js
+const User = require('./models/User');
+
+const resolvers = {
+  Query: {
+    users: async () =&gt; {
+      return await User.findAll();
+    },
+    user: async (_, { id }) =&gt; {
+      return await User.findByPk(id);
+    },
+  },
+};
+
+module.exports = resolvers;</pre></div><div class='content'></div><h2>Mutaciones</h2>
+<div class='content'><p>Las mutaciones permiten modificar los datos en la base de datos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVzb2x2ZXJzLmpzCmNvbnN0IHJlc29sdmVycyA9IHsKICBNdXRhdGlvbjogewogICAgY3JlYXRlVXNlcjogYXN5bmMgKF8sIHsgbmFtZSwgZW1haWwgfSkgPT4gewogICAgICByZXR1cm4gYXdhaXQgVXNlci5jcmVhdGUoeyBuYW1lLCBlbWFpbCB9KTsKICAgIH0sCiAgICB1cGRhdGVVc2VyOiBhc3luYyAoXywgeyBpZCwgbmFtZSwgZW1haWwgfSkgPT4gewogICAgICBjb25zdCB1c2VyID0gYXdhaXQgVXNlci5maW5kQnlQayhpZCk7CiAgICAgIGlmICghdXNlcikgdGhyb3cgbmV3IEVycm9yKCdVc2VyIG5vdCBmb3VuZCcpOwogICAgICB1c2VyLm5hbWUgPSBuYW1lOwogICAgICB1c2VyLmVtYWlsID0gZW1haWw7CiAgICAgIGF3YWl0IHVzZXIuc2F2ZSgpOwogICAgICByZXR1cm4gdXNlcjsKICAgIH0sCiAgICBkZWxldGVVc2VyOiBhc3luYyAoXywgeyBpZCB9KSA9PiB7CiAgICAgIGNvbnN0IHVzZXIgPSBhd2FpdCBVc2VyLmZpbmRCeVBrKGlkKTsKICAgICAgaWYgKCF1c2VyKSB0aHJvdyBuZXcgRXJyb3IoJ1VzZXIgbm90IGZvdW5kJyk7CiAgICAgIGF3YWl0IHVzZXIuZGVzdHJveSgpOwogICAgICByZXR1cm4gdXNlcjsKICAgIH0sCiAgfSwKfTsKCm1vZHVsZS5leHBvcnRzID0gcmVzb2x2ZXJzOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// resolvers.js
+const resolvers = {
+  Mutation: {
+    createUser: async (_, { name, email }) =&gt; {
+      return await User.create({ name, email });
+    },
+    updateUser: async (_, { id, name, email }) =&gt; {
+      const user = await User.findByPk(id);
+      if (!user) throw new Error('User not found');
+      user.name = name;
+      user.email = email;
+      await user.save();
+      return user;
+    },
+    deleteUser: async (_, { id }) =&gt; {
+      const user = await User.findByPk(id);
+      if (!user) throw new Error('User not found');
+      await user.destroy();
+      return user;
+    },
+  },
+};
+
+module.exports = resolvers;</pre></div><div class='content'></div><h1>3. Manejo de Errores Comunes</h1>
+<div class='content'></div><h2>Error de Conexión</h2>
+<div class='content'><p>Un error común es la incapacidad de conectarse a la base de datos. Asegúrate de que los detalles de conexión (nombre de la base de datos, usuario, contraseña, host) sean correctos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VxdWVsaXplLmF1dGhlbnRpY2F0ZSgpCiAgLnRoZW4oKCkgPT4gewogICAgY29uc29sZS5sb2coJ0Nvbm5lY3Rpb24gaGFzIGJlZW4gZXN0YWJsaXNoZWQgc3VjY2Vzc2Z1bGx5LicpOwogIH0pCiAgLmNhdGNoKGVyciA9PiB7CiAgICBjb25zb2xlLmVycm9yKCdVbmFibGUgdG8gY29ubmVjdCB0byB0aGUgZGF0YWJhc2U6JywgZXJyKTsKICB9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sequelize.authenticate()
+  .then(() =&gt; {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err =&gt; {
+    console.error('Unable to connect to the database:', err);
+  });</pre></div><div class='content'></div><h2>Error de Validación</h2>
+<div class='content'><p>Los errores de validación ocurren cuando los datos no cumplen con las restricciones definidas en el modelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dHJ5IHsKICBhd2FpdCBVc2VyLmNyZWF0ZSh7IG5hbWU6ICcnLCBlbWFpbDogJ2ludmFsaWQtZW1haWwnIH0pOwp9IGNhdGNoIChlcnJvcikgewogIGNvbnNvbGUuZXJyb3IoJ1ZhbGlkYXRpb24gZXJyb3I6JywgZXJyb3IpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>try {
+  await User.create({ name: '', email: 'invalid-email' });
+} catch (error) {
+  console.error('Validation error:', error);
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear y Consultar Usuarios</h2>
+<div class='content'><ol>
+<li><strong>Crear Usuarios</strong>: Implementa una mutación para crear un nuevo usuario.</li>
+<li><strong>Consultar Usuarios</strong>: Implementa una consulta para obtener todos los usuarios.</li>
+</ol>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBzY2hlbWEuZ3JhcGhxbAp0eXBlIFVzZXIgewogIGlkOiBJRCEKICBuYW1lOiBTdHJpbmchCiAgZW1haWw6IFN0cmluZyEKfQoKdHlwZSBRdWVyeSB7CiAgdXNlcnM6IFtVc2VyXQogIHVzZXIoaWQ6IElEISk6IFVzZXIKfQoKdHlwZSBNdXRhdGlvbiB7CiAgY3JlYXRlVXNlcihuYW1lOiBTdHJpbmchLCBlbWFpbDogU3RyaW5nISk6IFVzZXIKICB1cGRhdGVVc2VyKGlkOiBJRCEsIG5hbWU6IFN0cmluZywgZW1haWw6IFN0cmluZyk6IFVzZXIKICBkZWxldGVVc2VyKGlkOiBJRCEpOiBVc2VyCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># schema.graphql
+type User {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type Query {
+  users: [User]
+  user(id: ID!): User
+}
+
+type Mutation {
+  createUser(name: String!, email: String!): User
+  updateUser(id: ID!, name: String, email: String): User
+  deleteUser(id: ID!): User
+}</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gc2VydmVyLmpzCmNvbnN0IGV4cHJlc3MgPSByZXF1aXJlKCdleHByZXNzJyk7CmNvbnN0IHsgZ3JhcGhxbEhUVFAgfSA9IHJlcXVpcmUoJ2V4cHJlc3MtZ3JhcGhxbCcpOwpjb25zdCB7IGJ1aWxkU2NoZW1hIH0gPSByZXF1aXJlKCdncmFwaHFsJyk7CmNvbnN0IHJlc29sdmVycyA9IHJlcXVpcmUoJy4vcmVzb2x2ZXJzJyk7CmNvbnN0IHNjaGVtYSA9IGJ1aWxkU2NoZW1hKGAKICB0eXBlIFVzZXIgewogICAgaWQ6IElEIQogICAgbmFtZTogU3RyaW5nIQogICAgZW1haWw6IFN0cmluZyEKICB9CgogIHR5cGUgUXVlcnkgewogICAgdXNlcnM6IFtVc2VyXQogICAgdXNlcihpZDogSUQhKTogVXNlcgogIH0KCiAgdHlwZSBNdXRhdGlvbiB7CiAgICBjcmVhdGVVc2VyKG5hbWU6IFN0cmluZyEsIGVtYWlsOiBTdHJpbmchKTogVXNlcgogICAgdXBkYXRlVXNlcihpZDogSUQhLCBuYW1lOiBTdHJpbmcsIGVtYWlsOiBTdHJpbmcpOiBVc2VyCiAgICBkZWxldGVVc2VyKGlkOiBJRCEpOiBVc2VyCiAgfQpgKTsKCmNvbnN0IGFwcCA9IGV4cHJlc3MoKTsKCmFwcC51c2UoJy9ncmFwaHFsJywgZ3JhcGhxbEhUVFAoewogIHNjaGVtYTogc2NoZW1hLAogIHJvb3RWYWx1ZTogcmVzb2x2ZXJzLAogIGdyYXBoaXFsOiB0cnVlLAp9KSk7CgphcHAubGlzdGVuKDQwMDAsICgpID0+IGNvbnNvbGUubG9nKCdTZXJ2ZXIgcnVubmluZyBvbiBodHRwOi8vbG9jYWxob3N0OjQwMDAvZ3JhcGhxbCcpKTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// server.js
+const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
+const resolvers = require('./resolvers');
+const schema = buildSchema(`
+  type User {
+    id: ID!
+    name: String!
+    email: String!
+  }
+
+  type Query {
+    users: [User]
+    user(id: ID!): User
+  }
+
+  type Mutation {
+    createUser(name: String!, email: String!): User
+    updateUser(id: ID!, name: String, email: String): User
+    deleteUser(id: ID!): User
+  }
+`);
+
+const app = express();
+
+app.use('/graphql', graphqlHTTP({
+  schema: schema,
+  rootValue: resolvers,
+  graphiql: true,
+}));
+
+app.listen(4000, () =&gt; console.log('Server running on http://localhost:4000/graphql'));</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo conectar un servidor GraphQL a una base de datos utilizando Sequelize. Hemos cubierto la configuración de la conexión, la definición de modelos, la realización de consultas y mutaciones, y el manejo de errores comunes. Con estos conocimientos, estás preparado para manejar datos en tu aplicación GraphQL de manera eficiente y segura.</p>
+<p>En el próximo módulo, exploraremos estrategias avanzadas de obtención de datos y cómo optimizar el rendimiento de nuestras consultas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-05-custom-scalars' title="Escalares Personalizados">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-02-data-fetching-strategies' title="Estrategias de Obtención de Datos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

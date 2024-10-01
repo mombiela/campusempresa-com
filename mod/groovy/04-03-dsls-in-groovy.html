@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSLs en Groovy</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/groovy/04-03-dsls-in-groovy" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/groovy/04-03-dsls-in-groovy" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/groovy/04-03-dsls-in-groovy" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/groovy/04-03-dsls-in-groovy" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/groovy/04-03-dsls-in-groovy" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-ast-transformations' title="Transformaciones AST">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">DSLs en Groovy</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-groovy-java-integration' title="Integración de Groovy y Java">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a DSLs</h1>
+<div class='content'></div><h2>¿Qué es un DSL?</h2>
+<div class='content'><p>Un DSL (Domain-Specific Language) es un lenguaje de programación o especificación dedicado a un dominio particular. A diferencia de los lenguajes de propósito general (como Java o Python), los DSLs están diseñados para ser utilizados en un contexto específico, lo que los hace más expresivos y fáciles de usar en ese dominio.</p>
+</div><h2>Tipos de DSLs</h2>
+<div class='content'><ul>
+<li><strong>Internal DSLs</strong>: Se construyen dentro de un lenguaje de programación existente. Groovy es excelente para crear DSLs internos debido a su sintaxis flexible y capacidades de metaprogramación.</li>
+<li><strong>External DSLs</strong>: Se diseñan y construyen como lenguajes independientes, con su propia sintaxis y herramientas de análisis.</li>
+</ul>
+</div><h1>Ventajas de los DSLs en Groovy</h1>
+<div class='content'><ul>
+<li><strong>Sintaxis Concisa</strong>: Groovy permite una sintaxis más limpia y concisa, lo que facilita la creación de DSLs legibles.</li>
+<li><strong>Flexibilidad</strong>: La capacidad de Groovy para modificar y extender la sintaxis del lenguaje facilita la creación de DSLs.</li>
+<li><strong>Integración con Java</strong>: Los DSLs en Groovy pueden integrarse fácilmente con aplicaciones Java existentes.</li>
+</ul>
+</div><h1>Creación de un DSL en Groovy</h1>
+<div class='content'></div><h2>Ejemplo Práctico: DSL para Configuración de un Servidor Web</h2>
+<div class='content'><p>Vamos a crear un DSL simple para configurar un servidor web. Este DSL permitirá definir la configuración del servidor de una manera legible y concisa.</p>
+</div><h2>Paso 1: Definir la Estructura del DSL</h2>
+<div class='content'><p>Primero, definimos cómo queremos que se vea nuestro DSL. Por ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGhvc3QgJ2xvY2FsaG9zdCcKICAgIHBvcnQgODA4MAogICAgY29udGV4dFBhdGggJy9hcHAnCiAgICBzc2wgewogICAgICAgIGVuYWJsZWQgdHJ1ZQogICAgICAgIGtleVN0b3JlICdrZXlzdG9yZS5qa3MnCiAgICAgICAga2V5U3RvcmVQYXNzd29yZCAncGFzc3dvcmQnCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    host 'localhost'
+    port 8080
+    contextPath '/app'
+    ssl {
+        enabled true
+        keyStore 'keystore.jks'
+        keyStorePassword 'password'
+    }
+}</pre></div><div class='content'></div><h2>Paso 2: Implementar el DSL</h2>
+<div class='content'><h4>Definir Clases de Configuración</h4>
+<p>Definimos las clases que representarán la configuración del servidor:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgU2VydmVyQ29uZmlnIHsKICAgIFN0cmluZyBob3N0CiAgICBpbnQgcG9ydAogICAgU3RyaW5nIGNvbnRleHRQYXRoCiAgICBTU0xDb25maWcgc3NsID0gbmV3IFNTTENvbmZpZygpCgogICAgdm9pZCBob3N0KFN0cmluZyBob3N0KSB7CiAgICAgICAgdGhpcy5ob3N0ID0gaG9zdAogICAgfQoKICAgIHZvaWQgcG9ydChpbnQgcG9ydCkgewogICAgICAgIHRoaXMucG9ydCA9IHBvcnQKICAgIH0KCiAgICB2b2lkIGNvbnRleHRQYXRoKFN0cmluZyBjb250ZXh0UGF0aCkgewogICAgICAgIHRoaXMuY29udGV4dFBhdGggPSBjb250ZXh0UGF0aAogICAgfQoKICAgIHZvaWQgc3NsKENsb3N1cmUgY2xvc3VyZSkgewogICAgICAgIGNsb3N1cmUuZGVsZWdhdGUgPSBzc2wKICAgICAgICBjbG9zdXJlKCkKICAgIH0KfQoKY2xhc3MgU1NMQ29uZmlnIHsKICAgIGJvb2xlYW4gZW5hYmxlZAogICAgU3RyaW5nIGtleVN0b3JlCiAgICBTdHJpbmcga2V5U3RvcmVQYXNzd29yZAoKICAgIHZvaWQgZW5hYmxlZChib29sZWFuIGVuYWJsZWQpIHsKICAgICAgICB0aGlzLmVuYWJsZWQgPSBlbmFibGVkCiAgICB9CgogICAgdm9pZCBrZXlTdG9yZShTdHJpbmcga2V5U3RvcmUpIHsKICAgICAgICB0aGlzLmtleVN0b3JlID0ga2V5U3RvcmUKICAgIH0KCiAgICB2b2lkIGtleVN0b3JlUGFzc3dvcmQoU3RyaW5nIGtleVN0b3JlUGFzc3dvcmQpIHsKICAgICAgICB0aGlzLmtleVN0b3JlUGFzc3dvcmQgPSBrZXlTdG9yZVBhc3N3b3JkCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class ServerConfig {
+    String host
+    int port
+    String contextPath
+    SSLConfig ssl = new SSLConfig()
+
+    void host(String host) {
+        this.host = host
+    }
+
+    void port(int port) {
+        this.port = port
+    }
+
+    void contextPath(String contextPath) {
+        this.contextPath = contextPath
+    }
+
+    void ssl(Closure closure) {
+        closure.delegate = ssl
+        closure()
+    }
+}
+
+class SSLConfig {
+    boolean enabled
+    String keyStore
+    String keyStorePassword
+
+    void enabled(boolean enabled) {
+        this.enabled = enabled
+    }
+
+    void keyStore(String keyStore) {
+        this.keyStore = keyStore
+    }
+
+    void keyStorePassword(String keyStorePassword) {
+        this.keyStorePassword = keyStorePassword
+    }
+}</pre></div><div class='content'><h4>Crear el Método <code>server</code></h4>
+<p>Creamos un método <code>server</code> que acepte un <code>Closure</code> y configure el servidor:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIHNlcnZlcihDbG9zdXJlIGNsb3N1cmUpIHsKICAgIFNlcnZlckNvbmZpZyBjb25maWcgPSBuZXcgU2VydmVyQ29uZmlnKCkKICAgIGNsb3N1cmUuZGVsZWdhdGUgPSBjb25maWcKICAgIGNsb3N1cmUoKQogICAgcHJpbnRsbiAiU2VydmVyIGNvbmZpZ3VyZWQgd2l0aCBob3N0OiAke2NvbmZpZy5ob3N0fSwgcG9ydDogJHtjb25maWcucG9ydH0sIGNvbnRleHRQYXRoOiAke2NvbmZpZy5jb250ZXh0UGF0aH0iCiAgICBwcmludGxuICJTU0wgZW5hYmxlZDogJHtjb25maWcuc3NsLmVuYWJsZWR9LCBrZXlTdG9yZTogJHtjb25maWcuc3NsLmtleVN0b3JlfSIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def server(Closure closure) {
+    ServerConfig config = new ServerConfig()
+    closure.delegate = config
+    closure()
+    println &quot;Server configured with host: ${config.host}, port: ${config.port}, contextPath: ${config.contextPath}&quot;
+    println &quot;SSL enabled: ${config.ssl.enabled}, keyStore: ${config.ssl.keyStore}&quot;
+}</pre></div><div class='content'></div><h2>Paso 3: Usar el DSL</h2>
+<div class='content'><p>Ahora podemos usar nuestro DSL para configurar el servidor:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGhvc3QgJ2xvY2FsaG9zdCcKICAgIHBvcnQgODA4MAogICAgY29udGV4dFBhdGggJy9hcHAnCiAgICBzc2wgewogICAgICAgIGVuYWJsZWQgdHJ1ZQogICAgICAgIGtleVN0b3JlICdrZXlzdG9yZS5qa3MnCiAgICAgICAga2V5U3RvcmVQYXNzd29yZCAncGFzc3dvcmQnCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    host 'localhost'
+    port 8080
+    contextPath '/app'
+    ssl {
+        enabled true
+        keyStore 'keystore.jks'
+        keyStorePassword 'password'
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Clases de Configuración</strong>: <code>ServerConfig</code> y <code>SSLConfig</code> representan la configuración del servidor y SSL, respectivamente.</li>
+<li><strong>Métodos de Configuración</strong>: Los métodos como <code>host</code>, <code>port</code>, y <code>contextPath</code> en <code>ServerConfig</code> y <code>enabled</code>, <code>keyStore</code>, y <code>keyStorePassword</code> en <code>SSLConfig</code> permiten configurar las propiedades correspondientes.</li>
+<li><strong>Método <code>server</code></strong>: Este método crea una instancia de <code>ServerConfig</code>, delega el <code>Closure</code> a esta instancia y ejecuta el <code>Closure</code> para configurar el servidor.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Extender el DSL</h2>
+<div class='content'><p>Extiende el DSL para incluir la configuración de rutas en el servidor. La configuración de rutas debe permitir definir rutas y sus correspondientes controladores.</p>
+<h4>Ejemplo de Uso</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGhvc3QgJ2xvY2FsaG9zdCcKICAgIHBvcnQgODA4MAogICAgY29udGV4dFBhdGggJy9hcHAnCiAgICByb3V0ZXMgewogICAgICAgIHJvdXRlKCcvaG9tZScsICdIb21lQ29udHJvbGxlcicpCiAgICAgICAgcm91dGUoJy9sb2dpbicsICdMb2dpbkNvbnRyb2xsZXInKQogICAgfQogICAgc3NsIHsKICAgICAgICBlbmFibGVkIHRydWUKICAgICAgICBrZXlTdG9yZSAna2V5c3RvcmUuamtzJwogICAgICAgIGtleVN0b3JlUGFzc3dvcmQgJ3Bhc3N3b3JkJwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    host 'localhost'
+    port 8080
+    contextPath '/app'
+    routes {
+        route('/home', 'HomeController')
+        route('/login', 'LoginController')
+    }
+    ssl {
+        enabled true
+        keyStore 'keystore.jks'
+        keyStorePassword 'password'
+    }
+}</pre></div><div class='content'><h4>Solución</h4>
+<ol>
+<li><strong>Agregar Clase <code>RouteConfig</code></strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgUm91dGVDb25maWcgewogICAgTGlzdDxNYXA8U3RyaW5nLCBTdHJpbmc+PiByb3V0ZXMgPSBbXQoKICAgIHZvaWQgcm91dGUoU3RyaW5nIHBhdGgsIFN0cmluZyBjb250cm9sbGVyKSB7CiAgICAgICAgcm91dGVzIDw8IFtwYXRoOiBwYXRoLCBjb250cm9sbGVyOiBjb250cm9sbGVyXQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class RouteConfig {
+    List&lt;Map&lt;String, String&gt;&gt; routes = []
+
+    void route(String path, String controller) {
+        routes &lt;&lt; [path: path, controller: controller]
+    }
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Modificar <code>ServerConfig</code></strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgU2VydmVyQ29uZmlnIHsKICAgIFN0cmluZyBob3N0CiAgICBpbnQgcG9ydAogICAgU3RyaW5nIGNvbnRleHRQYXRoCiAgICBTU0xDb25maWcgc3NsID0gbmV3IFNTTENvbmZpZygpCiAgICBSb3V0ZUNvbmZpZyByb3V0ZXMgPSBuZXcgUm91dGVDb25maWcoKQoKICAgIHZvaWQgaG9zdChTdHJpbmcgaG9zdCkgewogICAgICAgIHRoaXMuaG9zdCA9IGhvc3QKICAgIH0KCiAgICB2b2lkIHBvcnQoaW50IHBvcnQpIHsKICAgICAgICB0aGlzLnBvcnQgPSBwb3J0CiAgICB9CgogICAgdm9pZCBjb250ZXh0UGF0aChTdHJpbmcgY29udGV4dFBhdGgpIHsKICAgICAgICB0aGlzLmNvbnRleHRQYXRoID0gY29udGV4dFBhdGgKICAgIH0KCiAgICB2b2lkIHNzbChDbG9zdXJlIGNsb3N1cmUpIHsKICAgICAgICBjbG9zdXJlLmRlbGVnYXRlID0gc3NsCiAgICAgICAgY2xvc3VyZSgpCiAgICB9CgogICAgdm9pZCByb3V0ZXMoQ2xvc3VyZSBjbG9zdXJlKSB7CiAgICAgICAgY2xvc3VyZS5kZWxlZ2F0ZSA9IHJvdXRlcwogICAgICAgIGNsb3N1cmUoKQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class ServerConfig {
+    String host
+    int port
+    String contextPath
+    SSLConfig ssl = new SSLConfig()
+    RouteConfig routes = new RouteConfig()
+
+    void host(String host) {
+        this.host = host
+    }
+
+    void port(int port) {
+        this.port = port
+    }
+
+    void contextPath(String contextPath) {
+        this.contextPath = contextPath
+    }
+
+    void ssl(Closure closure) {
+        closure.delegate = ssl
+        closure()
+    }
+
+    void routes(Closure closure) {
+        closure.delegate = routes
+        closure()
+    }
+}</pre></div><div class='content'><ol start="3">
+<li><strong>Usar el DSL Extendido</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGhvc3QgJ2xvY2FsaG9zdCcKICAgIHBvcnQgODA4MAogICAgY29udGV4dFBhdGggJy9hcHAnCiAgICByb3V0ZXMgewogICAgICAgIHJvdXRlKCcvaG9tZScsICdIb21lQ29udHJvbGxlcicpCiAgICAgICAgcm91dGUoJy9sb2dpbicsICdMb2dpbkNvbnRyb2xsZXInKQogICAgfQogICAgc3NsIHsKICAgICAgICBlbmFibGVkIHRydWUKICAgICAgICBrZXlTdG9yZSAna2V5c3RvcmUuamtzJwogICAgICAgIGtleVN0b3JlUGFzc3dvcmQgJ3Bhc3N3b3JkJwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    host 'localhost'
+    port 8080
+    contextPath '/app'
+    routes {
+        route('/home', 'HomeController')
+        route('/login', 'LoginController')
+    }
+    ssl {
+        enabled true
+        keyStore 'keystore.jks'
+        keyStorePassword 'password'
+    }
+}</pre></div><div class='content'></div><h2>Retroalimentación y Consejos</h2>
+<div class='content'><ul>
+<li><strong>Errores Comunes</strong>: Asegúrate de que los métodos en las clases de configuración coincidan exactamente con los nombres utilizados en el DSL.</li>
+<li><strong>Consejo</strong>: Utiliza la delegación de <code>Closure</code> para mantener el código limpio y legible.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido qué son los DSLs y cómo crear un DSL interno en Groovy. Hemos visto un ejemplo práctico de un DSL para configurar un servidor web y extendido el DSL para incluir la configuración de rutas. Los DSLs en Groovy pueden hacer que el código sea más legible y expresivo, especialmente en dominios específicos.</p>
+<p>En el próximo módulo, exploraremos la integración de Groovy con Java, lo que nos permitirá aprovechar las fortalezas de ambos lenguajes en nuestras aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-ast-transformations' title="Transformaciones AST">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-groovy-java-integration' title="Integración de Groovy y Java">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

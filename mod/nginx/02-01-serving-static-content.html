@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sirviendo Contenido Estático</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/02-01-serving-static-content" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/02-01-serving-static-content" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/02-01-serving-static-content" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/02-01-serving-static-content" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/02-01-serving-static-content" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-04-starting-stopping-nginx' title="Iniciando y Deteniendo NGINX">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Sirviendo Contenido Estático</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-02-directory-listings' title="Listados de Directorios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo configurar NGINX para servir contenido estático, como archivos HTML, imágenes, CSS y JavaScript. Este es uno de los usos más comunes de NGINX y es fundamental para cualquier servidor web.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Contenido Estático</strong>: Archivos que no cambian con frecuencia y se sirven tal cual desde el servidor.</li>
+<li><strong>Directiva <code>location</code></strong>: Utilizada para definir cómo NGINX debe manejar las solicitudes a diferentes rutas.</li>
+<li><strong>Raíz del Documento (<code>root</code>)</strong>: El directorio en el servidor donde se almacenan los archivos estáticos.</li>
+</ol>
+</div><h1>Configuración Básica</h1>
+<div class='content'></div><h2>Paso 1: Estructura de Directorios</h2>
+<div class='content'><p>Primero, asegúrate de tener una estructura de directorios adecuada para tus archivos estáticos. Por ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("L3Zhci93d3cvaHRtbC8KICAgIOKUnOKUgOKUgCBpbmRleC5odG1sCiAgICDilJzilIDilIAgYWJvdXQuaHRtbAogICAg4pSc4pSA4pSAIGNzcy8KICAgIOKUgiAgIOKUlOKUgOKUgCBzdHlsZXMuY3NzCiAgICDilJTilIDilIAgaW1hZ2VzLwogICAgICAgIOKUlOKUgOKUgCBsb2dvLnBuZw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>/var/www/html/
+    ├── index.html
+    ├── about.html
+    ├── css/
+    │   └── styles.css
+    └── images/
+        └── logo.png</pre></div><div class='content'></div><h2>Paso 2: Configuración del Bloque `server`</h2>
+<div class='content'><p>Edita el archivo de configuración de NGINX, generalmente ubicado en <code>/etc/nginx/nginx.conf</code> o en un archivo específico del sitio en <code>/etc/nginx/sites-available/</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHJvb3QgL3Zhci93d3cvaHRtbDsKICAgICAgICBpbmRleCBpbmRleC5odG1sOwogICAgfQoKICAgIGxvY2F0aW9uIC9pbWFnZXMvIHsKICAgICAgICByb290IC92YXIvd3d3L2h0bWw7CiAgICB9CgogICAgbG9jYXRpb24gL2Nzcy8gewogICAgICAgIHJvb3QgL3Zhci93d3cvaHRtbDsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        root /var/www/html;
+        index index.html;
+    }
+
+    location /images/ {
+        root /var/www/html;
+    }
+
+    location /css/ {
+        root /var/www/html;
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong><code>listen 80;</code></strong>: NGINX escuchará en el puerto 80 (HTTP).</li>
+<li><strong><code>server_name example.com;</code></strong>: Define el nombre del servidor.</li>
+<li><strong><code>location / { ... }</code></strong>: Configura la raíz del documento para la ruta <code>/</code>. La directiva <code>root</code> especifica el directorio donde se encuentran los archivos estáticos.</li>
+<li><strong><code>index index.html;</code></strong>: Define el archivo predeterminado que se servirá cuando se acceda a la raíz del sitio.</li>
+<li><strong><code>location /images/ { ... }</code> y <code>location /css/ { ... }</code></strong>: Configura rutas específicas para servir imágenes y archivos CSS.</li>
+</ul>
+</div><h2>Paso 3: Recargar NGINX</h2>
+<div class='content'><p>Después de realizar cambios en la configuración, recarga NGINX para aplicar los cambios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgcmVsb2FkIG5naW54"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl reload nginx</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Supongamos que tienes un archivo <code>index.html</code> en <code>/var/www/html/</code> con el siguiente contenido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8dGl0bGU+V2VsY29tZSB0byBOR0lOWDwvdGl0bGU+CiAgICA8bGluayByZWw9InN0eWxlc2hlZXQiIGhyZWY9Ii9jc3Mvc3R5bGVzLmNzcyI+CjwvaGVhZD4KPGJvZHk+CiAgICA8aDE+V2VsY29tZSB0byBOR0lOWDwvaDE+CiAgICA8aW1nIHNyYz0iL2ltYWdlcy9sb2dvLnBuZyIgYWx0PSJMb2dvIj4KPC9ib2R5Pgo8L2h0bWw+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+    &lt;meta charset=&quot;UTF-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+    &lt;title&gt;Welcome to NGINX&lt;/title&gt;
+    &lt;link rel=&quot;stylesheet&quot; href=&quot;/css/styles.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to NGINX&lt;/h1&gt;
+    &lt;img src=&quot;/images/logo.png&quot; alt=&quot;Logo&quot;&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre></div><div class='content'><p>Y un archivo CSS en <code>/var/www/html/css/styles.css</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ym9keSB7CiAgICBmb250LWZhbWlseTogQXJpYWwsIHNhbnMtc2VyaWY7CiAgICB0ZXh0LWFsaWduOiBjZW50ZXI7CiAgICBiYWNrZ3JvdW5kLWNvbG9yOiAjZjBmMGYwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}</pre></div><div class='content'><p>Con esta configuración, al acceder a <code>http://example.com</code>, NGINX servirá el archivo <code>index.html</code>, y los archivos CSS e imágenes se cargarán correctamente.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar un Nuevo Sitio</h2>
+<div class='content'><ol>
+<li>Crea una nueva estructura de directorios para un sitio web en <code>/var/www/mywebsite/</code>.</li>
+<li>Añade un archivo <code>index.html</code> con contenido básico.</li>
+<li>Configura NGINX para servir este nuevo sitio en <code>http://mywebsite.local</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Crear la estructura de directorios:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBta2RpciAtcCAvdmFyL3d3dy9teXdlYnNpdGUKZWNobyAiPGgxPldlbGNvbWUgdG8gTXkgV2Vic2l0ZTwvaDE+IiB8IHN1ZG8gdGVlIC92YXIvd3d3L215d2Vic2l0ZS9pbmRleC5odG1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo mkdir -p /var/www/mywebsite
+echo &quot;&lt;h1&gt;Welcome to My Website&lt;/h1&gt;&quot; | sudo tee /var/www/mywebsite/index.html</pre></div><div class='content'><ol start="2">
+<li>Configurar NGINX:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIG15d2Vic2l0ZS5sb2NhbDsKCiAgICBsb2NhdGlvbiAvIHsKICAgICAgICByb290IC92YXIvd3d3L215d2Vic2l0ZTsKICAgICAgICBpbmRleCBpbmRleC5odG1sOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name mywebsite.local;
+
+    location / {
+        root /var/www/mywebsite;
+        index index.html;
+    }
+}</pre></div><div class='content'><ol start="3">
+<li>Recargar NGINX:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgcmVsb2FkIG5naW54"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl reload nginx</pre></div><div class='content'><ol start="4">
+<li>Añadir <code>mywebsite.local</code> a tu archivo <code>/etc/hosts</code> para probar localmente:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZWNobyAiMTI3LjAuMC4xIG15d2Vic2l0ZS5sb2NhbCIgfCBzdWRvIHRlZSAtYSAvZXRjL2hvc3Rz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>echo &quot;127.0.0.1 mywebsite.local&quot; | sudo tee -a /etc/hosts</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar NGINX para servir contenido estático. Este es un paso fundamental para cualquier servidor web y sienta las bases para configuraciones más avanzadas. En el próximo tema, exploraremos cómo habilitar listados de directorios en NGINX.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-04-starting-stopping-nginx' title="Iniciando y Deteniendo NGINX">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='02-02-directory-listings' title="Listados de Directorios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

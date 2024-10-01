@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoencoders</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/deep_learning/05-02-autoencoders" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/deep_learning/05-02-autoencoders" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/deep_learning/05-02-autoencoders" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/deep_learning/05-02-autoencoders" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/deep_learning/05-02-autoencoders" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-redes-generativas-adversariales' title="Redes Generativas Adversariales (GAN)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Autoencoders</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-transfer-learning' title="Transfer Learning">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Los autoencoders son un tipo de red neuronal utilizada para aprender representaciones eficientes de los datos, típicamente para reducción de dimensionalidad o para generación de datos. A diferencia de las redes neuronales tradicionales que se entrenan para predecir una etiqueta de clase, los autoencoders se entrenan para reconstruir su entrada.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ol>
+<li><strong>Codificador (Encoder)</strong>: Transforma la entrada en una representación de menor dimensión.</li>
+<li><strong>Decodificador (Decoder)</strong>: Reconstruye la entrada original a partir de la representación de menor dimensión.</li>
+<li><strong>Capa Latente</strong>: La capa intermedia que contiene la representación comprimida de la entrada.</li>
+</ol>
+</div><h1>Arquitectura de un Autoencoder</h1>
+<div class='content'><p>Un autoencoder típico consta de tres partes principales:</p>
+<ol>
+<li><strong>Entrada</strong>: Los datos originales que se desean comprimir.</li>
+<li><strong>Codificador (Encoder)</strong>: Una red neuronal que reduce la dimensionalidad de la entrada.</li>
+<li><strong>Capa Latente</strong>: La representación comprimida de los datos.</li>
+<li><strong>Decodificador (Decoder)</strong>: Una red neuronal que reconstruye los datos originales a partir de la capa latente.</li>
+<li><strong>Salida</strong>: La reconstrucción de los datos originales.</li>
+</ol>
+</div><h2>Ejemplo de Arquitectura</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmxheWVycyBpbXBvcnQgSW5wdXQsIERlbnNlCmZyb20gdGVuc29yZmxvdy5rZXJhcy5tb2RlbHMgaW1wb3J0IE1vZGVsCgojIERlZmluaXIgZWwgdGFtYcOxbyBkZSBsYSBlbnRyYWRhCmlucHV0X2RpbSA9IDc4NCAgIyBQb3IgZWplbXBsbywgaW3DoWdlbmVzIGRlIDI4eDI4IHDDrXhlbGVzCmVuY29kaW5nX2RpbSA9IDMyICAjIERpbWVuc2lvbmFsaWRhZCBkZSBsYSBjYXBhIGxhdGVudGUKCiMgRGVmaW5pciBsYSBjYXBhIGRlIGVudHJhZGEKaW5wdXRfaW1nID0gSW5wdXQoc2hhcGU9KGlucHV0X2RpbSwpKQoKIyBEZWZpbmlyIGVsIGNvZGlmaWNhZG9yCmVuY29kZWQgPSBEZW5zZShlbmNvZGluZ19kaW0sIGFjdGl2YXRpb249J3JlbHUnKShpbnB1dF9pbWcpCgojIERlZmluaXIgZWwgZGVjb2RpZmljYWRvcgpkZWNvZGVkID0gRGVuc2UoaW5wdXRfZGltLCBhY3RpdmF0aW9uPSdzaWdtb2lkJykoZW5jb2RlZCkKCiMgQ3JlYXIgZWwgbW9kZWxvIGRlbCBhdXRvZW5jb2RlcgphdXRvZW5jb2RlciA9IE1vZGVsKGlucHV0X2ltZywgZGVjb2RlZCkKCiMgQ29tcGlsYXIgZWwgbW9kZWxvCmF1dG9lbmNvZGVyLmNvbXBpbGUob3B0aW1pemVyPSdhZGFtJywgbG9zcz0nYmluYXJ5X2Nyb3NzZW50cm9weScpCgojIFJlc3VtZW4gZGVsIG1vZGVsbwphdXRvZW5jb2Rlci5zdW1tYXJ5KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.layers import Input, Dense
+from tensorflow.keras.models import Model
+
+# Definir el tama&ntilde;o de la entrada
+input_dim = 784  # Por ejemplo, im&aacute;genes de 28x28 p&iacute;xeles
+encoding_dim = 32  # Dimensionalidad de la capa latente
+
+# Definir la capa de entrada
+input_img = Input(shape=(input_dim,))
+
+# Definir el codificador
+encoded = Dense(encoding_dim, activation='relu')(input_img)
+
+# Definir el decodificador
+decoded = Dense(input_dim, activation='sigmoid')(encoded)
+
+# Crear el modelo del autoencoder
+autoencoder = Model(input_img, decoded)
+
+# Compilar el modelo
+autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+
+# Resumen del modelo
+autoencoder.summary()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Input</strong>: La capa de entrada tiene una forma de <code>(input_dim,)</code>, que en este caso es 784 (28x28 píxeles).</li>
+<li><strong>Encoder</strong>: La capa <code>Dense</code> con <code>encoding_dim</code> neuronas y activación <code>relu</code> reduce la dimensionalidad de la entrada.</li>
+<li><strong>Decoder</strong>: La capa <code>Dense</code> con <code>input_dim</code> neuronas y activación <code>sigmoid</code> reconstruye la entrada original.</li>
+<li><strong>Model</strong>: El modelo se define desde la entrada hasta la salida reconstruida.</li>
+<li><strong>Compilación</strong>: El modelo se compila con el optimizador <code>adam</code> y la función de pérdida <code>binary_crossentropy</code>.</li>
+</ul>
+</div><h1>Entrenamiento del Autoencoder</h1>
+<div class='content'><p>Para entrenar el autoencoder, se utilizan los mismos datos tanto para la entrada como para la salida.</p>
+</div><h2>Ejemplo de Entrenamiento</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB0ZW5zb3JmbG93LmtlcmFzLmRhdGFzZXRzIGltcG9ydCBtbmlzdAppbXBvcnQgbnVtcHkgYXMgbnAKCiMgQ2FyZ2FyIGVsIGNvbmp1bnRvIGRlIGRhdG9zIE1OSVNUCih4X3RyYWluLCBfKSwgKHhfdGVzdCwgXykgPSBtbmlzdC5sb2FkX2RhdGEoKQoKIyBOb3JtYWxpemFyIGxvcyBkYXRvcwp4X3RyYWluID0geF90cmFpbi5hc3R5cGUoJ2Zsb2F0MzInKSAvIDI1NS4KeF90ZXN0ID0geF90ZXN0LmFzdHlwZSgnZmxvYXQzMicpIC8gMjU1Lgp4X3RyYWluID0geF90cmFpbi5yZXNoYXBlKChsZW4oeF90cmFpbiksIG5wLnByb2QoeF90cmFpbi5zaGFwZVsxOl0pKSkKeF90ZXN0ID0geF90ZXN0LnJlc2hhcGUoKGxlbih4X3Rlc3QpLCBucC5wcm9kKHhfdGVzdC5zaGFwZVsxOl0pKSkKCiMgRW50cmVuYXIgZWwgYXV0b2VuY29kZXIKYXV0b2VuY29kZXIuZml0KHhfdHJhaW4sIHhfdHJhaW4sCiAgICAgICAgICAgICAgICBlcG9jaHM9NTAsCiAgICAgICAgICAgICAgICBiYXRjaF9zaXplPTI1NiwKICAgICAgICAgICAgICAgIHNodWZmbGU9VHJ1ZSwKICAgICAgICAgICAgICAgIHZhbGlkYXRpb25fZGF0YT0oeF90ZXN0LCB4X3Rlc3QpKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from tensorflow.keras.datasets import mnist
+import numpy as np
+
+# Cargar el conjunto de datos MNIST
+(x_train, _), (x_test, _) = mnist.load_data()
+
+# Normalizar los datos
+x_train = x_train.astype('float32') / 255.
+x_test = x_test.astype('float32') / 255.
+x_train = x_train.reshape((len(x_train), np.prod(x_train.shape[1:])))
+x_test = x_test.reshape((len(x_test), np.prod(x_test.shape[1:])))
+
+# Entrenar el autoencoder
+autoencoder.fit(x_train, x_train,
+                epochs=50,
+                batch_size=256,
+                shuffle=True,
+                validation_data=(x_test, x_test))</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Carga de Datos</strong>: Se carga el conjunto de datos MNIST.</li>
+<li><strong>Normalización</strong>: Los datos se normalizan para que estén en el rango [0, 1].</li>
+<li><strong>Reshape</strong>: Los datos se remodelan para que sean vectores de 784 elementos.</li>
+<li><strong>Entrenamiento</strong>: El autoencoder se entrena usando los datos de entrenamiento, con 50 épocas y un tamaño de lote de 256.</li>
+</ul>
+</div><h1>Evaluación y Uso del Autoencoder</h1>
+<div class='content'><p>Una vez entrenado, el autoencoder puede ser utilizado para varias tareas, como la reducción de dimensionalidad o la detección de anomalías.</p>
+</div><h2>Ejemplo de Uso</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDb2RpZmljYXIgeSBkZWNvZGlmaWNhciBhbGd1bmFzIGltw6FnZW5lcyBkZWwgY29uanVudG8gZGUgcHJ1ZWJhCmVuY29kZWRfaW1ncyA9IGF1dG9lbmNvZGVyLnByZWRpY3QoeF90ZXN0KQoKIyBNb3N0cmFyIGxhcyBpbcOhZ2VuZXMgb3JpZ2luYWxlcyB5IGxhcyByZWNvbnN0cnVpZGFzCmltcG9ydCBtYXRwbG90bGliLnB5cGxvdCBhcyBwbHQKCm4gPSAxMCAgIyBOw7ptZXJvIGRlIGTDrWdpdG9zIGEgbW9zdHJhcgpwbHQuZmlndXJlKGZpZ3NpemU9KDIwLCA0KSkKZm9yIGkgaW4gcmFuZ2Uobik6CiAgICAjIE1vc3RyYXIgaW3DoWdlbmVzIG9yaWdpbmFsZXMKICAgIGF4ID0gcGx0LnN1YnBsb3QoMiwgbiwgaSArIDEpCiAgICBwbHQuaW1zaG93KHhfdGVzdFtpXS5yZXNoYXBlKDI4LCAyOCkpCiAgICBwbHQuZ3JheSgpCiAgICBheC5nZXRfeGF4aXMoKS5zZXRfdmlzaWJsZShGYWxzZSkKICAgIGF4LmdldF95YXhpcygpLnNldF92aXNpYmxlKEZhbHNlKQoKICAgICMgTW9zdHJhciBpbcOhZ2VuZXMgcmVjb25zdHJ1aWRhcwogICAgYXggPSBwbHQuc3VicGxvdCgyLCBuLCBpICsgMSArIG4pCiAgICBwbHQuaW1zaG93KGVuY29kZWRfaW1nc1tpXS5yZXNoYXBlKDI4LCAyOCkpCiAgICBwbHQuZ3JheSgpCiAgICBheC5nZXRfeGF4aXMoKS5zZXRfdmlzaWJsZShGYWxzZSkKICAgIGF4LmdldF95YXhpcygpLnNldF92aXNpYmxlKEZhbHNlKQpwbHQuc2hvdygp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Codificar y decodificar algunas im&aacute;genes del conjunto de prueba
+encoded_imgs = autoencoder.predict(x_test)
+
+# Mostrar las im&aacute;genes originales y las reconstruidas
+import matplotlib.pyplot as plt
+
+n = 10  # N&uacute;mero de d&iacute;gitos a mostrar
+plt.figure(figsize=(20, 4))
+for i in range(n):
+    # Mostrar im&aacute;genes originales
+    ax = plt.subplot(2, n, i + 1)
+    plt.imshow(x_test[i].reshape(28, 28))
+    plt.gray()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+
+    # Mostrar im&aacute;genes reconstruidas
+    ax = plt.subplot(2, n, i + 1 + n)
+    plt.imshow(encoded_imgs[i].reshape(28, 28))
+    plt.gray()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+plt.show()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Codificación y Decodificación</strong>: Se utilizan los datos de prueba para obtener las imágenes reconstruidas.</li>
+<li><strong>Visualización</strong>: Se muestran las imágenes originales y las reconstruidas para comparar la calidad de la reconstrucción.</li>
+</ul>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Modificar la Dimensionalidad de la Capa Latente</h2>
+<div class='content'><p>Modifica el valor de <code>encoding_dim</code> en el ejemplo anterior y observa cómo afecta la calidad de la reconstrucción.</p>
+</div><h2>Ejercicio 2: Añadir Capas Adicionales</h2>
+<div class='content'><p>Añade capas adicionales al codificador y al decodificador para ver cómo afecta esto al rendimiento del autoencoder.</p>
+</div><h2>Ejercicio 3: Aplicación en Detección de Anomalías</h2>
+<div class='content'><p>Utiliza el autoencoder entrenado para detectar anomalías en un conjunto de datos. Las anomalías pueden ser identificadas como aquellas entradas cuya reconstrucción tiene un error mayor a un umbral determinado.</p>
+<h4>Solución Propuesta para el Ejercicio 3</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDYWxjdWxhciBlbCBlcnJvciBkZSByZWNvbnN0cnVjY2nDs24KcmVjb25zdHJ1Y3RlZF9pbWdzID0gYXV0b2VuY29kZXIucHJlZGljdCh4X3Rlc3QpCnJlY29uc3RydWN0aW9uX2Vycm9yID0gbnAubWVhbihucC5zcXVhcmUoeF90ZXN0IC0gcmVjb25zdHJ1Y3RlZF9pbWdzKSwgYXhpcz0xKQoKIyBEZWZpbmlyIHVuIHVtYnJhbCBwYXJhIGxhcyBhbm9tYWzDrWFzCnRocmVzaG9sZCA9IG5wLnBlcmNlbnRpbGUocmVjb25zdHJ1Y3Rpb25fZXJyb3IsIDk1KQoKIyBJZGVudGlmaWNhciBsYXMgYW5vbWFsw61hcwphbm9tYWxpZXMgPSByZWNvbnN0cnVjdGlvbl9lcnJvciA+IHRocmVzaG9sZAoKIyBNb3N0cmFyIGFsZ3VuYXMgYW5vbWFsw61hcwphbm9tYWxvdXNfaW1hZ2VzID0geF90ZXN0W2Fub21hbGllc10KcGx0LmZpZ3VyZShmaWdzaXplPSgyMCwgNCkpCmZvciBpIGluIHJhbmdlKDEwKToKICAgIGF4ID0gcGx0LnN1YnBsb3QoMSwgMTAsIGkgKyAxKQogICAgcGx0Lmltc2hvdyhhbm9tYWxvdXNfaW1hZ2VzW2ldLnJlc2hhcGUoMjgsIDI4KSkKICAgIHBsdC5ncmF5KCkKICAgIGF4LmdldF94YXhpcygpLnNldF92aXNpYmxlKEZhbHNlKQogICAgYXguZ2V0X3lheGlzKCkuc2V0X3Zpc2libGUoRmFsc2UpCnBsdC5zaG93KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Calcular el error de reconstrucci&oacute;n
+reconstructed_imgs = autoencoder.predict(x_test)
+reconstruction_error = np.mean(np.square(x_test - reconstructed_imgs), axis=1)
+
+# Definir un umbral para las anomal&iacute;as
+threshold = np.percentile(reconstruction_error, 95)
+
+# Identificar las anomal&iacute;as
+anomalies = reconstruction_error &gt; threshold
+
+# Mostrar algunas anomal&iacute;as
+anomalous_images = x_test[anomalies]
+plt.figure(figsize=(20, 4))
+for i in range(10):
+    ax = plt.subplot(1, 10, i + 1)
+    plt.imshow(anomalous_images[i].reshape(28, 28))
+    plt.gray()
+    ax.get_xaxis().set_visible(False)
+    ax.get_yaxis().set_visible(False)
+plt.show()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Error de Reconstrucción</strong>: Se calcula el error cuadrático medio entre las imágenes originales y las reconstruidas.</li>
+<li><strong>Umbral</strong>: Se define un umbral basado en el percentil 95 del error de reconstrucción.</li>
+<li><strong>Detección de Anomalías</strong>: Se identifican las imágenes cuyo error de reconstrucción es mayor al umbral y se muestran algunas de ellas.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Los autoencoders son una herramienta poderosa en el campo del Deep Learning, especialmente útiles para la reducción de dimensionalidad, la generación de datos y la detección de anomalías. A través de este módulo, hemos explorado su arquitectura, entrenamiento y aplicaciones prácticas. Con los ejercicios propuestos, se espera que los estudiantes puedan experimentar y profundizar en el uso de autoencoders para resolver problemas complejos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-redes-generativas-adversariales' title="Redes Generativas Adversariales (GAN)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-transfer-learning' title="Transfer Learning">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

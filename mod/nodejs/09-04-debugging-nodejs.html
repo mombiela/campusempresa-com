@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Depuración de Aplicaciones Node.js</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/09-04-debugging-nodejs" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/09-04-debugging-nodejs" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/09-04-debugging-nodejs" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nodejs/09-04-debugging-nodejs" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/09-04-debugging-nodejs" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-integration-testing' title="Pruebas de Integración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Depuración de Aplicaciones Node.js</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-cluster-module' title="Módulo Cluster">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La depuración es una habilidad esencial para cualquier desarrollador. En este módulo, aprenderás cómo identificar y corregir errores en tus aplicaciones Node.js utilizando diversas herramientas y técnicas. La depuración efectiva puede ahorrarte mucho tiempo y esfuerzo, y te ayudará a entender mejor cómo funciona tu código.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-la-depuración">Introducción a la Depuración</a></li>
+<li><a href="#uso-de-consolelog">Uso de <code>console.log</code></a></li>
+<li><a href="#depuración-con-el-inspector-de-nodejs">Depuración con el Inspector de Node.js</a></li>
+<li><a href="#depuración-con-visual-studio-code">Depuración con Visual Studio Code</a></li>
+<li><a href="#errores-comunes-y-cómo-solucionarlos">Errores Comunes y Cómo Solucionarlos</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+</ol>
+</div><h1>Introducción a la Depuración</h1>
+<div class='content'><p>La depuración es el proceso de identificar y corregir errores en el código. En Node.js, hay varias herramientas y técnicas que puedes utilizar para depurar tus aplicaciones de manera efectiva.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='content'><ul>
+<li><strong>Errores de Sintaxis</strong>: Errores en la estructura del código que impiden que se ejecute.</li>
+<li><strong>Errores de Ejecución</strong>: Errores que ocurren durante la ejecución del programa.</li>
+<li><strong>Errores Lógicos</strong>: Errores en la lógica del programa que producen resultados incorrectos.</li>
+</ul>
+</div><h1>Uso de `console.log`</h1>
+<div class='content'><p>Una de las formas más simples y comunes de depurar es utilizando <code>console.log</code> para imprimir valores y mensajes en la consola.</p>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gYWRkKGEsIGIpIHsKICAgIGNvbnNvbGUubG9nKCdhOicsIGEpOwogICAgY29uc29sZS5sb2coJ2I6JywgYik7CiAgICByZXR1cm4gYSArIGI7Cn0KCmNvbnN0IHJlc3VsdCA9IGFkZCg1LCAzKTsKY29uc29sZS5sb2coJ1Jlc3VsdDonLCByZXN1bHQpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function add(a, b) {
+    console.log('a:', a);
+    console.log('b:', b);
+    return a + b;
+}
+
+const result = add(5, 3);
+console.log('Result:', result);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong><code>console.log('a:', a);</code></strong>: Imprime el valor de <code>a</code> en la consola.</li>
+<li><strong><code>console.log('b:', b);</code></strong>: Imprime el valor de <code>b</code> en la consola.</li>
+<li><strong><code>console.log('Result:', result);</code></strong>: Imprime el resultado de la función <code>add</code>.</li>
+</ul>
+</div><h1>Depuración con el Inspector de Node.js</h1>
+<div class='content'><p>Node.js incluye un inspector integrado que te permite depurar tu código de manera interactiva.</p>
+</div><h2>Pasos para Usar el Inspector</h2>
+<div class='content'><ol>
+<li><strong>Inicia tu aplicación con el inspector</strong>:
+<pre><code class="language-bash">node --inspect-brk app.js
+</code></pre>
+</li>
+<li><strong>Abre Chrome y navega a <code>chrome://inspect</code></strong>.</li>
+<li><strong>Haz clic en &quot;Open dedicated DevTools for Node&quot;</strong>.</li>
+</ol>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gYWRkKGEsIGIpIHsKICAgIGRlYnVnZ2VyOyAvLyBQYXVzYSBsYSBlamVjdWNpw7NuIGFxdcOtCiAgICByZXR1cm4gYSArIGI7Cn0KCmNvbnN0IHJlc3VsdCA9IGFkZCg1LCAzKTsKY29uc29sZS5sb2coJ1Jlc3VsdDonLCByZXN1bHQpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function add(a, b) {
+    debugger; // Pausa la ejecuci&oacute;n aqu&iacute;
+    return a + b;
+}
+
+const result = add(5, 3);
+console.log('Result:', result);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong><code>debugger;</code></strong>: Pausa la ejecución del programa en esta línea, permitiéndote inspeccionar el estado del programa.</li>
+</ul>
+</div><h1>Depuración con Visual Studio Code</h1>
+<div class='content'><p>Visual Studio Code (VS Code) es una herramienta poderosa para depurar aplicaciones Node.js.</p>
+</div><h2>Configuración</h2>
+<div class='content'><ol>
+<li><strong>Abre tu proyecto en VS Code</strong>.</li>
+<li><strong>Crea un archivo <code>launch.json</code></strong>:
+<pre><code class="language-json">{
+    &quot;version&quot;: &quot;0.2.0&quot;,
+    &quot;configurations&quot;: [
+        {
+            &quot;type&quot;: &quot;node&quot;,
+            &quot;request&quot;: &quot;launch&quot;,
+            &quot;name&quot;: &quot;Launch Program&quot;,
+            &quot;program&quot;: &quot;${workspaceFolder}/app.js&quot;
+        }
+    ]
+}
+</code></pre>
+</li>
+<li><strong>Inicia la depuración</strong>:
+<ul>
+<li>Haz clic en el icono de depuración en la barra lateral.</li>
+<li>Selecciona &quot;Launch Program&quot; y haz clic en el botón de inicio.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gYWRkKGEsIGIpIHsKICAgIHJldHVybiBhICsgYjsKfQoKY29uc3QgcmVzdWx0ID0gYWRkKDUsIDMpOwpjb25zb2xlLmxvZygnUmVzdWx0OicsIHJlc3VsdCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function add(a, b) {
+    return a + b;
+}
+
+const result = add(5, 3);
+console.log('Result:', result);</pre></div><div class='content'></div><h2>Explicación</h2>
+<div class='content'><ul>
+<li><strong>Puntos de interrupción</strong>: Puedes establecer puntos de interrupción haciendo clic en el margen izquierdo del editor.</li>
+<li><strong>Panel de variables</strong>: Inspecciona las variables en el contexto actual.</li>
+<li><strong>Panel de llamadas</strong>: Ve la pila de llamadas para entender el flujo de ejecución.</li>
+</ul>
+</div><h1>Errores Comunes y Cómo Solucionarlos</h1>
+<div class='content'></div><h2>Error de Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gYWRkKGEsIGIpIHsKICAgIHJldHVybiBhICsgYiAvLyBGYWx0YSBlbCBwdW50byB5IGNvbWEKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function add(a, b) {
+    return a + b // Falta el punto y coma
+}</pre></div><div class='content'><p><strong>Solución</strong>: Añade el punto y coma al final de la línea.</p>
+</div><h2>Error de Ejecución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwpmcy5yZWFkRmlsZSgnbm9uZXhpc3RlbnRmaWxlLnR4dCcsICd1dGY4JywgKGVyciwgZGF0YSkgPT4gewogICAgaWYgKGVycikgdGhyb3cgZXJyOwogICAgY29uc29sZS5sb2coZGF0YSk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+fs.readFile('nonexistentfile.txt', 'utf8', (err, data) =&gt; {
+    if (err) throw err;
+    console.log(data);
+});</pre></div><div class='content'><p><strong>Solución</strong>: Maneja el error adecuadamente en lugar de lanzar una excepción.</p>
+</div><h2>Error Lógico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gaXNFdmVuKG51bSkgewogICAgcmV0dXJuIG51bSAlIDIgPT09IDE7IC8vIERlYmVyw61hIHNlciAwCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function isEven(num) {
+    return num % 2 === 1; // Deber&iacute;a ser 0
+}</pre></div><div class='content'><p><strong>Solución</strong>: Corrige la condición lógica.</p>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Depuración con `console.log`</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Corrige el siguiente código utilizando <code>console.log</code> para encontrar el error.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gbXVsdGlwbHkoYSwgYikgewogICAgcmV0dXJuIGEgKiBiOwp9Cgpjb25zdCByZXN1bHQgPSBtdWx0aXBseSg1LCAnMycpOwpjb25zb2xlLmxvZygnUmVzdWx0OicsIHJlc3VsdCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function multiply(a, b) {
+    return a * b;
+}
+
+const result = multiply(5, '3');
+console.log('Result:', result);</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gbXVsdGlwbHkoYSwgYikgewogICAgY29uc29sZS5sb2coJ2E6JywgYSk7CiAgICBjb25zb2xlLmxvZygnYjonLCBiKTsKICAgIHJldHVybiBhICogYjsKfQoKY29uc3QgcmVzdWx0ID0gbXVsdGlwbHkoNSwgMyk7IC8vIENhbWJpYSAnMycgYSAzCmNvbnNvbGUubG9nKCdSZXN1bHQ6JywgcmVzdWx0KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function multiply(a, b) {
+    console.log('a:', a);
+    console.log('b:', b);
+    return a * b;
+}
+
+const result = multiply(5, 3); // Cambia '3' a 3
+console.log('Result:', result);</pre></div><div class='content'></div><h2>Ejercicio 2: Depuración con el Inspector de Node.js</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Usa el inspector de Node.js para encontrar y corregir el error en el siguiente código.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gZGl2aWRlKGEsIGIpIHsKICAgIHJldHVybiBhIC8gYjsKfQoKY29uc3QgcmVzdWx0ID0gZGl2aWRlKDEwLCAwKTsKY29uc29sZS5sb2coJ1Jlc3VsdDonLCByZXN1bHQpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function divide(a, b) {
+    return a / b;
+}
+
+const result = divide(10, 0);
+console.log('Result:', result);</pre></div><div class='content'><p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuY3Rpb24gZGl2aWRlKGEsIGIpIHsKICAgIGlmIChiID09PSAwKSB7CiAgICAgICAgY29uc29sZS5lcnJvcignRXJyb3I6IERpdmlzacOzbiBwb3IgY2VybycpOwogICAgICAgIHJldHVybiBudWxsOwogICAgfQogICAgcmV0dXJuIGEgLyBiOwp9Cgpjb25zdCByZXN1bHQgPSBkaXZpZGUoMTAsIDApOwpjb25zb2xlLmxvZygnUmVzdWx0OicsIHJlc3VsdCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>function divide(a, b) {
+    if (b === 0) {
+        console.error('Error: Divisi&oacute;n por cero');
+        return null;
+    }
+    return a / b;
+}
+
+const result = divide(10, 0);
+console.log('Result:', result);</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido varias técnicas y herramientas para depurar aplicaciones Node.js. Desde el uso básico de <code>console.log</code> hasta la depuración avanzada con el inspector de Node.js y Visual Studio Code, estas habilidades te ayudarán a identificar y corregir errores de manera más eficiente. La práctica constante de estas técnicas te permitirá mejorar tu capacidad para resolver problemas y escribir código más robusto.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-03-integration-testing' title="Pruebas de Integración">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='10-01-cluster-module' title="Módulo Cluster">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

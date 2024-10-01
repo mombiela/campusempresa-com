@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uso de Servicios para la Gestión de Estado</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular/08-02-using-services-state-management" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular/08-02-using-services-state-management" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular/08-02-using-services-state-management" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/angular/08-02-using-services-state-management" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/angular/08-02-using-services-state-management" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-state-management' title="Introducción a la Gestión de Estado">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Uso de Servicios para la Gestión de Estado</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-ngrx-store' title="NgRx Store">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En aplicaciones Angular, la gestión del estado es crucial para mantener la consistencia y la sincronización de los datos a lo largo de la aplicación. Los servicios juegan un papel fundamental en esta tarea, proporcionando una forma centralizada de gestionar y compartir datos entre componentes.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Servicios en Angular</strong>: Son clases que proporcionan funcionalidades compartidas a través de la aplicación. Se utilizan para encapsular lógica de negocio y datos que necesitan ser compartidos entre múltiples componentes.</li>
+<li><strong>Gestión de Estado</strong>: Se refiere a la práctica de manejar el estado de la aplicación de manera centralizada, asegurando que los datos sean consistentes y accesibles desde cualquier parte de la aplicación.</li>
+</ol>
+</div><h1>Ventajas de Usar Servicios para la Gestión de Estado</h1>
+<div class='content'><ul>
+<li><strong>Centralización</strong>: Los servicios permiten centralizar la lógica de negocio y el estado, facilitando su gestión y mantenimiento.</li>
+<li><strong>Reutilización</strong>: La lógica encapsulada en los servicios puede ser reutilizada en diferentes partes de la aplicación.</li>
+<li><strong>Desacoplamiento</strong>: Los servicios ayudan a desacoplar los componentes, haciendo que la aplicación sea más modular y fácil de probar.</li>
+</ul>
+</div><h1>Creación de un Servicio para la Gestión de Estado</h1>
+<div class='content'></div><h2>Paso 1: Crear el Servicio</h2>
+<div class='content'><p>Primero, crearemos un servicio utilizando Angular CLI:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmcgZ2VuZXJhdGUgc2VydmljZSBzdGF0ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ng generate service state</pre></div><div class='content'><p>Esto generará un archivo <code>state.service.ts</code> con el siguiente contenido básico:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgU3RhdGVTZXJ2aWNlIHsKCiAgY29uc3RydWN0b3IoKSB7IH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StateService {
+
+  constructor() { }
+}</pre></div><div class='content'></div><h2>Paso 2: Definir el Estado y Métodos</h2>
+<div class='content'><p>Vamos a definir un estado simple y algunos métodos para manipularlo. Supongamos que estamos gestionando una lista de tareas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgU3RhdGVTZXJ2aWNlIHsKICBwcml2YXRlIHRhc2tzOiBzdHJpbmdbXSA9IFtdOwoKICBjb25zdHJ1Y3RvcigpIHsgfQoKICBnZXRUYXNrcygpOiBzdHJpbmdbXSB7CiAgICByZXR1cm4gdGhpcy50YXNrczsKICB9CgogIGFkZFRhc2sodGFzazogc3RyaW5nKTogdm9pZCB7CiAgICB0aGlzLnRhc2tzLnB1c2godGFzayk7CiAgfQoKICByZW1vdmVUYXNrKGluZGV4OiBudW1iZXIpOiB2b2lkIHsKICAgIHRoaXMudGFza3Muc3BsaWNlKGluZGV4LCAxKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class StateService {
+  private tasks: string[] = [];
+
+  constructor() { }
+
+  getTasks(): string[] {
+    return this.tasks;
+  }
+
+  addTask(task: string): void {
+    this.tasks.push(task);
+  }
+
+  removeTask(index: number): void {
+    this.tasks.splice(index, 1);
+  }
+}</pre></div><div class='content'></div><h2>Paso 3: Inyectar el Servicio en un Componente</h2>
+<div class='content'><p>Ahora, inyectaremos el servicio en un componente para utilizarlo. Supongamos que tenemos un componente <code>TaskComponent</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50LCBPbkluaXQgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgU3RhdGVTZXJ2aWNlIH0gZnJvbSAnLi4vc3RhdGUuc2VydmljZSc7CgpAQ29tcG9uZW50KHsKICBzZWxlY3RvcjogJ2FwcC10YXNrJywKICB0ZW1wbGF0ZVVybDogJy4vdGFzay5jb21wb25lbnQuaHRtbCcsCiAgc3R5bGVVcmxzOiBbJy4vdGFzay5jb21wb25lbnQuY3NzJ10KfSkKZXhwb3J0IGNsYXNzIFRhc2tDb21wb25lbnQgaW1wbGVtZW50cyBPbkluaXQgewogIHRhc2tzOiBzdHJpbmdbXSA9IFtdOwogIG5ld1Rhc2s6IHN0cmluZyA9ICcnOwoKICBjb25zdHJ1Y3Rvcihwcml2YXRlIHN0YXRlU2VydmljZTogU3RhdGVTZXJ2aWNlKSB7IH0KCiAgbmdPbkluaXQoKTogdm9pZCB7CiAgICB0aGlzLnRhc2tzID0gdGhpcy5zdGF0ZVNlcnZpY2UuZ2V0VGFza3MoKTsKICB9CgogIGFkZFRhc2soKTogdm9pZCB7CiAgICBpZiAodGhpcy5uZXdUYXNrLnRyaW0oKSkgewogICAgICB0aGlzLnN0YXRlU2VydmljZS5hZGRUYXNrKHRoaXMubmV3VGFzayk7CiAgICAgIHRoaXMubmV3VGFzayA9ICcnOwogICAgICB0aGlzLnRhc2tzID0gdGhpcy5zdGF0ZVNlcnZpY2UuZ2V0VGFza3MoKTsKICAgIH0KICB9CgogIHJlbW92ZVRhc2soaW5kZXg6IG51bWJlcik6IHZvaWQgewogICAgdGhpcy5zdGF0ZVNlcnZpY2UucmVtb3ZlVGFzayhpbmRleCk7CiAgICB0aGlzLnRhc2tzID0gdGhpcy5zdGF0ZVNlcnZpY2UuZ2V0VGFza3MoKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Component, OnInit } from '@angular/core';
+import { StateService } from '../state.service';
+
+@Component({
+  selector: 'app-task',
+  templateUrl: './task.component.html',
+  styleUrls: ['./task.component.css']
+})
+export class TaskComponent implements OnInit {
+  tasks: string[] = [];
+  newTask: string = '';
+
+  constructor(private stateService: StateService) { }
+
+  ngOnInit(): void {
+    this.tasks = this.stateService.getTasks();
+  }
+
+  addTask(): void {
+    if (this.newTask.trim()) {
+      this.stateService.addTask(this.newTask);
+      this.newTask = '';
+      this.tasks = this.stateService.getTasks();
+    }
+  }
+
+  removeTask(index: number): void {
+    this.stateService.removeTask(index);
+    this.tasks = this.stateService.getTasks();
+  }
+}</pre></div><div class='content'></div><h2>Paso 4: Actualizar la Plantilla del Componente</h2>
+<div class='content'><p>Finalmente, actualizaremos la plantilla del componente para reflejar los cambios en el estado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRpdj4KICA8aDI+VGFzayBMaXN0PC9oMj4KICA8dWw+CiAgICA8bGkgKm5nRm9yPSJsZXQgdGFzayBvZiB0YXNrczsgbGV0IGkgPSBpbmRleCI+CiAgICAgIHt7IHRhc2sgfX0KICAgICAgPGJ1dHRvbiAoY2xpY2spPSJyZW1vdmVUYXNrKGkpIj5SZW1vdmU8L2J1dHRvbj4KICAgIDwvbGk+CiAgPC91bD4KICA8aW5wdXQgWyhuZ01vZGVsKV09Im5ld1Rhc2siIHBsYWNlaG9sZGVyPSJOZXcgVGFzayI+CiAgPGJ1dHRvbiAoY2xpY2spPSJhZGRUYXNrKCkiPkFkZCBUYXNrPC9idXR0b24+CjwvZGl2Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;div&gt;
+  &lt;h2&gt;Task List&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li *ngFor=&quot;let task of tasks; let i = index&quot;&gt;
+      {{ task }}
+      &lt;button (click)=&quot;removeTask(i)&quot;&gt;Remove&lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;input [(ngModel)]=&quot;newTask&quot; placeholder=&quot;New Task&quot;&gt;
+  &lt;button (click)=&quot;addTask()&quot;&gt;Add Task&lt;/button&gt;
+&lt;/div&gt;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Crear un servicio para gestionar una lista de usuarios.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Crear un servicio <code>UserService</code> que gestione una lista de usuarios.</li>
+<li>Definir métodos para obtener, agregar y eliminar usuarios.</li>
+<li>Inyectar el servicio en un componente <code>UserComponent</code>.</li>
+<li>Actualizar la plantilla del componente para mostrar y manipular la lista de usuarios.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><h4>Crear el Servicio</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmcgZ2VuZXJhdGUgc2VydmljZSB1c2Vy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ng generate service user</pre></div><div class='content'><h4>Definir el Estado y Métodos en <code>user.service.ts</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgVXNlclNlcnZpY2UgewogIHByaXZhdGUgdXNlcnM6IHN0cmluZ1tdID0gW107CgogIGNvbnN0cnVjdG9yKCkgeyB9CgogIGdldFVzZXJzKCk6IHN0cmluZ1tdIHsKICAgIHJldHVybiB0aGlzLnVzZXJzOwogIH0KCiAgYWRkVXNlcih1c2VyOiBzdHJpbmcpOiB2b2lkIHsKICAgIHRoaXMudXNlcnMucHVzaCh1c2VyKTsKICB9CgogIHJlbW92ZVVzZXIoaW5kZXg6IG51bWJlcik6IHZvaWQgewogICAgdGhpcy51c2Vycy5zcGxpY2UoaW5kZXgsIDEpOwogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class UserService {
+  private users: string[] = [];
+
+  constructor() { }
+
+  getUsers(): string[] {
+    return this.users;
+  }
+
+  addUser(user: string): void {
+    this.users.push(user);
+  }
+
+  removeUser(index: number): void {
+    this.users.splice(index, 1);
+  }
+}</pre></div><div class='content'><h4>Inyectar el Servicio en <code>user.component.ts</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgQ29tcG9uZW50LCBPbkluaXQgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgVXNlclNlcnZpY2UgfSBmcm9tICcuLi91c2VyLnNlcnZpY2UnOwoKQENvbXBvbmVudCh7CiAgc2VsZWN0b3I6ICdhcHAtdXNlcicsCiAgdGVtcGxhdGVVcmw6ICcuL3VzZXIuY29tcG9uZW50Lmh0bWwnLAogIHN0eWxlVXJsczogWycuL3VzZXIuY29tcG9uZW50LmNzcyddCn0pCmV4cG9ydCBjbGFzcyBVc2VyQ29tcG9uZW50IGltcGxlbWVudHMgT25Jbml0IHsKICB1c2Vyczogc3RyaW5nW10gPSBbXTsKICBuZXdVc2VyOiBzdHJpbmcgPSAnJzsKCiAgY29uc3RydWN0b3IocHJpdmF0ZSB1c2VyU2VydmljZTogVXNlclNlcnZpY2UpIHsgfQoKICBuZ09uSW5pdCgpOiB2b2lkIHsKICAgIHRoaXMudXNlcnMgPSB0aGlzLnVzZXJTZXJ2aWNlLmdldFVzZXJzKCk7CiAgfQoKICBhZGRVc2VyKCk6IHZvaWQgewogICAgaWYgKHRoaXMubmV3VXNlci50cmltKCkpIHsKICAgICAgdGhpcy51c2VyU2VydmljZS5hZGRVc2VyKHRoaXMubmV3VXNlcik7CiAgICAgIHRoaXMubmV3VXNlciA9ICcnOwogICAgICB0aGlzLnVzZXJzID0gdGhpcy51c2VyU2VydmljZS5nZXRVc2VycygpOwogICAgfQogIH0KCiAgcmVtb3ZlVXNlcihpbmRleDogbnVtYmVyKTogdm9pZCB7CiAgICB0aGlzLnVzZXJTZXJ2aWNlLnJlbW92ZVVzZXIoaW5kZXgpOwogICAgdGhpcy51c2VycyA9IHRoaXMudXNlclNlcnZpY2UuZ2V0VXNlcnMoKTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Component, OnInit } from '@angular/core';
+import { UserService } from '../user.service';
+
+@Component({
+  selector: 'app-user',
+  templateUrl: './user.component.html',
+  styleUrls: ['./user.component.css']
+})
+export class UserComponent implements OnInit {
+  users: string[] = [];
+  newUser: string = '';
+
+  constructor(private userService: UserService) { }
+
+  ngOnInit(): void {
+    this.users = this.userService.getUsers();
+  }
+
+  addUser(): void {
+    if (this.newUser.trim()) {
+      this.userService.addUser(this.newUser);
+      this.newUser = '';
+      this.users = this.userService.getUsers();
+    }
+  }
+
+  removeUser(index: number): void {
+    this.userService.removeUser(index);
+    this.users = this.userService.getUsers();
+  }
+}</pre></div><div class='content'><h4>Actualizar la Plantilla en <code>user.component.html</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRpdj4KICA8aDI+VXNlciBMaXN0PC9oMj4KICA8dWw+CiAgICA8bGkgKm5nRm9yPSJsZXQgdXNlciBvZiB1c2VyczsgbGV0IGkgPSBpbmRleCI+CiAgICAgIHt7IHVzZXIgfX0KICAgICAgPGJ1dHRvbiAoY2xpY2spPSJyZW1vdmVVc2VyKGkpIj5SZW1vdmU8L2J1dHRvbj4KICAgIDwvbGk+CiAgPC91bD4KICA8aW5wdXQgWyhuZ01vZGVsKV09Im5ld1VzZXIiIHBsYWNlaG9sZGVyPSJOZXcgVXNlciI+CiAgPGJ1dHRvbiAoY2xpY2spPSJhZGRVc2VyKCkiPkFkZCBVc2VyPC9idXR0b24+CjwvZGl2Pg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;div&gt;
+  &lt;h2&gt;User List&lt;/h2&gt;
+  &lt;ul&gt;
+    &lt;li *ngFor=&quot;let user of users; let i = index&quot;&gt;
+      {{ user }}
+      &lt;button (click)=&quot;removeUser(i)&quot;&gt;Remove&lt;/button&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;input [(ngModel)]=&quot;newUser&quot; placeholder=&quot;New User&quot;&gt;
+  &lt;button (click)=&quot;addUser()&quot;&gt;Add User&lt;/button&gt;
+&lt;/div&gt;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo utilizar servicios en Angular para gestionar el estado de la aplicación. Los servicios proporcionan una forma centralizada y reutilizable de manejar datos y lógica de negocio, lo que facilita la gestión y el mantenimiento de la aplicación. En el siguiente módulo, exploraremos cómo utilizar NgRx para una gestión de estado más avanzada y escalable.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-state-management' title="Introducción a la Gestión de Estado">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-ngrx-store' title="NgRx Store">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

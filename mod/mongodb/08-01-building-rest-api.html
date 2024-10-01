@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construyendo una API REST con MongoDB</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/mongodb/08-01-building-rest-api" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/mongodb/08-01-building-rest-api" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/mongodb/08-01-building-rest-api" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/mongodb/08-01-building-rest-api" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/mongodb/08-01-building-rest-api" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-mongodb-with-csharp' title="MongoDB con C#">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Construyendo una API REST con MongoDB</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-ecommerce-application' title="Aplicación de Comercio Electrónico">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás a construir una API REST utilizando MongoDB como base de datos. Este módulo te guiará a través de los conceptos y pasos necesarios para crear una API funcional que pueda realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en una base de datos MongoDB.</p>
+</div><h1>Objetivos del Tema</h1>
+<div class='content'><ul>
+<li>Comprender los conceptos básicos de una API REST.</li>
+<li>Configurar un entorno de desarrollo para construir una API REST.</li>
+<li>Implementar operaciones CRUD utilizando MongoDB.</li>
+<li>Probar la API REST para asegurar su correcto funcionamiento.</li>
+</ul>
+</div><h1>Requisitos Previos</h1>
+<div class='content'><ul>
+<li>Conocimientos básicos de JavaScript y Node.js.</li>
+<li>Familiaridad con MongoDB y operaciones CRUD.</li>
+<li>Entorno de desarrollo configurado con Node.js y MongoDB.</li>
+</ul>
+</div><h1>Contenido</h1>
+<div class='content'></div><h2>1. ¿Qué es una API REST?</h2>
+<div class='content'><p>Una API REST (Representational State Transfer) es un conjunto de reglas que permiten la comunicación entre sistemas a través de HTTP. Las API RESTful utilizan métodos HTTP estándar como GET, POST, PUT y DELETE para realizar operaciones CRUD.</p>
+</div><h2>2. Configuración del Entorno</h2>
+<div class='content'><p>Para construir nuestra API REST, utilizaremos Node.js y Express.js como framework de servidor. También utilizaremos Mongoose para interactuar con MongoDB.</p>
+<h4>Instalación de Node.js y npm</h4>
+<p>Si no tienes Node.js y npm instalados, puedes descargarlos e instalarlos desde <a href="https://nodejs.org/">nodejs.org</a>.</p>
+<h4>Creación del Proyecto</h4>
+<ol>
+<li>
+<p>Crea un nuevo directorio para tu proyecto y navega a él:</p>
+<pre><code class="language-bash">mkdir rest-api-mongodb
+cd rest-api-mongodb
+</code></pre>
+</li>
+<li>
+<p>Inicializa un nuevo proyecto Node.js:</p>
+<pre><code class="language-bash">npm init -y
+</code></pre>
+</li>
+<li>
+<p>Instala las dependencias necesarias:</p>
+<pre><code class="language-bash">npm install express mongoose body-parser
+</code></pre>
+</li>
+</ol>
+</div><h2>3. Estructura del Proyecto</h2>
+<div class='content'><p>Organiza tu proyecto de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVzdC1hcGktbW9uZ29kYi8K4pSCCuKUnOKUgOKUgCBtb2RlbHMvCuKUgiAgIOKUlOKUgOKUgCBpdGVtLmpzCuKUnOKUgOKUgCByb3V0ZXMvCuKUgiAgIOKUlOKUgOKUgCBpdGVtcy5qcwrilJzilIDilIAgYXBwLmpzCuKUlOKUgOKUgCBwYWNrYWdlLmpzb24="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>rest-api-mongodb/
+│
+├── models/
+│   └── item.js
+├── routes/
+│   └── items.js
+├── app.js
+└── package.json</pre></div><div class='content'></div><h2>4. Creación del Modelo de Datos</h2>
+<div class='content'><p>En MongoDB, los datos se almacenan en documentos. Utilizaremos Mongoose para definir un esquema y un modelo para nuestros datos.</p>
+<h4>models/item.js</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwoKY29uc3QgaXRlbVNjaGVtYSA9IG5ldyBtb25nb29zZS5TY2hlbWEoewogICAgbmFtZTogewogICAgICAgIHR5cGU6IFN0cmluZywKICAgICAgICByZXF1aXJlZDogdHJ1ZQogICAgfSwKICAgIHF1YW50aXR5OiB7CiAgICAgICAgdHlwZTogTnVtYmVyLAogICAgICAgIHJlcXVpcmVkOiB0cnVlCiAgICB9LAogICAgcHJpY2U6IHsKICAgICAgICB0eXBlOiBOdW1iZXIsCiAgICAgICAgcmVxdWlyZWQ6IHRydWUKICAgIH0KfSk7Cgptb2R1bGUuZXhwb3J0cyA9IG1vbmdvb3NlLm1vZGVsKCdJdGVtJywgaXRlbVNjaGVtYSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const mongoose = require('mongoose');
+
+const itemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    }
+});
+
+module.exports = mongoose.model('Item', itemSchema);</pre></div><div class='content'></div><h2>5. Creación de Rutas</h2>
+<div class='content'><p>Las rutas definen los endpoints de nuestra API y las operaciones que se pueden realizar en ellos.</p>
+<h4>routes/items.js</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3Qgcm91dGVyID0gZXhwcmVzcy5Sb3V0ZXIoKTsKY29uc3QgSXRlbSA9IHJlcXVpcmUoJy4uL21vZGVscy9pdGVtJyk7CgovLyBPYnRlbmVyIHRvZG9zIGxvcyDDrXRlbXMKcm91dGVyLmdldCgnLycsIGFzeW5jIChyZXEsIHJlcykgPT4gewogICAgdHJ5IHsKICAgICAgICBjb25zdCBpdGVtcyA9IGF3YWl0IEl0ZW0uZmluZCgpOwogICAgICAgIHJlcy5qc29uKGl0ZW1zKTsKICAgIH0gY2F0Y2ggKGVycikgewogICAgICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7CiAgICB9Cn0pOwoKLy8gT2J0ZW5lciB1biDDrXRlbSBwb3IgSUQKcm91dGVyLmdldCgnLzppZCcsIGdldEl0ZW0sIChyZXEsIHJlcykgPT4gewogICAgcmVzLmpzb24ocmVzLml0ZW0pOwp9KTsKCi8vIENyZWFyIHVuIG51ZXZvIMOtdGVtCnJvdXRlci5wb3N0KCcvJywgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgICBjb25zdCBpdGVtID0gbmV3IEl0ZW0oewogICAgICAgIG5hbWU6IHJlcS5ib2R5Lm5hbWUsCiAgICAgICAgcXVhbnRpdHk6IHJlcS5ib2R5LnF1YW50aXR5LAogICAgICAgIHByaWNlOiByZXEuYm9keS5wcmljZQogICAgfSk7CgogICAgdHJ5IHsKICAgICAgICBjb25zdCBuZXdJdGVtID0gYXdhaXQgaXRlbS5zYXZlKCk7CiAgICAgICAgcmVzLnN0YXR1cygyMDEpLmpzb24obmV3SXRlbSk7CiAgICB9IGNhdGNoIChlcnIpIHsKICAgICAgICByZXMuc3RhdHVzKDQwMCkuanNvbih7IG1lc3NhZ2U6IGVyci5tZXNzYWdlIH0pOwogICAgfQp9KTsKCi8vIEFjdHVhbGl6YXIgdW4gw610ZW0Kcm91dGVyLnB1dCgnLzppZCcsIGdldEl0ZW0sIGFzeW5jIChyZXEsIHJlcykgPT4gewogICAgaWYgKHJlcS5ib2R5Lm5hbWUgIT0gbnVsbCkgewogICAgICAgIHJlcy5pdGVtLm5hbWUgPSByZXEuYm9keS5uYW1lOwogICAgfQogICAgaWYgKHJlcS5ib2R5LnF1YW50aXR5ICE9IG51bGwpIHsKICAgICAgICByZXMuaXRlbS5xdWFudGl0eSA9IHJlcS5ib2R5LnF1YW50aXR5OwogICAgfQogICAgaWYgKHJlcS5ib2R5LnByaWNlICE9IG51bGwpIHsKICAgICAgICByZXMuaXRlbS5wcmljZSA9IHJlcS5ib2R5LnByaWNlOwogICAgfQoKICAgIHRyeSB7CiAgICAgICAgY29uc3QgdXBkYXRlZEl0ZW0gPSBhd2FpdCByZXMuaXRlbS5zYXZlKCk7CiAgICAgICAgcmVzLmpzb24odXBkYXRlZEl0ZW0pOwogICAgfSBjYXRjaCAoZXJyKSB7CiAgICAgICAgcmVzLnN0YXR1cyg0MDApLmpzb24oeyBtZXNzYWdlOiBlcnIubWVzc2FnZSB9KTsKICAgIH0KfSk7CgovLyBFbGltaW5hciB1biDDrXRlbQpyb3V0ZXIuZGVsZXRlKCcvOmlkJywgZ2V0SXRlbSwgYXN5bmMgKHJlcSwgcmVzKSA9PiB7CiAgICB0cnkgewogICAgICAgIGF3YWl0IHJlcy5pdGVtLnJlbW92ZSgpOwogICAgICAgIHJlcy5qc29uKHsgbWVzc2FnZTogJ0RlbGV0ZWQgSXRlbScgfSk7CiAgICB9IGNhdGNoIChlcnIpIHsKICAgICAgICByZXMuc3RhdHVzKDUwMCkuanNvbih7IG1lc3NhZ2U6IGVyci5tZXNzYWdlIH0pOwogICAgfQp9KTsKCi8vIE1pZGRsZXdhcmUgcGFyYSBvYnRlbmVyIHVuIMOtdGVtIHBvciBJRAphc3luYyBmdW5jdGlvbiBnZXRJdGVtKHJlcSwgcmVzLCBuZXh0KSB7CiAgICBsZXQgaXRlbTsKICAgIHRyeSB7CiAgICAgICAgaXRlbSA9IGF3YWl0IEl0ZW0uZmluZEJ5SWQocmVxLnBhcmFtcy5pZCk7CiAgICAgICAgaWYgKGl0ZW0gPT0gbnVsbCkgewogICAgICAgICAgICByZXR1cm4gcmVzLnN0YXR1cyg0MDQpLmpzb24oeyBtZXNzYWdlOiAnQ2Fubm90IGZpbmQgaXRlbScgfSk7CiAgICAgICAgfQogICAgfSBjYXRjaCAoZXJyKSB7CiAgICAgICAgcmV0dXJuIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7CiAgICB9CgogICAgcmVzLml0ZW0gPSBpdGVtOwogICAgbmV4dCgpOwp9Cgptb2R1bGUuZXhwb3J0cyA9IHJvdXRlcjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const router = express.Router();
+const Item = require('../models/item');
+
+// Obtener todos los &iacute;tems
+router.get('/', async (req, res) =&gt; {
+    try {
+        const items = await Item.find();
+        res.json(items);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Obtener un &iacute;tem por ID
+router.get('/:id', getItem, (req, res) =&gt; {
+    res.json(res.item);
+});
+
+// Crear un nuevo &iacute;tem
+router.post('/', async (req, res) =&gt; {
+    const item = new Item({
+        name: req.body.name,
+        quantity: req.body.quantity,
+        price: req.body.price
+    });
+
+    try {
+        const newItem = await item.save();
+        res.status(201).json(newItem);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Actualizar un &iacute;tem
+router.put('/:id', getItem, async (req, res) =&gt; {
+    if (req.body.name != null) {
+        res.item.name = req.body.name;
+    }
+    if (req.body.quantity != null) {
+        res.item.quantity = req.body.quantity;
+    }
+    if (req.body.price != null) {
+        res.item.price = req.body.price;
+    }
+
+    try {
+        const updatedItem = await res.item.save();
+        res.json(updatedItem);
+    } catch (err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
+// Eliminar un &iacute;tem
+router.delete('/:id', getItem, async (req, res) =&gt; {
+    try {
+        await res.item.remove();
+        res.json({ message: 'Deleted Item' });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});
+
+// Middleware para obtener un &iacute;tem por ID
+async function getItem(req, res, next) {
+    let item;
+    try {
+        item = await Item.findById(req.params.id);
+        if (item == null) {
+            return res.status(404).json({ message: 'Cannot find item' });
+        }
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+
+    res.item = item;
+    next();
+}
+
+module.exports = router;</pre></div><div class='content'></div><h2>6. Configuración del Servidor</h2>
+<div class='content'><p>Configura el servidor Express para utilizar las rutas que hemos definido.</p>
+<h4>app.js</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZXhwcmVzcyA9IHJlcXVpcmUoJ2V4cHJlc3MnKTsKY29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwpjb25zdCBib2R5UGFyc2VyID0gcmVxdWlyZSgnYm9keS1wYXJzZXInKTsKY29uc3QgYXBwID0gZXhwcmVzcygpOwoKbW9uZ29vc2UuY29ubmVjdCgnbW9uZ29kYjovL2xvY2FsaG9zdC9yZXN0LWFwaScsIHsgdXNlTmV3VXJsUGFyc2VyOiB0cnVlLCB1c2VVbmlmaWVkVG9wb2xvZ3k6IHRydWUgfSk7CmNvbnN0IGRiID0gbW9uZ29vc2UuY29ubmVjdGlvbjsKZGIub24oJ2Vycm9yJywgKGVycm9yKSA9PiBjb25zb2xlLmVycm9yKGVycm9yKSk7CmRiLm9uY2UoJ29wZW4nLCAoKSA9PiBjb25zb2xlLmxvZygnQ29ubmVjdGVkIHRvIERhdGFiYXNlJykpOwoKYXBwLnVzZShib2R5UGFyc2VyLmpzb24oKSk7Cgpjb25zdCBpdGVtc1JvdXRlciA9IHJlcXVpcmUoJy4vcm91dGVzL2l0ZW1zJyk7CmFwcC51c2UoJy9pdGVtcycsIGl0ZW1zUm91dGVyKTsKCmFwcC5saXN0ZW4oMzAwMCwgKCkgPT4gY29uc29sZS5sb2coJ1NlcnZlciBTdGFydGVkJykpOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const express = require('express');
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
+const app = express();
+
+mongoose.connect('mongodb://localhost/rest-api', { useNewUrlParser: true, useUnifiedTopology: true });
+const db = mongoose.connection;
+db.on('error', (error) =&gt; console.error(error));
+db.once('open', () =&gt; console.log('Connected to Database'));
+
+app.use(bodyParser.json());
+
+const itemsRouter = require('./routes/items');
+app.use('/items', itemsRouter);
+
+app.listen(3000, () =&gt; console.log('Server Started'));</pre></div><div class='content'></div><h2>7. Probando la API</h2>
+<div class='content'><p>Puedes utilizar herramientas como Postman o cURL para probar los endpoints de tu API.</p>
+<h4>Ejemplo de Peticiones</h4>
+<ul>
+<li><strong>GET</strong> <code>/items</code> - Obtener todos los ítems.</li>
+<li><strong>GET</strong> <code>/items/:id</code> - Obtener un ítem por ID.</li>
+<li><strong>POST</strong> <code>/items</code> - Crear un nuevo ítem.
+<pre><code class="language-json">{
+    &quot;name&quot;: &quot;Apple&quot;,
+    &quot;quantity&quot;: 10,
+    &quot;price&quot;: 1.5
+}
+</code></pre>
+</li>
+<li><strong>PUT</strong> <code>/items/:id</code> - Actualizar un ítem existente.
+<pre><code class="language-json">{
+    &quot;name&quot;: &quot;Orange&quot;,
+    &quot;quantity&quot;: 20,
+    &quot;price&quot;: 2.0
+}
+</code></pre>
+</li>
+<li><strong>DELETE</strong> <code>/items/:id</code> - Eliminar un ítem.</li>
+</ul>
+</div><h2>8. Ejercicios Prácticos</h2>
+<div class='content'><ol>
+<li><strong>Ejercicio 1:</strong> Añade un nuevo campo <code>description</code> al esquema del ítem y actualiza las rutas para manejar este nuevo campo.</li>
+<li><strong>Ejercicio 2:</strong> Implementa la paginación en la ruta GET <code>/items</code> para manejar grandes volúmenes de datos.</li>
+<li><strong>Ejercicio 3:</strong> Añade validaciones adicionales al modelo de datos, como límites de longitud para el nombre y valores mínimos/máximos para la cantidad y el precio.</li>
+</ol>
+</div><h2>Soluciones a los Ejercicios</h2>
+<div class='content'><h4>Ejercicio 1: Añadir Campo <code>description</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbW9kZWxzL2l0ZW0uanMKY29uc3QgaXRlbVNjaGVtYSA9IG5ldyBtb25nb29zZS5TY2hlbWEoewogICAgbmFtZTogewogICAgICAgIHR5cGU6IFN0cmluZywKICAgICAgICByZXF1aXJlZDogdHJ1ZQogICAgfSwKICAgIHF1YW50aXR5OiB7CiAgICAgICAgdHlwZTogTnVtYmVyLAogICAgICAgIHJlcXVpcmVkOiB0cnVlCiAgICB9LAogICAgcHJpY2U6IHsKICAgICAgICB0eXBlOiBOdW1iZXIsCiAgICAgICAgcmVxdWlyZWQ6IHRydWUKICAgIH0sCiAgICBkZXNjcmlwdGlvbjogewogICAgICAgIHR5cGU6IFN0cmluZywKICAgICAgICByZXF1aXJlZDogZmFsc2UKICAgIH0KfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// models/item.js
+const itemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    quantity: {
+        type: Number,
+        required: true
+    },
+    price: {
+        type: Number,
+        required: true
+    },
+    description: {
+        type: String,
+        required: false
+    }
+});</pre></div><div class='content'><p>Actualiza las rutas para manejar el nuevo campo <code>description</code>.</p>
+<h4>Ejercicio 2: Implementar Paginación</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcm91dGVzL2l0ZW1zLmpzCnJvdXRlci5nZXQoJy8nLCBhc3luYyAocmVxLCByZXMpID0+IHsKICAgIHRyeSB7CiAgICAgICAgY29uc3QgeyBwYWdlID0gMSwgbGltaXQgPSAxMCB9ID0gcmVxLnF1ZXJ5OwogICAgICAgIGNvbnN0IGl0ZW1zID0gYXdhaXQgSXRlbS5maW5kKCkKICAgICAgICAgICAgLmxpbWl0KGxpbWl0ICogMSkKICAgICAgICAgICAgLnNraXAoKHBhZ2UgLSAxKSAqIGxpbWl0KQogICAgICAgICAgICAuZXhlYygpOwogICAgICAgIGNvbnN0IGNvdW50ID0gYXdhaXQgSXRlbS5jb3VudERvY3VtZW50cygpOwogICAgICAgIHJlcy5qc29uKHsKICAgICAgICAgICAgaXRlbXMsCiAgICAgICAgICAgIHRvdGFsUGFnZXM6IE1hdGguY2VpbChjb3VudCAvIGxpbWl0KSwKICAgICAgICAgICAgY3VycmVudFBhZ2U6IHBhZ2UKICAgICAgICB9KTsKICAgIH0gY2F0Y2ggKGVycikgewogICAgICAgIHJlcy5zdGF0dXMoNTAwKS5qc29uKHsgbWVzc2FnZTogZXJyLm1lc3NhZ2UgfSk7CiAgICB9Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// routes/items.js
+router.get('/', async (req, res) =&gt; {
+    try {
+        const { page = 1, limit = 10 } = req.query;
+        const items = await Item.find()
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .exec();
+        const count = await Item.countDocuments();
+        res.json({
+            items,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page
+        });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+});</pre></div><div class='content'><h4>Ejercicio 3: Añadir Validaciones</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gbW9kZWxzL2l0ZW0uanMKY29uc3QgaXRlbVNjaGVtYSA9IG5ldyBtb25nb29zZS5TY2hlbWEoewogICAgbmFtZTogewogICAgICAgIHR5cGU6IFN0cmluZywKICAgICAgICByZXF1aXJlZDogdHJ1ZSwKICAgICAgICBtYXhsZW5ndGg6IDEwMAogICAgfSwKICAgIHF1YW50aXR5OiB7CiAgICAgICAgdHlwZTogTnVtYmVyLAogICAgICAgIHJlcXVpcmVkOiB0cnVlLAogICAgICAgIG1pbjogMSwKICAgICAgICBtYXg6IDEwMDAKICAgIH0sCiAgICBwcmljZTogewogICAgICAgIHR5cGU6IE51bWJlciwKICAgICAgICByZXF1aXJlZDogdHJ1ZSwKICAgICAgICBtaW46IDAuMDEKICAgIH0sCiAgICBkZXNjcmlwdGlvbjogewogICAgICAgIHR5cGU6IFN0cmluZywKICAgICAgICByZXF1aXJlZDogZmFsc2UsCiAgICAgICAgbWF4bGVuZ3RoOiA1MDAKICAgIH0KfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// models/item.js
+const itemSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        maxlength: 100
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        min: 1,
+        max: 1000
+    },
+    price: {
+        type: Number,
+        required: true,
+        min: 0.01
+    },
+    description: {
+        type: String,
+        required: false,
+        maxlength: 500
+    }
+});</pre></div><div class='content'></div><h2>Conclusión</h2>
+<div class='content'><p>En este tema, has aprendido a construir una API REST utilizando Node.js, Express y MongoDB. Has configurado el entorno de desarrollo, creado un modelo de datos, definido rutas y probado la API. Además, has realizado ejercicios prácticos para reforzar los conceptos aprendidos. Con esta base, estás preparado para construir aplicaciones más complejas y robustas utilizando MongoDB como base de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-04-mongodb-with-csharp' title="MongoDB con C#">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-02-ecommerce-application' title="Aplicación de Comercio Electrónico">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

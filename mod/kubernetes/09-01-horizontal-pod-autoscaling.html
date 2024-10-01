@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoescalado Horizontal de Pods</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/09-01-horizontal-pod-autoscaling" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/09-01-horizontal-pod-autoscaling" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/09-01-horizontal-pod-autoscaling" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kubernetes/09-01-horizontal-pod-autoscaling" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kubernetes/09-01-horizontal-pod-autoscaling" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-image-security' title="Seguridad de Imágenes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Autoescalado Horizontal de Pods</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-vertical-pod-autoscaling' title="Autoescalado Vertical de Pods">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>El autoescalado horizontal de pods (Horizontal Pod Autoscaling, HPA) es una característica de Kubernetes que permite ajustar automáticamente el número de pods en una aplicación en función de la carga de trabajo. Esta capacidad es crucial para mantener el rendimiento y la disponibilidad de las aplicaciones en un entorno dinámico.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Métricas de Escalado</strong>: HPA utiliza métricas como la utilización de CPU, memoria u otras métricas personalizadas para decidir cuándo escalar.</li>
+<li><strong>Controlador de Autoescalado</strong>: Un componente de Kubernetes que monitorea las métricas y ajusta el número de réplicas de los pods.</li>
+<li><strong>Objetivo de Escalado</strong>: El valor deseado de la métrica que se utiliza para determinar si se debe escalar hacia arriba o hacia abajo.</li>
+</ol>
+</div><h1>Configuración del Autoescalado Horizontal de Pods</h1>
+<div class='content'></div><h2>Paso 1: Instalar el Servidor de Métricas</h2>
+<div class='content'><p>El servidor de métricas es necesario para que HPA funcione, ya que proporciona las métricas de recursos utilizadas por los pods.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBodHRwczovL2dpdGh1Yi5jb20va3ViZXJuZXRlcy1zaWdzL21ldHJpY3Mtc2VydmVyL3JlbGVhc2VzL2xhdGVzdC9kb3dubG9hZC9jb21wb25lbnRzLnlhbWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml</pre></div><div class='content'></div><h2>Paso 2: Crear un Deployment</h2>
+<div class='content'><p>Primero, creamos un deployment simple que utilizaremos para el autoescalado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG5naW54LWRlcGxveW1lbnQKc3BlYzoKICByZXBsaWNhczogMQogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGFwcDogbmdpbngKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBuZ2lueAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBuZ2lueAogICAgICAgIGltYWdlOiBuZ2lueDoxLjE0LjIKICAgICAgICBwb3J0czoKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDgwCiAgICAgICAgcmVzb3VyY2VzOgogICAgICAgICAgcmVxdWVzdHM6CiAgICAgICAgICAgIGNwdTogIjEwMG0iCiAgICAgICAgICBsaW1pdHM6CiAgICAgICAgICAgIGNwdTogIjIwMG0i"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: &quot;100m&quot;
+          limits:
+            cpu: &quot;200m&quot;</pre></div><div class='content'><p>Aplicamos el deployment:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBuZ2lueC1kZXBsb3ltZW50LnlhbWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f nginx-deployment.yaml</pre></div><div class='content'></div><h2>Paso 3: Configurar el Autoescalado Horizontal</h2>
+<div class='content'><p>Ahora, configuramos el HPA para el deployment creado. En este ejemplo, escalaremos en función de la utilización de CPU.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhdXRvc2NhbGUgZGVwbG95bWVudCBuZ2lueC1kZXBsb3ltZW50IC0tY3B1LXBlcmNlbnQ9NTAgLS1taW49MSAtLW1heD0xMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl autoscale deployment nginx-deployment --cpu-percent=50 --min=1 --max=10</pre></div><div class='content'><p>Esto crea un HPA que ajustará el número de réplicas del deployment <code>nginx-deployment</code> para mantener la utilización de CPU en aproximadamente el 50%. El número de réplicas puede variar entre 1 y 10.</p>
+</div><h2>Verificar el Autoescalado</h2>
+<div class='content'><p>Podemos verificar el estado del HPA con el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgaHBh"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get hpa</pre></div><div class='content'><p>La salida debería mostrar algo similar a esto:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TkFNRSAgICAgICAgICAgICAgIFJFRkVSRU5DRSAgICAgICAgICAgICAgICAgICAgIFRBUkdFVFMgICBNSU5QT0RTICAgTUFYUE9EUyAgIFJFUExJQ0FTICAgQUdFCm5naW54LWRlcGxveW1lbnQgICBEZXBsb3ltZW50L25naW54LWRlcGxveW1lbnQgICAxMCUvNTAlICAgMSAgICAgICAgIDEwICAgICAgICAxICAgICAgICAgIDFt"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>NAME               REFERENCE                     TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+nginx-deployment   Deployment/nginx-deployment   10%/50%   1         10        1          1m</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Para ver el autoescalado en acción, podemos generar carga en los pods. Utilizaremos una herramienta como <code>kubectl run</code> para crear un pod que genere carga.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBydW4gLWkgLS10dHkgbG9hZC1nZW5lcmF0b3IgLS1pbWFnZT1idXN5Ym94IC9iaW4vc2g="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl run -i --tty load-generator --image=busybox /bin/sh</pre></div><div class='content'><p>Dentro del pod, ejecutamos un bucle infinito para generar carga:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2hpbGUgdHJ1ZTsgZG8gd2dldCAtcSAtTy0gaHR0cDovL25naW54LWRlcGxveW1lbnQ7IGRvbmU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>while true; do wget -q -O- http://nginx-deployment; done</pre></div><div class='content'><p>Después de un tiempo, deberíamos ver que el número de réplicas del deployment <code>nginx-deployment</code> aumenta para manejar la carga adicional.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar HPA para un Deployment</h2>
+<div class='content'><ol>
+<li><strong>Crear un Deployment</strong>: Crea un deployment con una imagen de tu elección.</li>
+<li><strong>Configurar HPA</strong>: Configura HPA para escalar el deployment basado en la utilización de CPU.</li>
+<li><strong>Generar Carga</strong>: Genera carga en los pods y observa cómo HPA ajusta el número de réplicas.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li><strong>Crear un Deployment</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15YXBwLWRlcGxveW1lbnQKc3BlYzoKICByZXBsaWNhczogMQogIHNlbGVjdG9yOgogICAgbWF0Y2hMYWJlbHM6CiAgICAgIGFwcDogbXlhcHAKICB0ZW1wbGF0ZToKICAgIG1ldGFkYXRhOgogICAgICBsYWJlbHM6CiAgICAgICAgYXBwOiBteWFwcAogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBteWFwcAogICAgICAgIGltYWdlOiBteWFwcDpsYXRlc3QKICAgICAgICBwb3J0czoKICAgICAgICAtIGNvbnRhaW5lclBvcnQ6IDgwCiAgICAgICAgcmVzb3VyY2VzOgogICAgICAgICAgcmVxdWVzdHM6CiAgICAgICAgICAgIGNwdTogIjEwMG0iCiAgICAgICAgICBsaW1pdHM6CiAgICAgICAgICAgIGNwdTogIjIwMG0i"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: myapp:latest
+        ports:
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: &quot;100m&quot;
+          limits:
+            cpu: &quot;200m&quot;</pre></div><div class='content'><p>Aplicar el deployment:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBteWFwcC1kZXBsb3ltZW50LnlhbWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f myapp-deployment.yaml</pre></div><div class='content'><ol start="2">
+<li><strong>Configurar HPA</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhdXRvc2NhbGUgZGVwbG95bWVudCBteWFwcC1kZXBsb3ltZW50IC0tY3B1LXBlcmNlbnQ9NTAgLS1taW49MSAtLW1heD0xMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl autoscale deployment myapp-deployment --cpu-percent=50 --min=1 --max=10</pre></div><div class='content'><ol start="3">
+<li><strong>Generar Carga</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBydW4gLWkgLS10dHkgbG9hZC1nZW5lcmF0b3IgLS1pbWFnZT1idXN5Ym94IC9iaW4vc2g="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl run -i --tty load-generator --image=busybox /bin/sh</pre></div><div class='content'><p>Dentro del pod:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2hpbGUgdHJ1ZTsgZG8gd2dldCAtcSAtTy0gaHR0cDovL215YXBwLWRlcGxveW1lbnQ7IGRvbmU="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>while true; do wget -q -O- http://myapp-deployment; done</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>El autoescalado horizontal de pods es una herramienta poderosa en Kubernetes que permite mantener el rendimiento y la disponibilidad de las aplicaciones ajustando automáticamente el número de pods en función de la carga de trabajo. En esta sección, hemos aprendido a configurar HPA, verificar su estado y generar carga para observar su funcionamiento. En el siguiente tema, exploraremos el autoescalado vertical de pods, que ajusta los recursos asignados a los pods en lugar de su número.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-04-image-security' title="Seguridad de Imágenes">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-02-vertical-pod-autoscaling' title="Autoescalado Vertical de Pods">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

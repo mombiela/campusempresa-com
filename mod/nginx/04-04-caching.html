@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caché</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/04-04-caching" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/04-04-caching" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/04-04-caching" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nginx/04-04-caching" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nginx/04-04-caching" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-ssl-tls-configuration' title="Configuración SSL/TLS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Caché</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-nginx-modules' title="Módulos de NGINX">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre la configuración y el uso de la caché en NGINX. La caché es una técnica esencial para mejorar el rendimiento de las aplicaciones web al reducir la carga en los servidores de backend y disminuir los tiempos de respuesta para los usuarios finales.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Caché de Proxy</strong>: Almacena las respuestas de los servidores de backend para que las solicitudes futuras puedan ser servidas directamente desde la caché.</li>
+<li><strong>Caché de Contenido Estático</strong>: Almacena archivos estáticos como imágenes, CSS y JavaScript.</li>
+<li><strong>Directivas de Caché</strong>: Configuraciones específicas en NGINX que controlan el comportamiento de la caché.</li>
+</ol>
+</div><h1>Configuración Básica de Caché en NGINX</h1>
+<div class='content'></div><h2>Paso 1: Configurar el Directorio de Caché</h2>
+<div class='content'><p>Primero, necesitamos definir un directorio donde NGINX almacenará los archivos en caché. Esto se hace en el bloque <code>http</code> de la configuración de NGINX.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBwcm94eV9jYWNoZV9wYXRoIC92YXIvY2FjaGUvbmdpbnggbGV2ZWxzPTE6MiBrZXlzX3pvbmU9bXlfY2FjaGU6MTBtIG1heF9zaXplPTFnIGluYWN0aXZlPTYwbSB1c2VfdGVtcF9wYXRoPW9mZjsKICAgIC4uLgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=1g inactive=60m use_temp_path=off;
+    ...
+}</pre></div><div class='content'><ul>
+<li><code>proxy_cache_path</code>: Define el directorio de caché y sus parámetros.
+<ul>
+<li><code>/var/cache/nginx</code>: Directorio donde se almacenarán los archivos en caché.</li>
+<li><code>levels=1:2</code>: Estructura de subdirectorios para almacenar los archivos en caché.</li>
+<li><code>keys_zone=my_cache:10m</code>: Define una zona de memoria compartida llamada <code>my_cache</code> con un tamaño de 10 MB para almacenar las claves de caché.</li>
+<li><code>max_size=1g</code>: Tamaño máximo de la caché en disco.</li>
+<li><code>inactive=60m</code>: Tiempo que un archivo puede permanecer en la caché sin ser solicitado antes de ser eliminado.</li>
+<li><code>use_temp_path=off</code>: Desactiva el uso de un directorio temporal para archivos en caché.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Paso 2: Configurar el Bloque de Servidor</h2>
+<div class='content'><p>Luego, configuramos el bloque de servidor para utilizar la caché.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmRfc2VydmVyOwogICAgICAgIHByb3h5X2NhY2hlIG15X2NhY2hlOwogICAgICAgIHByb3h5X2NhY2hlX3ZhbGlkIDIwMCAzMDIgMTBtOwogICAgICAgIHByb3h5X2NhY2hlX3ZhbGlkIDQwNCAxbTsKICAgICAgICBhZGRfaGVhZGVyIFgtQ2FjaGUtU3RhdHVzICR1cHN0cmVhbV9jYWNoZV9zdGF0dXM7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        proxy_pass http://backend_server;
+        proxy_cache my_cache;
+        proxy_cache_valid 200 302 10m;
+        proxy_cache_valid 404 1m;
+        add_header X-Cache-Status $upstream_cache_status;
+    }
+}</pre></div><div class='content'><ul>
+<li><code>proxy_pass</code>: Define el servidor de backend.</li>
+<li><code>proxy_cache</code>: Habilita la caché para esta ubicación y utiliza la zona de caché <code>my_cache</code>.</li>
+<li><code>proxy_cache_valid</code>: Define la duración de la caché para diferentes códigos de estado HTTP.
+<ul>
+<li><code>200 302 10m</code>: Respuestas con códigos de estado 200 y 302 se almacenarán en caché por 10 minutos.</li>
+<li><code>404 1m</code>: Respuestas con código de estado 404 se almacenarán en caché por 1 minuto.</li>
+</ul>
+</li>
+<li><code>add_header X-Cache-Status $upstream_cache_status</code>: Añade un encabezado HTTP para indicar el estado de la caché (HIT, MISS, etc.).</li>
+</ul>
+</div><h2>Ejemplo Completo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBwcm94eV9jYWNoZV9wYXRoIC92YXIvY2FjaGUvbmdpbnggbGV2ZWxzPTE6MiBrZXlzX3pvbmU9bXlfY2FjaGU6MTBtIG1heF9zaXplPTFnIGluYWN0aXZlPTYwbSB1c2VfdGVtcF9wYXRoPW9mZjsKCiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSBleGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmRfc2VydmVyOwogICAgICAgICAgICBwcm94eV9jYWNoZSBteV9jYWNoZTsKICAgICAgICAgICAgcHJveHlfY2FjaGVfdmFsaWQgMjAwIDMwMiAxMG07CiAgICAgICAgICAgIHByb3h5X2NhY2hlX3ZhbGlkIDQwNCAxbTsKICAgICAgICAgICAgYWRkX2hlYWRlciBYLUNhY2hlLVN0YXR1cyAkdXBzdHJlYW1fY2FjaGVfc3RhdHVzOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=1g inactive=60m use_temp_path=off;
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            proxy_pass http://backend_server;
+            proxy_cache my_cache;
+            proxy_cache_valid 200 302 10m;
+            proxy_cache_valid 404 1m;
+            add_header X-Cache-Status $upstream_cache_status;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Configurar Caché de Proxy</h2>
+<div class='content'><ol>
+<li>Configura un directorio de caché en NGINX.</li>
+<li>Configura un bloque de servidor para utilizar la caché.</li>
+<li>Verifica que las respuestas se están almacenando en caché y que el encabezado <code>X-Cache-Status</code> muestra el estado correcto.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Configura el directorio de caché:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBwcm94eV9jYWNoZV9wYXRoIC92YXIvY2FjaGUvbmdpbnggbGV2ZWxzPTE6MiBrZXlzX3pvbmU9bXlfY2FjaGU6MTBtIG1heF9zaXplPTFnIGluYWN0aXZlPTYwbSB1c2VfdGVtcF9wYXRoPW9mZjsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=my_cache:10m max_size=1g inactive=60m use_temp_path=off;
+}</pre></div><div class='content'><ol start="2">
+<li>Configura el bloque de servidor:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA4MDsKICAgIHNlcnZlcl9uYW1lIGV4YW1wbGUuY29tOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmRfc2VydmVyOwogICAgICAgIHByb3h5X2NhY2hlIG15X2NhY2hlOwogICAgICAgIHByb3h5X2NhY2hlX3ZhbGlkIDIwMCAzMDIgMTBtOwogICAgICAgIHByb3h5X2NhY2hlX3ZhbGlkIDQwNCAxbTsKICAgICAgICBhZGRfaGVhZGVyIFgtQ2FjaGUtU3RhdHVzICR1cHN0cmVhbV9jYWNoZV9zdGF0dXM7CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 80;
+    server_name example.com;
+
+    location / {
+        proxy_pass http://backend_server;
+        proxy_cache my_cache;
+        proxy_cache_valid 200 302 10m;
+        proxy_cache_valid 404 1m;
+        add_header X-Cache-Status $upstream_cache_status;
+    }
+}</pre></div><div class='content'><ol start="3">
+<li>Verifica el estado de la caché:</li>
+</ol>
+<ul>
+<li>Realiza una solicitud a tu servidor NGINX.</li>
+<li>Verifica el encabezado <code>X-Cache-Status</code> en la respuesta HTTP.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtSSBodHRwOi8vZXhhbXBsZS5jb20="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -I http://example.com</pre></div><div class='content'><p>Deberías ver un encabezado similar a:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WC1DYWNoZS1TdGF0dXM6IE1JU1M="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>X-Cache-Status: MISS</pre></div><div class='content'><p>En solicitudes posteriores, deberías ver:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("WC1DYWNoZS1TdGF0dXM6IEhJVA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>X-Cache-Status: HIT</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar la caché en NGINX para mejorar el rendimiento de nuestras aplicaciones web. La caché puede reducir significativamente la carga en los servidores de backend y mejorar los tiempos de respuesta para los usuarios finales. En el siguiente módulo, exploraremos más prácticas de seguridad y optimización en NGINX.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-03-ssl-tls-configuration' title="Configuración SSL/TLS">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-01-nginx-modules' title="Módulos de NGINX">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

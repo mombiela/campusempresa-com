@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursores Implícitos y Explícitos</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/03-02-implicit-explicit-cursors" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/03-02-implicit-explicit-cursors" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/03-02-implicit-explicit-cursors" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/plsql/03-02-implicit-explicit-cursors" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/03-02-implicit-explicit-cursors" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-sql-statements' title="Sentencias SQL en PL/SQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Cursores Implícitos y Explícitos</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-bulk-collect' title="Colección Masiva">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre los cursores en PL/SQL, una herramienta fundamental para manejar conjuntos de resultados de consultas SQL. Los cursores pueden ser implícitos o explícitos, y cada tipo tiene sus propias características y usos.</p>
+</div><h1>¿Qué es un Cursor?</h1>
+<div class='content'><p>Un cursor es un mecanismo que permite a las aplicaciones PL/SQL procesar filas de una consulta SQL de manera individual. Los cursores son esenciales cuando se necesita trabajar con múltiples filas de datos, ya que permiten recorrer y manipular cada fila de manera controlada.</p>
+</div><h2>Cursores Implícitos</h2>
+<div class='content'><p>Los cursores implícitos son gestionados automáticamente por Oracle cuando se ejecuta una sentencia SQL que devuelve un conjunto de resultados. No requieren una declaración explícita por parte del programador.</p>
+<h4>Características de los Cursores Implícitos:</h4>
+<ul>
+<li>Son creados automáticamente por Oracle.</li>
+<li>Se utilizan principalmente para sentencias <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code> y <code>SELECT INTO</code>.</li>
+<li>No requieren una declaración explícita ni un manejo explícito de apertura o cierre.</li>
+</ul>
+<h4>Ejemplo de Cursor Implícito:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgdl90b3RhbF9lbXBsb3llZXMgTlVNQkVSOwpCRUdJTgogICAgLS0gRWwgY3Vyc29yIGltcGzDrWNpdG8gc2UgY3JlYSB5IGdlc3Rpb25hIGF1dG9tw6F0aWNhbWVudGUKICAgIFNFTEVDVCBDT1VOVCgqKSBJTlRPIHZfdG90YWxfZW1wbG95ZWVzIEZST00gZW1wbG95ZWVzOwogICAgREJNU19PVVRQVVQuUFVUX0xJTkUoJ1RvdGFsIEVtcGxveWVlczogJyB8fCB2X3RvdGFsX2VtcGxveWVlcyk7CkVORDsKLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    v_total_employees NUMBER;
+BEGIN
+    -- El cursor impl&iacute;cito se crea y gestiona autom&aacute;ticamente
+    SELECT COUNT(*) INTO v_total_employees FROM employees;
+    DBMS_OUTPUT.PUT_LINE('Total Employees: ' || v_total_employees);
+END;
+/</pre></div><div class='content'><p>En este ejemplo, el cursor implícito se utiliza para contar el número de empleados en la tabla <code>employees</code>.</p>
+</div><h2>Cursores Explícitos</h2>
+<div class='content'><p>Los cursores explícitos son definidos y gestionados por el programador. Se utilizan cuando se necesita un control más fino sobre el procesamiento de filas de una consulta.</p>
+<h4>Características de los Cursores Explícitos:</h4>
+<ul>
+<li>Deben ser declarados explícitamente en el bloque PL/SQL.</li>
+<li>Requieren operaciones explícitas de apertura (<code>OPEN</code>), recuperación (<code>FETCH</code>) y cierre (<code>CLOSE</code>).</li>
+<li>Permiten un control detallado sobre el procesamiento de cada fila.</li>
+</ul>
+<h4>Ejemplo de Cursor Explícito:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgQ1VSU09SIGVtcF9jdXJzb3IgSVMKICAgICAgICBTRUxFQ1QgZW1wbG95ZWVfaWQsIGZpcnN0X25hbWUsIGxhc3RfbmFtZSBGUk9NIGVtcGxveWVlczsKICAgIHZfZW1wbG95ZWVfaWQgZW1wbG95ZWVzLmVtcGxveWVlX2lkJVRZUEU7CiAgICB2X2ZpcnN0X25hbWUgZW1wbG95ZWVzLmZpcnN0X25hbWUlVFlQRTsKICAgIHZfbGFzdF9uYW1lIGVtcGxveWVlcy5sYXN0X25hbWUlVFlQRTsKQkVHSU4KICAgIE9QRU4gZW1wX2N1cnNvcjsKICAgIExPT1AKICAgICAgICBGRVRDSCBlbXBfY3Vyc29yIElOVE8gdl9lbXBsb3llZV9pZCwgdl9maXJzdF9uYW1lLCB2X2xhc3RfbmFtZTsKICAgICAgICBFWElUIFdIRU4gZW1wX2N1cnNvciVOT1RGT1VORDsKICAgICAgICBEQk1TX09VVFBVVC5QVVRfTElORSgnRW1wbG95ZWUgSUQ6ICcgfHwgdl9lbXBsb3llZV9pZCB8fCAnLCBOYW1lOiAnIHx8IHZfZmlyc3RfbmFtZSB8fCAnICcgfHwgdl9sYXN0X25hbWUpOwogICAgRU5EIExPT1A7CiAgICBDTE9TRSBlbXBfY3Vyc29yOwpFTkQ7Ci8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    CURSOR emp_cursor IS
+        SELECT employee_id, first_name, last_name FROM employees;
+    v_employee_id employees.employee_id%TYPE;
+    v_first_name employees.first_name%TYPE;
+    v_last_name employees.last_name%TYPE;
+BEGIN
+    OPEN emp_cursor;
+    LOOP
+        FETCH emp_cursor INTO v_employee_id, v_first_name, v_last_name;
+        EXIT WHEN emp_cursor%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Employee ID: ' || v_employee_id || ', Name: ' || v_first_name || ' ' || v_last_name);
+    END LOOP;
+    CLOSE emp_cursor;
+END;
+/</pre></div><div class='content'><p>En este ejemplo, se declara un cursor explícito <code>emp_cursor</code> que selecciona <code>employee_id</code>, <code>first_name</code> y <code>last_name</code> de la tabla <code>employees</code>. Luego, se abre el cursor, se recuperan las filas una por una y se cierran al final.</p>
+</div><h1>Comparación entre Cursores Implícitos y Explícitos</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>Cursores Implícitos</th>
+<th>Cursores Explícitos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Declaración</td>
+<td>Automática</td>
+<td>Explícita</td>
+</tr>
+<tr>
+<td>Gestión</td>
+<td>Automática</td>
+<td>Manual (OPEN, FETCH, CLOSE)</td>
+</tr>
+<tr>
+<td>Uso Principal</td>
+<td>Sentencias <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, <code>SELECT INTO</code></td>
+<td>Consultas que requieren procesamiento fila por fila</td>
+</tr>
+<tr>
+<td>Control sobre Filas</td>
+<td>Limitado</td>
+<td>Completo</td>
+</tr>
+<tr>
+<td>Complejidad</td>
+<td>Baja</td>
+<td>Alta</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Uso de Cursor Implícito</h2>
+<div class='content'><p>Escribe un bloque PL/SQL que utilice un cursor implícito para calcular el salario promedio de los empleados en la tabla <code>employees</code>.</p>
+<h4>Solución:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgdl9hdmdfc2FsYXJ5IE5VTUJFUjsKQkVHSU4KICAgIFNFTEVDVCBBVkcoc2FsYXJ5KSBJTlRPIHZfYXZnX3NhbGFyeSBGUk9NIGVtcGxveWVlczsKICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdBdmVyYWdlIFNhbGFyeTogJyB8fCB2X2F2Z19zYWxhcnkpOwpFTkQ7Ci8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    v_avg_salary NUMBER;
+BEGIN
+    SELECT AVG(salary) INTO v_avg_salary FROM employees;
+    DBMS_OUTPUT.PUT_LINE('Average Salary: ' || v_avg_salary);
+END;
+/</pre></div><div class='content'></div><h2>Ejercicio 2: Uso de Cursor Explícito</h2>
+<div class='content'><p>Escribe un bloque PL/SQL que utilice un cursor explícito para listar los nombres y salarios de los empleados cuyo salario es mayor a 5000.</p>
+<h4>Solución:</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgQ1VSU09SIGhpZ2hfc2FsYXJ5X2N1cnNvciBJUwogICAgICAgIFNFTEVDVCBmaXJzdF9uYW1lLCBsYXN0X25hbWUsIHNhbGFyeSBGUk9NIGVtcGxveWVlcyBXSEVSRSBzYWxhcnkgPiA1MDAwOwogICAgdl9maXJzdF9uYW1lIGVtcGxveWVlcy5maXJzdF9uYW1lJVRZUEU7CiAgICB2X2xhc3RfbmFtZSBlbXBsb3llZXMubGFzdF9uYW1lJVRZUEU7CiAgICB2X3NhbGFyeSBlbXBsb3llZXMuc2FsYXJ5JVRZUEU7CkJFR0lOCiAgICBPUEVOIGhpZ2hfc2FsYXJ5X2N1cnNvcjsKICAgIExPT1AKICAgICAgICBGRVRDSCBoaWdoX3NhbGFyeV9jdXJzb3IgSU5UTyB2X2ZpcnN0X25hbWUsIHZfbGFzdF9uYW1lLCB2X3NhbGFyeTsKICAgICAgICBFWElUIFdIRU4gaGlnaF9zYWxhcnlfY3Vyc29yJU5PVEZPVU5EOwogICAgICAgIERCTVNfT1VUUFVULlBVVF9MSU5FKCdOYW1lOiAnIHx8IHZfZmlyc3RfbmFtZSB8fCAnICcgfHwgdl9sYXN0X25hbWUgfHwgJywgU2FsYXJ5OiAnIHx8IHZfc2FsYXJ5KTsKICAgIEVORCBMT09QOwogICAgQ0xPU0UgaGlnaF9zYWxhcnlfY3Vyc29yOwpFTkQ7Ci8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    CURSOR high_salary_cursor IS
+        SELECT first_name, last_name, salary FROM employees WHERE salary &gt; 5000;
+    v_first_name employees.first_name%TYPE;
+    v_last_name employees.last_name%TYPE;
+    v_salary employees.salary%TYPE;
+BEGIN
+    OPEN high_salary_cursor;
+    LOOP
+        FETCH high_salary_cursor INTO v_first_name, v_last_name, v_salary;
+        EXIT WHEN high_salary_cursor%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('Name: ' || v_first_name || ' ' || v_last_name || ', Salary: ' || v_salary);
+    END LOOP;
+    CLOSE high_salary_cursor;
+END;
+/</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los cursores implícitos y explícitos en PL/SQL. Los cursores implícitos son gestionados automáticamente por Oracle y son útiles para operaciones simples, mientras que los cursores explícitos proporcionan un control detallado sobre el procesamiento de filas y son necesarios para operaciones más complejas. Con esta base, estarás preparado para manejar conjuntos de resultados de manera eficiente en tus aplicaciones PL/SQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-01-sql-statements' title="Sentencias SQL en PL/SQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-03-bulk-collect' title="Colección Masiva">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

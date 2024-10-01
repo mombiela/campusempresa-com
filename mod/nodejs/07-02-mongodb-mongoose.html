@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usando MongoDB con Mongoose</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/07-02-mongodb-mongoose" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/07-02-mongodb-mongoose" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/07-02-mongodb-mongoose" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/nodejs/07-02-mongodb-mongoose" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/nodejs/07-02-mongodb-mongoose" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-introduction-databases' title="Introducción a las Bases de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Usando MongoDB con Mongoose</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-sql-sequelize' title="Usando Bases de Datos SQL con Sequelize">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, aprenderemos a usar MongoDB, una base de datos NoSQL, junto con Mongoose, una biblioteca de modelado de datos para MongoDB y Node.js. Mongoose proporciona una solución sencilla y elegante para trabajar con datos en MongoDB, permitiendo definir esquemas y modelos que facilitan la validación y la manipulación de datos.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#instalación-de-mongodb-y-mongoose">Instalación de MongoDB y Mongoose</a></li>
+<li><a href="#conexión-a-mongodb">Conexión a MongoDB</a></li>
+<li><a href="#definición-de-esquemas-y-modelos">Definición de Esquemas y Modelos</a></li>
+<li><a href="#operaciones-crud">Operaciones CRUD</a></li>
+<li><a href="#validación-y-middleware">Validación y Middleware</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+</ol>
+</div><h1>Instalación de MongoDB y Mongoose</h1>
+<div class='content'></div><h2>Instalación de MongoDB</h2>
+<div class='content'><p>Para instalar MongoDB, sigue las instrucciones específicas para tu sistema operativo en la <a href="https://docs.mongodb.com/manual/installation/">documentación oficial de MongoDB</a>.</p>
+</div><h2>Instalación de Mongoose</h2>
+<div class='content'><p>Para instalar Mongoose en tu proyecto Node.js, usa el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgbW9uZ29vc2U="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install mongoose</pre></div><div class='content'></div><h1>Conexión a MongoDB</h1>
+<div class='content'><p>Para conectarte a una base de datos MongoDB usando Mongoose, primero necesitas importar Mongoose y luego usar el método <code>connect</code> para establecer la conexión.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbW9uZ29vc2UgPSByZXF1aXJlKCdtb25nb29zZScpOwoKbW9uZ29vc2UuY29ubmVjdCgnbW9uZ29kYjovL2xvY2FsaG9zdDoyNzAxNy9taUJhc2VEZURhdG9zJywgewogIHVzZU5ld1VybFBhcnNlcjogdHJ1ZSwKICB1c2VVbmlmaWVkVG9wb2xvZ3k6IHRydWUKfSkudGhlbigoKSA9PiB7CiAgY29uc29sZS5sb2coJ0NvbmVjdGFkbyBhIE1vbmdvREInKTsKfSkuY2F0Y2goKGVycm9yKSA9PiB7CiAgY29uc29sZS5lcnJvcignRXJyb3IgYWwgY29uZWN0YXIgYSBNb25nb0RCOicsIGVycm9yKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://localhost:27017/miBaseDeDatos', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() =&gt; {
+  console.log('Conectado a MongoDB');
+}).catch((error) =&gt; {
+  console.error('Error al conectar a MongoDB:', error);
+});</pre></div><div class='content'></div><h1>Definición de Esquemas y Modelos</h1>
+<div class='content'></div><h2>Esquema</h2>
+<div class='content'><p>Un esquema en Mongoose define la estructura de los documentos dentro de una colección. Aquí hay un ejemplo de cómo definir un esquema para una colección de usuarios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgeyBTY2hlbWEgfSA9IG1vbmdvb3NlOwoKY29uc3QgdXN1YXJpb1NjaGVtYSA9IG5ldyBTY2hlbWEoewogIG5vbWJyZTogewogICAgdHlwZTogU3RyaW5nLAogICAgcmVxdWlyZWQ6IHRydWUKICB9LAogIGVkYWQ6IHsKICAgIHR5cGU6IE51bWJlciwKICAgIHJlcXVpcmVkOiB0cnVlCiAgfSwKICBlbWFpbDogewogICAgdHlwZTogU3RyaW5nLAogICAgcmVxdWlyZWQ6IHRydWUsCiAgICB1bmlxdWU6IHRydWUKICB9LAogIGZlY2hhQ3JlYWNpb246IHsKICAgIHR5cGU6IERhdGUsCiAgICBkZWZhdWx0OiBEYXRlLm5vdwogIH0KfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const { Schema } = mongoose;
+
+const usuarioSchema = new Schema({
+  nombre: {
+    type: String,
+    required: true
+  },
+  edad: {
+    type: Number,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  fechaCreacion: {
+    type: Date,
+    default: Date.now
+  }
+});</pre></div><div class='content'></div><h2>Modelo</h2>
+<div class='content'><p>Un modelo en Mongoose es una clase que se crea a partir de un esquema y se utiliza para interactuar con la base de datos.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgVXN1YXJpbyA9IG1vbmdvb3NlLm1vZGVsKCdVc3VhcmlvJywgdXN1YXJpb1NjaGVtYSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const Usuario = mongoose.model('Usuario', usuarioSchema);</pre></div><div class='content'></div><h1>Operaciones CRUD</h1>
+<div class='content'></div><h2>Crear</h2>
+<div class='content'><p>Para crear un nuevo documento en la base de datos, usa el método <code>save</code> del modelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbnVldm9Vc3VhcmlvID0gbmV3IFVzdWFyaW8oewogIG5vbWJyZTogJ0p1YW4gUMOpcmV6JywKICBlZGFkOiAzMCwKICBlbWFpbDogJ2p1YW4ucGVyZXpAZXhhbXBsZS5jb20nCn0pOwoKbnVldm9Vc3VhcmlvLnNhdmUoKS50aGVuKCh1c3VhcmlvKSA9PiB7CiAgY29uc29sZS5sb2coJ1VzdWFyaW8gY3JlYWRvOicsIHVzdWFyaW8pOwp9KS5jYXRjaCgoZXJyb3IpID0+IHsKICBjb25zb2xlLmVycm9yKCdFcnJvciBhbCBjcmVhciB1c3VhcmlvOicsIGVycm9yKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const nuevoUsuario = new Usuario({
+  nombre: 'Juan P&eacute;rez',
+  edad: 30,
+  email: 'juan.perez@example.com'
+});
+
+nuevoUsuario.save().then((usuario) =&gt; {
+  console.log('Usuario creado:', usuario);
+}).catch((error) =&gt; {
+  console.error('Error al crear usuario:', error);
+});</pre></div><div class='content'></div><h2>Leer</h2>
+<div class='content'><p>Para leer documentos de la base de datos, usa el método <code>find</code> del modelo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VXN1YXJpby5maW5kKCkudGhlbigodXN1YXJpb3MpID0+IHsKICBjb25zb2xlLmxvZygnVXN1YXJpb3M6JywgdXN1YXJpb3MpOwp9KS5jYXRjaCgoZXJyb3IpID0+IHsKICBjb25zb2xlLmVycm9yKCdFcnJvciBhbCBsZWVyIHVzdWFyaW9zOicsIGVycm9yKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Usuario.find().then((usuarios) =&gt; {
+  console.log('Usuarios:', usuarios);
+}).catch((error) =&gt; {
+  console.error('Error al leer usuarios:', error);
+});</pre></div><div class='content'></div><h2>Actualizar</h2>
+<div class='content'><p>Para actualizar un documento, usa el método <code>findByIdAndUpdate</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VXN1YXJpby5maW5kQnlJZEFuZFVwZGF0ZSgnaWREZWxVc3VhcmlvJywgeyBlZGFkOiAzMSB9LCB7IG5ldzogdHJ1ZSB9KS50aGVuKCh1c3VhcmlvKSA9PiB7CiAgY29uc29sZS5sb2coJ1VzdWFyaW8gYWN0dWFsaXphZG86JywgdXN1YXJpbyk7Cn0pLmNhdGNoKChlcnJvcikgPT4gewogIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIGFsIGFjdHVhbGl6YXIgdXN1YXJpbzonLCBlcnJvcik7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Usuario.findByIdAndUpdate('idDelUsuario', { edad: 31 }, { new: true }).then((usuario) =&gt; {
+  console.log('Usuario actualizado:', usuario);
+}).catch((error) =&gt; {
+  console.error('Error al actualizar usuario:', error);
+});</pre></div><div class='content'></div><h2>Eliminar</h2>
+<div class='content'><p>Para eliminar un documento, usa el método <code>findByIdAndDelete</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VXN1YXJpby5maW5kQnlJZEFuZERlbGV0ZSgnaWREZWxVc3VhcmlvJykudGhlbigodXN1YXJpbykgPT4gewogIGNvbnNvbGUubG9nKCdVc3VhcmlvIGVsaW1pbmFkbzonLCB1c3VhcmlvKTsKfSkuY2F0Y2goKGVycm9yKSA9PiB7CiAgY29uc29sZS5lcnJvcignRXJyb3IgYWwgZWxpbWluYXIgdXN1YXJpbzonLCBlcnJvcik7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Usuario.findByIdAndDelete('idDelUsuario').then((usuario) =&gt; {
+  console.log('Usuario eliminado:', usuario);
+}).catch((error) =&gt; {
+  console.error('Error al eliminar usuario:', error);
+});</pre></div><div class='content'></div><h1>Validación y Middleware</h1>
+<div class='content'></div><h2>Validación</h2>
+<div class='content'><p>Mongoose permite definir validaciones en los esquemas. Por ejemplo, podemos asegurarnos de que el campo <code>email</code> tenga un formato válido.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgdXN1YXJpb1NjaGVtYSA9IG5ldyBTY2hlbWEoewogIG5vbWJyZTogewogICAgdHlwZTogU3RyaW5nLAogICAgcmVxdWlyZWQ6IHRydWUKICB9LAogIGVkYWQ6IHsKICAgIHR5cGU6IE51bWJlciwKICAgIHJlcXVpcmVkOiB0cnVlCiAgfSwKICBlbWFpbDogewogICAgdHlwZTogU3RyaW5nLAogICAgcmVxdWlyZWQ6IHRydWUsCiAgICB1bmlxdWU6IHRydWUsCiAgICBtYXRjaDogLy4rXEAuK1wuLisvCiAgfSwKICBmZWNoYUNyZWFjaW9uOiB7CiAgICB0eXBlOiBEYXRlLAogICAgZGVmYXVsdDogRGF0ZS5ub3cKICB9Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const usuarioSchema = new Schema({
+  nombre: {
+    type: String,
+    required: true
+  },
+  edad: {
+    type: Number,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    match: /.+\@.+\..+/
+  },
+  fechaCreacion: {
+    type: Date,
+    default: Date.now
+  }
+});</pre></div><div class='content'></div><h2>Middleware</h2>
+<div class='content'><p>Mongoose también permite definir middleware que se ejecuta en diferentes etapas del ciclo de vida de un documento. Por ejemplo, podemos definir un middleware <code>pre-save</code> para realizar alguna acción antes de guardar un documento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dXN1YXJpb1NjaGVtYS5wcmUoJ3NhdmUnLCBmdW5jdGlvbihuZXh0KSB7CiAgY29uc29sZS5sb2coJ0FudGVzIGRlIGd1YXJkYXIgZWwgdXN1YXJpbzonLCB0aGlzKTsKICBuZXh0KCk7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>usuarioSchema.pre('save', function(next) {
+  console.log('Antes de guardar el usuario:', this);
+  next();
+});</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear y Leer Usuarios</h2>
+<div class='content'><ol>
+<li>
+<p>Crea un nuevo usuario con los siguientes datos:</p>
+<ul>
+<li>Nombre: Ana Gómez</li>
+<li>Edad: 25</li>
+<li>Email: ana.gomez@example.com</li>
+</ul>
+</li>
+<li>
+<p>Lee todos los usuarios de la base de datos y muestra los resultados en la consola.</p>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgbnVldm9Vc3VhcmlvID0gbmV3IFVzdWFyaW8oewogIG5vbWJyZTogJ0FuYSBHw7NtZXonLAogIGVkYWQ6IDI1LAogIGVtYWlsOiAnYW5hLmdvbWV6QGV4YW1wbGUuY29tJwp9KTsKCm51ZXZvVXN1YXJpby5zYXZlKCkudGhlbigodXN1YXJpbykgPT4gewogIGNvbnNvbGUubG9nKCdVc3VhcmlvIGNyZWFkbzonLCB1c3VhcmlvKTsKCiAgcmV0dXJuIFVzdWFyaW8uZmluZCgpOwp9KS50aGVuKCh1c3VhcmlvcykgPT4gewogIGNvbnNvbGUubG9nKCdVc3VhcmlvczonLCB1c3Vhcmlvcyk7Cn0pLmNhdGNoKChlcnJvcikgPT4gewogIGNvbnNvbGUuZXJyb3IoJ0Vycm9yOicsIGVycm9yKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const nuevoUsuario = new Usuario({
+  nombre: 'Ana G&oacute;mez',
+  edad: 25,
+  email: 'ana.gomez@example.com'
+});
+
+nuevoUsuario.save().then((usuario) =&gt; {
+  console.log('Usuario creado:', usuario);
+
+  return Usuario.find();
+}).then((usuarios) =&gt; {
+  console.log('Usuarios:', usuarios);
+}).catch((error) =&gt; {
+  console.error('Error:', error);
+});</pre></div><div class='content'></div><h2>Ejercicio 2: Actualizar y Eliminar Usuarios</h2>
+<div class='content'><ol>
+<li>Actualiza la edad del usuario con el email <code>ana.gomez@example.com</code> a 26.</li>
+<li>Elimina el usuario con el email <code>ana.gomez@example.com</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("VXN1YXJpby5maW5kT25lQW5kVXBkYXRlKHsgZW1haWw6ICdhbmEuZ29tZXpAZXhhbXBsZS5jb20nIH0sIHsgZWRhZDogMjYgfSwgeyBuZXc6IHRydWUgfSkudGhlbigodXN1YXJpbykgPT4gewogIGNvbnNvbGUubG9nKCdVc3VhcmlvIGFjdHVhbGl6YWRvOicsIHVzdWFyaW8pOwoKICByZXR1cm4gVXN1YXJpby5maW5kT25lQW5kRGVsZXRlKHsgZW1haWw6ICdhbmEuZ29tZXpAZXhhbXBsZS5jb20nIH0pOwp9KS50aGVuKCh1c3VhcmlvKSA9PiB7CiAgY29uc29sZS5sb2coJ1VzdWFyaW8gZWxpbWluYWRvOicsIHVzdWFyaW8pOwp9KS5jYXRjaCgoZXJyb3IpID0+IHsKICBjb25zb2xlLmVycm9yKCdFcnJvcjonLCBlcnJvcik7Cn0pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Usuario.findOneAndUpdate({ email: 'ana.gomez@example.com' }, { edad: 26 }, { new: true }).then((usuario) =&gt; {
+  console.log('Usuario actualizado:', usuario);
+
+  return Usuario.findOneAndDelete({ email: 'ana.gomez@example.com' });
+}).then((usuario) =&gt; {
+  console.log('Usuario eliminado:', usuario);
+}).catch((error) =&gt; {
+  console.error('Error:', error);
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este tema, hemos aprendido a usar MongoDB con Mongoose en una aplicación Node.js. Hemos cubierto la instalación, conexión, definición de esquemas y modelos, y operaciones CRUD básicas. También hemos visto cómo realizar validaciones y usar middleware en Mongoose. Con estos conocimientos, estás preparado para manejar datos en MongoDB de manera eficiente y estructurada en tus aplicaciones Node.js.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-01-introduction-databases' title="Introducción a las Bases de Datos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-03-sql-sequelize' title="Usando Bases de Datos SQL con Sequelize">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

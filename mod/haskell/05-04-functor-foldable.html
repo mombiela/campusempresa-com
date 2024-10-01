@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Functor y Foldable</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/haskell/05-04-functor-foldable" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/haskell/05-04-functor-foldable" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/haskell/05-04-functor-foldable" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/haskell/05-04-functor-foldable" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/haskell/05-04-functor-foldable" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-monad-transformers' title="Transformadores de Mónadas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Functor y Foldable</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-basic-io' title="I/O Básico">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, exploraremos dos conceptos fundamentales en Haskell: <code>Functor</code> y <code>Foldable</code>. Ambos son clases de tipos que proporcionan abstracciones poderosas para trabajar con estructuras de datos de manera funcional.</p>
+</div><h1>Functor</h1>
+<div class='content'></div><h2>¿Qué es un Functor?</h2>
+<div class='content'><p>Un <code>Functor</code> es una clase de tipos que representa estructuras de datos que pueden ser mapeadas. En otras palabras, un <code>Functor</code> es algo en lo que puedes aplicar una función a cada elemento dentro de la estructura sin cambiar la estructura en sí.</p>
+</div><h2>Definición de la Clase Functor</h2>
+<div class='content'><p>La clase <code>Functor</code> se define en el módulo <code>Prelude</code> de Haskell de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgRnVuY3RvciBmIHdoZXJlCiAgICBmbWFwIDo6IChhIC0+IGIpIC0+IGYgYSAtPiBmIGI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Functor f where
+    fmap :: (a -&gt; b) -&gt; f a -&gt; f b</pre></div><div class='content'><ul>
+<li><code>fmap</code> es una función que toma una función <code>(a -&gt; b)</code> y un <code>Functor</code> que contiene elementos de tipo <code>a</code> (<code>f a</code>), y devuelve un <code>Functor</code> que contiene elementos de tipo <code>b</code> (<code>f b</code>).</li>
+</ul>
+</div><h2>Ejemplo de Functor: Lista</h2>
+<div class='content'><p>Las listas en Haskell son instancias de <code>Functor</code>. Aquí hay un ejemplo de cómo usar <code>fmap</code> con listas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGVmaW5pbW9zIHVuYSBmdW5jacOzbiBxdWUgaW5jcmVtZW50YSB1biBuw7ptZXJvIGVuIDEKaW5jcmVtZW50IDo6IEludCAtPiBJbnQKaW5jcmVtZW50IHggPSB4ICsgMQoKLS0gVXNhbW9zIGZtYXAgcGFyYSBhcGxpY2FyICdpbmNyZW1lbnQnIGEgY2FkYSBlbGVtZW50byBkZSBsYSBsaXN0YQpyZXN1bHQgOjogW0ludF0KcmVzdWx0ID0gZm1hcCBpbmNyZW1lbnQgWzEsIDIsIDMsIDRdCgotLSBFbCByZXN1bHRhZG8gc2Vyw6EgWzIsIDMsIDQsIDVd"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Definimos una funci&oacute;n que incrementa un n&uacute;mero en 1
+increment :: Int -&gt; Int
+increment x = x + 1
+
+-- Usamos fmap para aplicar 'increment' a cada elemento de la lista
+result :: [Int]
+result = fmap increment [1, 2, 3, 4]
+
+-- El resultado ser&aacute; [2, 3, 4, 5]</pre></div><div class='content'></div><h2>Ejemplo de Functor: Maybe</h2>
+<div class='content'><p>El tipo <code>Maybe</code> también es una instancia de <code>Functor</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGVmaW5pbW9zIHVuYSBmdW5jacOzbiBxdWUgY29udmllcnRlIHVuIG7Dum1lcm8gYSBzdSByZXByZXNlbnRhY2nDs24gZW4gY2FkZW5hCnRvU3RyaW5nIDo6IEludCAtPiBTdHJpbmcKdG9TdHJpbmcgeCA9IHNob3cgeAoKLS0gVXNhbW9zIGZtYXAgcGFyYSBhcGxpY2FyICd0b1N0cmluZycgYSB1biB2YWxvciBkZSB0aXBvIE1heWJlCnJlc3VsdE1heWJlIDo6IE1heWJlIFN0cmluZwpyZXN1bHRNYXliZSA9IGZtYXAgdG9TdHJpbmcgKEp1c3QgMTIzKQoKLS0gRWwgcmVzdWx0YWRvIHNlcsOhIEp1c3QgIjEyMyI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Definimos una funci&oacute;n que convierte un n&uacute;mero a su representaci&oacute;n en cadena
+toString :: Int -&gt; String
+toString x = show x
+
+-- Usamos fmap para aplicar 'toString' a un valor de tipo Maybe
+resultMaybe :: Maybe String
+resultMaybe = fmap toString (Just 123)
+
+-- El resultado ser&aacute; Just &quot;123&quot;</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio:</strong> Define una instancia de <code>Functor</code> para un tipo de datos personalizado <code>Box</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBCb3ggYSA9IEJveCBhIGRlcml2aW5nIChTaG93KQoKaW5zdGFuY2UgRnVuY3RvciBCb3ggd2hlcmUKICAgIGZtYXAgZiAoQm94IHgpID0gQm94IChmIHgpCgotLSBQcnVlYmEgdHUgaW5zdGFuY2lhIGRlIEZ1bmN0b3IKbWFpbiA6OiBJTyAoKQptYWluID0gZG8KICAgIGxldCBib3ggPSBCb3ggMTAKICAgIHByaW50ICQgZm1hcCAoKjIpIGJveCAgLS0gRGViZXLDrWEgaW1wcmltaXIgIkJveCAyMCI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data Box a = Box a deriving (Show)
+
+instance Functor Box where
+    fmap f (Box x) = Box (f x)
+
+-- Prueba tu instancia de Functor
+main :: IO ()
+main = do
+    let box = Box 10
+    print $ fmap (*2) box  -- Deber&iacute;a imprimir &quot;Box 20&quot;</pre></div><div class='content'></div><h1>Foldable</h1>
+<div class='content'></div><h2>¿Qué es Foldable?</h2>
+<div class='content'><p><code>Foldable</code> es una clase de tipos que representa estructuras de datos que pueden ser &quot;plegadas&quot; (folded). Plegar una estructura de datos significa reducirla a un solo valor mediante la aplicación repetida de una función.</p>
+</div><h2>Definición de la Clase Foldable</h2>
+<div class='content'><p>La clase <code>Foldable</code> se define en el módulo <code>Prelude</code> de Haskell de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgRm9sZGFibGUgdCB3aGVyZQogICAgZm9sZHIgOjogKGEgLT4gYiAtPiBiKSAtPiBiIC0+IHQgYSAtPiBi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Foldable t where
+    foldr :: (a -&gt; b -&gt; b) -&gt; b -&gt; t a -&gt; b</pre></div><div class='content'><ul>
+<li><code>foldr</code> es una función que toma una función binaria <code>(a -&gt; b -&gt; b)</code>, un valor inicial de tipo <code>b</code>, y una estructura de datos de tipo <code>t a</code>, y devuelve un valor de tipo <code>b</code>.</li>
+</ul>
+</div><h2>Ejemplo de Foldable: Lista</h2>
+<div class='content'><p>Las listas en Haskell son instancias de <code>Foldable</code>. Aquí hay un ejemplo de cómo usar <code>foldr</code> con listas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gRGVmaW5pbW9zIHVuYSBmdW5jacOzbiBxdWUgc3VtYSBkb3MgbsO6bWVyb3MKYWRkIDo6IEludCAtPiBJbnQgLT4gSW50CmFkZCB4IHkgPSB4ICsgeQoKLS0gVXNhbW9zIGZvbGRyIHBhcmEgc3VtYXIgdG9kb3MgbG9zIGVsZW1lbnRvcyBkZSBsYSBsaXN0YQpzdW1MaXN0IDo6IFtJbnRdIC0+IEludApzdW1MaXN0ID0gZm9sZHIgYWRkIDAKCi0tIEVsIHJlc3VsdGFkbyBkZSBzdW1MaXN0IFsxLCAyLCAzLCA0XSBzZXLDoSAxMA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Definimos una funci&oacute;n que suma dos n&uacute;meros
+add :: Int -&gt; Int -&gt; Int
+add x y = x + y
+
+-- Usamos foldr para sumar todos los elementos de la lista
+sumList :: [Int] -&gt; Int
+sumList = foldr add 0
+
+-- El resultado de sumList [1, 2, 3, 4] ser&aacute; 10</pre></div><div class='content'></div><h2>Ejemplo de Foldable: Maybe</h2>
+<div class='content'><p>El tipo <code>Maybe</code> también es una instancia de <code>Foldable</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gVXNhbW9zIGZvbGRyIHBhcmEgc3VtYXIgZWwgdmFsb3IgZGUgdW4gTWF5YmUgY29uIHVuIHZhbG9yIGluaWNpYWwKc3VtTWF5YmUgOjogTWF5YmUgSW50IC0+IEludApzdW1NYXliZSA9IGZvbGRyICgrKSAwCgotLSBFbCByZXN1bHRhZG8gZGUgc3VtTWF5YmUgKEp1c3QgNSkgc2Vyw6EgNQotLSBFbCByZXN1bHRhZG8gZGUgc3VtTWF5YmUgTm90aGluZyBzZXLDoSAw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Usamos foldr para sumar el valor de un Maybe con un valor inicial
+sumMaybe :: Maybe Int -&gt; Int
+sumMaybe = foldr (+) 0
+
+-- El resultado de sumMaybe (Just 5) ser&aacute; 5
+-- El resultado de sumMaybe Nothing ser&aacute; 0</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio:</strong> Define una instancia de <code>Foldable</code> para un tipo de datos personalizado <code>Box</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGF0YSBCb3ggYSA9IEJveCBhIGRlcml2aW5nIChTaG93KQoKaW5zdGFuY2UgRm9sZGFibGUgQm94IHdoZXJlCiAgICBmb2xkciBmIHogKEJveCB4KSA9IGYgeCB6CgotLSBQcnVlYmEgdHUgaW5zdGFuY2lhIGRlIEZvbGRhYmxlCm1haW4gOjogSU8gKCkKbWFpbiA9IGRvCiAgICBsZXQgYm94ID0gQm94IDEwCiAgICBwcmludCAkIGZvbGRyICgrKSA1IGJveCAgLS0gRGViZXLDrWEgaW1wcmltaXIgIjE1Ig=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>data Box a = Box a deriving (Show)
+
+instance Foldable Box where
+    foldr f z (Box x) = f x z
+
+-- Prueba tu instancia de Foldable
+main :: IO ()
+main = do
+    let box = Box 10
+    print $ foldr (+) 5 box  -- Deber&iacute;a imprimir &quot;15&quot;</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las clases de tipos <code>Functor</code> y <code>Foldable</code> en Haskell. Los <code>Functor</code> nos permiten aplicar funciones a cada elemento dentro de una estructura de datos, mientras que los <code>Foldable</code> nos permiten reducir una estructura de datos a un solo valor mediante la aplicación repetida de una función. Hemos visto ejemplos prácticos y ejercicios para reforzar estos conceptos.</p>
+<p>En el próximo módulo, exploraremos el concepto de Mónadas, que es una extensión poderosa de los <code>Functor</code> y <code>Foldable</code>.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-monad-transformers' title="Transformadores de Mónadas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-basic-io' title="I/O Básico">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

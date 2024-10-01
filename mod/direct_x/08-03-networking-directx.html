@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redes en DirectX</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/direct_x/08-03-networking-directx" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/direct_x/08-03-networking-directx" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/direct_x/08-03-networking-directx" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/direct_x/08-03-networking-directx" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/direct_x/08-03-networking-directx" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-integrating-physics' title="Integrando Física">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Redes en DirectX</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-publishing-application' title="Publicando Tu Aplicación DirectX">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este módulo, aprenderemos cómo integrar capacidades de red en aplicaciones DirectX. La comunicación en red es esencial para aplicaciones multijugador y otras aplicaciones que requieren intercambio de datos en tiempo real. Cubriremos los conceptos básicos de redes, cómo configurar una conexión de red y cómo enviar y recibir datos.</p>
+</div><h1>Conceptos Básicos de Redes</h1>
+<div class='content'><p>Antes de sumergirnos en la implementación, es importante entender algunos conceptos básicos de redes:</p>
+<ul>
+<li><strong>Cliente y Servidor</strong>: En una arquitectura de red, el servidor es la entidad que proporciona servicios o recursos, mientras que el cliente es la entidad que los consume.</li>
+<li><strong>Protocolo de Comunicación</strong>: Un conjunto de reglas que define cómo se intercambian los datos entre el cliente y el servidor. Los protocolos más comunes son TCP (Transmission Control Protocol) y UDP (User Datagram Protocol).</li>
+<li><strong>Sockets</strong>: Una interfaz de programación que permite la comunicación entre dos nodos de una red.</li>
+</ul>
+</div><h1>Configuración del Entorno de Desarrollo</h1>
+<div class='content'><p>Para trabajar con redes en DirectX, necesitaremos configurar nuestro entorno de desarrollo para soportar la programación de sockets. Asegúrate de tener las siguientes herramientas y bibliotecas:</p>
+<ul>
+<li><strong>Visual Studio</strong>: Un entorno de desarrollo integrado (IDE) que soporta C++.</li>
+<li><strong>Winsock</strong>: Una API de Windows para la programación de aplicaciones de red.</li>
+</ul>
+</div><h2>Incluir Winsock en tu Proyecto</h2>
+<div class='content'><ol>
+<li>Abre tu proyecto en Visual Studio.</li>
+<li>Incluye las cabeceras necesarias en tu archivo de código:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHdpbnNvY2syLmg+CiNpbmNsdWRlIDx3czJ0Y3BpcC5oPgojcHJhZ21hIGNvbW1lbnQobGliLCAiV3MyXzMyLmxpYiIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;winsock2.h&gt;
+#include &lt;ws2tcpip.h&gt;
+#pragma comment(lib, &quot;Ws2_32.lib&quot;)</pre></div><div class='content'><ol start="3">
+<li>Inicializa Winsock al inicio de tu aplicación:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("V1NBREFUQSB3c2FEYXRhOwppbnQgaVJlc3VsdCA9IFdTQVN0YXJ0dXAoTUFLRVdPUkQoMiwgMiksICZ3c2FEYXRhKTsKaWYgKGlSZXN1bHQgIT0gMCkgewogICAgcHJpbnRmKCJXU0FTdGFydHVwIGZhaWxlZDogJWRcbiIsIGlSZXN1bHQpOwogICAgcmV0dXJuIDE7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>WSADATA wsaData;
+int iResult = WSAStartup(MAKEWORD(2, 2), &amp;wsaData);
+if (iResult != 0) {
+    printf(&quot;WSAStartup failed: %d\n&quot;, iResult);
+    return 1;
+}</pre></div><div class='content'></div><h1>Creando una Conexión de Red</h1>
+<div class='content'></div><h2>Configuración del Servidor</h2>
+<div class='content'><ol>
+<li><strong>Crear un Socket</strong>: Un socket es el punto final de una conexión de red.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U09DS0VUIExpc3RlblNvY2tldCA9IElOVkFMSURfU09DS0VUOwpMaXN0ZW5Tb2NrZXQgPSBzb2NrZXQoQUZfSU5FVCwgU09DS19TVFJFQU0sIElQUFJPVE9fVENQKTsKaWYgKExpc3RlblNvY2tldCA9PSBJTlZBTElEX1NPQ0tFVCkgewogICAgcHJpbnRmKCJFcnJvciBhdCBzb2NrZXQoKTogJWxkXG4iLCBXU0FHZXRMYXN0RXJyb3IoKSk7CiAgICBXU0FDbGVhbnVwKCk7CiAgICByZXR1cm4gMTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SOCKET ListenSocket = INVALID_SOCKET;
+ListenSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+if (ListenSocket == INVALID_SOCKET) {
+    printf(&quot;Error at socket(): %ld\n&quot;, WSAGetLastError());
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Asociar el Socket a una Dirección y Puerto</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c29ja2FkZHJfaW4gc2VydmljZTsKc2VydmljZS5zaW5fZmFtaWx5ID0gQUZfSU5FVDsKc2VydmljZS5zaW5fYWRkci5zX2FkZHIgPSBpbmV0X2FkZHIoIjEyNy4wLjAuMSIpOwpzZXJ2aWNlLnNpbl9wb3J0ID0gaHRvbnMoMjcwMTUpOwoKaWYgKGJpbmQoTGlzdGVuU29ja2V0LCAoU09DS0FERFIqKSZzZXJ2aWNlLCBzaXplb2Yoc2VydmljZSkpID09IFNPQ0tFVF9FUlJPUikgewogICAgcHJpbnRmKCJiaW5kIGZhaWxlZDogJWRcbiIsIFdTQUdldExhc3RFcnJvcigpKTsKICAgIGNsb3Nlc29ja2V0KExpc3RlblNvY2tldCk7CiAgICBXU0FDbGVhbnVwKCk7CiAgICByZXR1cm4gMTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sockaddr_in service;
+service.sin_family = AF_INET;
+service.sin_addr.s_addr = inet_addr(&quot;127.0.0.1&quot;);
+service.sin_port = htons(27015);
+
+if (bind(ListenSocket, (SOCKADDR*)&amp;service, sizeof(service)) == SOCKET_ERROR) {
+    printf(&quot;bind failed: %d\n&quot;, WSAGetLastError());
+    closesocket(ListenSocket);
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'><ol start="3">
+<li><strong>Escuchar por Conexiones Entrantes</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aWYgKGxpc3RlbihMaXN0ZW5Tb2NrZXQsIFNPTUFYQ09OTikgPT0gU09DS0VUX0VSUk9SKSB7CiAgICBwcmludGYoIkxpc3RlbiBmYWlsZWQ6ICVsZFxuIiwgV1NBR2V0TGFzdEVycm9yKCkpOwogICAgY2xvc2Vzb2NrZXQoTGlzdGVuU29ja2V0KTsKICAgIFdTQUNsZWFudXAoKTsKICAgIHJldHVybiAxOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>if (listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) {
+    printf(&quot;Listen failed: %ld\n&quot;, WSAGetLastError());
+    closesocket(ListenSocket);
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'><ol start="4">
+<li><strong>Aceptar una Conexión</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U09DS0VUIENsaWVudFNvY2tldDsKQ2xpZW50U29ja2V0ID0gYWNjZXB0KExpc3RlblNvY2tldCwgTlVMTCwgTlVMTCk7CmlmIChDbGllbnRTb2NrZXQgPT0gSU5WQUxJRF9TT0NLRVQpIHsKICAgIHByaW50ZigiYWNjZXB0IGZhaWxlZDogJWRcbiIsIFdTQUdldExhc3RFcnJvcigpKTsKICAgIGNsb3Nlc29ja2V0KExpc3RlblNvY2tldCk7CiAgICBXU0FDbGVhbnVwKCk7CiAgICByZXR1cm4gMTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SOCKET ClientSocket;
+ClientSocket = accept(ListenSocket, NULL, NULL);
+if (ClientSocket == INVALID_SOCKET) {
+    printf(&quot;accept failed: %d\n&quot;, WSAGetLastError());
+    closesocket(ListenSocket);
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'></div><h2>Configuración del Cliente</h2>
+<div class='content'><ol>
+<li><strong>Crear un Socket</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U09DS0VUIENvbm5lY3RTb2NrZXQgPSBJTlZBTElEX1NPQ0tFVDsKQ29ubmVjdFNvY2tldCA9IHNvY2tldChBRl9JTkVULCBTT0NLX1NUUkVBTSwgSVBQUk9UT19UQ1ApOwppZiAoQ29ubmVjdFNvY2tldCA9PSBJTlZBTElEX1NPQ0tFVCkgewogICAgcHJpbnRmKCJFcnJvciBhdCBzb2NrZXQoKTogJWxkXG4iLCBXU0FHZXRMYXN0RXJyb3IoKSk7CiAgICBXU0FDbGVhbnVwKCk7CiAgICByZXR1cm4gMTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SOCKET ConnectSocket = INVALID_SOCKET;
+ConnectSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+if (ConnectSocket == INVALID_SOCKET) {
+    printf(&quot;Error at socket(): %ld\n&quot;, WSAGetLastError());
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Conectar al Servidor</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c29ja2FkZHJfaW4gY2xpZW50U2VydmljZTsKY2xpZW50U2VydmljZS5zaW5fZmFtaWx5ID0gQUZfSU5FVDsKY2xpZW50U2VydmljZS5zaW5fYWRkci5zX2FkZHIgPSBpbmV0X2FkZHIoIjEyNy4wLjAuMSIpOwpjbGllbnRTZXJ2aWNlLnNpbl9wb3J0ID0gaHRvbnMoMjcwMTUpOwoKaWYgKGNvbm5lY3QoQ29ubmVjdFNvY2tldCwgKFNPQ0tBRERSKikmY2xpZW50U2VydmljZSwgc2l6ZW9mKGNsaWVudFNlcnZpY2UpKSA9PSBTT0NLRVRfRVJST1IpIHsKICAgIHByaW50ZigiVW5hYmxlIHRvIGNvbm5lY3QgdG8gc2VydmVyOiAlbGRcbiIsIFdTQUdldExhc3RFcnJvcigpKTsKICAgIGNsb3Nlc29ja2V0KENvbm5lY3RTb2NrZXQpOwogICAgV1NBQ2xlYW51cCgpOwogICAgcmV0dXJuIDE7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sockaddr_in clientService;
+clientService.sin_family = AF_INET;
+clientService.sin_addr.s_addr = inet_addr(&quot;127.0.0.1&quot;);
+clientService.sin_port = htons(27015);
+
+if (connect(ConnectSocket, (SOCKADDR*)&amp;clientService, sizeof(clientService)) == SOCKET_ERROR) {
+    printf(&quot;Unable to connect to server: %ld\n&quot;, WSAGetLastError());
+    closesocket(ConnectSocket);
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'></div><h1>Enviando y Recibiendo Datos</h1>
+<div class='content'></div><h2>Enviar Datos</h2>
+<div class='content'><p>Para enviar datos desde el cliente al servidor:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgY2hhciogc2VuZGJ1ZiA9ICJ0aGlzIGlzIGEgdGVzdCI7CmludCBpUmVzdWx0ID0gc2VuZChDb25uZWN0U29ja2V0LCBzZW5kYnVmLCAoaW50KXN0cmxlbihzZW5kYnVmKSwgMCk7CmlmIChpUmVzdWx0ID09IFNPQ0tFVF9FUlJPUikgewogICAgcHJpbnRmKCJzZW5kIGZhaWxlZDogJWRcbiIsIFdTQUdldExhc3RFcnJvcigpKTsKICAgIGNsb3Nlc29ja2V0KENvbm5lY3RTb2NrZXQpOwogICAgV1NBQ2xlYW51cCgpOwogICAgcmV0dXJuIDE7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const char* sendbuf = &quot;this is a test&quot;;
+int iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
+if (iResult == SOCKET_ERROR) {
+    printf(&quot;send failed: %d\n&quot;, WSAGetLastError());
+    closesocket(ConnectSocket);
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'></div><h2>Recibir Datos</h2>
+<div class='content'><p>Para recibir datos en el servidor:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2hhciByZWN2YnVmWzUxMl07CmludCByZWN2YnVmbGVuID0gNTEyOwoKaW50IGlSZXN1bHQgPSByZWN2KENsaWVudFNvY2tldCwgcmVjdmJ1ZiwgcmVjdmJ1ZmxlbiwgMCk7CmlmIChpUmVzdWx0ID4gMCkgewogICAgcHJpbnRmKCJCeXRlcyByZWNlaXZlZDogJWRcbiIsIGlSZXN1bHQpOwp9IGVsc2UgaWYgKGlSZXN1bHQgPT0gMCkgewogICAgcHJpbnRmKCJDb25uZWN0aW9uIGNsb3NpbmcuLi5cbiIpOwp9IGVsc2UgewogICAgcHJpbnRmKCJyZWN2IGZhaWxlZDogJWRcbiIsIFdTQUdldExhc3RFcnJvcigpKTsKICAgIGNsb3Nlc29ja2V0KENsaWVudFNvY2tldCk7CiAgICBXU0FDbGVhbnVwKCk7CiAgICByZXR1cm4gMTsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>char recvbuf[512];
+int recvbuflen = 512;
+
+int iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+if (iResult &gt; 0) {
+    printf(&quot;Bytes received: %d\n&quot;, iResult);
+} else if (iResult == 0) {
+    printf(&quot;Connection closing...\n&quot;);
+} else {
+    printf(&quot;recv failed: %d\n&quot;, WSAGetLastError());
+    closesocket(ClientSocket);
+    WSACleanup();
+    return 1;
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar un Chat Simple</h2>
+<div class='content'><p><strong>Objetivo</strong>: Crear una aplicación de chat simple donde un cliente puede enviar mensajes a un servidor y el servidor puede responder.</p>
+<p><strong>Pasos</strong>:</p>
+<ol>
+<li>Configura el servidor para aceptar múltiples conexiones.</li>
+<li>Configura el cliente para enviar mensajes al servidor.</li>
+<li>Implementa la lógica para que el servidor responda a los mensajes del cliente.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gQ8OzZGlnbyBkZWwgU2Vydmlkb3IKLy8gU2ltaWxhciBhbCBjw7NkaWdvIGRlIGNvbmZpZ3VyYWNpw7NuIGRlbCBzZXJ2aWRvciBhbnRlcmlvciwgcGVybyBjb24gdW4gYnVjbGUgcGFyYSBtYW5lamFyIG3Dumx0aXBsZXMgY2xpZW50ZXMKCi8vIEPDs2RpZ28gZGVsIENsaWVudGUKLy8gU2ltaWxhciBhbCBjw7NkaWdvIGRlIGNvbmZpZ3VyYWNpw7NuIGRlbCBjbGllbnRlIGFudGVyaW9yLCBwZXJvIGNvbiB1biBidWNsZSBwYXJhIGVudmlhciB5IHJlY2liaXIgbWVuc2FqZXM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// C&oacute;digo del Servidor
+// Similar al c&oacute;digo de configuraci&oacute;n del servidor anterior, pero con un bucle para manejar m&uacute;ltiples clientes
+
+// C&oacute;digo del Cliente
+// Similar al c&oacute;digo de configuraci&oacute;n del cliente anterior, pero con un bucle para enviar y recibir mensajes</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos cubierto los conceptos básicos de redes y cómo integrar capacidades de red en aplicaciones DirectX. Aprendimos a configurar un servidor y un cliente, y cómo enviar y recibir datos. Con estos conocimientos, puedes empezar a construir aplicaciones DirectX que se comuniquen a través de la red, como juegos multijugador y aplicaciones colaborativas.</p>
+<p>En el próximo módulo, exploraremos cómo publicar tu aplicación DirectX, asegurando que esté lista para ser distribuida y utilizada por otros.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-integrating-physics' title="Integrando Física">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-publishing-application' title="Publicando Tu Aplicación DirectX">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desplegando en Heroku</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/springboot/08-02-deploying-heroku" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/springboot/08-02-deploying-heroku" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/springboot/08-02-deploying-heroku" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/springboot/08-02-deploying-heroku" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/springboot/08-02-deploying-heroku" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-deployment' title="Introducción al Despliegue">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Desplegando en Heroku</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-deploying-aws' title="Desplegando en AWS">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás cómo desplegar una aplicación Spring Boot en Heroku, una plataforma como servicio (PaaS) que permite a los desarrolladores construir, ejecutar y operar aplicaciones completamente en la nube.</p>
+</div><h1>1. ¿Qué es Heroku?</h1>
+<div class='content'><p>Heroku es una plataforma en la nube que permite a los desarrolladores desplegar, gestionar y escalar aplicaciones sin preocuparse por la infraestructura subyacente. Ofrece soporte para múltiples lenguajes de programación, incluyendo Java, y es especialmente popular por su facilidad de uso y su integración con Git.</p>
+</div><h1>2. Prerrequisitos</h1>
+<div class='content'><p>Antes de comenzar, asegúrate de tener lo siguiente:</p>
+<ul>
+<li>Una cuenta en Heroku (puedes registrarte en <a href="https://signup.heroku.com/">Heroku</a>).</li>
+<li>Git instalado en tu máquina.</li>
+<li>Heroku CLI (Command Line Interface) instalado. Puedes descargarlo desde <a href="https://devcenter.heroku.com/articles/heroku-cli">Heroku CLI</a>.</li>
+</ul>
+</div><h1>3. Configuración del Proyecto Spring Boot</h1>
+<div class='content'></div><h2>3.1. Crear un Proyecto Spring Boot</h2>
+<div class='content'><p>Si aún no tienes un proyecto Spring Boot, puedes crear uno utilizando Spring Initializr:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCBodHRwczovL3N0YXJ0LnNwcmluZy5pby9zdGFydGVyLnppcCAtZCBkZXBlbmRlbmNpZXM9d2ViIC1kIG5hbWU9aGVyb2t1LWRlbW8gLWQgcGFja2FnZU5hbWU9Y29tLmV4YW1wbGUuaGVyb2t1IC1vIGhlcm9rdS1kZW1vLnppcAp1bnppcCBoZXJva3UtZGVtby56aXAgLWQgaGVyb2t1LWRlbW8KY2QgaGVyb2t1LWRlbW8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl https://start.spring.io/starter.zip -d dependencies=web -d name=heroku-demo -d packageName=com.example.heroku -o heroku-demo.zip
+unzip heroku-demo.zip -d heroku-demo
+cd heroku-demo</pre></div><div class='content'></div><h2>3.2. Configurar el `pom.xml`</h2>
+<div class='content'><p>Asegúrate de que tu archivo <code>pom.xml</code> tenga las siguientes dependencias básicas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGRlcGVuZGVuY2llcz4KICAgIDxkZXBlbmRlbmN5PgogICAgICAgIDxncm91cElkPm9yZy5zcHJpbmdmcmFtZXdvcmsuYm9vdDwvZ3JvdXBJZD4KICAgICAgICA8YXJ0aWZhY3RJZD5zcHJpbmctYm9vdC1zdGFydGVyLXdlYjwvYXJ0aWZhY3RJZD4KICAgIDwvZGVwZW5kZW5jeT4KPC9kZXBlbmRlbmNpZXM+"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</pre></div><div class='content'></div><h2>3.3. Crear un Controlador Simple</h2>
+<div class='content'><p>Crea un controlador simple para verificar que tu aplicación funciona correctamente:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5oZXJva3U7CgppbXBvcnQgb3JnLnNwcmluZ2ZyYW1ld29yay53ZWIuYmluZC5hbm5vdGF0aW9uLkdldE1hcHBpbmc7CmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLndlYi5iaW5kLmFubm90YXRpb24uUmVzdENvbnRyb2xsZXI7CgpAUmVzdENvbnRyb2xsZXIKcHVibGljIGNsYXNzIEhlbGxvQ29udHJvbGxlciB7CgogICAgQEdldE1hcHBpbmcoIi8iKQogICAgcHVibGljIFN0cmluZyBoZWxsbygpIHsKICAgICAgICByZXR1cm4gIkhlbGxvLCBIZXJva3UhIjsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.heroku;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+
+    @GetMapping(&quot;/&quot;)
+    public String hello() {
+        return &quot;Hello, Heroku!&quot;;
+    }
+}</pre></div><div class='content'></div><h1>4. Desplegar en Heroku</h1>
+<div class='content'></div><h2>4.1. Iniciar Sesión en Heroku</h2>
+<div class='content'><p>Abre una terminal y ejecuta el siguiente comando para iniciar sesión en Heroku:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGxvZ2lu"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku login</pre></div><div class='content'></div><h2>4.2. Crear una Aplicación en Heroku</h2>
+<div class='content'><p>Navega al directorio raíz de tu proyecto y ejecuta el siguiente comando para crear una nueva aplicación en Heroku:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IGNyZWF0ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku create</pre></div><div class='content'></div><h2>4.3. Configurar el `Procfile`</h2>
+<div class='content'><p>Crea un archivo llamado <code>Procfile</code> en el directorio raíz de tu proyecto. Este archivo le dice a Heroku cómo ejecutar tu aplicación. Añade la siguiente línea:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2ViOiBqYXZhIC1Ec2VydmVyLnBvcnQ9JFBPUlQgLWphciB0YXJnZXQvKi5qYXI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>web: java -Dserver.port=$PORT -jar target/*.jar</pre></div><div class='content'></div><h2>4.4. Construir el Proyecto</h2>
+<div class='content'><p>Construye tu proyecto utilizando Maven:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9tdm53IGNsZWFuIHBhY2thZ2U="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./mvnw clean package</pre></div><div class='content'></div><h2>4.5. Desplegar la Aplicación</h2>
+<div class='content'><p>Añade, confirma y empuja tu código a Heroku utilizando Git:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2l0IGluaXQKZ2l0IGFkZCAuCmdpdCBjb21taXQgLW0gIkluaXRpYWwgY29tbWl0IgpnaXQgcHVzaCBoZXJva3UgbWFzdGVy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>git init
+git add .
+git commit -m &quot;Initial commit&quot;
+git push heroku master</pre></div><div class='content'></div><h2>4.6. Verificar el Despliegue</h2>
+<div class='content'><p>Una vez que el despliegue se haya completado, puedes abrir tu aplicación en el navegador:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aGVyb2t1IG9wZW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>heroku open</pre></div><div class='content'><p>Deberías ver el mensaje &quot;Hello, Heroku!&quot;.</p>
+</div><h1>5. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Crea un nuevo proyecto Spring Boot con un controlador que devuelva un mensaje personalizado.</li>
+<li>Configura el proyecto para desplegarlo en Heroku.</li>
+<li>Despliega la aplicación en Heroku y verifica que funcione correctamente.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>Crear el proyecto Spring Boot:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCBodHRwczovL3N0YXJ0LnNwcmluZy5pby9zdGFydGVyLnppcCAtZCBkZXBlbmRlbmNpZXM9d2ViIC1kIG5hbWU9aGVyb2t1LWV4ZXJjaXNlIC1kIHBhY2thZ2VOYW1lPWNvbS5leGFtcGxlLmhlcm9rdWV4ZXJjaXNlIC1vIGhlcm9rdS1leGVyY2lzZS56aXAKdW56aXAgaGVyb2t1LWV4ZXJjaXNlLnppcCAtZCBoZXJva3UtZXhlcmNpc2UKY2QgaGVyb2t1LWV4ZXJjaXNl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl https://start.spring.io/starter.zip -d dependencies=web -d name=heroku-exercise -d packageName=com.example.herokuexercise -o heroku-exercise.zip
+unzip heroku-exercise.zip -d heroku-exercise
+cd heroku-exercise</pre></div><div class='content'><ol start="2">
+<li>Añadir un controlador:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGFja2FnZSBjb20uZXhhbXBsZS5oZXJva3VleGVyY2lzZTsKCmltcG9ydCBvcmcuc3ByaW5nZnJhbWV3b3JrLndlYi5iaW5kLmFubm90YXRpb24uR2V0TWFwcGluZzsKaW1wb3J0IG9yZy5zcHJpbmdmcmFtZXdvcmsud2ViLmJpbmQuYW5ub3RhdGlvbi5SZXN0Q29udHJvbGxlcjsKCkBSZXN0Q29udHJvbGxlcgpwdWJsaWMgY2xhc3MgQ3VzdG9tQ29udHJvbGxlciB7CgogICAgQEdldE1hcHBpbmcoIi8iKQogICAgcHVibGljIFN0cmluZyBjdXN0b21NZXNzYWdlKCkgewogICAgICAgIHJldHVybiAiV2VsY29tZSB0byBIZXJva3UhIjsKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>package com.example.herokuexercise;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class CustomController {
+
+    @GetMapping(&quot;/&quot;)
+    public String customMessage() {
+        return &quot;Welcome to Heroku!&quot;;
+    }
+}</pre></div><div class='content'><ol start="3">
+<li>Crear el <code>Procfile</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("d2ViOiBqYXZhIC1Ec2VydmVyLnBvcnQ9JFBPUlQgLWphciB0YXJnZXQvKi5qYXI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>web: java -Dserver.port=$PORT -jar target/*.jar</pre></div><div class='content'><ol start="4">
+<li>Construir y desplegar:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Li9tdm53IGNsZWFuIHBhY2thZ2UKZ2l0IGluaXQKZ2l0IGFkZCAuCmdpdCBjb21taXQgLW0gIkluaXRpYWwgY29tbWl0IgpoZXJva3UgY3JlYXRlCmdpdCBwdXNoIGhlcm9rdSBtYXN0ZXIKaGVyb2t1IG9wZW4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>./mvnw clean package
+git init
+git add .
+git commit -m &quot;Initial commit&quot;
+heroku create
+git push heroku master
+heroku open</pre></div><div class='content'></div><h1>6. Conclusión</h1>
+<div class='content'><p>Desplegar aplicaciones Spring Boot en Heroku es un proceso sencillo que puede ser realizado en pocos pasos. Heroku se encarga de la infraestructura, permitiéndote concentrarte en el desarrollo de tu aplicación. En el siguiente tema, aprenderemos cómo desplegar aplicaciones Spring Boot en AWS, otra plataforma popular para el despliegue en la nube.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-01-introduction-deployment' title="Introducción al Despliegue">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-03-deploying-aws' title="Desplegando en AWS">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

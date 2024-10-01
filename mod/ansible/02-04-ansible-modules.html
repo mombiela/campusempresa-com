@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulos de Ansible</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/ansible/02-04-ansible-modules" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/ansible/02-04-ansible-modules" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/ansible/02-04-ansible-modules" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/ansible/02-04-ansible-modules" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/ansible/02-04-ansible-modules" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-ad-hoc-commands' title="Comandos Ad-Hoc">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Módulos de Ansible</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-introduction-to-playbooks' title="Introducción a los Playbooks">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Los módulos son el núcleo de Ansible. Son pequeños programas que Ansible envía a los nodos para ejecutar tareas específicas. Los módulos pueden realizar una amplia variedad de tareas, desde la gestión de paquetes hasta la configuración de servicios y la manipulación de archivos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Módulos Integrados</strong>: Ansible viene con una gran cantidad de módulos integrados que cubren una amplia gama de funcionalidades.</li>
+<li><strong>Módulos Personalizados</strong>: Puedes escribir tus propios módulos si necesitas funcionalidades específicas que no están cubiertas por los módulos integrados.</li>
+<li><strong>Idempotencia</strong>: Los módulos de Ansible están diseñados para ser idempotentes, lo que significa que pueden ejecutarse múltiples veces sin cambiar el resultado después de la primera ejecución, siempre que el estado deseado ya se haya alcanzado.</li>
+</ol>
+</div><h1>Tipos de Módulos</h1>
+<div class='content'><p>Ansible tiene varios tipos de módulos, algunos de los más comunes son:</p>
+<ul>
+<li><strong>Módulos de Gestión de Paquetes</strong>: <code>apt</code>, <code>yum</code>, <code>pip</code></li>
+<li><strong>Módulos de Gestión de Servicios</strong>: <code>service</code>, <code>systemd</code></li>
+<li><strong>Módulos de Gestión de Archivos</strong>: <code>copy</code>, <code>template</code>, <code>file</code></li>
+<li><strong>Módulos de Gestión de Usuarios y Grupos</strong>: <code>user</code>, <code>group</code></li>
+<li><strong>Módulos de Gestión de Redes</strong>: <code>firewalld</code>, <code>iptables</code></li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a ver un ejemplo práctico de cómo usar algunos de estos módulos en un playbook.</p>
+</div><h2>Playbook de Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCi0gbmFtZTogRWplbXBsbyBkZSB1c28gZGUgbcOzZHVsb3MgZW4gQW5zaWJsZQogIGhvc3RzOiBsb2NhbGhvc3QKICB0YXNrczoKICAgIC0gbmFtZTogSW5zdGFsYXIgcGFxdWV0ZSBuZ2lueAogICAgICBhcHQ6CiAgICAgICAgbmFtZTogbmdpbngKICAgICAgICBzdGF0ZTogcHJlc2VudAogICAgICBiZWNvbWU6IHllcwoKICAgIC0gbmFtZTogSW5pY2lhciB5IGhhYmlsaXRhciBlbCBzZXJ2aWNpbyBuZ2lueAogICAgICBzZXJ2aWNlOgogICAgICAgIG5hbWU6IG5naW54CiAgICAgICAgc3RhdGU6IHN0YXJ0ZWQKICAgICAgICBlbmFibGVkOiB5ZXMKCiAgICAtIG5hbWU6IENyZWFyIHVuIGFyY2hpdm8gZGUgY29uZmlndXJhY2nDs24KICAgICAgY29weToKICAgICAgICBjb250ZW50OiB8CiAgICAgICAgICBzZXJ2ZXIgewogICAgICAgICAgICAgIGxpc3RlbiA4MDsKICAgICAgICAgICAgICBzZXJ2ZXJfbmFtZSBsb2NhbGhvc3Q7CiAgICAgICAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgICAgICAgIHJvb3QgL3Zhci93d3cvaHRtbDsKICAgICAgICAgICAgICAgICAgaW5kZXggaW5kZXguaHRtbCBpbmRleC5odG07CiAgICAgICAgICAgICAgfQogICAgICAgICAgfQogICAgICAgIGRlc3Q6IC9ldGMvbmdpbngvc2l0ZXMtYXZhaWxhYmxlL2RlZmF1bHQKICAgICAgICBvd25lcjogcm9vdAogICAgICAgIGdyb3VwOiByb290CiAgICAgICAgbW9kZTogJzA2NDQnCiAgICAgIGJlY29tZTogeWVzCgogICAgLSBuYW1lOiBSZWNhcmdhciBlbCBzZXJ2aWNpbyBuZ2lueAogICAgICBzZXJ2aWNlOgogICAgICAgIG5hbWU6IG5naW54CiAgICAgICAgc3RhdGU6IHJlbG9hZGVkCiAgICAgIGJlY29tZTogeWVz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+- name: Ejemplo de uso de m&oacute;dulos en Ansible
+  hosts: localhost
+  tasks:
+    - name: Instalar paquete nginx
+      apt:
+        name: nginx
+        state: present
+      become: yes
+
+    - name: Iniciar y habilitar el servicio nginx
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Crear un archivo de configuraci&oacute;n
+      copy:
+        content: |
+          server {
+              listen 80;
+              server_name localhost;
+              location / {
+                  root /var/www/html;
+                  index index.html index.htm;
+              }
+          }
+        dest: /etc/nginx/sites-available/default
+        owner: root
+        group: root
+        mode: '0644'
+      become: yes
+
+    - name: Recargar el servicio nginx
+      service:
+        name: nginx
+        state: reloaded
+      become: yes</pre></div><div class='content'></div><h2>Explicación del Playbook</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar paquete nginx</strong>:</p>
+<pre><code class="language-yaml">- name: Instalar paquete nginx
+  apt:
+    name: nginx
+    state: present
+  become: yes
+</code></pre>
+<p>Este bloque usa el módulo <code>apt</code> para asegurarse de que el paquete <code>nginx</code> esté instalado. La opción <code>become: yes</code> se usa para ejecutar la tarea con privilegios de superusuario.</p>
+</li>
+<li>
+<p><strong>Iniciar y habilitar el servicio nginx</strong>:</p>
+<pre><code class="language-yaml">- name: Iniciar y habilitar el servicio nginx
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+  become: yes
+</code></pre>
+<p>Este bloque usa el módulo <code>service</code> para iniciar y habilitar el servicio <code>nginx</code>.</p>
+</li>
+<li>
+<p><strong>Crear un archivo de configuración</strong>:</p>
+<pre><code class="language-yaml">- name: Crear un archivo de configuración
+  copy:
+    content: |
+      server {
+          listen 80;
+          server_name localhost;
+          location / {
+              root /var/www/html;
+              index index.html index.htm;
+          }
+      }
+    dest: /etc/nginx/sites-available/default
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+</code></pre>
+<p>Este bloque usa el módulo <code>copy</code> para crear un archivo de configuración para <code>nginx</code>. El contenido del archivo se especifica directamente en el playbook.</p>
+</li>
+<li>
+<p><strong>Recargar el servicio nginx</strong>:</p>
+<pre><code class="language-yaml">- name: Recargar el servicio nginx
+  service:
+    name: nginx
+    state: reloaded
+  become: yes
+</code></pre>
+<p>Este bloque usa el módulo <code>service</code> para recargar el servicio <code>nginx</code> después de que se haya cambiado la configuración.</p>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea un playbook que haga lo siguiente:</p>
+<ol>
+<li>Instale el paquete <code>git</code>.</li>
+<li>Cree un usuario llamado <code>deploy</code> con el shell <code>/bin/bash</code>.</li>
+<li>Cree un directorio <code>/home/deploy/.ssh</code> con los permisos adecuados.</li>
+<li>Copie una clave pública SSH al archivo <code>/home/deploy/.ssh/authorized_keys</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0tCi0gbmFtZTogRWplcmNpY2lvIGRlIG3Ds2R1bG9zIGVuIEFuc2libGUKICBob3N0czogbG9jYWxob3N0CiAgdGFza3M6CiAgICAtIG5hbWU6IEluc3RhbGFyIHBhcXVldGUgZ2l0CiAgICAgIGFwdDoKICAgICAgICBuYW1lOiBnaXQKICAgICAgICBzdGF0ZTogcHJlc2VudAogICAgICBiZWNvbWU6IHllcwoKICAgIC0gbmFtZTogQ3JlYXIgdXN1YXJpbyBkZXBsb3kKICAgICAgdXNlcjoKICAgICAgICBuYW1lOiBkZXBsb3kKICAgICAgICBzaGVsbDogL2Jpbi9iYXNoCiAgICAgICAgc3RhdGU6IHByZXNlbnQKICAgICAgYmVjb21lOiB5ZXMKCiAgICAtIG5hbWU6IENyZWFyIGRpcmVjdG9yaW8gLnNzaAogICAgICBmaWxlOgogICAgICAgIHBhdGg6IC9ob21lL2RlcGxveS8uc3NoCiAgICAgICAgc3RhdGU6IGRpcmVjdG9yeQogICAgICAgIG93bmVyOiBkZXBsb3kKICAgICAgICBncm91cDogZGVwbG95CiAgICAgICAgbW9kZTogJzA3MDAnCiAgICAgIGJlY29tZTogeWVzCgogICAgLSBuYW1lOiBDb3BpYXIgY2xhdmUgcMO6YmxpY2EgU1NICiAgICAgIGNvcHk6CiAgICAgICAgc3JjOiAvcGF0aC90by95b3VyL3B1YmxpY19rZXkucHViCiAgICAgICAgZGVzdDogL2hvbWUvZGVwbG95Ly5zc2gvYXV0aG9yaXplZF9rZXlzCiAgICAgICAgb3duZXI6IGRlcGxveQogICAgICAgIGdyb3VwOiBkZXBsb3kKICAgICAgICBtb2RlOiAnMDYwMCcKICAgICAgYmVjb21lOiB5ZXM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>---
+- name: Ejercicio de m&oacute;dulos en Ansible
+  hosts: localhost
+  tasks:
+    - name: Instalar paquete git
+      apt:
+        name: git
+        state: present
+      become: yes
+
+    - name: Crear usuario deploy
+      user:
+        name: deploy
+        shell: /bin/bash
+        state: present
+      become: yes
+
+    - name: Crear directorio .ssh
+      file:
+        path: /home/deploy/.ssh
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: '0700'
+      become: yes
+
+    - name: Copiar clave p&uacute;blica SSH
+      copy:
+        src: /path/to/your/public_key.pub
+        dest: /home/deploy/.ssh/authorized_keys
+        owner: deploy
+        group: deploy
+        mode: '0600'
+      become: yes</pre></div><div class='content'></div><h2>Explicación de la Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Instalar paquete git</strong>:</p>
+<pre><code class="language-yaml">- name: Instalar paquete git
+  apt:
+    name: git
+    state: present
+  become: yes
+</code></pre>
+<p>Usa el módulo <code>apt</code> para instalar <code>git</code>.</p>
+</li>
+<li>
+<p><strong>Crear usuario deploy</strong>:</p>
+<pre><code class="language-yaml">- name: Crear usuario deploy
+  user:
+    name: deploy
+    shell: /bin/bash
+    state: present
+  become: yes
+</code></pre>
+<p>Usa el módulo <code>user</code> para crear un usuario llamado <code>deploy</code>.</p>
+</li>
+<li>
+<p><strong>Crear directorio .ssh</strong>:</p>
+<pre><code class="language-yaml">- name: Crear directorio .ssh
+  file:
+    path: /home/deploy/.ssh
+    state: directory
+    owner: deploy
+    group: deploy
+    mode: '0700'
+  become: yes
+</code></pre>
+<p>Usa el módulo <code>file</code> para crear el directorio <code>.ssh</code> con los permisos adecuados.</p>
+</li>
+<li>
+<p><strong>Copiar clave pública SSH</strong>:</p>
+<pre><code class="language-yaml">- name: Copiar clave pública SSH
+  copy:
+    src: /path/to/your/public_key.pub
+    dest: /home/deploy/.ssh/authorized_keys
+    owner: deploy
+    group: deploy
+    mode: '0600'
+  become: yes
+</code></pre>
+<p>Usa el módulo <code>copy</code> para copiar la clave pública SSH al archivo <code>authorized_keys</code>.</p>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los módulos de Ansible, su importancia y cómo usarlos en playbooks. Los módulos son fundamentales para automatizar tareas con Ansible y permiten una gran flexibilidad y control sobre la configuración de los sistemas. En el próximo módulo, profundizaremos en los playbooks, que son la forma de organizar y ejecutar múltiples tareas de manera secuencial.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-03-ad-hoc-commands' title="Comandos Ad-Hoc">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-01-introduction-to-playbooks' title="Introducción a los Playbooks">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

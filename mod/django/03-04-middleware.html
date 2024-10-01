@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Middleware</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/django/03-04-middleware" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/django/03-04-middleware" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/django/03-04-middleware" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/django/03-04-middleware" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/django/03-04-middleware" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-user-authentication' title="Autenticación de Usuarios">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Middleware</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-file-uploads' title="Carga de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>El middleware en Django es una serie de componentes que se ejecutan durante el procesamiento de solicitudes y respuestas. Estos componentes pueden modificar la solicitud entrante, la respuesta saliente o ambos. El middleware es una herramienta poderosa para implementar funcionalidades transversales como autenticación, compresión de respuestas, manejo de sesiones, entre otros.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ul>
+<li><strong>Middleware</strong>: Es una clase que define métodos para procesar solicitudes y respuestas.</li>
+<li><strong>Request</strong>: La solicitud HTTP entrante.</li>
+<li><strong>Response</strong>: La respuesta HTTP saliente.</li>
+<li><strong>MIDDLEWARE</strong>: Configuración en <code>settings.py</code> que define la lista de middleware a utilizar.</li>
+</ul>
+</div><h1>Estructura de un Middleware</h1>
+<div class='content'><p>Un middleware en Django es una clase que debe implementar al menos uno de los siguientes métodos:</p>
+<ul>
+<li><code>__init__(self, get_response)</code>: Inicializa el middleware. <code>get_response</code> es una función que se llama para obtener la respuesta.</li>
+<li><code>__call__(self, request)</code>: Procesa la solicitud y devuelve una respuesta.</li>
+<li><code>process_view(self, request, view_func, view_args, view_kwargs)</code>: Se llama justo antes de que Django llame a la vista.</li>
+<li><code>process_exception(self, request, exception)</code>: Se llama si una vista genera una excepción.</li>
+<li><code>process_template_response(self, request, response)</code>: Se llama después de que la vista ha generado una respuesta, pero antes de que se renderice la plantilla.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear un middleware simple que registre el tiempo que tarda en procesarse una solicitud.</p>
+</div><h2>Paso 1: Crear el Middleware</h2>
+<div class='content'><p>Crea un archivo llamado <code>middleware.py</code> en una de tus aplicaciones Django.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRpbWUKCmNsYXNzIFJlcXVlc3RUaW1lTWlkZGxld2FyZToKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBnZXRfcmVzcG9uc2UpOgogICAgICAgIHNlbGYuZ2V0X3Jlc3BvbnNlID0gZ2V0X3Jlc3BvbnNlCgogICAgZGVmIF9fY2FsbF9fKHNlbGYsIHJlcXVlc3QpOgogICAgICAgIHN0YXJ0X3RpbWUgPSB0aW1lLnRpbWUoKQogICAgICAgIHJlc3BvbnNlID0gc2VsZi5nZXRfcmVzcG9uc2UocmVxdWVzdCkKICAgICAgICBkdXJhdGlvbiA9IHRpbWUudGltZSgpIC0gc3RhcnRfdGltZQogICAgICAgIHJlc3BvbnNlWydYLVJlcXVlc3QtRHVyYXRpb24nXSA9IHN0cihkdXJhdGlvbikKICAgICAgICByZXR1cm4gcmVzcG9uc2U="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import time
+
+class RequestTimeMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        start_time = time.time()
+        response = self.get_response(request)
+        duration = time.time() - start_time
+        response['X-Request-Duration'] = str(duration)
+        return response</pre></div><div class='content'></div><h2>Paso 2: Registrar el Middleware</h2>
+<div class='content'><p>Abre el archivo <code>settings.py</code> y añade tu middleware a la lista <code>MIDDLEWARE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("TUlERExFV0FSRSA9IFsKICAgICdkamFuZ28ubWlkZGxld2FyZS5zZWN1cml0eS5TZWN1cml0eU1pZGRsZXdhcmUnLAogICAgJ2RqYW5nby5jb250cmliLnNlc3Npb25zLm1pZGRsZXdhcmUuU2Vzc2lvbk1pZGRsZXdhcmUnLAogICAgJ2RqYW5nby5taWRkbGV3YXJlLmNvbW1vbi5Db21tb25NaWRkbGV3YXJlJywKICAgICdkamFuZ28ubWlkZGxld2FyZS5jc3JmLkNzcmZWaWV3TWlkZGxld2FyZScsCiAgICAnZGphbmdvLmNvbnRyaWIuYXV0aC5taWRkbGV3YXJlLkF1dGhlbnRpY2F0aW9uTWlkZGxld2FyZScsCiAgICAnZGphbmdvLmNvbnRyaWIubWVzc2FnZXMubWlkZGxld2FyZS5NZXNzYWdlTWlkZGxld2FyZScsCiAgICAnZGphbmdvLm1pZGRsZXdhcmUuY2xpY2tqYWNraW5nLlhGcmFtZU9wdGlvbnNNaWRkbGV3YXJlJywKICAgICd5b3VyX2FwcC5taWRkbGV3YXJlLlJlcXVlc3RUaW1lTWlkZGxld2FyZScsICAjIEHDsWFkZSB0dSBtaWRkbGV3YXJlIGFxdcOtCl0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'your_app.middleware.RequestTimeMiddleware',  # A&ntilde;ade tu middleware aqu&iacute;
+]</pre></div><div class='content'></div><h2>Paso 3: Probar el Middleware</h2>
+<div class='content'><p>Inicia tu servidor de desarrollo y realiza una solicitud a tu aplicación. Puedes usar herramientas como <code>curl</code> o tu navegador. Observa las cabeceras de la respuesta para ver el tiempo de procesamiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtSSBodHRwOi8vMTI3LjAuMC4xOjgwMDAv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -I http://127.0.0.1:8000/</pre></div><div class='content'><p>Deberías ver una cabecera <code>X-Request-Duration</code> con el tiempo que tardó en procesarse la solicitud.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Middleware de Autenticación Simple</h2>
+<div class='content'><p>Crea un middleware que verifique si una solicitud contiene una cabecera <code>X-Auth-Token</code> con un valor específico. Si la cabecera no está presente o el valor es incorrecto, devuelve una respuesta 403 Forbidden.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBkamFuZ28uaHR0cCBpbXBvcnQgSHR0cFJlc3BvbnNlRm9yYmlkZGVuCgpjbGFzcyBTaW1wbGVBdXRoTWlkZGxld2FyZToKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBnZXRfcmVzcG9uc2UpOgogICAgICAgIHNlbGYuZ2V0X3Jlc3BvbnNlID0gZ2V0X3Jlc3BvbnNlCgogICAgZGVmIF9fY2FsbF9fKHNlbGYsIHJlcXVlc3QpOgogICAgICAgIGF1dGhfdG9rZW4gPSByZXF1ZXN0LmhlYWRlcnMuZ2V0KCdYLUF1dGgtVG9rZW4nKQogICAgICAgIGlmIGF1dGhfdG9rZW4gIT0gJ215c2VjcmV0dG9rZW4nOgogICAgICAgICAgICByZXR1cm4gSHR0cFJlc3BvbnNlRm9yYmlkZGVuKCdGb3JiaWRkZW4nKQogICAgICAgIHJldHVybiBzZWxmLmdldF9yZXNwb25zZShyZXF1ZXN0KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from django.http import HttpResponseForbidden
+
+class SimpleAuthMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        auth_token = request.headers.get('X-Auth-Token')
+        if auth_token != 'mysecrettoken':
+            return HttpResponseForbidden('Forbidden')
+        return self.get_response(request)</pre></div><div class='content'><p>Registra el middleware en <code>settings.py</code> y prueba enviando solicitudes con y sin la cabecera <code>X-Auth-Token</code>.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El middleware en Django es una herramienta poderosa para implementar funcionalidades transversales en tu aplicación. Puedes usarlo para modificar solicitudes y respuestas, manejar excepciones y mucho más. En este módulo, hemos aprendido cómo crear y registrar un middleware, y hemos visto ejemplos prácticos para entender su funcionamiento.</p>
+<p>En el siguiente módulo, exploraremos cómo manejar la carga de archivos en Django, una funcionalidad esencial para muchas aplicaciones web.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-user-authentication' title="Autenticación de Usuarios">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-05-file-uploads' title="Carga de Archivos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

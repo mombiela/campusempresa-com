@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expresiones Regulares</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/powershell/04-03-regular-expressions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/powershell/04-03-regular-expressions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/powershell/04-03-regular-expressions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/powershell/04-03-regular-expressions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/powershell/04-03-regular-expressions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-debugging-scripts' title="Depuración de Scripts">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Expresiones Regulares</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-files-directories' title="Trabajando con Archivos y Directorios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las expresiones regulares (regex) son una herramienta poderosa para la manipulación y validación de texto. En PowerShell, las expresiones regulares se utilizan para buscar, reemplazar y validar patrones en cadenas de texto. Este tema cubrirá los conceptos básicos de las expresiones regulares, cómo utilizarlas en PowerShell y proporcionará ejemplos prácticos y ejercicios para reforzar el aprendizaje.</p>
+</div><h1>Conceptos Básicos de Expresiones Regulares</h1>
+<div class='content'></div><h2>¿Qué es una Expresión Regular?</h2>
+<div class='content'><p>Una expresión regular es una secuencia de caracteres que define un patrón de búsqueda. Este patrón puede ser utilizado para realizar operaciones de búsqueda y manipulación en cadenas de texto.</p>
+</div><h2>Componentes de una Expresión Regular</h2>
+<div class='content'><ul>
+<li><strong>Literales</strong>: Caracteres que coinciden exactamente con ellos mismos.</li>
+<li><strong>Metacaracteres</strong>: Caracteres con un significado especial (e.g., <code>.</code> para cualquier carácter, <code>\d</code> para un dígito).</li>
+<li><strong>Cuantificadores</strong>: Especifican cuántas veces debe aparecer un elemento (e.g., <code>*</code> para cero o más veces, <code>+</code> para una o más veces).</li>
+<li><strong>Grupos y Ranges</strong>: Permiten agrupar partes de la expresión y definir rangos de caracteres (e.g., <code>(abc)</code> para agrupar, <code>[a-z]</code> para un rango de letras minúsculas).</li>
+</ul>
+</div><h2>Ejemplos de Expresiones Regulares Comunes</h2>
+<div class='content'><ul>
+<li><code>\d{3}</code>: Coincide con exactamente tres dígitos.</li>
+<li><code>[A-Za-z]+</code>: Coincide con una o más letras mayúsculas o minúsculas.</li>
+<li><code>^Hello</code>: Coincide con &quot;Hello&quot; al inicio de una cadena.</li>
+<li><code>world$</code>: Coincide con &quot;world&quot; al final de una cadena.</li>
+</ul>
+</div><h1>Uso de Expresiones Regulares en PowerShell</h1>
+<div class='content'></div><h2>Cmdlets Principales</h2>
+<div class='content'><p>PowerShell proporciona varios cmdlets que permiten trabajar con expresiones regulares:</p>
+<ul>
+<li><code>Select-String</code>: Busca patrones en archivos o cadenas.</li>
+<li><code>-match</code> y <code>-notmatch</code>: Operadores para comparar cadenas con expresiones regulares.</li>
+<li><code>-replace</code>: Reemplaza partes de una cadena que coinciden con una expresión regular.</li>
+</ul>
+</div><h2>Ejemplos Prácticos</h2>
+<div class='content'><h4>Uso de <code>Select-String</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBCdXNjYXIgbGEgcGFsYWJyYSAiZXJyb3IiIGVuIHVuIGFyY2hpdm8gZGUgcmVnaXN0cm8KU2VsZWN0LVN0cmluZyAtUGF0aCAiQzpcTG9nc1xsb2dmaWxlLnR4dCIgLVBhdHRlcm4gImVycm9yIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Buscar la palabra &quot;error&quot; en un archivo de registro
+Select-String -Path &quot;C:\Logs\logfile.txt&quot; -Pattern &quot;error&quot;</pre></div><div class='content'><h4>Uso de <code>-match</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBWZXJpZmljYXIgc2kgdW5hIGNhZGVuYSBjb250aWVuZSB1biBuw7ptZXJvIGRlIHRlbMOpZm9ubwokcGhvbmVOdW1iZXIgPSAiQ29udGFjdCBtZSBhdCAxMjMtNDU2LTc4OTAiCmlmICgkcGhvbmVOdW1iZXIgLW1hdGNoICJcZHszfS1cZHszfS1cZHs0fSIpIHsKICAgIFdyaXRlLU91dHB1dCAiTsO6bWVybyBkZSB0ZWzDqWZvbm8gZW5jb250cmFkby4iCn0gZWxzZSB7CiAgICBXcml0ZS1PdXRwdXQgIk7Dum1lcm8gZGUgdGVsw6lmb25vIG5vIGVuY29udHJhZG8uIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Verificar si una cadena contiene un n&uacute;mero de tel&eacute;fono
+$phoneNumber = &quot;Contact me at 123-456-7890&quot;
+if ($phoneNumber -match &quot;\d{3}-\d{3}-\d{4}&quot;) {
+    Write-Output &quot;N&uacute;mero de tel&eacute;fono encontrado.&quot;
+} else {
+    Write-Output &quot;N&uacute;mero de tel&eacute;fono no encontrado.&quot;
+}</pre></div><div class='content'><h4>Uso de <code>-replace</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBSZWVtcGxhemFyIHRvZGFzIGxhcyBvY3VycmVuY2lhcyBkZSAiZm9vIiBjb24gImJhciIgZW4gdW5hIGNhZGVuYQokdGV4dCA9ICJmb28gaXMgbm90IGJhciwgYnV0IGZvbyBjYW4gYmUgYmFyIgokdXBkYXRlZFRleHQgPSAkdGV4dCAtcmVwbGFjZSAiZm9vIiwgImJhciIKV3JpdGUtT3V0cHV0ICR1cGRhdGVkVGV4dA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Reemplazar todas las ocurrencias de &quot;foo&quot; con &quot;bar&quot; en una cadena
+$text = &quot;foo is not bar, but foo can be bar&quot;
+$updatedText = $text -replace &quot;foo&quot;, &quot;bar&quot;
+Write-Output $updatedText</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Validar Direcciones de Correo Electrónico</h2>
+<div class='content'><p>Escribe un script que valide si una cadena es una dirección de correo electrónico válida.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JGVtYWlsID0gImV4YW1wbGVAZG9tYWluLmNvbSIKaWYgKCRlbWFpbCAtbWF0Y2ggIl5bXHctXC5dK0AoW1x3LV0rXC4pK1tcdy1dezIsNH0kIikgewogICAgV3JpdGUtT3V0cHV0ICJDb3JyZW8gZWxlY3Ryw7NuaWNvIHbDoWxpZG8uIgp9IGVsc2UgewogICAgV3JpdGUtT3V0cHV0ICJDb3JyZW8gZWxlY3Ryw7NuaWNvIG5vIHbDoWxpZG8uIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$email = &quot;example@domain.com&quot;
+if ($email -match &quot;^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$&quot;) {
+    Write-Output &quot;Correo electr&oacute;nico v&aacute;lido.&quot;
+} else {
+    Write-Output &quot;Correo electr&oacute;nico no v&aacute;lido.&quot;
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Extraer Números de una Cadena</h2>
+<div class='content'><p>Escribe un script que extraiga todos los números de una cadena dada.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHRleHQgPSAiSGF5IDMgZ2F0b3MsIDQgcGVycm9zIHkgNSBww6FqYXJvcy4iCiRudW1iZXJzID0gW3JlZ2V4XTo6TWF0Y2hlcygkdGV4dCwgIlxkKyIpCmZvcmVhY2ggKCRudW1iZXIgaW4gJG51bWJlcnMpIHsKICAgIFdyaXRlLU91dHB1dCAkbnVtYmVyLlZhbHVlCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$text = &quot;Hay 3 gatos, 4 perros y 5 p&aacute;jaros.&quot;
+$numbers = [regex]::Matches($text, &quot;\d+&quot;)
+foreach ($number in $numbers) {
+    Write-Output $number.Value
+}</pre></div><div class='content'></div><h2>Ejercicio 3: Reemplazar Fechas en un Formato Específico</h2>
+<div class='content'><p>Escribe un script que reemplace todas las fechas en formato <code>dd/mm/yyyy</code> por <code>yyyy-mm-dd</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JHRleHQgPSAiTGFzIGZlY2hhcyBpbXBvcnRhbnRlcyBzb24gMTIvMDUvMjAyMSB5IDIzLzExLzIwMjAuIgokdXBkYXRlZFRleHQgPSAkdGV4dCAtcmVwbGFjZSAiKFxkezJ9KS8oXGR7Mn0pLyhcZHs0fSkiLCAnJDMtJDItJDEnCldyaXRlLU91dHB1dCAkdXBkYXRlZFRleHQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$text = &quot;Las fechas importantes son 12/05/2021 y 23/11/2020.&quot;
+$updatedText = $text -replace &quot;(\d{2})/(\d{2})/(\d{4})&quot;, '$3-$2-$1'
+Write-Output $updatedText</pre></div><div class='content'></div><h1>Retroalimentación y Consejos</h1>
+<div class='content'></div><h2>Errores Comunes</h2>
+<div class='content'><ul>
+<li><strong>No escapar metacaracteres</strong>: Asegúrate de escapar los metacaracteres (<code>.</code>, <code>*</code>, <code>+</code>, etc.) cuando quieras que se traten como literales.</li>
+<li><strong>Cuantificadores incorrectos</strong>: Usar <code>*</code> en lugar de <code>+</code> puede llevar a coincidencias inesperadas, ya que <code>*</code> permite cero ocurrencias.</li>
+</ul>
+</div><h2>Consejos Adicionales</h2>
+<div class='content'><ul>
+<li><strong>Prueba tus expresiones</strong>: Utiliza herramientas en línea como regex101.com para probar y depurar tus expresiones regulares.</li>
+<li><strong>Documenta tus regex</strong>: Las expresiones regulares pueden ser difíciles de leer. Añade comentarios o documentación para explicar su propósito.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido los conceptos básicos de las expresiones regulares y cómo utilizarlas en PowerShell para buscar, validar y manipular texto. Las expresiones regulares son una herramienta poderosa que, cuando se domina, puede simplificar muchas tareas de procesamiento de texto. En el próximo tema, exploraremos cómo trabajar con archivos y directorios en PowerShell, lo que nos permitirá aplicar nuestras habilidades de scripting a la gestión de sistemas de archivos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='04-02-debugging-scripts' title="Depuración de Scripts">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-04-files-directories' title="Trabajando con Archivos y Directorios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manejo de Errores y Depuración</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bash/05-03-error-handling-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bash/05-03-error-handling-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bash/05-03-error-handling-debugging" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bash/05-03-error-handling-debugging" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bash/05-03-error-handling-debugging" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-process-management' title="Gestión de Procesos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Manejo de Errores y Depuración</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-regular-expressions' title="Expresiones Regulares">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderás cómo manejar errores y depurar scripts en Bash. La capacidad de identificar y corregir errores es crucial para escribir scripts robustos y eficientes. Este tema cubrirá las siguientes áreas:</p>
+<ol>
+<li><strong>Manejo de Errores en Bash</strong></li>
+<li><strong>Depuración de Scripts</strong></li>
+<li><strong>Ejemplos Prácticos</strong></li>
+<li><strong>Ejercicios</strong></li>
+</ol>
+</div><h1>1. Manejo de Errores en Bash</h1>
+<div class='content'></div><h2>1.1. Comprobación de Errores con `$?`</h2>
+<div class='content'><p>En Bash, cada comando devuelve un código de salida (<code>exit status</code>). Un código de salida de <code>0</code> indica éxito, mientras que cualquier otro valor indica un error. Puedes capturar este código usando la variable especial <code>$?</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgSW50ZW50YXIgY3JlYXIgdW4gZGlyZWN0b3Jpbwpta2RpciAvc29tZS9kaXJlY3RvcnkKCiMgQ29tcHJvYmFyIGVsIGPDs2RpZ28gZGUgc2FsaWRhCmlmIFsgJD8gLWVxIDAgXTsgdGhlbgogICAgZWNobyAiRGlyZWN0b3JpbyBjcmVhZG8gY29uIMOpeGl0by4iCmVsc2UKICAgIGVjaG8gIkVycm9yIGFsIGNyZWFyIGVsIGRpcmVjdG9yaW8uIgpmaQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Intentar crear un directorio
+mkdir /some/directory
+
+# Comprobar el c&oacute;digo de salida
+if [ $? -eq 0 ]; then
+    echo &quot;Directorio creado con &eacute;xito.&quot;
+else
+    echo &quot;Error al crear el directorio.&quot;
+fi</pre></div><div class='content'></div><h2>1.2. Uso de `set -e`</h2>
+<div class='content'><p>El comando <code>set -e</code> hace que el script termine inmediatamente si cualquier comando devuelve un código de salida distinto de <code>0</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKc2V0IC1lCgojIEVzdGUgY29tYW5kbyBmYWxsYXLDoSBzaSBlbCBkaXJlY3RvcmlvIHlhIGV4aXN0ZQpta2RpciAvc29tZS9kaXJlY3RvcnkKCiMgRXN0ZSBjb21hbmRvIG5vIHNlIGVqZWN1dGFyw6Egc2kgZWwgYW50ZXJpb3IgZmFsbGEKZWNobyAiRGlyZWN0b3JpbyBjcmVhZG8gY29uIMOpeGl0by4i"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+set -e
+
+# Este comando fallar&aacute; si el directorio ya existe
+mkdir /some/directory
+
+# Este comando no se ejecutar&aacute; si el anterior falla
+echo &quot;Directorio creado con &eacute;xito.&quot;</pre></div><div class='content'></div><h2>1.3. Captura de Errores con `trap`</h2>
+<div class='content'><p>El comando <code>trap</code> permite capturar señales y ejecutar comandos específicos cuando ocurren errores.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgRGVmaW5pciB1bmEgZnVuY2nDs24gZGUgbGltcGllemEKY2xlYW51cCgpIHsKICAgIGVjaG8gIk9jdXJyacOzIHVuIGVycm9yLiBMaW1waWFuZG8uLi4iCiAgICAjIFJlYWxpemFyIHRhcmVhcyBkZSBsaW1waWV6YSBhcXXDrQp9CgojIENvbmZpZ3VyYXIgdHJhcCBwYXJhIGNhcHR1cmFyIGVycm9yZXMKdHJhcCBjbGVhbnVwIEVSUgoKIyBDb21hbmRvcyBxdWUgcHVlZGVuIGZhbGxhcgpta2RpciAvc29tZS9kaXJlY3RvcnkKY3AgL3NvbWUvZmlsZSAvc29tZS9kaXJlY3Rvcnkv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Definir una funci&oacute;n de limpieza
+cleanup() {
+    echo &quot;Ocurri&oacute; un error. Limpiando...&quot;
+    # Realizar tareas de limpieza aqu&iacute;
+}
+
+# Configurar trap para capturar errores
+trap cleanup ERR
+
+# Comandos que pueden fallar
+mkdir /some/directory
+cp /some/file /some/directory/</pre></div><div class='content'></div><h1>2. Depuración de Scripts</h1>
+<div class='content'></div><h2>2.1. Uso de `set -x`</h2>
+<div class='content'><p>El comando <code>set -x</code> habilita el modo de depuración, que imprime cada comando antes de ejecutarlo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKc2V0IC14CgojIENvbWFuZG9zIHBhcmEgZGVwdXJhcgpta2RpciAvc29tZS9kaXJlY3RvcnkKY3AgL3NvbWUvZmlsZSAvc29tZS9kaXJlY3Rvcnkv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+set -x
+
+# Comandos para depurar
+mkdir /some/directory
+cp /some/file /some/directory/</pre></div><div class='content'></div><h2>2.2. Uso de `bash -x`</h2>
+<div class='content'><p>Puedes ejecutar un script en modo de depuración usando <code>bash -x</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmFzaCAteCBzY3JpcHQuc2g="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bash -x script.sh</pre></div><div class='content'></div><h2>2.3. Uso de `echo` para Depuración</h2>
+<div class='content'><p>Insertar comandos <code>echo</code> en tu script puede ayudarte a entender el flujo de ejecución y los valores de las variables.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCmVjaG8gIkluaWNpYW5kbyBzY3JpcHQuLi4iCgojIENvbWFuZG9zCm1rZGlyIC9zb21lL2RpcmVjdG9yeQplY2hvICJEaXJlY3RvcmlvIGNyZWFkby4iCgpjcCAvc29tZS9maWxlIC9zb21lL2RpcmVjdG9yeS8KZWNobyAiQXJjaGl2byBjb3BpYWRvLiI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+echo &quot;Iniciando script...&quot;
+
+# Comandos
+mkdir /some/directory
+echo &quot;Directorio creado.&quot;
+
+cp /some/file /some/directory/
+echo &quot;Archivo copiado.&quot;</pre></div><div class='content'></div><h1>3. Ejemplos Prácticos</h1>
+<div class='content'></div><h2>Ejemplo 1: Manejo de Errores con `trap`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgRnVuY2nDs24gZGUgbGltcGllemEKY2xlYW51cCgpIHsKICAgIGVjaG8gIk9jdXJyacOzIHVuIGVycm9yLiBMaW1waWFuZG8uLi4iCiAgICBybSAtcmYgL3NvbWUvZGlyZWN0b3J5Cn0KCiMgQ29uZmlndXJhciB0cmFwCnRyYXAgY2xlYW51cCBFUlIKCiMgQ29tYW5kb3MKbWtkaXIgL3NvbWUvZGlyZWN0b3J5CmNwIC9zb21lL25vbmV4aXN0ZW50ZmlsZSAvc29tZS9kaXJlY3Rvcnkv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Funci&oacute;n de limpieza
+cleanup() {
+    echo &quot;Ocurri&oacute; un error. Limpiando...&quot;
+    rm -rf /some/directory
+}
+
+# Configurar trap
+trap cleanup ERR
+
+# Comandos
+mkdir /some/directory
+cp /some/nonexistentfile /some/directory/</pre></div><div class='content'></div><h2>Ejemplo 2: Depuración con `set -x`</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKc2V0IC14CgojIENvbWFuZG9zCm1rZGlyIC9zb21lL2RpcmVjdG9yeQpjcCAvc29tZS9maWxlIC9zb21lL2RpcmVjdG9yeS8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+set -x
+
+# Comandos
+mkdir /some/directory
+cp /some/file /some/directory/</pre></div><div class='content'></div><h1>4. Ejercicios</h1>
+<div class='content'></div><h2>Ejercicio 1: Manejo de Errores</h2>
+<div class='content'><p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Escribe un script que intente copiar un archivo a un directorio.</li>
+<li>Si el archivo no existe, el script debe imprimir un mensaje de error y salir.</li>
+<li>Usa <code>trap</code> para limpiar cualquier recurso si ocurre un error.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKCiMgRnVuY2nDs24gZGUgbGltcGllemEKY2xlYW51cCgpIHsKICAgIGVjaG8gIk9jdXJyacOzIHVuIGVycm9yLiBMaW1waWFuZG8uLi4iCiAgICBybSAtcmYgL3NvbWUvZGlyZWN0b3J5Cn0KCiMgQ29uZmlndXJhciB0cmFwCnRyYXAgY2xlYW51cCBFUlIKCiMgQ29tYW5kb3MKbWtkaXIgL3NvbWUvZGlyZWN0b3J5CmlmIFsgISAtZiAvc29tZS9maWxlIF07IHRoZW4KICAgIGVjaG8gIkVsIGFyY2hpdm8gbm8gZXhpc3RlLiIKICAgIGV4aXQgMQpmaQpjcCAvc29tZS9maWxlIC9zb21lL2RpcmVjdG9yeS8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+
+# Funci&oacute;n de limpieza
+cleanup() {
+    echo &quot;Ocurri&oacute; un error. Limpiando...&quot;
+    rm -rf /some/directory
+}
+
+# Configurar trap
+trap cleanup ERR
+
+# Comandos
+mkdir /some/directory
+if [ ! -f /some/file ]; then
+    echo &quot;El archivo no existe.&quot;
+    exit 1
+fi
+cp /some/file /some/directory/</pre></div><div class='content'></div><h2>Ejercicio 2: Depuración</h2>
+<div class='content'><p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Escribe un script que cree un directorio y copie un archivo en él.</li>
+<li>Habilita el modo de depuración para ver la ejecución de cada comando.</li>
+</ol>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyEvYmluL2Jhc2gKc2V0IC14CgojIENvbWFuZG9zCm1rZGlyIC9zb21lL2RpcmVjdG9yeQpjcCAvc29tZS9maWxlIC9zb21lL2RpcmVjdG9yeS8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#!/bin/bash
+set -x
+
+# Comandos
+mkdir /some/directory
+cp /some/file /some/directory/</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, has aprendido cómo manejar errores y depurar scripts en Bash. El manejo adecuado de errores y la depuración son habilidades esenciales para escribir scripts robustos y eficientes. Ahora estás preparado para aplicar estas técnicas en tus propios scripts y mejorar su fiabilidad y mantenibilidad. En el próximo módulo, exploraremos las expresiones regulares y cómo utilizarlas en Bash.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-02-process-management' title="Gestión de Procesos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-04-regular-expressions' title="Expresiones Regulares">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

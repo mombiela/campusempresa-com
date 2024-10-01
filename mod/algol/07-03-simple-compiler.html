@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construcción de un Compilador Simple</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/algol/07-03-simple-compiler" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/algol/07-03-simple-compiler" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/algol/07-03-simple-compiler" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/algol/07-03-simple-compiler" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/algol/07-03-simple-compiler" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-algorithm-implementation' title="Implementación de Algoritmos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Construcción de un Compilador Simple</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-case-studies-projects' title="Estudios de Caso y Proyectos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos a construir un compilador simple para un subconjunto del lenguaje ALGOL. Este ejercicio te permitirá comprender los conceptos fundamentales de la compilación, incluyendo el análisis léxico, el análisis sintáctico, la generación de código intermedio y la generación de código final.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender los componentes básicos de un compilador.</li>
+<li>Implementar un analizador léxico (lexer).</li>
+<li>Implementar un analizador sintáctico (parser).</li>
+<li>Generar código intermedio.</li>
+<li>Generar código final ejecutable.</li>
+</ul>
+</div><h1>1. Componentes Básicos de un Compilador</h1>
+<div class='content'><p>Un compilador típico se compone de varias fases:</p>
+<ol>
+<li><strong>Análisis Léxico (Lexer)</strong>: Convierte el código fuente en una secuencia de tokens.</li>
+<li><strong>Análisis Sintáctico (Parser)</strong>: Convierte la secuencia de tokens en una estructura de datos (generalmente un árbol de sintaxis abstracta, AST).</li>
+<li><strong>Análisis Semántico</strong>: Verifica la semántica del programa (por ejemplo, tipos de datos).</li>
+<li><strong>Generación de Código Intermedio</strong>: Convierte el AST en una representación intermedia.</li>
+<li><strong>Optimización de Código</strong>: Mejora el código intermedio para hacerlo más eficiente.</li>
+<li><strong>Generación de Código Final</strong>: Convierte el código intermedio en código máquina o bytecode.</li>
+</ol>
+</div><h1>2. Implementación del Analizador Léxico (Lexer)</h1>
+<div class='content'><p>El analizador léxico toma el código fuente y lo divide en tokens. Un token es una secuencia de caracteres que representa una unidad léxica, como una palabra clave, un identificador, un operador, etc.</p>
+</div><h2>Ejemplo de Código para el Lexer</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHJlCgojIERlZmluaWNpw7NuIGRlIHRva2Vucwp0b2tlbl9zcGVjaWZpY2F0aW9uID0gWwogICAgKCdOVU1CRVInLCAgIHInXGQrKFwuXGQqKT8nKSwgICMgTsO6bWVyb3MgZW50ZXJvcyBvIGRlY2ltYWxlcwogICAgKCdBU1NJR04nLCAgIHInOj0nKSwgICAgICAgICAgICMgT3BlcmFkb3IgZGUgYXNpZ25hY2nDs24KICAgICgnRU5EJywgICAgICByJzsnKSwgICAgICAgICAgICAjIEZpbiBkZSBsYSBpbnN0cnVjY2nDs24KICAgICgnSUQnLCAgICAgICByJ1tBLVphLXpdKycpLCAgICAjIElkZW50aWZpY2Fkb3JlcwogICAgKCdPUCcsICAgICAgIHInWytcLSovXScpLCAgICAgICMgT3BlcmFkb3JlcyBhcml0bcOpdGljb3MKICAgICgnTkVXTElORScsICByJ1xuJyksICAgICAgICAgICAjIE51ZXZhIGzDrW5lYQogICAgKCdTS0lQJywgICAgIHInWyBcdF0rJyksICAgICAgICMgRXNwYWNpb3MgeSB0YWJ1bGFjaW9uZXMKICAgICgnTUlTTUFUQ0gnLCByJy4nKSwgICAgICAgICAgICAjIEN1YWxxdWllciBvdHJvIGNhcsOhY3RlcgpdCgojIENvbXBpbGFjacOzbiBkZSBsYXMgZXhwcmVzaW9uZXMgcmVndWxhcmVzCnRva2VuX3JlID0gJ3wnLmpvaW4oJyg/UDwlcz4lcyknICUgcGFpciBmb3IgcGFpciBpbiB0b2tlbl9zcGVjaWZpY2F0aW9uKQpnZXRfdG9rZW4gPSByZS5jb21waWxlKHRva2VuX3JlKS5tYXRjaAoKIyBGdW5jacOzbiBwYXJhIGdlbmVyYXIgdG9rZW5zCmRlZiB0b2tlbml6ZShjb2RlKToKICAgIGxpbmVfbnVtID0gMQogICAgbGluZV9zdGFydCA9IDAKICAgIG1vID0gZ2V0X3Rva2VuKGNvZGUpCiAgICB3aGlsZSBtbyBpcyBub3QgTm9uZToKICAgICAgICBraW5kID0gbW8ubGFzdGdyb3VwCiAgICAgICAgdmFsdWUgPSBtby5ncm91cChraW5kKQogICAgICAgIGlmIGtpbmQgPT0gJ05FV0xJTkUnOgogICAgICAgICAgICBsaW5lX3N0YXJ0ID0gbW8uZW5kKCkKICAgICAgICAgICAgbGluZV9udW0gKz0gMQogICAgICAgIGVsaWYga2luZCA9PSAnU0tJUCc6CiAgICAgICAgICAgIHBhc3MKICAgICAgICBlbGlmIGtpbmQgPT0gJ01JU01BVENIJzoKICAgICAgICAgICAgcmFpc2UgUnVudGltZUVycm9yKGYne3ZhbHVlIXJ9IGluZXNwZXJhZG8gZW4gbGEgbMOtbmVhIHtsaW5lX251bX0nKQogICAgICAgIGVsc2U6CiAgICAgICAgICAgIHlpZWxkIGtpbmQsIHZhbHVlCiAgICAgICAgbW8gPSBnZXRfdG9rZW4oY29kZSwgbW8uZW5kKCkpCiAgICBpZiBtbyBpcyBOb25lOgogICAgICAgIHJhaXNlIFJ1bnRpbWVFcnJvcihmJ0Vycm9yIGRlIHRva2VuaXphY2nDs24gZW4gbGEgbMOtbmVhIHtsaW5lX251bX0nKQoKIyBFamVtcGxvIGRlIHVzbwpjb2RlID0gJ3ggOj0gMTAgKyAyMDsnCnRva2VucyA9IGxpc3QodG9rZW5pemUoY29kZSkpCnByaW50KHRva2Vucyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import re
+
+# Definici&oacute;n de tokens
+token_specification = [
+    ('NUMBER',   r'\d+(\.\d*)?'),  # N&uacute;meros enteros o decimales
+    ('ASSIGN',   r':='),           # Operador de asignaci&oacute;n
+    ('END',      r';'),            # Fin de la instrucci&oacute;n
+    ('ID',       r'[A-Za-z]+'),    # Identificadores
+    ('OP',       r'[+\-*/]'),      # Operadores aritm&eacute;ticos
+    ('NEWLINE',  r'\n'),           # Nueva l&iacute;nea
+    ('SKIP',     r'[ \t]+'),       # Espacios y tabulaciones
+    ('MISMATCH', r'.'),            # Cualquier otro car&aacute;cter
+]
+
+# Compilaci&oacute;n de las expresiones regulares
+token_re = '|'.join('(?P&lt;%s&gt;%s)' % pair for pair in token_specification)
+get_token = re.compile(token_re).match
+
+# Funci&oacute;n para generar tokens
+def tokenize(code):
+    line_num = 1
+    line_start = 0
+    mo = get_token(code)
+    while mo is not None:
+        kind = mo.lastgroup
+        value = mo.group(kind)
+        if kind == 'NEWLINE':
+            line_start = mo.end()
+            line_num += 1
+        elif kind == 'SKIP':
+            pass
+        elif kind == 'MISMATCH':
+            raise RuntimeError(f'{value!r} inesperado en la l&iacute;nea {line_num}')
+        else:
+            yield kind, value
+        mo = get_token(code, mo.end())
+    if mo is None:
+        raise RuntimeError(f'Error de tokenizaci&oacute;n en la l&iacute;nea {line_num}')
+
+# Ejemplo de uso
+code = 'x := 10 + 20;'
+tokens = list(tokenize(code))
+print(tokens)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Definición de tokens</strong>: Se define una lista de tuplas donde cada tupla contiene el nombre del token y su expresión regular correspondiente.</li>
+<li><strong>Compilación de expresiones regulares</strong>: Se combinan todas las expresiones regulares en una sola expresión.</li>
+<li><strong>Función <code>tokenize</code></strong>: Esta función toma el código fuente y genera una secuencia de tokens. Utiliza la expresión regular compilada para encontrar coincidencias en el código fuente.</li>
+</ul>
+</div><h1>3. Implementación del Analizador Sintáctico (Parser)</h1>
+<div class='content'><p>El analizador sintáctico toma la secuencia de tokens generada por el lexer y construye un árbol de sintaxis abstracta (AST).</p>
+</div><h2>Ejemplo de Código para el Parser</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQVNUTm9kZToKICAgIGRlZiBfX2luaXRfXyhzZWxmLCB0eXBlLCB2YWx1ZT1Ob25lKToKICAgICAgICBzZWxmLnR5cGUgPSB0eXBlCiAgICAgICAgc2VsZi52YWx1ZSA9IHZhbHVlCiAgICAgICAgc2VsZi5jaGlsZHJlbiA9IFtdCgogICAgZGVmIGFkZF9jaGlsZChzZWxmLCBub2RlKToKICAgICAgICBzZWxmLmNoaWxkcmVuLmFwcGVuZChub2RlKQoKZGVmIHBhcnNlKHRva2Vucyk6CiAgICBkZWYgcGFyc2VfZXhwcmVzc2lvbihpbmRleCk6CiAgICAgICAgdG9rZW5fdHlwZSwgdG9rZW5fdmFsdWUgPSB0b2tlbnNbaW5kZXhdCiAgICAgICAgaWYgdG9rZW5fdHlwZSA9PSAnTlVNQkVSJzoKICAgICAgICAgICAgbm9kZSA9IEFTVE5vZGUoJ05VTUJFUicsIHRva2VuX3ZhbHVlKQogICAgICAgICAgICByZXR1cm4gbm9kZSwgaW5kZXggKyAxCiAgICAgICAgZWxpZiB0b2tlbl90eXBlID09ICdJRCc6CiAgICAgICAgICAgIG5vZGUgPSBBU1ROb2RlKCdJRCcsIHRva2VuX3ZhbHVlKQogICAgICAgICAgICByZXR1cm4gbm9kZSwgaW5kZXggKyAxCiAgICAgICAgZWxpZiB0b2tlbl90eXBlID09ICdPUCc6CiAgICAgICAgICAgIG5vZGUgPSBBU1ROb2RlKCdPUCcsIHRva2VuX3ZhbHVlKQogICAgICAgICAgICByZXR1cm4gbm9kZSwgaW5kZXggKyAxCiAgICAgICAgZWxzZToKICAgICAgICAgICAgcmFpc2UgU3ludGF4RXJyb3IoZidUb2tlbiBpbmVzcGVyYWRvOiB7dG9rZW5fdmFsdWV9JykKCiAgICBkZWYgcGFyc2Vfc3RhdGVtZW50KGluZGV4KToKICAgICAgICBub2RlID0gQVNUTm9kZSgnU1RBVEVNRU5UJykKICAgICAgICBsZWZ0X25vZGUsIGluZGV4ID0gcGFyc2VfZXhwcmVzc2lvbihpbmRleCkKICAgICAgICBub2RlLmFkZF9jaGlsZChsZWZ0X25vZGUpCiAgICAgICAgdG9rZW5fdHlwZSwgdG9rZW5fdmFsdWUgPSB0b2tlbnNbaW5kZXhdCiAgICAgICAgaWYgdG9rZW5fdHlwZSA9PSAnQVNTSUdOJzoKICAgICAgICAgICAgYXNzaWduX25vZGUgPSBBU1ROb2RlKCdBU1NJR04nLCB0b2tlbl92YWx1ZSkKICAgICAgICAgICAgbm9kZS5hZGRfY2hpbGQoYXNzaWduX25vZGUpCiAgICAgICAgICAgIGluZGV4ICs9IDEKICAgICAgICAgICAgcmlnaHRfbm9kZSwgaW5kZXggPSBwYXJzZV9leHByZXNzaW9uKGluZGV4KQogICAgICAgICAgICBub2RlLmFkZF9jaGlsZChyaWdodF9ub2RlKQogICAgICAgIGVsc2U6CiAgICAgICAgICAgIHJhaXNlIFN5bnRheEVycm9yKGYnVG9rZW4gaW5lc3BlcmFkbzoge3Rva2VuX3ZhbHVlfScpCiAgICAgICAgcmV0dXJuIG5vZGUsIGluZGV4CgogICAgYXN0LCBpbmRleCA9IHBhcnNlX3N0YXRlbWVudCgwKQogICAgcmV0dXJuIGFzdAoKIyBFamVtcGxvIGRlIHVzbwp0b2tlbnMgPSBbKCdJRCcsICd4JyksICgnQVNTSUdOJywgJzo9JyksICgnTlVNQkVSJywgJzEwJyksICgnT1AnLCAnKycpLCAoJ05VTUJFUicsICcyMCcpLCAoJ0VORCcsICc7JyldCmFzdCA9IHBhcnNlKHRva2VucykKcHJpbnQoYXN0LnR5cGUsIFtjaGlsZC50eXBlIGZvciBjaGlsZCBpbiBhc3QuY2hpbGRyZW5dKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class ASTNode:
+    def __init__(self, type, value=None):
+        self.type = type
+        self.value = value
+        self.children = []
+
+    def add_child(self, node):
+        self.children.append(node)
+
+def parse(tokens):
+    def parse_expression(index):
+        token_type, token_value = tokens[index]
+        if token_type == 'NUMBER':
+            node = ASTNode('NUMBER', token_value)
+            return node, index + 1
+        elif token_type == 'ID':
+            node = ASTNode('ID', token_value)
+            return node, index + 1
+        elif token_type == 'OP':
+            node = ASTNode('OP', token_value)
+            return node, index + 1
+        else:
+            raise SyntaxError(f'Token inesperado: {token_value}')
+
+    def parse_statement(index):
+        node = ASTNode('STATEMENT')
+        left_node, index = parse_expression(index)
+        node.add_child(left_node)
+        token_type, token_value = tokens[index]
+        if token_type == 'ASSIGN':
+            assign_node = ASTNode('ASSIGN', token_value)
+            node.add_child(assign_node)
+            index += 1
+            right_node, index = parse_expression(index)
+            node.add_child(right_node)
+        else:
+            raise SyntaxError(f'Token inesperado: {token_value}')
+        return node, index
+
+    ast, index = parse_statement(0)
+    return ast
+
+# Ejemplo de uso
+tokens = [('ID', 'x'), ('ASSIGN', ':='), ('NUMBER', '10'), ('OP', '+'), ('NUMBER', '20'), ('END', ';')]
+ast = parse(tokens)
+print(ast.type, [child.type for child in ast.children])</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Clase <code>ASTNode</code></strong>: Representa un nodo en el árbol de sintaxis abstracta. Cada nodo tiene un tipo, un valor opcional y una lista de hijos.</li>
+<li><strong>Función <code>parse_expression</code></strong>: Analiza una expresión y devuelve un nodo del AST y el índice del siguiente token.</li>
+<li><strong>Función <code>parse_statement</code></strong>: Analiza una sentencia y devuelve un nodo del AST y el índice del siguiente token.</li>
+<li><strong>Función <code>parse</code></strong>: Inicia el análisis sintáctico y devuelve el AST completo.</li>
+</ul>
+</div><h1>4. Generación de Código Intermedio</h1>
+<div class='content'><p>El código intermedio es una representación del programa que es más fácil de optimizar y traducir a código máquina.</p>
+</div><h2>Ejemplo de Código para la Generación de Código Intermedio</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGdlbmVyYXRlX2ludGVybWVkaWF0ZV9jb2RlKGFzdCk6CiAgICBpZiBhc3QudHlwZSA9PSAnU1RBVEVNRU5UJzoKICAgICAgICBsZWZ0X2NvZGUgPSBnZW5lcmF0ZV9pbnRlcm1lZGlhdGVfY29kZShhc3QuY2hpbGRyZW5bMF0pCiAgICAgICAgcmlnaHRfY29kZSA9IGdlbmVyYXRlX2ludGVybWVkaWF0ZV9jb2RlKGFzdC5jaGlsZHJlblsyXSkKICAgICAgICByZXR1cm4gZid7bGVmdF9jb2RlfSA6PSB7cmlnaHRfY29kZX0nCiAgICBlbGlmIGFzdC50eXBlID09ICdOVU1CRVInOgogICAgICAgIHJldHVybiBhc3QudmFsdWUKICAgIGVsaWYgYXN0LnR5cGUgPT0gJ0lEJzoKICAgICAgICByZXR1cm4gYXN0LnZhbHVlCiAgICBlbGlmIGFzdC50eXBlID09ICdPUCc6CiAgICAgICAgbGVmdF9jb2RlID0gZ2VuZXJhdGVfaW50ZXJtZWRpYXRlX2NvZGUoYXN0LmNoaWxkcmVuWzBdKQogICAgICAgIHJpZ2h0X2NvZGUgPSBnZW5lcmF0ZV9pbnRlcm1lZGlhdGVfY29kZShhc3QuY2hpbGRyZW5bMV0pCiAgICAgICAgcmV0dXJuIGYne2xlZnRfY29kZX0ge2FzdC52YWx1ZX0ge3JpZ2h0X2NvZGV9JwoKIyBFamVtcGxvIGRlIHVzbwppbnRlcm1lZGlhdGVfY29kZSA9IGdlbmVyYXRlX2ludGVybWVkaWF0ZV9jb2RlKGFzdCkKcHJpbnQoaW50ZXJtZWRpYXRlX2NvZGUp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def generate_intermediate_code(ast):
+    if ast.type == 'STATEMENT':
+        left_code = generate_intermediate_code(ast.children[0])
+        right_code = generate_intermediate_code(ast.children[2])
+        return f'{left_code} := {right_code}'
+    elif ast.type == 'NUMBER':
+        return ast.value
+    elif ast.type == 'ID':
+        return ast.value
+    elif ast.type == 'OP':
+        left_code = generate_intermediate_code(ast.children[0])
+        right_code = generate_intermediate_code(ast.children[1])
+        return f'{left_code} {ast.value} {right_code}'
+
+# Ejemplo de uso
+intermediate_code = generate_intermediate_code(ast)
+print(intermediate_code)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Función <code>generate_intermediate_code</code></strong>: Toma el AST y genera una representación intermedia del código. La función es recursiva y maneja diferentes tipos de nodos del AST.</li>
+</ul>
+</div><h1>5. Generación de Código Final</h1>
+<div class='content'><p>La generación de código final convierte el código intermedio en código máquina o bytecode que puede ser ejecutado por una máquina virtual o un procesador.</p>
+</div><h2>Ejemplo de Código para la Generación de Código Final</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGdlbmVyYXRlX2ZpbmFsX2NvZGUoaW50ZXJtZWRpYXRlX2NvZGUpOgogICAgIyBFc3RlIGVzIHVuIGVqZW1wbG8gc2ltcGxpZmljYWRvIHF1ZSBzaW1wbGVtZW50ZSBkZXZ1ZWx2ZSBlbCBjw7NkaWdvIGludGVybWVkaW8KICAgIHJldHVybiBpbnRlcm1lZGlhdGVfY29kZQoKIyBFamVtcGxvIGRlIHVzbwpmaW5hbF9jb2RlID0gZ2VuZXJhdGVfZmluYWxfY29kZShpbnRlcm1lZGlhdGVfY29kZSkKcHJpbnQoZmluYWxfY29kZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def generate_final_code(intermediate_code):
+    # Este es un ejemplo simplificado que simplemente devuelve el c&oacute;digo intermedio
+    return intermediate_code
+
+# Ejemplo de uso
+final_code = generate_final_code(intermediate_code)
+print(final_code)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Función <code>generate_final_code</code></strong>: En este ejemplo simplificado, la función simplemente devuelve el código intermedio. En un compilador real, esta función convertiría el código intermedio en código máquina o bytecode.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Implementa un compilador simple para un subconjunto del lenguaje ALGOL que soporte asignaciones y operaciones aritméticas básicas. El compilador debe incluir las siguientes fases:</p>
+<ol>
+<li>Análisis Léxico</li>
+<li>Análisis Sintáctico</li>
+<li>Generación de Código Intermedio</li>
+<li>Generación de Código Final</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBJbXBsZW1lbnRhY2nDs24gY29tcGxldGEgZGVsIGNvbXBpbGFkb3IKCiMgQW7DoWxpc2lzIEzDqXhpY28KaW1wb3J0IHJlCgp0b2tlbl9zcGVjaWZpY2F0aW9uID0gWwogICAgKCdOVU1CRVInLCAgIHInXGQrKFwuXGQqKT8nKSwKICAgICgnQVNTSUdOJywgICByJzo9JyksCiAgICAoJ0VORCcsICAgICAgcic7JyksCiAgICAoJ0lEJywgICAgICAgcidbQS1aYS16XSsnKSwKICAgICgnT1AnLCAgICAgICByJ1srXC0qL10nKSwKICAgICgnTkVXTElORScsICByJ1xuJyksCiAgICAoJ1NLSVAnLCAgICAgcidbIFx0XSsnKSwKICAgICgnTUlTTUFUQ0gnLCByJy4nKSwKXQoKdG9rZW5fcmUgPSAnfCcuam9pbignKD9QPCVzPiVzKScgJSBwYWlyIGZvciBwYWlyIGluIHRva2VuX3NwZWNpZmljYXRpb24pCmdldF90b2tlbiA9IHJlLmNvbXBpbGUodG9rZW5fcmUpLm1hdGNoCgpkZWYgdG9rZW5pemUoY29kZSk6CiAgICBsaW5lX251bSA9IDEKICAgIGxpbmVfc3RhcnQgPSAwCiAgICBtbyA9IGdldF90b2tlbihjb2RlKQogICAgd2hpbGUgbW8gaXMgbm90IE5vbmU6CiAgICAgICAga2luZCA9IG1vLmxhc3Rncm91cAogICAgICAgIHZhbHVlID0gbW8uZ3JvdXAoa2luZCkKICAgICAgICBpZiBraW5kID09ICdORVdMSU5FJzoKICAgICAgICAgICAgbGluZV9zdGFydCA9IG1vLmVuZCgpCiAgICAgICAgICAgIGxpbmVfbnVtICs9IDEKICAgICAgICBlbGlmIGtpbmQgPT0gJ1NLSVAnOgogICAgICAgICAgICBwYXNzCiAgICAgICAgZWxpZiBraW5kID09ICdNSVNNQVRDSCc6CiAgICAgICAgICAgIHJhaXNlIFJ1bnRpbWVFcnJvcihmJ3t2YWx1ZSFyfSBpbmVzcGVyYWRvIGVuIGxhIGzDrW5lYSB7bGluZV9udW19JykKICAgICAgICBlbHNlOgogICAgICAgICAgICB5aWVsZCBraW5kLCB2YWx1ZQogICAgICAgIG1vID0gZ2V0X3Rva2VuKGNvZGUsIG1vLmVuZCgpKQogICAgaWYgbW8gaXMgTm9uZToKICAgICAgICByYWlzZSBSdW50aW1lRXJyb3IoZidFcnJvciBkZSB0b2tlbml6YWNpw7NuIGVuIGxhIGzDrW5lYSB7bGluZV9udW19JykKCiMgQW7DoWxpc2lzIFNpbnTDoWN0aWNvCmNsYXNzIEFTVE5vZGU6CiAgICBkZWYgX19pbml0X18oc2VsZiwgdHlwZSwgdmFsdWU9Tm9uZSk6CiAgICAgICAgc2VsZi50eXBlID0gdHlwZQogICAgICAgIHNlbGYudmFsdWUgPSB2YWx1ZQogICAgICAgIHNlbGYuY2hpbGRyZW4gPSBbXQoKICAgIGRlZiBhZGRfY2hpbGQoc2VsZiwgbm9kZSk6CiAgICAgICAgc2VsZi5jaGlsZHJlbi5hcHBlbmQobm9kZSkKCmRlZiBwYXJzZSh0b2tlbnMpOgogICAgZGVmIHBhcnNlX2V4cHJlc3Npb24oaW5kZXgpOgogICAgICAgIHRva2VuX3R5cGUsIHRva2VuX3ZhbHVlID0gdG9rZW5zW2luZGV4XQogICAgICAgIGlmIHRva2VuX3R5cGUgPT0gJ05VTUJFUic6CiAgICAgICAgICAgIG5vZGUgPSBBU1ROb2RlKCdOVU1CRVInLCB0b2tlbl92YWx1ZSkKICAgICAgICAgICAgcmV0dXJuIG5vZGUsIGluZGV4ICsgMQogICAgICAgIGVsaWYgdG9rZW5fdHlwZSA9PSAnSUQnOgogICAgICAgICAgICBub2RlID0gQVNUTm9kZSgnSUQnLCB0b2tlbl92YWx1ZSkKICAgICAgICAgICAgcmV0dXJuIG5vZGUsIGluZGV4ICsgMQogICAgICAgIGVsaWYgdG9rZW5fdHlwZSA9PSAnT1AnOgogICAgICAgICAgICBub2RlID0gQVNUTm9kZSgnT1AnLCB0b2tlbl92YWx1ZSkKICAgICAgICAgICAgcmV0dXJuIG5vZGUsIGluZGV4ICsgMQogICAgICAgIGVsc2U6CiAgICAgICAgICAgIHJhaXNlIFN5bnRheEVycm9yKGYnVG9rZW4gaW5lc3BlcmFkbzoge3Rva2VuX3ZhbHVlfScpCgogICAgZGVmIHBhcnNlX3N0YXRlbWVudChpbmRleCk6CiAgICAgICAgbm9kZSA9IEFTVE5vZGUoJ1NUQVRFTUVOVCcpCiAgICAgICAgbGVmdF9ub2RlLCBpbmRleCA9IHBhcnNlX2V4cHJlc3Npb24oaW5kZXgpCiAgICAgICAgbm9kZS5hZGRfY2hpbGQobGVmdF9ub2RlKQogICAgICAgIHRva2VuX3R5cGUsIHRva2VuX3ZhbHVlID0gdG9rZW5zW2luZGV4XQogICAgICAgIGlmIHRva2VuX3R5cGUgPT0gJ0FTU0lHTic6CiAgICAgICAgICAgIGFzc2lnbl9ub2RlID0gQVNUTm9kZSgnQVNTSUdOJywgdG9rZW5fdmFsdWUpCiAgICAgICAgICAgIG5vZGUuYWRkX2NoaWxkKGFzc2lnbl9ub2RlKQogICAgICAgICAgICBpbmRleCArPSAxCiAgICAgICAgICAgIHJpZ2h0X25vZGUsIGluZGV4ID0gcGFyc2VfZXhwcmVzc2lvbihpbmRleCkKICAgICAgICAgICAgbm9kZS5hZGRfY2hpbGQocmlnaHRfbm9kZSkKICAgICAgICBlbHNlOgogICAgICAgICAgICByYWlzZSBTeW50YXhFcnJvcihmJ1Rva2VuIGluZXNwZXJhZG86IHt0b2tlbl92YWx1ZX0nKQogICAgICAgIHJldHVybiBub2RlLCBpbmRleAoKICAgIGFzdCwgaW5kZXggPSBwYXJzZV9zdGF0ZW1lbnQoMCkKICAgIHJldHVybiBhc3QKCiMgR2VuZXJhY2nDs24gZGUgQ8OzZGlnbyBJbnRlcm1lZGlvCmRlZiBnZW5lcmF0ZV9pbnRlcm1lZGlhdGVfY29kZShhc3QpOgogICAgaWYgYXN0LnR5cGUgPT0gJ1NUQVRFTUVOVCc6CiAgICAgICAgbGVmdF9jb2RlID0gZ2VuZXJhdGVfaW50ZXJtZWRpYXRlX2NvZGUoYXN0LmNoaWxkcmVuWzBdKQogICAgICAgIHJpZ2h0X2NvZGUgPSBnZW5lcmF0ZV9pbnRlcm1lZGlhdGVfY29kZShhc3QuY2hpbGRyZW5bMl0pCiAgICAgICAgcmV0dXJuIGYne2xlZnRfY29kZX0gOj0ge3JpZ2h0X2NvZGV9JwogICAgZWxpZiBhc3QudHlwZSA9PSAnTlVNQkVSJzoKICAgICAgICByZXR1cm4gYXN0LnZhbHVlCiAgICBlbGlmIGFzdC50eXBlID09ICdJRCc6CiAgICAgICAgcmV0dXJuIGFzdC52YWx1ZQogICAgZWxpZiBhc3QudHlwZSA9PSAnT1AnOgogICAgICAgIGxlZnRfY29kZSA9IGdlbmVyYXRlX2ludGVybWVkaWF0ZV9jb2RlKGFzdC5jaGlsZHJlblswXSkKICAgICAgICByaWdodF9jb2RlID0gZ2VuZXJhdGVfaW50ZXJtZWRpYXRlX2NvZGUoYXN0LmNoaWxkcmVuWzFdKQogICAgICAgIHJldHVybiBmJ3tsZWZ0X2NvZGV9IHthc3QudmFsdWV9IHtyaWdodF9jb2RlfScKCiMgR2VuZXJhY2nDs24gZGUgQ8OzZGlnbyBGaW5hbApkZWYgZ2VuZXJhdGVfZmluYWxfY29kZShpbnRlcm1lZGlhdGVfY29kZSk6CiAgICByZXR1cm4gaW50ZXJtZWRpYXRlX2NvZGUKCiMgRWplbXBsbyBkZSB1c28KY29kZSA9ICd4IDo9IDEwICsgMjA7Jwp0b2tlbnMgPSBsaXN0KHRva2VuaXplKGNvZGUpKQphc3QgPSBwYXJzZSh0b2tlbnMpCmludGVybWVkaWF0ZV9jb2RlID0gZ2VuZXJhdGVfaW50ZXJtZWRpYXRlX2NvZGUoYXN0KQpmaW5hbF9jb2RlID0gZ2VuZXJhdGVfZmluYWxfY29kZShpbnRlcm1lZGlhdGVfY29kZSkKcHJpbnQoZmluYWxfY29kZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Implementaci&oacute;n completa del compilador
+
+# An&aacute;lisis L&eacute;xico
+import re
+
+token_specification = [
+    ('NUMBER',   r'\d+(\.\d*)?'),
+    ('ASSIGN',   r':='),
+    ('END',      r';'),
+    ('ID',       r'[A-Za-z]+'),
+    ('OP',       r'[+\-*/]'),
+    ('NEWLINE',  r'\n'),
+    ('SKIP',     r'[ \t]+'),
+    ('MISMATCH', r'.'),
+]
+
+token_re = '|'.join('(?P&lt;%s&gt;%s)' % pair for pair in token_specification)
+get_token = re.compile(token_re).match
+
+def tokenize(code):
+    line_num = 1
+    line_start = 0
+    mo = get_token(code)
+    while mo is not None:
+        kind = mo.lastgroup
+        value = mo.group(kind)
+        if kind == 'NEWLINE':
+            line_start = mo.end()
+            line_num += 1
+        elif kind == 'SKIP':
+            pass
+        elif kind == 'MISMATCH':
+            raise RuntimeError(f'{value!r} inesperado en la l&iacute;nea {line_num}')
+        else:
+            yield kind, value
+        mo = get_token(code, mo.end())
+    if mo is None:
+        raise RuntimeError(f'Error de tokenizaci&oacute;n en la l&iacute;nea {line_num}')
+
+# An&aacute;lisis Sint&aacute;ctico
+class ASTNode:
+    def __init__(self, type, value=None):
+        self.type = type
+        self.value = value
+        self.children = []
+
+    def add_child(self, node):
+        self.children.append(node)
+
+def parse(tokens):
+    def parse_expression(index):
+        token_type, token_value = tokens[index]
+        if token_type == 'NUMBER':
+            node = ASTNode('NUMBER', token_value)
+            return node, index + 1
+        elif token_type == 'ID':
+            node = ASTNode('ID', token_value)
+            return node, index + 1
+        elif token_type == 'OP':
+            node = ASTNode('OP', token_value)
+            return node, index + 1
+        else:
+            raise SyntaxError(f'Token inesperado: {token_value}')
+
+    def parse_statement(index):
+        node = ASTNode('STATEMENT')
+        left_node, index = parse_expression(index)
+        node.add_child(left_node)
+        token_type, token_value = tokens[index]
+        if token_type == 'ASSIGN':
+            assign_node = ASTNode('ASSIGN', token_value)
+            node.add_child(assign_node)
+            index += 1
+            right_node, index = parse_expression(index)
+            node.add_child(right_node)
+        else:
+            raise SyntaxError(f'Token inesperado: {token_value}')
+        return node, index
+
+    ast, index = parse_statement(0)
+    return ast
+
+# Generaci&oacute;n de C&oacute;digo Intermedio
+def generate_intermediate_code(ast):
+    if ast.type == 'STATEMENT':
+        left_code = generate_intermediate_code(ast.children[0])
+        right_code = generate_intermediate_code(ast.children[2])
+        return f'{left_code} := {right_code}'
+    elif ast.type == 'NUMBER':
+        return ast.value
+    elif ast.type == 'ID':
+        return ast.value
+    elif ast.type == 'OP':
+        left_code = generate_intermediate_code(ast.children[0])
+        right_code = generate_intermediate_code(ast.children[1])
+        return f'{left_code} {ast.value} {right_code}'
+
+# Generaci&oacute;n de C&oacute;digo Final
+def generate_final_code(intermediate_code):
+    return intermediate_code
+
+# Ejemplo de uso
+code = 'x := 10 + 20;'
+tokens = list(tokenize(code))
+ast = parse(tokens)
+intermediate_code = generate_intermediate_code(ast)
+final_code = generate_final_code(intermediate_code)
+print(final_code)</pre></div><div class='content'></div><h2>Explicación del Ejercicio</h2>
+<div class='content'><ul>
+<li><strong>Análisis Léxico</strong>: Se tokeniza el código fuente.</li>
+<li><strong>Análisis Sintáctico</strong>: Se construye el AST a partir de los tokens.</li>
+<li><strong>Generación de Código Intermedio</strong>: Se genera una representación intermedia del código.</li>
+<li><strong>Generación de Código Final</strong>: Se genera el código final a partir del código intermedio.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos construido un compilador simple para un subconjunto del lenguaje ALGOL. Hemos cubierto las fases principales de un compilador: análisis léxico, análisis sintáctico, generación de código intermedio y generación de código final. Este ejercicio te proporciona una base sólida para comprender cómo funcionan los compiladores y te prepara para explorar temas más avanzados en la compilación.</p>
+<p>En el próximo módulo, aplicaremos estos conocimientos para implementar algoritmos más complejos y explorar estudios de caso y proyectos prácticos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='07-02-algorithm-implementation' title="Implementación de Algoritmos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-04-case-studies-projects' title="Estudios de Caso y Proyectos">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

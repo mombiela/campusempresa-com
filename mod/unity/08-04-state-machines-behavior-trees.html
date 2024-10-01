@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Máquinas de Estado y Árboles de Comportamiento</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/unity/08-04-state-machines-behavior-trees" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/unity/08-04-state-machines-behavior-trees" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/unity/08-04-state-machines-behavior-trees" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/unity/08-04-state-machines-behavior-trees" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/unity/08-04-state-machines-behavior-trees" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-basic-ai-scripting' title="Programación Básica de IA">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Máquinas de Estado y Árboles de Comportamiento</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-profiling-optimization-techniques' title="Técnicas de Perfilado y Optimización">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, exploraremos dos técnicas avanzadas de programación de inteligencia artificial (IA) en Unity: las máquinas de estado y los árboles de comportamiento. Estas técnicas son fundamentales para crear comportamientos complejos y realistas en los personajes de los juegos.</p>
+</div><h1>Máquinas de Estado</h1>
+<div class='content'></div><h2>¿Qué es una Máquina de Estado?</h2>
+<div class='content'><p>Una máquina de estado es un modelo de comportamiento que permite a un objeto cambiar entre diferentes estados en respuesta a eventos o condiciones. Cada estado define un comportamiento específico y las transiciones entre estados están controladas por condiciones lógicas.</p>
+</div><h2>Componentes de una Máquina de Estado</h2>
+<div class='content'><ol>
+<li><strong>Estados</strong>: Representan diferentes comportamientos o modos de operación.</li>
+<li><strong>Transiciones</strong>: Condiciones que permiten el cambio de un estado a otro.</li>
+<li><strong>Eventos</strong>: Acciones o condiciones que desencadenan transiciones.</li>
+</ol>
+</div><h2>Implementación de una Máquina de Estado en Unity</h2>
+<div class='content'><h4>Paso 1: Definir los Estados</h4>
+<p>Primero, definimos los estados como una enumeración:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGVudW0gU3RhdGUKewogICAgSWRsZSwKICAgIFBhdHJvbCwKICAgIENoYXNlLAogICAgQXR0YWNrCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public enum State
+{
+    Idle,
+    Patrol,
+    Chase,
+    Attack
+}</pre></div><div class='content'><h4>Paso 2: Crear la Clase de la Máquina de Estado</h4>
+<p>Creamos una clase que maneje los estados y las transiciones:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFN0YXRlTWFjaGluZSA6IE1vbm9CZWhhdmlvdXIKewogICAgcHVibGljIFN0YXRlIGN1cnJlbnRTdGF0ZTsKCiAgICB2b2lkIFN0YXJ0KCkKICAgIHsKICAgICAgICBjdXJyZW50U3RhdGUgPSBTdGF0ZS5JZGxlOwogICAgfQoKICAgIHZvaWQgVXBkYXRlKCkKICAgIHsKICAgICAgICBzd2l0Y2ggKGN1cnJlbnRTdGF0ZSkKICAgICAgICB7CiAgICAgICAgICAgIGNhc2UgU3RhdGUuSWRsZToKICAgICAgICAgICAgICAgIEhhbmRsZUlkbGVTdGF0ZSgpOwogICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgIGNhc2UgU3RhdGUuUGF0cm9sOgogICAgICAgICAgICAgICAgSGFuZGxlUGF0cm9sU3RhdGUoKTsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgICAgICBjYXNlIFN0YXRlLkNoYXNlOgogICAgICAgICAgICAgICAgSGFuZGxlQ2hhc2VTdGF0ZSgpOwogICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgIGNhc2UgU3RhdGUuQXR0YWNrOgogICAgICAgICAgICAgICAgSGFuZGxlQXR0YWNrU3RhdGUoKTsKICAgICAgICAgICAgICAgIGJyZWFrOwogICAgICAgIH0KICAgIH0KCiAgICB2b2lkIEhhbmRsZUlkbGVTdGF0ZSgpCiAgICB7CiAgICAgICAgLy8gTMOzZ2ljYSBwYXJhIGVsIGVzdGFkbyBJZGxlCiAgICAgICAgaWYgKC8qIGNvbmRpY2nDs24gcGFyYSBjYW1iaWFyIGEgUGF0cm9sICovKQogICAgICAgIHsKICAgICAgICAgICAgY3VycmVudFN0YXRlID0gU3RhdGUuUGF0cm9sOwogICAgICAgIH0KICAgIH0KCiAgICB2b2lkIEhhbmRsZVBhdHJvbFN0YXRlKCkKICAgIHsKICAgICAgICAvLyBMw7NnaWNhIHBhcmEgZWwgZXN0YWRvIFBhdHJvbAogICAgICAgIGlmICgvKiBjb25kaWNpw7NuIHBhcmEgY2FtYmlhciBhIENoYXNlICovKQogICAgICAgIHsKICAgICAgICAgICAgY3VycmVudFN0YXRlID0gU3RhdGUuQ2hhc2U7CiAgICAgICAgfQogICAgfQoKICAgIHZvaWQgSGFuZGxlQ2hhc2VTdGF0ZSgpCiAgICB7CiAgICAgICAgLy8gTMOzZ2ljYSBwYXJhIGVsIGVzdGFkbyBDaGFzZQogICAgICAgIGlmICgvKiBjb25kaWNpw7NuIHBhcmEgY2FtYmlhciBhIEF0dGFjayAqLykKICAgICAgICB7CiAgICAgICAgICAgIGN1cnJlbnRTdGF0ZSA9IFN0YXRlLkF0dGFjazsKICAgICAgICB9CiAgICB9CgogICAgdm9pZCBIYW5kbGVBdHRhY2tTdGF0ZSgpCiAgICB7CiAgICAgICAgLy8gTMOzZ2ljYSBwYXJhIGVsIGVzdGFkbyBBdHRhY2sKICAgICAgICBpZiAoLyogY29uZGljacOzbiBwYXJhIGNhbWJpYXIgYSBJZGxlICovKQogICAgICAgIHsKICAgICAgICAgICAgY3VycmVudFN0YXRlID0gU3RhdGUuSWRsZTsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class StateMachine : MonoBehaviour
+{
+    public State currentState;
+
+    void Start()
+    {
+        currentState = State.Idle;
+    }
+
+    void Update()
+    {
+        switch (currentState)
+        {
+            case State.Idle:
+                HandleIdleState();
+                break;
+            case State.Patrol:
+                HandlePatrolState();
+                break;
+            case State.Chase:
+                HandleChaseState();
+                break;
+            case State.Attack:
+                HandleAttackState();
+                break;
+        }
+    }
+
+    void HandleIdleState()
+    {
+        // L&oacute;gica para el estado Idle
+        if (/* condici&oacute;n para cambiar a Patrol */)
+        {
+            currentState = State.Patrol;
+        }
+    }
+
+    void HandlePatrolState()
+    {
+        // L&oacute;gica para el estado Patrol
+        if (/* condici&oacute;n para cambiar a Chase */)
+        {
+            currentState = State.Chase;
+        }
+    }
+
+    void HandleChaseState()
+    {
+        // L&oacute;gica para el estado Chase
+        if (/* condici&oacute;n para cambiar a Attack */)
+        {
+            currentState = State.Attack;
+        }
+    }
+
+    void HandleAttackState()
+    {
+        // L&oacute;gica para el estado Attack
+        if (/* condici&oacute;n para cambiar a Idle */)
+        {
+            currentState = State.Idle;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio</strong>: Implementa una máquina de estado para un enemigo que patrulla entre puntos y persigue al jugador cuando está cerca.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEVuZW15QUkgOiBNb25vQmVoYXZpb3VyCnsKICAgIHB1YmxpYyBUcmFuc2Zvcm1bXSBwYXRyb2xQb2ludHM7CiAgICBwdWJsaWMgVHJhbnNmb3JtIHBsYXllcjsKICAgIHB1YmxpYyBmbG9hdCBjaGFzZURpc3RhbmNlID0gNWY7CiAgICBwcml2YXRlIGludCBjdXJyZW50UGF0cm9sSW5kZXg7CiAgICBwcml2YXRlIFN0YXRlIGN1cnJlbnRTdGF0ZTsKCiAgICB2b2lkIFN0YXJ0KCkKICAgIHsKICAgICAgICBjdXJyZW50U3RhdGUgPSBTdGF0ZS5QYXRyb2w7CiAgICAgICAgY3VycmVudFBhdHJvbEluZGV4ID0gMDsKICAgIH0KCiAgICB2b2lkIFVwZGF0ZSgpCiAgICB7CiAgICAgICAgc3dpdGNoIChjdXJyZW50U3RhdGUpCiAgICAgICAgewogICAgICAgICAgICBjYXNlIFN0YXRlLlBhdHJvbDoKICAgICAgICAgICAgICAgIFBhdHJvbCgpOwogICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgICAgIGNhc2UgU3RhdGUuQ2hhc2U6CiAgICAgICAgICAgICAgICBDaGFzZSgpOwogICAgICAgICAgICAgICAgYnJlYWs7CiAgICAgICAgfQogICAgfQoKICAgIHZvaWQgUGF0cm9sKCkKICAgIHsKICAgICAgICBUcmFuc2Zvcm0gdGFyZ2V0UG9pbnQgPSBwYXRyb2xQb2ludHNbY3VycmVudFBhdHJvbEluZGV4XTsKICAgICAgICB0cmFuc2Zvcm0ucG9zaXRpb24gPSBWZWN0b3IzLk1vdmVUb3dhcmRzKHRyYW5zZm9ybS5wb3NpdGlvbiwgdGFyZ2V0UG9pbnQucG9zaXRpb24sIFRpbWUuZGVsdGFUaW1lKTsKCiAgICAgICAgaWYgKFZlY3RvcjMuRGlzdGFuY2UodHJhbnNmb3JtLnBvc2l0aW9uLCB0YXJnZXRQb2ludC5wb3NpdGlvbikgPCAwLjFmKQogICAgICAgIHsKICAgICAgICAgICAgY3VycmVudFBhdHJvbEluZGV4ID0gKGN1cnJlbnRQYXRyb2xJbmRleCArIDEpICUgcGF0cm9sUG9pbnRzLkxlbmd0aDsKICAgICAgICB9CgogICAgICAgIGlmIChWZWN0b3IzLkRpc3RhbmNlKHRyYW5zZm9ybS5wb3NpdGlvbiwgcGxheWVyLnBvc2l0aW9uKSA8IGNoYXNlRGlzdGFuY2UpCiAgICAgICAgewogICAgICAgICAgICBjdXJyZW50U3RhdGUgPSBTdGF0ZS5DaGFzZTsKICAgICAgICB9CiAgICB9CgogICAgdm9pZCBDaGFzZSgpCiAgICB7CiAgICAgICAgdHJhbnNmb3JtLnBvc2l0aW9uID0gVmVjdG9yMy5Nb3ZlVG93YXJkcyh0cmFuc2Zvcm0ucG9zaXRpb24sIHBsYXllci5wb3NpdGlvbiwgVGltZS5kZWx0YVRpbWUpOwoKICAgICAgICBpZiAoVmVjdG9yMy5EaXN0YW5jZSh0cmFuc2Zvcm0ucG9zaXRpb24sIHBsYXllci5wb3NpdGlvbikgPiBjaGFzZURpc3RhbmNlKQogICAgICAgIHsKICAgICAgICAgICAgY3VycmVudFN0YXRlID0gU3RhdGUuUGF0cm9sOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class EnemyAI : MonoBehaviour
+{
+    public Transform[] patrolPoints;
+    public Transform player;
+    public float chaseDistance = 5f;
+    private int currentPatrolIndex;
+    private State currentState;
+
+    void Start()
+    {
+        currentState = State.Patrol;
+        currentPatrolIndex = 0;
+    }
+
+    void Update()
+    {
+        switch (currentState)
+        {
+            case State.Patrol:
+                Patrol();
+                break;
+            case State.Chase:
+                Chase();
+                break;
+        }
+    }
+
+    void Patrol()
+    {
+        Transform targetPoint = patrolPoints[currentPatrolIndex];
+        transform.position = Vector3.MoveTowards(transform.position, targetPoint.position, Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, targetPoint.position) &lt; 0.1f)
+        {
+            currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+        }
+
+        if (Vector3.Distance(transform.position, player.position) &lt; chaseDistance)
+        {
+            currentState = State.Chase;
+        }
+    }
+
+    void Chase()
+    {
+        transform.position = Vector3.MoveTowards(transform.position, player.position, Time.deltaTime);
+
+        if (Vector3.Distance(transform.position, player.position) &gt; chaseDistance)
+        {
+            currentState = State.Patrol;
+        }
+    }
+}</pre></div><div class='content'></div><h1>Árboles de Comportamiento</h1>
+<div class='content'></div><h2>¿Qué es un Árbol de Comportamiento?</h2>
+<div class='content'><p>Un árbol de comportamiento es una estructura jerárquica que organiza comportamientos en nodos. Cada nodo puede ser una acción, una condición o una combinación de ambas. Los árboles de comportamiento son más flexibles y escalables que las máquinas de estado.</p>
+</div><h2>Componentes de un Árbol de Comportamiento</h2>
+<div class='content'><ol>
+<li><strong>Nodos de Acción</strong>: Realizan tareas específicas.</li>
+<li><strong>Nodos de Control</strong>: Dirigen el flujo de ejecución (secuencias, selectores).</li>
+<li><strong>Nodos de Condición</strong>: Evalúan condiciones y deciden el flujo.</li>
+</ol>
+</div><h2>Implementación de un Árbol de Comportamiento en Unity</h2>
+<div class='content'><h4>Paso 1: Definir los Nodos</h4>
+<p>Creamos una clase base para los nodos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGFic3RyYWN0IGNsYXNzIE5vZGUKewogICAgcHVibGljIGFic3RyYWN0IGJvb2wgRXhlY3V0ZSgpOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public abstract class Node
+{
+    public abstract bool Execute();
+}</pre></div><div class='content'><h4>Paso 2: Crear Nodos de Acción y Condición</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEFjdGlvbk5vZGUgOiBOb2RlCnsKICAgIHByaXZhdGUgU3lzdGVtLkFjdGlvbiBhY3Rpb247CgogICAgcHVibGljIEFjdGlvbk5vZGUoU3lzdGVtLkFjdGlvbiBhY3Rpb24pCiAgICB7CiAgICAgICAgdGhpcy5hY3Rpb24gPSBhY3Rpb247CiAgICB9CgogICAgcHVibGljIG92ZXJyaWRlIGJvb2wgRXhlY3V0ZSgpCiAgICB7CiAgICAgICAgYWN0aW9uKCk7CiAgICAgICAgcmV0dXJuIHRydWU7CiAgICB9Cn0KCnB1YmxpYyBjbGFzcyBDb25kaXRpb25Ob2RlIDogTm9kZQp7CiAgICBwcml2YXRlIFN5c3RlbS5GdW5jPGJvb2w+IGNvbmRpdGlvbjsKCiAgICBwdWJsaWMgQ29uZGl0aW9uTm9kZShTeXN0ZW0uRnVuYzxib29sPiBjb25kaXRpb24pCiAgICB7CiAgICAgICAgdGhpcy5jb25kaXRpb24gPSBjb25kaXRpb247CiAgICB9CgogICAgcHVibGljIG92ZXJyaWRlIGJvb2wgRXhlY3V0ZSgpCiAgICB7CiAgICAgICAgcmV0dXJuIGNvbmRpdGlvbigpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class ActionNode : Node
+{
+    private System.Action action;
+
+    public ActionNode(System.Action action)
+    {
+        this.action = action;
+    }
+
+    public override bool Execute()
+    {
+        action();
+        return true;
+    }
+}
+
+public class ConditionNode : Node
+{
+    private System.Func&lt;bool&gt; condition;
+
+    public ConditionNode(System.Func&lt;bool&gt; condition)
+    {
+        this.condition = condition;
+    }
+
+    public override bool Execute()
+    {
+        return condition();
+    }
+}</pre></div><div class='content'><h4>Paso 3: Crear Nodos de Control</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFNlcXVlbmNlTm9kZSA6IE5vZGUKewogICAgcHJpdmF0ZSBMaXN0PE5vZGU+IGNoaWxkcmVuOwoKICAgIHB1YmxpYyBTZXF1ZW5jZU5vZGUoTGlzdDxOb2RlPiBjaGlsZHJlbikKICAgIHsKICAgICAgICB0aGlzLmNoaWxkcmVuID0gY2hpbGRyZW47CiAgICB9CgogICAgcHVibGljIG92ZXJyaWRlIGJvb2wgRXhlY3V0ZSgpCiAgICB7CiAgICAgICAgZm9yZWFjaCAodmFyIGNoaWxkIGluIGNoaWxkcmVuKQogICAgICAgIHsKICAgICAgICAgICAgaWYgKCFjaGlsZC5FeGVjdXRlKCkpCiAgICAgICAgICAgIHsKICAgICAgICAgICAgICAgIHJldHVybiBmYWxzZTsKICAgICAgICAgICAgfQogICAgICAgIH0KICAgICAgICByZXR1cm4gdHJ1ZTsKICAgIH0KfQoKcHVibGljIGNsYXNzIFNlbGVjdG9yTm9kZSA6IE5vZGUKewogICAgcHJpdmF0ZSBMaXN0PE5vZGU+IGNoaWxkcmVuOwoKICAgIHB1YmxpYyBTZWxlY3Rvck5vZGUoTGlzdDxOb2RlPiBjaGlsZHJlbikKICAgIHsKICAgICAgICB0aGlzLmNoaWxkcmVuID0gY2hpbGRyZW47CiAgICB9CgogICAgcHVibGljIG92ZXJyaWRlIGJvb2wgRXhlY3V0ZSgpCiAgICB7CiAgICAgICAgZm9yZWFjaCAodmFyIGNoaWxkIGluIGNoaWxkcmVuKQogICAgICAgIHsKICAgICAgICAgICAgaWYgKGNoaWxkLkV4ZWN1dGUoKSkKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgcmV0dXJuIHRydWU7CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgcmV0dXJuIGZhbHNlOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class SequenceNode : Node
+{
+    private List&lt;Node&gt; children;
+
+    public SequenceNode(List&lt;Node&gt; children)
+    {
+        this.children = children;
+    }
+
+    public override bool Execute()
+    {
+        foreach (var child in children)
+        {
+            if (!child.Execute())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+public class SelectorNode : Node
+{
+    private List&lt;Node&gt; children;
+
+    public SelectorNode(List&lt;Node&gt; children)
+    {
+        this.children = children;
+    }
+
+    public override bool Execute()
+    {
+        foreach (var child in children)
+        {
+            if (child.Execute())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+}</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio</strong>: Implementa un árbol de comportamiento para un enemigo que patrulla y ataca al jugador si está cerca.</p>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEVuZW15QUkgOiBNb25vQmVoYXZpb3VyCnsKICAgIHByaXZhdGUgTm9kZSByb290Tm9kZTsKCiAgICB2b2lkIFN0YXJ0KCkKICAgIHsKICAgICAgICByb290Tm9kZSA9IG5ldyBTZWxlY3Rvck5vZGUobmV3IExpc3Q8Tm9kZT4KICAgICAgICB7CiAgICAgICAgICAgIG5ldyBTZXF1ZW5jZU5vZGUobmV3IExpc3Q8Tm9kZT4KICAgICAgICAgICAgewogICAgICAgICAgICAgICAgbmV3IENvbmRpdGlvbk5vZGUoKCkgPT4gVmVjdG9yMy5EaXN0YW5jZSh0cmFuc2Zvcm0ucG9zaXRpb24sIHBsYXllci5wb3NpdGlvbikgPCBjaGFzZURpc3RhbmNlKSwKICAgICAgICAgICAgICAgIG5ldyBBY3Rpb25Ob2RlKCgpID0+IENoYXNlKCkpCiAgICAgICAgICAgIH0pLAogICAgICAgICAgICBuZXcgQWN0aW9uTm9kZSgoKSA9PiBQYXRyb2woKSkKICAgICAgICB9KTsKICAgIH0KCiAgICB2b2lkIFVwZGF0ZSgpCiAgICB7CiAgICAgICAgcm9vdE5vZGUuRXhlY3V0ZSgpOwogICAgfQoKICAgIHZvaWQgUGF0cm9sKCkKICAgIHsKICAgICAgICAvLyBMw7NnaWNhIGRlIHBhdHJ1bGxhamUKICAgIH0KCiAgICB2b2lkIENoYXNlKCkKICAgIHsKICAgICAgICAvLyBMw7NnaWNhIGRlIHBlcnNlY3VjacOzbgogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class EnemyAI : MonoBehaviour
+{
+    private Node rootNode;
+
+    void Start()
+    {
+        rootNode = new SelectorNode(new List&lt;Node&gt;
+        {
+            new SequenceNode(new List&lt;Node&gt;
+            {
+                new ConditionNode(() =&gt; Vector3.Distance(transform.position, player.position) &lt; chaseDistance),
+                new ActionNode(() =&gt; Chase())
+            }),
+            new ActionNode(() =&gt; Patrol())
+        });
+    }
+
+    void Update()
+    {
+        rootNode.Execute();
+    }
+
+    void Patrol()
+    {
+        // L&oacute;gica de patrullaje
+    }
+
+    void Chase()
+    {
+        // L&oacute;gica de persecuci&oacute;n
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las máquinas de estado y los árboles de comportamiento, dos técnicas avanzadas para la programación de IA en Unity. Las máquinas de estado son útiles para comportamientos simples y bien definidos, mientras que los árboles de comportamiento ofrecen mayor flexibilidad y escalabilidad para comportamientos complejos. Con estos conocimientos, puedes crear personajes de juego más inteligentes y realistas.</p>
+<p>En el próximo módulo, exploraremos técnicas avanzadas de física y cómo aplicarlas en Unity para mejorar la interacción y realismo en tus juegos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-03-basic-ai-scripting' title="Programación Básica de IA">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-01-profiling-optimization-techniques' title="Técnicas de Perfilado y Optimización">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

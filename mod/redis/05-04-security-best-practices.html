@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mejores Prácticas de Seguridad</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/05-04-security-best-practices" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/05-04-security-best-practices" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/05-04-security-best-practices" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/redis/05-04-security-best-practices" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/05-04-security-best-practices" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-access-control-lists-acls' title="Listas de Control de Acceso (ACLs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Mejores Prácticas de Seguridad</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-memory-optimization' title="Optimización de Memoria">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, abordaremos las mejores prácticas de seguridad para Redis. La seguridad es un aspecto crucial en cualquier sistema de bases de datos, y Redis no es una excepción. A continuación, se presentan las prácticas recomendadas para asegurar tu instancia de Redis.</p>
+</div><h1>1. Configuración de Autenticación</h1>
+<div class='content'></div><h2>Habilitar la Autenticación</h2>
+<div class='content'><p>Redis permite configurar una contraseña para autenticar a los clientes. Esto se puede hacer mediante el comando <code>requirepass</code> en el archivo de configuración <code>redis.conf</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVxdWlyZXBhc3MgeW91cnBhc3N3b3Jk"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>requirepass yourpassword</pre></div><div class='content'></div><h2>Ejemplo de Configuración</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByZWRpcy5jb25mCnJlcXVpcmVwYXNzIG15U3Ryb25nUGFzc3dvcmQxMjM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># redis.conf
+requirepass myStrongPassword123</pre></div><div class='content'></div><h2>Uso en Redis CLI</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JCByZWRpcy1jbGkKMTI3LjAuMC4xOjYzNzk+IEFVVEggbXlTdHJvbmdQYXNzd29yZDEyMwpPSw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$ redis-cli
+127.0.0.1:6379&gt; AUTH myStrongPassword123
+OK</pre></div><div class='content'><p><strong>Nota:</strong> Asegúrate de usar contraseñas fuertes y únicas.</p>
+</div><h1>2. Restricción de Acceso por IP</h1>
+<div class='content'></div><h2>Configuración de Bind</h2>
+<div class='content'><p>Limita las direcciones IP desde las cuales Redis aceptará conexiones. Esto se puede hacer con la directiva <code>bind</code> en el archivo de configuración.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YmluZCAxMjcuMC4wLjE="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>bind 127.0.0.1</pre></div><div class='content'></div><h2>Ejemplo de Configuración</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByZWRpcy5jb25mCmJpbmQgMTI3LjAuMC4xIDE5Mi4xNjguMS4xMDA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># redis.conf
+bind 127.0.0.1 192.168.1.100</pre></div><div class='content'><p><strong>Nota:</strong> Es recomendable permitir solo las IPs necesarias y evitar el uso de <code>0.0.0.0</code> que permite conexiones desde cualquier IP.</p>
+</div><h1>3. Uso de Listas de Control de Acceso (ACLs)</h1>
+<div class='content'></div><h2>Configuración de ACLs</h2>
+<div class='content'><p>Redis 6.0 introdujo las ACLs, que permiten definir permisos granulares para diferentes usuarios.</p>
+</div><h2>Ejemplo de Configuración</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByZWRpcy5jb25mCnVzZXIgZGVmYXVsdCBvbiBub3Bhc3MgfiogK0BhbGwKdXNlciByZWFkX29ubHlfdXNlciBvbiA+cGFzc3dvcmQxMjMgfiogK0ByZWFkCnVzZXIgd3JpdGVfb25seV91c2VyIG9uID5wYXNzd29yZDQ1NiB+KiArQHdyaXRl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># redis.conf
+user default on nopass ~* +@all
+user read_only_user on &gt;password123 ~* +@read
+user write_only_user on &gt;password456 ~* +@write</pre></div><div class='content'></div><h2>Comandos de ACLs</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MTI3LjAuMC4xOjYzNzk+IEFDTCBTRVRVU0VSIHJlYWRfb25seV91c2VyIG9uID5wYXNzd29yZDEyMyB+KiArQHJlYWQKMTI3LjAuMC4xOjYzNzk+IEFDTCBTRVRVU0VSIHdyaXRlX29ubHlfdXNlciBvbiA+cGFzc3dvcmQ0NTYgfiogK0B3cml0ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>127.0.0.1:6379&gt; ACL SETUSER read_only_user on &gt;password123 ~* +@read
+127.0.0.1:6379&gt; ACL SETUSER write_only_user on &gt;password456 ~* +@write</pre></div><div class='content'><p><strong>Nota:</strong> Define usuarios con permisos mínimos necesarios para sus tareas.</p>
+</div><h1>4. Encriptación de Tráfico</h1>
+<div class='content'></div><h2>Uso de TLS/SSL</h2>
+<div class='content'><p>Redis soporta TLS/SSL para encriptar el tráfico entre el cliente y el servidor.</p>
+</div><h2>Configuración de TLS</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByZWRpcy5jb25mCnRscy1wb3J0IDYzNzkKdGxzLWNlcnQtZmlsZSAvcGF0aC90by9yZWRpcy5jcnQKdGxzLWtleS1maWxlIC9wYXRoL3RvL3JlZGlzLmtleQp0bHMtY2EtY2VydC1maWxlIC9wYXRoL3RvL2NhLmNydA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># redis.conf
+tls-port 6379
+tls-cert-file /path/to/redis.crt
+tls-key-file /path/to/redis.key
+tls-ca-cert-file /path/to/ca.crt</pre></div><div class='content'></div><h2>Ejemplo de Configuración</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByZWRpcy5jb25mCnRscy1wb3J0IDYzNzkKdGxzLWNlcnQtZmlsZSAvZXRjL3NzbC9yZWRpcy5jcnQKdGxzLWtleS1maWxlIC9ldGMvc3NsL3JlZGlzLmtleQp0bHMtY2EtY2VydC1maWxlIC9ldGMvc3NsL2NhLmNydA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># redis.conf
+tls-port 6379
+tls-cert-file /etc/ssl/redis.crt
+tls-key-file /etc/ssl/redis.key
+tls-ca-cert-file /etc/ssl/ca.crt</pre></div><div class='content'><p><strong>Nota:</strong> Asegúrate de que los certificados y claves sean seguros y estén correctamente configurados.</p>
+</div><h1>5. Monitoreo y Auditoría</h1>
+<div class='content'></div><h2>Monitoreo de Accesos</h2>
+<div class='content'><p>Utiliza herramientas de monitoreo para registrar y analizar los accesos a Redis.</p>
+</div><h2>Ejemplo de Herramientas</h2>
+<div class='content'><ul>
+<li><strong>Redis Sentinel</strong>: Para monitoreo y failover.</li>
+<li><strong>Prometheus</strong>: Para monitoreo de métricas.</li>
+<li><strong>ELK Stack</strong>: Para análisis de logs.</li>
+</ul>
+<p><strong>Nota:</strong> Configura alertas para accesos no autorizados o comportamientos anómalos.</p>
+</div><h1>6. Actualizaciones y Parches</h1>
+<div class='content'></div><h2>Mantén Redis Actualizado</h2>
+<div class='content'><p>Asegúrate de utilizar la última versión de Redis y aplica parches de seguridad tan pronto como estén disponibles.</p>
+</div><h2>Ejemplo de Comando</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("JCBzdWRvIGFwdC1nZXQgdXBkYXRlCiQgc3VkbyBhcHQtZ2V0IGluc3RhbGwgcmVkaXMtc2VydmVy"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>$ sudo apt-get update
+$ sudo apt-get install redis-server</pre></div><div class='content'><p><strong>Nota:</strong> Revisa regularmente las notas de la versión para estar al tanto de las actualizaciones de seguridad.</p>
+</div><h1>7. Configuración de Seguridad Adicional</h1>
+<div class='content'></div><h2>Deshabilitar Comandos Peligrosos</h2>
+<div class='content'><p>Deshabilita comandos que pueden ser peligrosos si se usan incorrectamente.</p>
+</div><h2>Ejemplo de Configuración</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyByZWRpcy5jb25mCnJlbmFtZS1jb21tYW5kIEZMVVNIREIgIiIKcmVuYW1lLWNvbW1hbmQgRkxVU0hBTEwgIiIKcmVuYW1lLWNvbW1hbmQgQ09ORklHICIiCnJlbmFtZS1jb21tYW5kIFNIVVRET1dOICIi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># redis.conf
+rename-command FLUSHDB &quot;&quot;
+rename-command FLUSHALL &quot;&quot;
+rename-command CONFIG &quot;&quot;
+rename-command SHUTDOWN &quot;&quot;</pre></div><div class='content'><p><strong>Nota:</strong> Renombra o deshabilita comandos que no sean necesarios para la operación diaria.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Implementar estas mejores prácticas de seguridad ayudará a proteger tu instancia de Redis contra accesos no autorizados y ataques. Asegúrate de revisar y actualizar regularmente tus configuraciones de seguridad para adaptarte a nuevas amenazas y vulnerabilidades.</p>
+<p>En el siguiente módulo, exploraremos cómo optimizar el rendimiento de Redis para asegurar que tu instancia no solo sea segura, sino también eficiente y rápida.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-access-control-lists-acls' title="Listas de Control de Acceso (ACLs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-memory-optimization' title="Optimización de Memoria">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

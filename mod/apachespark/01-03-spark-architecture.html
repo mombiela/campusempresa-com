@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arquitectura de Spark</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/apachespark/01-03-spark-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/apachespark/01-03-spark-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/apachespark/01-03-spark-architecture" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/apachespark/01-03-spark-architecture" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/apachespark/01-03-spark-architecture" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-setting-up-spark-environment' title="Configuración del Entorno Spark">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Arquitectura de Spark</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-spark-shell' title="Shell de Spark">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Apache Spark es una plataforma de procesamiento de datos en clúster que permite realizar análisis de datos a gran escala de manera rápida y eficiente. La arquitectura de Spark está diseñada para ser altamente escalable y flexible, permitiendo a los desarrolladores procesar grandes volúmenes de datos de manera distribuida. En esta sección, exploraremos los componentes clave de la arquitectura de Spark y cómo interactúan entre sí.</p>
+</div><h1>Componentes Principales de la Arquitectura de Spark</h1>
+<div class='content'><ol>
+<li><strong>Driver Program</strong></li>
+<li><strong>Cluster Manager</strong></li>
+<li><strong>Workers</strong></li>
+<li><strong>Executors</strong></li>
+<li><strong>Tasks</strong></li>
+</ol>
+</div><h2>1. Driver Program</h2>
+<div class='content'><p>El Driver Program es el punto de entrada de una aplicación Spark. Es responsable de:</p>
+<ul>
+<li>Definir la lógica de la aplicación.</li>
+<li>Crear el contexto de Spark (<code>SparkContext</code>).</li>
+<li>Solicitar recursos al Cluster Manager.</li>
+<li>Dividir el trabajo en tareas y distribuirlas a los ejecutores.</li>
+</ul>
+</div><h2>2. Cluster Manager</h2>
+<div class='content'><p>El Cluster Manager es responsable de gestionar los recursos del clúster. Spark puede trabajar con diferentes tipos de Cluster Managers, incluyendo:</p>
+<ul>
+<li><strong>Standalone Cluster Manager</strong>: Un Cluster Manager simple que viene con Spark.</li>
+<li><strong>Apache Mesos</strong>: Un Cluster Manager de código abierto para la gestión de recursos.</li>
+<li><strong>Hadoop YARN</strong>: El gestor de recursos de Hadoop.</li>
+<li><strong>Kubernetes</strong>: Un sistema de orquestación de contenedores.</li>
+</ul>
+</div><h2>3. Workers</h2>
+<div class='content'><p>Los Workers son nodos en el clúster que ejecutan las tareas asignadas por el Driver Program. Cada Worker puede ejecutar múltiples ejecutores.</p>
+</div><h2>4. Executors</h2>
+<div class='content'><p>Los Executors son procesos que se ejecutan en los Workers y son responsables de:</p>
+<ul>
+<li>Ejecutar las tareas asignadas.</li>
+<li>Almacenar los datos en caché para optimizar el rendimiento.</li>
+<li>Reportar el estado de las tareas al Driver Program.</li>
+</ul>
+</div><h2>5. Tasks</h2>
+<div class='content'><p>Las Tasks son las unidades de trabajo más pequeñas en Spark. Cada tarea es una parte de una operación que se ejecuta en un conjunto de datos. Las tareas son distribuidas a los ejecutores por el Driver Program.</p>
+</div><h1>Diagrama de Arquitectura de Spark</h1>
+<div class='content'><p>A continuación se muestra un diagrama simplificado de la arquitectura de Spark:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ky0tLS0tLS0tLS0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLS0tLS0tLS0tLS0tKwp8ICAgRHJpdmVyIFByb2dyYW0gIHwgICAgICAgfCAgIENsdXN0ZXIgTWFuYWdlciB8CnwgICAgICAgICAgICAgICAgICAgfCAgICAgICB8ICAgICAgICAgICAgICAgICAgIHwKfCAgKy0tLS0tLS0tLS0tLS0rICB8ICAgICAgIHwgICstLS0tLS0tLS0tLS0tKyAgfAp8ICB8IFNwYXJrQ29udGV4dHwgIHwgICAgICAgfCAgfCBSZXNvdXJjZSAgICB8ICB8CnwgICstLS0tLS0tLS0tLS0tKyAgfCAgICAgICB8ICB8IEFsbG9jYXRpb24gIHwgIHwKfCAgICAgICAgICAgICAgICAgICB8ICAgICAgIHwgICstLS0tLS0tLS0tLS0tKyAgfAorLS0tLS0tLS0tLS0tLS0tLS0tLSsgICAgICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0rCiAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgfAogICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgIHwKICAgICAgICAgICB2ICAgICAgICAgICAgICAgICAgICAgICAgICB2CistLS0tLS0tLS0tLS0tLS0tLS0tKyAgICAgICArLS0tLS0tLS0tLS0tLS0tLS0tLSsKfCAgICAgIFdvcmtlciAgICAgICB8ICAgICAgIHwgICAgICBXb3JrZXIgICAgICAgfAp8ICAgICAgICAgICAgICAgICAgIHwgICAgICAgfCAgICAgICAgICAgICAgICAgICB8CnwgICstLS0tLS0tLS0tLS0tKyAgfCAgICAgICB8ICArLS0tLS0tLS0tLS0tLSsgIHwKfCAgfCAgIEV4ZWN1dG9yICB8ICB8ICAgICAgIHwgIHwgICBFeGVjdXRvciAgfCAgfAp8ICArLS0tLS0tLS0tLS0tLSsgIHwgICAgICAgfCAgKy0tLS0tLS0tLS0tLS0rICB8CnwgICAgICAgICAgICAgICAgICAgfCAgICAgICB8ICAgICAgICAgICAgICAgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLS0tLS0tLS0tLS0tKwogICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgIHwKICAgICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICB8CiAgICAgICAgICAgdiAgICAgICAgICAgICAgICAgICAgICAgICAgdgorLS0tLS0tLS0tLS0tLS0tLS0tLSsgICAgICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0rCnwgICAgICAgVGFzayAgICAgICAgfCAgICAgICB8ICAgICAgIFRhc2sgICAgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLS0tLS0tLS0tLS0tKw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>+-------------------+       +-------------------+
+|   Driver Program  |       |   Cluster Manager |
+|                   |       |                   |
+|  +-------------+  |       |  +-------------+  |
+|  | SparkContext|  |       |  | Resource    |  |
+|  +-------------+  |       |  | Allocation  |  |
+|                   |       |  +-------------+  |
++-------------------+       +-------------------+
+           |                          |
+           |                          |
+           v                          v
++-------------------+       +-------------------+
+|      Worker       |       |      Worker       |
+|                   |       |                   |
+|  +-------------+  |       |  +-------------+  |
+|  |   Executor  |  |       |  |   Executor  |  |
+|  +-------------+  |       |  +-------------+  |
+|                   |       |                   |
++-------------------+       +-------------------+
+           |                          |
+           |                          |
+           v                          v
++-------------------+       +-------------------+
+|       Task        |       |       Task        |
++-------------------+       +-------------------+</pre></div><div class='content'></div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>A continuación, se muestra un ejemplo de cómo se configura y ejecuta una aplicación Spark simple en Python utilizando PySpark:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrIGltcG9ydCBTcGFya0NvbmYsIFNwYXJrQ29udGV4dAoKIyBDb25maWd1cmFjacOzbiBkZWwgU3BhcmtDb250ZXh0CmNvbmYgPSBTcGFya0NvbmYoKS5zZXRBcHBOYW1lKCJFamVtcGxvQXJxdWl0ZWN0dXJhU3BhcmsiKS5zZXRNYXN0ZXIoImxvY2FsIikKc2MgPSBTcGFya0NvbnRleHQoY29uZj1jb25mKQoKIyBDcmVhciB1biBSREQgYSBwYXJ0aXIgZGUgdW5hIGxpc3RhCmRhdGEgPSBbMSwgMiwgMywgNCwgNV0KcmRkID0gc2MucGFyYWxsZWxpemUoZGF0YSkKCiMgUmVhbGl6YXIgdW5hIG9wZXJhY2nDs24gZGUgdHJhbnNmb3JtYWNpw7NuIChtYXApCnNxdWFyZWRfcmRkID0gcmRkLm1hcChsYW1iZGEgeDogeCAqIHgpCgojIFJlYWxpemFyIHVuYSBhY2Npw7NuIChjb2xsZWN0KQpyZXN1bHQgPSBzcXVhcmVkX3JkZC5jb2xsZWN0KCkKCiMgSW1wcmltaXIgZWwgcmVzdWx0YWRvCnByaW50KHJlc3VsdCkKCiMgRGV0ZW5lciBlbCBTcGFya0NvbnRleHQKc2Muc3RvcCgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark import SparkConf, SparkContext
+
+# Configuraci&oacute;n del SparkContext
+conf = SparkConf().setAppName(&quot;EjemploArquitecturaSpark&quot;).setMaster(&quot;local&quot;)
+sc = SparkContext(conf=conf)
+
+# Crear un RDD a partir de una lista
+data = [1, 2, 3, 4, 5]
+rdd = sc.parallelize(data)
+
+# Realizar una operaci&oacute;n de transformaci&oacute;n (map)
+squared_rdd = rdd.map(lambda x: x * x)
+
+# Realizar una acci&oacute;n (collect)
+result = squared_rdd.collect()
+
+# Imprimir el resultado
+print(result)
+
+# Detener el SparkContext
+sc.stop()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configuración del SparkContext</strong>:</p>
+<pre><code class="language-python">conf = SparkConf().setAppName(&quot;EjemploArquitecturaSpark&quot;).setMaster(&quot;local&quot;)
+sc = SparkContext(conf=conf)
+</code></pre>
+<p>Aquí, configuramos el <code>SparkContext</code> con un nombre de aplicación y especificamos que se ejecutará en modo local.</p>
+</li>
+<li>
+<p><strong>Crear un RDD</strong>:</p>
+<pre><code class="language-python">data = [1, 2, 3, 4, 5]
+rdd = sc.parallelize(data)
+</code></pre>
+<p>Creamos un RDD a partir de una lista de datos.</p>
+</li>
+<li>
+<p><strong>Transformación</strong>:</p>
+<pre><code class="language-python">squared_rdd = rdd.map(lambda x: x * x)
+</code></pre>
+<p>Aplicamos una transformación <code>map</code> para calcular el cuadrado de cada elemento en el RDD.</p>
+</li>
+<li>
+<p><strong>Acción</strong>:</p>
+<pre><code class="language-python">result = squared_rdd.collect()
+</code></pre>
+<p>Ejecutamos la acción <code>collect</code> para obtener los resultados de la transformación.</p>
+</li>
+<li>
+<p><strong>Imprimir el Resultado</strong>:</p>
+<pre><code class="language-python">print(result)
+</code></pre>
+<p>Imprimimos el resultado en la consola.</p>
+</li>
+<li>
+<p><strong>Detener el SparkContext</strong>:</p>
+<pre><code class="language-python">sc.stop()
+</code></pre>
+<p>Detenemos el <code>SparkContext</code> para liberar los recursos.</p>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Contar Palabras en un Texto</h2>
+<div class='content'><p>Escribe un programa en PySpark que lea un archivo de texto y cuente la cantidad de veces que aparece cada palabra.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBweXNwYXJrIGltcG9ydCBTcGFya0NvbmYsIFNwYXJrQ29udGV4dAoKIyBDb25maWd1cmFjacOzbiBkZWwgU3BhcmtDb250ZXh0CmNvbmYgPSBTcGFya0NvbmYoKS5zZXRBcHBOYW1lKCJDb250YXJQYWxhYnJhcyIpLnNldE1hc3RlcigibG9jYWwiKQpzYyA9IFNwYXJrQ29udGV4dChjb25mPWNvbmYpCgojIExlZXIgZWwgYXJjaGl2byBkZSB0ZXh0bwp0ZXh0X2ZpbGUgPSBzYy50ZXh0RmlsZSgicnV0YS9hbC9hcmNoaXZvLnR4dCIpCgojIENvbnRhciBsYXMgcGFsYWJyYXMKd29yZF9jb3VudHMgPSB0ZXh0X2ZpbGUuZmxhdE1hcChsYW1iZGEgbGluZTogbGluZS5zcGxpdCgiICIpKSBcCiAgICAgICAgICAgICAgICAgICAgICAgLm1hcChsYW1iZGEgd29yZDogKHdvcmQsIDEpKSBcCiAgICAgICAgICAgICAgICAgICAgICAgLnJlZHVjZUJ5S2V5KGxhbWJkYSBhLCBiOiBhICsgYikKCiMgUmVjb2dlciBsb3MgcmVzdWx0YWRvcwpyZXN1bHRzID0gd29yZF9jb3VudHMuY29sbGVjdCgpCgojIEltcHJpbWlyIGxvcyByZXN1bHRhZG9zCmZvciB3b3JkLCBjb3VudCBpbiByZXN1bHRzOgogICAgcHJpbnQoZiJ7d29yZH06IHtjb3VudH0iKQoKIyBEZXRlbmVyIGVsIFNwYXJrQ29udGV4dApzYy5zdG9wKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from pyspark import SparkConf, SparkContext
+
+# Configuraci&oacute;n del SparkContext
+conf = SparkConf().setAppName(&quot;ContarPalabras&quot;).setMaster(&quot;local&quot;)
+sc = SparkContext(conf=conf)
+
+# Leer el archivo de texto
+text_file = sc.textFile(&quot;ruta/al/archivo.txt&quot;)
+
+# Contar las palabras
+word_counts = text_file.flatMap(lambda line: line.split(&quot; &quot;)) \
+                       .map(lambda word: (word, 1)) \
+                       .reduceByKey(lambda a, b: a + b)
+
+# Recoger los resultados
+results = word_counts.collect()
+
+# Imprimir los resultados
+for word, count in results:
+    print(f&quot;{word}: {count}&quot;)
+
+# Detener el SparkContext
+sc.stop()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Leer el Archivo de Texto</strong>:</p>
+<pre><code class="language-python">text_file = sc.textFile(&quot;ruta/al/archivo.txt&quot;)
+</code></pre>
+<p>Leemos el archivo de texto y creamos un RDD.</p>
+</li>
+<li>
+<p><strong>Contar las Palabras</strong>:</p>
+<pre><code class="language-python">word_counts = text_file.flatMap(lambda line: line.split(&quot; &quot;)) <br>                          .map(lambda word: (word, 1)) <br>                          .reduceByKey(lambda a, b: a + b)
+</code></pre>
+<ul>
+<li><code>flatMap</code>: Divide cada línea en palabras.</li>
+<li><code>map</code>: Asigna un valor de 1 a cada palabra.</li>
+<li><code>reduceByKey</code>: Suma los valores para cada palabra.</li>
+</ul>
+</li>
+<li>
+<p><strong>Recoger los Resultados</strong>:</p>
+<pre><code class="language-python">results = word_counts.collect()
+</code></pre>
+</li>
+<li>
+<p><strong>Imprimir los Resultados</strong>:</p>
+<pre><code class="language-python">for word, count in results:
+    print(f&quot;{word}: {count}&quot;)
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos explorado la arquitectura de Apache Spark, incluyendo sus componentes principales y cómo interactúan entre sí. También hemos visto un ejemplo práctico de cómo configurar y ejecutar una aplicación Spark simple. Finalmente, hemos proporcionado un ejercicio práctico para reforzar los conceptos aprendidos. En la próxima sección, profundizaremos en los conceptos básicos de Spark, comenzando con los RDDs (Conjuntos de Datos Distribuidos Resilientes).</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='01-02-setting-up-spark-environment' title="Configuración del Entorno Spark">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='01-04-spark-shell' title="Shell de Spark">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

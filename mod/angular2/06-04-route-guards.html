@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardias de Ruta</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/angular2/06-04-route-guards" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/angular2/06-04-route-guards" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/angular2/06-04-route-guards" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/angular2/06-04-route-guards" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/angular2/06-04-route-guards" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-child-routes' title="Rutas Hijas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Guardias de Ruta</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-template-driven-forms' title="Formularios Basados en Plantillas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre los guardias de ruta en Angular, una característica esencial para controlar el acceso a las rutas en una aplicación Angular. Los guardias de ruta permiten proteger rutas específicas, asegurando que solo los usuarios autorizados puedan acceder a ellas. También pueden ser utilizados para gestionar la navegación y realizar tareas antes de que una ruta sea activada o desactivada.</p>
+</div><h1>¿Qué son los Guardias de Ruta?</h1>
+<div class='content'><p>Los guardias de ruta son servicios que implementan interfaces específicas de Angular para controlar la navegación. Estas interfaces permiten interceptar la navegación y decidir si una ruta puede ser activada, desactivada, cargada o descargada.</p>
+</div><h2>Tipos de Guardias de Ruta</h2>
+<div class='content'><ol>
+<li><strong>CanActivate</strong>: Determina si una ruta puede ser activada.</li>
+<li><strong>CanActivateChild</strong>: Determina si las rutas hijas pueden ser activadas.</li>
+<li><strong>CanDeactivate</strong>: Determina si una ruta puede ser desactivada.</li>
+<li><strong>CanLoad</strong>: Determina si un módulo puede ser cargado de manera diferida (lazy loading).</li>
+<li><strong>Resolve</strong>: Recupera datos antes de que una ruta sea activada.</li>
+</ol>
+</div><h1>Implementación de Guardias de Ruta</h1>
+<div class='content'></div><h2>Paso 1: Crear un Guard</h2>
+<div class='content'><p>Primero, crearemos un guard utilizando Angular CLI:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmcgZ2VuZXJhdGUgZ3VhcmQgYXV0aA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ng generate guard auth</pre></div><div class='content'><p>Esto generará un archivo <code>auth.guard.ts</code> con una estructura básica.</p>
+</div><h2>Paso 2: Implementar la Lógica del Guard</h2>
+<div class='content'><p>Editaremos el archivo <code>auth.guard.ts</code> para implementar la lógica de nuestro guard. En este ejemplo, utilizaremos <code>CanActivate</code> para proteger una ruta:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBDYW5BY3RpdmF0ZSwgQWN0aXZhdGVkUm91dGVTbmFwc2hvdCwgUm91dGVyU3RhdGVTbmFwc2hvdCwgVXJsVHJlZSwgUm91dGVyIH0gZnJvbSAnQGFuZ3VsYXIvcm91dGVyJzsKaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnOwppbXBvcnQgeyBBdXRoU2VydmljZSB9IGZyb20gJy4vYXV0aC5zZXJ2aWNlJzsKCkBJbmplY3RhYmxlKHsKICBwcm92aWRlZEluOiAncm9vdCcKfSkKZXhwb3J0IGNsYXNzIEF1dGhHdWFyZCBpbXBsZW1lbnRzIENhbkFjdGl2YXRlIHsKCiAgY29uc3RydWN0b3IocHJpdmF0ZSBhdXRoU2VydmljZTogQXV0aFNlcnZpY2UsIHByaXZhdGUgcm91dGVyOiBSb3V0ZXIpIHt9CgogIGNhbkFjdGl2YXRlKAogICAgbmV4dDogQWN0aXZhdGVkUm91dGVTbmFwc2hvdCwKICAgIHN0YXRlOiBSb3V0ZXJTdGF0ZVNuYXBzaG90KTogT2JzZXJ2YWJsZTxib29sZWFuIHwgVXJsVHJlZT4gfCBQcm9taXNlPGJvb2xlYW4gfCBVcmxUcmVlPiB8IGJvb2xlYW4gfCBVcmxUcmVlIHsKICAgIGlmICh0aGlzLmF1dGhTZXJ2aWNlLmlzTG9nZ2VkSW4oKSkgewogICAgICByZXR1cm4gdHJ1ZTsKICAgIH0gZWxzZSB7CiAgICAgIHRoaXMucm91dGVyLm5hdmlnYXRlKFsnL2xvZ2luJ10pOwogICAgICByZXR1cm4gZmFsc2U7CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable&lt;boolean | UrlTree&gt; | Promise&lt;boolean | UrlTree&gt; | boolean | UrlTree {
+    if (this.authService.isLoggedIn()) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo, <code>AuthGuard</code> utiliza un servicio de autenticación (<code>AuthService</code>) para verificar si el usuario está autenticado. Si el usuario no está autenticado, se redirige a la página de inicio de sesión.</p>
+</div><h2>Paso 3: Aplicar el Guard a una Ruta</h2>
+<div class='content'><p>Ahora, aplicaremos el guard a una ruta en el archivo de configuración de rutas (<code>app-routing.module.ts</code>):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgUm91dGVyTW9kdWxlLCBSb3V0ZXMgfSBmcm9tICdAYW5ndWxhci9yb3V0ZXInOwppbXBvcnQgeyBIb21lQ29tcG9uZW50IH0gZnJvbSAnLi9ob21lL2hvbWUuY29tcG9uZW50JzsKaW1wb3J0IHsgTG9naW5Db21wb25lbnQgfSBmcm9tICcuL2xvZ2luL2xvZ2luLmNvbXBvbmVudCc7CmltcG9ydCB7IEF1dGhHdWFyZCB9IGZyb20gJy4vYXV0aC5ndWFyZCc7Cgpjb25zdCByb3V0ZXM6IFJvdXRlcyA9IFsKICB7IHBhdGg6ICcnLCBjb21wb25lbnQ6IEhvbWVDb21wb25lbnQgfSwKICB7IHBhdGg6ICdsb2dpbicsIGNvbXBvbmVudDogTG9naW5Db21wb25lbnQgfSwKICB7IHBhdGg6ICdwcm90ZWN0ZWQnLCBjb21wb25lbnQ6IFByb3RlY3RlZENvbXBvbmVudCwgY2FuQWN0aXZhdGU6IFtBdXRoR3VhcmRdIH0KXTsKCkBOZ01vZHVsZSh7CiAgaW1wb3J0czogW1JvdXRlck1vZHVsZS5mb3JSb290KHJvdXRlcyldLAogIGV4cG9ydHM6IFtSb3V0ZXJNb2R1bGVdCn0pCmV4cG9ydCBjbGFzcyBBcHBSb3V0aW5nTW9kdWxlIHsgfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
+import { AuthGuard } from './auth.guard';
+
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'protected', component: ProtectedComponent, canActivate: [AuthGuard] }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }</pre></div><div class='content'><p>En este ejemplo, la ruta <code>protected</code> está protegida por <code>AuthGuard</code>. Solo los usuarios autenticados podrán acceder a esta ruta.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Guard de Autenticación</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Crear un guard que proteja una ruta específica y redirija a los usuarios no autenticados a la página de inicio de sesión.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Crear un servicio de autenticación (<code>AuthService</code>) que tenga un método <code>isLoggedIn()</code>.</li>
+<li>Generar un guard (<code>AuthGuard</code>) utilizando Angular CLI.</li>
+<li>Implementar la lógica de autenticación en el guard.</li>
+<li>Aplicar el guard a una ruta en el archivo de configuración de rutas.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li><strong>Crear el Servicio de Autenticación</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwoKQEluamVjdGFibGUoewogIHByb3ZpZGVkSW46ICdyb290Jwp9KQpleHBvcnQgY2xhc3MgQXV0aFNlcnZpY2UgewogIHByaXZhdGUgbG9nZ2VkSW4gPSBmYWxzZTsKCiAgaXNMb2dnZWRJbigpOiBib29sZWFuIHsKICAgIHJldHVybiB0aGlzLmxvZ2dlZEluOwogIH0KCiAgbG9naW4oKSB7CiAgICB0aGlzLmxvZ2dlZEluID0gdHJ1ZTsKICB9CgogIGxvZ291dCgpIHsKICAgIHRoaXMubG9nZ2VkSW4gPSBmYWxzZTsKICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private loggedIn = false;
+
+  isLoggedIn(): boolean {
+    return this.loggedIn;
+  }
+
+  login() {
+    this.loggedIn = true;
+  }
+
+  logout() {
+    this.loggedIn = false;
+  }
+}</pre></div><div class='content'><ol start="2">
+<li><strong>Generar el Guard</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmcgZ2VuZXJhdGUgZ3VhcmQgYXV0aA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>ng generate guard auth</pre></div><div class='content'><ol start="3">
+<li><strong>Implementar la Lógica del Guard</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgSW5qZWN0YWJsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvcmUnOwppbXBvcnQgeyBDYW5BY3RpdmF0ZSwgQWN0aXZhdGVkUm91dGVTbmFwc2hvdCwgUm91dGVyU3RhdGVTbmFwc2hvdCwgVXJsVHJlZSwgUm91dGVyIH0gZnJvbSAnQGFuZ3VsYXIvcm91dGVyJzsKaW1wb3J0IHsgT2JzZXJ2YWJsZSB9IGZyb20gJ3J4anMnOwppbXBvcnQgeyBBdXRoU2VydmljZSB9IGZyb20gJy4vYXV0aC5zZXJ2aWNlJzsKCkBJbmplY3RhYmxlKHsKICBwcm92aWRlZEluOiAncm9vdCcKfSkKZXhwb3J0IGNsYXNzIEF1dGhHdWFyZCBpbXBsZW1lbnRzIENhbkFjdGl2YXRlIHsKCiAgY29uc3RydWN0b3IocHJpdmF0ZSBhdXRoU2VydmljZTogQXV0aFNlcnZpY2UsIHByaXZhdGUgcm91dGVyOiBSb3V0ZXIpIHt9CgogIGNhbkFjdGl2YXRlKAogICAgbmV4dDogQWN0aXZhdGVkUm91dGVTbmFwc2hvdCwKICAgIHN0YXRlOiBSb3V0ZXJTdGF0ZVNuYXBzaG90KTogT2JzZXJ2YWJsZTxib29sZWFuIHwgVXJsVHJlZT4gfCBQcm9taXNlPGJvb2xlYW4gfCBVcmxUcmVlPiB8IGJvb2xlYW4gfCBVcmxUcmVlIHsKICAgIGlmICh0aGlzLmF1dGhTZXJ2aWNlLmlzTG9nZ2VkSW4oKSkgewogICAgICByZXR1cm4gdHJ1ZTsKICAgIH0gZWxzZSB7CiAgICAgIHRoaXMucm91dGVyLm5hdmlnYXRlKFsnL2xvZ2luJ10pOwogICAgICByZXR1cm4gZmFsc2U7CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { Injectable } from '@angular/core';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot): Observable&lt;boolean | UrlTree&gt; | Promise&lt;boolean | UrlTree&gt; | boolean | UrlTree {
+    if (this.authService.isLoggedIn()) {
+      return true;
+    } else {
+      this.router.navigate(['/login']);
+      return false;
+    }
+  }
+}</pre></div><div class='content'><ol start="4">
+<li><strong>Aplicar el Guard a una Ruta</strong>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHsgTmdNb2R1bGUgfSBmcm9tICdAYW5ndWxhci9jb3JlJzsKaW1wb3J0IHsgUm91dGVyTW9kdWxlLCBSb3V0ZXMgfSBmcm9tICdAYW5ndWxhci9yb3V0ZXInOwppbXBvcnQgeyBIb21lQ29tcG9uZW50IH0gZnJvbSAnLi9ob21lL2hvbWUuY29tcG9uZW50JzsKaW1wb3J0IHsgTG9naW5Db21wb25lbnQgfSBmcm9tICcuL2xvZ2luL2xvZ2luLmNvbXBvbmVudCc7CmltcG9ydCB7IFByb3RlY3RlZENvbXBvbmVudCB9IGZyb20gJy4vcHJvdGVjdGVkL3Byb3RlY3RlZC5jb21wb25lbnQnOwppbXBvcnQgeyBBdXRoR3VhcmQgfSBmcm9tICcuL2F1dGguZ3VhcmQnOwoKY29uc3Qgcm91dGVzOiBSb3V0ZXMgPSBbCiAgeyBwYXRoOiAnJywgY29tcG9uZW50OiBIb21lQ29tcG9uZW50IH0sCiAgeyBwYXRoOiAnbG9naW4nLCBjb21wb25lbnQ6IExvZ2luQ29tcG9uZW50IH0sCiAgeyBwYXRoOiAncHJvdGVjdGVkJywgY29tcG9uZW50OiBQcm90ZWN0ZWRDb21wb25lbnQsIGNhbkFjdGl2YXRlOiBbQXV0aEd1YXJkXSB9Cl07CgpATmdNb2R1bGUoewogIGltcG9ydHM6IFtSb3V0ZXJNb2R1bGUuZm9yUm9vdChyb3V0ZXMpXSwKICBleHBvcnRzOiBbUm91dGVyTW9kdWxlXQp9KQpleHBvcnQgY2xhc3MgQXBwUm91dGluZ01vZHVsZSB7IH0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
+import { ProtectedComponent } from './protected/protected.component';
+import { AuthGuard } from './auth.guard';
+
+const routes: Routes = [
+  { path: '', component: HomeComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'protected', component: ProtectedComponent, canActivate: [AuthGuard] }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido sobre los guardias de ruta en Angular y cómo utilizarlos para proteger rutas específicas en nuestra aplicación. Hemos cubierto los diferentes tipos de guardias de ruta y hemos implementado un guard de autenticación paso a paso. Los guardias de ruta son una herramienta poderosa para controlar el acceso y la navegación en aplicaciones Angular, asegurando que solo los usuarios autorizados puedan acceder a ciertas áreas de la aplicación.</p>
+<p>En el próximo módulo, exploraremos los formularios en Angular, comenzando con los formularios basados en plantillas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-child-routes' title="Rutas Hijas">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-template-driven-forms' title="Formularios Basados en Plantillas">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

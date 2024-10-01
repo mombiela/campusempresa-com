@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSL (Lenguaje Específico de Dominio) en Kotlin</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/kotlin/03-05-dsl-domain-specific-language" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kotlin/03-05-dsl-domain-specific-language" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kotlin/03-05-dsl-domain-specific-language" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/kotlin/03-05-dsl-domain-specific-language" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/kotlin/03-05-dsl-domain-specific-language" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-coroutines-asynchronous-programming' title="Corrutinas y Programación Asíncrona">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">DSL (Lenguaje Específico de Dominio) en Kotlin</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-android-development-kotlin' title="Introducción al Desarrollo Android con Kotlin">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Un Lenguaje Específico de Dominio (DSL, por sus siglas en inglés) es un lenguaje de programación o especificación dedicado a un dominio particular de problemas. Kotlin es especialmente adecuado para crear DSLs debido a su sintaxis concisa y sus características avanzadas como las funciones de extensión, lambdas con receptores y la capacidad de sobrecargar operadores.</p>
+<p>En esta sección, aprenderemos cómo crear y utilizar DSLs en Kotlin para simplificar y hacer más legible el código en dominios específicos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>DSL Interno vs. DSL Externo</strong>:</p>
+<ul>
+<li><strong>DSL Interno</strong>: Un DSL que se construye utilizando las características del lenguaje anfitrión (en este caso, Kotlin).</li>
+<li><strong>DSL Externo</strong>: Un DSL que se define fuera del lenguaje anfitrión y requiere un parser para interpretarlo.</li>
+</ul>
+</li>
+<li>
+<p><strong>Funciones de Extensión</strong>: Permiten agregar nuevas funcionalidades a las clases existentes sin modificar su código.</p>
+</li>
+<li>
+<p><strong>Lambdas con Receptores</strong>: Permiten acceder a los miembros de un objeto receptor dentro de una lambda, facilitando la creación de DSLs.</p>
+</li>
+<li>
+<p><strong>Sobrecarga de Operadores</strong>: Permite definir el comportamiento de operadores como <code>+</code>, <code>-</code>, <code>*</code>, etc., para tipos personalizados.</p>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico: Construcción de un DSL para Configuración de HTML</h1>
+<div class='content'><p>Vamos a construir un DSL simple para generar código HTML. Este ejemplo ilustrará cómo utilizar las características de Kotlin para crear un DSL interno.</p>
+</div><h2>Paso 1: Definir las Clases Base</h2>
+<div class='content'><p>Primero, definimos las clases base que representarán los elementos HTML.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("b3BlbiBjbGFzcyBUYWcodmFsIG5hbWU6IFN0cmluZykgewogICAgcHJpdmF0ZSB2YWwgY2hpbGRyZW4gPSBtdXRhYmxlTGlzdE9mPFRhZz4oKQogICAgcHJpdmF0ZSB2YWwgYXR0cmlidXRlcyA9IG11dGFibGVNYXBPZjxTdHJpbmcsIFN0cmluZz4oKQoKICAgIHByb3RlY3RlZCBmdW4gPFQgOiBUYWc+IGRvSW5pdChjaGlsZDogVCwgaW5pdDogVC4oKSAtPiBVbml0KTogVCB7CiAgICAgICAgY2hpbGQuaW5pdCgpCiAgICAgICAgY2hpbGRyZW4uYWRkKGNoaWxkKQogICAgICAgIHJldHVybiBjaGlsZAogICAgfQoKICAgIG92ZXJyaWRlIGZ1biB0b1N0cmluZygpOiBTdHJpbmcgewogICAgICAgIHZhbCBhdHRycyA9IGlmIChhdHRyaWJ1dGVzLmlzRW1wdHkoKSkgIiIgZWxzZSBhdHRyaWJ1dGVzLm1hcCB7ICIke2l0LmtleX09XCIke2l0LnZhbHVlfVwiIiB9LmpvaW5Ub1N0cmluZygiICIsICIgIikKICAgICAgICB2YWwgY2hpbGRyZW5TdHJpbmcgPSBjaGlsZHJlbi5qb2luVG9TdHJpbmcoIiIpCiAgICAgICAgcmV0dXJuICI8JG5hbWUkYXR0cnM+JGNoaWxkcmVuU3RyaW5nPC8kbmFtZT4iCiAgICB9CgogICAgb3BlcmF0b3IgZnVuIFN0cmluZy5pbnZva2UodmFsdWU6IFN0cmluZykgewogICAgICAgIGF0dHJpYnV0ZXNbdGhpc10gPSB2YWx1ZQogICAgfQp9CgpjbGFzcyBIVE1MIDogVGFnKCJodG1sIikgewogICAgZnVuIGhlYWQoaW5pdDogSGVhZC4oKSAtPiBVbml0KSA9IGRvSW5pdChIZWFkKCksIGluaXQpCiAgICBmdW4gYm9keShpbml0OiBCb2R5LigpIC0+IFVuaXQpID0gZG9Jbml0KEJvZHkoKSwgaW5pdCkKfQoKY2xhc3MgSGVhZCA6IFRhZygiaGVhZCIpIHsKICAgIGZ1biB0aXRsZShpbml0OiBUaXRsZS4oKSAtPiBVbml0KSA9IGRvSW5pdChUaXRsZSgpLCBpbml0KQp9CgpjbGFzcyBUaXRsZSA6IFRhZygidGl0bGUiKQoKY2xhc3MgQm9keSA6IFRhZygiYm9keSIpIHsKICAgIGZ1biBoMShpbml0OiBIMS4oKSAtPiBVbml0KSA9IGRvSW5pdChIMSgpLCBpbml0KQogICAgZnVuIHAoaW5pdDogUC4oKSAtPiBVbml0KSA9IGRvSW5pdChQKCksIGluaXQpCn0KCmNsYXNzIEgxIDogVGFnKCJoMSIpCmNsYXNzIFAgOiBUYWcoInAiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>open class Tag(val name: String) {
+    private val children = mutableListOf&lt;Tag&gt;()
+    private val attributes = mutableMapOf&lt;String, String&gt;()
+
+    protected fun &lt;T : Tag&gt; doInit(child: T, init: T.() -&gt; Unit): T {
+        child.init()
+        children.add(child)
+        return child
+    }
+
+    override fun toString(): String {
+        val attrs = if (attributes.isEmpty()) &quot;&quot; else attributes.map { &quot;${it.key}=\&quot;${it.value}\&quot;&quot; }.joinToString(&quot; &quot;, &quot; &quot;)
+        val childrenString = children.joinToString(&quot;&quot;)
+        return &quot;&lt;$name$attrs&gt;$childrenString&lt;/$name&gt;&quot;
+    }
+
+    operator fun String.invoke(value: String) {
+        attributes[this] = value
+    }
+}
+
+class HTML : Tag(&quot;html&quot;) {
+    fun head(init: Head.() -&gt; Unit) = doInit(Head(), init)
+    fun body(init: Body.() -&gt; Unit) = doInit(Body(), init)
+}
+
+class Head : Tag(&quot;head&quot;) {
+    fun title(init: Title.() -&gt; Unit) = doInit(Title(), init)
+}
+
+class Title : Tag(&quot;title&quot;)
+
+class Body : Tag(&quot;body&quot;) {
+    fun h1(init: H1.() -&gt; Unit) = doInit(H1(), init)
+    fun p(init: P.() -&gt; Unit) = doInit(P(), init)
+}
+
+class H1 : Tag(&quot;h1&quot;)
+class P : Tag(&quot;p&quot;)</pre></div><div class='content'></div><h2>Paso 2: Crear la Función de Extensión para el DSL</h2>
+<div class='content'><p>Creamos una función de extensión para inicializar el DSL.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuIGh0bWwoaW5pdDogSFRNTC4oKSAtPiBVbml0KTogSFRNTCB7CiAgICB2YWwgaHRtbCA9IEhUTUwoKQogICAgaHRtbC5pbml0KCkKICAgIHJldHVybiBodG1sCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fun html(init: HTML.() -&gt; Unit): HTML {
+    val html = HTML()
+    html.init()
+    return html
+}</pre></div><div class='content'></div><h2>Paso 3: Utilizar el DSL</h2>
+<div class='content'><p>Ahora podemos utilizar nuestro DSL para construir un documento HTML.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuIG1haW4oKSB7CiAgICB2YWwgZG9jdW1lbnQgPSBodG1sIHsKICAgICAgICBoZWFkIHsKICAgICAgICAgICAgdGl0bGUgewogICAgICAgICAgICAgICAgInRleHQiKCJNeSBUaXRsZSIpCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgYm9keSB7CiAgICAgICAgICAgIGgxIHsKICAgICAgICAgICAgICAgICJ0ZXh0IigiSGVsbG8sIFdvcmxkISIpCiAgICAgICAgICAgIH0KICAgICAgICAgICAgcCB7CiAgICAgICAgICAgICAgICAidGV4dCIoIlRoaXMgaXMgYSBwYXJhZ3JhcGguIikKICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KICAgIHByaW50bG4oZG9jdW1lbnQpCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fun main() {
+    val document = html {
+        head {
+            title {
+                &quot;text&quot;(&quot;My Title&quot;)
+            }
+        }
+        body {
+            h1 {
+                &quot;text&quot;(&quot;Hello, World!&quot;)
+            }
+            p {
+                &quot;text&quot;(&quot;This is a paragraph.&quot;)
+            }
+        }
+    }
+    println(document)
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Clases Base</strong>: <code>Tag</code> es la clase base para todos los elementos HTML. Tiene una lista de hijos (<code>children</code>) y un mapa de atributos (<code>attributes</code>).</li>
+<li><strong>Método <code>doInit</code></strong>: Este método inicializa un hijo y lo agrega a la lista de hijos.</li>
+<li><strong>Sobrecarga del Operador <code>invoke</code></strong>: Permite agregar atributos a los elementos HTML de manera concisa.</li>
+<li><strong>Función <code>html</code></strong>: Inicializa el DSL y devuelve el objeto <code>HTML</code> construido.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Añadir Soporte para Listas</h2>
+<div class='content'><p>Añade soporte para listas (<code>ul</code> y <code>li</code>) en el DSL.</p>
+<h4>Solución</h4>
+<ol>
+<li>Añade las clases <code>UL</code> y <code>LI</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgVUwgOiBUYWcoInVsIikgewogICAgZnVuIGxpKGluaXQ6IExJLigpIC0+IFVuaXQpID0gZG9Jbml0KExJKCksIGluaXQpCn0KCmNsYXNzIExJIDogVGFnKCJsaSIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class UL : Tag(&quot;ul&quot;) {
+    fun li(init: LI.() -&gt; Unit) = doInit(LI(), init)
+}
+
+class LI : Tag(&quot;li&quot;)</pre></div><div class='content'><ol start="2">
+<li>Modifica la clase <code>Body</code> para incluir <code>ul</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgQm9keSA6IFRhZygiYm9keSIpIHsKICAgIGZ1biBoMShpbml0OiBIMS4oKSAtPiBVbml0KSA9IGRvSW5pdChIMSgpLCBpbml0KQogICAgZnVuIHAoaW5pdDogUC4oKSAtPiBVbml0KSA9IGRvSW5pdChQKCksIGluaXQpCiAgICBmdW4gdWwoaW5pdDogVUwuKCkgLT4gVW5pdCkgPSBkb0luaXQoVUwoKSwgaW5pdCkKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class Body : Tag(&quot;body&quot;) {
+    fun h1(init: H1.() -&gt; Unit) = doInit(H1(), init)
+    fun p(init: P.() -&gt; Unit) = doInit(P(), init)
+    fun ul(init: UL.() -&gt; Unit) = doInit(UL(), init)
+}</pre></div><div class='content'><ol start="3">
+<li>Utiliza el DSL para crear una lista:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnVuIG1haW4oKSB7CiAgICB2YWwgZG9jdW1lbnQgPSBodG1sIHsKICAgICAgICBoZWFkIHsKICAgICAgICAgICAgdGl0bGUgewogICAgICAgICAgICAgICAgInRleHQiKCJNeSBUaXRsZSIpCiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICAgICAgYm9keSB7CiAgICAgICAgICAgIGgxIHsKICAgICAgICAgICAgICAgICJ0ZXh0IigiSGVsbG8sIFdvcmxkISIpCiAgICAgICAgICAgIH0KICAgICAgICAgICAgcCB7CiAgICAgICAgICAgICAgICAidGV4dCIoIlRoaXMgaXMgYSBwYXJhZ3JhcGguIikKICAgICAgICAgICAgfQogICAgICAgICAgICB1bCB7CiAgICAgICAgICAgICAgICBsaSB7CiAgICAgICAgICAgICAgICAgICAgInRleHQiKCJJdGVtIDEiKQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgbGkgewogICAgICAgICAgICAgICAgICAgICJ0ZXh0IigiSXRlbSAyIikKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIGxpIHsKICAgICAgICAgICAgICAgICAgICAidGV4dCIoIkl0ZW0gMyIpCiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9CiAgICBwcmludGxuKGRvY3VtZW50KQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>fun main() {
+    val document = html {
+        head {
+            title {
+                &quot;text&quot;(&quot;My Title&quot;)
+            }
+        }
+        body {
+            h1 {
+                &quot;text&quot;(&quot;Hello, World!&quot;)
+            }
+            p {
+                &quot;text&quot;(&quot;This is a paragraph.&quot;)
+            }
+            ul {
+                li {
+                    &quot;text&quot;(&quot;Item 1&quot;)
+                }
+                li {
+                    &quot;text&quot;(&quot;Item 2&quot;)
+                }
+                li {
+                    &quot;text&quot;(&quot;Item 3&quot;)
+                }
+            }
+        }
+    }
+    println(document)
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo crear un DSL interno en Kotlin utilizando funciones de extensión, lambdas con receptores y sobrecarga de operadores. Los DSLs pueden hacer que el código sea más legible y expresivo, especialmente en dominios específicos como la generación de HTML. Con la práctica, podrás crear tus propios DSLs para simplificar tareas complejas en tus proyectos.</p>
+<p>En el próximo módulo, exploraremos cómo aplicar estos conocimientos en el desarrollo de aplicaciones Android con Kotlin.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-04-coroutines-asynchronous-programming' title="Corrutinas y Programación Asíncrona">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-introduction-android-development-kotlin' title="Introducción al Desarrollo Android con Kotlin">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

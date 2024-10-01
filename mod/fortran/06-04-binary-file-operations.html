@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operaciones con Archivos Binarios</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/fortran/06-04-binary-file-operations" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/fortran/06-04-binary-file-operations" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/fortran/06-04-binary-file-operations" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/fortran/06-04-binary-file-operations" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/fortran/06-04-binary-file-operations" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-file-positioning' title="Posicionamiento de Archivos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Operaciones con Archivos Binarios</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-modules-interfaces' title="Módulos e Interfaces">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo manejar archivos binarios en Fortran. Los archivos binarios son útiles cuando se necesita almacenar datos en un formato más compacto y eficiente que los archivos de texto. A continuación, cubriremos los conceptos clave, proporcionaremos ejemplos prácticos y ejercicios para reforzar el aprendizaje.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Archivos Binarios vs. Archivos de Texto</strong>:</p>
+<ul>
+<li><strong>Archivos de Texto</strong>: Almacenan datos en formato legible por humanos.</li>
+<li><strong>Archivos Binarios</strong>: Almacenan datos en formato binario, que es más eficiente en términos de espacio y velocidad de lectura/escritura.</li>
+</ul>
+</li>
+<li>
+<p><strong>Apertura de Archivos Binarios</strong>:</p>
+<ul>
+<li>Utilizamos la instrucción <code>open</code> con el atributo <code>form='unformatted'</code> para abrir archivos binarios.</li>
+</ul>
+</li>
+<li>
+<p><strong>Lectura y Escritura de Datos</strong>:</p>
+<ul>
+<li>Utilizamos las instrucciones <code>read</code> y <code>write</code> para leer y escribir datos en archivos binarios.</li>
+</ul>
+</li>
+<li>
+<p><strong>Posicionamiento en Archivos Binarios</strong>:</p>
+<ul>
+<li>Utilizamos la instrucción <code>rewind</code>, <code>backspace</code> y <code>endfile</code> para manipular la posición en el archivo.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'></div><h2>Escribiendo Datos en un Archivo Binario</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSB3cml0ZV9iaW5hcnkKICAgIGltcGxpY2l0IG5vbmUKICAgIGludGVnZXIgOjogaSwgdW5pdAogICAgcmVhbCA6OiBkYXRhKDUpID0gWzEuMSwgMi4yLCAzLjMsIDQuNCwgNS41XQoKICAgICEgQWJyaXIgZWwgYXJjaGl2byBiaW5hcmlvIHBhcmEgZXNjcml0dXJhCiAgICBvcGVuKHVuaXQ9MTAsIGZpbGU9J2RhdGEuYmluJywgZm9ybT0ndW5mb3JtYXR0ZWQnLCBzdGF0dXM9J3JlcGxhY2UnKQoKICAgICEgRXNjcmliaXIgbG9zIGRhdG9zIGVuIGVsIGFyY2hpdm8gYmluYXJpbwogICAgd3JpdGUoMTApIGRhdGEKCiAgICAhIENlcnJhciBlbCBhcmNoaXZvCiAgICBjbG9zZSgxMCkKZW5kIHByb2dyYW0gd3JpdGVfYmluYXJ5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program write_binary
+    implicit none
+    integer :: i, unit
+    real :: data(5) = [1.1, 2.2, 3.3, 4.4, 5.5]
+
+    ! Abrir el archivo binario para escritura
+    open(unit=10, file='data.bin', form='unformatted', status='replace')
+
+    ! Escribir los datos en el archivo binario
+    write(10) data
+
+    ! Cerrar el archivo
+    close(10)
+end program write_binary</pre></div><div class='content'></div><h2>Leyendo Datos de un Archivo Binario</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSByZWFkX2JpbmFyeQogICAgaW1wbGljaXQgbm9uZQogICAgaW50ZWdlciA6OiBpLCB1bml0CiAgICByZWFsIDo6IGRhdGEoNSkKCiAgICAhIEFicmlyIGVsIGFyY2hpdm8gYmluYXJpbyBwYXJhIGxlY3R1cmEKICAgIG9wZW4odW5pdD0xMCwgZmlsZT0nZGF0YS5iaW4nLCBmb3JtPSd1bmZvcm1hdHRlZCcsIHN0YXR1cz0nb2xkJykKCiAgICAhIExlZXIgbG9zIGRhdG9zIGRlbCBhcmNoaXZvIGJpbmFyaW8KICAgIHJlYWQoMTApIGRhdGEKCiAgICAhIENlcnJhciBlbCBhcmNoaXZvCiAgICBjbG9zZSgxMCkKCiAgICAhIEltcHJpbWlyIGxvcyBkYXRvcyBsZcOtZG9zCiAgICBkbyBpID0gMSwgNQogICAgICAgIHByaW50ICosICdEYXRhKCcsIGksICcpID0gJywgZGF0YShpKQogICAgZW5kIGRvCmVuZCBwcm9ncmFtIHJlYWRfYmluYXJ5"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program read_binary
+    implicit none
+    integer :: i, unit
+    real :: data(5)
+
+    ! Abrir el archivo binario para lectura
+    open(unit=10, file='data.bin', form='unformatted', status='old')
+
+    ! Leer los datos del archivo binario
+    read(10) data
+
+    ! Cerrar el archivo
+    close(10)
+
+    ! Imprimir los datos le&iacute;dos
+    do i = 1, 5
+        print *, 'Data(', i, ') = ', data(i)
+    end do
+end program read_binary</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Apertura del Archivo</strong>:</p>
+<ul>
+<li><code>open(unit=10, file='data.bin', form='unformatted', status='replace')</code>: Abre el archivo <code>data.bin</code> para escritura en formato binario. Si el archivo ya existe, se reemplaza.</li>
+<li><code>open(unit=10, file='data.bin', form='unformatted', status='old')</code>: Abre el archivo <code>data.bin</code> para lectura en formato binario. El archivo debe existir.</li>
+</ul>
+</li>
+<li>
+<p><strong>Escritura de Datos</strong>:</p>
+<ul>
+<li><code>write(10) data</code>: Escribe el arreglo <code>data</code> en el archivo binario.</li>
+</ul>
+</li>
+<li>
+<p><strong>Lectura de Datos</strong>:</p>
+<ul>
+<li><code>read(10) data</code>: Lee los datos del archivo binario en el arreglo <code>data</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Cierre del Archivo</strong>:</p>
+<ul>
+<li><code>close(10)</code>: Cierra el archivo.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Escribir y Leer una Matriz en un Archivo Binario</h2>
+<div class='content'><p><strong>Objetivo</strong>: Escribir una matriz de 3x3 en un archivo binario y luego leerla desde el archivo.</p>
+<p><strong>Instrucciones</strong>:</p>
+<ol>
+<li>Escribe un programa que cree una matriz de 3x3 con valores de tu elección.</li>
+<li>Escribe la matriz en un archivo binario.</li>
+<li>Escribe otro programa que lea la matriz desde el archivo binario y la imprima en la pantalla.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+<h4>Escribiendo la Matriz</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSB3cml0ZV9tYXRyaXgKICAgIGltcGxpY2l0IG5vbmUKICAgIGludGVnZXIgOjogaSwgaiwgdW5pdAogICAgcmVhbCA6OiBtYXRyaXgoMywzKSA9IHJlc2hhcGUoWzEuMSwgMi4yLCAzLjMsIDQuNCwgNS41LCA2LjYsIDcuNywgOC44LCA5LjldLCBbMywzXSkKCiAgICAhIEFicmlyIGVsIGFyY2hpdm8gYmluYXJpbyBwYXJhIGVzY3JpdHVyYQogICAgb3Blbih1bml0PTEwLCBmaWxlPSdtYXRyaXguYmluJywgZm9ybT0ndW5mb3JtYXR0ZWQnLCBzdGF0dXM9J3JlcGxhY2UnKQoKICAgICEgRXNjcmliaXIgbGEgbWF0cml6IGVuIGVsIGFyY2hpdm8gYmluYXJpbwogICAgd3JpdGUoMTApIG1hdHJpeAoKICAgICEgQ2VycmFyIGVsIGFyY2hpdm8KICAgIGNsb3NlKDEwKQplbmQgcHJvZ3JhbSB3cml0ZV9tYXRyaXg="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program write_matrix
+    implicit none
+    integer :: i, j, unit
+    real :: matrix(3,3) = reshape([1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9], [3,3])
+
+    ! Abrir el archivo binario para escritura
+    open(unit=10, file='matrix.bin', form='unformatted', status='replace')
+
+    ! Escribir la matriz en el archivo binario
+    write(10) matrix
+
+    ! Cerrar el archivo
+    close(10)
+end program write_matrix</pre></div><div class='content'><h4>Leyendo la Matriz</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHJvZ3JhbSByZWFkX21hdHJpeAogICAgaW1wbGljaXQgbm9uZQogICAgaW50ZWdlciA6OiBpLCBqLCB1bml0CiAgICByZWFsIDo6IG1hdHJpeCgzLDMpCgogICAgISBBYnJpciBlbCBhcmNoaXZvIGJpbmFyaW8gcGFyYSBsZWN0dXJhCiAgICBvcGVuKHVuaXQ9MTAsIGZpbGU9J21hdHJpeC5iaW4nLCBmb3JtPSd1bmZvcm1hdHRlZCcsIHN0YXR1cz0nb2xkJykKCiAgICAhIExlZXIgbGEgbWF0cml6IGRlbCBhcmNoaXZvIGJpbmFyaW8KICAgIHJlYWQoMTApIG1hdHJpeAoKICAgICEgQ2VycmFyIGVsIGFyY2hpdm8KICAgIGNsb3NlKDEwKQoKICAgICEgSW1wcmltaXIgbGEgbWF0cml6IGxlw61kYQogICAgZG8gaSA9IDEsIDMKICAgICAgICBkbyBqID0gMSwgMwogICAgICAgICAgICBwcmludCAqLCAnTWF0cml4KCcsIGksICcsJywgaiwgJykgPSAnLCBtYXRyaXgoaSxqKQogICAgICAgIGVuZCBkbwogICAgZW5kIGRvCmVuZCBwcm9ncmFtIHJlYWRfbWF0cml4"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>program read_matrix
+    implicit none
+    integer :: i, j, unit
+    real :: matrix(3,3)
+
+    ! Abrir el archivo binario para lectura
+    open(unit=10, file='matrix.bin', form='unformatted', status='old')
+
+    ! Leer la matriz del archivo binario
+    read(10) matrix
+
+    ! Cerrar el archivo
+    close(10)
+
+    ! Imprimir la matriz le&iacute;da
+    do i = 1, 3
+        do j = 1, 3
+            print *, 'Matrix(', i, ',', j, ') = ', matrix(i,j)
+        end do
+    end do
+end program read_matrix</pre></div><div class='content'></div><h2>Retroalimentación y Consejos</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Errores Comunes</strong>:</p>
+<ul>
+<li>No cerrar el archivo después de la lectura/escritura puede causar problemas de acceso.</li>
+<li>Asegúrate de que el archivo existe antes de intentar leerlo.</li>
+<li>Verifica que los datos leídos sean del mismo tipo y tamaño que los datos escritos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Consejos Adicionales</strong>:</p>
+<ul>
+<li>Utiliza nombres de archivos descriptivos para facilitar la identificación.</li>
+<li>Siempre maneja los errores de apertura de archivos para evitar fallos inesperados.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo manejar archivos binarios en Fortran, incluyendo la apertura, lectura, escritura y cierre de archivos. Los archivos binarios son una herramienta poderosa para almacenar datos de manera eficiente. Con los ejemplos y ejercicios proporcionados, deberías estar bien preparado para trabajar con archivos binarios en tus propios proyectos.</p>
+<p>En el próximo módulo, exploraremos temas avanzados como módulos e interfaces, que te permitirán organizar y estructurar mejor tu código Fortran.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-03-file-positioning' title="Posicionamiento de Archivos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-01-modules-interfaces' title="Módulos e Interfaces">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orquestación con Kubernetes</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/microservicios/05-02-orquestacion-kubernetes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/microservicios/05-02-orquestacion-kubernetes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/microservicios/05-02-orchestration-kubernetes" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/microservicios/05-02-orquestacion-kubernetes" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/microservicios/05-02-orquestacion-kubernetes" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-contenedores-docker' title="Contenedores y Docker">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Orquestación con Kubernetes</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-cicd-microservicios' title="CI/CD para Microservicios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Kubernetes es una plataforma de orquestación de contenedores que automatiza el despliegue, la gestión y la escalabilidad de aplicaciones en contenedores. En este módulo, aprenderemos cómo Kubernetes puede ser utilizado para gestionar microservicios de manera eficiente.</p>
+</div><h1>Conceptos Clave de Kubernetes</h1>
+<div class='content'></div><h2>1. Clúster de Kubernetes</h2>
+<div class='content'><p>Un clúster de Kubernetes es un conjunto de nodos que ejecutan aplicaciones en contenedores. Los componentes principales de un clúster son:</p>
+<ul>
+<li><strong>Master Node</strong>: Responsable de la gestión del clúster.</li>
+<li><strong>Worker Nodes</strong>: Ejecutan las aplicaciones en contenedores.</li>
+</ul>
+</div><h2>2. Pods</h2>
+<div class='content'><p>Un pod es la unidad más pequeña de ejecución en Kubernetes y puede contener uno o más contenedores que comparten el mismo contexto de red y almacenamiento.</p>
+</div><h2>3. Servicios</h2>
+<div class='content'><p>Los servicios en Kubernetes proporcionan una forma de exponer una aplicación que se ejecuta en un conjunto de pods como un servicio de red.</p>
+</div><h2>4. Deployments</h2>
+<div class='content'><p>Los deployments definen el estado deseado de una aplicación y Kubernetes se encarga de mantener ese estado, gestionando la creación y el escalado de pods.</p>
+</div><h2>5. ConfigMaps y Secrets</h2>
+<div class='content'><ul>
+<li><strong>ConfigMaps</strong>: Almacenan datos de configuración en formato clave-valor.</li>
+<li><strong>Secrets</strong>: Almacenan información sensible, como contraseñas y tokens.</li>
+</ul>
+</div><h1>Despliegue de Microservicios con Kubernetes</h1>
+<div class='content'></div><h2>Paso 1: Configuración del Clúster</h2>
+<div class='content'><p>Para comenzar, necesitamos un clúster de Kubernetes. Puedes usar servicios gestionados como Google Kubernetes Engine (GKE), Amazon Elastic Kubernetes Service (EKS) o Azure Kubernetes Service (AKS), o configurar un clúster local con Minikube.</p>
+</div><h2>Paso 2: Creación de un Deployment</h2>
+<div class='content'><p>Vamos a crear un deployment para un microservicio simple. Supongamos que tenemos una imagen de Docker llamada <code>my-microservice</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogYXBwcy92MQpraW5kOiBEZXBsb3ltZW50Cm1ldGFkYXRhOgogIG5hbWU6IG15LW1pY3Jvc2VydmljZS1kZXBsb3ltZW50CnNwZWM6CiAgcmVwbGljYXM6IDMKICBzZWxlY3RvcjoKICAgIG1hdGNoTGFiZWxzOgogICAgICBhcHA6IG15LW1pY3Jvc2VydmljZQogIHRlbXBsYXRlOgogICAgbWV0YWRhdGE6CiAgICAgIGxhYmVsczoKICAgICAgICBhcHA6IG15LW1pY3Jvc2VydmljZQogICAgc3BlYzoKICAgICAgY29udGFpbmVyczoKICAgICAgLSBuYW1lOiBteS1taWNyb3NlcnZpY2UKICAgICAgICBpbWFnZTogbXktbWljcm9zZXJ2aWNlOmxhdGVzdAogICAgICAgIHBvcnRzOgogICAgICAgIC0gY29udGFpbmVyUG9ydDogODA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-microservice-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-microservice
+  template:
+    metadata:
+      labels:
+        app: my-microservice
+    spec:
+      containers:
+      - name: my-microservice
+        image: my-microservice:latest
+        ports:
+        - containerPort: 80</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes que estamos utilizando.</li>
+<li><strong>kind</strong>: El tipo de objeto que estamos creando, en este caso, un Deployment.</li>
+<li><strong>metadata</strong>: Información sobre el objeto, como su nombre.</li>
+<li><strong>spec</strong>: La especificación del deployment.
+<ul>
+<li><strong>replicas</strong>: El número de réplicas del pod que queremos ejecutar.</li>
+<li><strong>selector</strong>: Define cómo seleccionar los pods que pertenecen a este deployment.</li>
+<li><strong>template</strong>: Define el pod que se va a crear.
+<ul>
+<li><strong>metadata</strong>: Etiquetas para el pod.</li>
+<li><strong>spec</strong>: La especificación del contenedor dentro del pod.
+<ul>
+<li><strong>containers</strong>: Lista de contenedores que se ejecutarán en el pod.
+<ul>
+<li><strong>name</strong>: Nombre del contenedor.</li>
+<li><strong>image</strong>: La imagen de Docker que se utilizará.</li>
+<li><strong>ports</strong>: Los puertos que se expondrán.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div><h2>Paso 3: Creación de un Servicio</h2>
+<div class='content'><p>Para exponer nuestro microservicio, necesitamos crear un servicio.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogU2VydmljZQptZXRhZGF0YToKICBuYW1lOiBteS1taWNyb3NlcnZpY2Utc2VydmljZQpzcGVjOgogIHNlbGVjdG9yOgogICAgYXBwOiBteS1taWNyb3NlcnZpY2UKICBwb3J0czoKICAgIC0gcHJvdG9jb2w6IFRDUAogICAgICBwb3J0OiA4MAogICAgICB0YXJnZXRQb3J0OiA4MAogIHR5cGU6IExvYWRCYWxhbmNlcg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Service
+metadata:
+  name: my-microservice-service
+spec:
+  selector:
+    app: my-microservice
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>apiVersion</strong>: La versión de la API de Kubernetes que estamos utilizando.</li>
+<li><strong>kind</strong>: El tipo de objeto que estamos creando, en este caso, un Service.</li>
+<li><strong>metadata</strong>: Información sobre el objeto, como su nombre.</li>
+<li><strong>spec</strong>: La especificación del servicio.
+<ul>
+<li><strong>selector</strong>: Define cómo seleccionar los pods que pertenecen a este servicio.</li>
+<li><strong>ports</strong>: Los puertos que se expondrán.
+<ul>
+<li><strong>protocol</strong>: El protocolo que se utilizará.</li>
+<li><strong>port</strong>: El puerto en el que el servicio estará disponible.</li>
+<li><strong>targetPort</strong>: El puerto en el que el contenedor escucha.</li>
+</ul>
+</li>
+<li><strong>type</strong>: El tipo de servicio, en este caso, LoadBalancer para exponer el servicio externamente.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Desplegar un Microservicio en Kubernetes</h2>
+<div class='content'><ol>
+<li><strong>Configura un clúster de Kubernetes</strong> utilizando Minikube o un servicio gestionado.</li>
+<li><strong>Crea un archivo YAML</strong> para un deployment de un microservicio.</li>
+<li><strong>Crea un archivo YAML</strong> para un servicio que exponga el microservicio.</li>
+<li><strong>Aplica los archivos YAML</strong> utilizando <code>kubectl apply -f &lt;archivo.yaml&gt;</code>.</li>
+<li><strong>Verifica el despliegue</strong> utilizando <code>kubectl get pods</code> y <code>kubectl get services</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p>Configura Minikube:</p>
+<pre><code class="language-bash">minikube start
+</code></pre>
+</li>
+<li>
+<p>Crea <code>deployment.yaml</code>:</p>
+<pre><code class="language-yaml">apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-microservice-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-microservice
+  template:
+    metadata:
+      labels:
+        app: my-microservice
+    spec:
+      containers:
+      - name: my-microservice
+        image: my-microservice:latest
+        ports:
+        - containerPort: 80
+</code></pre>
+</li>
+<li>
+<p>Crea <code>service.yaml</code>:</p>
+<pre><code class="language-yaml">apiVersion: v1
+kind: Service
+metadata:
+  name: my-microservice-service
+spec:
+  selector:
+    app: my-microservice
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: LoadBalancer
+</code></pre>
+</li>
+<li>
+<p>Aplica los archivos YAML:</p>
+<pre><code class="language-bash">kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+</code></pre>
+</li>
+<li>
+<p>Verifica el despliegue:</p>
+<pre><code class="language-bash">kubectl get pods
+kubectl get services
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido los conceptos básicos de Kubernetes y cómo utilizarlo para orquestar microservicios. Hemos visto cómo crear deployments y servicios para gestionar y exponer nuestros microservicios. Con esta base, estamos preparados para explorar temas más avanzados de despliegue y gestión en Kubernetes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-01-contenedores-docker' title="Contenedores y Docker">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='05-03-cicd-microservicios' title="CI/CD para Microservicios">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

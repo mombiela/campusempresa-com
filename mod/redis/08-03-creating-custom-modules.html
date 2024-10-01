@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creando Módulos Personalizados</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/08-03-creating-custom-modules" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/08-03-creating-custom-modules" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/08-03-creating-custom-modules" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/redis/08-03-creating-custom-modules" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/redis/08-03-creating-custom-modules" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-popular-redis-modules' title="Módulos Populares de Redis">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Creando Módulos Personalizados</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-using-redis-with-other-technologies' title="Usando Redis con Otras Tecnologías">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo crear módulos personalizados en Redis. Los módulos permiten extender la funcionalidad de Redis con comandos y tipos de datos personalizados, lo que puede ser muy útil para casos de uso específicos.</p>
+</div><h1>1. Introducción a los Módulos Personalizados</h1>
+<div class='content'></div><h2>¿Qué es un Módulo de Redis?</h2>
+<div class='content'><p>Un módulo de Redis es una extensión que permite agregar nuevas funcionalidades a Redis. Los módulos pueden incluir nuevos comandos, tipos de datos y otras características que no están disponibles en la versión estándar de Redis.</p>
+</div><h2>¿Por qué Crear un Módulo Personalizado?</h2>
+<div class='content'><ul>
+<li><strong>Funcionalidad Extendida</strong>: Agregar comandos y tipos de datos específicos para tus necesidades.</li>
+<li><strong>Optimización</strong>: Mejorar el rendimiento para casos de uso específicos.</li>
+<li><strong>Integración</strong>: Facilitar la integración con otras tecnologías y sistemas.</li>
+</ul>
+</div><h1>2. Configuración del Entorno</h1>
+<div class='content'></div><h2>Requisitos Previos</h2>
+<div class='content'><ul>
+<li>Redis 4.0 o superior.</li>
+<li>Conocimientos básicos de C (el lenguaje en el que se escriben los módulos de Redis).</li>
+<li>Un entorno de desarrollo configurado con un compilador de C (como GCC).</li>
+</ul>
+</div><h2>Instalación de Redis</h2>
+<div class='content'><p>Si aún no tienes Redis instalado, puedes seguir estos pasos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZXNjYXJnYXIgUmVkaXMKd2dldCBodHRwOi8vZG93bmxvYWQucmVkaXMuaW8vcmVkaXMtc3RhYmxlLnRhci5negp0YXIgeHZ6ZiByZWRpcy1zdGFibGUudGFyLmd6CmNkIHJlZGlzLXN0YWJsZQoKIyBDb21waWxhciBSZWRpcwptYWtl"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Descargar Redis
+wget http://download.redis.io/redis-stable.tar.gz
+tar xvzf redis-stable.tar.gz
+cd redis-stable
+
+# Compilar Redis
+make</pre></div><div class='content'></div><h2>Configuración del Entorno de Desarrollo</h2>
+<div class='content'><p>Asegúrate de tener un compilador de C instalado. En sistemas basados en Debian, puedes instalar GCC con:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCBidWlsZC1lc3NlbnRpYWw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
+sudo apt-get install build-essential</pre></div><div class='content'></div><h1>3. Estructura Básica de un Módulo</h1>
+<div class='content'></div><h2>Archivo de Cabecera</h2>
+<div class='content'><p>Cada módulo de Redis debe incluir el archivo de cabecera <code>redismodule.h</code>, que proporciona las funciones y macros necesarias para interactuar con Redis.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgInJlZGlzbW9kdWxlLmgi"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &quot;redismodule.h&quot;</pre></div><div class='content'></div><h2>Función de Inicialización</h2>
+<div class='content'><p>Cada módulo debe definir una función de inicialización que será llamada cuando el módulo se cargue en Redis.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW50IFJlZGlzTW9kdWxlX09uTG9hZChSZWRpc01vZHVsZUN0eCAqY3R4LCBSZWRpc01vZHVsZVN0cmluZyAqKmFyZ3YsIGludCBhcmdjKSB7CiAgICBpZiAoUmVkaXNNb2R1bGVfSW5pdChjdHgsICJteW1vZHVsZSIsIDEsIFJFRElTTU9EVUxFX0FQSVZFUl8xKSA9PSBSRURJU01PRFVMRV9FUlIpIHsKICAgICAgICByZXR1cm4gUkVESVNNT0RVTEVfRVJSOwogICAgfQogICAgcmV0dXJuIFJFRElTTU9EVUxFX09LOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (RedisModule_Init(ctx, &quot;mymodule&quot;, 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h2>Registro de Comandos</h2>
+<div class='content'><p>Para agregar un nuevo comando, debes registrarlo en la función de inicialización.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW50IE15Q29tbWFuZChSZWRpc01vZHVsZUN0eCAqY3R4LCBSZWRpc01vZHVsZVN0cmluZyAqKmFyZ3YsIGludCBhcmdjKSB7CiAgICBSZWRpc01vZHVsZV9SZXBseVdpdGhTaW1wbGVTdHJpbmcoY3R4LCAiSGVsbG8sIFJlZGlzISIpOwogICAgcmV0dXJuIFJFRElTTU9EVUxFX09LOwp9CgppbnQgUmVkaXNNb2R1bGVfT25Mb2FkKFJlZGlzTW9kdWxlQ3R4ICpjdHgsIFJlZGlzTW9kdWxlU3RyaW5nICoqYXJndiwgaW50IGFyZ2MpIHsKICAgIGlmIChSZWRpc01vZHVsZV9Jbml0KGN0eCwgIm15bW9kdWxlIiwgMSwgUkVESVNNT0RVTEVfQVBJVkVSXzEpID09IFJFRElTTU9EVUxFX0VSUikgewogICAgICAgIHJldHVybiBSRURJU01PRFVMRV9FUlI7CiAgICB9CiAgICBpZiAoUmVkaXNNb2R1bGVfQ3JlYXRlQ29tbWFuZChjdHgsICJteW1vZHVsZS5teWNvbW1hbmQiLCBNeUNvbW1hbmQsICJyZWFkb25seSIsIDAsIDAsIDApID09IFJFRElTTU9EVUxFX0VSUikgewogICAgICAgIHJldHVybiBSRURJU01PRFVMRV9FUlI7CiAgICB9CiAgICByZXR1cm4gUkVESVNNT0RVTEVfT0s7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>int MyCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    RedisModule_ReplyWithSimpleString(ctx, &quot;Hello, Redis!&quot;);
+    return REDISMODULE_OK;
+}
+
+int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (RedisModule_Init(ctx, &quot;mymodule&quot;, 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    if (RedisModule_CreateCommand(ctx, &quot;mymodule.mycommand&quot;, MyCommand, &quot;readonly&quot;, 0, 0, 0) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h1>4. Compilación y Carga del Módulo</h1>
+<div class='content'></div><h2>Compilación</h2>
+<div class='content'><p>Guarda el código del módulo en un archivo llamado <code>mymodule.c</code> y compílalo con el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2NjIC1vIG15bW9kdWxlLnNvIC1zaGFyZWQgLWZQSUMgLUkvcGF0aC90by9yZWRpcy9zcmMgbXltb2R1bGUuYw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcc -o mymodule.so -shared -fPIC -I/path/to/redis/src mymodule.c</pre></div><div class='content'></div><h2>Carga del Módulo en Redis</h2>
+<div class='content'><p>Para cargar el módulo en Redis, agrega la siguiente línea a tu archivo de configuración de Redis (<code>redis.conf</code>):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bG9hZG1vZHVsZSAvcGF0aC90by9teW1vZHVsZS5zbw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>loadmodule /path/to/mymodule.so</pre></div><div class='content'><p>O carga el módulo en tiempo de ejecución con el comando <code>MODULE LOAD</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtY2xpIE1PRFVMRSBMT0FEIC9wYXRoL3RvL215bW9kdWxlLnNv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-cli MODULE LOAD /path/to/mymodule.so</pre></div><div class='content'></div><h1>5. Ejemplo Completo</h1>
+<div class='content'></div><h2>Código del Módulo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgInJlZGlzbW9kdWxlLmgiCgppbnQgTXlDb21tYW5kKFJlZGlzTW9kdWxlQ3R4ICpjdHgsIFJlZGlzTW9kdWxlU3RyaW5nICoqYXJndiwgaW50IGFyZ2MpIHsKICAgIGlmIChhcmdjICE9IDIpIHsKICAgICAgICByZXR1cm4gUmVkaXNNb2R1bGVfV3JvbmdBcml0eShjdHgpOwogICAgfQogICAgY29uc3QgY2hhciAqbmFtZSA9IFJlZGlzTW9kdWxlX1N0cmluZ1B0ckxlbihhcmd2WzFdLCBOVUxMKTsKICAgIFJlZGlzTW9kdWxlX1JlcGx5V2l0aEZvcm1hdChjdHgsICJIZWxsbywgJXMhIiwgbmFtZSk7CiAgICByZXR1cm4gUkVESVNNT0RVTEVfT0s7Cn0KCmludCBSZWRpc01vZHVsZV9PbkxvYWQoUmVkaXNNb2R1bGVDdHggKmN0eCwgUmVkaXNNb2R1bGVTdHJpbmcgKiphcmd2LCBpbnQgYXJnYykgewogICAgaWYgKFJlZGlzTW9kdWxlX0luaXQoY3R4LCAibXltb2R1bGUiLCAxLCBSRURJU01PRFVMRV9BUElWRVJfMSkgPT0gUkVESVNNT0RVTEVfRVJSKSB7CiAgICAgICAgcmV0dXJuIFJFRElTTU9EVUxFX0VSUjsKICAgIH0KICAgIGlmIChSZWRpc01vZHVsZV9DcmVhdGVDb21tYW5kKGN0eCwgIm15bW9kdWxlLm15Y29tbWFuZCIsIE15Q29tbWFuZCwgInJlYWRvbmx5IiwgMCwgMCwgMCkgPT0gUkVESVNNT0RVTEVfRVJSKSB7CiAgICAgICAgcmV0dXJuIFJFRElTTU9EVUxFX0VSUjsKICAgIH0KICAgIHJldHVybiBSRURJU01PRFVMRV9PSzsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &quot;redismodule.h&quot;
+
+int MyCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (argc != 2) {
+        return RedisModule_WrongArity(ctx);
+    }
+    const char *name = RedisModule_StringPtrLen(argv[1], NULL);
+    RedisModule_ReplyWithFormat(ctx, &quot;Hello, %s!&quot;, name);
+    return REDISMODULE_OK;
+}
+
+int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (RedisModule_Init(ctx, &quot;mymodule&quot;, 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    if (RedisModule_CreateCommand(ctx, &quot;mymodule.mycommand&quot;, MyCommand, &quot;readonly&quot;, 0, 0, 0) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h2>Compilación y Carga</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Z2NjIC1vIG15bW9kdWxlLnNvIC1zaGFyZWQgLWZQSUMgLUkvcGF0aC90by9yZWRpcy9zcmMgbXltb2R1bGUuYwpyZWRpcy1jbGkgTU9EVUxFIExPQUQgL3BhdGgvdG8vbXltb2R1bGUuc28="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>gcc -o mymodule.so -shared -fPIC -I/path/to/redis/src mymodule.c
+redis-cli MODULE LOAD /path/to/mymodule.so</pre></div><div class='content'></div><h2>Prueba del Módulo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmVkaXMtY2xpIG15bW9kdWxlLm15Y29tbWFuZCAiV29ybGQiCiMgT3V0cHV0OiAiSGVsbG8sIFdvcmxkISI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>redis-cli mymodule.mycommand &quot;World&quot;
+# Output: &quot;Hello, World!&quot;</pre></div><div class='content'></div><h1>6. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Comando de Suma</h2>
+<div class='content'><p>Crea un módulo que implemente un comando <code>mymodule.sum</code> que tome dos números como argumentos y devuelva su suma.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgInJlZGlzbW9kdWxlLmgiCgppbnQgU3VtQ29tbWFuZChSZWRpc01vZHVsZUN0eCAqY3R4LCBSZWRpc01vZHVsZVN0cmluZyAqKmFyZ3YsIGludCBhcmdjKSB7CiAgICBpZiAoYXJnYyAhPSAzKSB7CiAgICAgICAgcmV0dXJuIFJlZGlzTW9kdWxlX1dyb25nQXJpdHkoY3R4KTsKICAgIH0KICAgIGxvbmcgbG9uZyBhLCBiOwogICAgaWYgKFJlZGlzTW9kdWxlX1N0cmluZ1RvTG9uZ0xvbmcoYXJndlsxXSwgJmEpICE9IFJFRElTTU9EVUxFX09LIHx8CiAgICAgICAgUmVkaXNNb2R1bGVfU3RyaW5nVG9Mb25nTG9uZyhhcmd2WzJdLCAmYikgIT0gUkVESVNNT0RVTEVfT0spIHsKICAgICAgICBSZWRpc01vZHVsZV9SZXBseVdpdGhFcnJvcihjdHgsICJFUlIgaW52YWxpZCBpbnRlZ2VyIik7CiAgICAgICAgcmV0dXJuIFJFRElTTU9EVUxFX09LOwogICAgfQogICAgUmVkaXNNb2R1bGVfUmVwbHlXaXRoTG9uZ0xvbmcoY3R4LCBhICsgYik7CiAgICByZXR1cm4gUkVESVNNT0RVTEVfT0s7Cn0KCmludCBSZWRpc01vZHVsZV9PbkxvYWQoUmVkaXNNb2R1bGVDdHggKmN0eCwgUmVkaXNNb2R1bGVTdHJpbmcgKiphcmd2LCBpbnQgYXJnYykgewogICAgaWYgKFJlZGlzTW9kdWxlX0luaXQoY3R4LCAibXltb2R1bGUiLCAxLCBSRURJU01PRFVMRV9BUElWRVJfMSkgPT0gUkVESVNNT0RVTEVfRVJSKSB7CiAgICAgICAgcmV0dXJuIFJFRElTTU9EVUxFX0VSUjsKICAgIH0KICAgIGlmIChSZWRpc01vZHVsZV9DcmVhdGVDb21tYW5kKGN0eCwgIm15bW9kdWxlLnN1bSIsIFN1bUNvbW1hbmQsICJyZWFkb25seSIsIDAsIDAsIDApID09IFJFRElTTU9EVUxFX0VSUikgewogICAgICAgIHJldHVybiBSRURJU01PRFVMRV9FUlI7CiAgICB9CiAgICByZXR1cm4gUkVESVNNT0RVTEVfT0s7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &quot;redismodule.h&quot;
+
+int SumCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (argc != 3) {
+        return RedisModule_WrongArity(ctx);
+    }
+    long long a, b;
+    if (RedisModule_StringToLongLong(argv[1], &amp;a) != REDISMODULE_OK ||
+        RedisModule_StringToLongLong(argv[2], &amp;b) != REDISMODULE_OK) {
+        RedisModule_ReplyWithError(ctx, &quot;ERR invalid integer&quot;);
+        return REDISMODULE_OK;
+    }
+    RedisModule_ReplyWithLongLong(ctx, a + b);
+    return REDISMODULE_OK;
+}
+
+int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (RedisModule_Init(ctx, &quot;mymodule&quot;, 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    if (RedisModule_CreateCommand(ctx, &quot;mymodule.sum&quot;, SumCommand, &quot;readonly&quot;, 0, 0, 0) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Crear un Comando de Concatenación</h2>
+<div class='content'><p>Crea un módulo que implemente un comando <code>mymodule.concat</code> que tome dos cadenas como argumentos y devuelva su concatenación.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgInJlZGlzbW9kdWxlLmgiCgppbnQgQ29uY2F0Q29tbWFuZChSZWRpc01vZHVsZUN0eCAqY3R4LCBSZWRpc01vZHVsZVN0cmluZyAqKmFyZ3YsIGludCBhcmdjKSB7CiAgICBpZiAoYXJnYyAhPSAzKSB7CiAgICAgICAgcmV0dXJuIFJlZGlzTW9kdWxlX1dyb25nQXJpdHkoY3R4KTsKICAgIH0KICAgIHNpemVfdCBsZW4xLCBsZW4yOwogICAgY29uc3QgY2hhciAqc3RyMSA9IFJlZGlzTW9kdWxlX1N0cmluZ1B0ckxlbihhcmd2WzFdLCAmbGVuMSk7CiAgICBjb25zdCBjaGFyICpzdHIyID0gUmVkaXNNb2R1bGVfU3RyaW5nUHRyTGVuKGFyZ3ZbMl0sICZsZW4yKTsKCiAgICBSZWRpc01vZHVsZVN0cmluZyAqcmVzdWx0ID0gUmVkaXNNb2R1bGVfQ3JlYXRlU3RyaW5nUHJpbnRmKGN0eCwgIiVzJXMiLCBzdHIxLCBzdHIyKTsKICAgIFJlZGlzTW9kdWxlX1JlcGx5V2l0aFN0cmluZyhjdHgsIHJlc3VsdCk7CiAgICBSZWRpc01vZHVsZV9GcmVlU3RyaW5nKGN0eCwgcmVzdWx0KTsKICAgIHJldHVybiBSRURJU01PRFVMRV9PSzsKfQoKaW50IFJlZGlzTW9kdWxlX09uTG9hZChSZWRpc01vZHVsZUN0eCAqY3R4LCBSZWRpc01vZHVsZVN0cmluZyAqKmFyZ3YsIGludCBhcmdjKSB7CiAgICBpZiAoUmVkaXNNb2R1bGVfSW5pdChjdHgsICJteW1vZHVsZSIsIDEsIFJFRElTTU9EVUxFX0FQSVZFUl8xKSA9PSBSRURJU01PRFVMRV9FUlIpIHsKICAgICAgICByZXR1cm4gUkVESVNNT0RVTEVfRVJSOwogICAgfQogICAgaWYgKFJlZGlzTW9kdWxlX0NyZWF0ZUNvbW1hbmQoY3R4LCAibXltb2R1bGUuY29uY2F0IiwgQ29uY2F0Q29tbWFuZCwgInJlYWRvbmx5IiwgMCwgMCwgMCkgPT0gUkVESVNNT0RVTEVfRVJSKSB7CiAgICAgICAgcmV0dXJuIFJFRElTTU9EVUxFX0VSUjsKICAgIH0KICAgIHJldHVybiBSRURJU01PRFVMRV9PSzsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &quot;redismodule.h&quot;
+
+int ConcatCommand(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (argc != 3) {
+        return RedisModule_WrongArity(ctx);
+    }
+    size_t len1, len2;
+    const char *str1 = RedisModule_StringPtrLen(argv[1], &amp;len1);
+    const char *str2 = RedisModule_StringPtrLen(argv[2], &amp;len2);
+
+    RedisModuleString *result = RedisModule_CreateStringPrintf(ctx, &quot;%s%s&quot;, str1, str2);
+    RedisModule_ReplyWithString(ctx, result);
+    RedisModule_FreeString(ctx, result);
+    return REDISMODULE_OK;
+}
+
+int RedisModule_OnLoad(RedisModuleCtx *ctx, RedisModuleString **argv, int argc) {
+    if (RedisModule_Init(ctx, &quot;mymodule&quot;, 1, REDISMODULE_APIVER_1) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    if (RedisModule_CreateCommand(ctx, &quot;mymodule.concat&quot;, ConcatCommand, &quot;readonly&quot;, 0, 0, 0) == REDISMODULE_ERR) {
+        return REDISMODULE_ERR;
+    }
+    return REDISMODULE_OK;
+}</pre></div><div class='content'></div><h1>7. Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo crear módulos personalizados en Redis. Hemos cubierto la estructura básica de un módulo, cómo compilarlo y cargarlo en Redis, y hemos visto ejemplos prácticos de comandos personalizados. Con esta base, puedes empezar a crear tus propios módulos para extender la funcionalidad de Redis según tus necesidades específicas.</p>
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li><strong>Módulos de Redis</strong>: Extienden la funcionalidad de Redis con comandos y tipos de datos personalizados.</li>
+<li><strong>Configuración del Entorno</strong>: Necesitas Redis 4.0+, conocimientos de C y un compilador de C.</li>
+<li><strong>Estructura Básica</strong>: Incluye el archivo de cabecera <code>redismodule.h</code>, define una función de inicialización y registra comandos.</li>
+<li><strong>Compilación y Carga</strong>: Compila el módulo con GCC y cárgalo en Redis con <code>MODULE LOAD</code>.</li>
+<li><strong>Ejercicios Prácticos</strong>: Implementa comandos personalizados como <code>mymodule.sum</code> y <code>mymodule.concat</code>.</li>
+</ul>
+<p>Con estos conocimientos, estás listo para explorar más a fondo las capacidades de los módulos de Redis y crear soluciones personalizadas para tus aplicaciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='08-02-popular-redis-modules' title="Módulos Populares de Redis">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='08-04-using-redis-with-other-technologies' title="Usando Redis con Otras Tecnologías">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

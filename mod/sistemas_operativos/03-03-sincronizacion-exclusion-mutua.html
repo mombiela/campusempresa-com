@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sincronización y Exclusión Mutua</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/sistemas_operativos/03-03-sincronizacion-exclusion-mutua" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sistemas_operativos/03-03-sincronitzacio-exclusio-mutua" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sistemas_operativos/03-03-synchronization-mutual-exclusion" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/sistemas_operativos/03-03-sincronizacion-exclusion-mutua" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/sistemas_operativos/03-03-sincronizacion-exclusion-mutua" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-hilos-procesos' title="Hilos y Procesos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Sincronización y Exclusión Mutua</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-problemas-clasicos' title="Problemas Clásicos de Concurrencia">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, exploraremos los conceptos de sincronización y exclusión mutua en sistemas operativos. Estos conceptos son fundamentales para la gestión de la concurrencia y la coordinación de múltiples procesos o hilos que acceden a recursos compartidos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Sincronización</h2>
+<div class='content'><p>La sincronización se refiere a la coordinación de la ejecución de procesos o hilos para asegurar que accedan a los recursos compartidos de manera ordenada y sin conflictos. Es crucial para evitar condiciones de carrera, donde el resultado de la ejecución depende del orden en que se ejecutan los procesos.</p>
+</div><h2>Exclusión Mutua</h2>
+<div class='content'><p>La exclusión mutua es una propiedad que asegura que solo un proceso o hilo puede acceder a un recurso crítico (como una sección de código o un dato compartido) en un momento dado. Esto previene la interferencia entre procesos y garantiza la integridad de los datos.</p>
+</div><h1>Mecanismos de Sincronización y Exclusión Mutua</h1>
+<div class='content'></div><h2>1. Bloqueos (Locks)</h2>
+<div class='content'><p>Los bloqueos son mecanismos que permiten a los procesos o hilos adquirir y liberar acceso a recursos compartidos. Existen varios tipos de bloqueos:</p>
+<ul>
+<li><strong>Mutex (Mutual Exclusion Lock)</strong>: Un mutex es un tipo de bloqueo que asegura que solo un hilo puede poseer el bloqueo a la vez.</li>
+<li><strong>Spinlock</strong>: Un spinlock es un tipo de mutex que hace que el hilo espere activamente (gire) hasta que el bloqueo esté disponible.</li>
+</ul>
+<h4>Ejemplo de Mutex en C</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHB0aHJlYWQuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CgpwdGhyZWFkX211dGV4X3QgbG9jazsKCnZvaWQqIHRocmVhZF9mdW5jdGlvbih2b2lkKiBhcmcpIHsKICAgIHB0aHJlYWRfbXV0ZXhfbG9jaygmbG9jayk7CiAgICAvLyBTZWNjacOzbiBjcsOtdGljYQogICAgcHJpbnRmKCJUaHJlYWQgJWQgZXN0w6EgZW4gbGEgc2VjY2nDs24gY3LDrXRpY2FcbiIsICooaW50KilhcmcpOwogICAgcHRocmVhZF9tdXRleF91bmxvY2soJmxvY2spOwogICAgcmV0dXJuIE5VTEw7Cn0KCmludCBtYWluKCkgewogICAgcHRocmVhZF90IHRocmVhZHNbMl07CiAgICBpbnQgdGhyZWFkX2lkc1syXSA9IHsxLCAyfTsKCiAgICBwdGhyZWFkX211dGV4X2luaXQoJmxvY2ssIE5VTEwpOwoKICAgIGZvciAoaW50IGkgPSAwOyBpIDwgMjsgaSsrKSB7CiAgICAgICAgcHRocmVhZF9jcmVhdGUoJnRocmVhZHNbaV0sIE5VTEwsIHRocmVhZF9mdW5jdGlvbiwgJnRocmVhZF9pZHNbaV0pOwogICAgfQoKICAgIGZvciAoaW50IGkgPSAwOyBpIDwgMjsgaSsrKSB7CiAgICAgICAgcHRocmVhZF9qb2luKHRocmVhZHNbaV0sIE5VTEwpOwogICAgfQoKICAgIHB0aHJlYWRfbXV0ZXhfZGVzdHJveSgmbG9jayk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+
+pthread_mutex_t lock;
+
+void* thread_function(void* arg) {
+    pthread_mutex_lock(&amp;lock);
+    // Secci&oacute;n cr&iacute;tica
+    printf(&quot;Thread %d est&aacute; en la secci&oacute;n cr&iacute;tica\n&quot;, *(int*)arg);
+    pthread_mutex_unlock(&amp;lock);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[2];
+    int thread_ids[2] = {1, 2};
+
+    pthread_mutex_init(&amp;lock, NULL);
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_create(&amp;threads[i], NULL, thread_function, &amp;thread_ids[i]);
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    pthread_mutex_destroy(&amp;lock);
+    return 0;
+}</pre></div><div class='content'><p><strong>Explicación:</strong></p>
+<ul>
+<li><code>pthread_mutex_init(&amp;lock, NULL);</code>: Inicializa el mutex.</li>
+<li><code>pthread_mutex_lock(&amp;lock);</code>: Adquiere el mutex antes de entrar en la sección crítica.</li>
+<li><code>pthread_mutex_unlock(&amp;lock);</code>: Libera el mutex después de salir de la sección crítica.</li>
+<li><code>pthread_mutex_destroy(&amp;lock);</code>: Destruye el mutex al final.</li>
+</ul>
+</div><h2>2. Semáforos</h2>
+<div class='content'><p>Los semáforos son variables que se utilizan para controlar el acceso a recursos compartidos. Pueden ser contadores (semáforos contadores) o binarios (semáforos binarios).</p>
+<h4>Ejemplo de Semáforo en C</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHB0aHJlYWQuaD4KI2luY2x1ZGUgPHNlbWFwaG9yZS5oPgojaW5jbHVkZSA8c3RkaW8uaD4KCnNlbV90IHNlbWFwaG9yZTsKCnZvaWQqIHRocmVhZF9mdW5jdGlvbih2b2lkKiBhcmcpIHsKICAgIHNlbV93YWl0KCZzZW1hcGhvcmUpOwogICAgLy8gU2VjY2nDs24gY3LDrXRpY2EKICAgIHByaW50ZigiVGhyZWFkICVkIGVzdMOhIGVuIGxhIHNlY2Npw7NuIGNyw610aWNhXG4iLCAqKGludCopYXJnKTsKICAgIHNlbV9wb3N0KCZzZW1hcGhvcmUpOwogICAgcmV0dXJuIE5VTEw7Cn0KCmludCBtYWluKCkgewogICAgcHRocmVhZF90IHRocmVhZHNbMl07CiAgICBpbnQgdGhyZWFkX2lkc1syXSA9IHsxLCAyfTsKCiAgICBzZW1faW5pdCgmc2VtYXBob3JlLCAwLCAxKTsKCiAgICBmb3IgKGludCBpID0gMDsgaSA8IDI7IGkrKykgewogICAgICAgIHB0aHJlYWRfY3JlYXRlKCZ0aHJlYWRzW2ldLCBOVUxMLCB0aHJlYWRfZnVuY3Rpb24sICZ0aHJlYWRfaWRzW2ldKTsKICAgIH0KCiAgICBmb3IgKGludCBpID0gMDsgaSA8IDI7IGkrKykgewogICAgICAgIHB0aHJlYWRfam9pbih0aHJlYWRzW2ldLCBOVUxMKTsKICAgIH0KCiAgICBzZW1fZGVzdHJveSgmc2VtYXBob3JlKTsKICAgIHJldHVybiAwOwp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;stdio.h&gt;
+
+sem_t semaphore;
+
+void* thread_function(void* arg) {
+    sem_wait(&amp;semaphore);
+    // Secci&oacute;n cr&iacute;tica
+    printf(&quot;Thread %d est&aacute; en la secci&oacute;n cr&iacute;tica\n&quot;, *(int*)arg);
+    sem_post(&amp;semaphore);
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[2];
+    int thread_ids[2] = {1, 2};
+
+    sem_init(&amp;semaphore, 0, 1);
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_create(&amp;threads[i], NULL, thread_function, &amp;thread_ids[i]);
+    }
+
+    for (int i = 0; i &lt; 2; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    sem_destroy(&amp;semaphore);
+    return 0;
+}</pre></div><div class='content'><p><strong>Explicación:</strong></p>
+<ul>
+<li><code>sem_init(&amp;semaphore, 0, 1);</code>: Inicializa el semáforo con un valor de 1.</li>
+<li><code>sem_wait(&amp;semaphore);</code>: Decrementa el semáforo y espera si su valor es 0.</li>
+<li><code>sem_post(&amp;semaphore);</code>: Incrementa el semáforo.</li>
+<li><code>sem_destroy(&amp;semaphore);</code>: Destruye el semáforo al final.</li>
+</ul>
+</div><h2>3. Monitores</h2>
+<div class='content'><p>Los monitores son estructuras de alto nivel que combinan datos y procedimientos para garantizar la exclusión mutua. Los procedimientos dentro de un monitor se ejecutan de manera que solo un proceso puede estar activo en un momento dado.</p>
+</div><h2>4. Variables de Condición</h2>
+<div class='content'><p>Las variables de condición se utilizan junto con los monitores para permitir que los hilos esperen hasta que una condición específica sea verdadera.</p>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar un Mutex</h2>
+<div class='content'><p>Implementa un programa en C que utilice un mutex para proteger una sección crítica donde se incrementa un contador compartido por múltiples hilos.</p>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHB0aHJlYWQuaD4KI2luY2x1ZGUgPHN0ZGlvLmg+CgojZGVmaW5lIE5VTV9USFJFQURTIDUKI2RlZmluZSBOVU1fSU5DUkVNRU5UUyAxMDAwCgpwdGhyZWFkX211dGV4X3QgbG9jazsKaW50IGNvdW50ZXIgPSAwOwoKdm9pZCogaW5jcmVtZW50X2NvdW50ZXIodm9pZCogYXJnKSB7CiAgICBmb3IgKGludCBpID0gMDsgaSA8IE5VTV9JTkNSRU1FTlRTOyBpKyspIHsKICAgICAgICBwdGhyZWFkX211dGV4X2xvY2soJmxvY2spOwogICAgICAgIGNvdW50ZXIrKzsKICAgICAgICBwdGhyZWFkX211dGV4X3VubG9jaygmbG9jayk7CiAgICB9CiAgICByZXR1cm4gTlVMTDsKfQoKaW50IG1haW4oKSB7CiAgICBwdGhyZWFkX3QgdGhyZWFkc1tOVU1fVEhSRUFEU107CgogICAgcHRocmVhZF9tdXRleF9pbml0KCZsb2NrLCBOVUxMKTsKCiAgICBmb3IgKGludCBpID0gMDsgaSA8IE5VTV9USFJFQURTOyBpKyspIHsKICAgICAgICBwdGhyZWFkX2NyZWF0ZSgmdGhyZWFkc1tpXSwgTlVMTCwgaW5jcmVtZW50X2NvdW50ZXIsIE5VTEwpOwogICAgfQoKICAgIGZvciAoaW50IGkgPSAwOyBpIDwgTlVNX1RIUkVBRFM7IGkrKykgewogICAgICAgIHB0aHJlYWRfam9pbih0aHJlYWRzW2ldLCBOVUxMKTsKICAgIH0KCiAgICBwcmludGYoIkNvdW50ZXIgZmluYWw6ICVkXG4iLCBjb3VudGVyKTsKCiAgICBwdGhyZWFkX211dGV4X2Rlc3Ryb3koJmxvY2spOwogICAgcmV0dXJuIDA7Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+
+#define NUM_THREADS 5
+#define NUM_INCREMENTS 1000
+
+pthread_mutex_t lock;
+int counter = 0;
+
+void* increment_counter(void* arg) {
+    for (int i = 0; i &lt; NUM_INCREMENTS; i++) {
+        pthread_mutex_lock(&amp;lock);
+        counter++;
+        pthread_mutex_unlock(&amp;lock);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[NUM_THREADS];
+
+    pthread_mutex_init(&amp;lock, NULL);
+
+    for (int i = 0; i &lt; NUM_THREADS; i++) {
+        pthread_create(&amp;threads[i], NULL, increment_counter, NULL);
+    }
+
+    for (int i = 0; i &lt; NUM_THREADS; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    printf(&quot;Counter final: %d\n&quot;, counter);
+
+    pthread_mutex_destroy(&amp;lock);
+    return 0;
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Implementar un Semáforo</h2>
+<div class='content'><p>Implementa un programa en C que utilice un semáforo para controlar el acceso a una sección crítica donde se decrementa un contador compartido por múltiples hilos.</p>
+<p><strong>Solución:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("I2luY2x1ZGUgPHB0aHJlYWQuaD4KI2luY2x1ZGUgPHNlbWFwaG9yZS5oPgojaW5jbHVkZSA8c3RkaW8uaD4KCiNkZWZpbmUgTlVNX1RIUkVBRFMgNQojZGVmaW5lIE5VTV9ERUNSRU1FTlRTIDEwMDAKCnNlbV90IHNlbWFwaG9yZTsKaW50IGNvdW50ZXIgPSA1MDAwOwoKdm9pZCogZGVjcmVtZW50X2NvdW50ZXIodm9pZCogYXJnKSB7CiAgICBmb3IgKGludCBpID0gMDsgaSA8IE5VTV9ERUNSRU1FTlRTOyBpKyspIHsKICAgICAgICBzZW1fd2FpdCgmc2VtYXBob3JlKTsKICAgICAgICBjb3VudGVyLS07CiAgICAgICAgc2VtX3Bvc3QoJnNlbWFwaG9yZSk7CiAgICB9CiAgICByZXR1cm4gTlVMTDsKfQoKaW50IG1haW4oKSB7CiAgICBwdGhyZWFkX3QgdGhyZWFkc1tOVU1fVEhSRUFEU107CgogICAgc2VtX2luaXQoJnNlbWFwaG9yZSwgMCwgMSk7CgogICAgZm9yIChpbnQgaSA9IDA7IGkgPCBOVU1fVEhSRUFEUzsgaSsrKSB7CiAgICAgICAgcHRocmVhZF9jcmVhdGUoJnRocmVhZHNbaV0sIE5VTEwsIGRlY3JlbWVudF9jb3VudGVyLCBOVUxMKTsKICAgIH0KCiAgICBmb3IgKGludCBpID0gMDsgaSA8IE5VTV9USFJFQURTOyBpKyspIHsKICAgICAgICBwdGhyZWFkX2pvaW4odGhyZWFkc1tpXSwgTlVMTCk7CiAgICB9CgogICAgcHJpbnRmKCJDb3VudGVyIGZpbmFsOiAlZFxuIiwgY291bnRlcik7CgogICAgc2VtX2Rlc3Ryb3koJnNlbWFwaG9yZSk7CiAgICByZXR1cm4gMDsKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;stdio.h&gt;
+
+#define NUM_THREADS 5
+#define NUM_DECREMENTS 1000
+
+sem_t semaphore;
+int counter = 5000;
+
+void* decrement_counter(void* arg) {
+    for (int i = 0; i &lt; NUM_DECREMENTS; i++) {
+        sem_wait(&amp;semaphore);
+        counter--;
+        sem_post(&amp;semaphore);
+    }
+    return NULL;
+}
+
+int main() {
+    pthread_t threads[NUM_THREADS];
+
+    sem_init(&amp;semaphore, 0, 1);
+
+    for (int i = 0; i &lt; NUM_THREADS; i++) {
+        pthread_create(&amp;threads[i], NULL, decrement_counter, NULL);
+    }
+
+    for (int i = 0; i &lt; NUM_THREADS; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    printf(&quot;Counter final: %d\n&quot;, counter);
+
+    sem_destroy(&amp;semaphore);
+    return 0;
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos de sincronización y exclusión mutua, y hemos explorado varios mecanismos para implementarlos, como mutexes, semáforos, monitores y variables de condición. Estos mecanismos son esenciales para gestionar la concurrencia y asegurar la integridad de los datos en sistemas operativos.</p>
+<p><strong>Próximo Tema: Problemas Clásicos de Concurrencia</strong></p>
+<p>En el siguiente tema, discutiremos algunos problemas clásicos de concurrencia, como el problema del productor-consumidor y el problema de los filósofos comensales, y cómo se pueden resolver utilizando los mecanismos de sincronización y exclusión mutua que hemos aprendido.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-02-hilos-procesos' title="Hilos y Procesos">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-04-problemas-clasicos' title="Problemas Clásicos de Concurrencia">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Texto Completo</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/elasticsearch/03-01-full-text-search" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/elasticsearch/03-01-full-text-search" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/elasticsearch/03-01-full-text-search" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/elasticsearch/03-01-full-text-search" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/elasticsearch/03-01-full-text-search" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-elasticsearch-query-dsl' title="Elasticsearch Query DSL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Búsqueda de Texto Completo</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-filtering-sorting' title="Filtrado y Ordenación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>La búsqueda de texto completo es una de las características más poderosas de Elasticsearch. Permite realizar búsquedas avanzadas en grandes volúmenes de texto, proporcionando resultados relevantes y rápidos. En este tema, aprenderemos cómo funciona la búsqueda de texto completo en Elasticsearch, cómo configurarla y cómo utilizarla de manera efectiva.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><p>Antes de profundizar en la búsqueda de texto completo, es importante entender algunos conceptos clave:</p>
+<ul>
+<li><strong>Análisis de Texto</strong>: Proceso de convertir texto en una forma que pueda ser indexada y buscada. Incluye tokenización, normalización y eliminación de palabras vacías.</li>
+<li><strong>Tokenización</strong>: Dividir el texto en unidades más pequeñas llamadas tokens (por ejemplo, palabras).</li>
+<li><strong>Normalización</strong>: Convertir tokens a una forma estándar (por ejemplo, convertir a minúsculas).</li>
+<li><strong>Índice Invertido</strong>: Estructura de datos que permite búsquedas rápidas. Mapea términos a los documentos que los contienen.</li>
+</ul>
+</div><h1>Configuración de la Búsqueda de Texto Completo</h1>
+<div class='content'></div><h2>1. Creación de un Índice con Análisis de Texto</h2>
+<div class='content'><p>Para realizar una búsqueda de texto completo, primero necesitamos crear un índice con un mapeo adecuado y analizadores de texto. Aquí hay un ejemplo de cómo hacerlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9taV9pbmRpY2UKewogICJzZXR0aW5ncyI6IHsKICAgICJhbmFseXNpcyI6IHsKICAgICAgImFuYWx5emVyIjogewogICAgICAgICJtaV9hbmFsaXphZG9yIjogewogICAgICAgICAgInR5cGUiOiAic3RhbmRhcmQiLAogICAgICAgICAgInN0b3B3b3JkcyI6ICJfZW5nbGlzaF8iCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgfSwKICAibWFwcGluZ3MiOiB7CiAgICAicHJvcGVydGllcyI6IHsKICAgICAgImNvbnRlbmlkbyI6IHsKICAgICAgICAidHlwZSI6ICJ0ZXh0IiwKICAgICAgICAiYW5hbHl6ZXIiOiAibWlfYW5hbGl6YWRvciIKICAgICAgfQogICAgfQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /mi_indice
+{
+  &quot;settings&quot;: {
+    &quot;analysis&quot;: {
+      &quot;analyzer&quot;: {
+        &quot;mi_analizador&quot;: {
+          &quot;type&quot;: &quot;standard&quot;,
+          &quot;stopwords&quot;: &quot;_english_&quot;
+        }
+      }
+    }
+  },
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;contenido&quot;: {
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;analyzer&quot;: &quot;mi_analizador&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo:</p>
+<ul>
+<li>Creamos un índice llamado <code>mi_indice</code>.</li>
+<li>Definimos un analizador llamado <code>mi_analizador</code> que utiliza el analizador estándar y elimina las palabras vacías en inglés.</li>
+<li>Mapeamos el campo <code>contenido</code> como tipo <code>text</code> y especificamos que debe ser analizado con <code>mi_analizador</code>.</li>
+</ul>
+</div><h2>2. Indexación de Documentos</h2>
+<div class='content'><p>Una vez que el índice está configurado, podemos indexar documentos. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvbWlfaW5kaWNlL19kb2MvMQp7CiAgInRpdHVsbyI6ICJJbnRyb2R1Y2Npw7NuIGEgRWxhc3RpY3NlYXJjaCIsCiAgImNvbnRlbmlkbyI6ICJFbGFzdGljc2VhcmNoIGVzIHVuIG1vdG9yIGRlIGLDunNxdWVkYSB5IGFuw6FsaXNpcyBkaXN0cmlidWlkby4iCn0KClBPU1QgL21pX2luZGljZS9fZG9jLzIKewogICJ0aXR1bG8iOiAiQsO6c3F1ZWRhIGRlIFRleHRvIENvbXBsZXRvIiwKICAiY29udGVuaWRvIjogIkxhIGLDunNxdWVkYSBkZSB0ZXh0byBjb21wbGV0byBwZXJtaXRlIGVuY29udHJhciBkb2N1bWVudG9zIHJlbGV2YW50ZXMuIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /mi_indice/_doc/1
+{
+  &quot;titulo&quot;: &quot;Introducci&oacute;n a Elasticsearch&quot;,
+  &quot;contenido&quot;: &quot;Elasticsearch es un motor de b&uacute;squeda y an&aacute;lisis distribuido.&quot;
+}
+
+POST /mi_indice/_doc/2
+{
+  &quot;titulo&quot;: &quot;B&uacute;squeda de Texto Completo&quot;,
+  &quot;contenido&quot;: &quot;La b&uacute;squeda de texto completo permite encontrar documentos relevantes.&quot;
+}</pre></div><div class='content'></div><h2>3. Realización de Búsquedas de Texto Completo</h2>
+<div class='content'><p>Para realizar una búsqueda de texto completo, utilizamos la consulta <code>match</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9taV9pbmRpY2UvX3NlYXJjaAp7CiAgInF1ZXJ5IjogewogICAgIm1hdGNoIjogewogICAgICAiY29udGVuaWRvIjogIm1vdG9yIGRlIGLDunNxdWVkYSIKICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /mi_indice/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;contenido&quot;: &quot;motor de b&uacute;squeda&quot;
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo, buscamos documentos en el índice <code>mi_indice</code> donde el campo <code>contenido</code> contenga los términos &quot;motor de búsqueda&quot;.</p>
+</div><h1>Ejemplos Prácticos</h1>
+<div class='content'></div><h2>Ejemplo 1: Búsqueda Básica</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9taV9pbmRpY2UvX3NlYXJjaAp7CiAgInF1ZXJ5IjogewogICAgIm1hdGNoIjogewogICAgICAiY29udGVuaWRvIjogIkVsYXN0aWNzZWFyY2giCiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /mi_indice/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;contenido&quot;: &quot;Elasticsearch&quot;
+    }
+  }
+}</pre></div><div class='content'></div><h2>Ejemplo 2: Búsqueda con Relevancia</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9taV9pbmRpY2UvX3NlYXJjaAp7CiAgInF1ZXJ5IjogewogICAgIm1hdGNoIjogewogICAgICAiY29udGVuaWRvIjogewogICAgICAgICJxdWVyeSI6ICJiw7pzcXVlZGEgdGV4dG8gY29tcGxldG8iLAogICAgICAgICJvcGVyYXRvciI6ICJhbmQiCiAgICAgIH0KICAgIH0KICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /mi_indice/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;contenido&quot;: {
+        &quot;query&quot;: &quot;b&uacute;squeda texto completo&quot;,
+        &quot;operator&quot;: &quot;and&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo, utilizamos el operador <code>and</code> para asegurar que ambos términos (&quot;búsqueda&quot; y &quot;texto completo&quot;) deben estar presentes en los documentos coincidentes.</p>
+</div><h2>Ejemplo 3: Búsqueda con Realce (Highlighting)</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9taV9pbmRpY2UvX3NlYXJjaAp7CiAgInF1ZXJ5IjogewogICAgIm1hdGNoIjogewogICAgICAiY29udGVuaWRvIjogIkVsYXN0aWNzZWFyY2giCiAgICB9CiAgfSwKICAiaGlnaGxpZ2h0IjogewogICAgImZpZWxkcyI6IHsKICAgICAgImNvbnRlbmlkbyI6IHt9CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /mi_indice/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;contenido&quot;: &quot;Elasticsearch&quot;
+    }
+  },
+  &quot;highlight&quot;: {
+    &quot;fields&quot;: {
+      &quot;contenido&quot;: {}
+    }
+  }
+}</pre></div><div class='content'><p>En este ejemplo, utilizamos la funcionalidad de realce para resaltar los términos coincidentes en los resultados de búsqueda.</p>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear un Índice y Indexar Documentos</h2>
+<div class='content'><ol>
+<li>Crea un índice llamado <code>libros</code> con un analizador personalizado que elimine las palabras vacías en español.</li>
+<li>Indexa los siguientes documentos en el índice <code>libros</code>:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UE9TVCAvbGlicm9zL19kb2MvMQp7CiAgInRpdHVsbyI6ICJFbCBRdWlqb3RlIiwKICAiY29udGVuaWRvIjogIkVuIHVuIGx1Z2FyIGRlIGxhIE1hbmNoYSwgZGUgY3V5byBub21icmUgbm8gcXVpZXJvIGFjb3JkYXJtZS4uLiIKfQoKUE9TVCAvbGlicm9zL19kb2MvMgp7CiAgInRpdHVsbyI6ICJDaWVuIEHDsW9zIGRlIFNvbGVkYWQiLAogICJjb250ZW5pZG8iOiAiTXVjaG9zIGHDsW9zIGRlc3B1w6lzLCBmcmVudGUgYWwgcGVsb3TDs24gZGUgZnVzaWxhbWllbnRvLi4uIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>POST /libros/_doc/1
+{
+  &quot;titulo&quot;: &quot;El Quijote&quot;,
+  &quot;contenido&quot;: &quot;En un lugar de la Mancha, de cuyo nombre no quiero acordarme...&quot;
+}
+
+POST /libros/_doc/2
+{
+  &quot;titulo&quot;: &quot;Cien A&ntilde;os de Soledad&quot;,
+  &quot;contenido&quot;: &quot;Muchos a&ntilde;os despu&eacute;s, frente al pelot&oacute;n de fusilamiento...&quot;
+}</pre></div><div class='content'></div><h2>Ejercicio 2: Realizar Búsquedas de Texto Completo</h2>
+<div class='content'><ol>
+<li>Realiza una búsqueda en el índice <code>libros</code> para encontrar documentos que contengan el término &quot;Mancha&quot;.</li>
+<li>Realiza una búsqueda en el índice <code>libros</code> para encontrar documentos que contengan ambos términos &quot;años&quot; y &quot;fusilamiento&quot;.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución al Ejercicio 1</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("UFVUIC9saWJyb3MKewogICJzZXR0aW5ncyI6IHsKICAgICJhbmFseXNpcyI6IHsKICAgICAgImFuYWx5emVyIjogewogICAgICAgICJtaV9hbmFsaXphZG9yX2VzIjogewogICAgICAgICAgInR5cGUiOiAic3RhbmRhcmQiLAogICAgICAgICAgInN0b3B3b3JkcyI6ICJfc3BhbmlzaF8iCiAgICAgICAgfQogICAgICB9CiAgICB9CiAgfSwKICAibWFwcGluZ3MiOiB7CiAgICAicHJvcGVydGllcyI6IHsKICAgICAgImNvbnRlbmlkbyI6IHsKICAgICAgICAidHlwZSI6ICJ0ZXh0IiwKICAgICAgICAiYW5hbHl6ZXIiOiAibWlfYW5hbGl6YWRvcl9lcyIKICAgICAgfQogICAgfQogIH0KfQoKUE9TVCAvbGlicm9zL19kb2MvMQp7CiAgInRpdHVsbyI6ICJFbCBRdWlqb3RlIiwKICAiY29udGVuaWRvIjogIkVuIHVuIGx1Z2FyIGRlIGxhIE1hbmNoYSwgZGUgY3V5byBub21icmUgbm8gcXVpZXJvIGFjb3JkYXJtZS4uLiIKfQoKUE9TVCAvbGlicm9zL19kb2MvMgp7CiAgInRpdHVsbyI6ICJDaWVuIEHDsW9zIGRlIFNvbGVkYWQiLAogICJjb250ZW5pZG8iOiAiTXVjaG9zIGHDsW9zIGRlc3B1w6lzLCBmcmVudGUgYWwgcGVsb3TDs24gZGUgZnVzaWxhbWllbnRvLi4uIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>PUT /libros
+{
+  &quot;settings&quot;: {
+    &quot;analysis&quot;: {
+      &quot;analyzer&quot;: {
+        &quot;mi_analizador_es&quot;: {
+          &quot;type&quot;: &quot;standard&quot;,
+          &quot;stopwords&quot;: &quot;_spanish_&quot;
+        }
+      }
+    }
+  },
+  &quot;mappings&quot;: {
+    &quot;properties&quot;: {
+      &quot;contenido&quot;: {
+        &quot;type&quot;: &quot;text&quot;,
+        &quot;analyzer&quot;: &quot;mi_analizador_es&quot;
+      }
+    }
+  }
+}
+
+POST /libros/_doc/1
+{
+  &quot;titulo&quot;: &quot;El Quijote&quot;,
+  &quot;contenido&quot;: &quot;En un lugar de la Mancha, de cuyo nombre no quiero acordarme...&quot;
+}
+
+POST /libros/_doc/2
+{
+  &quot;titulo&quot;: &quot;Cien A&ntilde;os de Soledad&quot;,
+  &quot;contenido&quot;: &quot;Muchos a&ntilde;os despu&eacute;s, frente al pelot&oacute;n de fusilamiento...&quot;
+}</pre></div><div class='content'><h4>Solución al Ejercicio 2</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("R0VUIC9saWJyb3MvX3NlYXJjaAp7CiAgInF1ZXJ5IjogewogICAgIm1hdGNoIjogewogICAgICAiY29udGVuaWRvIjogIk1hbmNoYSIKICAgIH0KICB9Cn0KCkdFVCAvbGlicm9zL19zZWFyY2gKewogICJxdWVyeSI6IHsKICAgICJtYXRjaCI6IHsKICAgICAgImNvbnRlbmlkbyI6IHsKICAgICAgICAicXVlcnkiOiAiYcOxb3MgZnVzaWxhbWllbnRvIiwKICAgICAgICAib3BlcmF0b3IiOiAiYW5kIgogICAgICB9CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>GET /libros/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;contenido&quot;: &quot;Mancha&quot;
+    }
+  }
+}
+
+GET /libros/_search
+{
+  &quot;query&quot;: {
+    &quot;match&quot;: {
+      &quot;contenido&quot;: {
+        &quot;query&quot;: &quot;a&ntilde;os fusilamiento&quot;,
+        &quot;operator&quot;: &quot;and&quot;
+      }
+    }
+  }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido los conceptos básicos de la búsqueda de texto completo en Elasticsearch, cómo configurar un índice con analizadores de texto, cómo indexar documentos y cómo realizar búsquedas de texto completo. Estos conocimientos son fundamentales para aprovechar al máximo las capacidades de búsqueda de Elasticsearch. En el próximo tema, exploraremos técnicas avanzadas de filtrado y ordenación para refinar aún más nuestras búsquedas.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='02-04-elasticsearch-query-dsl' title="Elasticsearch Query DSL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='03-02-filtering-sorting' title="Filtrado y Ordenación">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

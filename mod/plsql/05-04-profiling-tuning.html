@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfilado y Ajuste</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/05-04-profiling-tuning" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/05-04-profiling-tuning" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/05-04-profiling-tuning" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/plsql/05-04-profiling-tuning" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/plsql/05-04-profiling-tuning" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-debugging' title="Depuración de Código PL/SQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Perfilado y Ajuste</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-simple-application' title="Construyendo una Aplicación Simple">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este módulo, aprenderemos sobre las técnicas de perfilado y ajuste en PL/SQL. Estas técnicas son esenciales para identificar y resolver problemas de rendimiento en tus aplicaciones PL/SQL. El perfilado te permite analizar el comportamiento de tu código, mientras que el ajuste se enfoca en optimizar el rendimiento.</p>
+</div><h1>Objetivos del Módulo</h1>
+<div class='content'><ul>
+<li>Comprender qué es el perfilado y por qué es importante.</li>
+<li>Aprender a utilizar herramientas de perfilado en PL/SQL.</li>
+<li>Conocer técnicas de ajuste para mejorar el rendimiento de tus aplicaciones PL/SQL.</li>
+</ul>
+</div><h1>1. ¿Qué es el Perfilado?</h1>
+<div class='content'><p>El perfilado es el proceso de medir el rendimiento de tu código PL/SQL para identificar cuellos de botella y áreas que necesitan optimización. Esto incluye el análisis de tiempo de ejecución, uso de CPU, y otras métricas de rendimiento.</p>
+</div><h2>Herramientas de Perfilado</h2>
+<div class='content'><ul>
+<li><strong>DBMS_PROFILER</strong>: Un paquete PL/SQL que permite recopilar datos de perfilado.</li>
+<li><strong>DBMS_HPROF</strong>: Herramienta para el perfilado jerárquico de PL/SQL.</li>
+<li><strong>Oracle SQL Developer</strong>: Incluye herramientas de perfilado y ajuste.</li>
+</ul>
+</div><h1>2. Uso de DBMS_PROFILER</h1>
+<div class='content'></div><h2>Configuración Inicial</h2>
+<div class='content'><p>Para usar <code>DBMS_PROFILER</code>, primero necesitas instalar y configurar el paquete. Aquí hay un ejemplo de cómo hacerlo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ3JlYXIgbGFzIHRhYmxhcyBuZWNlc2FyaWFzIHBhcmEgREJNU19QUk9GSUxFUgpCRUdJTgogIERCTVNfUFJPRklMRVIuQ1JFQVRFX1BST0ZJTEVSX1RBQkxFUygnUFJPRklMRVJfVVNFUicpOwpFTkQ7Ci8KCi0tIE90b3JnYXIgcGVybWlzb3MgbmVjZXNhcmlvcwpHUkFOVCBFWEVDVVRFIE9OIERCTVNfUFJPRklMRVIgVE8gUFJPRklMRVJfVVNFUjs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Crear las tablas necesarias para DBMS_PROFILER
+BEGIN
+  DBMS_PROFILER.CREATE_PROFILER_TABLES('PROFILER_USER');
+END;
+/
+
+-- Otorgar permisos necesarios
+GRANT EXECUTE ON DBMS_PROFILER TO PROFILER_USER;</pre></div><div class='content'></div><h2>Iniciando el Perfilado</h2>
+<div class='content'><p>Para iniciar el perfilado, usa los siguientes comandos:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gSW5pY2lhciBlbCBwZXJmaWxhZG8KQkVHSU4KICBEQk1TX1BST0ZJTEVSLlNUQVJUX1BST0ZJTEVSKCdNaV9QZXJmaWxhZG8nKTsKRU5EOwovCgotLSBFamVjdXRhciBlbCBjw7NkaWdvIHF1ZSBkZXNlYXMgcGVyZmlsYXIKQkVHSU4KICAtLSBUdSBjw7NkaWdvIFBML1NRTCBhcXXDrQpFTkQ7Ci8KCi0tIERldGVuZXIgZWwgcGVyZmlsYWRvCkJFR0lOCiAgREJNU19QUk9GSUxFUi5TVE9QX1BST0ZJTEVSOwpFTkQ7Ci8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Iniciar el perfilado
+BEGIN
+  DBMS_PROFILER.START_PROFILER('Mi_Perfilado');
+END;
+/
+
+-- Ejecutar el c&oacute;digo que deseas perfilar
+BEGIN
+  -- Tu c&oacute;digo PL/SQL aqu&iacute;
+END;
+/
+
+-- Detener el perfilado
+BEGIN
+  DBMS_PROFILER.STOP_PROFILER;
+END;
+/</pre></div><div class='content'></div><h2>Consultar Resultados</h2>
+<div class='content'><p>Después de ejecutar el perfilado, puedes consultar los resultados en las tablas creadas:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBwbHNxbF9wcm9maWxlcl9kYXRhOwpTRUxFQ1QgKiBGUk9NIHBsc3FsX3Byb2ZpbGVyX3VuaXRzOwpTRUxFQ1QgKiBGUk9NIHBsc3FsX3Byb2ZpbGVyX3J1bnM7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM plsql_profiler_data;
+SELECT * FROM plsql_profiler_units;
+SELECT * FROM plsql_profiler_runs;</pre></div><div class='content'></div><h1>3. Técnicas de Ajuste</h1>
+<div class='content'></div><h2>Identificación de Cuellos de Botella</h2>
+<div class='content'><p>Una vez que has perfilado tu código, el siguiente paso es identificar los cuellos de botella. Busca las secciones de código que consumen más tiempo o recursos.</p>
+</div><h2>Optimización de Consultas SQL</h2>
+<div class='content'><p>Las consultas SQL mal optimizadas son una causa común de problemas de rendimiento. Aquí hay algunas técnicas para optimizar tus consultas:</p>
+<ul>
+<li><strong>Uso de Índices</strong>: Asegúrate de que las columnas utilizadas en las cláusulas <code>WHERE</code> y <code>JOIN</code> estén indexadas.</li>
+<li><strong>Evitar Subconsultas Anidadas</strong>: Usa uniones en lugar de subconsultas anidadas cuando sea posible.</li>
+<li><strong>Uso de Hints</strong>: Utiliza hints de Oracle para guiar al optimizador de consultas.</li>
+</ul>
+</div><h2>Uso Eficiente de Cursores</h2>
+<div class='content'><ul>
+<li><strong>Cursores Implícitos vs Explícitos</strong>: Usa cursores implícitos para operaciones simples y cursores explícitos para operaciones más complejas.</li>
+<li><strong>Bulk Collect</strong>: Utiliza <code>BULK COLLECT</code> para reducir el número de cambios de contexto entre PL/SQL y SQL.</li>
+</ul>
+</div><h2>Manejo de Excepciones</h2>
+<div class='content'><p>El manejo de excepciones también puede afectar el rendimiento. Asegúrate de manejar las excepciones de manera eficiente y solo cuando sea necesario.</p>
+</div><h1>4. Ejemplo Práctico</h1>
+<div class='content'></div><h2>Código Antes del Ajuste</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogIHZfc3VtIE5VTUJFUiA6PSAwOwpCRUdJTgogIEZPUiBpIElOIDEuLjEwMDAwMDAgTE9PUAogICAgdl9zdW0gOj0gdl9zdW0gKyBpOwogIEVORCBMT09QOwogIERCTVNfT1VUUFVULlBVVF9MSU5FKCdTdW06ICcgfHwgdl9zdW0pOwpFTkQ7Ci8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+  v_sum NUMBER := 0;
+BEGIN
+  FOR i IN 1..1000000 LOOP
+    v_sum := v_sum + i;
+  END LOOP;
+  DBMS_OUTPUT.PUT_LINE('Sum: ' || v_sum);
+END;
+/</pre></div><div class='content'></div><h2>Código Después del Ajuste</h2>
+<div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogIHZfc3VtIE5VTUJFUiA6PSAwOwpCRUdJTgogIFNFTEVDVCBTVU0oTEVWRUwpIElOVE8gdl9zdW0gRlJPTSBEVUFMIENPTk5FQ1QgQlkgTEVWRUwgPD0gMTAwMDAwMDsKICBEQk1TX09VVFBVVC5QVVRfTElORSgnU3VtOiAnIHx8IHZfc3VtKTsKRU5EOwov"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+  v_sum NUMBER := 0;
+BEGIN
+  SELECT SUM(LEVEL) INTO v_sum FROM DUAL CONNECT BY LEVEL &lt;= 1000000;
+  DBMS_OUTPUT.PUT_LINE('Sum: ' || v_sum);
+END;
+/</pre></div><div class='content'></div><h1>5. Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Perfilado de Código</h2>
+<div class='content'><ol>
+<li>Configura <code>DBMS_PROFILER</code> en tu entorno.</li>
+<li>Escribe un bloque PL/SQL que realice una operación intensiva en recursos.</li>
+<li>Usa <code>DBMS_PROFILER</code> para perfilar el bloque PL/SQL.</li>
+<li>Consulta los resultados y identifica las áreas que necesitan optimización.</li>
+</ol>
+</div><h2>Ejercicio 2: Optimización de Consultas</h2>
+<div class='content'><ol>
+<li>Escribe una consulta SQL que realice una operación de unión entre dos tablas grandes.</li>
+<li>Usa técnicas de optimización para mejorar el rendimiento de la consulta.</li>
+<li>Compara el tiempo de ejecución antes y después de la optimización.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En este módulo, hemos aprendido sobre las técnicas de perfilado y ajuste en PL/SQL. El perfilado te permite identificar cuellos de botella en tu código, mientras que el ajuste se enfoca en optimizar el rendimiento. Al aplicar estas técnicas, puedes mejorar significativamente la eficiencia de tus aplicaciones PL/SQL.</p>
+<p>En el próximo módulo, aplicaremos estos conocimientos en un contexto del mundo real, construyendo una aplicación simple y explorando cómo PL/SQL puede interactuar con otros lenguajes.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='05-03-debugging' title="Depuración de Código PL/SQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-01-simple-application' title="Construyendo una Aplicación Simple">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

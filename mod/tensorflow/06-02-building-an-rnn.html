@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construyendo una RNN</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/06-02-building-an-rnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/06-02-building-an-rnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/06-02-building-an-rnn" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/tensorflow/06-02-building-an-rnn" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/tensorflow/06-02-building-an-rnn" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-to-rnns' title="Introducción a RNNs">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Construyendo una RNN</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-long-short-term-memory' title="Memoria a Largo Plazo (LSTM)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos a construir una Red Neuronal Recurrente (RNN) utilizando TensorFlow. Las RNNs son especialmente útiles para procesar datos secuenciales, como series temporales, texto y datos de audio. Vamos a desglosar el proceso en pasos claros y proporcionar ejemplos prácticos para que puedas seguirlos fácilmente.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Comprender la estructura básica de una RNN.</li>
+<li>Construir una RNN simple utilizando TensorFlow.</li>
+<li>Entrenar la RNN con un conjunto de datos secuenciales.</li>
+<li>Evaluar el rendimiento de la RNN.</li>
+</ul>
+</div><h1>1. Estructura Básica de una RNN</h1>
+<div class='content'><p>Una RNN es una red neuronal que tiene conexiones recurrentes, lo que significa que la salida de una capa se retroalimenta como entrada para la misma capa en el siguiente paso temporal. Esto permite que la red mantenga una &quot;memoria&quot; de los estados anteriores.</p>
+</div><h2>Componentes Clave:</h2>
+<div class='content'><ul>
+<li><strong>Capa Recurrente</strong>: La capa que tiene conexiones recurrentes.</li>
+<li><strong>Estado Oculto</strong>: La memoria de la red que se actualiza en cada paso temporal.</li>
+<li><strong>Entrada Secuencial</strong>: Los datos que se alimentan a la red en secuencia.</li>
+</ul>
+</div><h1>2. Construcción de una RNN Simple</h1>
+<div class='content'><p>Vamos a construir una RNN simple utilizando la API de Keras en TensorFlow. Para este ejemplo, utilizaremos una secuencia de números como datos de entrada.</p>
+</div><h2>Paso 1: Importar las Bibliotecas Necesarias</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLm1vZGVscyBpbXBvcnQgU2VxdWVudGlhbApmcm9tIHRlbnNvcmZsb3cua2VyYXMubGF5ZXJzIGltcG9ydCBTaW1wbGVSTk4sIERlbnNlCmltcG9ydCBudW1weSBhcyBucA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense
+import numpy as np</pre></div><div class='content'></div><h2>Paso 2: Preparar los Datos</h2>
+<div class='content'><p>Vamos a crear una secuencia de números y dividirla en secuencias más pequeñas para entrenar la RNN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1bmEgc2VjdWVuY2lhIGRlIG7Dum1lcm9zCmRhdGEgPSBucC5hcnJheShbaSBmb3IgaSBpbiByYW5nZSgxMDApXSkKCiMgRGVmaW5pciBsYSBsb25naXR1ZCBkZSBsYXMgc2VjdWVuY2lhcwpzZXF1ZW5jZV9sZW5ndGggPSAxMAoKIyBDcmVhciBsYXMgc2VjdWVuY2lhcyBkZSBlbnRyYWRhIHkgbGFzIGV0aXF1ZXRhcwpYID0gW10KeSA9IFtdCgpmb3IgaSBpbiByYW5nZShsZW4oZGF0YSkgLSBzZXF1ZW5jZV9sZW5ndGgpOgogICAgWC5hcHBlbmQoZGF0YVtpOmkgKyBzZXF1ZW5jZV9sZW5ndGhdKQogICAgeS5hcHBlbmQoZGF0YVtpICsgc2VxdWVuY2VfbGVuZ3RoXSkKClggPSBucC5hcnJheShYKQp5ID0gbnAuYXJyYXkoeSkKCiMgUmVzaGFwZSBwYXJhIHF1ZSBzZWEgY29tcGF0aWJsZSBjb24gbGEgZW50cmFkYSBkZSBsYSBSTk4KWCA9IFgucmVzaGFwZSgoWC5zaGFwZVswXSwgWC5zaGFwZVsxXSwgMSkp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear una secuencia de n&uacute;meros
+data = np.array([i for i in range(100)])
+
+# Definir la longitud de las secuencias
+sequence_length = 10
+
+# Crear las secuencias de entrada y las etiquetas
+X = []
+y = []
+
+for i in range(len(data) - sequence_length):
+    X.append(data[i:i + sequence_length])
+    y.append(data[i + sequence_length])
+
+X = np.array(X)
+y = np.array(y)
+
+# Reshape para que sea compatible con la entrada de la RNN
+X = X.reshape((X.shape[0], X.shape[1], 1))</pre></div><div class='content'></div><h2>Paso 3: Definir el Modelo</h2>
+<div class='content'><p>Vamos a definir un modelo secuencial con una capa SimpleRNN y una capa densa para la salida.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwgPSBTZXF1ZW50aWFsKCkKbW9kZWwuYWRkKFNpbXBsZVJOTig1MCwgYWN0aXZhdGlvbj0ncmVsdScsIGlucHV0X3NoYXBlPShzZXF1ZW5jZV9sZW5ndGgsIDEpKSkKbW9kZWwuYWRkKERlbnNlKDEpKQoKbW9kZWwuY29tcGlsZShvcHRpbWl6ZXI9J2FkYW0nLCBsb3NzPSdtc2UnKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model = Sequential()
+model.add(SimpleRNN(50, activation='relu', input_shape=(sequence_length, 1)))
+model.add(Dense(1))
+
+model.compile(optimizer='adam', loss='mse')</pre></div><div class='content'></div><h2>Paso 4: Entrenar el Modelo</h2>
+<div class='content'><p>Entrenamos el modelo con los datos preparados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuZml0KFgsIHksIGVwb2Nocz0yMDAsIHZlcmJvc2U9MSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.fit(X, y, epochs=200, verbose=1)</pre></div><div class='content'></div><h2>Paso 5: Evaluar el Modelo</h2>
+<div class='content'><p>Podemos evaluar el modelo utilizando una parte de los datos que no se usaron para el entrenamiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1bmEgbnVldmEgc2VjdWVuY2lhIHBhcmEgbGEgZXZhbHVhY2nDs24KdGVzdF9kYXRhID0gbnAuYXJyYXkoW2kgZm9yIGkgaW4gcmFuZ2UoOTAsIDExMCldKQpYX3Rlc3QgPSBbXQp5X3Rlc3QgPSBbXQoKZm9yIGkgaW4gcmFuZ2UobGVuKHRlc3RfZGF0YSkgLSBzZXF1ZW5jZV9sZW5ndGgpOgogICAgWF90ZXN0LmFwcGVuZCh0ZXN0X2RhdGFbaTppICsgc2VxdWVuY2VfbGVuZ3RoXSkKICAgIHlfdGVzdC5hcHBlbmQodGVzdF9kYXRhW2kgKyBzZXF1ZW5jZV9sZW5ndGhdKQoKWF90ZXN0ID0gbnAuYXJyYXkoWF90ZXN0KQp5X3Rlc3QgPSBucC5hcnJheSh5X3Rlc3QpCgpYX3Rlc3QgPSBYX3Rlc3QucmVzaGFwZSgoWF90ZXN0LnNoYXBlWzBdLCBYX3Rlc3Quc2hhcGVbMV0sIDEpKQoKIyBFdmFsdWFyIGVsIG1vZGVsbwpsb3NzID0gbW9kZWwuZXZhbHVhdGUoWF90ZXN0LCB5X3Rlc3QsIHZlcmJvc2U9MCkKcHJpbnQoZidMb3NzOiB7bG9zc30nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear una nueva secuencia para la evaluaci&oacute;n
+test_data = np.array([i for i in range(90, 110)])
+X_test = []
+y_test = []
+
+for i in range(len(test_data) - sequence_length):
+    X_test.append(test_data[i:i + sequence_length])
+    y_test.append(test_data[i + sequence_length])
+
+X_test = np.array(X_test)
+y_test = np.array(y_test)
+
+X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
+
+# Evaluar el modelo
+loss = model.evaluate(X_test, y_test, verbose=0)
+print(f'Loss: {loss}')</pre></div><div class='content'></div><h1>3. Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Predecir una Secuencia de Números</h2>
+<div class='content'><p>Modifica el código anterior para predecir una secuencia de números diferente. Por ejemplo, intenta predecir la secuencia de números pares.</p>
+</div><h2>Solución:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1bmEgc2VjdWVuY2lhIGRlIG7Dum1lcm9zIHBhcmVzCmRhdGEgPSBucC5hcnJheShbaSBmb3IgaSBpbiByYW5nZSgwLCAyMDAsIDIpXSkKCiMgRGVmaW5pciBsYSBsb25naXR1ZCBkZSBsYXMgc2VjdWVuY2lhcwpzZXF1ZW5jZV9sZW5ndGggPSAxMAoKIyBDcmVhciBsYXMgc2VjdWVuY2lhcyBkZSBlbnRyYWRhIHkgbGFzIGV0aXF1ZXRhcwpYID0gW10KeSA9IFtdCgpmb3IgaSBpbiByYW5nZShsZW4oZGF0YSkgLSBzZXF1ZW5jZV9sZW5ndGgpOgogICAgWC5hcHBlbmQoZGF0YVtpOmkgKyBzZXF1ZW5jZV9sZW5ndGhdKQogICAgeS5hcHBlbmQoZGF0YVtpICsgc2VxdWVuY2VfbGVuZ3RoXSkKClggPSBucC5hcnJheShYKQp5ID0gbnAuYXJyYXkoeSkKCiMgUmVzaGFwZSBwYXJhIHF1ZSBzZWEgY29tcGF0aWJsZSBjb24gbGEgZW50cmFkYSBkZSBsYSBSTk4KWCA9IFgucmVzaGFwZSgoWC5zaGFwZVswXSwgWC5zaGFwZVsxXSwgMSkpCgojIERlZmluaXIgZWwgbW9kZWxvCm1vZGVsID0gU2VxdWVudGlhbCgpCm1vZGVsLmFkZChTaW1wbGVSTk4oNTAsIGFjdGl2YXRpb249J3JlbHUnLCBpbnB1dF9zaGFwZT0oc2VxdWVuY2VfbGVuZ3RoLCAxKSkpCm1vZGVsLmFkZChEZW5zZSgxKSkKCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPSdhZGFtJywgbG9zcz0nbXNlJykKCiMgRW50cmVuYXIgZWwgbW9kZWxvCm1vZGVsLmZpdChYLCB5LCBlcG9jaHM9MjAwLCB2ZXJib3NlPTEpCgojIEV2YWx1YXIgZWwgbW9kZWxvCnRlc3RfZGF0YSA9IG5wLmFycmF5KFtpIGZvciBpIGluIHJhbmdlKDE4MCwgMjIwLCAyKV0pClhfdGVzdCA9IFtdCnlfdGVzdCA9IFtdCgpmb3IgaSBpbiByYW5nZShsZW4odGVzdF9kYXRhKSAtIHNlcXVlbmNlX2xlbmd0aCk6CiAgICBYX3Rlc3QuYXBwZW5kKHRlc3RfZGF0YVtpOmkgKyBzZXF1ZW5jZV9sZW5ndGhdKQogICAgeV90ZXN0LmFwcGVuZCh0ZXN0X2RhdGFbaSArIHNlcXVlbmNlX2xlbmd0aF0pCgpYX3Rlc3QgPSBucC5hcnJheShYX3Rlc3QpCnlfdGVzdCA9IG5wLmFycmF5KHlfdGVzdCkKClhfdGVzdCA9IFhfdGVzdC5yZXNoYXBlKChYX3Rlc3Quc2hhcGVbMF0sIFhfdGVzdC5zaGFwZVsxXSwgMSkpCgpsb3NzID0gbW9kZWwuZXZhbHVhdGUoWF90ZXN0LCB5X3Rlc3QsIHZlcmJvc2U9MCkKcHJpbnQoZidMb3NzOiB7bG9zc30nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear una secuencia de n&uacute;meros pares
+data = np.array([i for i in range(0, 200, 2)])
+
+# Definir la longitud de las secuencias
+sequence_length = 10
+
+# Crear las secuencias de entrada y las etiquetas
+X = []
+y = []
+
+for i in range(len(data) - sequence_length):
+    X.append(data[i:i + sequence_length])
+    y.append(data[i + sequence_length])
+
+X = np.array(X)
+y = np.array(y)
+
+# Reshape para que sea compatible con la entrada de la RNN
+X = X.reshape((X.shape[0], X.shape[1], 1))
+
+# Definir el modelo
+model = Sequential()
+model.add(SimpleRNN(50, activation='relu', input_shape=(sequence_length, 1)))
+model.add(Dense(1))
+
+model.compile(optimizer='adam', loss='mse')
+
+# Entrenar el modelo
+model.fit(X, y, epochs=200, verbose=1)
+
+# Evaluar el modelo
+test_data = np.array([i for i in range(180, 220, 2)])
+X_test = []
+y_test = []
+
+for i in range(len(test_data) - sequence_length):
+    X_test.append(test_data[i:i + sequence_length])
+    y_test.append(test_data[i + sequence_length])
+
+X_test = np.array(X_test)
+y_test = np.array(y_test)
+
+X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
+
+loss = model.evaluate(X_test, y_test, verbose=0)
+print(f'Loss: {loss}')</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido a construir una RNN simple utilizando TensorFlow. Hemos cubierto la estructura básica de una RNN, cómo preparar los datos, definir el modelo, entrenarlo y evaluarlo. Las RNNs son poderosas para trabajar con datos secuenciales y tienen muchas aplicaciones en el mundo real, como el procesamiento de lenguaje natural y la predicción de series temporales.</p>
+<p>En el próximo tema, exploraremos las Memorias a Largo Plazo (LSTM), una variante de las RNNs que aborda algunos de los problemas comunes de las RNNs estándar.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-01-introduction-to-rnns' title="Introducción a RNNs">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='06-03-long-short-term-memory' title="Memoria a Largo Plazo (LSTM)">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

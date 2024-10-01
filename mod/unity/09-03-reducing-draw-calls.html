@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reducción de Llamadas de Dibujo</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/unity/09-03-reducing-draw-calls" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/unity/09-03-reducing-draw-calls" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/unity/09-03-reducing-draw-calls" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/unity/09-03-reducing-draw-calls" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/unity/09-03-reducing-draw-calls" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-memory-management' title="Gestión de Memoria">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Reducción de Llamadas de Dibujo</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-optimizing-physics-collisions' title="Optimización de Física y Colisiones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos sobre la reducción de llamadas de dibujo (draw calls) en Unity, un aspecto crucial para optimizar el rendimiento de tu juego. Las llamadas de dibujo son instrucciones enviadas a la GPU para renderizar objetos en la pantalla. Un número elevado de estas llamadas puede afectar negativamente el rendimiento del juego, especialmente en dispositivos con recursos limitados.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Draw Calls</strong>: Instrucciones enviadas a la GPU para renderizar un objeto.</li>
+<li><strong>Batching</strong>: Técnica para agrupar múltiples objetos en una sola llamada de dibujo.</li>
+<li><strong>Instancing</strong>: Técnica para renderizar múltiples copias de un objeto con una sola llamada de dibujo.</li>
+<li><strong>LOD (Level of Detail)</strong>: Técnica para reducir la complejidad de los modelos a medida que se alejan de la cámara.</li>
+</ol>
+</div><h1>Técnicas para Reducir Draw Calls</h1>
+<div class='content'></div><h2>1. Batching</h2>
+<div class='content'><p>Unity ofrece dos tipos de batching: estático y dinámico.</p>
+<h4>Batching Estático</h4>
+<p>El batching estático agrupa objetos que no se mueven en una sola llamada de dibujo. Para usarlo:</p>
+<ol>
+<li>Selecciona los objetos en la escena.</li>
+<li>Marca la casilla &quot;Static&quot; en el Inspector.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSBjw7NkaWdvIHBhcmEgbWFyY2FyIHVuIG9iamV0byBjb21vIGVzdMOhdGljbwpnYW1lT2JqZWN0LmlzU3RhdGljID0gdHJ1ZTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de c&oacute;digo para marcar un objeto como est&aacute;tico
+gameObject.isStatic = true;</pre></div><div class='content'><h4>Batching Dinámico</h4>
+<p>El batching dinámico agrupa objetos que se mueven y comparten el mismo material. Unity lo hace automáticamente si los objetos cumplen ciertos criterios (menos de 300 vértices, mismo material).</p>
+</div><h2>2. Instancing</h2>
+<div class='content'><p>El instancing permite renderizar múltiples copias de un objeto con una sola llamada de dibujo. Es útil para objetos repetitivos como árboles o rocas.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSBjw7NkaWdvIHBhcmEgdXNhciBpbnN0YW5jaW5nCk1hdGVyaWFsIG1hdGVyaWFsID0gbmV3IE1hdGVyaWFsKFNoYWRlci5GaW5kKCJTdGFuZGFyZCIpKTsKbWF0ZXJpYWwuZW5hYmxlSW5zdGFuY2luZyA9IHRydWU7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de c&oacute;digo para usar instancing
+Material material = new Material(Shader.Find(&quot;Standard&quot;));
+material.enableInstancing = true;</pre></div><div class='content'></div><h2>3. Uso de Shaders Eficientes</h2>
+<div class='content'><p>Los shaders personalizados pueden optimizar el rendimiento. Por ejemplo, los shaders que soportan instancing pueden reducir significativamente las llamadas de dibujo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSB1biBzaGFkZXIgc2ltcGxlIGNvbiBpbnN0YW5jaW5nClNoYWRlciAiQ3VzdG9tL0luc3RhbmNlZFNoYWRlciIgewogICAgUHJvcGVydGllcyB7CiAgICAgICAgX0NvbG9yICgiQ29sb3IiLCBDb2xvcikgPSAoMSwxLDEsMSkKICAgIH0KICAgIFN1YlNoYWRlciB7CiAgICAgICAgUGFzcyB7CiAgICAgICAgICAgIENHUFJPR1JBTQogICAgICAgICAgICAjcHJhZ21hIHZlcnRleCB2ZXJ0CiAgICAgICAgICAgICNwcmFnbWEgZnJhZ21lbnQgZnJhZwogICAgICAgICAgICAjcHJhZ21hIG11bHRpX2NvbXBpbGVfaW5zdGFuY2luZwogICAgICAgICAgICAjaW5jbHVkZSAiVW5pdHlDRy5jZ2luYyIKICAgICAgICAgICAgc3RydWN0IGFwcGRhdGEgewogICAgICAgICAgICAgICAgZmxvYXQ0IHZlcnRleCA6IFBPU0lUSU9OOwogICAgICAgICAgICAgICAgZmxvYXQ0IGNvbG9yIDogQ09MT1I7CiAgICAgICAgICAgICAgICBVTklUWV9WRVJURVhfSU5QVVRfSU5TVEFOQ0VfSUQKICAgICAgICAgICAgfTsKICAgICAgICAgICAgc3RydWN0IHYyZiB7CiAgICAgICAgICAgICAgICBmbG9hdDQgcG9zIDogU1ZfUE9TSVRJT047CiAgICAgICAgICAgICAgICBmbG9hdDQgY29sb3IgOiBDT0xPUjsKICAgICAgICAgICAgICAgIFVOSVRZX1ZFUlRFWF9PVVRQVVRfU1RFUkVPCiAgICAgICAgICAgIH07CiAgICAgICAgICAgIFVOSVRZX0lOU1RBTkNJTkdfQlVGRkVSX1NUQVJUKFByb3BzKQogICAgICAgICAgICAgICAgVU5JVFlfSU5TVEFOQ0lOR19CVUZGRVJfRU5EKFByb3BzKQogICAgICAgICAgICB2MmYgdmVydCAoYXBwZGF0YSB2KSB7CiAgICAgICAgICAgICAgICB2MmYgbzsKICAgICAgICAgICAgICAgIFVOSVRZX1NFVFVQX0lOU1RBTkNFX0lEKHYpOwogICAgICAgICAgICAgICAgby5wb3MgPSBVbml0eU9iamVjdFRvQ2xpcFBvcyh2LnZlcnRleCk7CiAgICAgICAgICAgICAgICBvLmNvbG9yID0gdi5jb2xvcjsKICAgICAgICAgICAgICAgIHJldHVybiBvOwogICAgICAgICAgICB9CiAgICAgICAgICAgIGZpeGVkNCBmcmFnICh2MmYgaSkgOiBTVl9UYXJnZXQgewogICAgICAgICAgICAgICAgcmV0dXJuIGkuY29sb3I7CiAgICAgICAgICAgIH0KICAgICAgICAgICAgRU5EQ0cKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de un shader simple con instancing
+Shader &quot;Custom/InstancedShader&quot; {
+    Properties {
+        _Color (&quot;Color&quot;, Color) = (1,1,1,1)
+    }
+    SubShader {
+        Pass {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_instancing
+            #include &quot;UnityCG.cginc&quot;
+            struct appdata {
+                float4 vertex : POSITION;
+                float4 color : COLOR;
+                UNITY_VERTEX_INPUT_INSTANCE_ID
+            };
+            struct v2f {
+                float4 pos : SV_POSITION;
+                float4 color : COLOR;
+                UNITY_VERTEX_OUTPUT_STEREO
+            };
+            UNITY_INSTANCING_BUFFER_START(Props)
+                UNITY_INSTANCING_BUFFER_END(Props)
+            v2f vert (appdata v) {
+                v2f o;
+                UNITY_SETUP_INSTANCE_ID(v);
+                o.pos = UnityObjectToClipPos(v.vertex);
+                o.color = v.color;
+                return o;
+            }
+            fixed4 frag (v2f i) : SV_Target {
+                return i.color;
+            }
+            ENDCG
+        }
+    }
+}</pre></div><div class='content'></div><h2>4. Level of Detail (LOD)</h2>
+<div class='content'><p>El LOD reduce la complejidad de los modelos a medida que se alejan de la cámara. Unity permite configurar LODs para cada modelo.</p>
+<ol>
+<li>Selecciona el objeto en la escena.</li>
+<li>Añade un componente &quot;LOD Group&quot;.</li>
+<li>Configura los niveles de detalle.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gRWplbXBsbyBkZSBjw7NkaWdvIHBhcmEgY29uZmlndXJhciBMT0RzCkxPREdyb3VwIGxvZEdyb3VwID0gZ2FtZU9iamVjdC5BZGRDb21wb25lbnQ8TE9ER3JvdXA+KCk7CkxPRFtdIGxvZHMgPSBuZXcgTE9EWzJdOwpsb2RzWzBdID0gbmV3IExPRCgwLjVmLCBuZXcgUmVuZGVyZXJbXSB7IHJlbmRlcmVyMSB9KTsKbG9kc1sxXSA9IG5ldyBMT0QoMC4yZiwgbmV3IFJlbmRlcmVyW10geyByZW5kZXJlcjIgfSk7CmxvZEdyb3VwLlNldExPRHMobG9kcyk7CmxvZEdyb3VwLlJlY2FsY3VsYXRlQm91bmRzKCk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// Ejemplo de c&oacute;digo para configurar LODs
+LODGroup lodGroup = gameObject.AddComponent&lt;LODGroup&gt;();
+LOD[] lods = new LOD[2];
+lods[0] = new LOD(0.5f, new Renderer[] { renderer1 });
+lods[1] = new LOD(0.2f, new Renderer[] { renderer2 });
+lodGroup.SetLODs(lods);
+lodGroup.RecalculateBounds();</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Implementar Batching Estático</h2>
+<div class='content'><ol>
+<li>Crea una escena con varios objetos estáticos (por ejemplo, edificios).</li>
+<li>Marca todos los objetos como estáticos.</li>
+<li>Observa la reducción en las llamadas de dibujo usando el Profiler de Unity.</li>
+</ol>
+</div><h2>Ejercicio 2: Usar Instancing</h2>
+<div class='content'><ol>
+<li>Crea una escena con múltiples copias de un objeto (por ejemplo, árboles).</li>
+<li>Aplica un material que soporte instancing.</li>
+<li>Observa la reducción en las llamadas de dibujo usando el Profiler de Unity.</li>
+</ol>
+</div><h2>Soluciones</h2>
+<div class='content'><h4>Solución Ejercicio 1</h4>
+<ol>
+<li>Selecciona todos los objetos estáticos en la escena.</li>
+<li>Marca la casilla &quot;Static&quot; en el Inspector.</li>
+<li>Abre el Profiler (Window &gt; Analysis &gt; Profiler) y observa la reducción en las llamadas de dibujo.</li>
+</ol>
+<h4>Solución Ejercicio 2</h4>
+<ol>
+<li>Crea un material que soporte instancing.</li>
+<li>Aplica el material a todos los objetos repetitivos.</li>
+<li>Abre el Profiler y observa la reducción en las llamadas de dibujo.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Reducir las llamadas de dibujo es esencial para optimizar el rendimiento de tu juego en Unity. Técnicas como el batching, el instancing, el uso de shaders eficientes y el LOD pueden ayudarte a lograr un rendimiento óptimo. Practica estas técnicas en tus proyectos para familiarizarte con ellas y mejorar la eficiencia de tus juegos.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='09-02-memory-management' title="Gestión de Memoria">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='09-04-optimizing-physics-collisions' title="Optimización de Física y Colisiones">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

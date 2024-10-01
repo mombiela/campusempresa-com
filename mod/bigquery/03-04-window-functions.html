@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funciones de Ventana</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/03-04-window-functions" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/03-04-window-functions" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/03-04-window-functions" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/bigquery/03-04-window-functions" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/bigquery/03-04-window-functions" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-common-table-expressions' title="Expresiones de Tabla Comunes (CTEs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Funciones de Ventana</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-advanced-joins' title="Joins Avanzados">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las funciones de ventana (o window functions) en SQL son una poderosa herramienta que permite realizar cálculos sobre un conjunto de filas relacionadas con la fila actual. A diferencia de las funciones de agregación estándar, las funciones de ventana no agrupan los resultados en una sola fila, sino que mantienen el contexto de cada fila individual.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Partición</strong>: Divide el conjunto de resultados en subconjuntos. Las funciones de ventana se aplican a cada partición por separado.</li>
+<li><strong>Orden</strong>: Define el orden en el que se procesan las filas dentro de cada partición.</li>
+<li><strong>Frame</strong>: Especifica un subconjunto de filas dentro de la partición que se utilizará para la función de ventana.</li>
+</ol>
+</div><h1>Sintaxis Básica</h1>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PGZ1bmNpw7NuX2RlX3ZlbnRhbmE+IE9WRVIgKAogICAgW1BBUlRJVElPTiBCWSA8ZXhwcmVzaW9uZXNfZGVfcGFydGljacOzbj5dCiAgICBbT1JERVIgQlkgPGV4cHJlc2lvbmVzX2RlX29yZGVuPl0KICAgIFs8ZnJhbWVfY2xhdXNlPl0KKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;funci&oacute;n_de_ventana&gt; OVER (
+    [PARTITION BY &lt;expresiones_de_partici&oacute;n&gt;]
+    [ORDER BY &lt;expresiones_de_orden&gt;]
+    [&lt;frame_clause&gt;]
+)</pre></div><div class='content'></div><h2>Ejemplo de Sintaxis</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U1VNKHNhbGVzKSBPVkVSICgKICAgIFBBUlRJVElPTiBCWSByZWdpb24KICAgIE9SREVSIEJZIGRhdGUKICAgIFJPV1MgQkVUV0VFTiAxIFBSRUNFRElORyBBTkQgQ1VSUkVOVCBST1cKKSBBUyBydW5uaW5nX3RvdGFs"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SUM(sales) OVER (
+    PARTITION BY region
+    ORDER BY date
+    ROWS BETWEEN 1 PRECEDING AND CURRENT ROW
+) AS running_total</pre></div><div class='content'></div><h1>Tipos Comunes de Funciones de Ventana</h1>
+<div class='content'><ol>
+<li><strong>Funciones de Agregación</strong>: <code>SUM()</code>, <code>AVG()</code>, <code>MIN()</code>, <code>MAX()</code>, <code>COUNT()</code></li>
+<li><strong>Funciones de Rango</strong>: <code>RANK()</code>, <code>DENSE_RANK()</code>, <code>ROW_NUMBER()</code></li>
+<li><strong>Funciones de Valor</strong>: <code>FIRST_VALUE()</code>, <code>LAST_VALUE()</code>, <code>NTH_VALUE()</code></li>
+</ol>
+</div><h1>Ejemplos Prácticos</h1>
+<div class='content'></div><h2>1. Cálculo de Suma Acumulativa</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBkYXRlLAogICAgc2FsZXMsCiAgICBTVU0oc2FsZXMpIE9WRVIgKAogICAgICAgIE9SREVSIEJZIGRhdGUKICAgICAgICBST1dTIEJFVFdFRU4gVU5CT1VOREVEIFBSRUNFRElORyBBTkQgQ1VSUkVOVCBST1cKICAgICkgQVMgY3VtdWxhdGl2ZV9zYWxlcwpGUk9NCiAgICBzYWxlc19kYXRhCk9SREVSIEJZCiAgICBkYXRlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    date,
+    sales,
+    SUM(sales) OVER (
+        ORDER BY date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS cumulative_sales
+FROM
+    sales_data
+ORDER BY
+    date;</pre></div><div class='content'><p><strong>Explicación</strong>: Esta consulta calcula la suma acumulativa de las ventas ordenadas por fecha.</p>
+</div><h2>2. Cálculo de Rango</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIGRlcGFydG1lbnQsCiAgICBzYWxhcnksCiAgICBSQU5LKCkgT1ZFUiAoCiAgICAgICAgUEFSVElUSU9OIEJZIGRlcGFydG1lbnQKICAgICAgICBPUkRFUiBCWSBzYWxhcnkgREVTQwogICAgKSBBUyBzYWxhcnlfcmFuawpGUk9NCiAgICBlbXBsb3llZV9kYXRhOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    department,
+    salary,
+    RANK() OVER (
+        PARTITION BY department
+        ORDER BY salary DESC
+    ) AS salary_rank
+FROM
+    employee_data;</pre></div><div class='content'><p><strong>Explicación</strong>: Esta consulta asigna un rango a cada empleado dentro de su departamento basado en su salario, en orden descendente.</p>
+</div><h2>3. Valor de la Primera Fila en una Partición</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIGRlcGFydG1lbnQsCiAgICBzYWxhcnksCiAgICBGSVJTVF9WQUxVRShzYWxhcnkpIE9WRVIgKAogICAgICAgIFBBUlRJVElPTiBCWSBkZXBhcnRtZW50CiAgICAgICAgT1JERVIgQlkgaGlyZV9kYXRlCiAgICApIEFTIGZpcnN0X3NhbGFyeQpGUk9NCiAgICBlbXBsb3llZV9kYXRhOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    department,
+    salary,
+    FIRST_VALUE(salary) OVER (
+        PARTITION BY department
+        ORDER BY hire_date
+    ) AS first_salary
+FROM
+    employee_data;</pre></div><div class='content'><p><strong>Explicación</strong>: Esta consulta obtiene el salario del primer empleado contratado en cada departamento.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Suma Acumulativa de Ventas</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Utiliza la tabla <code>sales_data</code> para calcular la suma acumulativa de las ventas por región y fecha.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICByZWdpb24sCiAgICBkYXRlLAogICAgc2FsZXMsCiAgICBTVU0oc2FsZXMpIE9WRVIgKAogICAgICAgIFBBUlRJVElPTiBCWSByZWdpb24KICAgICAgICBPUkRFUiBCWSBkYXRlCiAgICAgICAgUk9XUyBCRVRXRUVOIFVOQk9VTkRFRCBQUkVDRURJTkcgQU5EIENVUlJFTlQgUk9XCiAgICApIEFTIGN1bXVsYXRpdmVfc2FsZXMKRlJPTQogICAgc2FsZXNfZGF0YQpPUkRFUiBCWQogICAgcmVnaW9uLCBkYXRlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    region,
+    date,
+    sales,
+    SUM(sales) OVER (
+        PARTITION BY region
+        ORDER BY date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS cumulative_sales
+FROM
+    sales_data
+ORDER BY
+    region, date;</pre></div><div class='content'></div><h2>Ejercicio 2: Rango de Salarios</h2>
+<div class='content'><p><strong>Instrucciones</strong>: Utiliza la tabla <code>employee_data</code> para calcular el rango de salarios dentro de cada departamento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIGRlcGFydG1lbnQsCiAgICBzYWxhcnksCiAgICBSQU5LKCkgT1ZFUiAoCiAgICAgICAgUEFSVElUSU9OIEJZIGRlcGFydG1lbnQKICAgICAgICBPUkRFUiBCWSBzYWxhcnkgREVTQwogICAgKSBBUyBzYWxhcnlfcmFuawpGUk9NCiAgICBlbXBsb3llZV9kYXRhOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    department,
+    salary,
+    RANK() OVER (
+        PARTITION BY department
+        ORDER BY salary DESC
+    ) AS salary_rank
+FROM
+    employee_data;</pre></div><div class='content'></div><h1>Soluciones</h1>
+<div class='content'></div><h2>Solución al Ejercicio 1</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICByZWdpb24sCiAgICBkYXRlLAogICAgc2FsZXMsCiAgICBTVU0oc2FsZXMpIE9WRVIgKAogICAgICAgIFBBUlRJVElPTiBCWSByZWdpb24KICAgICAgICBPUkRFUiBCWSBkYXRlCiAgICAgICAgUk9XUyBCRVRXRUVOIFVOQk9VTkRFRCBQUkVDRURJTkcgQU5EIENVUlJFTlQgUk9XCiAgICApIEFTIGN1bXVsYXRpdmVfc2FsZXMKRlJPTQogICAgc2FsZXNfZGF0YQpPUkRFUiBCWQogICAgcmVnaW9uLCBkYXRlOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    region,
+    date,
+    sales,
+    SUM(sales) OVER (
+        PARTITION BY region
+        ORDER BY date
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+    ) AS cumulative_sales
+FROM
+    sales_data
+ORDER BY
+    region, date;</pre></div><div class='content'></div><h2>Solución al Ejercicio 2</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgICBlbXBsb3llZV9pZCwKICAgIGRlcGFydG1lbnQsCiAgICBzYWxhcnksCiAgICBSQU5LKCkgT1ZFUiAoCiAgICAgICAgUEFSVElUSU9OIEJZIGRlcGFydG1lbnQKICAgICAgICBPUkRFUiBCWSBzYWxhcnkgREVTQwogICAgKSBBUyBzYWxhcnlfcmFuawpGUk9NCiAgICBlbXBsb3llZV9kYXRhOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+    employee_id,
+    department,
+    salary,
+    RANK() OVER (
+        PARTITION BY department
+        ORDER BY salary DESC
+    ) AS salary_rank
+FROM
+    employee_data;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>Las funciones de ventana en BigQuery permiten realizar cálculos avanzados y análisis detallados sin perder el contexto de cada fila individual. Al dominar estas funciones, puedes realizar análisis más complejos y obtener insights más profundos de tus datos. En el siguiente módulo, exploraremos los Joins Avanzados, que te permitirán combinar datos de múltiples tablas de manera eficiente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='03-03-common-table-expressions' title="Expresiones de Tabla Comunes (CTEs)">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='04-01-advanced-joins' title="Joins Avanzados">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>

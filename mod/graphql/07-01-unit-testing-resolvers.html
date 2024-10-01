@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pruebas Unitarias de Resolvers</title>
+
+    <link rel="alternate" href="https://campusempresa.com/mod/graphql/07-01-unit-testing-resolvers" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/graphql/07-01-unit-testing-resolvers" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/graphql/07-01-unit-testing-resolvers" hreflang="en" />
+    
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.css" rel="stylesheet">
+	
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="text/javascript" src="/js/main.js"></script>
+</head>
+
+<body >
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-8 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-4 p-0 text-end">
+			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
+			<h3 id="main_subtitle"></h3>
+		</div>
+	</div>
+</div>
+<div class="container-xxl" style="margin-top: -1em;">
+	<div class="row">
+		<div class="col-12 p-0 m-0 text-end">
+										<a href="https://enterprisecampus.net/mod/graphql/07-01-unit-testing-resolvers" class="px-2">EN</a></b>
+				|
+				<b class="px-2">ES</b>
+				|
+				<a href="https://campusempresa.cat/mod/graphql/07-01-unit-testing-resolvers" class="px-2">CA</a>
+								</div>
+	</div>
+</div>
+   <div class="top-bar container-fluid">
+	<div class="container-xxl">
+		<div class="row">
+			<div class="col" id="left_menu">
+				<a href="/objective">El Proyecto</a>
+				<a href="/about">Sobre nosotros</a>
+				<a href="/contribute">Contribuir</a>
+				<a href="/donate">Donaciones</a>
+				<a href="/licence">Licencia</a>
+			</div>
+		</div>
+	</div>
+   </div>
+
+<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+			<div id="nav1" class="navigation"></div>
+			<div id="inner_content">
+								<div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-graphql-subscriptions' title="Suscripciones de GraphQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+					<a href="./"><h2 style="text-decoration:underline">Pruebas Unitarias de Resolvers</h2></a>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-integration-testing' title="Pruebas de Integración">Siguiente &#x25BA;</a>
+			</div>
+</div>
+<div class='content'><p>Las pruebas unitarias son una parte esencial del desarrollo de software, ya que aseguran que cada componente de tu aplicación funcione correctamente de manera aislada. En el contexto de GraphQL, los resolvers son funciones que manejan las solicitudes de datos y, por lo tanto, son cruciales para el correcto funcionamiento de tu API. Este módulo te guiará a través del proceso de escribir y ejecutar pruebas unitarias para resolvers de GraphQL.</p>
+</div><h1>Objetivos de Aprendizaje</h1>
+<div class='content'><ul>
+<li>Comprender la importancia de las pruebas unitarias para resolvers.</li>
+<li>Configurar un entorno de pruebas para resolvers de GraphQL.</li>
+<li>Escribir y ejecutar pruebas unitarias utilizando herramientas comunes como Jest.</li>
+<li>Manejar casos de prueba comunes y errores.</li>
+</ul>
+</div><h1>1. Importancia de las Pruebas Unitarias para Resolvers</h1>
+<div class='content'><p>Las pruebas unitarias te permiten:</p>
+<ul>
+<li><strong>Verificar la funcionalidad</strong>: Asegurarte de que cada resolver devuelve los datos correctos.</li>
+<li><strong>Detectar errores temprano</strong>: Identificar problemas antes de que lleguen a producción.</li>
+<li><strong>Facilitar el mantenimiento</strong>: Hacer cambios en el código con confianza, sabiendo que las pruebas te alertarán de cualquier problema.</li>
+<li><strong>Documentar el comportamiento</strong>: Las pruebas actúan como documentación viva del comportamiento esperado de tus resolvers.</li>
+</ul>
+</div><h1>2. Configuración del Entorno de Pruebas</h1>
+<div class='content'></div><h2>Instalación de Dependencias</h2>
+<div class='content'><p>Para comenzar, necesitas instalar algunas dependencias. En este ejemplo, utilizaremos Jest, una popular biblioteca de pruebas para JavaScript.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIGluc3RhbGwgLS1zYXZlLWRldiBqZXN0Cm5wbSBpbnN0YWxsIC0tc2F2ZS1kZXYgQGJhYmVsL3ByZXNldC1lbnYgQGJhYmVsL3ByZXNldC10eXBlc2NyaXB0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm install --save-dev jest
+npm install --save-dev @babel/preset-env @babel/preset-typescript</pre></div><div class='content'></div><h2>Configuración de Babel</h2>
+<div class='content'><p>Crea un archivo <code>.babelrc</code> en la raíz de tu proyecto para configurar Babel:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ewogICJwcmVzZXRzIjogWyJAYmFiZWwvcHJlc2V0LWVudiIsICJAYmFiZWwvcHJlc2V0LXR5cGVzY3JpcHQiXQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>{
+  &quot;presets&quot;: [&quot;@babel/preset-env&quot;, &quot;@babel/preset-typescript&quot;]
+}</pre></div><div class='content'></div><h2>Configuración de Jest</h2>
+<div class='content'><p>Añade la configuración de Jest en tu <code>package.json</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Implc3QiOiB7CiAgInRyYW5zZm9ybSI6IHsKICAgICJeLitcXC4oanN8dHMpJCI6ICJiYWJlbC1qZXN0IgogIH0sCiAgInRlc3RFbnZpcm9ubWVudCI6ICJub2RlIgp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&quot;jest&quot;: {
+  &quot;transform&quot;: {
+    &quot;^.+\\.(js|ts)$&quot;: &quot;babel-jest&quot;
+  },
+  &quot;testEnvironment&quot;: &quot;node&quot;
+}</pre></div><div class='content'></div><h1>3. Escribiendo Pruebas Unitarias</h1>
+<div class='content'></div><h2>Ejemplo de Resolver</h2>
+<div class='content'><p>Supongamos que tienes el siguiente resolver:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVzb2x2ZXJzLmpzCmNvbnN0IHJlc29sdmVycyA9IHsKICBRdWVyeTogewogICAgdXNlcjogYXN5bmMgKF8sIHsgaWQgfSwgeyBkYXRhU291cmNlcyB9KSA9PiB7CiAgICAgIHJldHVybiBkYXRhU291cmNlcy51c2VyQVBJLmdldFVzZXJCeUlkKGlkKTsKICAgIH0KICB9Cn07Cgptb2R1bGUuZXhwb3J0cyA9IHJlc29sdmVyczs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// resolvers.js
+const resolvers = {
+  Query: {
+    user: async (_, { id }, { dataSources }) =&gt; {
+      return dataSources.userAPI.getUserById(id);
+    }
+  }
+};
+
+module.exports = resolvers;</pre></div><div class='content'></div><h2>Escribiendo la Prueba</h2>
+<div class='content'><p>Crea un archivo de prueba, por ejemplo, <code>resolvers.test.js</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ly8gcmVzb2x2ZXJzLnRlc3QuanMKY29uc3QgcmVzb2x2ZXJzID0gcmVxdWlyZSgnLi9yZXNvbHZlcnMnKTsKCmRlc2NyaWJlKCdSZXNvbHZlcnMnLCAoKSA9PiB7CiAgZGVzY3JpYmUoJ1F1ZXJ5LnVzZXInLCAoKSA9PiB7CiAgICBpdCgnc2hvdWxkIHJldHVybiB0aGUgY29ycmVjdCB1c2VyJywgYXN5bmMgKCkgPT4gewogICAgICBjb25zdCBtb2NrVXNlciA9IHsgaWQ6ICcxJywgbmFtZTogJ0pvaG4gRG9lJyB9OwogICAgICBjb25zdCBtb2NrRGF0YVNvdXJjZXMgPSB7CiAgICAgICAgdXNlckFQSTogewogICAgICAgICAgZ2V0VXNlckJ5SWQ6IGplc3QuZm4oKS5tb2NrUmVzb2x2ZWRWYWx1ZShtb2NrVXNlcikKICAgICAgICB9CiAgICAgIH07CgogICAgICBjb25zdCByZXN1bHQgPSBhd2FpdCByZXNvbHZlcnMuUXVlcnkudXNlcihudWxsLCB7IGlkOiAnMScgfSwgeyBkYXRhU291cmNlczogbW9ja0RhdGFTb3VyY2VzIH0pOwoKICAgICAgZXhwZWN0KHJlc3VsdCkudG9FcXVhbChtb2NrVXNlcik7CiAgICAgIGV4cGVjdChtb2NrRGF0YVNvdXJjZXMudXNlckFQSS5nZXRVc2VyQnlJZCkudG9IYXZlQmVlbkNhbGxlZFdpdGgoJzEnKTsKICAgIH0pOwogIH0pOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>// resolvers.test.js
+const resolvers = require('./resolvers');
+
+describe('Resolvers', () =&gt; {
+  describe('Query.user', () =&gt; {
+    it('should return the correct user', async () =&gt; {
+      const mockUser = { id: '1', name: 'John Doe' };
+      const mockDataSources = {
+        userAPI: {
+          getUserById: jest.fn().mockResolvedValue(mockUser)
+        }
+      };
+
+      const result = await resolvers.Query.user(null, { id: '1' }, { dataSources: mockDataSources });
+
+      expect(result).toEqual(mockUser);
+      expect(mockDataSources.userAPI.getUserById).toHaveBeenCalledWith('1');
+    });
+  });
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>describe</strong>: Agrupa pruebas relacionadas.</li>
+<li><strong>it</strong>: Define una prueba individual.</li>
+<li><strong>jest.fn()</strong>: Crea una función simulada (mock) para <code>getUserById</code>.</li>
+<li><strong>mockResolvedValue</strong>: Configura la función simulada para que devuelva un valor específico cuando se llame.</li>
+<li><strong>expect</strong>: Realiza una aserción sobre el resultado de la función.</li>
+</ul>
+</div><h1>4. Ejecución de las Pruebas</h1>
+<div class='content'><p>Para ejecutar las pruebas, añade un script en tu <code>package.json</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("InNjcmlwdHMiOiB7CiAgInRlc3QiOiAiamVzdCIKfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&quot;scripts&quot;: {
+  &quot;test&quot;: &quot;jest&quot;
+}</pre></div><div class='content'><p>Luego, ejecuta las pruebas con el siguiente comando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bnBtIHRlc3Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>npm test</pre></div><div class='content'></div><h1>5. Manejo de Casos de Prueba Comunes y Errores</h1>
+<div class='content'></div><h2>Casos de Prueba Comunes</h2>
+<div class='content'><ul>
+<li><strong>Datos no encontrados</strong>: Verifica que el resolver maneje correctamente los casos en los que no se encuentran datos.</li>
+<li><strong>Errores de red</strong>: Simula errores de red y asegúrate de que el resolver los maneje adecuadamente.</li>
+<li><strong>Validación de entradas</strong>: Asegúrate de que el resolver maneje correctamente las entradas inválidas.</li>
+</ul>
+</div><h2>Ejemplo de Manejo de Errores</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aXQoJ3Nob3VsZCBoYW5kbGUgZXJyb3JzJywgYXN5bmMgKCkgPT4gewogIGNvbnN0IG1vY2tEYXRhU291cmNlcyA9IHsKICAgIHVzZXJBUEk6IHsKICAgICAgZ2V0VXNlckJ5SWQ6IGplc3QuZm4oKS5tb2NrUmVqZWN0ZWRWYWx1ZShuZXcgRXJyb3IoJ05ldHdvcmsgZXJyb3InKSkKICAgIH0KICB9OwoKICBhd2FpdCBleHBlY3QocmVzb2x2ZXJzLlF1ZXJ5LnVzZXIobnVsbCwgeyBpZDogJzEnIH0sIHsgZGF0YVNvdXJjZXM6IG1vY2tEYXRhU291cmNlcyB9KSkKICAgIC5yZWplY3RzCiAgICAudG9UaHJvdygnTmV0d29yayBlcnJvcicpOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>it('should handle errors', async () =&gt; {
+  const mockDataSources = {
+    userAPI: {
+      getUserById: jest.fn().mockRejectedValue(new Error('Network error'))
+    }
+  };
+
+  await expect(resolvers.Query.user(null, { id: '1' }, { dataSources: mockDataSources }))
+    .rejects
+    .toThrow('Network error');
+});</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto la importancia de las pruebas unitarias para resolvers de GraphQL, cómo configurar un entorno de pruebas, y cómo escribir y ejecutar pruebas unitarias utilizando Jest. También hemos discutido cómo manejar casos de prueba comunes y errores. Con esta base, estarás mejor preparado para asegurar la calidad y fiabilidad de tus resolvers de GraphQL.</p>
+<p>En el siguiente tema, profundizaremos en las pruebas de integración para asegurarnos de que los diferentes componentes de tu aplicación funcionen juntos correctamente.</p>
+</div><div class='row navigation'>
+	<div class='col-2'>
+					<a href='06-04-graphql-subscriptions' title="Suscripciones de GraphQL">&#x25C4;Anterior</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end'>
+					<a href='07-02-integration-testing' title="Pruebas de Integración">Siguiente &#x25BA;</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+			<h1>Publicidad</h1>
+			<p>Este espacio está destinado a publicidad.</p>
+			<p>Si quieres ser patrocinador, contáctanos para incluir enlaces en esta zona: <a href='mailto:admin@campusempresa.cat'>admin@campusempresa.cat</a></p>
+			<p>¡Gracias por colaborar!</p>
+		</div>
+	</div>
+</div>
+
+   <div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Fem servir galetes per millorar la teva experiència d'ús i oferir continguts adaptats als teus interessos
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+	</div>    
+</body>
+</html>
