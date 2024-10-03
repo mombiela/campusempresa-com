@@ -25,12 +25,12 @@
     <div id="content">
 		<div id="header" class="container-xxl">
 	<div class="row">
-		<div class="col-12 col-md-8 p-0">
+		<div class="col-12 col-md-8 p-2 p-md-0">
 			<h1 class="m-0 p-0">
 				<a href="/"><img src="/img/logo_header.png"></a>
 			</h1>
 		</div>
-		<div class="col-12 col-md-4 px-0 py-2 py-md-0 text-end">
+		<div class="col-12 col-md-4 p-2 p-md-0 text-end">
 			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
 			<h3 id="main_subtitle"></h3>
 		</div>
@@ -38,7 +38,7 @@
 </div>
 <div class="container-xxl" style="margin-top: -1em;">
 	<div class="row">
-		<div class="col-12 px-0 py-2 py-md-0 m-0 text-end">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
 										<a href="https://enterprisecampus.net/mod/pytorch/04-04-fine-tuning-cnns" class="px-2">EN</a></b>
 				|
 				<b class="px-2">ES</b>
@@ -78,35 +78,52 @@
 			</div>
 </div>
 <div class='content'><p>El ajuste fino (fine-tuning) de redes neuronales convolucionales (CNNs) es una técnica poderosa que permite reutilizar modelos preentrenados en nuevas tareas. En lugar de entrenar una red desde cero, lo cual puede ser costoso en términos de tiempo y recursos, el ajuste fino aprovecha el conocimiento adquirido por una red preentrenada en una tarea similar y lo adapta a una nueva tarea específica.</p>
-</div><h1>Conceptos Clave</h1>
+</div><h1><p>Conceptos Clave</p>
+</h1>
 <div class='content'><ol>
 <li><strong>Modelos Preentrenados</strong>: Modelos que han sido entrenados en grandes conjuntos de datos, como ImageNet.</li>
 <li><strong>Transferencia de Aprendizaje</strong>: Técnica que utiliza modelos preentrenados y los adapta a nuevas tareas.</li>
 <li><strong>Congelación de Capas</strong>: Proceso de mantener ciertas capas del modelo preentrenado sin cambios durante el entrenamiento.</li>
 <li><strong>Descongelación de Capas</strong>: Proceso de permitir que ciertas capas del modelo preentrenado se actualicen durante el entrenamiento.</li>
 </ol>
-</div><h1>Pasos para el Ajuste Fino de CNNs</h1>
-<div class='content'></div><h2>1. Selección del Modelo Preentrenado</h2>
+</div><h1><p>Pasos para el Ajuste Fino de CNNs</p>
+</h1>
+<div class='content'></div><h2><ol>
+<li>Selección del Modelo Preentrenado</li>
+</ol>
+</h2>
 <div class='content'><p>PyTorch proporciona varios modelos preentrenados a través del módulo <code>torchvision.models</code>. Algunos de los modelos más comunes incluyen ResNet, VGG, y AlexNet.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCgojIENhcmdhciB1biBtb2RlbG8gcHJlZW50cmVuYWRvCm1vZGVsID0gbW9kZWxzLnJlc25ldDUwKHByZXRyYWluZWQ9VHJ1ZSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
 import torchvision.models as models
 
 # Cargar un modelo preentrenado
-model = models.resnet50(pretrained=True)</pre></div><div class='content'></div><h2>2. Congelación de Capas</h2>
+model = models.resnet50(pretrained=True)</pre></div><div class='content'></div><h2><ol start="2">
+<li>Congelación de Capas</li>
+</ol>
+</h2>
 <div class='content'><p>Para evitar que las capas preentrenadas se actualicen durante el entrenamiento inicial, se pueden &quot;congelar&quot; estas capas.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Zm9yIHBhcmFtIGluIG1vZGVsLnBhcmFtZXRlcnMoKToKICAgIHBhcmFtLnJlcXVpcmVzX2dyYWQgPSBGYWxzZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>for param in model.parameters():
-    param.requires_grad = False</pre></div><div class='content'></div><h2>3. Modificación de la Capa de Salida</h2>
+    param.requires_grad = False</pre></div><div class='content'></div><h2><ol start="3">
+<li>Modificación de la Capa de Salida</li>
+</ol>
+</h2>
 <div class='content'><p>La capa de salida del modelo debe ser modificada para que coincida con el número de clases de la nueva tarea.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLm5uIGFzIG5uCgojIE1vZGlmaWNhciBsYSBjYXBhIGRlIHNhbGlkYSBwYXJhIHVuYSBudWV2YSB0YXJlYSBjb24gMTAgY2xhc2VzCm51bV9mdHJzID0gbW9kZWwuZmMuaW5fZmVhdHVyZXMKbW9kZWwuZmMgPSBubi5MaW5lYXIobnVtX2Z0cnMsIDEwKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.nn as nn
 
 # Modificar la capa de salida para una nueva tarea con 10 clases
 num_ftrs = model.fc.in_features
-model.fc = nn.Linear(num_ftrs, 10)</pre></div><div class='content'></div><h2>4. Definición del Optimizador y la Función de Pérdida</h2>
+model.fc = nn.Linear(num_ftrs, 10)</pre></div><div class='content'></div><h2><ol start="4">
+<li>Definición del Optimizador y la Función de Pérdida</li>
+</ol>
+</h2>
 <div class='content'><p>Definir el optimizador y la función de pérdida para el entrenamiento.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoLm9wdGltIGFzIG9wdGltCgpjcml0ZXJpb24gPSBubi5Dcm9zc0VudHJvcHlMb3NzKCkKb3B0aW1pemVyID0gb3B0aW0uU0dEKG1vZGVsLmZjLnBhcmFtZXRlcnMoKSwgbHI9MC4wMDEsIG1vbWVudHVtPTAuOSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch.optim as optim
 
 criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(model.fc.parameters(), lr=0.001, momentum=0.9)</pre></div><div class='content'></div><h2>5. Entrenamiento del Modelo</h2>
+optimizer = optim.SGD(model.fc.parameters(), lr=0.001, momentum=0.9)</pre></div><div class='content'></div><h2><ol start="5">
+<li>Entrenamiento del Modelo</li>
+</ol>
+</h2>
 <div class='content'><p>Entrenar el modelo con los datos de la nueva tarea.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFamVtcGxvIGRlIGJ1Y2xlIGRlIGVudHJlbmFtaWVudG8gc2ltcGxpZmljYWRvCmZvciBlcG9jaCBpbiByYW5nZShudW1fZXBvY2hzKToKICAgIGZvciBpbnB1dHMsIGxhYmVscyBpbiBkYXRhbG9hZGVyOgogICAgICAgIG9wdGltaXplci56ZXJvX2dyYWQoKQogICAgICAgIG91dHB1dHMgPSBtb2RlbChpbnB1dHMpCiAgICAgICAgbG9zcyA9IGNyaXRlcmlvbihvdXRwdXRzLCBsYWJlbHMpCiAgICAgICAgbG9zcy5iYWNrd2FyZCgpCiAgICAgICAgb3B0aW1pemVyLnN0ZXAoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Ejemplo de bucle de entrenamiento simplificado
 for epoch in range(num_epochs):
@@ -115,7 +132,10 @@ for epoch in range(num_epochs):
         outputs = model(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
-        optimizer.step()</pre></div><div class='content'></div><h2>6. Descongelación de Capas y Ajuste Fino</h2>
+        optimizer.step()</pre></div><div class='content'></div><h2><ol start="6">
+<li>Descongelación de Capas y Ajuste Fino</li>
+</ol>
+</h2>
 <div class='content'><p>Después de entrenar la capa de salida, se pueden descongelar algunas de las capas preentrenadas para ajustar finamente el modelo.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBEZXNjb25nZWxhciB0b2RhcyBsYXMgY2FwYXMKZm9yIHBhcmFtIGluIG1vZGVsLnBhcmFtZXRlcnMoKToKICAgIHBhcmFtLnJlcXVpcmVzX2dyYWQgPSBUcnVlCgojIFJlZGVmaW5pciBlbCBvcHRpbWl6YWRvciBwYXJhIGluY2x1aXIgdG9kb3MgbG9zIHBhcsOhbWV0cm9zCm9wdGltaXplciA9IG9wdGltLlNHRChtb2RlbC5wYXJhbWV0ZXJzKCksIGxyPTAuMDAwMSwgbW9tZW50dW09MC45KQoKIyBDb250aW51YXIgZWwgZW50cmVuYW1pZW50bwpmb3IgZXBvY2ggaW4gcmFuZ2UobnVtX2ZpbmVfdHVuZV9lcG9jaHMpOgogICAgZm9yIGlucHV0cywgbGFiZWxzIGluIGRhdGFsb2FkZXI6CiAgICAgICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICAgICAgb3V0cHV0cyA9IG1vZGVsKGlucHV0cykKICAgICAgICBsb3NzID0gY3JpdGVyaW9uKG91dHB1dHMsIGxhYmVscykKICAgICAgICBsb3NzLmJhY2t3YXJkKCkKICAgICAgICBvcHRpbWl6ZXIuc3RlcCgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Descongelar todas las capas
 for param in model.parameters():
@@ -131,8 +151,10 @@ for epoch in range(num_fine_tune_epochs):
         outputs = model(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
-        optimizer.step()</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
-<div class='content'></div><h2>Ejercicio</h2>
+        optimizer.step()</pre></div><div class='content'></div><h1><p>Ejercicio Práctico</p>
+</h1>
+<div class='content'></div><h2><p>Ejercicio</p>
+</h2>
 <div class='content'><ol>
 <li>Selecciona un modelo preentrenado de <code>torchvision.models</code>.</li>
 <li>Congela todas las capas del modelo.</li>
@@ -140,7 +162,8 @@ for epoch in range(num_fine_tune_epochs):
 <li>Entrena el modelo con un conjunto de datos de tu elección.</li>
 <li>Descongela las capas y realiza un ajuste fino del modelo.</li>
 </ol>
-</div><h2>Solución</h2>
+</div><h2><p>Solución</p>
+</h2>
 <div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaHZpc2lvbi5tb2RlbHMgYXMgbW9kZWxzCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0KZnJvbSB0b3JjaHZpc2lvbiBpbXBvcnQgZGF0YXNldHMsIHRyYW5zZm9ybXMKZnJvbSB0b3JjaC51dGlscy5kYXRhIGltcG9ydCBEYXRhTG9hZGVyCgojIDEuIFNlbGVjY2nDs24gZGVsIG1vZGVsbyBwcmVlbnRyZW5hZG8KbW9kZWwgPSBtb2RlbHMucmVzbmV0NTAocHJldHJhaW5lZD1UcnVlKQoKIyAyLiBDb25nZWxhY2nDs24gZGUgdG9kYXMgbGFzIGNhcGFzCmZvciBwYXJhbSBpbiBtb2RlbC5wYXJhbWV0ZXJzKCk6CiAgICBwYXJhbS5yZXF1aXJlc19ncmFkID0gRmFsc2UKCiMgMy4gTW9kaWZpY2FjacOzbiBkZSBsYSBjYXBhIGRlIHNhbGlkYQpudW1fZnRycyA9IG1vZGVsLmZjLmluX2ZlYXR1cmVzCm1vZGVsLmZjID0gbm4uTGluZWFyKG51bV9mdHJzLCA1KQoKIyA0LiBEZWZpbmljacOzbiBkZWwgb3B0aW1pemFkb3IgeSBsYSBmdW5jacOzbiBkZSBww6lyZGlkYQpjcml0ZXJpb24gPSBubi5Dcm9zc0VudHJvcHlMb3NzKCkKb3B0aW1pemVyID0gb3B0aW0uU0dEKG1vZGVsLmZjLnBhcmFtZXRlcnMoKSwgbHI9MC4wMDEsIG1vbWVudHVtPTAuOSkKCiMgNS4gUHJlcGFyYWNpw7NuIGRlIGxvcyBkYXRvcwp0cmFuc2Zvcm0gPSB0cmFuc2Zvcm1zLkNvbXBvc2UoWwogICAgdHJhbnNmb3Jtcy5SZXNpemUoMjU2KSwKICAgIHRyYW5zZm9ybXMuQ2VudGVyQ3JvcCgyMjQpLAogICAgdHJhbnNmb3Jtcy5Ub1RlbnNvcigpLApdKQoKdHJhaW5fZGF0YXNldCA9IGRhdGFzZXRzLkZha2VEYXRhKHRyYW5zZm9ybT10cmFuc2Zvcm0pCnRyYWluX2xvYWRlciA9IERhdGFMb2FkZXIodHJhaW5fZGF0YXNldCwgYmF0Y2hfc2l6ZT0zMiwgc2h1ZmZsZT1UcnVlKQoKIyBFbnRyZW5hbWllbnRvIGluaWNpYWwKbnVtX2Vwb2NocyA9IDUKZm9yIGVwb2NoIGluIHJhbmdlKG51bV9lcG9jaHMpOgogICAgZm9yIGlucHV0cywgbGFiZWxzIGluIHRyYWluX2xvYWRlcjoKICAgICAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgICAgICBvdXRwdXRzID0gbW9kZWwoaW5wdXRzKQogICAgICAgIGxvc3MgPSBjcml0ZXJpb24ob3V0cHV0cywgbGFiZWxzKQogICAgICAgIGxvc3MuYmFja3dhcmQoKQogICAgICAgIG9wdGltaXplci5zdGVwKCkKCiMgNi4gRGVzY29uZ2VsYWNpw7NuIGRlIGNhcGFzIHkgYWp1c3RlIGZpbm8KZm9yIHBhcmFtIGluIG1vZGVsLnBhcmFtZXRlcnMoKToKICAgIHBhcmFtLnJlcXVpcmVzX2dyYWQgPSBUcnVlCgpvcHRpbWl6ZXIgPSBvcHRpbS5TR0QobW9kZWwucGFyYW1ldGVycygpLCBscj0wLjAwMDEsIG1vbWVudHVtPTAuOSkKCm51bV9maW5lX3R1bmVfZXBvY2hzID0gNQpmb3IgZXBvY2ggaW4gcmFuZ2UobnVtX2ZpbmVfdHVuZV9lcG9jaHMpOgogICAgZm9yIGlucHV0cywgbGFiZWxzIGluIHRyYWluX2xvYWRlcjoKICAgICAgICBvcHRpbWl6ZXIuemVyb19ncmFkKCkKICAgICAgICBvdXRwdXRzID0gbW9kZWwoaW5wdXRzKQogICAgICAgIGxvc3MgPSBjcml0ZXJpb24ob3V0cHV0cywgbGFiZWxzKQogICAgICAgIGxvc3MuYmFja3dhcmQoKQogICAgICAgIG9wdGltaXplci5zdGVwKCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
 import torchvision.models as models
 import torch.nn as nn
@@ -196,7 +219,8 @@ for epoch in range(num_fine_tune_epochs):
         outputs = model(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
-        optimizer.step()</pre></div><div class='content'></div><h1>Conclusión</h1>
+        optimizer.step()</pre></div><div class='content'></div><h1><p>Conclusión</p>
+</h1>
 <div class='content'><p>El ajuste fino de CNNs es una técnica eficiente para adaptar modelos preentrenados a nuevas tareas, ahorrando tiempo y recursos. Al congelar y descongelar capas estratégicamente, se puede aprovechar el conocimiento previo del modelo y mejorar su rendimiento en la nueva tarea. Esta técnica es especialmente útil en escenarios donde los datos de entrenamiento son limitados.</p>
 </div><div class='row navigation'>
 	<div class='col-2'>

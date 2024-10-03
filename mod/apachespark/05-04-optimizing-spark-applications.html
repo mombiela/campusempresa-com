@@ -25,12 +25,12 @@
     <div id="content">
 		<div id="header" class="container-xxl">
 	<div class="row">
-		<div class="col-12 col-md-8 p-0">
+		<div class="col-12 col-md-8 p-2 p-md-0">
 			<h1 class="m-0 p-0">
 				<a href="/"><img src="/img/logo_header.png"></a>
 			</h1>
 		</div>
-		<div class="col-12 col-md-4 px-0 py-2 py-md-0 text-end">
+		<div class="col-12 col-md-4 p-2 p-md-0 text-end">
 			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
 			<h3 id="main_subtitle"></h3>
 		</div>
@@ -38,7 +38,7 @@
 </div>
 <div class="container-xxl" style="margin-top: -1em;">
 	<div class="row">
-		<div class="col-12 px-0 py-2 py-md-0 m-0 text-end">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
 										<a href="https://enterprisecampus.net/mod/apachespark/05-04-optimizing-spark-applications" class="px-2">EN</a></b>
 				|
 				<b class="px-2">ES</b>
@@ -78,7 +78,8 @@
 			</div>
 </div>
 <div class='content'><p>La optimización de aplicaciones en Apache Spark es crucial para mejorar el rendimiento y la eficiencia de los trabajos de procesamiento de datos. En este módulo, aprenderemos diversas técnicas y estrategias para optimizar nuestras aplicaciones Spark.</p>
-</div><h1>Contenido</h1>
+</div><h1><p>Contenido</p>
+</h1>
 <div class='content'><ol>
 <li><a href="#entendiendo-el-plan-de-ejecución">Entendiendo el Plan de Ejecución</a></li>
 <li><a href="#optimización-de-transformaciones">Optimización de Transformaciones</a></li>
@@ -88,58 +89,76 @@
 <li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
 <li><a href="#conclusión">Conclusión</a></li>
 </ol>
-</div><h1>Entendiendo el Plan de Ejecución</h1>
-<div class='content'></div><h2>Plan Lógico y Plan Físico</h2>
+</div><h1><p>Entendiendo el Plan de Ejecución</p>
+</h1>
+<div class='content'></div><h2><p>Plan Lógico y Plan Físico</p>
+</h2>
 <div class='content'><p>Spark genera dos tipos de planes de ejecución:</p>
 <ul>
 <li><strong>Plan Lógico</strong>: Describe las operaciones de alto nivel que se realizarán.</li>
 <li><strong>Plan Físico</strong>: Detalla cómo se ejecutarán esas operaciones en el clúster.</li>
 </ul>
-</div><h2>Visualización del Plan de Ejecución</h2>
+</div><h2><p>Visualización del Plan de Ejecución</p>
+</h2>
 <div class='content'><p>Podemos visualizar el plan de ejecución utilizando el método <code>explain()</code> en un DataFrame.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGRmID0gc3BhcmsucmVhZC5qc29uKCJwYXRoL3RvL2pzb24vZmlsZSIpCmRmLmZpbHRlcigkImFnZSIgPiAyMSkuZXhwbGFpbigp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val df = spark.read.json(&quot;path/to/json/file&quot;)
 df.filter($&quot;age&quot; &gt; 21).explain()</pre></div><div class='content'><p>Este comando mostrará el plan lógico y físico de la operación.</p>
-</div><h1>Optimización de Transformaciones</h1>
-<div class='content'></div><h2>Transformaciones Narrow y Wide</h2>
+</div><h1><p>Optimización de Transformaciones</p>
+</h1>
+<div class='content'></div><h2><p>Transformaciones Narrow y Wide</p>
+</h2>
 <div class='content'><ul>
 <li><strong>Narrow Transformations</strong>: Operaciones que no requieren un shuffle de datos (e.g., <code>map</code>, <code>filter</code>).</li>
 <li><strong>Wide Transformations</strong>: Operaciones que requieren un shuffle de datos (e.g., <code>groupBy</code>, <code>join</code>).</li>
 </ul>
-</div><h2>Ejemplo de Transformaciones</h2>
+</div><h2><p>Ejemplo de Transformaciones</p>
+</h2>
 <div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnBhcmFsbGVsaXplKFNlcSgoMSwgMiksICgzLCA0KSwgKDMsIDYpKSkKdmFsIHJlc3VsdCA9IHJkZC5ncm91cEJ5S2V5KCkubWFwVmFsdWVzKF8uc3VtKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.parallelize(Seq((1, 2), (3, 4), (3, 6)))
 val result = rdd.groupByKey().mapValues(_.sum)</pre></div><div class='content'><p>En este ejemplo, <code>groupByKey</code> es una transformación wide que puede ser costosa. En su lugar, podemos usar <code>reduceByKey</code> para optimizar:</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJlc3VsdCA9IHJkZC5yZWR1Y2VCeUtleShfICsgXyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val result = rdd.reduceByKey(_ + _)</pre></div><div class='content'></div><h1>Uso Eficiente de la Memoria</h1>
-<div class='content'></div><h2>Persistencia y Caché</h2>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJlc3VsdCA9IHJkZC5yZWR1Y2VCeUtleShfICsgXyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val result = rdd.reduceByKey(_ + _)</pre></div><div class='content'></div><h1><p>Uso Eficiente de la Memoria</p>
+</h1>
+<div class='content'></div><h2><p>Persistencia y Caché</p>
+</h2>
 <div class='content'><p>Podemos almacenar RDDs en memoria para reutilizarlos sin volver a calcularlos.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJwYXRoL3RvL2ZpbGUiKQpyZGQuY2FjaGUoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;path/to/file&quot;)
-rdd.cache()</pre></div><div class='content'></div><h2>Niveles de Persistencia</h2>
+rdd.cache()</pre></div><div class='content'></div><h2><p>Niveles de Persistencia</p>
+</h2>
 <div class='content'><p>Spark ofrece varios niveles de persistencia, como <code>MEMORY_ONLY</code>, <code>MEMORY_AND_DISK</code>, etc.</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmRkLnBlcnNpc3QoU3RvcmFnZUxldmVsLk1FTU9SWV9BTkRfRElTSyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>rdd.persist(StorageLevel.MEMORY_AND_DISK)</pre></div><div class='content'></div><h1>Particionamiento de Datos</h1>
-<div class='content'></div><h2>Reparticionamiento</h2>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cmRkLnBlcnNpc3QoU3RvcmFnZUxldmVsLk1FTU9SWV9BTkRfRElTSyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>rdd.persist(StorageLevel.MEMORY_AND_DISK)</pre></div><div class='content'></div><h1><p>Particionamiento de Datos</p>
+</h1>
+<div class='content'></div><h2><p>Reparticionamiento</p>
+</h2>
 <div class='content'><p>Podemos controlar el número de particiones para optimizar el procesamiento.</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJwYXRoL3RvL2ZpbGUiKS5yZXBhcnRpdGlvbigxMCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;path/to/file&quot;).repartition(10)</pre></div><div class='content'></div><h2>Coalesce</h2>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJwYXRoL3RvL2ZpbGUiKS5yZXBhcnRpdGlvbigxMCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;path/to/file&quot;).repartition(10)</pre></div><div class='content'></div><h2><p>Coalesce</p>
+</h2>
 <div class='content'><p>Para reducir el número de particiones sin un shuffle completo, usamos <code>coalesce</code>.</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJwYXRoL3RvL2ZpbGUiKS5jb2FsZXNjZSg1KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;path/to/file&quot;).coalesce(5)</pre></div><div class='content'></div><h1>Configuración de Parámetros</h1>
-<div class='content'></div><h2>Parámetros de Configuración</h2>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJwYXRoL3RvL2ZpbGUiKS5jb2FsZXNjZSg1KQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;path/to/file&quot;).coalesce(5)</pre></div><div class='content'></div><h1><p>Configuración de Parámetros</p>
+</h1>
+<div class='content'></div><h2><p>Parámetros de Configuración</p>
+</h2>
 <div class='content'><p>Algunos parámetros clave para la optimización incluyen:</p>
 <ul>
 <li><code>spark.executor.memory</code>: Cantidad de memoria asignada a cada ejecutor.</li>
 <li><code>spark.executor.cores</code>: Número de núcleos asignados a cada ejecutor.</li>
 <li><code>spark.sql.shuffle.partitions</code>: Número de particiones para operaciones de shuffle.</li>
 </ul>
-</div><h2>Ejemplo de Configuración</h2>
+</div><h2><p>Ejemplo de Configuración</p>
+</h2>
 <div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIGNvbmYgPSBuZXcgU3BhcmtDb25mKCkKICAuc2V0QXBwTmFtZSgiT3B0aW1pemVkQXBwIikKICAuc2V0KCJzcGFyay5leGVjdXRvci5tZW1vcnkiLCAiNGciKQogIC5zZXQoInNwYXJrLmV4ZWN1dG9yLmNvcmVzIiwgIjIiKQogIC5zZXQoInNwYXJrLnNxbC5zaHVmZmxlLnBhcnRpdGlvbnMiLCAiNTAiKQoKdmFsIHNjID0gbmV3IFNwYXJrQ29udGV4dChjb25mKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val conf = new SparkConf()
   .setAppName(&quot;OptimizedApp&quot;)
   .set(&quot;spark.executor.memory&quot;, &quot;4g&quot;)
   .set(&quot;spark.executor.cores&quot;, &quot;2&quot;)
   .set(&quot;spark.sql.shuffle.partitions&quot;, &quot;50&quot;)
 
-val sc = new SparkContext(conf)</pre></div><div class='content'></div><h1>Ejercicios Prácticos</h1>
-<div class='content'></div><h2>Ejercicio 1: Optimización de Transformaciones</h2>
+val sc = new SparkContext(conf)</pre></div><div class='content'></div><h1><p>Ejercicios Prácticos</p>
+</h1>
+<div class='content'></div><h2><p>Ejercicio 1: Optimización de Transformaciones</p>
+</h2>
 <div class='content'><p>Dado el siguiente código, optimízalo para mejorar el rendimiento:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnBhcmFsbGVsaXplKFNlcSgoMSwgMiksICgzLCA0KSwgKDMsIDYpKSkKdmFsIHJlc3VsdCA9IHJkZC5ncm91cEJ5S2V5KCkubWFwVmFsdWVzKF8uc3VtKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.parallelize(Seq((1, 2), (3, 4), (3, 6)))
 val result = rdd.groupByKey().mapValues(_.sum)</pre></div><div class='content'><p><strong>Solución:</strong></p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJlc3VsdCA9IHJkZC5yZWR1Y2VCeUtleShfICsgXyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val result = rdd.reduceByKey(_ + _)</pre></div><div class='content'></div><h2>Ejercicio 2: Uso de Caché</h2>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJlc3VsdCA9IHJkZC5yZWR1Y2VCeUtleShfICsgXyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val result = rdd.reduceByKey(_ + _)</pre></div><div class='content'></div><h2><p>Ejercicio 2: Uso de Caché</p>
+</h2>
 <div class='content'><p>Carga un archivo de texto y realiza varias operaciones sobre él. Usa caché para optimizar el rendimiento.</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJwYXRoL3RvL2ZpbGUiKQp2YWwgd29yZHMgPSByZGQuZmxhdE1hcChfLnNwbGl0KCIgIikpCnZhbCB3b3JkQ291bnRzID0gd29yZHMubWFwKHdvcmQgPT4gKHdvcmQsIDEpKS5yZWR1Y2VCeUtleShfICsgXykKd29yZENvdW50cy5jb2xsZWN0KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;path/to/file&quot;)
 val words = rdd.flatMap(_.split(&quot; &quot;))
@@ -148,7 +167,8 @@ wordCounts.collect()</pre></div><div class='content'><p><strong>Solución:</stro
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("dmFsIHJkZCA9IHNjLnRleHRGaWxlKCJwYXRoL3RvL2ZpbGUiKS5jYWNoZSgpCnZhbCB3b3JkcyA9IHJkZC5mbGF0TWFwKF8uc3BsaXQoIiAiKSkKdmFsIHdvcmRDb3VudHMgPSB3b3Jkcy5tYXAod29yZCA9PiAod29yZCwgMSkpLnJlZHVjZUJ5S2V5KF8gKyBfKQp3b3JkQ291bnRzLmNvbGxlY3QoKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>val rdd = sc.textFile(&quot;path/to/file&quot;).cache()
 val words = rdd.flatMap(_.split(&quot; &quot;))
 val wordCounts = words.map(word =&gt; (word, 1)).reduceByKey(_ + _)
-wordCounts.collect()</pre></div><div class='content'></div><h1>Conclusión</h1>
+wordCounts.collect()</pre></div><div class='content'></div><h1><p>Conclusión</p>
+</h1>
 <div class='content'><p>En este módulo, hemos aprendido diversas técnicas para optimizar aplicaciones Spark, incluyendo la comprensión del plan de ejecución, la optimización de transformaciones, el uso eficiente de la memoria, el particionamiento de datos y la configuración de parámetros. Estas estrategias son esenciales para mejorar el rendimiento y la eficiencia de nuestras aplicaciones Spark. En el próximo módulo, exploraremos cómo ejecutar Spark en diferentes entornos de nube.</p>
 </div><div class='row navigation'>
 	<div class='col-2'>

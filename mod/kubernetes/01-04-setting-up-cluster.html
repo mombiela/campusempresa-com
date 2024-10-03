@@ -25,12 +25,12 @@
     <div id="content">
 		<div id="header" class="container-xxl">
 	<div class="row">
-		<div class="col-12 col-md-8 p-0">
+		<div class="col-12 col-md-8 p-2 p-md-0">
 			<h1 class="m-0 p-0">
 				<a href="/"><img src="/img/logo_header.png"></a>
 			</h1>
 		</div>
-		<div class="col-12 col-md-4 px-0 py-2 py-md-0 text-end">
+		<div class="col-12 col-md-4 p-2 p-md-0 text-end">
 			<h2 id="main_title"><cite>Construyendo la sociedad de hoy y del mañana</cite></h2>
 			<h3 id="main_subtitle"></h3>
 		</div>
@@ -38,7 +38,7 @@
 </div>
 <div class="container-xxl" style="margin-top: -1em;">
 	<div class="row">
-		<div class="col-12 px-0 py-2 py-md-0 m-0 text-end">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
 										<a href="https://enterprisecampus.net/mod/kubernetes/01-04-setting-up-cluster" class="px-2">EN</a></b>
 				|
 				<b class="px-2">ES</b>
@@ -78,14 +78,16 @@
 			</div>
 </div>
 <div class='content'><p>En esta sección, aprenderás cómo configurar un clúster de Kubernetes desde cero. Este proceso incluye la instalación de las herramientas necesarias, la configuración de los nodos y la verificación de que el clúster esté funcionando correctamente.</p>
-</div><h1>Objetivos de Aprendizaje</h1>
+</div><h1><p>Objetivos de Aprendizaje</p>
+</h1>
 <div class='content'><ul>
 <li>Entender los requisitos previos para configurar un clúster de Kubernetes.</li>
 <li>Instalar y configurar <code>kubeadm</code>, <code>kubelet</code> y <code>kubectl</code>.</li>
 <li>Inicializar el clúster y unir nodos al clúster.</li>
 <li>Verificar la configuración del clúster.</li>
 </ul>
-</div><h1>Requisitos Previos</h1>
+</div><h1><p>Requisitos Previos</p>
+</h1>
 <div class='content'><p>Antes de comenzar, asegúrate de tener:</p>
 <ul>
 <li>Un sistema operativo compatible (preferiblemente Ubuntu 20.04 o CentOS 7).</li>
@@ -93,56 +95,73 @@
 <li>Conexión a Internet para descargar las herramientas necesarias.</li>
 <li>Privilegios de superusuario (root) en las máquinas.</li>
 </ul>
-</div><h1>Paso 1: Preparar las Máquinas</h1>
-<h2>Actualizar el Sistema</h2>
+</div><h1><p>Paso 1: Preparar las Máquinas</p>
+</h1>
+<h2><p>Actualizar el Sistema</p>
+</h2>
 <div class='content'><p>Primero, actualiza los paquetes de tu sistema operativo:</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZSAmJiBzdWRvIGFwdC1nZXQgdXBncmFkZSAteQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update &amp;&amp; sudo apt-get upgrade -y</pre></div><div class='content'></div><h2>Desactivar el Swap</h2>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZSAmJiBzdWRvIGFwdC1nZXQgdXBncmFkZSAteQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update &amp;&amp; sudo apt-get upgrade -y</pre></div><div class='content'></div><h2><p>Desactivar el Swap</p>
+</h2>
 <div class='content'><p>Kubernetes requiere que el swap esté desactivado. Puedes desactivarlo temporalmente con:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzd2Fwb2ZmIC1h"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo swapoff -a</pre></div><div class='content'><p>Para desactivarlo permanentemente, edita el archivo <code>/etc/fstab</code> y comenta la línea que contiene la entrada de swap.</p>
-</div><h2>Configurar el Firewall</h2>
+</div><h2><p>Configurar el Firewall</p>
+</h2>
 <div class='content'><p>Permite el tráfico necesario para Kubernetes:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyB1ZncgYWxsb3cgNjQ0My90Y3AKc3VkbyB1ZncgYWxsb3cgMjM3OToyMzgwL3RjcApzdWRvIHVmdyBhbGxvdyAxMDI1MDoxMDI1Mi90Y3AKc3VkbyB1ZncgYWxsb3cgMTAyNTUvdGNw"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo ufw allow 6443/tcp
 sudo ufw allow 2379:2380/tcp
 sudo ufw allow 10250:10252/tcp
-sudo ufw allow 10255/tcp</pre></div><div class='content'></div><h1>Paso 2: Instalar Docker</h1>
+sudo ufw allow 10255/tcp</pre></div><div class='content'></div><h1><p>Paso 2: Instalar Docker</p>
+</h1>
 <div class='content'><p>Kubernetes utiliza Docker como su motor de contenedores. Instala Docker con los siguientes comandos:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCAteSBkb2NrZXIuaW8Kc3VkbyBzeXN0ZW1jdGwgZW5hYmxlIGRvY2tlcgpzdWRvIHN5c3RlbWN0bCBzdGFydCBkb2NrZXI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
 sudo apt-get install -y docker.io
 sudo systemctl enable docker
-sudo systemctl start docker</pre></div><div class='content'></div><h1>Paso 3: Instalar kubeadm, kubelet y kubectl</h1>
-<h2>Añadir la Fuente del Repositorio de Kubernetes</h2>
+sudo systemctl start docker</pre></div><div class='content'></div><h1><p>Paso 3: Instalar kubeadm, kubelet y kubectl</p>
+</h1>
+<h2><p>Añadir la Fuente del Repositorio de Kubernetes</p>
+</h2>
 <div class='content'><p>Añade la clave GPG y el repositorio de Kubernetes:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCAteSBhcHQtdHJhbnNwb3J0LWh0dHBzIGNhLWNlcnRpZmljYXRlcyBjdXJsCnN1ZG8gY3VybCAtZnNTTCBodHRwczovL3BhY2thZ2VzLmNsb3VkLmdvb2dsZS5jb20vYXB0L2RvYy9hcHQta2V5LmdwZyB8IHN1ZG8gYXB0LWtleSBhZGQgLQplY2hvICJkZWIgaHR0cHM6Ly9hcHQua3ViZXJuZXRlcy5pby8ga3ViZXJuZXRlcy14ZW5pYWwgbWFpbiIgfCBzdWRvIHRlZSAvZXRjL2FwdC9zb3VyY2VzLmxpc3QuZC9rdWJlcm5ldGVzLmxpc3Q="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl
 sudo curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-echo &quot;deb https://apt.kubernetes.io/ kubernetes-xenial main&quot; | sudo tee /etc/apt/sources.list.d/kubernetes.list</pre></div><div class='content'></div><h2>Instalar las Herramientas</h2>
+echo &quot;deb https://apt.kubernetes.io/ kubernetes-xenial main&quot; | sudo tee /etc/apt/sources.list.d/kubernetes.list</pre></div><div class='content'></div><h2><p>Instalar las Herramientas</p>
+</h2>
 <div class='content'><p>Instala <code>kubeadm</code>, <code>kubelet</code> y <code>kubectl</code>:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBhcHQtZ2V0IHVwZGF0ZQpzdWRvIGFwdC1nZXQgaW5zdGFsbCAteSBrdWJlbGV0IGt1YmVhZG0ga3ViZWN0bApzdWRvIGFwdC1tYXJrIGhvbGQga3ViZWxldCBrdWJlYWRtIGt1YmVjdGw="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
-sudo apt-mark hold kubelet kubeadm kubectl</pre></div><div class='content'></div><h1>Paso 4: Inicializar el Clúster</h1>
-<h2>Inicializar el Nodo Maestro</h2>
+sudo apt-mark hold kubelet kubeadm kubectl</pre></div><div class='content'></div><h1><p>Paso 4: Inicializar el Clúster</p>
+</h1>
+<h2><p>Inicializar el Nodo Maestro</p>
+</h2>
 <div class='content'><p>En el nodo maestro, ejecuta el siguiente comando para inicializar el clúster:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBrdWJlYWRtIGluaXQgLS1wb2QtbmV0d29yay1jaWRyPTE5Mi4xNjguMC4wLzE2"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo kubeadm init --pod-network-cidr=192.168.0.0/16</pre></div><div class='content'><p>Este comando configurará el nodo maestro y te proporcionará un comando <code>kubeadm join</code> que usarás para unir los nodos trabajadores al clúster.</p>
-</div><h2>Configurar kubectl para el Usuario No Root</h2>
+</div><h2><p>Configurar kubectl para el Usuario No Root</p>
+</h2>
 <div class='content'><p>Configura <code>kubectl</code> para tu usuario no root:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bWtkaXIgLXAgJEhPTUUvLmt1YmUKc3VkbyBjcCAtaSAvZXRjL2t1YmVybmV0ZXMvYWRtaW4uY29uZiAkSE9NRS8ua3ViZS9jb25maWcKc3VkbyBjaG93biAkKGlkIC11KTokKGlkIC1nKSAkSE9NRS8ua3ViZS9jb25maWc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-sudo chown $(id -u):$(id -g) $HOME/.kube/config</pre></div><div class='content'></div><h2>Instalar una Red de Pods</h2>
+sudo chown $(id -u):$(id -g) $HOME/.kube/config</pre></div><div class='content'></div><h2><p>Instalar una Red de Pods</p>
+</h2>
 <div class='content'><p>Instala una red de pods (por ejemplo, Calico):</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBodHRwczovL2RvY3MucHJvamVjdGNhbGljby5vcmcvbWFuaWZlc3RzL2NhbGljby55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml</pre></div><div class='content'></div><h1>Paso 5: Unir Nodos Trabajadores al Clúster</h1>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBodHRwczovL2RvY3MucHJvamVjdGNhbGljby5vcmcvbWFuaWZlc3RzL2NhbGljby55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml</pre></div><div class='content'></div><h1><p>Paso 5: Unir Nodos Trabajadores al Clúster</p>
+</h1>
 <div class='content'><p>En cada nodo trabajador, ejecuta el comando <code>kubeadm join</code> que obtuviste al inicializar el nodo maestro. Debe tener un aspecto similar a este:</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBrdWJlYWRtIGpvaW4gPG1hc3Rlci1pcD46NjQ0MyAtLXRva2VuIDx0b2tlbj4gLS1kaXNjb3ZlcnktdG9rZW4tY2EtY2VydC1oYXNoIHNoYTI1Njo8aGFzaD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo kubeadm join &lt;master-ip&gt;:6443 --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;hash&gt;</pre></div><div class='content'></div><h1>Paso 6: Verificar el Clúster</h1>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBrdWJlYWRtIGpvaW4gPG1hc3Rlci1pcD46NjQ0MyAtLXRva2VuIDx0b2tlbj4gLS1kaXNjb3ZlcnktdG9rZW4tY2EtY2VydC1oYXNoIHNoYTI1Njo8aGFzaD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo kubeadm join &lt;master-ip&gt;:6443 --token &lt;token&gt; --discovery-token-ca-cert-hash sha256:&lt;hash&gt;</pre></div><div class='content'></div><h1><p>Paso 6: Verificar el Clúster</p>
+</h1>
 <div class='content'><p>Verifica que todos los nodos estén unidos y funcionando correctamente:</p>
 </div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBnZXQgbm9kZXM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl get nodes</pre></div><div class='content'><p>Deberías ver una lista de todos los nodos en tu clúster con el estado <code>Ready</code>.</p>
-</div><h1>Ejercicio Práctico</h1>
-<h2>Ejercicio 1: Configurar un Clúster de Kubernetes</h2>
+</div><h1><p>Ejercicio Práctico</p>
+</h1>
+<h2><p>Ejercicio 1: Configurar un Clúster de Kubernetes</p>
+</h2>
 <div class='content'><ol>
 <li>Configura dos máquinas virtuales o instancias en la nube.</li>
 <li>Sigue los pasos anteriores para instalar Docker, <code>kubeadm</code>, <code>kubelet</code> y <code>kubectl</code>.</li>
 <li>Inicializa el nodo maestro y une el nodo trabajador.</li>
 <li>Verifica que el clúster esté funcionando correctamente.</li>
 </ol>
-</div><h2>Solución del Ejercicio 1</h2>
+</div><h2><p>Solución del Ejercicio 1</p>
+</h2>
 <div class='content'><ol>
 <li><strong>Preparar las Máquinas</strong>: Actualiza el sistema, desactiva el swap y configura el firewall en ambas máquinas.</li>
 <li><strong>Instalar Docker</strong>: Ejecuta los comandos de instalación de Docker en ambas máquinas.</li>
@@ -151,7 +170,8 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config</pre></div><div class='content'>
 <li><strong>Unir Nodos Trabajadores</strong>: Ejecuta el comando <code>kubeadm join</code> en el nodo trabajador.</li>
 <li><strong>Verificar el Clúster</strong>: Usa <code>kubectl get nodes</code> para verificar que ambos nodos estén en estado <code>Ready</code>.</li>
 </ol>
-</div><h1>Conclusión</h1>
+</div><h1><p>Conclusión</p>
+</h1>
 <div class='content'><p>En esta sección, has aprendido cómo configurar un clúster de Kubernetes desde cero. Has instalado las herramientas necesarias, inicializado el nodo maestro, unido nodos trabajadores y verificado la configuración del clúster. Con esta base, estás listo para explorar los componentes principales de Kubernetes en el siguiente módulo.</p>
 </div><div class='row navigation'>
 	<div class='col-2'>
