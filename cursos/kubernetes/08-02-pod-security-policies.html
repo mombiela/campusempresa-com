@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Políticas de Seguridad de Pods </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/kubernetes/08-02-pod-security-policies" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/kubernetes/08-02-pod-security-policies" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/kubernetes/08-02-pod-security-policies" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "kubernetes";
+  		var TEMA_NAME = "8-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/kubernetes/08-02-pod-security-policies";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/kubernetes/08-02-pod-security-policies" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/kubernetes/08-02-pod-security-policies" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="kubernetes">
+		<a  href="#" class="text-secondary d-none" data-read-mod="kubernetes" data-read-unit="8-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="kubernetes" data-unread-unit="8-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='08-01-rbac' title="Control de Acceso Basado en Roles (RBAC)" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='08-01-rbac' title="Control de Acceso Basado en Roles (RBAC)" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Políticas de Seguridad de Pods</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-03-network-security' title="Seguridad de Red" class="py-2 px-3 btn btn-primary"
+				data-read-mod="kubernetes" data-read-unit="8-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-03-network-security' title="Seguridad de Red" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="kubernetes" data-read-unit="8-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>Las Políticas de Seguridad de Pods (PSP) son una característica de Kubernetes que permite a los administradores controlar la seguridad de los pods en un clúster. Las PSP definen un conjunto de condiciones que un pod debe cumplir para ser admitido en el clúster. Estas políticas ayudan a garantizar que los pods se ejecuten de manera segura y cumplan con las políticas de seguridad de la organización.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2><ol>
+<li>¿Qué es una Política de Seguridad de Pods?</li>
+</ol></h2>
+<div class='content'><p>Una PSP es un recurso de Kubernetes que define un conjunto de condiciones y restricciones que los pods deben cumplir para ser admitidos en el clúster. Estas condiciones pueden incluir restricciones sobre el uso de privilegios, el acceso a volúmenes, la configuración de redes, entre otros.</p>
+</div><h2><ol start="2">
+<li>Componentes de una PSP</li>
+</ol></h2>
+<div class='content'><ul>
+<li><strong>Privilegios de Usuario</strong>: Controla si un pod puede ejecutarse como un usuario privilegiado.</li>
+<li><strong>Capacidades de Linux</strong>: Define las capacidades de Linux que un pod puede tener.</li>
+<li><strong>Volúmenes</strong>: Restringe los tipos de volúmenes que un pod puede usar.</li>
+<li><strong>Redes</strong>: Controla las configuraciones de red, como el uso de hostNetwork.</li>
+<li><strong>SELinux</strong>: Define las políticas de SELinux que un pod debe cumplir.</li>
+<li><strong>AppArmor</strong>: Especifica los perfiles de AppArmor que un pod debe usar.</li>
+</ul>
+</div><h1>Ejemplo de una PSP</h1>
+<div class='content'><p>A continuación, se muestra un ejemplo de una PSP que restringe los pods para que no se ejecuten como usuarios privilegiados y solo permite el uso de volúmenes de tipo <code>emptyDir</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcG9saWN5L3YxYmV0YTEKa2luZDogUG9kU2VjdXJpdHlQb2xpY3kKbWV0YWRhdGE6CiAgbmFtZTogcmVzdHJpY3RlZC1wc3AKc3BlYzoKICBwcml2aWxlZ2VkOiBmYWxzZQogIHZvbHVtZXM6CiAgLSAnZW1wdHlEaXInCiAgcnVuQXNVc2VyOgogICAgcnVsZTogJ011c3RSdW5Bc05vblJvb3QnCiAgc2VMaW51eDoKICAgIHJ1bGU6ICdSdW5Bc0FueScKICBzdXBwbGVtZW50YWxHcm91cHM6CiAgICBydWxlOiAnUnVuQXNBbnknCiAgZnNHcm91cDoKICAgIHJ1bGU6ICdSdW5Bc0FueSc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: restricted-psp
+spec:
+  privileged: false
+  volumes:
+  - 'emptyDir'
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'</pre></div><div class='content'></div><h2>Explicación del Ejemplo</h2>
+<div class='content'><ul>
+<li><strong>privileged: false</strong>: No permite que los pods se ejecuten como usuarios privilegiados.</li>
+<li><strong>volumes: ['emptyDir']</strong>: Solo permite el uso de volúmenes de tipo <code>emptyDir</code>.</li>
+<li><strong>runAsUser.rule: 'MustRunAsNonRoot'</strong>: Obliga a que los pods se ejecuten como un usuario no root.</li>
+<li><strong>seLinux.rule: 'RunAsAny'</strong>: No impone restricciones específicas de SELinux.</li>
+<li><strong>supplementalGroups.rule: 'RunAsAny'</strong>: No impone restricciones en los grupos suplementarios.</li>
+<li><strong>fsGroup.rule: 'RunAsAny'</strong>: No impone restricciones en los grupos de archivos.</li>
+</ul>
+</div><h1>Implementación de PSP en un Clúster</h1>
+<div class='content'></div><h2>Paso 1: Crear la PSP</h2>
+<div class='content'><p>Guarda el ejemplo anterior en un archivo llamado <code>restricted-psp.yaml</code> y aplícalo al clúster:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiByZXN0cmljdGVkLXBzcC55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f restricted-psp.yaml</pre></div><div class='content'></div><h2>Paso 2: Crear un Role y RoleBinding</h2>
+<div class='content'><p>Para que la PSP sea efectiva, debes crear un Role y un RoleBinding que otorgue permisos para usar la PSP:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlCm1ldGFkYXRhOgogIG5hbWU6IHBzcC11c2VyCiAgbmFtZXNwYWNlOiBkZWZhdWx0CnJ1bGVzOgotIGFwaUdyb3VwczogWydwb2xpY3knXQogIHJlc291cmNlczogWydwb2RzZWN1cml0eXBvbGljaWVzJ10KICB2ZXJiczogWyd1c2UnXQogIHJlc291cmNlTmFtZXM6IFsncmVzdHJpY3RlZC1wc3AnXQotLS0KYXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlQmluZGluZwptZXRhZGF0YToKICBuYW1lOiBwc3AtdXNlci1iaW5kaW5nCiAgbmFtZXNwYWNlOiBkZWZhdWx0CnJvbGVSZWY6CiAgYXBpR3JvdXA6IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8KICBraW5kOiBSb2xlCiAgbmFtZTogcHNwLXVzZXIKc3ViamVjdHM6Ci0ga2luZDogVXNlcgogIG5hbWU6ICdzeXN0ZW06c2VydmljZWFjY291bnQ6ZGVmYXVsdDpkZWZhdWx0JwogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlv"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: psp-user
+  namespace: default
+rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames: ['restricted-psp']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: psp-user-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: psp-user
+subjects:
+- kind: User
+  name: 'system:serviceaccount:default:default'
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'><p>Aplica estos recursos al clúster:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBwc3Atcm9sZS55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f psp-role.yaml</pre></div><div class='content'></div><h2>Paso 3: Verificar la PSP</h2>
+<div class='content'><p>Intenta crear un pod que no cumpla con las restricciones de la PSP para verificar que la política está funcionando:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IHByaXZpbGVnZWQtcG9kCnNwZWM6CiAgY29udGFpbmVyczoKICAtIG5hbWU6IG5naW54CiAgICBpbWFnZTogbmdpbngKICAgIHNlY3VyaXR5Q29udGV4dDoKICAgICAgcHJpdmlsZWdlZDogdHJ1ZQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: privileged-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    securityContext:
+      privileged: true</pre></div><div class='content'><p>Guarda este manifiesto en un archivo llamado <code>privileged-pod.yaml</code> y aplícalo al clúster:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBwcml2aWxlZ2VkLXBvZC55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f privileged-pod.yaml</pre></div><div class='content'><p>Deberías ver un error indicando que el pod no cumple con las políticas de seguridad.</p>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear una PSP que Permita Solo Volúmenes ConfigMap</h2>
+<div class='content'><ol>
+<li>Crea una PSP que permita solo volúmenes de tipo <code>configMap</code>.</li>
+<li>Crea un Role y un RoleBinding para usar esta PSP.</li>
+<li>Verifica que los pods que no usan volúmenes de tipo <code>configMap</code> sean rechazados.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>PSP:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcG9saWN5L3YxYmV0YTEKa2luZDogUG9kU2VjdXJpdHlQb2xpY3kKbWV0YWRhdGE6CiAgbmFtZTogY29uZmlnbWFwLXBzcApzcGVjOgogIHByaXZpbGVnZWQ6IGZhbHNlCiAgdm9sdW1lczoKICAtICdjb25maWdNYXAnCiAgcnVuQXNVc2VyOgogICAgcnVsZTogJ011c3RSdW5Bc05vblJvb3QnCiAgc2VMaW51eDoKICAgIHJ1bGU6ICdSdW5Bc0FueScKICBzdXBwbGVtZW50YWxHcm91cHM6CiAgICBydWxlOiAnUnVuQXNBbnknCiAgZnNHcm91cDoKICAgIHJ1bGU6ICdSdW5Bc0FueSc="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: policy/v1beta1
+kind: PodSecurityPolicy
+metadata:
+  name: configmap-psp
+spec:
+  privileged: false
+  volumes:
+  - 'configMap'
+  runAsUser:
+    rule: 'MustRunAsNonRoot'
+  seLinux:
+    rule: 'RunAsAny'
+  supplementalGroups:
+    rule: 'RunAsAny'
+  fsGroup:
+    rule: 'RunAsAny'</pre></div><div class='content'><ol start="2">
+<li>Role y RoleBinding:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlCm1ldGFkYXRhOgogIG5hbWU6IGNvbmZpZ21hcC1wc3AtdXNlcgogIG5hbWVzcGFjZTogZGVmYXVsdApydWxlczoKLSBhcGlHcm91cHM6IFsncG9saWN5J10KICByZXNvdXJjZXM6IFsncG9kc2VjdXJpdHlwb2xpY2llcyddCiAgdmVyYnM6IFsndXNlJ10KICByZXNvdXJjZU5hbWVzOiBbJ2NvbmZpZ21hcC1wc3AnXQotLS0KYXBpVmVyc2lvbjogcmJhYy5hdXRob3JpemF0aW9uLms4cy5pby92MQpraW5kOiBSb2xlQmluZGluZwptZXRhZGF0YToKICBuYW1lOiBjb25maWdtYXAtcHNwLXVzZXItYmluZGluZwogIG5hbWVzcGFjZTogZGVmYXVsdApyb2xlUmVmOgogIGFwaUdyb3VwOiByYmFjLmF1dGhvcml6YXRpb24uazhzLmlvCiAga2luZDogUm9sZQogIG5hbWU6IGNvbmZpZ21hcC1wc3AtdXNlcgpzdWJqZWN0czoKLSBraW5kOiBVc2VyCiAgbmFtZTogJ3N5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQnCiAgYXBpR3JvdXA6IHJiYWMuYXV0aG9yaXphdGlvbi5rOHMuaW8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: configmap-psp-user
+  namespace: default
+rules:
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs: ['use']
+  resourceNames: ['configmap-psp']
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: configmap-psp-user-binding
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: configmap-psp-user
+subjects:
+- kind: User
+  name: 'system:serviceaccount:default:default'
+  apiGroup: rbac.authorization.k8s.io</pre></div><div class='content'><ol start="3">
+<li>Verificación:</li>
+</ol>
+<p>Intenta crear un pod con un volumen de tipo <code>emptyDir</code> y verifica que sea rechazado.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBpVmVyc2lvbjogdjEKa2luZDogUG9kCm1ldGFkYXRhOgogIG5hbWU6IGludmFsaWQtcG9kCnNwZWM6CiAgY29udGFpbmVyczoKICAtIG5hbWU6IG5naW54CiAgICBpbWFnZTogbmdpbngKICAgIHZvbHVtZU1vdW50czoKICAgIC0gbW91bnRQYXRoOiAvZGF0YQogICAgICBuYW1lOiBkYXRhLXZvbHVtZQogIHZvbHVtZXM6CiAgLSBuYW1lOiBkYXRhLXZvbHVtZQogICAgZW1wdHlEaXI6IHt9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>apiVersion: v1
+kind: Pod
+metadata:
+  name: invalid-pod
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    volumeMounts:
+    - mountPath: /data
+      name: data-volume
+  volumes:
+  - name: data-volume
+    emptyDir: {}</pre></div><div class='content'><p>Guarda este manifiesto en un archivo llamado <code>invalid-pod.yaml</code> y aplícalo al clúster:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("a3ViZWN0bCBhcHBseSAtZiBpbnZhbGlkLXBvZC55YW1s"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>kubectl apply -f invalid-pod.yaml</pre></div><div class='content'><p>Deberías ver un error indicando que el pod no cumple con las políticas de seguridad.</p>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Las Políticas de Seguridad de Pods son una herramienta poderosa para garantizar que los pods en un clúster de Kubernetes se ejecuten de manera segura y cumplan con las políticas de seguridad de la organización. Al definir y aplicar PSPs, los administradores pueden controlar aspectos críticos de la seguridad de los pods, como el uso de privilegios, el acceso a volúmenes y la configuración de redes.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='08-01-rbac' title="Control de Acceso Basado en Roles (RBAC)" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='08-01-rbac' title="Control de Acceso Basado en Roles (RBAC)" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-03-network-security' title="Seguridad de Red" class="py-2 px-3 btn btn-primary"
+				data-read-mod="kubernetes" data-read-unit="8-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-03-network-security' title="Seguridad de Red" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="kubernetes" data-read-unit="8-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Kubernetes</h1>
+<h2>Módulo 1: Introducción a Kubernetes</h2>
+<ul>
+<li><a href="01-01-what-is-kubernetes">¿Qué es Kubernetes?</a></li>
+<li><a href="01-02-kubernetes-architecture">Arquitectura de Kubernetes</a></li>
+<li><a href="01-03-key-concepts-terminology">Conceptos y Terminología Clave</a></li>
+<li><a href="01-04-setting-up-cluster">Configuración de un Clúster de Kubernetes</a></li>
+<li><a href="01-05-kubernetes-cli">CLI de Kubernetes (kubectl)</a></li>
+</ul>
+<h2>Módulo 2: Componentes Principales de Kubernetes</h2>
+<ul>
+<li><a href="02-01-pods">Pods</a></li>
+<li><a href="02-02-replicasets">ReplicaSets</a></li>
+<li><a href="02-03-deployments">Deployments</a></li>
+<li><a href="02-04-services">Servicios</a></li>
+<li><a href="02-05-namespaces">Namespaces</a></li>
+</ul>
+<h2>Módulo 3: Gestión de Configuración y Secretos</h2>
+<ul>
+<li><a href="03-01-configmaps">ConfigMaps</a></li>
+<li><a href="03-02-secrets">Secrets</a></li>
+<li><a href="03-03-environment-variables">Variables de Entorno</a></li>
+<li><a href="03-04-resource-quotas-limits">Cuotas y Límites de Recursos</a></li>
+</ul>
+<h2>Módulo 4: Redes en Kubernetes</h2>
+<ul>
+<li><a href="04-01-cluster-networking">Redes de Clúster</a></li>
+<li><a href="04-02-service-types">Tipos de Servicios</a></li>
+<li><a href="04-03-ingress-controllers">Controladores de Ingress</a></li>
+<li><a href="04-04-network-policies">Políticas de Red</a></li>
+</ul>
+<h2>Módulo 5: Almacenamiento en Kubernetes</h2>
+<ul>
+<li><a href="05-01-volumes">Volúmenes</a></li>
+<li><a href="05-02-persistent-volumes">Volúmenes Persistentes</a></li>
+<li><a href="05-03-persistent-volume-claims">Reclamaciones de Volúmenes Persistentes</a></li>
+<li><a href="05-04-storage-classes">Clases de Almacenamiento</a></li>
+</ul>
+<h2>Módulo 6: Conceptos Avanzados de Kubernetes</h2>
+<ul>
+<li><a href="06-01-statefulsets">StatefulSets</a></li>
+<li><a href="06-02-daemonsets">DaemonSets</a></li>
+<li><a href="06-03-jobs-cronjobs">Trabajos y CronJobs</a></li>
+<li><a href="06-04-crds">Definiciones de Recursos Personalizados (CRDs)</a></li>
+</ul>
+<h2>Módulo 7: Monitoreo y Registro</h2>
+<ul>
+<li><a href="07-01-monitoring-prometheus">Monitoreo con Prometheus</a></li>
+<li><a href="07-02-logging-efk">Registro con Elasticsearch, Fluentd y Kibana (EFK)</a></li>
+<li><a href="07-03-health-checks-probes">Verificaciones de Salud y Sondas</a></li>
+<li><a href="07-04-metrics-server">Servidor de Métricas</a></li>
+</ul>
+<h2>Módulo 8: Seguridad en Kubernetes</h2>
+<ul>
+<li><a href="08-01-rbac">Control de Acceso Basado en Roles (RBAC)</a></li>
+<li><a href="08-02-pod-security-policies">Políticas de Seguridad de Pods</a></li>
+<li><a href="08-03-network-security">Seguridad de Red</a></li>
+<li><a href="08-04-image-security">Seguridad de Imágenes</a></li>
+</ul>
+<h2>Módulo 9: Escalado y Rendimiento</h2>
+<ul>
+<li><a href="09-01-horizontal-pod-autoscaling">Autoescalado Horizontal de Pods</a></li>
+<li><a href="09-02-vertical-pod-autoscaling">Autoescalado Vertical de Pods</a></li>
+<li><a href="09-03-cluster-autoscaling">Autoescalado de Clúster</a></li>
+<li><a href="09-04-performance-tuning">Ajuste de Rendimiento</a></li>
+</ul>
+<h2>Módulo 10: Ecosistema y Herramientas de Kubernetes</h2>
+<ul>
+<li><a href="10-01-helm">Helm</a></li>
+<li><a href="10-02-kustomize">Kustomize</a></li>
+<li><a href="10-03-kubeadm">Kubeadm</a></li>
+<li><a href="10-04-minikube">Minikube</a></li>
+</ul>
+<h2>Módulo 11: Estudios de Caso y Aplicaciones del Mundo Real</h2>
+<ul>
+<li><a href="11-01-deploying-web-application">Despliegue de una Aplicación Web</a></li>
+<li><a href="11-02-cicd-kubernetes">CI/CD con Kubernetes</a></li>
+<li><a href="11-03-running-stateful-applications">Ejecución de Aplicaciones con Estado</a></li>
+<li><a href="11-04-multi-cluster-management">Gestión Multi-Clúster</a></li>
+</ul>
+<h2>Módulo 12: Preparación para la Certificación de Kubernetes</h2>
+<ul>
+<li><a href="12-01-cka">Administrador Certificado de Kubernetes (CKA)</a></li>
+<li><a href="12-02-ckad">Desarrollador de Aplicaciones Certificado de Kubernetes (CKAD)</a></li>
+<li><a href="12-03-cks">Especialista en Seguridad Certificado de Kubernetes (CKS)</a></li>
+<li><a href="12-04-exam-preparation-tips">Consejos para la Preparación del Examen</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

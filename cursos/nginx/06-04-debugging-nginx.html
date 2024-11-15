@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Depuración de NGINX </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/06-04-debugging-nginx" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/06-04-debugging-nginx" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/06-04-debugging-nginx" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "tech-tools";
+  		var MOD_NAME = "nginx";
+  		var TEMA_NAME = "6-4";
+  		var TYPE = "mod";
+  		var PATH = "mod/nginx/06-04-debugging-nginx";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/nginx/06-04-debugging-nginx" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/nginx/06-04-debugging-nginx" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="nginx">
+		<a  href="#" class="text-secondary d-none" data-read-mod="nginx" data-read-unit="6-4" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="nginx" data-unread-unit="6-4" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-03-performance-tuning' title="Ajuste de Rendimiento" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-03-performance-tuning' title="Ajuste de Rendimiento" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Depuración de NGINX</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-01-introduction-nginx-plus' title="Introducción a NGINX Plus" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nginx" data-read-unit="6-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-01-introduction-nginx-plus' title="Introducción a NGINX Plus" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nginx" data-read-unit="6-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>La depuración de NGINX es una habilidad esencial para cualquier administrador de sistemas o desarrollador que trabaje con este servidor web y proxy inverso. En esta sección, aprenderás cómo identificar y resolver problemas comunes en NGINX utilizando diversas herramientas y técnicas de depuración.</p>
+</div><h1><ol>
+<li>Introducción a la Depuración</li>
+</ol></h1>
+<div class='content'><p>La depuración implica identificar y resolver problemas en la configuración o el funcionamiento de NGINX. Los problemas pueden variar desde errores de configuración hasta problemas de rendimiento y fallos en la entrega de contenido.</p>
+</div><h2>Conceptos Clave:</h2>
+<div class='content'><ul>
+<li><strong>Logs de NGINX</strong>: Archivos que registran eventos y errores.</li>
+<li><strong>Niveles de Log</strong>: Diferentes niveles de detalle en los logs (error, warn, info, debug).</li>
+<li><strong>Herramientas de Depuración</strong>: Utilidades y comandos que ayudan a diagnosticar problemas.</li>
+</ul>
+</div><h1><ol start="2">
+<li>Logs de NGINX</li>
+</ol></h1>
+<div class='content'><p>Los logs son la primera línea de defensa cuando se trata de depurar problemas en NGINX. Existen dos tipos principales de logs en NGINX:</p>
+<ul>
+<li><strong>Access Logs</strong>: Registran todas las solicitudes que llegan al servidor.</li>
+<li><strong>Error Logs</strong>: Registran errores y eventos importantes.</li>
+</ul>
+</div><h2>Configuración de Logs</h2>
+<div class='content'><p>La configuración de los logs se realiza en el archivo de configuración de NGINX (<code>nginx.conf</code>).</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBsb2dfZm9ybWF0IG1haW4gJyRyZW1vdGVfYWRkciAtICRyZW1vdGVfdXNlciBbJHRpbWVfbG9jYWxdICIkcmVxdWVzdCIgJwogICAgICAgICAgICAgICAgICAgICAgJyRzdGF0dXMgJGJvZHlfYnl0ZXNfc2VudCAiJGh0dHBfcmVmZXJlciIgJwogICAgICAgICAgICAgICAgICAgICAgJyIkaHR0cF91c2VyX2FnZW50IiAiJGh0dHBfeF9mb3J3YXJkZWRfZm9yIic7CgogICAgYWNjZXNzX2xvZyAvdmFyL2xvZy9uZ2lueC9hY2Nlc3MubG9nIG1haW47CiAgICBlcnJvcl9sb2cgL3Zhci9sb2cvbmdpbngvZXJyb3IubG9nIHdhcm47Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    log_format main '$remote_addr - $remote_user [$time_local] &quot;$request&quot; '
+                      '$status $body_bytes_sent &quot;$http_referer&quot; '
+                      '&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;';
+
+    access_log /var/log/nginx/access.log main;
+    error_log /var/log/nginx/error.log warn;
+}</pre></div><div class='content'><ul>
+<li><strong>log_format</strong>: Define el formato de los logs de acceso.</li>
+<li><strong>access_log</strong>: Especifica la ubicación del archivo de logs de acceso.</li>
+<li><strong>error_log</strong>: Especifica la ubicación del archivo de logs de error y el nivel de detalle.</li>
+</ul>
+</div><h2>Niveles de Log</h2>
+<div class='content'><p>Los niveles de log determinan la cantidad de información registrada:</p>
+<ul>
+<li><strong>debug</strong>: Información detallada para depuración.</li>
+<li><strong>info</strong>: Información general.</li>
+<li><strong>warn</strong>: Advertencias que no son errores pero pueden ser problemáticas.</li>
+<li><strong>error</strong>: Errores que requieren atención inmediata.</li>
+<li><strong>crit</strong>: Errores críticos que pueden causar la caída del servidor.</li>
+</ul>
+</div><h1><ol start="3">
+<li>Habilitando el Modo de Depuración</li>
+</ol></h1>
+<div class='content'><p>El modo de depuración proporciona información detallada sobre el funcionamiento interno de NGINX. Para habilitarlo, ajusta el nivel de log a <code>debug</code> en el archivo de configuración.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZXJyb3JfbG9nIC92YXIvbG9nL25naW54L2Vycm9yLmxvZyBkZWJ1Zzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>error_log /var/log/nginx/error.log debug;</pre></div><div class='content'></div><h2>Ejemplo de Configuración</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBlcnJvcl9sb2cgL3Zhci9sb2cvbmdpbngvZXJyb3IubG9nIGRlYnVnOwogICAgLi4uCn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    error_log /var/log/nginx/error.log debug;
+    ...
+}</pre></div><div class='content'><p>Después de realizar este cambio, reinicia NGINX para que los cambios surtan efecto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgcmVzdGFydCBuZ2lueA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl restart nginx</pre></div><div class='content'></div><h1><ol start="4">
+<li>Herramientas de Depuración</li>
+</ol></h1>
+<div class='content'></div><h2>4.1. Comando <code>nginx -t</code></h2>
+<div class='content'><p>El comando <code>nginx -t</code> verifica la sintaxis del archivo de configuración sin iniciar el servidor.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBuZ2lueCAtdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo nginx -t</pre></div><div class='content'></div><h2>4.2. Comando <code>nginx -s</code></h2>
+<div class='content'><p>El comando <code>nginx -s</code> se utiliza para enviar señales al proceso maestro de NGINX.</p>
+<ul>
+<li><strong>reload</strong>: Recarga la configuración sin interrumpir el servicio.</li>
+<li><strong>stop</strong>: Detiene el servidor.</li>
+<li><strong>quit</strong>: Detiene el servidor después de completar las solicitudes actuales.</li>
+</ul>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBuZ2lueCAtcyByZWxvYWQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo nginx -s reload</pre></div><div class='content'></div><h2>4.3. Herramientas Externas</h2>
+<div class='content'><ul>
+<li><strong>curl</strong>: Para probar solicitudes HTTP.</li>
+<li><strong>netstat</strong>: Para verificar puertos y conexiones.</li>
+<li><strong>strace</strong>: Para rastrear llamadas al sistema.</li>
+</ul>
+</div><h1><ol start="5">
+<li>Ejercicios Prácticos</li>
+</ol></h1>
+<div class='content'></div><h2>Ejercicio 1: Verificar la Configuración de NGINX</h2>
+<div class='content'><ol>
+<li>Abre el archivo de configuración de NGINX (<code>nginx.conf</code>).</li>
+<li>Añade o ajusta la línea para habilitar el modo de depuración:
+<pre><code class="language-nginx">error_log /var/log/nginx/error.log debug;
+</code></pre>
+</li>
+<li>Guarda los cambios y ejecuta el comando para verificar la configuración:
+<pre><code class="language-bash">sudo nginx -t
+</code></pre>
+</li>
+<li>Si no hay errores, reinicia NGINX:
+<pre><code class="language-bash">sudo systemctl restart nginx
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejercicio 2: Analizar Logs de Error</h2>
+<div class='content'><ol>
+<li>Genera un error intencional en la configuración de NGINX (por ejemplo, un bloque de servidor malformado).</li>
+<li>Intenta recargar NGINX y observa los logs de error:
+<pre><code class="language-bash">sudo nginx -s reload
+tail -f /var/log/nginx/error.log
+</code></pre>
+</li>
+<li>Corrige el error y verifica nuevamente la configuración.</li>
+</ol>
+</div><h1><ol start="6">
+<li>Resumen</li>
+</ol></h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de la depuración en NGINX, incluyendo la configuración y análisis de logs, habilitación del modo de depuración y el uso de herramientas de depuración. La capacidad de identificar y resolver problemas de manera eficiente es crucial para mantener un servidor NGINX en funcionamiento óptimo.</p>
+<p>En el próximo módulo, exploraremos NGINX Plus y sus características avanzadas, incluyendo el balanceo de carga avanzado y la configuración dinámica.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-03-performance-tuning' title="Ajuste de Rendimiento" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-03-performance-tuning' title="Ajuste de Rendimiento" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='07-01-introduction-nginx-plus' title="Introducción a NGINX Plus" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nginx" data-read-unit="6-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='07-01-introduction-nginx-plus' title="Introducción a NGINX Plus" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nginx" data-read-unit="6-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de NGINX</h1>
+<h2>Módulo 1: Introducción a NGINX</h2>
+<ul>
+<li><a href="01-01-what-is-nginx">¿Qué es NGINX?</a></li>
+<li><a href="01-02-installing-nginx">Instalando NGINX</a></li>
+<li><a href="01-03-basic-nginx-configuration">Configuración Básica de NGINX</a></li>
+<li><a href="01-04-starting-stopping-nginx">Iniciando y Deteniendo NGINX</a></li>
+</ul>
+<h2>Módulo 2: NGINX como Servidor Web</h2>
+<ul>
+<li><a href="02-01-serving-static-content">Sirviendo Contenido Estático</a></li>
+<li><a href="02-02-directory-listings">Listados de Directorios</a></li>
+<li><a href="02-03-custom-error-pages">Páginas de Error Personalizadas</a></li>
+<li><a href="02-04-logging-log-formats">Registro y Formatos de Registro</a></li>
+</ul>
+<h2>Módulo 3: NGINX como Proxy Inverso</h2>
+<ul>
+<li><a href="03-01-introduction-reverse-proxy">Introducción al Proxy Inverso</a></li>
+<li><a href="03-02-configuring-reverse-proxy">Configurando un Proxy Inverso</a></li>
+<li><a href="03-03-load-balancing">Balanceo de Carga</a></li>
+<li><a href="03-04-health-checks">Verificaciones de Salud</a></li>
+</ul>
+<h2>Módulo 4: Seguridad y Optimización</h2>
+<ul>
+<li><a href="04-01-basic-security-practices">Prácticas Básicas de Seguridad</a></li>
+<li><a href="04-02-rate-limiting">Limitación de Tasa</a></li>
+<li><a href="04-03-ssl-tls-configuration">Configuración SSL/TLS</a></li>
+<li><a href="04-04-caching">Caché</a></li>
+</ul>
+<h2>Módulo 5: Funciones Avanzadas de NGINX</h2>
+<ul>
+<li><a href="05-01-nginx-modules">Módulos de NGINX</a></li>
+<li><a href="05-02-using-nginx-docker">Usando NGINX con Docker</a></li>
+<li><a href="05-03-nginx-http2">NGINX y HTTP/2</a></li>
+<li><a href="05-04-nginx-grpc">NGINX y gRPC</a></li>
+</ul>
+<h2>Módulo 6: Monitoreo y Solución de Problemas</h2>
+<ul>
+<li><a href="06-01-monitoring-nginx">Monitoreando NGINX</a></li>
+<li><a href="06-02-common-issues-solutions">Problemas Comunes y Soluciones</a></li>
+<li><a href="06-03-performance-tuning">Ajuste de Rendimiento</a></li>
+<li><a href="06-04-debugging-nginx">Depuración de NGINX</a></li>
+</ul>
+<h2>Módulo 7: NGINX Plus</h2>
+<ul>
+<li><a href="07-01-introduction-nginx-plus">Introducción a NGINX Plus</a></li>
+<li><a href="07-02-advanced-load-balancing">Balanceo de Carga Avanzado</a></li>
+<li><a href="07-03-application-health-monitoring">Monitoreo de Salud de Aplicaciones</a></li>
+<li><a href="07-04-dynamic-configuration">Configuración Dinámica</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Concurrencia: Hilos y Procesos </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/python/08-04-concurrency-threads-and-processes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/python/08-04-concurrency-threads-and-processes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/python/08-04-concurrency-threads-and-processes" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "languages";
+  		var MOD_NAME = "python";
+  		var TEMA_NAME = "8-4";
+  		var TYPE = "mod";
+  		var PATH = "mod/python/08-04-concurrency-threads-and-processes";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/python/08-04-concurrency-threads-and-processes" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/python/08-04-concurrency-threads-and-processes" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="python">
+		<a  href="#" class="text-secondary d-none" data-read-mod="python" data-read-unit="8-4" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="python" data-unread-unit="8-4" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='08-03-context-managers' title="Administradores de Contexto" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='08-03-context-managers' title="Administradores de Contexto" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Concurrencia: Hilos y Procesos</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio para Programación Asíncrona" class="py-2 px-3 btn btn-primary"
+				data-read-mod="python" data-read-unit="8-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio para Programación Asíncrona" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="python" data-read-unit="8-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>La concurrencia es una técnica que permite que múltiples tareas se ejecuten de manera simultánea, mejorando la eficiencia y el rendimiento de las aplicaciones. En Python, la concurrencia se puede lograr utilizando hilos (threads) y procesos (processes). Este tema cubre los conceptos básicos de hilos y procesos, cómo utilizarlos en Python, y proporciona ejemplos prácticos y ejercicios para reforzar el aprendizaje.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li>
+<p><strong>Concurrencia vs. Paralelismo</strong>:</p>
+<ul>
+<li><strong>Concurrencia</strong>: Múltiples tareas progresan simultáneamente.</li>
+<li><strong>Paralelismo</strong>: Múltiples tareas se ejecutan exactamente al mismo tiempo, generalmente en múltiples núcleos de CPU.</li>
+</ul>
+</li>
+<li>
+<p><strong>Hilos (Threads)</strong>:</p>
+<ul>
+<li>Un hilo es la unidad más pequeña de procesamiento que puede ser programada.</li>
+<li>Los hilos comparten el mismo espacio de memoria dentro de un proceso.</li>
+</ul>
+</li>
+<li>
+<p><strong>Procesos (Processes)</strong>:</p>
+<ul>
+<li>Un proceso es una instancia de un programa en ejecución.</li>
+<li>Los procesos tienen su propio espacio de memoria independiente.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Hilos en Python</h1>
+<div class='content'><p>Python proporciona el módulo <code>threading</code> para trabajar con hilos. A continuación, se muestra un ejemplo básico de cómo crear y ejecutar hilos.</p>
+</div><h2>Ejemplo: Uso de Hilos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwppbXBvcnQgdGltZQoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGYiTnVtYmVyOiB7aX0iKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCmRlZiBwcmludF9sZXR0ZXJzKCk6CiAgICBmb3IgbGV0dGVyIGluICdhYmNkZSc6CiAgICAgICAgcHJpbnQoZiJMZXR0ZXI6IHtsZXR0ZXJ9IikKICAgICAgICB0aW1lLnNsZWVwKDEpCgojIENyZWFyIGhpbG9zCnRocmVhZDEgPSB0aHJlYWRpbmcuVGhyZWFkKHRhcmdldD1wcmludF9udW1iZXJzKQp0aHJlYWQyID0gdGhyZWFkaW5nLlRocmVhZCh0YXJnZXQ9cHJpbnRfbGV0dGVycykKCiMgSW5pY2lhciBoaWxvcwp0aHJlYWQxLnN0YXJ0KCkKdGhyZWFkMi5zdGFydCgpCgojIEVzcGVyYXIgYSBxdWUgbG9zIGhpbG9zIHRlcm1pbmVuCnRocmVhZDEuam9pbigpCnRocmVhZDIuam9pbigpCgpwcmludCgiSGlsb3MgY29tcGxldGFkb3MiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+import time
+
+def print_numbers():
+    for i in range(5):
+        print(f&quot;Number: {i}&quot;)
+        time.sleep(1)
+
+def print_letters():
+    for letter in 'abcde':
+        print(f&quot;Letter: {letter}&quot;)
+        time.sleep(1)
+
+# Crear hilos
+thread1 = threading.Thread(target=print_numbers)
+thread2 = threading.Thread(target=print_letters)
+
+# Iniciar hilos
+thread1.start()
+thread2.start()
+
+# Esperar a que los hilos terminen
+thread1.join()
+thread2.join()
+
+print(&quot;Hilos completados&quot;)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importación de Módulos</strong>: Se importan los módulos <code>threading</code> y <code>time</code>.</li>
+<li><strong>Definición de Funciones</strong>: Se definen dos funciones, <code>print_numbers</code> y <code>print_letters</code>, que imprimen números y letras respectivamente.</li>
+<li><strong>Creación de Hilos</strong>: Se crean dos hilos, <code>thread1</code> y <code>thread2</code>, asignando las funciones como objetivos.</li>
+<li><strong>Inicio de Hilos</strong>: Se inician los hilos con <code>start()</code>.</li>
+<li><strong>Esperar Finalización</strong>: Se utiliza <code>join()</code> para esperar a que ambos hilos terminen antes de continuar.</li>
+</ol>
+</div><h1>Procesos en Python</h1>
+<div class='content'><p>Para trabajar con procesos, Python proporciona el módulo <code>multiprocessing</code>. A continuación, se muestra un ejemplo básico de cómo crear y ejecutar procesos.</p>
+</div><h2>Ejemplo: Uso de Procesos</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG11bHRpcHJvY2Vzc2luZwppbXBvcnQgdGltZQoKZGVmIHByaW50X251bWJlcnMoKToKICAgIGZvciBpIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KGYiTnVtYmVyOiB7aX0iKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCmRlZiBwcmludF9sZXR0ZXJzKCk6CiAgICBmb3IgbGV0dGVyIGluICdhYmNkZSc6CiAgICAgICAgcHJpbnQoZiJMZXR0ZXI6IHtsZXR0ZXJ9IikKICAgICAgICB0aW1lLnNsZWVwKDEpCgojIENyZWFyIHByb2Nlc29zCnByb2Nlc3MxID0gbXVsdGlwcm9jZXNzaW5nLlByb2Nlc3ModGFyZ2V0PXByaW50X251bWJlcnMpCnByb2Nlc3MyID0gbXVsdGlwcm9jZXNzaW5nLlByb2Nlc3ModGFyZ2V0PXByaW50X2xldHRlcnMpCgojIEluaWNpYXIgcHJvY2Vzb3MKcHJvY2VzczEuc3RhcnQoKQpwcm9jZXNzMi5zdGFydCgpCgojIEVzcGVyYXIgYSBxdWUgbG9zIHByb2Nlc29zIHRlcm1pbmVuCnByb2Nlc3MxLmpvaW4oKQpwcm9jZXNzMi5qb2luKCkKCnByaW50KCJQcm9jZXNvcyBjb21wbGV0YWRvcyIp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import multiprocessing
+import time
+
+def print_numbers():
+    for i in range(5):
+        print(f&quot;Number: {i}&quot;)
+        time.sleep(1)
+
+def print_letters():
+    for letter in 'abcde':
+        print(f&quot;Letter: {letter}&quot;)
+        time.sleep(1)
+
+# Crear procesos
+process1 = multiprocessing.Process(target=print_numbers)
+process2 = multiprocessing.Process(target=print_letters)
+
+# Iniciar procesos
+process1.start()
+process2.start()
+
+# Esperar a que los procesos terminen
+process1.join()
+process2.join()
+
+print(&quot;Procesos completados&quot;)</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Importación de Módulos</strong>: Se importan los módulos <code>multiprocessing</code> y <code>time</code>.</li>
+<li><strong>Definición de Funciones</strong>: Se definen dos funciones, <code>print_numbers</code> y <code>print_letters</code>, que imprimen números y letras respectivamente.</li>
+<li><strong>Creación de Procesos</strong>: Se crean dos procesos, <code>process1</code> y <code>process2</code>, asignando las funciones como objetivos.</li>
+<li><strong>Inicio de Procesos</strong>: Se inician los procesos con <code>start()</code>.</li>
+<li><strong>Esperar Finalización</strong>: Se utiliza <code>join()</code> para esperar a que ambos procesos terminen antes de continuar.</li>
+</ol>
+</div><h1>Comparación: Hilos vs. Procesos</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>Hilos (Threads)</th>
+<th>Procesos (Processes)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Espacio de Memoria</td>
+<td>Comparten el mismo espacio de memoria</td>
+<td>Tienen su propio espacio de memoria</td>
+</tr>
+<tr>
+<td>Creación</td>
+<td>Más rápidos y ligeros</td>
+<td>Más lentos y pesados</td>
+</tr>
+<tr>
+<td>Comunicación</td>
+<td>Más fácil (comparten memoria)</td>
+<td>Más difícil (necesitan mecanismos de IPC)</td>
+</tr>
+<tr>
+<td>Seguridad</td>
+<td>Menos seguros (problemas de sincronización)</td>
+<td>Más seguros (memoria independiente)</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Contador Concurrente</h2>
+<div class='content'><p>Escribe un programa que cree dos hilos. Un hilo debe contar de 1 a 5 y el otro hilo debe contar de 6 a 10. Ambos hilos deben imprimir los números con un retraso de 1 segundo entre cada número.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRocmVhZGluZwppbXBvcnQgdGltZQoKZGVmIGNvdW50X3VwX3RvXzUoKToKICAgIGZvciBpIGluIHJhbmdlKDEsIDYpOgogICAgICAgIHByaW50KGYiQ291bnQgMS01OiB7aX0iKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCmRlZiBjb3VudF91cF90b18xMCgpOgogICAgZm9yIGkgaW4gcmFuZ2UoNiwgMTEpOgogICAgICAgIHByaW50KGYiQ291bnQgNi0xMDoge2l9IikKICAgICAgICB0aW1lLnNsZWVwKDEpCgojIENyZWFyIGhpbG9zCnRocmVhZDEgPSB0aHJlYWRpbmcuVGhyZWFkKHRhcmdldD1jb3VudF91cF90b181KQp0aHJlYWQyID0gdGhyZWFkaW5nLlRocmVhZCh0YXJnZXQ9Y291bnRfdXBfdG9fMTApCgojIEluaWNpYXIgaGlsb3MKdGhyZWFkMS5zdGFydCgpCnRocmVhZDIuc3RhcnQoKQoKIyBFc3BlcmFyIGEgcXVlIGxvcyBoaWxvcyB0ZXJtaW5lbgp0aHJlYWQxLmpvaW4oKQp0aHJlYWQyLmpvaW4oKQoKcHJpbnQoIkNvbnRhZG9yZXMgY29tcGxldGFkb3MiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import threading
+import time
+
+def count_up_to_5():
+    for i in range(1, 6):
+        print(f&quot;Count 1-5: {i}&quot;)
+        time.sleep(1)
+
+def count_up_to_10():
+    for i in range(6, 11):
+        print(f&quot;Count 6-10: {i}&quot;)
+        time.sleep(1)
+
+# Crear hilos
+thread1 = threading.Thread(target=count_up_to_5)
+thread2 = threading.Thread(target=count_up_to_10)
+
+# Iniciar hilos
+thread1.start()
+thread2.start()
+
+# Esperar a que los hilos terminen
+thread1.join()
+thread2.join()
+
+print(&quot;Contadores completados&quot;)</pre></div><div class='content'></div><h2>Ejercicio 2: Procesos Concurrentes</h2>
+<div class='content'><p>Escribe un programa que cree dos procesos. Un proceso debe imprimir &quot;Proceso 1&quot; cinco veces con un retraso de 1 segundo entre cada impresión, y el otro proceso debe imprimir &quot;Proceso 2&quot; cinco veces con el mismo retraso.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG11bHRpcHJvY2Vzc2luZwppbXBvcnQgdGltZQoKZGVmIHByb2Nlc3Nfb25lKCk6CiAgICBmb3IgXyBpbiByYW5nZSg1KToKICAgICAgICBwcmludCgiUHJvY2VzbyAxIikKICAgICAgICB0aW1lLnNsZWVwKDEpCgpkZWYgcHJvY2Vzc190d28oKToKICAgIGZvciBfIGluIHJhbmdlKDUpOgogICAgICAgIHByaW50KCJQcm9jZXNvIDIiKQogICAgICAgIHRpbWUuc2xlZXAoMSkKCiMgQ3JlYXIgcHJvY2Vzb3MKcHJvY2VzczEgPSBtdWx0aXByb2Nlc3NpbmcuUHJvY2Vzcyh0YXJnZXQ9cHJvY2Vzc19vbmUpCnByb2Nlc3MyID0gbXVsdGlwcm9jZXNzaW5nLlByb2Nlc3ModGFyZ2V0PXByb2Nlc3NfdHdvKQoKIyBJbmljaWFyIHByb2Nlc29zCnByb2Nlc3MxLnN0YXJ0KCkKcHJvY2VzczIuc3RhcnQoKQoKIyBFc3BlcmFyIGEgcXVlIGxvcyBwcm9jZXNvcyB0ZXJtaW5lbgpwcm9jZXNzMS5qb2luKCkKcHJvY2VzczIuam9pbigpCgpwcmludCgiUHJvY2Vzb3MgY29tcGxldGFkb3MiKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import multiprocessing
+import time
+
+def process_one():
+    for _ in range(5):
+        print(&quot;Proceso 1&quot;)
+        time.sleep(1)
+
+def process_two():
+    for _ in range(5):
+        print(&quot;Proceso 2&quot;)
+        time.sleep(1)
+
+# Crear procesos
+process1 = multiprocessing.Process(target=process_one)
+process2 = multiprocessing.Process(target=process_two)
+
+# Iniciar procesos
+process1.start()
+process2.start()
+
+# Esperar a que los procesos terminen
+process1.join()
+process2.join()
+
+print(&quot;Procesos completados&quot;)</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos básicos de concurrencia utilizando hilos y procesos en Python. Aprendimos cómo crear y manejar hilos y procesos, y discutimos las diferencias clave entre ellos. Además, proporcionamos ejemplos prácticos y ejercicios para reforzar el aprendizaje. La concurrencia es una herramienta poderosa para mejorar el rendimiento de las aplicaciones, y comprender cómo utilizar hilos y procesos es esencial para cualquier programador avanzado en Python.</p>
+<p>En el próximo tema, exploraremos los <strong>Administradores de Contexto</strong>, una característica avanzada de Python que facilita la gestión de recursos como archivos y conexiones de red.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='08-03-context-managers' title="Administradores de Contexto" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='08-03-context-managers' title="Administradores de Contexto" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio para Programación Asíncrona" class="py-2 px-3 btn btn-primary"
+				data-read-mod="python" data-read-unit="8-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-05-asyncio-for-asynchronous-programming' title="Asyncio para Programación Asíncrona" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="python" data-read-unit="8-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Programación en Python</h1>
+<h2>Módulo 1: Introducción a Python</h2>
+<ul>
+<li><a href="01-01-introduction-to-python">Introducción a Python</a></li>
+<li><a href="01-02-setting-up-development-environment">Configuración del Entorno de Desarrollo</a></li>
+<li><a href="01-03-python-syntax-and-basic-data-types">Sintaxis de Python y Tipos de Datos Básicos</a></li>
+<li><a href="01-04-variables-and-constants">Variables y Constantes</a></li>
+<li><a href="01-05-basic-input-and-output">Entrada y Salida Básica</a></li>
+</ul>
+<h2>Módulo 2: Estructuras de Control</h2>
+<ul>
+<li><a href="02-01-conditional-statements">Sentencias Condicionales</a></li>
+<li><a href="02-02-loops-for-and-while">Bucles: for y while</a></li>
+<li><a href="02-03-control-flow-tools">Herramientas de Control de Flujo</a></li>
+<li><a href="02-04-list-comprehensions">Comprensiones de Listas</a></li>
+</ul>
+<h2>Módulo 3: Funciones y Módulos</h2>
+<ul>
+<li><a href="03-01-defining-functions">Definición de Funciones</a></li>
+<li><a href="03-02-function-arguments">Argumentos de Función</a></li>
+<li><a href="03-03-lambda-functions">Funciones Lambda</a></li>
+<li><a href="03-04-modules-and-packages">Módulos y Paquetes</a></li>
+<li><a href="03-05-standard-library-overview">Visión General de la Biblioteca Estándar</a></li>
+</ul>
+<h2>Módulo 4: Estructuras de Datos</h2>
+<ul>
+<li><a href="04-01-lists">Listas</a></li>
+<li><a href="04-02-tuples">Tuplas</a></li>
+<li><a href="04-03-dictionaries">Diccionarios</a></li>
+<li><a href="04-04-sets">Conjuntos</a></li>
+<li><a href="04-05-advanced-data-structures">Estructuras de Datos Avanzadas</a></li>
+</ul>
+<h2>Módulo 5: Programación Orientada a Objetos</h2>
+<ul>
+<li><a href="05-01-classes-and-objects">Clases y Objetos</a></li>
+<li><a href="05-02-inheritance">Herencia</a></li>
+<li><a href="05-03-polymorphism">Polimorfismo</a></li>
+<li><a href="05-04-encapsulation">Encapsulación</a></li>
+<li><a href="05-05-magic-methods">Métodos Mágicos</a></li>
+</ul>
+<h2>Módulo 6: Manejo de Archivos</h2>
+<ul>
+<li><a href="06-01-reading-and-writing-files">Lectura y Escritura de Archivos</a></li>
+<li><a href="06-02-working-with-csv-files">Trabajo con Archivos CSV</a></li>
+<li><a href="06-03-json-data-handling">Manejo de Datos JSON</a></li>
+<li><a href="06-04-file-and-directory-operations">Operaciones de Archivos y Directorios</a></li>
+</ul>
+<h2>Módulo 7: Manejo de Errores y Excepciones</h2>
+<ul>
+<li><a href="07-01-introduction-to-exceptions">Introducción a las Excepciones</a></li>
+<li><a href="07-02-handling-exceptions">Manejo de Excepciones</a></li>
+<li><a href="07-03-raising-exceptions">Lanzamiento de Excepciones</a></li>
+<li><a href="07-04-custom-exceptions">Excepciones Personalizadas</a></li>
+</ul>
+<h2>Módulo 8: Temas Avanzados</h2>
+<ul>
+<li><a href="08-01-decorators">Decoradores</a></li>
+<li><a href="08-02-generators">Generadores</a></li>
+<li><a href="08-03-context-managers">Administradores de Contexto</a></li>
+<li><a href="08-04-concurrency-threads-and-processes">Concurrencia: Hilos y Procesos</a></li>
+<li><a href="08-05-asyncio-for-asynchronous-programming">Asyncio para Programación Asíncrona</a></li>
+</ul>
+<h2>Módulo 9: Pruebas y Depuración</h2>
+<ul>
+<li><a href="09-01-introduction-to-testing">Introducción a las Pruebas</a></li>
+<li><a href="09-02-unit-testing-with-unittest">Pruebas Unitarias con unittest</a></li>
+<li><a href="09-03-test-driven-development">Desarrollo Guiado por Pruebas</a></li>
+<li><a href="09-04-debugging-techniques">Técnicas de Depuración</a></li>
+<li><a href="09-05-using-pdb-for-debugging">Uso de pdb para Depuración</a></li>
+</ul>
+<h2>Módulo 10: Desarrollo Web con Python</h2>
+<ul>
+<li><a href="10-01-introduction-to-web-development">Introducción al Desarrollo Web</a></li>
+<li><a href="10-02-flask-framework-basics">Fundamentos del Framework Flask</a></li>
+<li><a href="10-03-building-rest-apis-with-flask">Construcción de APIs REST con Flask</a></li>
+<li><a href="10-04-introduction-to-django">Introducción a Django</a></li>
+<li><a href="10-05-building-web-applications-with-django">Construcción de Aplicaciones Web con Django</a></li>
+</ul>
+<h2>Módulo 11: Ciencia de Datos con Python</h2>
+<ul>
+<li><a href="11-01-introduction-to-data-science">Introducción a la Ciencia de Datos</a></li>
+<li><a href="11-02-numpy-for-numerical-computing">NumPy para Computación Numérica</a></li>
+<li><a href="11-03-pandas-for-data-manipulation">Pandas para Manipulación de Datos</a></li>
+<li><a href="11-04-matplotlib-for-data-visualization">Matplotlib para Visualización de Datos</a></li>
+<li><a href="11-05-introduction-to-machine-learning-with-scikit-learn">Introducción al Aprendizaje Automático con scikit-learn</a></li>
+</ul>
+<h2>Módulo 12: Proyecto Final</h2>
+<ul>
+<li><a href="12-01-project-overview-and-requirements">Visión General y Requisitos del Proyecto</a></li>
+<li><a href="12-02-planning-and-design">Planificación y Diseño</a></li>
+<li><a href="12-03-implementation">Implementación</a></li>
+<li><a href="12-04-testing-and-debugging">Pruebas y Depuración</a></li>
+<li><a href="12-05-project-presentation">Presentación del Proyecto</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

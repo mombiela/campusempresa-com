@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Depuración de Código PL/SQL </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/plsql/05-03-debugging" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/plsql/05-03-debugging" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/plsql/05-03-debugging" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "languages";
+  		var MOD_NAME = "plsql";
+  		var TEMA_NAME = "5-3";
+  		var TYPE = "mod";
+  		var PATH = "mod/plsql/05-03-debugging";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/plsql/05-03-debugging" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/plsql/05-03-debugging" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="plsql">
+		<a  href="#" class="text-secondary d-none" data-read-mod="plsql" data-read-unit="5-3" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="plsql" data-unread-unit="5-3" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-02-best-practices' title="Mejores Prácticas" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-02-best-practices' title="Mejores Prácticas" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Depuración de Código PL/SQL</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-04-profiling-tuning' title="Perfilado y Ajuste" class="py-2 px-3 btn btn-primary"
+				data-read-mod="plsql" data-read-unit="5-3">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-04-profiling-tuning' title="Perfilado y Ajuste" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="plsql" data-read-unit="5-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>La depuración de código es una habilidad esencial para cualquier programador. En PL/SQL, la depuración implica identificar y corregir errores en el código para asegurar que funcione según lo esperado. En esta sección, aprenderás diversas técnicas y herramientas para depurar tu código PL/SQL de manera efectiva.</p>
+</div><h1>Contenido</h1>
+<div class='content'><ol>
+<li><a href="#introducción-a-la-depuración">Introducción a la Depuración</a></li>
+<li><a href="#tipos-de-errores">Tipos de Errores</a></li>
+<li><a href="#métodos-de-depuración">Métodos de Depuración</a></li>
+<li><a href="#uso-de-dbms_output">Uso de DBMS_OUTPUT</a></li>
+<li><a href="#uso-de-dbms_debug">Uso de DBMS_DEBUG</a></li>
+<li><a href="#depuración-en-oracle-sql-developer">Depuración en Oracle SQL Developer</a></li>
+<li><a href="#ejercicios-prácticos">Ejercicios Prácticos</a></li>
+<li><a href="#conclusión">Conclusión</a></li>
+</ol>
+</div><h1>Introducción a la Depuración</h1>
+<div class='content'><p>La depuración es el proceso de encontrar y resolver errores en el código. En PL/SQL, los errores pueden ser de sintaxis, lógicos o de tiempo de ejecución. La depuración efectiva te permite identificar rápidamente la causa de los problemas y corregirlos.</p>
+</div><h1>Tipos de Errores</h1>
+<div class='content'></div><h2>Errores de Sintaxis</h2>
+<div class='content'><p>Estos errores ocurren cuando el código no sigue las reglas del lenguaje PL/SQL. Son detectados por el compilador y generalmente son fáciles de corregir.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU4KICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdIb2xhIE11bmRvJykKRU5EOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN
+    dbms_output.put_line('Hola Mundo')
+END;</pre></div><div class='content'><p><em>Error:</em> Falta el punto y coma (<code>;</code>) después de <code>put_line</code>.</p>
+</div><h2>Errores Lógicos</h2>
+<div class='content'><p>Estos errores ocurren cuando el código no produce el resultado esperado debido a una lógica incorrecta.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSAwOwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIHJlc3VsdCA6PSBudW0xIC8gbnVtMjsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdSZXN1bHRhZG86ICcgfHwgcmVzdWx0KTsKRU5EOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 0;
+    result NUMBER;
+BEGIN
+    result := num1 / num2;
+    dbms_output.put_line('Resultado: ' || result);
+END;</pre></div><div class='content'><p><em>Error:</em> División por cero.</p>
+</div><h2>Errores de Tiempo de Ejecución</h2>
+<div class='content'><p>Estos errores ocurren mientras el programa se está ejecutando y pueden ser causados por condiciones inesperadas.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbXlfY3Vyc29yIFNZU19SRUZDVVJTT1I7CiAgICBteV92YXIgTlVNQkVSOwpCRUdJTgogICAgT1BFTiBteV9jdXJzb3IgRk9SIFNFTEVDVCAxIEZST00gZHVhbDsKICAgIEZFVENIIG15X2N1cnNvciBJTlRPIG15X3ZhcjsKICAgIENMT1NFIG15X2N1cnNvcjsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdWYWxvcjogJyB8fCBteV92YXIpOwpFTkQ7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    my_cursor SYS_REFCURSOR;
+    my_var NUMBER;
+BEGIN
+    OPEN my_cursor FOR SELECT 1 FROM dual;
+    FETCH my_cursor INTO my_var;
+    CLOSE my_cursor;
+    dbms_output.put_line('Valor: ' || my_var);
+END;</pre></div><div class='content'><p><em>Error:</em> Intentar usar una variable no inicializada.</p>
+</div><h1>Métodos de Depuración</h1>
+<div class='content'></div><h2>Uso de DBMS_OUTPUT</h2>
+<div class='content'><p>El paquete <code>DBMS_OUTPUT</code> se utiliza para imprimir mensajes en la consola, lo que puede ayudarte a entender el flujo de tu programa y los valores de las variables.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtMSBOVU1CRVIgOj0gMTA7CiAgICBudW0yIE5VTUJFUiA6PSA1OwogICAgcmVzdWx0IE5VTUJFUjsKQkVHSU4KICAgIHJlc3VsdCA6PSBudW0xICsgbnVtMjsKICAgIGRibXNfb3V0cHV0LnB1dF9saW5lKCdSZXN1bHRhZG86ICcgfHwgcmVzdWx0KTsKRU5EOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num1 NUMBER := 10;
+    num2 NUMBER := 5;
+    result NUMBER;
+BEGIN
+    result := num1 + num2;
+    dbms_output.put_line('Resultado: ' || result);
+END;</pre></div><div class='content'></div><h2>Uso de DBMS_DEBUG</h2>
+<div class='content'><p>El paquete <code>DBMS_DEBUG</code> proporciona una interfaz para depurar programas PL/SQL. Permite establecer puntos de interrupción, inspeccionar variables y controlar la ejecución del programa.</p>
+<p><strong>Ejemplo:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gQ29uZmlndXJhY2nDs24gaW5pY2lhbCBwYXJhIHVzYXIgREJNU19ERUJVRwpFWEVDIERCTVNfREVCVUcuaW5pdGlhbGl6ZTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Configuraci&oacute;n inicial para usar DBMS_DEBUG
+EXEC DBMS_DEBUG.initialize;</pre></div><div class='content'></div><h2>Depuración en Oracle SQL Developer</h2>
+<div class='content'><p>Oracle SQL Developer ofrece una interfaz gráfica para depurar código PL/SQL. Puedes establecer puntos de interrupción, inspeccionar variables y ejecutar el código paso a paso.</p>
+<p><strong>Pasos:</strong></p>
+<ol>
+<li>Abre Oracle SQL Developer.</li>
+<li>Carga tu script PL/SQL.</li>
+<li>Establece puntos de interrupción haciendo clic en el margen izquierdo del editor.</li>
+<li>Ejecuta el script en modo de depuración.</li>
+<li>Usa las herramientas de depuración para inspeccionar variables y controlar la ejecución.</li>
+</ol>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Depuración con DBMS_OUTPUT</h2>
+<div class='content'><p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Escribe un bloque PL/SQL que calcule el factorial de un número.</li>
+<li>Usa <code>DBMS_OUTPUT</code> para imprimir el valor de la variable en cada iteración del bucle.</li>
+</ol>
+<p><strong>Código:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("REVDTEFSRQogICAgbnVtIE5VTUJFUiA6PSA1OwogICAgZmFjdG9yaWFsIE5VTUJFUiA6PSAxOwpCRUdJTgogICAgRk9SIGkgSU4gMS4ubnVtIExPT1AKICAgICAgICBmYWN0b3JpYWwgOj0gZmFjdG9yaWFsICogaTsKICAgICAgICBkYm1zX291dHB1dC5wdXRfbGluZSgnRmFjdG9yaWFsIGRlICcgfHwgaSB8fCAnIGVzICcgfHwgZmFjdG9yaWFsKTsKICAgIEVORCBMT09QOwpFTkQ7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>DECLARE
+    num NUMBER := 5;
+    factorial NUMBER := 1;
+BEGIN
+    FOR i IN 1..num LOOP
+        factorial := factorial * i;
+        dbms_output.put_line('Factorial de ' || i || ' es ' || factorial);
+    END LOOP;
+END;</pre></div><div class='content'></div><h2>Ejercicio 2: Depuración en Oracle SQL Developer</h2>
+<div class='content'><p><strong>Instrucciones:</strong></p>
+<ol>
+<li>Crea un procedimiento almacenado que acepte un número y devuelva su cuadrado.</li>
+<li>Establece puntos de interrupción y depura el procedimiento en Oracle SQL Developer.</li>
+</ol>
+<p><strong>Código:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgUFJPQ0VEVVJFIGNhbGN1bGF0ZV9zcXVhcmUgKHBfbnVtIElOIE5VTUJFUiwgcF9zcXVhcmUgT1VUIE5VTUJFUikgSVMKQkVHSU4KICAgIHBfc3F1YXJlIDo9IHBfbnVtICogcF9udW07CkVORDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE PROCEDURE calculate_square (p_num IN NUMBER, p_square OUT NUMBER) IS
+BEGIN
+    p_square := p_num * p_num;
+END;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>La depuración es una parte crucial del desarrollo de software. En PL/SQL, puedes utilizar herramientas como <code>DBMS_OUTPUT</code>, <code>DBMS_DEBUG</code> y Oracle SQL Developer para identificar y corregir errores en tu código. Practicar estas técnicas te ayudará a mejorar tus habilidades de depuración y a escribir código más robusto y eficiente.</p>
+<hr />
+<p>Con esto concluye la sección sobre depuración de código PL/SQL. En la siguiente sección, exploraremos técnicas de perfilado y ajuste para optimizar el rendimiento de tu código PL/SQL.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-02-best-practices' title="Mejores Prácticas" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-02-best-practices' title="Mejores Prácticas" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-04-profiling-tuning' title="Perfilado y Ajuste" class="py-2 px-3 btn btn-primary"
+				data-read-mod="plsql" data-read-unit="5-3">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-04-profiling-tuning' title="Perfilado y Ajuste" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="plsql" data-read-unit="5-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de PL/SQL</h1>
+<h2>Módulo 1: Introducción a PL/SQL</h2>
+<ul>
+<li><a href="01-01-what-is-plsql">¿Qué es PL/SQL?</a></li>
+<li><a href="01-02-setting-up-environment">Configurando tu Entorno</a></li>
+<li><a href="01-03-basic-plsql-syntax">Sintaxis Básica de PL/SQL</a></li>
+<li><a href="01-04-hello-world">Hola Mundo en PL/SQL</a></li>
+</ul>
+<h2>Módulo 2: Fundamentos de PL/SQL</h2>
+<ul>
+<li><a href="02-01-block-structure">Estructura del Bloque PL/SQL</a></li>
+<li><a href="02-02-variables-data-types">Variables y Tipos de Datos</a></li>
+<li><a href="02-03-control-structures">Estructuras de Control</a></li>
+<li><a href="02-04-cursors">Cursores</a></li>
+<li><a href="02-05-exception-handling">Manejo de Excepciones</a></li>
+</ul>
+<h2>Módulo 3: Trabajando con SQL en PL/SQL</h2>
+<ul>
+<li><a href="03-01-sql-statements">Sentencias SQL en PL/SQL</a></li>
+<li><a href="03-02-implicit-explicit-cursors">Cursores Implícitos y Explícitos</a></li>
+<li><a href="03-03-bulk-collect">Colección Masiva</a></li>
+<li><a href="03-04-forall-statement">Sentencia FORALL</a></li>
+</ul>
+<h2>Módulo 4: Conceptos Avanzados de PL/SQL</h2>
+<ul>
+<li><a href="04-01-stored-procedures">Procedimientos Almacenados</a></li>
+<li><a href="04-02-functions">Funciones</a></li>
+<li><a href="04-03-packages">Paquetes</a></li>
+<li><a href="04-04-triggers">Disparadores</a></li>
+</ul>
+<h2>Módulo 5: Optimización y Mejores Prácticas en PL/SQL</h2>
+<ul>
+<li><a href="05-01-code-optimization">Técnicas de Optimización de Código</a></li>
+<li><a href="05-02-best-practices">Mejores Prácticas</a></li>
+<li><a href="05-03-debugging">Depuración de Código PL/SQL</a></li>
+<li><a href="05-04-profiling-tuning">Perfilado y Ajuste</a></li>
+</ul>
+<h2>Módulo 6: Aplicaciones del Mundo Real</h2>
+<ul>
+<li><a href="06-01-simple-application">Construyendo una Aplicación Simple</a></li>
+<li><a href="06-02-interfacing-languages">Interfaz con Otros Lenguajes</a></li>
+<li><a href="06-03-security-considerations">Consideraciones de Seguridad</a></li>
+<li><a href="06-04-case-studies">Estudios de Caso</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

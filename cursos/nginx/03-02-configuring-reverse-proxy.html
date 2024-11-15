@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Configurando un Proxy Inverso </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/03-02-configuring-reverse-proxy" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/03-02-configuring-reverse-proxy" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/03-02-configuring-reverse-proxy" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "tech-tools";
+  		var MOD_NAME = "nginx";
+  		var TEMA_NAME = "3-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/nginx/03-02-configuring-reverse-proxy";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/nginx/03-02-configuring-reverse-proxy" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/nginx/03-02-configuring-reverse-proxy" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="nginx">
+		<a  href="#" class="text-secondary d-none" data-read-mod="nginx" data-read-unit="3-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="nginx" data-unread-unit="3-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-01-introduction-reverse-proxy' title="Introducción al Proxy Inverso" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-01-introduction-reverse-proxy' title="Introducción al Proxy Inverso" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Configurando un Proxy Inverso</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-03-load-balancing' title="Balanceo de Carga" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nginx" data-read-unit="3-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-03-load-balancing' title="Balanceo de Carga" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nginx" data-read-unit="3-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo configurar NGINX como un proxy inverso. Un proxy inverso es un servidor que se sitúa entre los clientes y los servidores backend, redirigiendo las solicitudes de los clientes a los servidores backend adecuados. Esta configuración es útil para mejorar la seguridad, el rendimiento y la escalabilidad de las aplicaciones web.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Proxy Inverso</strong>: Un servidor que redirige las solicitudes de los clientes a uno o más servidores backend.</li>
+<li><strong>Servidor Backend</strong>: El servidor que realmente maneja las solicitudes y responde al cliente.</li>
+<li><strong>Balanceo de Carga</strong>: Distribuir las solicitudes entre varios servidores backend para mejorar el rendimiento y la disponibilidad.</li>
+</ol>
+</div><h1>Configuración Básica de un Proxy Inverso</h1>
+<div class='content'></div><h2>Paso 1: Instalación de NGINX</h2>
+<div class='content'><p>Si aún no tienes NGINX instalado, sigue las instrucciones del módulo anterior para instalarlo.</p>
+</div><h2>Paso 2: Configuración del Archivo <code>nginx.conf</code></h2>
+<div class='content'><ol>
+<li>
+<p>Abre el archivo de configuración principal de NGINX (<code>nginx.conf</code>), que generalmente se encuentra en <code>/etc/nginx/nginx.conf</code>.</p>
+</li>
+<li>
+<p>Dentro del bloque <code>http</code>, define un bloque <code>server</code> para configurar el proxy inverso.</p>
+</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICBzZXJ2ZXIgewogICAgICAgIGxpc3RlbiA4MDsKICAgICAgICBzZXJ2ZXJfbmFtZSBleGFtcGxlLmNvbTsKCiAgICAgICAgbG9jYXRpb24gLyB7CiAgICAgICAgICAgIHByb3h5X3Bhc3MgaHR0cDovL2JhY2tlbmRfc2VydmVyOwogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIEhvc3QgJGhvc3Q7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1SZWFsLUlQICRyZW1vdGVfYWRkcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLUZvcndhcmRlZC1Gb3IgJHByb3h5X2FkZF94X2ZvcndhcmRlZF9mb3I7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgWC1Gb3J3YXJkZWQtUHJvdG8gJHNjaGVtZTsKICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            proxy_pass http://backend_server;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>listen 80;</code>: NGINX escuchará en el puerto 80 (HTTP).</li>
+<li><code>server_name example.com;</code>: Define el nombre del servidor.</li>
+<li><code>location / { ... }</code>: Configura la ruta raíz para redirigir todas las solicitudes entrantes.</li>
+<li><code>proxy_pass http://backend_server;</code>: Redirige las solicitudes al servidor backend. Reemplaza <code>backend_server</code> con la dirección IP o el nombre de dominio de tu servidor backend.</li>
+<li><code>proxy_set_header</code>: Estas directivas configuran los encabezados HTTP que se enviarán al servidor backend.</li>
+</ul>
+</div><h2>Paso 3: Definir el Servidor Backend</h2>
+<div class='content'><p>Puedes definir el servidor backend directamente en la directiva <code>proxy_pass</code> o usar un bloque <code>upstream</code> para definir múltiples servidores backend.</p>
+<h4>Usando un Bloque <code>upstream</code></h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kX3NlcnZlcnMgewogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CiAgICAgICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kX3NlcnZlcnM7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgSG9zdCAkaG9zdDsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVJlYWwtSVAgJHJlbW90ZV9hZGRyOwogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIFgtRm9yd2FyZGVkLUZvciAkcHJveHlfYWRkX3hfZm9yd2FyZGVkX2ZvcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLUZvcndhcmRlZC1Qcm90byAkc2NoZW1lOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend_servers {
+        server backend1.example.com;
+        server backend2.example.com;
+    }
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><code>upstream backend_servers { ... }</code>: Define un grupo de servidores backend.</li>
+<li><code>server backend1.example.com;</code>: Define un servidor backend.</li>
+<li><code>proxy_pass http://backend_servers;</code>: Redirige las solicitudes al grupo de servidores backend.</li>
+</ul>
+</div><h2>Paso 4: Probar la Configuración</h2>
+<div class='content'><ol>
+<li>Verifica la configuración de NGINX para asegurarte de que no haya errores de sintaxis:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBuZ2lueCAtdA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo nginx -t</pre></div><div class='content'><ol start="2">
+<li>Si la verificación es exitosa, recarga NGINX para aplicar los cambios:</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgcmVsb2FkIG5naW54"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl reload nginx</pre></div><div class='content'></div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Objetivo</strong>: Configurar NGINX como un proxy inverso para dos servidores backend.</p>
+<ol>
+<li>Abre el archivo <code>nginx.conf</code>.</li>
+<li>Define un bloque <code>upstream</code> con dos servidores backend.</li>
+<li>Configura un bloque <code>server</code> para redirigir las solicitudes al grupo de servidores backend.</li>
+<li>Verifica y recarga la configuración de NGINX.</li>
+</ol>
+<p><strong>Solución</strong>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aHR0cCB7CiAgICB1cHN0cmVhbSBiYWNrZW5kX3NlcnZlcnMgewogICAgICAgIHNlcnZlciBiYWNrZW5kMS5leGFtcGxlLmNvbTsKICAgICAgICBzZXJ2ZXIgYmFja2VuZDIuZXhhbXBsZS5jb207CiAgICB9CgogICAgc2VydmVyIHsKICAgICAgICBsaXN0ZW4gODA7CiAgICAgICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb207CgogICAgICAgIGxvY2F0aW9uIC8gewogICAgICAgICAgICBwcm94eV9wYXNzIGh0dHA6Ly9iYWNrZW5kX3NlcnZlcnM7CiAgICAgICAgICAgIHByb3h5X3NldF9oZWFkZXIgSG9zdCAkaG9zdDsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLVJlYWwtSVAgJHJlbW90ZV9hZGRyOwogICAgICAgICAgICBwcm94eV9zZXRfaGVhZGVyIFgtRm9yd2FyZGVkLUZvciAkcHJveHlfYWRkX3hfZm9yd2FyZGVkX2ZvcjsKICAgICAgICAgICAgcHJveHlfc2V0X2hlYWRlciBYLUZvcndhcmRlZC1Qcm90byAkc2NoZW1lOwogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>http {
+    upstream backend_servers {
+        server backend1.example.com;
+        server backend2.example.com;
+    }
+
+    server {
+        listen 80;
+        server_name example.com;
+
+        location / {
+            proxy_pass http://backend_servers;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}</pre></div><div class='content'></div><h2>Errores Comunes y Consejos</h2>
+<div class='content'><ul>
+<li><strong>Error 502 Bad Gateway</strong>: Esto puede ocurrir si NGINX no puede comunicarse con el servidor backend. Verifica que los servidores backend estén en funcionamiento y que las direcciones IP o nombres de dominio sean correctos.</li>
+<li><strong>Configuración Incorrecta de Encabezados</strong>: Asegúrate de configurar correctamente los encabezados HTTP para que el servidor backend reciba la información correcta del cliente.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar NGINX como un proxy inverso. Esta configuración es fundamental para mejorar la seguridad, el rendimiento y la escalabilidad de las aplicaciones web. En el próximo tema, exploraremos cómo implementar el balanceo de carga con NGINX.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-01-introduction-reverse-proxy' title="Introducción al Proxy Inverso" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-01-introduction-reverse-proxy' title="Introducción al Proxy Inverso" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-03-load-balancing' title="Balanceo de Carga" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nginx" data-read-unit="3-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-03-load-balancing' title="Balanceo de Carga" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nginx" data-read-unit="3-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de NGINX</h1>
+<h2>Módulo 1: Introducción a NGINX</h2>
+<ul>
+<li><a href="01-01-what-is-nginx">¿Qué es NGINX?</a></li>
+<li><a href="01-02-installing-nginx">Instalando NGINX</a></li>
+<li><a href="01-03-basic-nginx-configuration">Configuración Básica de NGINX</a></li>
+<li><a href="01-04-starting-stopping-nginx">Iniciando y Deteniendo NGINX</a></li>
+</ul>
+<h2>Módulo 2: NGINX como Servidor Web</h2>
+<ul>
+<li><a href="02-01-serving-static-content">Sirviendo Contenido Estático</a></li>
+<li><a href="02-02-directory-listings">Listados de Directorios</a></li>
+<li><a href="02-03-custom-error-pages">Páginas de Error Personalizadas</a></li>
+<li><a href="02-04-logging-log-formats">Registro y Formatos de Registro</a></li>
+</ul>
+<h2>Módulo 3: NGINX como Proxy Inverso</h2>
+<ul>
+<li><a href="03-01-introduction-reverse-proxy">Introducción al Proxy Inverso</a></li>
+<li><a href="03-02-configuring-reverse-proxy">Configurando un Proxy Inverso</a></li>
+<li><a href="03-03-load-balancing">Balanceo de Carga</a></li>
+<li><a href="03-04-health-checks">Verificaciones de Salud</a></li>
+</ul>
+<h2>Módulo 4: Seguridad y Optimización</h2>
+<ul>
+<li><a href="04-01-basic-security-practices">Prácticas Básicas de Seguridad</a></li>
+<li><a href="04-02-rate-limiting">Limitación de Tasa</a></li>
+<li><a href="04-03-ssl-tls-configuration">Configuración SSL/TLS</a></li>
+<li><a href="04-04-caching">Caché</a></li>
+</ul>
+<h2>Módulo 5: Funciones Avanzadas de NGINX</h2>
+<ul>
+<li><a href="05-01-nginx-modules">Módulos de NGINX</a></li>
+<li><a href="05-02-using-nginx-docker">Usando NGINX con Docker</a></li>
+<li><a href="05-03-nginx-http2">NGINX y HTTP/2</a></li>
+<li><a href="05-04-nginx-grpc">NGINX y gRPC</a></li>
+</ul>
+<h2>Módulo 6: Monitoreo y Solución de Problemas</h2>
+<ul>
+<li><a href="06-01-monitoring-nginx">Monitoreando NGINX</a></li>
+<li><a href="06-02-common-issues-solutions">Problemas Comunes y Soluciones</a></li>
+<li><a href="06-03-performance-tuning">Ajuste de Rendimiento</a></li>
+<li><a href="06-04-debugging-nginx">Depuración de NGINX</a></li>
+</ul>
+<h2>Módulo 7: NGINX Plus</h2>
+<ul>
+<li><a href="07-01-introduction-nginx-plus">Introducción a NGINX Plus</a></li>
+<li><a href="07-02-advanced-load-balancing">Balanceo de Carga Avanzado</a></li>
+<li><a href="07-03-application-health-monitoring">Monitoreo de Salud de Aplicaciones</a></li>
+<li><a href="07-04-dynamic-configuration">Configuración Dinámica</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

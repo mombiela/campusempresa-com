@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Entendiendo los índices </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/sql/08-01-understanding-indexes" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/sql/08-01-understanding-indexes" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/sql/08-01-understanding-indexes" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "languages";
+  		var MOD_NAME = "sql";
+  		var TEMA_NAME = "8-1";
+  		var TYPE = "mod";
+  		var PATH = "mod/sql/08-01-understanding-indexes";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/sql/08-01-understanding-indexes" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/sql/08-01-understanding-indexes" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="sql">
+		<a  href="#" class="text-secondary d-none" data-read-mod="sql" data-read-unit="8-1" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="sql" data-unread-unit="8-1" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='07-04-using-subqueries-select-from-where' title="Usando subconsultas en cláusulas SELECT, FROM y WHERE" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='07-04-using-subqueries-select-from-where' title="Usando subconsultas en cláusulas SELECT, FROM y WHERE" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Entendiendo los índices</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-02-creating-managing-indexes' title="Creación y gestión de índices" class="py-2 px-3 btn btn-primary"
+				data-read-mod="sql" data-read-unit="8-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-02-creating-managing-indexes' title="Creación y gestión de índices" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="sql" data-read-unit="8-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='index'></div><h2>Introducción</h2>
+<div class='index'><p>Los índices en SQL son estructuras de datos que mejoran la velocidad de las operaciones de consulta en una base de datos. Funcionan de manera similar a los índices en un libro, permitiendo un acceso rápido a los datos sin tener que escanear toda la tabla.</p>
+</div><h2>Conceptos Clave</h2>
+<div class='index'><ol>
+<li><strong>Índice</strong>: Una estructura de datos que mejora la velocidad de recuperación de datos.</li>
+<li><strong>Clave de índice</strong>: La columna o columnas en las que se basa el índice.</li>
+<li><strong>Árbol B</strong>: Una estructura de datos comúnmente utilizada para implementar índices.</li>
+<li><strong>Índice único</strong>: Un índice que garantiza la unicidad de los valores en la columna indexada.</li>
+<li><strong>Índice compuesto</strong>: Un índice que incluye más de una columna.</li>
+</ol>
+</div><h2>Tipos de Índices</h2>
+<div class='index'><table>
+<thead>
+<tr>
+<th>Tipo de Índice</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Índice Primario</td>
+<td>Un índice único que se crea automáticamente cuando se define una clave primaria.</td>
+</tr>
+<tr>
+<td>Índice Único</td>
+<td>Garantiza que todos los valores en la columna indexada sean únicos.</td>
+</tr>
+<tr>
+<td>Índice No Único</td>
+<td>Permite valores duplicados en la columna indexada.</td>
+</tr>
+<tr>
+<td>Índice Compuesto</td>
+<td>Un índice que incluye más de una columna.</td>
+</tr>
+<tr>
+<td>Índice de Texto Completo</td>
+<td>Utilizado para búsquedas de texto en grandes volúmenes de datos textuales.</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ventajas de los Índices</h2>
+<div class='index'><ul>
+<li><strong>Mejora del rendimiento de las consultas</strong>: Los índices permiten un acceso más rápido a los datos.</li>
+<li><strong>Aceleración de las búsquedas</strong>: Especialmente útil en tablas grandes.</li>
+<li><strong>Optimización de las operaciones de JOIN</strong>: Los índices pueden mejorar el rendimiento de las operaciones JOIN.</li>
+</ul>
+</div><h2>Desventajas de los Índices</h2>
+<div class='index'><ul>
+<li><strong>Espacio de almacenamiento</strong>: Los índices ocupan espacio adicional en la base de datos.</li>
+<li><strong>Coste de mantenimiento</strong>: Las operaciones de inserción, actualización y eliminación pueden ser más lentas debido a la necesidad de actualizar los índices.</li>
+</ul>
+</div><h2>Ejemplo Práctico</h2>
+<div class='index'></div><h2>Creación de un Índice</h2>
+<div class='index'><p>Supongamos que tenemos una tabla <code>empleados</code> con las siguientes columnas: <code>id</code>, <code>nombre</code>, <code>departamento</code>, <code>salario</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIFRBQkxFIGVtcGxlYWRvcyAoCiAgICBpZCBJTlQgUFJJTUFSWSBLRVksCiAgICBub21icmUgVkFSQ0hBUigxMDApLAogICAgZGVwYXJ0YW1lbnRvIFZBUkNIQVIoNTApLAogICAgc2FsYXJpbyBERUNJTUFMKDEwLCAyKQopOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE TABLE empleados (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    departamento VARCHAR(50),
+    salario DECIMAL(10, 2)
+);</pre></div><div class='index'><p>Para mejorar la velocidad de las consultas que buscan empleados por <code>departamento</code>, podemos crear un índice en la columna <code>departamento</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXBhcnRhbWVudG8gT04gZW1wbGVhZG9zKGRlcGFydGFtZW50byk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_departamento ON empleados(departamento);</pre></div><div class='index'></div><h2>Uso del Índice en Consultas</h2>
+<div class='index'><p>Ahora, cuando ejecutamos una consulta que filtra por <code>departamento</code>, el índice <code>idx_departamento</code> se utilizará para acelerar la búsqueda.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBlbXBsZWFkb3MgV0hFUkUgZGVwYXJ0YW1lbnRvID0gJ1ZlbnRhcyc7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM empleados WHERE departamento = 'Ventas';</pre></div><div class='index'></div><h2>Índice Compuesto</h2>
+<div class='index'><p>Si a menudo realizamos consultas que filtran por <code>departamento</code> y <code>salario</code>, podemos crear un índice compuesto.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIElOREVYIGlkeF9kZXB0b19zYWxhcmlvIE9OIGVtcGxlYWRvcyhkZXBhcnRhbWVudG8sIHNhbGFyaW8pOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE INDEX idx_depto_salario ON empleados(departamento, salario);</pre></div><div class='index'><p>Este índice mejorará el rendimiento de las consultas que utilizan ambas columnas en la cláusula <code>WHERE</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUICogRlJPTSBlbXBsZWFkb3MgV0hFUkUgZGVwYXJ0YW1lbnRvID0gJ1ZlbnRhcycgQU5EIHNhbGFyaW8gPiA1MDAwMDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT * FROM empleados WHERE departamento = 'Ventas' AND salario &gt; 50000;</pre></div><div class='index'></div><h2>Ejercicio Práctico</h2>
+<div class='index'></div><h2>Ejercicio 1: Creación de Índices</h2>
+<div class='index'><ol>
+<li>Crea una tabla llamada <code>productos</code> con las siguientes columnas: <code>id</code>, <code>nombre</code>, <code>categoria</code>, <code>precio</code>.</li>
+<li>Inserta algunos datos en la tabla <code>productos</code>.</li>
+<li>Crea un índice en la columna <code>categoria</code>.</li>
+<li>Realiza una consulta que filtre los productos por <code>categoria</code> y observa el rendimiento.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='index'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gUGFzbyAxOiBDcmVhciBsYSB0YWJsYSBwcm9kdWN0b3MKQ1JFQVRFIFRBQkxFIHByb2R1Y3RvcyAoCiAgICBpZCBJTlQgUFJJTUFSWSBLRVksCiAgICBub21icmUgVkFSQ0hBUigxMDApLAogICAgY2F0ZWdvcmlhIFZBUkNIQVIoNTApLAogICAgcHJlY2lvIERFQ0lNQUwoMTAsIDIpCik7CgotLSBQYXNvIDI6IEluc2VydGFyIGRhdG9zIGVuIGxhIHRhYmxhIHByb2R1Y3RvcwpJTlNFUlQgSU5UTyBwcm9kdWN0b3MgKGlkLCBub21icmUsIGNhdGVnb3JpYSwgcHJlY2lvKSBWQUxVRVMKKDEsICdQcm9kdWN0byBBJywgJ0VsZWN0csOzbmljYScsIDI5OS45OSksCigyLCAnUHJvZHVjdG8gQicsICdFbGVjdHLDs25pY2EnLCAxOTkuOTkpLAooMywgJ1Byb2R1Y3RvIEMnLCAnSG9nYXInLCA5OS45OSksCig0LCAnUHJvZHVjdG8gRCcsICdIb2dhcicsIDQ5Ljk5KTsKCi0tIFBhc28gMzogQ3JlYXIgdW4gw61uZGljZSBlbiBsYSBjb2x1bW5hIGNhdGVnb3JpYQpDUkVBVEUgSU5ERVggaWR4X2NhdGVnb3JpYSBPTiBwcm9kdWN0b3MoY2F0ZWdvcmlhKTsKCi0tIFBhc28gNDogUmVhbGl6YXIgdW5hIGNvbnN1bHRhIHF1ZSBmaWx0cmUgcG9yIGNhdGVnb3JpYQpTRUxFQ1QgKiBGUk9NIHByb2R1Y3RvcyBXSEVSRSBjYXRlZ29yaWEgPSAnRWxlY3Ryw7NuaWNhJzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Paso 1: Crear la tabla productos
+CREATE TABLE productos (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(100),
+    categoria VARCHAR(50),
+    precio DECIMAL(10, 2)
+);
+
+-- Paso 2: Insertar datos en la tabla productos
+INSERT INTO productos (id, nombre, categoria, precio) VALUES
+(1, 'Producto A', 'Electr&oacute;nica', 299.99),
+(2, 'Producto B', 'Electr&oacute;nica', 199.99),
+(3, 'Producto C', 'Hogar', 99.99),
+(4, 'Producto D', 'Hogar', 49.99);
+
+-- Paso 3: Crear un &iacute;ndice en la columna categoria
+CREATE INDEX idx_categoria ON productos(categoria);
+
+-- Paso 4: Realizar una consulta que filtre por categoria
+SELECT * FROM productos WHERE categoria = 'Electr&oacute;nica';</pre></div><div class='index'></div><h2>Conclusión</h2>
+<div class='index'><p>Los índices son herramientas poderosas para mejorar el rendimiento de las consultas en SQL. Sin embargo, es importante usarlos con cuidado, ya que también pueden aumentar el coste de almacenamiento y mantenimiento. En el próximo tema, aprenderemos cómo crear y gestionar índices de manera efectiva.</p>
+<hr />
+<p>En el siguiente tema, &quot;Creación y gestión de índices&quot;, profundizaremos en cómo crear diferentes tipos de índices y cómo mantenerlos para asegurar un rendimiento óptimo de la base de datos.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='07-04-using-subqueries-select-from-where' title="Usando subconsultas en cláusulas SELECT, FROM y WHERE" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='07-04-using-subqueries-select-from-where' title="Usando subconsultas en cláusulas SELECT, FROM y WHERE" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-02-creating-managing-indexes' title="Creación y gestión de índices" class="py-2 px-3 btn btn-primary"
+				data-read-mod="sql" data-read-unit="8-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-02-creating-managing-indexes' title="Creación y gestión de índices" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="sql" data-read-unit="8-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de SQL</h1>
+<h2>Módulo 1: Introducción a SQL</h2>
+<ul>
+<li><a href="01-01-what-is-sql">¿Qué es SQL?</a></li>
+<li><a href="01-02-setting-up-environment">Configurando tu entorno SQL</a></li>
+<li><a href="01-03-basic-sql-syntax">Sintaxis básica de SQL</a></li>
+<li><a href="01-04-understanding-databases-tables">Entendiendo bases de datos y tablas</a></li>
+</ul>
+<h2>Módulo 2: Consultas básicas de SQL</h2>
+<ul>
+<li><a href="02-01-select-statement">Instrucción SELECT</a></li>
+<li><a href="02-02-filtering-data-where">Filtrando datos con WHERE</a></li>
+<li><a href="02-03-sorting-data-order-by">Ordenando datos con ORDER BY</a></li>
+<li><a href="02-04-limiting-results-limit">Limitando resultados con LIMIT</a></li>
+</ul>
+<h2>Módulo 3: Trabajando con múltiples tablas</h2>
+<ul>
+<li><a href="03-01-join-operations">Operaciones JOIN</a></li>
+<li><a href="03-02-inner-join">INNER JOIN</a></li>
+<li><a href="03-03-left-join">LEFT JOIN</a></li>
+<li><a href="03-04-right-join">RIGHT JOIN</a></li>
+<li><a href="03-05-full-outer-join">FULL OUTER JOIN</a></li>
+</ul>
+<h2>Módulo 4: Filtrado avanzado de datos</h2>
+<ul>
+<li><a href="04-01-using-like-pattern-matching">Usando LIKE para coincidencia de patrones</a></li>
+<li><a href="04-02-in-between-operators">Operadores IN y BETWEEN</a></li>
+<li><a href="04-03-null-values-is-null">Valores NULL y IS NULL</a></li>
+<li><a href="04-04-aggregating-data-group-by">Agregando datos con GROUP BY</a></li>
+<li><a href="04-05-having-clause">Cláusula HAVING</a></li>
+</ul>
+<h2>Módulo 5: Manipulación de datos</h2>
+<ul>
+<li><a href="05-01-insert-statement">Instrucción INSERT</a></li>
+<li><a href="05-02-update-statement">Instrucción UPDATE</a></li>
+<li><a href="05-03-delete-statement">Instrucción DELETE</a></li>
+<li><a href="05-04-upsert-merge-statement">Instrucción UPSERT (MERGE)</a></li>
+</ul>
+<h2>Módulo 6: Funciones avanzadas de SQL</h2>
+<ul>
+<li><a href="06-01-string-functions">Funciones de cadena</a></li>
+<li><a href="06-02-numeric-functions">Funciones numéricas</a></li>
+<li><a href="06-03-date-time-functions">Funciones de fecha y hora</a></li>
+<li><a href="06-04-conditional-expressions">Expresiones condicionales</a></li>
+</ul>
+<h2>Módulo 7: Subconsultas y consultas anidadas</h2>
+<ul>
+<li><a href="07-01-introduction-subqueries">Introducción a subconsultas</a></li>
+<li><a href="07-02-correlated-subqueries">Subconsultas correlacionadas</a></li>
+<li><a href="07-03-exists-not-exists">EXISTS y NOT EXISTS</a></li>
+<li><a href="07-04-using-subqueries-select-from-where">Usando subconsultas en cláusulas SELECT, FROM y WHERE</a></li>
+</ul>
+<h2>Módulo 8: Índices y optimización de rendimiento</h2>
+<ul>
+<li><a href="08-01-understanding-indexes">Entendiendo los índices</a></li>
+<li><a href="08-02-creating-managing-indexes">Creación y gestión de índices</a></li>
+<li><a href="08-03-query-optimization-techniques">Técnicas de optimización de consultas</a></li>
+<li><a href="08-04-analyzing-query-performance">Análisis del rendimiento de consultas</a></li>
+</ul>
+<h2>Módulo 9: Transacciones y concurrencia</h2>
+<ul>
+<li><a href="09-01-introduction-transactions">Introducción a las transacciones</a></li>
+<li><a href="09-02-acid-properties">Propiedades ACID</a></li>
+<li><a href="09-03-transaction-control-statements">Instrucciones de control de transacciones</a></li>
+<li><a href="09-04-handling-concurrency">Manejo de concurrencia</a></li>
+</ul>
+<h2>Módulo 10: Temas avanzados</h2>
+<ul>
+<li><a href="10-01-stored-procedures">Procedimientos almacenados</a></li>
+<li><a href="10-02-triggers">Triggers</a></li>
+<li><a href="10-03-views">Vistas</a></li>
+<li><a href="10-04-common-table-expressions">Expresiones de tabla comunes (CTEs)</a></li>
+<li><a href="10-05-window-functions">Funciones de ventana</a></li>
+</ul>
+<h2>Módulo 11: SQL en la práctica</h2>
+<ul>
+<li><a href="11-01-real-world-use-cases">Casos de uso en el mundo real</a></li>
+<li><a href="11-02-best-practices">Mejores prácticas</a></li>
+<li><a href="11-03-sql-data-analysis">SQL para análisis de datos</a></li>
+<li><a href="11-04-sql-web-development">SQL en desarrollo web</a></li>
+</ul>
+<h2>Módulo 12: Proyecto final</h2>
+<ul>
+<li><a href="12-01-project-overview">Descripción del proyecto</a></li>
+<li><a href="12-02-project-requirements">Requisitos del proyecto</a></li>
+<li><a href="12-03-project-implementation">Implementación del proyecto</a></li>
+<li><a href="12-04-project-presentation">Presentación del proyecto</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

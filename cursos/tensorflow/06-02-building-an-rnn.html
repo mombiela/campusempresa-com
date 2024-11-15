@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Construyendo una RNN </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/tensorflow/06-02-building-an-rnn" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/tensorflow/06-02-building-an-rnn" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/tensorflow/06-02-building-an-rnn" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "tensorflow";
+  		var TEMA_NAME = "6-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/tensorflow/06-02-building-an-rnn";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/tensorflow/06-02-building-an-rnn" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/tensorflow/06-02-building-an-rnn" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="tensorflow">
+		<a  href="#" class="text-secondary d-none" data-read-mod="tensorflow" data-read-unit="6-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="tensorflow" data-unread-unit="6-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-01-introduction-to-rnns' title="Introducción a RNNs" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-01-introduction-to-rnns' title="Introducción a RNNs" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Construyendo una RNN</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-03-long-short-term-memory' title="Memoria a Largo Plazo (LSTM)" class="py-2 px-3 btn btn-primary"
+				data-read-mod="tensorflow" data-read-unit="6-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-03-long-short-term-memory' title="Memoria a Largo Plazo (LSTM)" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="tensorflow" data-read-unit="6-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos a construir una Red Neuronal Recurrente (RNN) utilizando TensorFlow. Las RNNs son especialmente útiles para procesar datos secuenciales, como series temporales, texto y datos de audio. Vamos a desglosar el proceso en pasos claros y proporcionar ejemplos prácticos para que puedas seguirlos fácilmente.</p>
+</div><h1>Objetivos</h1>
+<div class='content'><ul>
+<li>Comprender la estructura básica de una RNN.</li>
+<li>Construir una RNN simple utilizando TensorFlow.</li>
+<li>Entrenar la RNN con un conjunto de datos secuenciales.</li>
+<li>Evaluar el rendimiento de la RNN.</li>
+</ul>
+</div><h1><ol>
+<li>Estructura Básica de una RNN</li>
+</ol></h1>
+<div class='content'><p>Una RNN es una red neuronal que tiene conexiones recurrentes, lo que significa que la salida de una capa se retroalimenta como entrada para la misma capa en el siguiente paso temporal. Esto permite que la red mantenga una &quot;memoria&quot; de los estados anteriores.</p>
+</div><h2>Componentes Clave:</h2>
+<div class='content'><ul>
+<li><strong>Capa Recurrente</strong>: La capa que tiene conexiones recurrentes.</li>
+<li><strong>Estado Oculto</strong>: La memoria de la red que se actualiza en cada paso temporal.</li>
+<li><strong>Entrada Secuencial</strong>: Los datos que se alimentan a la red en secuencia.</li>
+</ul>
+</div><h1><ol start="2">
+<li>Construcción de una RNN Simple</li>
+</ol></h1>
+<div class='content'><p>Vamos a construir una RNN simple utilizando la API de Keras en TensorFlow. Para este ejemplo, utilizaremos una secuencia de números como datos de entrada.</p>
+</div><h2>Paso 1: Importar las Bibliotecas Necesarias</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRlbnNvcmZsb3cgYXMgdGYKZnJvbSB0ZW5zb3JmbG93LmtlcmFzLm1vZGVscyBpbXBvcnQgU2VxdWVudGlhbApmcm9tIHRlbnNvcmZsb3cua2VyYXMubGF5ZXJzIGltcG9ydCBTaW1wbGVSTk4sIERlbnNlCmltcG9ydCBudW1weSBhcyBucA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import SimpleRNN, Dense
+import numpy as np</pre></div><div class='content'></div><h2>Paso 2: Preparar los Datos</h2>
+<div class='content'><p>Vamos a crear una secuencia de números y dividirla en secuencias más pequeñas para entrenar la RNN.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1bmEgc2VjdWVuY2lhIGRlIG7Dum1lcm9zCmRhdGEgPSBucC5hcnJheShbaSBmb3IgaSBpbiByYW5nZSgxMDApXSkKCiMgRGVmaW5pciBsYSBsb25naXR1ZCBkZSBsYXMgc2VjdWVuY2lhcwpzZXF1ZW5jZV9sZW5ndGggPSAxMAoKIyBDcmVhciBsYXMgc2VjdWVuY2lhcyBkZSBlbnRyYWRhIHkgbGFzIGV0aXF1ZXRhcwpYID0gW10KeSA9IFtdCgpmb3IgaSBpbiByYW5nZShsZW4oZGF0YSkgLSBzZXF1ZW5jZV9sZW5ndGgpOgogICAgWC5hcHBlbmQoZGF0YVtpOmkgKyBzZXF1ZW5jZV9sZW5ndGhdKQogICAgeS5hcHBlbmQoZGF0YVtpICsgc2VxdWVuY2VfbGVuZ3RoXSkKClggPSBucC5hcnJheShYKQp5ID0gbnAuYXJyYXkoeSkKCiMgUmVzaGFwZSBwYXJhIHF1ZSBzZWEgY29tcGF0aWJsZSBjb24gbGEgZW50cmFkYSBkZSBsYSBSTk4KWCA9IFgucmVzaGFwZSgoWC5zaGFwZVswXSwgWC5zaGFwZVsxXSwgMSkp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear una secuencia de n&uacute;meros
+data = np.array([i for i in range(100)])
+
+# Definir la longitud de las secuencias
+sequence_length = 10
+
+# Crear las secuencias de entrada y las etiquetas
+X = []
+y = []
+
+for i in range(len(data) - sequence_length):
+    X.append(data[i:i + sequence_length])
+    y.append(data[i + sequence_length])
+
+X = np.array(X)
+y = np.array(y)
+
+# Reshape para que sea compatible con la entrada de la RNN
+X = X.reshape((X.shape[0], X.shape[1], 1))</pre></div><div class='content'></div><h2>Paso 3: Definir el Modelo</h2>
+<div class='content'><p>Vamos a definir un modelo secuencial con una capa SimpleRNN y una capa densa para la salida.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwgPSBTZXF1ZW50aWFsKCkKbW9kZWwuYWRkKFNpbXBsZVJOTig1MCwgYWN0aXZhdGlvbj0ncmVsdScsIGlucHV0X3NoYXBlPShzZXF1ZW5jZV9sZW5ndGgsIDEpKSkKbW9kZWwuYWRkKERlbnNlKDEpKQoKbW9kZWwuY29tcGlsZShvcHRpbWl6ZXI9J2FkYW0nLCBsb3NzPSdtc2UnKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model = Sequential()
+model.add(SimpleRNN(50, activation='relu', input_shape=(sequence_length, 1)))
+model.add(Dense(1))
+
+model.compile(optimizer='adam', loss='mse')</pre></div><div class='content'></div><h2>Paso 4: Entrenar el Modelo</h2>
+<div class='content'><p>Entrenamos el modelo con los datos preparados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuZml0KFgsIHksIGVwb2Nocz0yMDAsIHZlcmJvc2U9MSk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.fit(X, y, epochs=200, verbose=1)</pre></div><div class='content'></div><h2>Paso 5: Evaluar el Modelo</h2>
+<div class='content'><p>Podemos evaluar el modelo utilizando una parte de los datos que no se usaron para el entrenamiento.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1bmEgbnVldmEgc2VjdWVuY2lhIHBhcmEgbGEgZXZhbHVhY2nDs24KdGVzdF9kYXRhID0gbnAuYXJyYXkoW2kgZm9yIGkgaW4gcmFuZ2UoOTAsIDExMCldKQpYX3Rlc3QgPSBbXQp5X3Rlc3QgPSBbXQoKZm9yIGkgaW4gcmFuZ2UobGVuKHRlc3RfZGF0YSkgLSBzZXF1ZW5jZV9sZW5ndGgpOgogICAgWF90ZXN0LmFwcGVuZCh0ZXN0X2RhdGFbaTppICsgc2VxdWVuY2VfbGVuZ3RoXSkKICAgIHlfdGVzdC5hcHBlbmQodGVzdF9kYXRhW2kgKyBzZXF1ZW5jZV9sZW5ndGhdKQoKWF90ZXN0ID0gbnAuYXJyYXkoWF90ZXN0KQp5X3Rlc3QgPSBucC5hcnJheSh5X3Rlc3QpCgpYX3Rlc3QgPSBYX3Rlc3QucmVzaGFwZSgoWF90ZXN0LnNoYXBlWzBdLCBYX3Rlc3Quc2hhcGVbMV0sIDEpKQoKIyBFdmFsdWFyIGVsIG1vZGVsbwpsb3NzID0gbW9kZWwuZXZhbHVhdGUoWF90ZXN0LCB5X3Rlc3QsIHZlcmJvc2U9MCkKcHJpbnQoZidMb3NzOiB7bG9zc30nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear una nueva secuencia para la evaluaci&oacute;n
+test_data = np.array([i for i in range(90, 110)])
+X_test = []
+y_test = []
+
+for i in range(len(test_data) - sequence_length):
+    X_test.append(test_data[i:i + sequence_length])
+    y_test.append(test_data[i + sequence_length])
+
+X_test = np.array(X_test)
+y_test = np.array(y_test)
+
+X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
+
+# Evaluar el modelo
+loss = model.evaluate(X_test, y_test, verbose=0)
+print(f'Loss: {loss}')</pre></div><div class='content'></div><h1><ol start="3">
+<li>Ejercicio Práctico</li>
+</ol></h1>
+<div class='content'></div><h2>Ejercicio 1: Predecir una Secuencia de Números</h2>
+<div class='content'><p>Modifica el código anterior para predecir una secuencia de números diferente. Por ejemplo, intenta predecir la secuencia de números pares.</p>
+</div><h2>Solución:</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1bmEgc2VjdWVuY2lhIGRlIG7Dum1lcm9zIHBhcmVzCmRhdGEgPSBucC5hcnJheShbaSBmb3IgaSBpbiByYW5nZSgwLCAyMDAsIDIpXSkKCiMgRGVmaW5pciBsYSBsb25naXR1ZCBkZSBsYXMgc2VjdWVuY2lhcwpzZXF1ZW5jZV9sZW5ndGggPSAxMAoKIyBDcmVhciBsYXMgc2VjdWVuY2lhcyBkZSBlbnRyYWRhIHkgbGFzIGV0aXF1ZXRhcwpYID0gW10KeSA9IFtdCgpmb3IgaSBpbiByYW5nZShsZW4oZGF0YSkgLSBzZXF1ZW5jZV9sZW5ndGgpOgogICAgWC5hcHBlbmQoZGF0YVtpOmkgKyBzZXF1ZW5jZV9sZW5ndGhdKQogICAgeS5hcHBlbmQoZGF0YVtpICsgc2VxdWVuY2VfbGVuZ3RoXSkKClggPSBucC5hcnJheShYKQp5ID0gbnAuYXJyYXkoeSkKCiMgUmVzaGFwZSBwYXJhIHF1ZSBzZWEgY29tcGF0aWJsZSBjb24gbGEgZW50cmFkYSBkZSBsYSBSTk4KWCA9IFgucmVzaGFwZSgoWC5zaGFwZVswXSwgWC5zaGFwZVsxXSwgMSkpCgojIERlZmluaXIgZWwgbW9kZWxvCm1vZGVsID0gU2VxdWVudGlhbCgpCm1vZGVsLmFkZChTaW1wbGVSTk4oNTAsIGFjdGl2YXRpb249J3JlbHUnLCBpbnB1dF9zaGFwZT0oc2VxdWVuY2VfbGVuZ3RoLCAxKSkpCm1vZGVsLmFkZChEZW5zZSgxKSkKCm1vZGVsLmNvbXBpbGUob3B0aW1pemVyPSdhZGFtJywgbG9zcz0nbXNlJykKCiMgRW50cmVuYXIgZWwgbW9kZWxvCm1vZGVsLmZpdChYLCB5LCBlcG9jaHM9MjAwLCB2ZXJib3NlPTEpCgojIEV2YWx1YXIgZWwgbW9kZWxvCnRlc3RfZGF0YSA9IG5wLmFycmF5KFtpIGZvciBpIGluIHJhbmdlKDE4MCwgMjIwLCAyKV0pClhfdGVzdCA9IFtdCnlfdGVzdCA9IFtdCgpmb3IgaSBpbiByYW5nZShsZW4odGVzdF9kYXRhKSAtIHNlcXVlbmNlX2xlbmd0aCk6CiAgICBYX3Rlc3QuYXBwZW5kKHRlc3RfZGF0YVtpOmkgKyBzZXF1ZW5jZV9sZW5ndGhdKQogICAgeV90ZXN0LmFwcGVuZCh0ZXN0X2RhdGFbaSArIHNlcXVlbmNlX2xlbmd0aF0pCgpYX3Rlc3QgPSBucC5hcnJheShYX3Rlc3QpCnlfdGVzdCA9IG5wLmFycmF5KHlfdGVzdCkKClhfdGVzdCA9IFhfdGVzdC5yZXNoYXBlKChYX3Rlc3Quc2hhcGVbMF0sIFhfdGVzdC5zaGFwZVsxXSwgMSkpCgpsb3NzID0gbW9kZWwuZXZhbHVhdGUoWF90ZXN0LCB5X3Rlc3QsIHZlcmJvc2U9MCkKcHJpbnQoZidMb3NzOiB7bG9zc30nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear una secuencia de n&uacute;meros pares
+data = np.array([i for i in range(0, 200, 2)])
+
+# Definir la longitud de las secuencias
+sequence_length = 10
+
+# Crear las secuencias de entrada y las etiquetas
+X = []
+y = []
+
+for i in range(len(data) - sequence_length):
+    X.append(data[i:i + sequence_length])
+    y.append(data[i + sequence_length])
+
+X = np.array(X)
+y = np.array(y)
+
+# Reshape para que sea compatible con la entrada de la RNN
+X = X.reshape((X.shape[0], X.shape[1], 1))
+
+# Definir el modelo
+model = Sequential()
+model.add(SimpleRNN(50, activation='relu', input_shape=(sequence_length, 1)))
+model.add(Dense(1))
+
+model.compile(optimizer='adam', loss='mse')
+
+# Entrenar el modelo
+model.fit(X, y, epochs=200, verbose=1)
+
+# Evaluar el modelo
+test_data = np.array([i for i in range(180, 220, 2)])
+X_test = []
+y_test = []
+
+for i in range(len(test_data) - sequence_length):
+    X_test.append(test_data[i:i + sequence_length])
+    y_test.append(test_data[i + sequence_length])
+
+X_test = np.array(X_test)
+y_test = np.array(y_test)
+
+X_test = X_test.reshape((X_test.shape[0], X_test.shape[1], 1))
+
+loss = model.evaluate(X_test, y_test, verbose=0)
+print(f'Loss: {loss}')</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta lección, hemos aprendido a construir una RNN simple utilizando TensorFlow. Hemos cubierto la estructura básica de una RNN, cómo preparar los datos, definir el modelo, entrenarlo y evaluarlo. Las RNNs son poderosas para trabajar con datos secuenciales y tienen muchas aplicaciones en el mundo real, como el procesamiento de lenguaje natural y la predicción de series temporales.</p>
+<p>En el próximo tema, exploraremos las Memorias a Largo Plazo (LSTM), una variante de las RNNs que aborda algunos de los problemas comunes de las RNNs estándar.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-01-introduction-to-rnns' title="Introducción a RNNs" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-01-introduction-to-rnns' title="Introducción a RNNs" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-03-long-short-term-memory' title="Memoria a Largo Plazo (LSTM)" class="py-2 px-3 btn btn-primary"
+				data-read-mod="tensorflow" data-read-unit="6-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-03-long-short-term-memory' title="Memoria a Largo Plazo (LSTM)" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="tensorflow" data-read-unit="6-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de TensorFlow</h1>
+<h2>Módulo 1: Introducción a TensorFlow</h2>
+<ul>
+<li><a href="01-01-what-is-tensorflow">¿Qué es TensorFlow?</a></li>
+<li><a href="01-02-setting-up-tensorflow">Configuración de TensorFlow</a></li>
+<li><a href="01-03-basic-tensorflow-concepts">Conceptos Básicos de TensorFlow</a></li>
+<li><a href="01-04-tensorflow-hello-world">Hola Mundo en TensorFlow</a></li>
+</ul>
+<h2>Módulo 2: Fundamentos de TensorFlow</h2>
+<ul>
+<li><a href="02-01-tensors-and-operations">Tensores y Operaciones</a></li>
+<li><a href="02-02-variables-and-constants">Variables y Constantes</a></li>
+<li><a href="02-03-tensorflow-graphs">Grafos de TensorFlow</a></li>
+<li><a href="02-04-eager-execution">Ejecución Eager</a></li>
+</ul>
+<h2>Módulo 3: Manejo de Datos en TensorFlow</h2>
+<ul>
+<li><a href="03-01-loading-data">Cargando Datos</a></li>
+<li><a href="03-02-data-pipelines-with-tf-data">Pipelines de Datos con tf.data</a></li>
+<li><a href="03-03-data-augmentation">Aumento de Datos</a></li>
+<li><a href="03-04-working-with-datasets">Trabajando con Conjuntos de Datos</a></li>
+</ul>
+<h2>Módulo 4: Construcción de Redes Neuronales</h2>
+<ul>
+<li><a href="04-01-introduction-to-neural-networks">Introducción a Redes Neuronales</a></li>
+<li><a href="04-02-creating-a-simple-neural-network">Creando una Red Neuronal Simple</a></li>
+<li><a href="04-03-activation-functions">Funciones de Activación</a></li>
+<li><a href="04-04-loss-functions-and-optimizers">Funciones de Pérdida y Optimizadores</a></li>
+</ul>
+<h2>Módulo 5: Redes Neuronales Convolucionales (CNNs)</h2>
+<ul>
+<li><a href="05-01-introduction-to-cnns">Introducción a CNNs</a></li>
+<li><a href="05-02-building-a-cnn">Construyendo una CNN</a></li>
+<li><a href="05-03-pooling-layers">Capas de Pooling</a></li>
+<li><a href="05-04-advanced-cnn-architectures">Arquitecturas Avanzadas de CNN</a></li>
+</ul>
+<h2>Módulo 6: Redes Neuronales Recurrentes (RNNs)</h2>
+<ul>
+<li><a href="06-01-introduction-to-rnns">Introducción a RNNs</a></li>
+<li><a href="06-02-building-an-rnn">Construyendo una RNN</a></li>
+<li><a href="06-03-long-short-term-memory">Memoria a Largo Plazo (LSTM)</a></li>
+<li><a href="06-04-gated-recurrent-units">Unidades Recurrentes Gated (GRUs)</a></li>
+</ul>
+<h2>Módulo 7: Técnicas Avanzadas de TensorFlow</h2>
+<ul>
+<li><a href="07-01-custom-layers-and-models">Capas y Modelos Personalizados</a></li>
+<li><a href="07-02-tensorflow-hub">TensorFlow Hub</a></li>
+<li><a href="07-03-transfer-learning">Aprendizaje por Transferencia</a></li>
+<li><a href="07-04-hyperparameter-tuning">Ajuste de Hiperparámetros</a></li>
+</ul>
+<h2>Módulo 8: TensorFlow para Producción</h2>
+<ul>
+<li><a href="08-01-model-saving-and-loading">Guardado y Carga de Modelos</a></li>
+<li><a href="08-02-tensorflow-serving">TensorFlow Serving</a></li>
+<li><a href="08-03-deploying-models">Despliegue de Modelos</a></li>
+<li><a href="08-04-monitoring-and-maintenance">Monitoreo y Mantenimiento</a></li>
+</ul>
+<h2>Módulo 9: TensorFlow Extendido (TFX)</h2>
+<ul>
+<li><a href="09-01-introduction-to-tfx">Introducción a TFX</a></li>
+<li><a href="09-02-data-validation">Validación de Datos</a></li>
+<li><a href="09-03-transforming-data">Transformación de Datos</a></li>
+<li><a href="09-04-model-analysis">Análisis de Modelos</a></li>
+</ul>
+<h2>Módulo 10: Temas Especiales</h2>
+<ul>
+<li><a href="10-01-tensorflow-lite">TensorFlow Lite</a></li>
+<li><a href="10-02-tensorflow-js">TensorFlow.js</a></li>
+<li><a href="10-03-tensorflow-federated">TensorFlow Federated</a></li>
+<li><a href="10-04-tensorflow-quantum">TensorFlow Quantum</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

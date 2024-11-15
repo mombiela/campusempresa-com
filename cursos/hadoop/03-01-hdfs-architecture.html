@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Arquitectura de HDFS </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/hadoop/03-01-hdfs-architecture" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/hadoop/03-01-hdfs-architecture" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/hadoop/03-01-hdfs-architecture" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "hadoop";
+  		var TEMA_NAME = "3-1";
+  		var TYPE = "mod";
+  		var PATH = "mod/hadoop/03-01-hdfs-architecture";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/hadoop/03-01-hdfs-architecture" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/hadoop/03-01-hdfs-architecture" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="hadoop">
+		<a  href="#" class="text-secondary d-none" data-read-mod="hadoop" data-read-unit="3-1" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="hadoop" data-unread-unit="3-1" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='02-04-yarn' title="YARN (Yet Another Resource Negotiator)" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='02-04-yarn' title="YARN (Yet Another Resource Negotiator)" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Arquitectura de HDFS</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-02-hdfs-commands' title="Comandos de HDFS" class="py-2 px-3 btn btn-primary"
+				data-read-mod="hadoop" data-read-unit="3-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-02-hdfs-commands' title="Comandos de HDFS" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="hadoop" data-read-unit="3-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>El Sistema de Archivos Distribuido de Hadoop (HDFS) es uno de los componentes fundamentales del ecosistema Hadoop. Diseñado para almacenar grandes volúmenes de datos de manera distribuida y redundante, HDFS permite el procesamiento eficiente de datos a gran escala. En esta sección, exploraremos la arquitectura de HDFS, sus componentes clave y cómo interactúan entre sí.</p>
+</div><h1>Componentes Principales de HDFS</h1>
+<div class='content'><p>HDFS se compone de varios componentes esenciales que trabajan juntos para proporcionar almacenamiento distribuido y acceso a datos. Los componentes principales son:</p>
+<ol>
+<li>
+<p><strong>Namenode</strong>:</p>
+<ul>
+<li>Es el maestro del sistema HDFS.</li>
+<li>Gestiona el espacio de nombres del sistema de archivos y regula el acceso a los archivos por parte de los clientes.</li>
+<li>Mantiene la información de metadatos, como la estructura de directorios y los bloques de datos.</li>
+</ul>
+</li>
+<li>
+<p><strong>Datanode</strong>:</p>
+<ul>
+<li>Son los trabajadores del sistema HDFS.</li>
+<li>Almacenan los datos reales en bloques.</li>
+<li>Informan periódicamente al Namenode sobre el estado de los bloques que almacenan.</li>
+</ul>
+</li>
+<li>
+<p><strong>Secondary Namenode</strong>:</p>
+<ul>
+<li>No es un respaldo del Namenode.</li>
+<li>Ayuda a reducir la carga del Namenode al tomar instantáneas periódicas del espacio de nombres y los registros de transacciones.</li>
+</ul>
+</li>
+<li>
+<p><strong>Client</strong>:</p>
+<ul>
+<li>Interactúa con el Namenode y los Datanodes para leer y escribir datos.</li>
+<li>Divide los archivos en bloques y los distribuye a los Datanodes.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Estructura de HDFS</h1>
+<div class='content'></div><h2>Espacio de Nombres y Bloques de Datos</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Espacio de Nombres</strong>:</p>
+<ul>
+<li>HDFS organiza los archivos en una jerarquía de directorios y archivos, similar a un sistema de archivos tradicional.</li>
+<li>El Namenode mantiene el espacio de nombres y los metadatos asociados.</li>
+</ul>
+</li>
+<li>
+<p><strong>Bloques de Datos</strong>:</p>
+<ul>
+<li>Los archivos en HDFS se dividen en bloques de tamaño fijo (por defecto, 128 MB).</li>
+<li>Cada bloque se almacena en múltiples Datanodes para garantizar la redundancia y la tolerancia a fallos.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Replicación de Datos</h2>
+<div class='content'><ul>
+<li><strong>Replicación</strong>:
+<ul>
+<li>Cada bloque de datos se replica en varios Datanodes (por defecto, tres réplicas).</li>
+<li>La replicación asegura que los datos estén disponibles incluso si uno o más Datanodes fallan.</li>
+</ul>
+</li>
+</ul>
+</div><h2>Comunicación entre Componentes</h2>
+<div class='content'><ul>
+<li>
+<p><strong>Heartbeat</strong>:</p>
+<ul>
+<li>Los Datanodes envían señales de &quot;heartbeat&quot; periódicas al Namenode para indicar que están activos y funcionando correctamente.</li>
+<li>Si el Namenode no recibe un heartbeat de un Datanode dentro de un tiempo específico, lo marca como fallido.</li>
+</ul>
+</li>
+<li>
+<p><strong>Block Report</strong>:</p>
+<ul>
+<li>Los Datanodes envían informes de bloques al Namenode, detallando los bloques que almacenan.</li>
+<li>Esto permite al Namenode mantener un registro actualizado de la ubicación de los bloques.</li>
+</ul>
+</li>
+</ul>
+</div><h1>Diagrama de Arquitectura de HDFS</h1>
+<div class='content'><p>A continuación se presenta un diagrama simplificado de la arquitectura de HDFS:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Ky0tLS0tLS0tLS0tLS0tLS0tLS0rICAgICAgICstLS0tLS0tLS0tLS0tLS0tLS0tKwp8ICAgICAgQ2xpZW50ICAgICAgIHwgICAgICAgfCAgICAgIENsaWVudCAgICAgICB8CistLS0tLS0tLS0tLS0tLS0tLS0tKyAgICAgICArLS0tLS0tLS0tLS0tLS0tLS0tLSsKICAgICAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgfAogICAgICAgICAgdiAgICAgICAgICAgICAgICAgICAgICAgICB2CistLS0tLS0tLS0tLS0tLS0tLS0tKyAgICAgICArLS0tLS0tLS0tLS0tLS0tLS0tLSsKfCAgICAgTmFtZW5vZGUgICAgICB8ICAgICAgIHwgU2Vjb25kYXJ5IE5hbWVub2RlfAorLS0tLS0tLS0tLS0tLS0tLS0tLSsgICAgICAgKy0tLS0tLS0tLS0tLS0tLS0tLS0rCiAgICAgICAgICB8CiAgICAgICAgICB2CistLS0tLS0tLS0tLS0tLS0tLS0tKwp8ICAgICBEYXRhbm9kZSAgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0rCiAgICAgICAgICB8CiAgICAgICAgICB2CistLS0tLS0tLS0tLS0tLS0tLS0tKwp8ICAgICBEYXRhbm9kZSAgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0rCiAgICAgICAgICB8CiAgICAgICAgICB2CistLS0tLS0tLS0tLS0tLS0tLS0tKwp8ICAgICBEYXRhbm9kZSAgICAgIHwKKy0tLS0tLS0tLS0tLS0tLS0tLS0r"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>+-------------------+       +-------------------+
+|      Client       |       |      Client       |
++-------------------+       +-------------------+
+          |                         |
+          v                         v
++-------------------+       +-------------------+
+|     Namenode      |       | Secondary Namenode|
++-------------------+       +-------------------+
+          |
+          v
++-------------------+
+|     Datanode      |
++-------------------+
+          |
+          v
++-------------------+
+|     Datanode      |
++-------------------+
+          |
+          v
++-------------------+
+|     Datanode      |
++-------------------+</pre></div><div class='content'></div><h1>Ejemplo Práctico: Escribir y Leer Datos en HDFS</h1>
+<div class='content'></div><h2>Escribir Datos en HDFS</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciB1biBkaXJlY3RvcmlvIGVuIEhERlMKaGRmcyBkZnMgLW1rZGlyIC91c2VyL2VzdHVkaWFudGUKCiMgU3ViaXIgdW4gYXJjaGl2byBsb2NhbCBhIEhERlMKaGRmcyBkZnMgLXB1dCBhcmNoaXZvX2xvY2FsLnR4dCAvdXNlci9lc3R1ZGlhbnRlLw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear un directorio en HDFS
+hdfs dfs -mkdir /user/estudiante
+
+# Subir un archivo local a HDFS
+hdfs dfs -put archivo_local.txt /user/estudiante/</pre></div><div class='content'></div><h2>Leer Datos desde HDFS</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBMaXN0YXIgYXJjaGl2b3MgZW4gdW4gZGlyZWN0b3JpbyBkZSBIREZTCmhkZnMgZGZzIC1scyAvdXNlci9lc3R1ZGlhbnRlLwoKIyBMZWVyIGVsIGNvbnRlbmlkbyBkZSB1biBhcmNoaXZvIGVuIEhERlMKaGRmcyBkZnMgLWNhdCAvdXNlci9lc3R1ZGlhbnRlL2FyY2hpdm9fbG9jYWwudHh0"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Listar archivos en un directorio de HDFS
+hdfs dfs -ls /user/estudiante/
+
+# Leer el contenido de un archivo en HDFS
+hdfs dfs -cat /user/estudiante/archivo_local.txt</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear y Manipular Archivos en HDFS</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Crear un directorio en HDFS</strong>:</p>
+<ul>
+<li>Usa el comando <code>hdfs dfs -mkdir /user/tu_usuario/ejercicio1</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Subir un archivo local a HDFS</strong>:</p>
+<ul>
+<li>Crea un archivo de texto en tu sistema local llamado <code>datos.txt</code> con contenido de tu elección.</li>
+<li>Usa el comando <code>hdfs dfs -put datos.txt /user/tu_usuario/ejercicio1/</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Listar los archivos en el directorio de HDFS</strong>:</p>
+<ul>
+<li>Usa el comando <code>hdfs dfs -ls /user/tu_usuario/ejercicio1/</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Leer el contenido del archivo en HDFS</strong>:</p>
+<ul>
+<li>Usa el comando <code>hdfs dfs -cat /user/tu_usuario/ejercicio1/datos.txt</code>.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBQYXNvIDE6IENyZWFyIHVuIGRpcmVjdG9yaW8gZW4gSERGUwpoZGZzIGRmcyAtbWtkaXIgL3VzZXIvdHVfdXN1YXJpby9lamVyY2ljaW8xCgojIFBhc28gMjogU3ViaXIgdW4gYXJjaGl2byBsb2NhbCBhIEhERlMKaGRmcyBkZnMgLXB1dCBkYXRvcy50eHQgL3VzZXIvdHVfdXN1YXJpby9lamVyY2ljaW8xLwoKIyBQYXNvIDM6IExpc3RhciBsb3MgYXJjaGl2b3MgZW4gZWwgZGlyZWN0b3JpbyBkZSBIREZTCmhkZnMgZGZzIC1scyAvdXNlci90dV91c3VhcmlvL2VqZXJjaWNpbzEvCgojIFBhc28gNDogTGVlciBlbCBjb250ZW5pZG8gZGVsIGFyY2hpdm8gZW4gSERGUwpoZGZzIGRmcyAtY2F0IC91c2VyL3R1X3VzdWFyaW8vZWplcmNpY2lvMS9kYXRvcy50eHQ="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Paso 1: Crear un directorio en HDFS
+hdfs dfs -mkdir /user/tu_usuario/ejercicio1
+
+# Paso 2: Subir un archivo local a HDFS
+hdfs dfs -put datos.txt /user/tu_usuario/ejercicio1/
+
+# Paso 3: Listar los archivos en el directorio de HDFS
+hdfs dfs -ls /user/tu_usuario/ejercicio1/
+
+# Paso 4: Leer el contenido del archivo en HDFS
+hdfs dfs -cat /user/tu_usuario/ejercicio1/datos.txt</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos explorado la arquitectura de HDFS, incluyendo sus componentes principales, la estructura de almacenamiento y la comunicación entre componentes. También hemos visto cómo interactuar con HDFS mediante comandos prácticos. Con este conocimiento, estás preparado para profundizar en los comandos de HDFS y la replicación de datos en las siguientes secciones.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='02-04-yarn' title="YARN (Yet Another Resource Negotiator)" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='02-04-yarn' title="YARN (Yet Another Resource Negotiator)" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-02-hdfs-commands' title="Comandos de HDFS" class="py-2 px-3 btn btn-primary"
+				data-read-mod="hadoop" data-read-unit="3-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-02-hdfs-commands' title="Comandos de HDFS" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="hadoop" data-read-unit="3-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Hadoop</h1>
+<h2>Módulo 1: Introducción a Hadoop</h2>
+<ul>
+<li><a href="01-01-what-is-hadoop">¿Qué es Hadoop?</a></li>
+<li><a href="01-02-hadoop-ecosystem-overview">Visión General del Ecosistema Hadoop</a></li>
+<li><a href="01-03-hadoop-vs-traditional-databases">Hadoop vs Bases de Datos Tradicionales</a></li>
+<li><a href="01-04-setting-up-hadoop-environment">Configuración del Entorno Hadoop</a></li>
+</ul>
+<h2>Módulo 2: Arquitectura de Hadoop</h2>
+<ul>
+<li><a href="02-01-hadoop-core-components">Componentes Principales de Hadoop</a></li>
+<li><a href="02-02-hdfs">HDFS (Sistema de Archivos Distribuido de Hadoop)</a></li>
+<li><a href="02-03-mapreduce-framework">Marco de Trabajo MapReduce</a></li>
+<li><a href="02-04-yarn">YARN (Yet Another Resource Negotiator)</a></li>
+</ul>
+<h2>Módulo 3: HDFS (Sistema de Archivos Distribuido de Hadoop)</h2>
+<ul>
+<li><a href="03-01-hdfs-architecture">Arquitectura de HDFS</a></li>
+<li><a href="03-02-hdfs-commands">Comandos de HDFS</a></li>
+<li><a href="03-03-data-replication-in-hdfs">Replicación de Datos en HDFS</a></li>
+<li><a href="03-04-hdfs-fault-tolerance">Tolerancia a Fallos en HDFS</a></li>
+</ul>
+<h2>Módulo 4: Programación MapReduce</h2>
+<ul>
+<li><a href="04-01-introduction-to-mapreduce">Introducción a MapReduce</a></li>
+<li><a href="04-02-mapreduce-job-workflow">Flujo de Trabajo de un Job MapReduce</a></li>
+<li><a href="04-03-writing-a-mapreduce-program">Escribiendo un Programa MapReduce</a></li>
+<li><a href="04-04-mapreduce-optimization-techniques">Técnicas de Optimización de MapReduce</a></li>
+</ul>
+<h2>Módulo 5: Herramientas del Ecosistema Hadoop</h2>
+<ul>
+<li><a href="05-01-apache-pig">Apache Pig</a></li>
+<li><a href="05-02-apache-hive">Apache Hive</a></li>
+<li><a href="05-03-apache-hbase">Apache HBase</a></li>
+<li><a href="05-04-apache-sqoop">Apache Sqoop</a></li>
+<li><a href="05-05-apache-flume">Apache Flume</a></li>
+<li><a href="05-06-apache-oozie">Apache Oozie</a></li>
+</ul>
+<h2>Módulo 6: Conceptos Avanzados de Hadoop</h2>
+<ul>
+<li><a href="06-01-hadoop-security">Seguridad en Hadoop</a></li>
+<li><a href="06-02-hadoop-cluster-management">Gestión de Clústeres Hadoop</a></li>
+<li><a href="06-03-hadoop-performance-tuning">Ajuste de Rendimiento de Hadoop</a></li>
+<li><a href="06-04-hadoop-data-serialization">Serialización de Datos en Hadoop</a></li>
+</ul>
+<h2>Módulo 7: Aplicaciones del Mundo Real y Estudios de Caso</h2>
+<ul>
+<li><a href="07-01-hadoop-in-data-warehousing">Hadoop en Almacenamiento de Datos</a></li>
+<li><a href="07-02-hadoop-in-machine-learning">Hadoop en Aprendizaje Automático</a></li>
+<li><a href="07-03-hadoop-in-real-time-data-processing">Hadoop en Procesamiento de Datos en Tiempo Real</a></li>
+<li><a href="07-04-case-studies-of-hadoop-implementations">Estudios de Caso de Implementaciones de Hadoop</a></li>
+</ul>
+<h2>Módulo 8: Proyectos Prácticos</h2>
+<ul>
+<li><a href="08-01-project-1-analyzing-big-data-with-hadoop">Proyecto 1: Analizando Big Data con Hadoop</a></li>
+<li><a href="08-02-project-2-building-a-data-pipeline-with-hadoop-ecosystem">Proyecto 2: Construyendo una Canalización de Datos con el Ecosistema Hadoop</a></li>
+<li><a href="08-03-project-3-real-time-data-processing-with-hadoop">Proyecto 3: Procesamiento de Datos en Tiempo Real con Hadoop</a></li>
+<li><a href="08-04-project-4-machine-learning-with-hadoop">Proyecto 4: Aprendizaje Automático con Hadoop</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Trabajando con Streams </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/nodejs/03-02-working-with-streams" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nodejs/03-02-working-with-streams" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nodejs/03-02-working-with-streams" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "nodejs";
+  		var TEMA_NAME = "3-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/nodejs/03-02-working-with-streams";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/nodejs/03-02-working-with-streams" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/nodejs/03-02-working-with-streams" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="nodejs">
+		<a  href="#" class="text-secondary d-none" data-read-mod="nodejs" data-read-unit="3-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="nodejs" data-unread-unit="3-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-01-reading-writing-files' title="Lectura y Escritura de Archivos" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-01-reading-writing-files' title="Lectura y Escritura de Archivos" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Trabajando con Streams</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-03-file-system-module' title="Módulo del Sistema de Archivos" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nodejs" data-read-unit="3-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-03-file-system-module' title="Módulo del Sistema de Archivos" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nodejs" data-read-unit="3-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>En Node.js, los streams son una forma eficiente de manejar la lectura y escritura de datos de manera asíncrona. Los streams permiten procesar datos en fragmentos en lugar de cargar todo el contenido en memoria, lo que es especialmente útil para manejar archivos grandes o flujos de datos continuos.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Streams de Lectura (Readable Streams)</strong>: Permiten leer datos de una fuente.</li>
+<li><strong>Streams de Escritura (Writable Streams)</strong>: Permiten escribir datos a un destino.</li>
+<li><strong>Streams Dúplex (Duplex Streams)</strong>: Pueden ser tanto de lectura como de escritura.</li>
+<li><strong>Streams Transform (Transform Streams)</strong>: Son streams dúplex que pueden modificar o transformar los datos mientras pasan a través de ellos.</li>
+</ol>
+</div><h1>Tipos de Streams</h1>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Tipo de Stream</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Readable</td>
+<td>Permite leer datos de una fuente.</td>
+</tr>
+<tr>
+<td>Writable</td>
+<td>Permite escribir datos a un destino.</td>
+</tr>
+<tr>
+<td>Duplex</td>
+<td>Permite tanto leer como escribir datos.</td>
+</tr>
+<tr>
+<td>Transform</td>
+<td>Permite modificar los datos mientras se leen o escriben.</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Ejemplo Práctico: Lectura de un Archivo con Streams</h1>
+<div class='content'><p>Vamos a leer un archivo de texto utilizando un stream de lectura.</p>
+</div><h2>Paso 1: Crear un Archivo de Texto</h2>
+<div class='content'><p>Primero, crea un archivo de texto llamado <code>example.txt</code> con el siguiente contenido:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RXN0ZSBlcyB1biBhcmNoaXZvIGRlIGVqZW1wbG8uCkNvbnRpZW5lIHZhcmlhcyBsw61uZWFzIGRlIHRleHRvLg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>Este es un archivo de ejemplo.
+Contiene varias l&iacute;neas de texto.</pre></div><div class='content'></div><h2>Paso 2: Leer el Archivo con un Stream de Lectura</h2>
+<div class='content'><p>A continuación, vamos a leer el archivo utilizando un stream de lectura en Node.js.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwoKLy8gQ3JlYXIgdW4gc3RyZWFtIGRlIGxlY3R1cmEKY29uc3QgcmVhZGFibGVTdHJlYW0gPSBmcy5jcmVhdGVSZWFkU3RyZWFtKCdleGFtcGxlLnR4dCcsIHsKICAgIGVuY29kaW5nOiAndXRmOCcsCiAgICBoaWdoV2F0ZXJNYXJrOiAxNiAvLyBUYW1hw7FvIGRlbCBidWZmZXIgZW4gYnl0ZXMKfSk7CgovLyBNYW5lamFyIGVsIGV2ZW50byAnZGF0YScgcGFyYSBsZWVyIGxvcyBkYXRvcyBlbiBmcmFnbWVudG9zCnJlYWRhYmxlU3RyZWFtLm9uKCdkYXRhJywgKGNodW5rKSA9PiB7CiAgICBjb25zb2xlLmxvZygnTnVldm8gZnJhZ21lbnRvIHJlY2liaWRvOicsIGNodW5rKTsKfSk7CgovLyBNYW5lamFyIGVsIGV2ZW50byAnZW5kJyBwYXJhIHNhYmVyIGN1w6FuZG8gc2UgaGEgdGVybWluYWRvIGRlIGxlZXIgZWwgYXJjaGl2bwpyZWFkYWJsZVN0cmVhbS5vbignZW5kJywgKCkgPT4gewogICAgY29uc29sZS5sb2coJ0xlY3R1cmEgZGVsIGFyY2hpdm8gY29tcGxldGFkYS4nKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+
+// Crear un stream de lectura
+const readableStream = fs.createReadStream('example.txt', {
+    encoding: 'utf8',
+    highWaterMark: 16 // Tama&ntilde;o del buffer en bytes
+});
+
+// Manejar el evento 'data' para leer los datos en fragmentos
+readableStream.on('data', (chunk) =&gt; {
+    console.log('Nuevo fragmento recibido:', chunk);
+});
+
+// Manejar el evento 'end' para saber cu&aacute;ndo se ha terminado de leer el archivo
+readableStream.on('end', () =&gt; {
+    console.log('Lectura del archivo completada.');
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong><code>fs.createReadStream('example.txt', { encoding: 'utf8', highWaterMark: 16 })</code></strong>: Crea un stream de lectura para el archivo <code>example.txt</code>. El parámetro <code>encoding</code> especifica que los datos deben ser leídos como texto UTF-8, y <code>highWaterMark</code> establece el tamaño del buffer en 16 bytes.</li>
+<li><strong><code>readableStream.on('data', (chunk) =&gt; { ... })</code></strong>: Escucha el evento <code>data</code> para recibir los datos en fragmentos (chunks). Cada fragmento se procesa a medida que se recibe.</li>
+<li><strong><code>readableStream.on('end', () =&gt; { ... })</code></strong>: Escucha el evento <code>end</code> para saber cuándo se ha terminado de leer el archivo.</li>
+</ul>
+</div><h1>Ejemplo Práctico: Escritura en un Archivo con Streams</h1>
+<div class='content'><p>Ahora, vamos a escribir datos en un archivo utilizando un stream de escritura.</p>
+</div><h2>Paso 1: Crear un Stream de Escritura</h2>
+<div class='content'><p>Vamos a escribir datos en un archivo llamado <code>output.txt</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwoKLy8gQ3JlYXIgdW4gc3RyZWFtIGRlIGVzY3JpdHVyYQpjb25zdCB3cml0YWJsZVN0cmVhbSA9IGZzLmNyZWF0ZVdyaXRlU3RyZWFtKCdvdXRwdXQudHh0Jyk7CgovLyBFc2NyaWJpciBkYXRvcyBlbiBlbCBhcmNoaXZvCndyaXRhYmxlU3RyZWFtLndyaXRlKCdQcmltZXJhIGzDrW5lYSBkZSB0ZXh0by5cbicpOwp3cml0YWJsZVN0cmVhbS53cml0ZSgnU2VndW5kYSBsw61uZWEgZGUgdGV4dG8uXG4nKTsKCi8vIEZpbmFsaXphciBlbCBzdHJlYW0gZGUgZXNjcml0dXJhCndyaXRhYmxlU3RyZWFtLmVuZCgoKSA9PiB7CiAgICBjb25zb2xlLmxvZygnRXNjcml0dXJhIGVuIGVsIGFyY2hpdm8gY29tcGxldGFkYS4nKTsKfSk7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+
+// Crear un stream de escritura
+const writableStream = fs.createWriteStream('output.txt');
+
+// Escribir datos en el archivo
+writableStream.write('Primera l&iacute;nea de texto.\n');
+writableStream.write('Segunda l&iacute;nea de texto.\n');
+
+// Finalizar el stream de escritura
+writableStream.end(() =&gt; {
+    console.log('Escritura en el archivo completada.');
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong><code>fs.createWriteStream('output.txt')</code></strong>: Crea un stream de escritura para el archivo <code>output.txt</code>.</li>
+<li><strong><code>writableStream.write('Primera línea de texto.\n')</code></strong>: Escribe la primera línea de texto en el archivo.</li>
+<li><strong><code>writableStream.write('Segunda línea de texto.\n')</code></strong>: Escribe la segunda línea de texto en el archivo.</li>
+<li><strong><code>writableStream.end(() =&gt; { ... })</code></strong>: Finaliza el stream de escritura y ejecuta la función de callback cuando la escritura se ha completado.</li>
+</ul>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Copiar un Archivo Utilizando Streams</h2>
+<div class='content'><p>Escribe un programa en Node.js que copie el contenido de <code>example.txt</code> a un nuevo archivo llamado <code>copy.txt</code> utilizando streams de lectura y escritura.</p>
+<h4>Solución</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y29uc3QgZnMgPSByZXF1aXJlKCdmcycpOwoKLy8gQ3JlYXIgdW4gc3RyZWFtIGRlIGxlY3R1cmEKY29uc3QgcmVhZGFibGVTdHJlYW0gPSBmcy5jcmVhdGVSZWFkU3RyZWFtKCdleGFtcGxlLnR4dCcsIHsKICAgIGVuY29kaW5nOiAndXRmOCcsCiAgICBoaWdoV2F0ZXJNYXJrOiAxNgp9KTsKCi8vIENyZWFyIHVuIHN0cmVhbSBkZSBlc2NyaXR1cmEKY29uc3Qgd3JpdGFibGVTdHJlYW0gPSBmcy5jcmVhdGVXcml0ZVN0cmVhbSgnY29weS50eHQnKTsKCi8vIExlZXIgZGF0b3MgZGVsIGFyY2hpdm8gZGUgb3JpZ2VuIHkgZXNjcmliaXJsb3MgZW4gZWwgYXJjaGl2byBkZSBkZXN0aW5vCnJlYWRhYmxlU3RyZWFtLm9uKCdkYXRhJywgKGNodW5rKSA9PiB7CiAgICB3cml0YWJsZVN0cmVhbS53cml0ZShjaHVuayk7Cn0pOwoKLy8gRmluYWxpemFyIGVsIHN0cmVhbSBkZSBlc2NyaXR1cmEgY3VhbmRvIHNlIGhheWEgdGVybWluYWRvIGRlIGxlZXIgZWwgYXJjaGl2bwpyZWFkYWJsZVN0cmVhbS5vbignZW5kJywgKCkgPT4gewogICAgd3JpdGFibGVTdHJlYW0uZW5kKCgpID0+IHsKICAgICAgICBjb25zb2xlLmxvZygnQ29waWEgZGVsIGFyY2hpdm8gY29tcGxldGFkYS4nKTsKICAgIH0pOwp9KTs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>const fs = require('fs');
+
+// Crear un stream de lectura
+const readableStream = fs.createReadStream('example.txt', {
+    encoding: 'utf8',
+    highWaterMark: 16
+});
+
+// Crear un stream de escritura
+const writableStream = fs.createWriteStream('copy.txt');
+
+// Leer datos del archivo de origen y escribirlos en el archivo de destino
+readableStream.on('data', (chunk) =&gt; {
+    writableStream.write(chunk);
+});
+
+// Finalizar el stream de escritura cuando se haya terminado de leer el archivo
+readableStream.on('end', () =&gt; {
+    writableStream.end(() =&gt; {
+        console.log('Copia del archivo completada.');
+    });
+});</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>Streams de Lectura y Escritura</strong>: Se crean streams de lectura y escritura para <code>example.txt</code> y <code>copy.txt</code>, respectivamente.</li>
+<li><strong>Transferencia de Datos</strong>: Los datos leídos del archivo de origen se escriben en el archivo de destino en fragmentos.</li>
+<li><strong>Finalización</strong>: El stream de escritura se finaliza cuando se ha terminado de leer el archivo de origen.</li>
+</ul>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre los diferentes tipos de streams en Node.js y cómo utilizarlos para leer y escribir datos de manera eficiente. Los streams son una herramienta poderosa para manejar grandes volúmenes de datos sin consumir demasiada memoria. En el próximo módulo, exploraremos cómo trabajar con el módulo del sistema de archivos en Node.js para realizar operaciones más avanzadas.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='03-01-reading-writing-files' title="Lectura y Escritura de Archivos" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='03-01-reading-writing-files' title="Lectura y Escritura de Archivos" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='03-03-file-system-module' title="Módulo del Sistema de Archivos" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nodejs" data-read-unit="3-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='03-03-file-system-module' title="Módulo del Sistema de Archivos" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nodejs" data-read-unit="3-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Node.js</h1>
+<h2>Módulo 1: Introducción a Node.js</h2>
+<ul>
+<li><a href="01-01-what-is-nodejs">¿Qué es Node.js?</a></li>
+<li><a href="01-02-setting-up-nodejs">Configuración de Node.js</a></li>
+<li><a href="01-03-first-nodejs-program">Tu Primer Programa en Node.js</a></li>
+<li><a href="01-04-nodejs-repl">Node.js REPL</a></li>
+</ul>
+<h2>Módulo 2: Conceptos Básicos</h2>
+<ul>
+<li><a href="02-01-nodejs-architecture">Arquitectura de Node.js</a></li>
+<li><a href="02-02-event-loop">Event Loop</a></li>
+<li><a href="02-03-callbacks-async">Callbacks y Programación Asíncrona</a></li>
+<li><a href="02-04-modules-require">Módulos y require()</a></li>
+</ul>
+<h2>Módulo 3: Sistema de Archivos y E/S</h2>
+<ul>
+<li><a href="03-01-reading-writing-files">Lectura y Escritura de Archivos</a></li>
+<li><a href="03-02-working-with-streams">Trabajando con Streams</a></li>
+<li><a href="03-03-file-system-module">Módulo del Sistema de Archivos</a></li>
+<li><a href="03-04-path-module">Módulo Path</a></li>
+</ul>
+<h2>Módulo 4: HTTP y Servidores Web</h2>
+<ul>
+<li><a href="04-01-simple-http-server">Creando un Servidor HTTP Simple</a></li>
+<li><a href="04-02-handling-requests-responses">Manejo de Solicitudes y Respuestas</a></li>
+<li><a href="04-03-serving-static-files">Sirviendo Archivos Estáticos</a></li>
+<li><a href="04-04-routing">Enrutamiento</a></li>
+</ul>
+<h2>Módulo 5: NPM y Gestión de Paquetes</h2>
+<ul>
+<li><a href="05-01-introduction-to-npm">Introducción a NPM</a></li>
+<li><a href="05-02-installing-using-packages">Instalación y Uso de Paquetes</a></li>
+<li><a href="05-03-creating-publishing-packages">Creación y Publicación de Paquetes</a></li>
+<li><a href="05-04-semantic-versioning">Versionado Semántico</a></li>
+</ul>
+<h2>Módulo 6: Framework Express.js</h2>
+<ul>
+<li><a href="06-01-introduction-to-express">Introducción a Express.js</a></li>
+<li><a href="06-02-setting-up-express">Configuración de una Aplicación Express</a></li>
+<li><a href="06-03-middleware">Middleware</a></li>
+<li><a href="06-04-routing-express">Enrutamiento en Express</a></li>
+<li><a href="06-05-error-handling">Manejo de Errores</a></li>
+</ul>
+<h2>Módulo 7: Bases de Datos y ORMs</h2>
+<ul>
+<li><a href="07-01-introduction-databases">Introducción a las Bases de Datos</a></li>
+<li><a href="07-02-mongodb-mongoose">Usando MongoDB con Mongoose</a></li>
+<li><a href="07-03-sql-sequelize">Usando Bases de Datos SQL con Sequelize</a></li>
+<li><a href="07-04-crud-operations">Operaciones CRUD</a></li>
+</ul>
+<h2>Módulo 8: Autenticación y Autorización</h2>
+<ul>
+<li><a href="08-01-introduction-authentication">Introducción a la Autenticación</a></li>
+<li><a href="08-02-using-passport">Usando Passport.js</a></li>
+<li><a href="08-03-jwt-authentication">Autenticación JWT</a></li>
+<li><a href="08-04-role-based-access">Control de Acceso Basado en Roles</a></li>
+</ul>
+<h2>Módulo 9: Pruebas y Depuración</h2>
+<ul>
+<li><a href="09-01-introduction-testing">Introducción a las Pruebas</a></li>
+<li><a href="09-02-unit-testing-mocha-chai">Pruebas Unitarias con Mocha y Chai</a></li>
+<li><a href="09-03-integration-testing">Pruebas de Integración</a></li>
+<li><a href="09-04-debugging-nodejs">Depuración de Aplicaciones Node.js</a></li>
+</ul>
+<h2>Módulo 10: Temas Avanzados</h2>
+<ul>
+<li><a href="10-01-cluster-module">Módulo Cluster</a></li>
+<li><a href="10-02-worker-threads">Hilos de Trabajo</a></li>
+<li><a href="10-03-performance-optimization">Optimización del Rendimiento</a></li>
+<li><a href="10-04-building-restful-apis">Construcción de APIs RESTful</a></li>
+<li><a href="10-05-graphql-nodejs">GraphQL con Node.js</a></li>
+</ul>
+<h2>Módulo 11: Despliegue y DevOps</h2>
+<ul>
+<li><a href="11-01-environment-variables">Variables de Entorno</a></li>
+<li><a href="11-02-using-pm2">Usando PM2 para la Gestión de Procesos</a></li>
+<li><a href="11-03-deploying-heroku">Desplegando en Heroku</a></li>
+<li><a href="11-04-ci-cd">Integración y Despliegue Continuos</a></li>
+</ul>
+<h2>Módulo 12: Proyectos del Mundo Real</h2>
+<ul>
+<li><a href="12-01-building-chat-app">Construcción de una Aplicación de Chat</a></li>
+<li><a href="12-02-creating-ecommerce-api">Creación de una API de Comercio Electrónico</a></li>
+<li><a href="12-03-developing-blogging-platform">Desarrollo de una Plataforma de Blogs</a></li>
+<li><a href="12-04-building-task-management">Construcción de una Herramienta de Gestión de Tareas</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

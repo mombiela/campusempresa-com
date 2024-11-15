@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Escalando Redis </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/07-04-scaling-redis" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/07-04-scaling-redis" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/07-04-scaling-redis" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "redis";
+  		var TEMA_NAME = "7-4";
+  		var TYPE = "mod";
+  		var PATH = "mod/redis/07-04-scaling-redis";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/redis/07-04-scaling-redis" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/redis/07-04-scaling-redis" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="redis">
+		<a  href="#" class="text-secondary d-none" data-read-mod="redis" data-read-unit="7-4" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="redis" data-unread-unit="7-4" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='07-03-cluster-mode' title="Modo Cluster" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='07-03-cluster-mode' title="Modo Cluster" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Escalando Redis</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-01-introduction-to-redis-modules' title="Introducción a los Módulos de Redis" class="py-2 px-3 btn btn-primary"
+				data-read-mod="redis" data-read-unit="7-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-01-introduction-to-redis-modules' title="Introducción a los Módulos de Redis" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="redis" data-read-unit="7-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo escalar Redis para manejar grandes volúmenes de datos y tráfico. Redis ofrece varias estrategias para escalar, incluyendo la replicación, el uso de Redis Sentinel y el modo Cluster. Nos enfocaremos en cómo utilizar estas herramientas y técnicas para asegurar que tu instancia de Redis pueda crecer y manejar la carga de trabajo de manera eficiente.</p>
+</div><h1><ol>
+<li>Introducción a la Escalabilidad</li>
+</ol></h1>
+<div class='content'><p>La escalabilidad es la capacidad de un sistema para manejar una cantidad creciente de trabajo, o su potencial para ser ampliado para acomodar ese crecimiento. En el contexto de Redis, esto significa poder manejar más datos y más operaciones por segundo.</p>
+</div><h2>Estrategias de Escalabilidad en Redis</h2>
+<div class='content'><ol>
+<li><strong>Replicación</strong>: Crear réplicas de las instancias de Redis para distribuir la carga de lectura.</li>
+<li><strong>Redis Sentinel</strong>: Proporciona alta disponibilidad y monitoreo.</li>
+<li><strong>Modo Cluster</strong>: Distribuye datos en múltiples nodos para manejar grandes volúmenes de datos y tráfico.</li>
+</ol>
+</div><h1><ol start="2">
+<li>Replicación</li>
+</ol></h1>
+<div class='content'><p>La replicación en Redis permite crear copias de una instancia maestra en una o más instancias esclavas. Esto es útil para distribuir la carga de lectura y proporcionar redundancia.</p>
+</div><h2>Configuración Básica de Replicación</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar el Maestro</strong>: No se requiere configuración especial en el maestro.</p>
+</li>
+<li>
+<p><strong>Configurar el Esclavo</strong>: Añadir la siguiente línea en el archivo de configuración del esclavo (<code>redis.conf</code>):</p>
+<pre><code class="language-plaintext">replicaof &lt;master-ip&gt; &lt;master-port&gt;
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar el Esclavo</strong>: Iniciar la instancia de Redis esclava.</p>
+</li>
+</ol>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFbiBlbCBhcmNoaXZvIHJlZGlzLmNvbmYgZGVsIGVzY2xhdm8KcmVwbGljYW9mIDE5Mi4xNjguMS4xMDAgNjM3OQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># En el archivo redis.conf del esclavo
+replicaof 192.168.1.100 6379</pre></div><div class='content'></div><h2>Verificación de la Replicación</h2>
+<div class='content'><p>Usa el comando <code>INFO replication</code> en el esclavo para verificar el estado de la replicación.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MTI3LjAuMC4xOjYzNzk+IElORk8gcmVwbGljYXRpb24KIyBSZXBsaWNhdGlvbgpyb2xlOnNsYXZlCm1hc3Rlcl9ob3N0OjE5Mi4xNjguMS4xMDAKbWFzdGVyX3BvcnQ6NjM3OQptYXN0ZXJfbGlua19zdGF0dXM6dXA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>127.0.0.1:6379&gt; INFO replication
+# Replication
+role:slave
+master_host:192.168.1.100
+master_port:6379
+master_link_status:up</pre></div><div class='content'></div><h1><ol start="3">
+<li>Redis Sentinel</li>
+</ol></h1>
+<div class='content'><p>Redis Sentinel proporciona alta disponibilidad mediante la supervisión de instancias de Redis y la realización de failover automático en caso de que una instancia maestra falle.</p>
+</div><h2>Configuración Básica de Redis Sentinel</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar Sentinel</strong>: Crear un archivo de configuración para Sentinel (<code>sentinel.conf</code>).</p>
+<pre><code class="language-plaintext">sentinel monitor mymaster 192.168.1.100 6379 2
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 60000
+sentinel parallel-syncs mymaster 1
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Sentinel</strong>: Iniciar el proceso de Sentinel.</p>
+<pre><code class="language-bash">redis-sentinel /path/to/sentinel.conf
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFbiBlbCBhcmNoaXZvIHNlbnRpbmVsLmNvbmYKc2VudGluZWwgbW9uaXRvciBteW1hc3RlciAxOTIuMTY4LjEuMTAwIDYzNzkgMgpzZW50aW5lbCBkb3duLWFmdGVyLW1pbGxpc2Vjb25kcyBteW1hc3RlciA1MDAwCnNlbnRpbmVsIGZhaWxvdmVyLXRpbWVvdXQgbXltYXN0ZXIgNjAwMDAKc2VudGluZWwgcGFyYWxsZWwtc3luY3MgbXltYXN0ZXIgMQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># En el archivo sentinel.conf
+sentinel monitor mymaster 192.168.1.100 6379 2
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 60000
+sentinel parallel-syncs mymaster 1</pre></div><div class='content'></div><h2>Verificación de Sentinel</h2>
+<div class='content'><p>Usa el comando <code>SENTINEL masters</code> para verificar el estado de los maestros monitoreados.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MTI3LjAuMC4xOjI2Mzc5PiBTRU5USU5FTCBtYXN0ZXJz"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>127.0.0.1:26379&gt; SENTINEL masters</pre></div><div class='content'></div><h1><ol start="4">
+<li>Modo Cluster</li>
+</ol></h1>
+<div class='content'><p>Redis Cluster permite distribuir datos en múltiples nodos, proporcionando escalabilidad horizontal y alta disponibilidad.</p>
+</div><h2>Configuración Básica del Cluster</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar Nodos del Cluster</strong>: Añadir las siguientes líneas en el archivo de configuración de cada nodo (<code>redis.conf</code>):</p>
+<pre><code class="language-plaintext">cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+</code></pre>
+</li>
+<li>
+<p><strong>Iniciar Nodos del Cluster</strong>: Iniciar cada instancia de Redis.</p>
+</li>
+<li>
+<p><strong>Crear el Cluster</strong>: Usar la herramienta <code>redis-cli</code> para crear el cluster.</p>
+<pre><code class="language-bash">redis-cli --cluster create &lt;node1-ip&gt;:&lt;port&gt; &lt;node2-ip&gt;:&lt;port&gt; ... --cluster-replicas 1
+</code></pre>
+</li>
+</ol>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBFbiBlbCBhcmNoaXZvIHJlZGlzLmNvbmYgZGUgY2FkYSBub2RvCmNsdXN0ZXItZW5hYmxlZCB5ZXMKY2x1c3Rlci1jb25maWctZmlsZSBub2Rlcy5jb25mCmNsdXN0ZXItbm9kZS10aW1lb3V0IDUwMDA="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># En el archivo redis.conf de cada nodo
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBDcmVhciBlbCBjbHVzdGVyCnJlZGlzLWNsaSAtLWNsdXN0ZXIgY3JlYXRlIDE5Mi4xNjguMS4xMDA6NjM3OSAxOTIuMTY4LjEuMTAxOjYzNzkgMTkyLjE2OC4xLjEwMjo2Mzc5IC0tY2x1c3Rlci1yZXBsaWNhcyAx"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Crear el cluster
+redis-cli --cluster create 192.168.1.100:6379 192.168.1.101:6379 192.168.1.102:6379 --cluster-replicas 1</pre></div><div class='content'></div><h2>Verificación del Cluster</h2>
+<div class='content'><p>Usa el comando <code>CLUSTER NODES</code> para verificar el estado del cluster.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("MTI3LjAuMC4xOjYzNzk+IENMVVNURVIgTk9ERVM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>127.0.0.1:6379&gt; CLUSTER NODES</pre></div><div class='content'></div><h1><ol start="5">
+<li>Ejercicio Práctico</li>
+</ol></h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>Configura una instancia maestra de Redis.</li>
+<li>Configura dos instancias esclavas que repliquen la instancia maestra.</li>
+<li>Configura Redis Sentinel para monitorear la instancia maestra y realizar failover automático.</li>
+<li>Configura un cluster de Redis con tres nodos y una réplica por nodo.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p><strong>Configurar Maestro</strong>: No se requiere configuración especial.</p>
+</li>
+<li>
+<p><strong>Configurar Esclavos</strong>:</p>
+<pre><code class="language-plaintext"># En el archivo redis.conf de cada esclavo
+replicaof 192.168.1.100 6379
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Sentinel</strong>:</p>
+<pre><code class="language-plaintext"># En el archivo sentinel.conf
+sentinel monitor mymaster 192.168.1.100 6379 2
+sentinel down-after-milliseconds mymaster 5000
+sentinel failover-timeout mymaster 60000
+sentinel parallel-syncs mymaster 1
+</code></pre>
+</li>
+<li>
+<p><strong>Configurar Cluster</strong>:</p>
+<pre><code class="language-plaintext"># En el archivo redis.conf de cada nodo
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+</code></pre>
+<pre><code class="language-bash"># Crear el cluster
+redis-cli --cluster create 192.168.1.100:6379 192.168.1.101:6379 192.168.1.102:6379 --cluster-replicas 1
+</code></pre>
+</li>
+</ol>
+</div><h1><ol start="6">
+<li>Conclusión</li>
+</ol></h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo escalar Redis utilizando replicación, Redis Sentinel y el modo Cluster. Estas técnicas permiten manejar grandes volúmenes de datos y tráfico, asegurando que tu instancia de Redis pueda crecer y manejar la carga de trabajo de manera eficiente. En el próximo módulo, exploraremos los módulos y extensiones de Redis para ampliar aún más sus capacidades.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='07-03-cluster-mode' title="Modo Cluster" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='07-03-cluster-mode' title="Modo Cluster" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='08-01-introduction-to-redis-modules' title="Introducción a los Módulos de Redis" class="py-2 px-3 btn btn-primary"
+				data-read-mod="redis" data-read-unit="7-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='08-01-introduction-to-redis-modules' title="Introducción a los Módulos de Redis" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="redis" data-read-unit="7-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Redis</h1>
+<h2>Módulo 1: Introducción a Redis</h2>
+<ul>
+<li><a href="01-01-what-is-redis">¿Qué es Redis?</a></li>
+<li><a href="01-02-installing-redis">Instalando Redis</a></li>
+<li><a href="01-03-basic-redis-data-types">Tipos de Datos Básicos de Redis</a></li>
+<li><a href="01-04-redis-cli-basics">Conceptos Básicos de Redis CLI</a></li>
+</ul>
+<h2>Módulo 2: Estructuras de Datos de Redis</h2>
+<ul>
+<li><a href="02-01-strings">Cadenas</a></li>
+<li><a href="02-02-lists">Listas</a></li>
+<li><a href="02-03-sets">Conjuntos</a></li>
+<li><a href="02-04-hashes">Hashes</a></li>
+<li><a href="02-05-sorted-sets">Conjuntos Ordenados</a></li>
+</ul>
+<h2>Módulo 3: Comandos y Operaciones de Redis</h2>
+<ul>
+<li><a href="03-01-basic-commands">Comandos Básicos</a></li>
+<li><a href="03-02-advanced-commands">Comandos Avanzados</a></li>
+<li><a href="03-03-transactions">Transacciones</a></li>
+<li><a href="03-04-pipelining">Pipelining</a></li>
+</ul>
+<h2>Módulo 4: Persistencia en Redis</h2>
+<ul>
+<li><a href="04-01-snapshots-rdb">Instantáneas (RDB)</a></li>
+<li><a href="04-02-append-only-files-aof">Archivos de Solo Adición (AOF)</a></li>
+<li><a href="04-03-persistence-configuration">Configuración de Persistencia</a></li>
+<li><a href="04-04-backup-and-restore">Respaldo y Restauración</a></li>
+</ul>
+<h2>Módulo 5: Seguridad en Redis</h2>
+<ul>
+<li><a href="05-01-authentication">Autenticación</a></li>
+<li><a href="05-02-encryption">Encriptación</a></li>
+<li><a href="05-03-access-control-lists-acls">Listas de Control de Acceso (ACLs)</a></li>
+<li><a href="05-04-security-best-practices">Mejores Prácticas de Seguridad</a></li>
+</ul>
+<h2>Módulo 6: Optimización del Rendimiento de Redis</h2>
+<ul>
+<li><a href="06-01-memory-optimization">Optimización de Memoria</a></li>
+<li><a href="06-02-latency-and-throughput">Latencia y Rendimiento</a></li>
+<li><a href="06-03-performance-tuning">Ajuste de Rendimiento</a></li>
+<li><a href="06-04-monitoring-and-metrics">Monitoreo y Métricas</a></li>
+</ul>
+<h2>Módulo 7: Clustering y Alta Disponibilidad en Redis</h2>
+<ul>
+<li><a href="07-01-replication">Replicación</a></li>
+<li><a href="07-02-sentinel">Sentinel</a></li>
+<li><a href="07-03-cluster-mode">Modo Cluster</a></li>
+<li><a href="07-04-scaling-redis">Escalando Redis</a></li>
+</ul>
+<h2>Módulo 8: Módulos y Extensiones de Redis</h2>
+<ul>
+<li><a href="08-01-introduction-to-redis-modules">Introducción a los Módulos de Redis</a></li>
+<li><a href="08-02-popular-redis-modules">Módulos Populares de Redis</a></li>
+<li><a href="08-03-creating-custom-modules">Creando Módulos Personalizados</a></li>
+<li><a href="08-04-using-redis-with-other-technologies">Usando Redis con Otras Tecnologías</a></li>
+</ul>
+<h2>Módulo 9: Casos de Uso Avanzados de Redis</h2>
+<ul>
+<li><a href="09-01-caching">Caching</a></li>
+<li><a href="09-02-session-storage">Almacenamiento de Sesiones</a></li>
+<li><a href="09-03-message-queues">Colas de Mensajes</a></li>
+<li><a href="09-04-real-time-analytics">Analítica en Tiempo Real</a></li>
+</ul>
+<h2>Módulo 10: Redis en Producción</h2>
+<ul>
+<li><a href="10-01-deployment-strategies">Estrategias de Despliegue</a></li>
+<li><a href="10-02-monitoring-and-maintenance">Monitoreo y Mantenimiento</a></li>
+<li><a href="10-03-troubleshooting">Solución de Problemas</a></li>
+<li><a href="10-04-case-studies">Estudios de Caso</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

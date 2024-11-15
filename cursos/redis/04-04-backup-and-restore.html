@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Respaldo y Restauración </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/redis/04-04-backup-and-restore" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/redis/04-04-backup-and-restore" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/redis/04-04-backup-and-restore" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "redis";
+  		var TEMA_NAME = "4-4";
+  		var TYPE = "mod";
+  		var PATH = "mod/redis/04-04-backup-and-restore";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/redis/04-04-backup-and-restore" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/redis/04-04-backup-and-restore" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="redis">
+		<a  href="#" class="text-secondary d-none" data-read-mod="redis" data-read-unit="4-4" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="redis" data-unread-unit="4-4" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-03-persistence-configuration' title="Configuración de Persistencia" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-03-persistence-configuration' title="Configuración de Persistencia" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Respaldo y Restauración</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-01-authentication' title="Autenticación" class="py-2 px-3 btn btn-primary"
+				data-read-mod="redis" data-read-unit="4-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-01-authentication' title="Autenticación" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="redis" data-read-unit="4-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo realizar respaldos y restauraciones en Redis. La capacidad de respaldar y restaurar datos es crucial para garantizar la integridad y disponibilidad de la información en caso de fallos del sistema, errores humanos o cualquier otro tipo de incidente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>RDB (Redis Database File)</strong>: Es un archivo de instantánea que contiene una copia de todos los datos almacenados en Redis en un momento específico.</li>
+<li><strong>AOF (Append Only File)</strong>: Es un archivo que registra cada operación de escritura recibida por el servidor Redis, permitiendo una reconstrucción precisa del estado de la base de datos.</li>
+</ol>
+</div><h1>Respaldo con RDB</h1>
+<div class='content'></div><h2>Creación de un Respaldo</h2>
+<div class='content'><p>Redis permite crear respaldos de la base de datos utilizando el mecanismo de instantáneas (RDB). Para crear un respaldo manualmente, puedes usar los siguientes comandos:</p>
+<ul>
+<li>
+<p><strong>SAVE</strong>: Este comando bloquea el servidor Redis hasta que la operación de guardado se complete. No es recomendado en entornos de producción debido a su naturaleza bloqueante.</p>
+<pre><code class="language-shell">SAVE
+</code></pre>
+</li>
+<li>
+<p><strong>BGSAVE</strong>: Este comando crea un proceso hijo que realiza la operación de guardado, permitiendo que el servidor Redis continúe atendiendo solicitudes.</p>
+<pre><code class="language-shell">BGSAVE
+</code></pre>
+</li>
+</ul>
+</div><h2>Ubicación del Archivo RDB</h2>
+<div class='content'><p>El archivo RDB se guarda en la ubicación especificada en el archivo de configuración de Redis (<code>redis.conf</code>). Por defecto, el archivo se llama <code>dump.rdb</code> y se encuentra en el directorio de trabajo de Redis.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGlyIC92YXIvbGliL3JlZGlzCmRiZmlsZW5hbWUgZHVtcC5yZGI="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>dir /var/lib/redis
+dbfilename dump.rdb</pre></div><div class='content'></div><h2>Ejemplo Práctico</h2>
+<div class='content'><ol>
+<li>
+<p>Ejecuta el comando <code>BGSAVE</code> en la CLI de Redis:</p>
+<pre><code class="language-shell">redis-cli BGSAVE
+</code></pre>
+</li>
+<li>
+<p>Verifica la creación del archivo <code>dump.rdb</code> en el directorio configurado:</p>
+<pre><code class="language-shell">ls /var/lib/redis
+</code></pre>
+</li>
+</ol>
+</div><h1>Restauración desde un Archivo RDB</h1>
+<div class='content'><p>Para restaurar datos desde un archivo RDB, sigue estos pasos:</p>
+<ol>
+<li>
+<p>Detén el servidor Redis si está en ejecución:</p>
+<pre><code class="language-shell">sudo systemctl stop redis
+</code></pre>
+</li>
+<li>
+<p>Reemplaza el archivo <code>dump.rdb</code> en el directorio de trabajo de Redis con el archivo de respaldo.</p>
+<pre><code class="language-shell">cp /ruta/a/tu/respaldo/dump.rdb /var/lib/redis/dump.rdb
+</code></pre>
+</li>
+<li>
+<p>Inicia el servidor Redis:</p>
+<pre><code class="language-shell">sudo systemctl start redis
+</code></pre>
+</li>
+</ol>
+</div><h1>Respaldo con AOF</h1>
+<div class='content'></div><h2>Configuración de AOF</h2>
+<div class='content'><p>Para habilitar AOF, debes modificar el archivo de configuración de Redis (<code>redis.conf</code>):</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("YXBwZW5kb25seSB5ZXMKYXBwZW5kZmlsZW5hbWUgImFwcGVuZG9ubHkuYW9mIg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>appendonly yes
+appendfilename &quot;appendonly.aof&quot;</pre></div><div class='content'></div><h2>Creación de un Respaldo</h2>
+<div class='content'><p>El archivo AOF se actualiza automáticamente con cada operación de escritura. Para crear un respaldo, simplemente copia el archivo AOF a una ubicación segura.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3AgL3Zhci9saWIvcmVkaXMvYXBwZW5kb25seS5hb2YgL3J1dGEvYS90dS9yZXNwYWxkby8="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>cp /var/lib/redis/appendonly.aof /ruta/a/tu/respaldo/</pre></div><div class='content'></div><h2>Restauración desde un Archivo AOF</h2>
+<div class='content'><p>Para restaurar datos desde un archivo AOF, sigue estos pasos:</p>
+<ol>
+<li>
+<p>Detén el servidor Redis si está en ejecución:</p>
+<pre><code class="language-shell">sudo systemctl stop redis
+</code></pre>
+</li>
+<li>
+<p>Reemplaza el archivo <code>appendonly.aof</code> en el directorio de trabajo de Redis con el archivo de respaldo.</p>
+<pre><code class="language-shell">cp /ruta/a/tu/respaldo/appendonly.aof /var/lib/redis/appendonly.aof
+</code></pre>
+</li>
+<li>
+<p>Inicia el servidor Redis:</p>
+<pre><code class="language-shell">sudo systemctl start redis
+</code></pre>
+</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Crear y Restaurar un Respaldo RDB</h2>
+<div class='content'><ol>
+<li>Crea un respaldo RDB utilizando el comando <code>BGSAVE</code>.</li>
+<li>Verifica la creación del archivo <code>dump.rdb</code>.</li>
+<li>Simula una pérdida de datos eliminando todas las claves en Redis.</li>
+<li>Restaura los datos desde el archivo <code>dump.rdb</code>.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p>Ejecuta <code>BGSAVE</code>:</p>
+<pre><code class="language-shell">redis-cli BGSAVE
+</code></pre>
+</li>
+<li>
+<p>Verifica el archivo <code>dump.rdb</code>:</p>
+<pre><code class="language-shell">ls /var/lib/redis
+</code></pre>
+</li>
+<li>
+<p>Elimina todas las claves:</p>
+<pre><code class="language-shell">redis-cli FLUSHALL
+</code></pre>
+</li>
+<li>
+<p>Detén Redis, reemplaza el archivo <code>dump.rdb</code> y reinicia Redis:</p>
+<pre><code class="language-shell">sudo systemctl stop redis
+cp /ruta/a/tu/respaldo/dump.rdb /var/lib/redis/dump.rdb
+sudo systemctl start redis
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo realizar respaldos y restauraciones en Redis utilizando los mecanismos RDB y AOF. Estos procesos son esenciales para mantener la integridad y disponibilidad de los datos en Redis. En el próximo módulo, exploraremos la seguridad en Redis, incluyendo autenticación, encriptación y mejores prácticas de seguridad.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-03-persistence-configuration' title="Configuración de Persistencia" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-03-persistence-configuration' title="Configuración de Persistencia" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-01-authentication' title="Autenticación" class="py-2 px-3 btn btn-primary"
+				data-read-mod="redis" data-read-unit="4-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-01-authentication' title="Autenticación" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="redis" data-read-unit="4-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Redis</h1>
+<h2>Módulo 1: Introducción a Redis</h2>
+<ul>
+<li><a href="01-01-what-is-redis">¿Qué es Redis?</a></li>
+<li><a href="01-02-installing-redis">Instalando Redis</a></li>
+<li><a href="01-03-basic-redis-data-types">Tipos de Datos Básicos de Redis</a></li>
+<li><a href="01-04-redis-cli-basics">Conceptos Básicos de Redis CLI</a></li>
+</ul>
+<h2>Módulo 2: Estructuras de Datos de Redis</h2>
+<ul>
+<li><a href="02-01-strings">Cadenas</a></li>
+<li><a href="02-02-lists">Listas</a></li>
+<li><a href="02-03-sets">Conjuntos</a></li>
+<li><a href="02-04-hashes">Hashes</a></li>
+<li><a href="02-05-sorted-sets">Conjuntos Ordenados</a></li>
+</ul>
+<h2>Módulo 3: Comandos y Operaciones de Redis</h2>
+<ul>
+<li><a href="03-01-basic-commands">Comandos Básicos</a></li>
+<li><a href="03-02-advanced-commands">Comandos Avanzados</a></li>
+<li><a href="03-03-transactions">Transacciones</a></li>
+<li><a href="03-04-pipelining">Pipelining</a></li>
+</ul>
+<h2>Módulo 4: Persistencia en Redis</h2>
+<ul>
+<li><a href="04-01-snapshots-rdb">Instantáneas (RDB)</a></li>
+<li><a href="04-02-append-only-files-aof">Archivos de Solo Adición (AOF)</a></li>
+<li><a href="04-03-persistence-configuration">Configuración de Persistencia</a></li>
+<li><a href="04-04-backup-and-restore">Respaldo y Restauración</a></li>
+</ul>
+<h2>Módulo 5: Seguridad en Redis</h2>
+<ul>
+<li><a href="05-01-authentication">Autenticación</a></li>
+<li><a href="05-02-encryption">Encriptación</a></li>
+<li><a href="05-03-access-control-lists-acls">Listas de Control de Acceso (ACLs)</a></li>
+<li><a href="05-04-security-best-practices">Mejores Prácticas de Seguridad</a></li>
+</ul>
+<h2>Módulo 6: Optimización del Rendimiento de Redis</h2>
+<ul>
+<li><a href="06-01-memory-optimization">Optimización de Memoria</a></li>
+<li><a href="06-02-latency-and-throughput">Latencia y Rendimiento</a></li>
+<li><a href="06-03-performance-tuning">Ajuste de Rendimiento</a></li>
+<li><a href="06-04-monitoring-and-metrics">Monitoreo y Métricas</a></li>
+</ul>
+<h2>Módulo 7: Clustering y Alta Disponibilidad en Redis</h2>
+<ul>
+<li><a href="07-01-replication">Replicación</a></li>
+<li><a href="07-02-sentinel">Sentinel</a></li>
+<li><a href="07-03-cluster-mode">Modo Cluster</a></li>
+<li><a href="07-04-scaling-redis">Escalando Redis</a></li>
+</ul>
+<h2>Módulo 8: Módulos y Extensiones de Redis</h2>
+<ul>
+<li><a href="08-01-introduction-to-redis-modules">Introducción a los Módulos de Redis</a></li>
+<li><a href="08-02-popular-redis-modules">Módulos Populares de Redis</a></li>
+<li><a href="08-03-creating-custom-modules">Creando Módulos Personalizados</a></li>
+<li><a href="08-04-using-redis-with-other-technologies">Usando Redis con Otras Tecnologías</a></li>
+</ul>
+<h2>Módulo 9: Casos de Uso Avanzados de Redis</h2>
+<ul>
+<li><a href="09-01-caching">Caching</a></li>
+<li><a href="09-02-session-storage">Almacenamiento de Sesiones</a></li>
+<li><a href="09-03-message-queues">Colas de Mensajes</a></li>
+<li><a href="09-04-real-time-analytics">Analítica en Tiempo Real</a></li>
+</ul>
+<h2>Módulo 10: Redis en Producción</h2>
+<ul>
+<li><a href="10-01-deployment-strategies">Estrategias de Despliegue</a></li>
+<li><a href="10-02-monitoring-and-maintenance">Monitoreo y Mantenimiento</a></li>
+<li><a href="10-03-troubleshooting">Solución de Problemas</a></li>
+<li><a href="10-04-case-studies">Estudios de Caso</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

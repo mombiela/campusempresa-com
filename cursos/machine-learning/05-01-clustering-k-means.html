@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Clustering: K-means </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/machine_learning/05-01-clustering-k-means" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/machine_learning/05-01-clustering-k-means" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/machine_learning/05-01-clustering-k-means" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "foundations";
+  		var MOD_NAME = "machine_learning";
+  		var TEMA_NAME = "5-1";
+  		var TYPE = "mod";
+  		var PATH = "mod/machine_learning/05-01-clustering-k-means";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/machine_learning/05-01-clustering-k-means" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/machine_learning/05-01-clustering-k-means" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="machine_learning">
+		<a  href="#" class="text-secondary d-none" data-read-mod="machine_learning" data-read-unit="5-1" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="machine_learning" data-unread-unit="5-1" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-06-redes-neuronales' title="Redes neuronales" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-06-redes-neuronales' title="Redes neuronales" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Clustering: K-means</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-02-clustering-jerarquico' title="Clustering jerárquico" class="py-2 px-3 btn btn-primary"
+				data-read-mod="machine_learning" data-read-unit="5-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-02-clustering-jerarquico' title="Clustering jerárquico" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="machine_learning" data-read-unit="5-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>El clustering es una técnica de aprendizaje no supervisado que agrupa datos en conjuntos (clusters) de tal manera que los elementos dentro de un mismo cluster son más similares entre sí que con los elementos de otros clusters. K-means es uno de los algoritmos de clustering más populares y ampliamente utilizados debido a su simplicidad y eficiencia.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Centroides</strong>: Puntos que representan el centro de un cluster.</li>
+<li><strong>Clusters</strong>: Grupos de datos que son similares entre sí.</li>
+<li><strong>Distancia Euclidiana</strong>: Métrica comúnmente utilizada para medir la similitud entre puntos de datos.</li>
+</ol>
+</div><h1>Algoritmo K-means</h1>
+<div class='content'><p>El algoritmo K-means sigue los siguientes pasos:</p>
+<ol>
+<li><strong>Inicialización</strong>: Seleccionar K puntos aleatorios como centroides iniciales.</li>
+<li><strong>Asignación</strong>: Asignar cada punto de datos al centroide más cercano.</li>
+<li><strong>Actualización</strong>: Calcular nuevos centroides como el promedio de los puntos asignados a cada cluster.</li>
+<li><strong>Repetición</strong>: Repetir los pasos de asignación y actualización hasta que los centroides no cambien significativamente.</li>
+</ol>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a implementar el algoritmo K-means utilizando Python y la biblioteca <code>scikit-learn</code>.</p>
+</div><h2>Paso 1: Importar Bibliotecas</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCmltcG9ydCBtYXRwbG90bGliLnB5cGxvdCBhcyBwbHQKZnJvbSBza2xlYXJuLmNsdXN0ZXIgaW1wb3J0IEtNZWFucwpmcm9tIHNrbGVhcm4uZGF0YXNldHMgaW1wb3J0IG1ha2VfYmxvYnM="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+from sklearn.datasets import make_blobs</pre></div><div class='content'></div><h2>Paso 2: Generar Datos de Ejemplo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZW5lcmFyIGRhdG9zIGRlIGVqZW1wbG8KWCwgeSA9IG1ha2VfYmxvYnMobl9zYW1wbGVzPTMwMCwgY2VudGVycz00LCBjbHVzdGVyX3N0ZD0wLjYwLCByYW5kb21fc3RhdGU9MCkKcGx0LnNjYXR0ZXIoWFs6LCAwXSwgWFs6LCAxXSwgcz01MCkKcGx0LnNob3coKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Generar datos de ejemplo
+X, y = make_blobs(n_samples=300, centers=4, cluster_std=0.60, random_state=0)
+plt.scatter(X[:, 0], X[:, 1], s=50)
+plt.show()</pre></div><div class='content'></div><h2>Paso 3: Aplicar K-means</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBBcGxpY2FyIEstbWVhbnMKa21lYW5zID0gS01lYW5zKG5fY2x1c3RlcnM9NCkKa21lYW5zLmZpdChYKQp5X2ttZWFucyA9IGttZWFucy5wcmVkaWN0KFgp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Aplicar K-means
+kmeans = KMeans(n_clusters=4)
+kmeans.fit(X)
+y_kmeans = kmeans.predict(X)</pre></div><div class='content'></div><h2>Paso 4: Visualizar Resultados</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBWaXN1YWxpemFyIGxvcyBjbHVzdGVycwpwbHQuc2NhdHRlcihYWzosIDBdLCBYWzosIDFdLCBjPXlfa21lYW5zLCBzPTUwLCBjbWFwPSd2aXJpZGlzJykKCiMgVmlzdWFsaXphciBsb3MgY2VudHJvaWRlcwpjZW50ZXJzID0ga21lYW5zLmNsdXN0ZXJfY2VudGVyc18KcGx0LnNjYXR0ZXIoY2VudGVyc1s6LCAwXSwgY2VudGVyc1s6LCAxXSwgYz0ncmVkJywgcz0yMDAsIGFscGhhPTAuNzUpCnBsdC5zaG93KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Visualizar los clusters
+plt.scatter(X[:, 0], X[:, 1], c=y_kmeans, s=50, cmap='viridis')
+
+# Visualizar los centroides
+centers = kmeans.cluster_centers_
+plt.scatter(centers[:, 0], centers[:, 1], c='red', s=200, alpha=0.75)
+plt.show()</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ol>
+<li><strong>Generación de Datos</strong>: Utilizamos <code>make_blobs</code> para generar un conjunto de datos con 300 muestras y 4 centros.</li>
+<li><strong>Aplicación de K-means</strong>: Creamos una instancia de <code>KMeans</code> con 4 clusters y ajustamos el modelo a nuestros datos.</li>
+<li><strong>Visualización</strong>: Utilizamos <code>matplotlib</code> para visualizar los datos y los centroides resultantes.</li>
+</ol>
+</div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Aplicar K-means a un Nuevo Conjunto de Datos</h2>
+<div class='content'><ol>
+<li>Genera un nuevo conjunto de datos con 5 clusters.</li>
+<li>Aplica el algoritmo K-means para identificar los clusters.</li>
+<li>Visualiza los resultados.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBHZW5lcmFyIG51ZXZvIGNvbmp1bnRvIGRlIGRhdG9zClhfbmV3LCB5X25ldyA9IG1ha2VfYmxvYnMobl9zYW1wbGVzPTMwMCwgY2VudGVycz01LCBjbHVzdGVyX3N0ZD0wLjcwLCByYW5kb21fc3RhdGU9NDIpCnBsdC5zY2F0dGVyKFhfbmV3WzosIDBdLCBYX25ld1s6LCAxXSwgcz01MCkKcGx0LnNob3coKQoKIyBBcGxpY2FyIEstbWVhbnMKa21lYW5zX25ldyA9IEtNZWFucyhuX2NsdXN0ZXJzPTUpCmttZWFuc19uZXcuZml0KFhfbmV3KQp5X2ttZWFuc19uZXcgPSBrbWVhbnNfbmV3LnByZWRpY3QoWF9uZXcpCgojIFZpc3VhbGl6YXIgbG9zIGNsdXN0ZXJzCnBsdC5zY2F0dGVyKFhfbmV3WzosIDBdLCBYX25ld1s6LCAxXSwgYz15X2ttZWFuc19uZXcsIHM9NTAsIGNtYXA9J3ZpcmlkaXMnKQoKIyBWaXN1YWxpemFyIGxvcyBjZW50cm9pZGVzCmNlbnRlcnNfbmV3ID0ga21lYW5zX25ldy5jbHVzdGVyX2NlbnRlcnNfCnBsdC5zY2F0dGVyKGNlbnRlcnNfbmV3WzosIDBdLCBjZW50ZXJzX25ld1s6LCAxXSwgYz0ncmVkJywgcz0yMDAsIGFscGhhPTAuNzUpCnBsdC5zaG93KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Generar nuevo conjunto de datos
+X_new, y_new = make_blobs(n_samples=300, centers=5, cluster_std=0.70, random_state=42)
+plt.scatter(X_new[:, 0], X_new[:, 1], s=50)
+plt.show()
+
+# Aplicar K-means
+kmeans_new = KMeans(n_clusters=5)
+kmeans_new.fit(X_new)
+y_kmeans_new = kmeans_new.predict(X_new)
+
+# Visualizar los clusters
+plt.scatter(X_new[:, 0], X_new[:, 1], c=y_kmeans_new, s=50, cmap='viridis')
+
+# Visualizar los centroides
+centers_new = kmeans_new.cluster_centers_
+plt.scatter(centers_new[:, 0], centers_new[:, 1], c='red', s=200, alpha=0.75)
+plt.show()</pre></div><div class='content'></div><h1>Errores Comunes y Consejos</h1>
+<div class='content'><ol>
+<li><strong>Número de Clusters Incorrecto</strong>: Elegir un número incorrecto de clusters puede llevar a resultados subóptimos. Utiliza métodos como el codo (elbow method) para determinar el número óptimo de clusters.</li>
+<li><strong>Escalado de Datos</strong>: Asegúrate de escalar tus datos antes de aplicar K-means, especialmente si las características tienen diferentes unidades o escalas.</li>
+<li><strong>Inicialización de Centroides</strong>: La inicialización aleatoria de centroides puede llevar a diferentes resultados. Utiliza la inicialización <code>k-means++</code> para mejorar la estabilidad.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>El algoritmo K-means es una herramienta poderosa para el clustering de datos. Su simplicidad y eficiencia lo hacen adecuado para una amplia gama de aplicaciones. Sin embargo, es crucial elegir el número correcto de clusters y escalar los datos adecuadamente para obtener los mejores resultados.</p>
+<p>En el próximo tema, exploraremos otro algoritmo de clustering: el clustering jerárquico.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-06-redes-neuronales' title="Redes neuronales" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-06-redes-neuronales' title="Redes neuronales" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-02-clustering-jerarquico' title="Clustering jerárquico" class="py-2 px-3 btn btn-primary"
+				data-read-mod="machine_learning" data-read-unit="5-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-02-clustering-jerarquico' title="Clustering jerárquico" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="machine_learning" data-read-unit="5-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Machine Learning</h1>
+<h2>Módulo 1: Introducción al Machine Learning</h2>
+<ul>
+<li><a href="01-01-que-es-machine-learning">¿Qué es el Machine Learning?</a></li>
+<li><a href="01-02-historia-evolucion-machine-learning">Historia y evolución del Machine Learning</a></li>
+<li><a href="01-03-tipos-machine-learning">Tipos de Machine Learning</a></li>
+<li><a href="01-04-aplicaciones-machine-learning">Aplicaciones del Machine Learning</a></li>
+</ul>
+<h2>Módulo 2: Fundamentos de Estadística y Probabilidad</h2>
+<ul>
+<li><a href="02-01-conceptos-basicos-estadistica">Conceptos básicos de estadística</a></li>
+<li><a href="02-02-distribuciones-probabilidad">Distribuciones de probabilidad</a></li>
+<li><a href="02-03-inferencia-estadistica">Inferencia estadística</a></li>
+<li><a href="02-04-teorema-bayes">Teorema de Bayes</a></li>
+</ul>
+<h2>Módulo 3: Preprocesamiento de Datos</h2>
+<ul>
+<li><a href="03-01-limpieza-datos">Limpieza de datos</a></li>
+<li><a href="03-02-transformacion-datos">Transformación de datos</a></li>
+<li><a href="03-03-normalizacion-estandarizacion">Normalización y estandarización</a></li>
+<li><a href="03-04-manejo-datos-faltantes">Manejo de datos faltantes</a></li>
+</ul>
+<h2>Módulo 4: Algoritmos de Machine Learning Supervisado</h2>
+<ul>
+<li><a href="04-01-regresion-lineal">Regresión lineal</a></li>
+<li><a href="04-02-regresion-logistica">Regresión logística</a></li>
+<li><a href="04-03-arboles-decision">Árboles de decisión</a></li>
+<li><a href="04-04-svm">Máquinas de soporte vectorial (SVM)</a></li>
+<li><a href="04-05-knn">K-Vecinos más cercanos (K-NN)</a></li>
+<li><a href="04-06-redes-neuronales">Redes neuronales</a></li>
+</ul>
+<h2>Módulo 5: Algoritmos de Machine Learning No Supervisado</h2>
+<ul>
+<li><a href="05-01-clustering-k-means">Clustering: K-means</a></li>
+<li><a href="05-02-clustering-jerarquico">Clustering jerárquico</a></li>
+<li><a href="05-03-pca">Análisis de componentes principales (PCA)</a></li>
+<li><a href="05-04-dbscan">Análisis de agrupamiento DBSCAN</a></li>
+</ul>
+<h2>Módulo 6: Evaluación y Validación de Modelos</h2>
+<ul>
+<li><a href="06-01-metricas-evaluacion">Métricas de evaluación</a></li>
+<li><a href="06-02-validacion-cruzada">Validación cruzada</a></li>
+<li><a href="06-03-curva-roc-auc">Curva ROC y AUC</a></li>
+<li><a href="06-04-overfitting-underfitting">Overfitting y underfitting</a></li>
+</ul>
+<h2>Módulo 7: Técnicas Avanzadas y Optimización</h2>
+<ul>
+<li><a href="07-01-ensemble-learning">Ensemble Learning</a></li>
+<li><a href="07-02-gradient-boosting">Gradient Boosting</a></li>
+<li><a href="07-03-deep-learning">Redes neuronales profundas (Deep Learning)</a></li>
+<li><a href="07-04-optimizacion-hiperparametros">Optimización de hiperparámetros</a></li>
+</ul>
+<h2>Módulo 8: Implementación y Despliegue de Modelos</h2>
+<ul>
+<li><a href="08-01-frameworks-bibliotecas">Frameworks y bibliotecas populares</a></li>
+<li><a href="08-02-implementacion-produccion">Implementación de modelos en producción</a></li>
+<li><a href="08-03-mantenimiento-monitoreo">Mantenimiento y monitoreo de modelos</a></li>
+<li><a href="08-04-etica-privacidad">Consideraciones éticas y de privacidad</a></li>
+</ul>
+<h2>Módulo 9: Proyectos Prácticos</h2>
+<ul>
+<li><a href="09-01-proyecto-prediccion-precios-viviendas">Proyecto 1: Predicción de precios de viviendas</a></li>
+<li><a href="09-02-proyecto-clasificacion-imagenes">Proyecto 2: Clasificación de imágenes</a></li>
+<li><a href="09-03-proyecto-analisis-sentimientos">Proyecto 3: Análisis de sentimientos en redes sociales</a></li>
+<li><a href="09-04-proyecto-deteccion-fraudes">Proyecto 4: Detección de fraudes</a></li>
+</ul>
+<h2>Módulo 10: Recursos Adicionales</h2>
+<ul>
+<li><a href="10-01-libros-recomendados">Libros recomendados</a></li>
+<li><a href="10-02-cursos-en-linea">Cursos en línea</a></li>
+<li><a href="10-03-comunidades-foros">Comunidades y foros</a></li>
+<li><a href="10-04-herramientas-software">Herramientas y software</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

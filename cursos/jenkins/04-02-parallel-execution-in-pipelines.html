@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Ejecución Paralela en Pipelines </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/jenkins/04-02-parallel-execution-in-pipelines" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/jenkins/04-02-parallel-execution-in-pipelines" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/jenkins/04-02-parallel-execution-in-pipelines" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "jenkins";
+  		var TEMA_NAME = "4-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/jenkins/04-02-parallel-execution-in-pipelines";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/jenkins/04-02-parallel-execution-in-pipelines" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/jenkins/04-02-parallel-execution-in-pipelines" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="jenkins">
+		<a  href="#" class="text-secondary d-none" data-read-mod="jenkins" data-read-unit="4-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="jenkins" data-unread-unit="4-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-01-pipeline-stages-and-steps' title="Etapas y Pasos de Pipeline" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-01-pipeline-stages-and-steps' title="Etapas y Pasos de Pipeline" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Ejecución Paralela en Pipelines</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='04-03-using-environment-variables' title="Usando Variables de Entorno" class="py-2 px-3 btn btn-primary"
+				data-read-mod="jenkins" data-read-unit="4-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='04-03-using-environment-variables' title="Usando Variables de Entorno" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="jenkins" data-read-unit="4-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderemos cómo ejecutar tareas en paralelo dentro de una pipeline de Jenkins. La ejecución paralela es una característica poderosa que permite reducir el tiempo total de ejecución de una pipeline al realizar múltiples tareas simultáneamente.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'><ol>
+<li><strong>Etapas (Stages)</strong>: Las etapas son bloques de una pipeline que agrupan una serie de pasos (steps). Cada etapa puede contener múltiples pasos que se ejecutan secuencialmente.</li>
+<li><strong>Pasos (Steps)</strong>: Los pasos son las acciones individuales que se ejecutan dentro de una etapa.</li>
+<li><strong>Paralelismo</strong>: La capacidad de ejecutar múltiples etapas o pasos al mismo tiempo.</li>
+</ol>
+</div><h1>Ejecución Paralela en Pipelines Declarativas</h1>
+<div class='content'><p>En una pipeline declarativa, la ejecución paralela se define utilizando la palabra clave <code>parallel</code>. A continuación, se muestra un ejemplo básico de cómo configurar una ejecución paralela:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCBhbmQgVGVzdCcpIHsKICAgICAgICAgICAgcGFyYWxsZWwgewogICAgICAgICAgICAgICAgc3RhZ2UoJ0J1aWxkJykgewogICAgICAgICAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICAgICAgICAgIC8vIEFxdcOtIGlyw61hbiBsb3MgY29tYW5kb3MgZGUgY29uc3RydWNjacOzbgogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHN0YWdlKCdUZXN0JykgewogICAgICAgICAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBkZSBwcnVlYmEKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgIH0KICAgICAgICB9CiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build and Test') {
+            parallel {
+                stage('Build') {
+                    steps {
+                        echo 'Building...'
+                        // Aqu&iacute; ir&iacute;an los comandos de construcci&oacute;n
+                    }
+                }
+                stage('Test') {
+                    steps {
+                        echo 'Testing...'
+                        // Aqu&iacute; ir&iacute;an los comandos de prueba
+                    }
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>pipeline</strong>: Define la pipeline.</li>
+<li><strong>agent any</strong>: Indica que la pipeline puede ejecutarse en cualquier agente disponible.</li>
+<li><strong>stages</strong>: Agrupa todas las etapas de la pipeline.</li>
+<li><strong>stage('Build and Test')</strong>: Define una etapa que contiene tareas paralelas.</li>
+<li><strong>parallel</strong>: Indica que las etapas dentro de este bloque deben ejecutarse en paralelo.</li>
+<li><strong>stage('Build')</strong> y <strong>stage('Test')</strong>: Definen las etapas individuales que se ejecutarán en paralelo.</li>
+<li><strong>steps</strong>: Contiene los pasos que se ejecutarán dentro de cada etapa.</li>
+</ul>
+</div><h1>Ejecución Paralela en Pipelines Scriptadas</h1>
+<div class='content'><p>En una pipeline scriptada, la ejecución paralela se logra utilizando la función <code>parallel</code>. Aquí hay un ejemplo:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bm9kZSB7CiAgICBzdGFnZSgnQnVpbGQgYW5kIFRlc3QnKSB7CiAgICAgICAgcGFyYWxsZWwoCiAgICAgICAgICAgIGJ1aWxkOiB7CiAgICAgICAgICAgICAgICBlY2hvICdCdWlsZGluZy4uLicKICAgICAgICAgICAgICAgIC8vIEFxdcOtIGlyw61hbiBsb3MgY29tYW5kb3MgZGUgY29uc3RydWNjacOzbgogICAgICAgICAgICB9LAogICAgICAgICAgICB0ZXN0OiB7CiAgICAgICAgICAgICAgICBlY2hvICdUZXN0aW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQXF1w60gaXLDrWFuIGxvcyBjb21hbmRvcyBkZSBwcnVlYmEKICAgICAgICAgICAgfQogICAgICAgICkKICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>node {
+    stage('Build and Test') {
+        parallel(
+            build: {
+                echo 'Building...'
+                // Aqu&iacute; ir&iacute;an los comandos de construcci&oacute;n
+            },
+            test: {
+                echo 'Testing...'
+                // Aqu&iacute; ir&iacute;an los comandos de prueba
+            }
+        )
+    }
+}</pre></div><div class='content'></div><h2>Explicación del Código</h2>
+<div class='content'><ul>
+<li><strong>node</strong>: Define un nodo en el que se ejecutará la pipeline.</li>
+<li><strong>stage('Build and Test')</strong>: Define una etapa que contiene tareas paralelas.</li>
+<li><strong>parallel</strong>: Función que permite definir tareas paralelas.</li>
+<li><strong>build</strong> y <strong>test</strong>: Son las tareas paralelas definidas como bloques de código.</li>
+</ul>
+</div><h1>Ejemplo Práctico</h1>
+<div class='content'><p>Vamos a crear una pipeline que construya, pruebe y despliegue una aplicación en paralelo.</p>
+</div><h2>Pipeline Declarativa</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCwgVGVzdCBhbmQgRGVwbG95JykgewogICAgICAgICAgICBwYXJhbGxlbCB7CiAgICAgICAgICAgICAgICBzdGFnZSgnQnVpbGQnKSB7CiAgICAgICAgICAgICAgICAgICAgc3RlcHMgewogICAgICAgICAgICAgICAgICAgICAgICBlY2hvICdCdWlsZGluZy4uLicKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgY29uc3RydWNjacOzbgogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIHN0YWdlKCdUZXN0JykgewogICAgICAgICAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgICAgICAgICAgZWNobyAnVGVzdGluZy4uLicKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgcHJ1ZWJhCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgc3RhZ2UoJ0RlcGxveScpIHsKICAgICAgICAgICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gJ0RlcGxveWluZy4uLicKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgZGVzcGxpZWd1ZQogICAgICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgIH0KICAgIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build, Test and Deploy') {
+            parallel {
+                stage('Build') {
+                    steps {
+                        echo 'Building...'
+                        // Comandos de construcci&oacute;n
+                    }
+                }
+                stage('Test') {
+                    steps {
+                        echo 'Testing...'
+                        // Comandos de prueba
+                    }
+                }
+                stage('Deploy') {
+                    steps {
+                        echo 'Deploying...'
+                        // Comandos de despliegue
+                    }
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h2>Pipeline Scriptada</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bm9kZSB7CiAgICBzdGFnZSgnQnVpbGQsIFRlc3QgYW5kIERlcGxveScpIHsKICAgICAgICBwYXJhbGxlbCgKICAgICAgICAgICAgYnVpbGQ6IHsKICAgICAgICAgICAgICAgIGVjaG8gJ0J1aWxkaW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgY29uc3RydWNjacOzbgogICAgICAgICAgICB9LAogICAgICAgICAgICB0ZXN0OiB7CiAgICAgICAgICAgICAgICBlY2hvICdUZXN0aW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgcHJ1ZWJhCiAgICAgICAgICAgIH0sCiAgICAgICAgICAgIGRlcGxveTogewogICAgICAgICAgICAgICAgZWNobyAnRGVwbG95aW5nLi4uJwogICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgZGVzcGxpZWd1ZQogICAgICAgICAgICB9CiAgICAgICAgKQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>node {
+    stage('Build, Test and Deploy') {
+        parallel(
+            build: {
+                echo 'Building...'
+                // Comandos de construcci&oacute;n
+            },
+            test: {
+                echo 'Testing...'
+                // Comandos de prueba
+            },
+            deploy: {
+                echo 'Deploying...'
+                // Comandos de despliegue
+            }
+        )
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><p>Crea una pipeline que ejecute las siguientes tareas en paralelo:</p>
+<ol>
+<li>Compilar el código.</li>
+<li>Ejecutar pruebas unitarias.</li>
+<li>Analizar el código con una herramienta de análisis estático.</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwZWxpbmUgewogICAgYWdlbnQgYW55CiAgICBzdGFnZXMgewogICAgICAgIHN0YWdlKCdCdWlsZCwgVGVzdCBhbmQgQW5hbHl6ZScpIHsKICAgICAgICAgICAgcGFyYWxsZWwgewogICAgICAgICAgICAgICAgc3RhZ2UoJ0J1aWxkJykgewogICAgICAgICAgICAgICAgICAgIHN0ZXBzIHsKICAgICAgICAgICAgICAgICAgICAgICAgZWNobyAnQnVpbGRpbmcuLi4nCiAgICAgICAgICAgICAgICAgICAgICAgIC8vIENvbWFuZG9zIGRlIGNvbnN0cnVjY2nDs24KICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBzdGFnZSgnVGVzdCcpIHsKICAgICAgICAgICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gJ1J1bm5pbmcgVW5pdCBUZXN0cy4uLicKICAgICAgICAgICAgICAgICAgICAgICAgLy8gQ29tYW5kb3MgZGUgcHJ1ZWJhcyB1bml0YXJpYXMKICAgICAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICB9CiAgICAgICAgICAgICAgICBzdGFnZSgnQW5hbHl6ZScpIHsKICAgICAgICAgICAgICAgICAgICBzdGVwcyB7CiAgICAgICAgICAgICAgICAgICAgICAgIGVjaG8gJ0FuYWx5emluZyBDb2RlLi4uJwogICAgICAgICAgICAgICAgICAgICAgICAvLyBDb21hbmRvcyBkZSBhbsOhbGlzaXMgZXN0w6F0aWNvCiAgICAgICAgICAgICAgICAgICAgfQogICAgICAgICAgICAgICAgfQogICAgICAgICAgICB9CiAgICAgICAgfQogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pipeline {
+    agent any
+    stages {
+        stage('Build, Test and Analyze') {
+            parallel {
+                stage('Build') {
+                    steps {
+                        echo 'Building...'
+                        // Comandos de construcci&oacute;n
+                    }
+                }
+                stage('Test') {
+                    steps {
+                        echo 'Running Unit Tests...'
+                        // Comandos de pruebas unitarias
+                    }
+                }
+                stage('Analyze') {
+                    steps {
+                        echo 'Analyzing Code...'
+                        // Comandos de an&aacute;lisis est&aacute;tico
+                    }
+                }
+            }
+        }
+    }
+}</pre></div><div class='content'></div><h1>Resumen</h1>
+<div class='content'><p>En esta sección, hemos aprendido cómo configurar la ejecución paralela en pipelines de Jenkins tanto en pipelines declarativas como scriptadas. La ejecución paralela es una técnica esencial para optimizar el tiempo de ejecución de las pipelines al permitir que múltiples tareas se realicen simultáneamente. Practica creando tus propias pipelines con tareas paralelas para familiarizarte con esta poderosa característica.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='04-01-pipeline-stages-and-steps' title="Etapas y Pasos de Pipeline" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='04-01-pipeline-stages-and-steps' title="Etapas y Pasos de Pipeline" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='04-03-using-environment-variables' title="Usando Variables de Entorno" class="py-2 px-3 btn btn-primary"
+				data-read-mod="jenkins" data-read-unit="4-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='04-03-using-environment-variables' title="Usando Variables de Entorno" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="jenkins" data-read-unit="4-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Jenkins: De Principiante a Avanzado</h1>
+<h2>Módulo 1: Introducción a Jenkins</h2>
+<ul>
+<li><a href="01-01-what-is-jenkins">¿Qué es Jenkins?</a></li>
+<li><a href="01-02-installing-jenkins">Instalando Jenkins</a></li>
+<li><a href="01-03-jenkins-architecture">Arquitectura de Jenkins</a></li>
+<li><a href="01-04-first-jenkins-job">Primer Trabajo en Jenkins</a></li>
+</ul>
+<h2>Módulo 2: Conceptos Básicos de Jenkins</h2>
+<ul>
+<li><a href="02-01-jenkins-dashboard-overview">Visión General del Tablero de Jenkins</a></li>
+<li><a href="02-02-creating-and-running-jobs">Creación y Ejecución de Trabajos</a></li>
+<li><a href="02-03-understanding-jenkins-pipelines">Entendiendo las Pipelines de Jenkins</a></li>
+<li><a href="02-04-using-jenkins-plugins">Usando Plugins de Jenkins</a></li>
+</ul>
+<h2>Módulo 3: Pipelines de Jenkins</h2>
+<ul>
+<li><a href="03-01-pipeline-as-code">Pipeline como Código</a></li>
+<li><a href="03-02-declarative-vs-scripted-pipelines">Pipelines Declarativas vs Scriptadas</a></li>
+<li><a href="03-03-creating-a-simple-pipeline">Creando una Pipeline Simple</a></li>
+<li><a href="03-04-pipeline-syntax">Sintaxis de Pipeline</a></li>
+</ul>
+<h2>Módulo 4: Pipelines Avanzadas de Jenkins</h2>
+<ul>
+<li><a href="04-01-pipeline-stages-and-steps">Etapas y Pasos de Pipeline</a></li>
+<li><a href="04-02-parallel-execution-in-pipelines">Ejecución Paralela en Pipelines</a></li>
+<li><a href="04-03-using-environment-variables">Usando Variables de Entorno</a></li>
+<li><a href="04-04-pipeline-best-practices">Mejores Prácticas de Pipeline</a></li>
+</ul>
+<h2>Módulo 5: Administración de Jenkins</h2>
+<ul>
+<li><a href="05-01-managing-jenkins-nodes">Gestionando Nodos de Jenkins</a></li>
+<li><a href="05-02-configuring-security">Configurando Seguridad</a></li>
+<li><a href="05-03-backup-and-restore-jenkins">Respaldo y Restauración de Jenkins</a></li>
+<li><a href="05-04-monitoring-jenkins">Monitoreando Jenkins</a></li>
+</ul>
+<h2>Módulo 6: Integrando Jenkins</h2>
+<ul>
+<li><a href="06-01-integrating-with-version-control-systems">Integración con Sistemas de Control de Versiones</a></li>
+<li><a href="06-02-integrating-with-build-tools">Integración con Herramientas de Construcción</a></li>
+<li><a href="06-03-integrating-with-testing-tools">Integración con Herramientas de Pruebas</a></li>
+<li><a href="06-04-integrating-with-deployment-tools">Integración con Herramientas de Despliegue</a></li>
+</ul>
+<h2>Módulo 7: Jenkins para Integración Continua y Entrega Continua (CI/CD)</h2>
+<ul>
+<li><a href="07-01-understanding-ci-cd">Entendiendo CI/CD</a></li>
+<li><a href="07-02-setting-up-a-ci-pipeline">Configurando una Pipeline de CI</a></li>
+<li><a href="07-03-setting-up-a-cd-pipeline">Configurando una Pipeline de CD</a></li>
+<li><a href="07-04-automating-deployments">Automatizando Despliegues</a></li>
+</ul>
+<h2>Módulo 8: Temas Avanzados de Jenkins</h2>
+<ul>
+<li><a href="08-01-using-jenkins-with-docker">Usando Jenkins con Docker</a></li>
+<li><a href="08-02-jenkins-and-kubernetes">Jenkins y Kubernetes</a></li>
+<li><a href="08-03-jenkins-as-code-with-jenkinsfile">Jenkins como Código con Jenkinsfile</a></li>
+<li><a href="08-04-scaling-jenkins">Escalando Jenkins</a></li>
+</ul>
+<h2>Módulo 9: Mejores Prácticas y Solución de Problemas en Jenkins</h2>
+<ul>
+<li><a href="09-01-jenkins-best-practices">Mejores Prácticas de Jenkins</a></li>
+<li><a href="09-02-common-jenkins-issues-and-solutions">Problemas Comunes de Jenkins y Soluciones</a></li>
+<li><a href="09-03-optimizing-jenkins-performance">Optimizando el Rendimiento de Jenkins</a></li>
+<li><a href="09-04-jenkins-community-and-resources">Comunidad y Recursos de Jenkins</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

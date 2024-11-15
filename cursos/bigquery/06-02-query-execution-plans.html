@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Entendiendo los Planes de Ejecución de Consultas </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/bigquery/06-02-query-execution-plans" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/bigquery/06-02-query-execution-plans" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/bigquery/06-02-query-execution-plans" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "bigquery";
+  		var TEMA_NAME = "6-2";
+  		var TYPE = "mod";
+  		var PATH = "mod/bigquery/06-02-query-execution-plans";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/bigquery/06-02-query-execution-plans" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/bigquery/06-02-query-execution-plans" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="bigquery">
+		<a  href="#" class="text-secondary d-none" data-read-mod="bigquery" data-read-unit="6-2" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="bigquery" data-unread-unit="6-2" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-01-query-optimization-techniques' title="Técnicas de Optimización de Consultas" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-01-query-optimization-techniques' title="Técnicas de Optimización de Consultas" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Entendiendo los Planes de Ejecución de Consultas</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-03-using-materialized-views' title="Uso de Vistas Materializadas" class="py-2 px-3 btn btn-primary"
+				data-read-mod="bigquery" data-read-unit="6-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-03-using-materialized-views' title="Uso de Vistas Materializadas" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="bigquery" data-read-unit="6-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>En este tema, aprenderás a interpretar y utilizar los planes de ejecución de consultas en BigQuery para optimizar el rendimiento de tus consultas. Los planes de ejecución proporcionan una visión detallada de cómo BigQuery ejecuta una consulta, permitiéndote identificar cuellos de botella y áreas de mejora.</p>
+</div><h1>¿Qué es un Plan de Ejecución de Consultas?</h1>
+<div class='content'><p>Un plan de ejecución de consultas es una representación detallada de los pasos que BigQuery sigue para ejecutar una consulta SQL. Incluye información sobre:</p>
+<ul>
+<li><strong>Operaciones de escaneo</strong>: Cómo se leen los datos de las tablas.</li>
+<li><strong>Operaciones de unión</strong>: Cómo se combinan los datos de diferentes tablas.</li>
+<li><strong>Operaciones de filtrado</strong>: Cómo se aplican los filtros a los datos.</li>
+<li><strong>Operaciones de agregación</strong>: Cómo se agrupan y agregan los datos.</li>
+</ul>
+</div><h1>Cómo Obtener un Plan de Ejecución</h1>
+<div class='content'><p>Para obtener un plan de ejecución en BigQuery, puedes utilizar la opción &quot;Explain&quot; en la consola de BigQuery o agregar la palabra clave <code>EXPLAIN</code> antes de tu consulta SQL.</p>
+</div><h2>Ejemplo Práctico</h2>
+<div class='content'><p>Supongamos que tienes la siguiente consulta SQL:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VMRUNUCiAgdXNlcl9pZCwKICBDT1VOVCgqKSBBUyB0b3RhbF9wdXJjaGFzZXMKRlJPTQogIGBteV9kYXRhc2V0LnB1cmNoYXNlc2AKV0hFUkUKICBwdXJjaGFzZV9kYXRlID49ICcyMDIzLTAxLTAxJwpHUk9VUCBCWQogIHVzZXJfaWQKT1JERVIgQlkKICB0b3RhbF9wdXJjaGFzZXMgREVTQzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SELECT
+  user_id,
+  COUNT(*) AS total_purchases
+FROM
+  `my_dataset.purchases`
+WHERE
+  purchase_date &gt;= '2023-01-01'
+GROUP BY
+  user_id
+ORDER BY
+  total_purchases DESC;</pre></div><div class='content'><p>Para obtener el plan de ejecución, puedes modificar la consulta de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTgpTRUxFQ1QKICB1c2VyX2lkLAogIENPVU5UKCopIEFTIHRvdGFsX3B1cmNoYXNlcwpGUk9NCiAgYG15X2RhdGFzZXQucHVyY2hhc2VzYApXSEVSRQogIHB1cmNoYXNlX2RhdGUgPj0gJzIwMjMtMDEtMDEnCkdST1VQIEJZCiAgdXNlcl9pZApPUkRFUiBCWQogIHRvdGFsX3B1cmNoYXNlcyBERVNDOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN
+SELECT
+  user_id,
+  COUNT(*) AS total_purchases
+FROM
+  `my_dataset.purchases`
+WHERE
+  purchase_date &gt;= '2023-01-01'
+GROUP BY
+  user_id
+ORDER BY
+  total_purchases DESC;</pre></div><div class='content'></div><h1>Interpretando el Plan de Ejecución</h1>
+<div class='content'><p>El plan de ejecución se presenta en un formato tabular que incluye varias columnas importantes:</p>
+<table>
+<thead>
+<tr>
+<th>Columna</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Step</strong></td>
+<td>El número de paso en el plan de ejecución.</td>
+</tr>
+<tr>
+<td><strong>Kind</strong></td>
+<td>El tipo de operación (e.g., Scan, Join, Aggregate).</td>
+</tr>
+<tr>
+<td><strong>Substeps</strong></td>
+<td>Detalles adicionales sobre la operación.</td>
+</tr>
+<tr>
+<td><strong>Start Time</strong></td>
+<td>El tiempo de inicio relativo de la operación.</td>
+</tr>
+<tr>
+<td><strong>End Time</strong></td>
+<td>El tiempo de finalización relativo de la operación.</td>
+</tr>
+<tr>
+<td><strong>Wait Ratio</strong></td>
+<td>El porcentaje de tiempo que la operación estuvo esperando recursos.</td>
+</tr>
+<tr>
+<td><strong>Read Ratio</strong></td>
+<td>El porcentaje de tiempo que la operación estuvo leyendo datos.</td>
+</tr>
+<tr>
+<td><strong>Compute Ratio</strong></td>
+<td>El porcentaje de tiempo que la operación estuvo procesando datos.</td>
+</tr>
+<tr>
+<td><strong>Write Ratio</strong></td>
+<td>El porcentaje de tiempo que la operación estuvo escribiendo datos.</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ejemplo de Plan de Ejecución</h2>
+<div class='content'><p>A continuación, se muestra un ejemplo simplificado de un plan de ejecución:</p>
+<table>
+<thead>
+<tr>
+<th>Step</th>
+<th>Kind</th>
+<th>Substeps</th>
+<th>Start Time</th>
+<th>End Time</th>
+<th>Wait Ratio</th>
+<th>Read Ratio</th>
+<th>Compute Ratio</th>
+<th>Write Ratio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Scan</td>
+<td>Read from <code>my_dataset.purchases</code></td>
+<td>0s</td>
+<td>1s</td>
+<td>10%</td>
+<td>70%</td>
+<td>20%</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Filter</td>
+<td>Apply filter on <code>purchase_date</code></td>
+<td>1s</td>
+<td>1.5s</td>
+<td>5%</td>
+<td>10%</td>
+<td>85%</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Aggregate</td>
+<td>Group by <code>user_id</code></td>
+<td>1.5s</td>
+<td>2s</td>
+<td>0%</td>
+<td>20%</td>
+<td>80%</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Sort</td>
+<td>Order by <code>total_purchases</code> DESC</td>
+<td>2s</td>
+<td>2.5s</td>
+<td>0%</td>
+<td>10%</td>
+<td>40%</td>
+<td>50%</td>
+</tr>
+</tbody>
+</table>
+</div><h1>Análisis del Plan de Ejecución</h1>
+<div class='content'></div><h2>Identificación de Cuellos de Botella</h2>
+<div class='content'><ul>
+<li><strong>Operaciones de Escaneo</strong>: Si el tiempo de lectura es alto, considera particionar o agrupar tus datos para reducir el volumen de datos leídos.</li>
+<li><strong>Operaciones de Filtrado</strong>: Asegúrate de que los filtros se aplican lo antes posible para reducir el conjunto de datos procesado.</li>
+<li><strong>Operaciones de Agregación</strong>: Las agregaciones pueden ser costosas; considera usar funciones de ventana o pre-agregar datos si es posible.</li>
+<li><strong>Operaciones de Ordenación</strong>: Las ordenaciones pueden ser optimizadas mediante el uso de índices o particionamiento adecuado.</li>
+</ul>
+</div><h2>Ejemplo de Optimización</h2>
+<div class='content'><p>Supongamos que el plan de ejecución muestra que la operación de escaneo está tomando mucho tiempo. Puedes optimizar la consulta particionando la tabla <code>purchases</code> por <code>purchase_date</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Q1JFQVRFIE9SIFJFUExBQ0UgVEFCTEUgYG15X2RhdGFzZXQucHVyY2hhc2VzX3BhcnRpdGlvbmVkYApQQVJUSVRJT04gQlkgREFURShwdXJjaGFzZV9kYXRlKSBBUwpTRUxFQ1QgKiBGUk9NIGBteV9kYXRhc2V0LnB1cmNoYXNlc2A7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>CREATE OR REPLACE TABLE `my_dataset.purchases_partitioned`
+PARTITION BY DATE(purchase_date) AS
+SELECT * FROM `my_dataset.purchases`;</pre></div><div class='content'><p>Luego, puedes reescribir la consulta para aprovechar la partición:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("RVhQTEFJTgpTRUxFQ1QKICB1c2VyX2lkLAogIENPVU5UKCopIEFTIHRvdGFsX3B1cmNoYXNlcwpGUk9NCiAgYG15X2RhdGFzZXQucHVyY2hhc2VzX3BhcnRpdGlvbmVkYApXSEVSRQogIHB1cmNoYXNlX2RhdGUgPj0gJzIwMjMtMDEtMDEnCkdST1VQIEJZCiAgdXNlcl9pZApPUkRFUiBCWQogIHRvdGFsX3B1cmNoYXNlcyBERVNDOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>EXPLAIN
+SELECT
+  user_id,
+  COUNT(*) AS total_purchases
+FROM
+  `my_dataset.purchases_partitioned`
+WHERE
+  purchase_date &gt;= '2023-01-01'
+GROUP BY
+  user_id
+ORDER BY
+  total_purchases DESC;</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio</h2>
+<div class='content'><ol>
+<li>
+<p>Obtén el plan de ejecución para la siguiente consulta:</p>
+<pre><code class="language-sql">SELECT
+  product_id,
+  AVG(price) AS average_price
+FROM
+  `my_dataset.sales`
+WHERE
+  sale_date &gt;= '2023-01-01'
+GROUP BY
+  product_id
+ORDER BY
+  average_price DESC;
+</code></pre>
+</li>
+<li>
+<p>Analiza el plan de ejecución y responde las siguientes preguntas:</p>
+<ul>
+<li>¿Cuál es la operación que toma más tiempo?</li>
+<li>¿Qué porcentaje del tiempo se dedica a la lectura de datos?</li>
+<li>¿Cómo podrías optimizar esta consulta?</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p>Modifica la consulta para obtener el plan de ejecución:</p>
+<pre><code class="language-sql">EXPLAIN
+SELECT
+  product_id,
+  AVG(price) AS average_price
+FROM
+  `my_dataset.sales`
+WHERE
+  sale_date &gt;= '2023-01-01'
+GROUP BY
+  product_id
+ORDER BY
+  average_price DESC;
+</code></pre>
+</li>
+<li>
+<p>Analiza el plan de ejecución (ejemplo simplificado):
+| Step | Kind      | Substeps                          | Start Time | End Time | Wait Ratio | Read Ratio | Compute Ratio | Write Ratio |
+|------|-----------|-----------------------------------|------------|----------|------------|------------|---------------|-------------|
+| 1    | Scan      | Read from <code>my_dataset.sales</code>      | 0s         | 1.5s     | 5%         | 60%        | 35%           | 0%          |
+| 2    | Filter    | Apply filter on <code>sale_date</code>       | 1.5s       | 2s       | 5%         | 10%        | 85%           | 0%          |
+| 3    | Aggregate | Group by <code>product_id</code>             | 2s         | 2.5s     | 0%         | 20%        | 80%           | 0%          |
+| 4    | Sort      | Order by <code>average_price</code> DESC     | 2.5s       | 3s       | 0%         | 10%        | 40%           | 50%         |</p>
+<ul>
+<li><strong>Operación que toma más tiempo</strong>: La operación de escaneo.</li>
+<li><strong>Porcentaje del tiempo dedicado a la lectura de datos</strong>: 60%.</li>
+<li><strong>Optimización</strong>: Considera particionar la tabla <code>sales</code> por <code>sale_date</code> para reducir el tiempo de escaneo.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>Entender y analizar los planes de ejecución de consultas en BigQuery es crucial para optimizar el rendimiento de tus consultas. Al identificar cuellos de botella y aplicar técnicas de optimización, puedes mejorar significativamente la eficiencia de tus consultas y reducir los costos asociados. En el próximo tema, exploraremos el uso de vistas materializadas para mejorar aún más el rendimiento de las consultas.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-01-query-optimization-techniques' title="Técnicas de Optimización de Consultas" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-01-query-optimization-techniques' title="Técnicas de Optimización de Consultas" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-03-using-materialized-views' title="Uso de Vistas Materializadas" class="py-2 px-3 btn btn-primary"
+				data-read-mod="bigquery" data-read-unit="6-2">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-03-using-materialized-views' title="Uso de Vistas Materializadas" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="bigquery" data-read-unit="6-2">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de BigQuery</h1>
+<h2>Módulo 1: Introducción a BigQuery</h2>
+<ul>
+<li><a href="01-01-what-is-bigquery">¿Qué es BigQuery?</a></li>
+<li><a href="01-02-setting-up-environment">Configuración de tu Entorno de BigQuery</a></li>
+<li><a href="01-03-understanding-architecture">Entendiendo la Arquitectura de BigQuery</a></li>
+<li><a href="01-04-console-overview">Visión General de la Consola de BigQuery</a></li>
+</ul>
+<h2>Módulo 2: SQL Básico en BigQuery</h2>
+<ul>
+<li><a href="02-01-introduction-to-sql">Introducción a SQL</a></li>
+<li><a href="02-02-basic-sql-queries">Consultas SQL Básicas</a></li>
+<li><a href="02-03-filtering-sorting-data">Filtrado y Ordenación de Datos</a></li>
+<li><a href="02-04-aggregating-data">Agregación de Datos</a></li>
+</ul>
+<h2>Módulo 3: SQL Intermedio en BigQuery</h2>
+<ul>
+<li><a href="03-01-joins-unions">Joins y Uniones</a></li>
+<li><a href="03-02-subqueries">Subconsultas</a></li>
+<li><a href="03-03-common-table-expressions">Expresiones de Tabla Comunes (CTEs)</a></li>
+<li><a href="03-04-window-functions">Funciones de Ventana</a></li>
+</ul>
+<h2>Módulo 4: SQL Avanzado en BigQuery</h2>
+<ul>
+<li><a href="04-01-advanced-joins">Joins Avanzados</a></li>
+<li><a href="04-02-nested-repeated-fields">Campos Anidados y Repetidos</a></li>
+<li><a href="04-03-user-defined-functions">Funciones Definidas por el Usuario (UDFs)</a></li>
+<li><a href="04-04-partitioning-clustering">Particionamiento y Agrupamiento</a></li>
+</ul>
+<h2>Módulo 5: Gestión de Datos en BigQuery</h2>
+<ul>
+<li><a href="05-01-loading-data">Cargando Datos en BigQuery</a></li>
+<li><a href="05-02-exporting-data">Exportando Datos desde BigQuery</a></li>
+<li><a href="05-03-data-transformation-cleaning">Transformación y Limpieza de Datos</a></li>
+<li><a href="05-04-managing-datasets-tables">Gestión de Conjuntos de Datos y Tablas</a></li>
+</ul>
+<h2>Módulo 6: Optimización del Rendimiento de BigQuery</h2>
+<ul>
+<li><a href="06-01-query-optimization-techniques">Técnicas de Optimización de Consultas</a></li>
+<li><a href="06-02-query-execution-plans">Entendiendo los Planes de Ejecución de Consultas</a></li>
+<li><a href="06-03-using-materialized-views">Uso de Vistas Materializadas</a></li>
+<li><a href="06-04-optimizing-storage">Optimización del Almacenamiento</a></li>
+</ul>
+<h2>Módulo 7: Seguridad y Cumplimiento en BigQuery</h2>
+<ul>
+<li><a href="07-01-access-control-permissions">Control de Acceso y Permisos</a></li>
+<li><a href="07-02-data-encryption">Encriptación de Datos</a></li>
+<li><a href="07-03-auditing-monitoring">Auditoría y Monitoreo</a></li>
+<li><a href="07-04-compliance-best-practices">Cumplimiento y Mejores Prácticas</a></li>
+</ul>
+<h2>Módulo 8: Integración y Automatización de BigQuery</h2>
+<ul>
+<li><a href="08-01-integrating-google-cloud">Integración con Servicios de Google Cloud</a></li>
+<li><a href="08-02-using-dataflow">Uso de BigQuery con Dataflow</a></li>
+<li><a href="08-03-automating-workflows">Automatización de Flujos de Trabajo con Cloud Functions</a></li>
+<li><a href="08-04-scheduling-queries">Programación de Consultas con Cloud Scheduler</a></li>
+</ul>
+<h2>Módulo 9: Machine Learning en BigQuery (BQML)</h2>
+<ul>
+<li><a href="09-01-introduction-bqml">Introducción a BigQuery ML</a></li>
+<li><a href="09-02-creating-training-models">Creación y Entrenamiento de Modelos</a></li>
+<li><a href="09-03-evaluating-predicting-models">Evaluación y Predicción con Modelos</a></li>
+<li><a href="09-04-advanced-bqml-features">Características Avanzadas de BQML</a></li>
+</ul>
+<h2>Módulo 10: Casos de Uso de BigQuery en el Mundo Real</h2>
+<ul>
+<li><a href="10-01-analyzing-web-app-analytics">Análisis de Analíticas Web y de Aplicaciones</a></li>
+<li><a href="10-02-financial-data-analysis">Análisis de Datos Financieros</a></li>
+<li><a href="10-03-iot-data-processing">Procesamiento de Datos IoT</a></li>
+<li><a href="10-04-building-dashboards-data-studio">Construcción de Dashboards con Data Studio</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

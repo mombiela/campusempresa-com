@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Gestión de Memoria y Recolección de Basura </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/csharp/06-04-memory-management-and-garbage-collection" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/csharp/06-04-memory-management-and-garbage-collection" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/csharp/06-04-memory-management-and-garbage-collection" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "languages";
+  		var MOD_NAME = "csharp";
+  		var TEMA_NAME = "6-4";
+  		var TYPE = "mod";
+  		var PATH = "mod/csharp/06-04-memory-management-and-garbage-collection";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/csharp/06-04-memory-management-and-garbage-collection" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/csharp/06-04-memory-management-and-garbage-collection" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="csharp">
+		<a  href="#" class="text-secondary d-none" data-read-mod="csharp" data-read-unit="6-4" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="csharp" data-unread-unit="6-4" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-03-dynamic-programming' title="Programación Dinámica" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-03-dynamic-programming' title="Programación Dinámica" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Gestión de Memoria y Recolección de Basura</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-05-multithreading-and-parallel-programming' title="Multihilo y Programación Paralela" class="py-2 px-3 btn btn-primary"
+				data-read-mod="csharp" data-read-unit="6-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-05-multithreading-and-parallel-programming' title="Multihilo y Programación Paralela" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="csharp" data-read-unit="6-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>La gestión de memoria y la recolección de basura son aspectos cruciales en la programación con C#. Entender cómo funciona la memoria y cómo se maneja en C# te permitirá escribir código más eficiente y evitar problemas comunes como las fugas de memoria.</p>
+</div><h1><ol>
+<li>Introducción a la Gestión de Memoria</li>
+</ol></h1>
+<div class='content'><p>En C#, la memoria se divide principalmente en dos áreas:</p>
+<ul>
+<li><strong>Stack (Pila)</strong>: Almacena variables de tipo valor y referencias a objetos.</li>
+<li><strong>Heap (Montón)</strong>: Almacena objetos y datos dinámicos.</li>
+</ul>
+</div><h2>Stack vs Heap</h2>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Característica</th>
+<th>Stack</th>
+<th>Heap</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Almacenamiento</td>
+<td>Variables de tipo valor y referencias a objetos</td>
+<td>Objetos y datos dinámicos</td>
+</tr>
+<tr>
+<td>Gestión</td>
+<td>LIFO (Last In, First Out)</td>
+<td>Gestión dinámica</td>
+</tr>
+<tr>
+<td>Velocidad</td>
+<td>Rápida</td>
+<td>Más lenta comparada con el stack</td>
+</tr>
+<tr>
+<td>Tamaño</td>
+<td>Limitado</td>
+<td>Generalmente más grande que el stack</td>
+</tr>
+</tbody>
+</table>
+</div><h2>Ejemplo de Stack y Heap</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFByb2dyYW0KewogICAgcHVibGljIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIGludCB4ID0gMTA7IC8vIEFsbWFjZW5hZG8gZW4gZWwgc3RhY2sKICAgICAgICBQZXJzb24gcGVyc29uID0gbmV3IFBlcnNvbigpOyAvLyBSZWZlcmVuY2lhIGFsbWFjZW5hZGEgZW4gZWwgc3RhY2ssIG9iamV0byBlbiBlbCBoZWFwCiAgICAgICAgcGVyc29uLk5hbWUgPSAiSm9obiI7CiAgICB9Cn0KCnB1YmxpYyBjbGFzcyBQZXJzb24KewogICAgcHVibGljIHN0cmluZyBOYW1lIHsgZ2V0OyBzZXQ7IH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class Program
+{
+    public static void Main()
+    {
+        int x = 10; // Almacenado en el stack
+        Person person = new Person(); // Referencia almacenada en el stack, objeto en el heap
+        person.Name = &quot;John&quot;;
+    }
+}
+
+public class Person
+{
+    public string Name { get; set; }
+}</pre></div><div class='content'><p>En el ejemplo anterior:</p>
+<ul>
+<li><code>x</code> es una variable de tipo valor almacenada en el stack.</li>
+<li><code>person</code> es una referencia almacenada en el stack, mientras que el objeto <code>Person</code> se almacena en el heap.</li>
+</ul>
+</div><h1><ol start="2">
+<li>Recolección de Basura (Garbage Collection)</li>
+</ol></h1>
+<div class='content'><p>La recolección de basura en C# es un proceso automático que libera memoria ocupada por objetos que ya no son accesibles en el programa. El recolector de basura (GC) en .NET sigue un algoritmo de generación para optimizar el rendimiento.</p>
+</div><h2>Generaciones en Garbage Collection</h2>
+<div class='content'><ul>
+<li><strong>Generación 0</strong>: Contiene objetos de vida corta. La recolección de basura ocurre frecuentemente en esta generación.</li>
+<li><strong>Generación 1</strong>: Contiene objetos que han sobrevivido a la recolección de la Generación 0.</li>
+<li><strong>Generación 2</strong>: Contiene objetos de larga vida. La recolección de basura ocurre menos frecuentemente en esta generación.</li>
+</ul>
+</div><h2>Funcionamiento del Garbage Collector</h2>
+<div class='content'><ol>
+<li><strong>Identificación de Objetos Inalcanzables</strong>: El GC identifica los objetos que ya no tienen referencias activas.</li>
+<li><strong>Compactación de Memoria</strong>: El GC compacta la memoria moviendo los objetos alcanzables para eliminar fragmentación.</li>
+<li><strong>Liberación de Memoria</strong>: La memoria ocupada por objetos inalcanzables se libera.</li>
+</ol>
+</div><h2>Ejemplo de Recolección de Basura</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFByb2dyYW0KewogICAgcHVibGljIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIENyZWF0ZU9iamVjdHMoKTsKICAgICAgICBHQy5Db2xsZWN0KCk7IC8vIEZvcnphciBsYSByZWNvbGVjY2nDs24gZGUgYmFzdXJhCiAgICB9CgogICAgcHVibGljIHN0YXRpYyB2b2lkIENyZWF0ZU9iamVjdHMoKQogICAgewogICAgICAgIGZvciAoaW50IGkgPSAwOyBpIDwgMTAwMDsgaSsrKQogICAgICAgIHsKICAgICAgICAgICAgUGVyc29uIHBlcnNvbiA9IG5ldyBQZXJzb24oKTsKICAgICAgICB9CiAgICB9Cn0KCnB1YmxpYyBjbGFzcyBQZXJzb24KewogICAgcHVibGljIHN0cmluZyBOYW1lIHsgZ2V0OyBzZXQ7IH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class Program
+{
+    public static void Main()
+    {
+        CreateObjects();
+        GC.Collect(); // Forzar la recolecci&oacute;n de basura
+    }
+
+    public static void CreateObjects()
+    {
+        for (int i = 0; i &lt; 1000; i++)
+        {
+            Person person = new Person();
+        }
+    }
+}
+
+public class Person
+{
+    public string Name { get; set; }
+}</pre></div><div class='content'><p>En el ejemplo anterior, se crean múltiples objetos <code>Person</code> en un bucle. Al llamar a <code>GC.Collect()</code>, se fuerza la recolección de basura, liberando la memoria ocupada por los objetos <code>Person</code> que ya no son accesibles.</p>
+</div><h1><ol start="3">
+<li>Buenas Prácticas para la Gestión de Memoria</li>
+</ol></h1>
+<div class='content'><ul>
+<li><strong>Liberar Recursos No Administrados</strong>: Implementa la interfaz <code>IDisposable</code> y el patrón <code>Dispose</code> para liberar recursos no administrados.</li>
+<li><strong>Evitar Fugas de Memoria</strong>: Asegúrate de eliminar referencias a objetos que ya no necesitas.</li>
+<li><strong>Usar <code>using</code> para Recursos</strong>: Utiliza la declaración <code>using</code> para asegurar que los recursos se liberen correctamente.</li>
+</ul>
+</div><h2>Ejemplo de <code>IDisposable</code> y <code>using</code></h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFJlc291cmNlSG9sZGVyIDogSURpc3Bvc2FibGUKewogICAgcHJpdmF0ZSBib29sIGRpc3Bvc2VkID0gZmFsc2U7CgogICAgcHVibGljIHZvaWQgRGlzcG9zZSgpCiAgICB7CiAgICAgICAgRGlzcG9zZSh0cnVlKTsKICAgICAgICBHQy5TdXBwcmVzc0ZpbmFsaXplKHRoaXMpOwogICAgfQoKICAgIHByb3RlY3RlZCB2aXJ0dWFsIHZvaWQgRGlzcG9zZShib29sIGRpc3Bvc2luZykKICAgIHsKICAgICAgICBpZiAoIWRpc3Bvc2VkKQogICAgICAgIHsKICAgICAgICAgICAgaWYgKGRpc3Bvc2luZykKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgLy8gTGliZXJhciByZWN1cnNvcyBhZG1pbmlzdHJhZG9zCiAgICAgICAgICAgIH0KICAgICAgICAgICAgLy8gTGliZXJhciByZWN1cnNvcyBubyBhZG1pbmlzdHJhZG9zCiAgICAgICAgICAgIGRpc3Bvc2VkID0gdHJ1ZTsKICAgICAgICB9CiAgICB9CgogICAgflJlc291cmNlSG9sZGVyKCkKICAgIHsKICAgICAgICBEaXNwb3NlKGZhbHNlKTsKICAgIH0KfQoKcHVibGljIGNsYXNzIFByb2dyYW0KewogICAgcHVibGljIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHVzaW5nIChSZXNvdXJjZUhvbGRlciByZXNvdXJjZSA9IG5ldyBSZXNvdXJjZUhvbGRlcigpKQogICAgICAgIHsKICAgICAgICAgICAgLy8gVXNhciBlbCByZWN1cnNvCiAgICAgICAgfSAvLyBFbCByZWN1cnNvIHNlIGxpYmVyYSBhdXRvbcOhdGljYW1lbnRlIGFxdcOtCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class ResourceHolder : IDisposable
+{
+    private bool disposed = false;
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (disposing)
+            {
+                // Liberar recursos administrados
+            }
+            // Liberar recursos no administrados
+            disposed = true;
+        }
+    }
+
+    ~ResourceHolder()
+    {
+        Dispose(false);
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        using (ResourceHolder resource = new ResourceHolder())
+        {
+            // Usar el recurso
+        } // El recurso se libera autom&aacute;ticamente aqu&iacute;
+    }
+}</pre></div><div class='content'></div><h1><ol start="4">
+<li>Ejercicios Prácticos</li>
+</ol></h1>
+<div class='content'></div><h2>Ejercicio 1: Identificar el Stack y el Heap</h2>
+<div class='content'><p>Dado el siguiente código, identifica qué variables se almacenan en el stack y cuáles en el heap.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFByb2dyYW0KewogICAgcHVibGljIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIGludCBhID0gNTsKICAgICAgICBzdHJpbmcgYiA9ICJIZWxsbyI7CiAgICAgICAgUGVyc29uIHBlcnNvbiA9IG5ldyBQZXJzb24oKTsKICAgICAgICBwZXJzb24uTmFtZSA9ICJBbGljZSI7CiAgICB9Cn0KCnB1YmxpYyBjbGFzcyBQZXJzb24KewogICAgcHVibGljIHN0cmluZyBOYW1lIHsgZ2V0OyBzZXQ7IH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class Program
+{
+    public static void Main()
+    {
+        int a = 5;
+        string b = &quot;Hello&quot;;
+        Person person = new Person();
+        person.Name = &quot;Alice&quot;;
+    }
+}
+
+public class Person
+{
+    public string Name { get; set; }
+}</pre></div><div class='content'><p><strong>Solución:</strong></p>
+<ul>
+<li><code>a</code> se almacena en el stack.</li>
+<li><code>b</code> es una referencia almacenada en el stack, mientras que el objeto string se almacena en el heap.</li>
+<li><code>person</code> es una referencia almacenada en el stack, mientras que el objeto <code>Person</code> y su propiedad <code>Name</code> se almacenan en el heap.</li>
+</ul>
+</div><h2>Ejercicio 2: Implementar <code>IDisposable</code></h2>
+<div class='content'><p>Implementa la interfaz <code>IDisposable</code> en una clase <code>FileManager</code> que maneja un archivo.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIEZpbGVNYW5hZ2VyIDogSURpc3Bvc2FibGUKewogICAgcHJpdmF0ZSBGaWxlU3RyZWFtIGZpbGVTdHJlYW07CiAgICBwcml2YXRlIGJvb2wgZGlzcG9zZWQgPSBmYWxzZTsKCiAgICBwdWJsaWMgRmlsZU1hbmFnZXIoc3RyaW5nIGZpbGVQYXRoKQogICAgewogICAgICAgIGZpbGVTdHJlYW0gPSBuZXcgRmlsZVN0cmVhbShmaWxlUGF0aCwgRmlsZU1vZGUuT3Blbk9yQ3JlYXRlKTsKICAgIH0KCiAgICBwdWJsaWMgdm9pZCBXcml0ZVRvRmlsZShzdHJpbmcgY29udGVudCkKICAgIHsKICAgICAgICBieXRlW10gaW5mbyA9IG5ldyBVVEY4RW5jb2RpbmcodHJ1ZSkuR2V0Qnl0ZXMoY29udGVudCk7CiAgICAgICAgZmlsZVN0cmVhbS5Xcml0ZShpbmZvLCAwLCBpbmZvLkxlbmd0aCk7CiAgICB9CgogICAgcHVibGljIHZvaWQgRGlzcG9zZSgpCiAgICB7CiAgICAgICAgRGlzcG9zZSh0cnVlKTsKICAgICAgICBHQy5TdXBwcmVzc0ZpbmFsaXplKHRoaXMpOwogICAgfQoKICAgIHByb3RlY3RlZCB2aXJ0dWFsIHZvaWQgRGlzcG9zZShib29sIGRpc3Bvc2luZykKICAgIHsKICAgICAgICBpZiAoIWRpc3Bvc2VkKQogICAgICAgIHsKICAgICAgICAgICAgaWYgKGRpc3Bvc2luZykKICAgICAgICAgICAgewogICAgICAgICAgICAgICAgLy8gTGliZXJhciByZWN1cnNvcyBhZG1pbmlzdHJhZG9zCiAgICAgICAgICAgICAgICBpZiAoZmlsZVN0cmVhbSAhPSBudWxsKQogICAgICAgICAgICAgICAgewogICAgICAgICAgICAgICAgICAgIGZpbGVTdHJlYW0uQ2xvc2UoKTsKICAgICAgICAgICAgICAgICAgICBmaWxlU3RyZWFtID0gbnVsbDsKICAgICAgICAgICAgICAgIH0KICAgICAgICAgICAgfQogICAgICAgICAgICAvLyBMaWJlcmFyIHJlY3Vyc29zIG5vIGFkbWluaXN0cmFkb3MKICAgICAgICAgICAgZGlzcG9zZWQgPSB0cnVlOwogICAgICAgIH0KICAgIH0KCiAgICB+RmlsZU1hbmFnZXIoKQogICAgewogICAgICAgIERpc3Bvc2UoZmFsc2UpOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class FileManager : IDisposable
+{
+    private FileStream fileStream;
+    private bool disposed = false;
+
+    public FileManager(string filePath)
+    {
+        fileStream = new FileStream(filePath, FileMode.OpenOrCreate);
+    }
+
+    public void WriteToFile(string content)
+    {
+        byte[] info = new UTF8Encoding(true).GetBytes(content);
+        fileStream.Write(info, 0, info.Length);
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposed)
+        {
+            if (disposing)
+            {
+                // Liberar recursos administrados
+                if (fileStream != null)
+                {
+                    fileStream.Close();
+                    fileStream = null;
+                }
+            }
+            // Liberar recursos no administrados
+            disposed = true;
+        }
+    }
+
+    ~FileManager()
+    {
+        Dispose(false);
+    }
+}</pre></div><div class='content'><p><strong>Uso de <code>FileManager</code> con <code>using</code>:</strong></p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cHVibGljIGNsYXNzIFByb2dyYW0KewogICAgcHVibGljIHN0YXRpYyB2b2lkIE1haW4oKQogICAgewogICAgICAgIHVzaW5nIChGaWxlTWFuYWdlciBmaWxlTWFuYWdlciA9IG5ldyBGaWxlTWFuYWdlcigiZXhhbXBsZS50eHQiKSkKICAgICAgICB7CiAgICAgICAgICAgIGZpbGVNYW5hZ2VyLldyaXRlVG9GaWxlKCJIZWxsbywgV29ybGQhIik7CiAgICAgICAgfSAvLyBFbCByZWN1cnNvIHNlIGxpYmVyYSBhdXRvbcOhdGljYW1lbnRlIGFxdcOtCiAgICB9Cn0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>public class Program
+{
+    public static void Main()
+    {
+        using (FileManager fileManager = new FileManager(&quot;example.txt&quot;))
+        {
+            fileManager.WriteToFile(&quot;Hello, World!&quot;);
+        } // El recurso se libera autom&aacute;ticamente aqu&iacute;
+    }
+}</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos fundamentales de la gestión de memoria y la recolección de basura en C#. Entender cómo funciona la memoria y cómo se maneja en C# es crucial para escribir código eficiente y evitar problemas comunes. Hemos aprendido sobre el stack y el heap, el funcionamiento del garbage collector, y las mejores prácticas para la gestión de memoria. Además, hemos practicado con ejercicios para reforzar estos conceptos. En el próximo módulo, exploraremos la construcción de aplicaciones en C#.</p>
+<p>¡Continúa practicando y aplicando estos conceptos para mejorar tus habilidades en C#!</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='06-03-dynamic-programming' title="Programación Dinámica" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='06-03-dynamic-programming' title="Programación Dinámica" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-05-multithreading-and-parallel-programming' title="Multihilo y Programación Paralela" class="py-2 px-3 btn btn-primary"
+				data-read-mod="csharp" data-read-unit="6-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-05-multithreading-and-parallel-programming' title="Multihilo y Programación Paralela" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="csharp" data-read-unit="6-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de Programación en C#</h1>
+<h2>Módulo 1: Introducción a C#</h2>
+<ul>
+<li><a href="01-01-introduction-to-csharp">Introducción a C#</a></li>
+<li><a href="01-02-setting-up-development-environment">Configuración del Entorno de Desarrollo</a></li>
+<li><a href="01-03-hello-world-program">Programa Hola Mundo</a></li>
+<li><a href="01-04-basic-syntax-and-structure">Sintaxis y Estructura Básica</a></li>
+<li><a href="01-05-variables-and-data-types">Variables y Tipos de Datos</a></li>
+</ul>
+<h2>Módulo 2: Estructuras de Control</h2>
+<ul>
+<li><a href="02-01-conditional-statements">Sentencias Condicionales</a></li>
+<li><a href="02-02-loops">Bucles</a></li>
+<li><a href="02-03-switch-statements">Sentencias Switch</a></li>
+<li><a href="02-04-exception-handling">Manejo de Excepciones</a></li>
+</ul>
+<h2>Módulo 3: Programación Orientada a Objetos</h2>
+<ul>
+<li><a href="03-01-classes-and-objects">Clases y Objetos</a></li>
+<li><a href="03-02-methods">Métodos</a></li>
+<li><a href="03-03-constructors-and-destructors">Constructores y Destructores</a></li>
+<li><a href="03-04-inheritance">Herencia</a></li>
+<li><a href="03-05-polymorphism">Polimorfismo</a></li>
+<li><a href="03-06-encapsulation">Encapsulamiento</a></li>
+<li><a href="03-07-abstraction">Abstracción</a></li>
+</ul>
+<h2>Módulo 4: Conceptos Avanzados de C#</h2>
+<ul>
+<li><a href="04-01-interfaces">Interfaces</a></li>
+<li><a href="04-02-delegates-and-events">Delegados y Eventos</a></li>
+<li><a href="04-03-generics">Genéricos</a></li>
+<li><a href="04-04-collections">Colecciones</a></li>
+<li><a href="04-05-linq">LINQ (Consulta Integrada en el Lenguaje)</a></li>
+<li><a href="04-06-asynchronous-programming">Programación Asíncrona</a></li>
+</ul>
+<h2>Módulo 5: Trabajando con Datos</h2>
+<ul>
+<li><a href="05-01-file-io">Entrada/Salida de Archivos</a></li>
+<li><a href="05-02-serialization">Serialización</a></li>
+<li><a href="05-03-database-connectivity">Conectividad con Bases de Datos</a></li>
+<li><a href="05-04-entity-framework">Entity Framework</a></li>
+</ul>
+<h2>Módulo 6: Temas Avanzados</h2>
+<ul>
+<li><a href="06-01-reflection">Reflexión</a></li>
+<li><a href="06-02-attributes">Atributos</a></li>
+<li><a href="06-03-dynamic-programming">Programación Dinámica</a></li>
+<li><a href="06-04-memory-management-and-garbage-collection">Gestión de Memoria y Recolección de Basura</a></li>
+<li><a href="06-05-multithreading-and-parallel-programming">Multihilo y Programación Paralela</a></li>
+</ul>
+<h2>Módulo 7: Construcción de Aplicaciones</h2>
+<ul>
+<li><a href="07-01-windows-forms">Formularios de Windows</a></li>
+<li><a href="07-02-wpf">WPF (Windows Presentation Foundation)</a></li>
+<li><a href="07-03-aspnet-core">ASP.NET Core</a></li>
+<li><a href="07-04-blazor">Blazor</a></li>
+<li><a href="07-05-xamarin">Xamarin</a></li>
+</ul>
+<h2>Módulo 8: Mejores Prácticas y Patrones de Diseño</h2>
+<ul>
+<li><a href="08-01-coding-standards-and-best-practices">Estándares de Codificación y Mejores Prácticas</a></li>
+<li><a href="08-02-design-patterns">Patrones de Diseño</a></li>
+<li><a href="08-03-unit-testing">Pruebas Unitarias</a></li>
+<li><a href="08-04-code-review-and-refactoring">Revisión y Refactorización de Código</a></li>
+</ul>
+<h2>Módulo 9: Proyecto Final</h2>
+<ul>
+<li><a href="09-01-project-overview">Descripción del Proyecto</a></li>
+<li><a href="09-02-requirements-and-planning">Requisitos y Planificación</a></li>
+<li><a href="09-03-implementation">Implementación</a></li>
+<li><a href="09-04-testing-and-debugging">Pruebas y Depuración</a></li>
+<li><a href="09-05-deployment">Despliegue</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

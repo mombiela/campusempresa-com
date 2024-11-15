@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Redes de Memoria a Largo Plazo (LSTM) </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/pytorch/05-03-lstm-networks" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/pytorch/05-03-lstm-networks" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/pytorch/05-03-lstm-networks" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "pytorch";
+  		var TEMA_NAME = "5-3";
+  		var TYPE = "mod";
+  		var PATH = "mod/pytorch/05-03-lstm-networks";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/pytorch/05-03-lstm-networks" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/pytorch/05-03-lstm-networks" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="pytorch">
+		<a  href="#" class="text-secondary d-none" data-read-mod="pytorch" data-read-unit="5-3" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="pytorch" data-unread-unit="5-3" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-02-building-rnn-from-scratch' title="Construcción de una RNN desde Cero" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-02-building-rnn-from-scratch' title="Construcción de una RNN desde Cero" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Redes de Memoria a Largo Plazo (LSTM)</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-04-gru-networks' title="Unidades Recurrentes con Puerta (GRUs)" class="py-2 px-3 btn btn-primary"
+				data-read-mod="pytorch" data-read-unit="5-3">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-04-gru-networks' title="Unidades Recurrentes con Puerta (GRUs)" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="pytorch" data-read-unit="5-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>Las Redes de Memoria a Largo Plazo (LSTM, por sus siglas en inglés) son un tipo especial de red neuronal recurrente (RNN) que se utilizan para modelar secuencias de datos y resolver problemas donde las dependencias a largo plazo son cruciales. Las LSTM están diseñadas para mitigar el problema del desvanecimiento del gradiente, que es común en las RNN tradicionales.</p>
+</div><h1>Conceptos Clave de las LSTM</h1>
+<div class='content'><ol>
+<li><strong>Celdas de LSTM</strong>: La unidad básica de una LSTM es la celda, que tiene la capacidad de mantener información a lo largo del tiempo.</li>
+<li><strong>Puertas de LSTM</strong>: Las celdas de LSTM tienen tres tipos de puertas que controlan el flujo de información:
+<ul>
+<li><strong>Puerta de Entrada</strong>: Decide qué información de la entrada actual debe ser almacenada en la celda.</li>
+<li><strong>Puerta de Olvido</strong>: Decide qué información debe ser eliminada de la celda.</li>
+<li><strong>Puerta de Salida</strong>: Decide qué parte de la información de la celda debe ser utilizada para la salida actual.</li>
+</ul>
+</li>
+</ol>
+</div><h1>Arquitectura de una Celda LSTM</h1>
+<div class='content'><p>La arquitectura de una celda LSTM se puede visualizar de la siguiente manera:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ICAgICAgICAgIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkAogICAgICAgICAg4pSCICAgIEVudHJhZGEgICAg4pSCCiAgICAgICAgICDilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJgKICAgICAgICAgICAgICAgICDilIIKICAgICAgICAgICAgICAgICDilrwKICAgICAgICAgIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkAogICAgICAgICAg4pSCICBQdWVydGEgZGUgICAg4pSCCiAgICAgICAgICDilIIgICAgRW50cmFkYSAgICDilIIKICAgICAgICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmAogICAgICAgICAgICAgICAgIOKUggogICAgICAgICAgICAgICAgIOKWvAogICAgICAgICAg4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQCiAgICAgICAgICDilIIgIEVzdGFkbyBkZSAgICDilIIKICAgICAgICAgIOKUgiAgICBsYSBDZWxkYSAgIOKUggogICAgICAgICAg4pSU4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSYCiAgICAgICAgICAgICAgICAg4pSCCiAgICAgICAgICAgICAgICAg4pa8CiAgICAgICAgICDilIzilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJAKICAgICAgICAgIOKUgiAgUHVlcnRhIGRlICAgIOKUggogICAgICAgICAg4pSCICAgIE9sdmlkbyAgICAg4pSCCiAgICAgICAgICDilJTilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilJgKICAgICAgICAgICAgICAgICDilIIKICAgICAgICAgICAgICAgICDilrwKICAgICAgICAgIOKUjOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUkAogICAgICAgICAg4pSCICBQdWVydGEgZGUgICAg4pSCCiAgICAgICAgICDilIIgICAgU2FsaWRhICAgICDilIIKICAgICAgICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmAogICAgICAgICAgICAgICAgIOKUggogICAgICAgICAgICAgICAgIOKWvAogICAgICAgICAg4pSM4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSQCiAgICAgICAgICDilIIgICAgU2FsaWRhICAgICDilIIKICAgICAgICAgIOKUlOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUmA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>          ┌───────────────┐
+          │    Entrada    │
+          └───────────────┘
+                 │
+                 ▼
+          ┌───────────────┐
+          │  Puerta de    │
+          │    Entrada    │
+          └───────────────┘
+                 │
+                 ▼
+          ┌───────────────┐
+          │  Estado de    │
+          │    la Celda   │
+          └───────────────┘
+                 │
+                 ▼
+          ┌───────────────┐
+          │  Puerta de    │
+          │    Olvido     │
+          └───────────────┘
+                 │
+                 ▼
+          ┌───────────────┐
+          │  Puerta de    │
+          │    Salida     │
+          └───────────────┘
+                 │
+                 ▼
+          ┌───────────────┐
+          │    Salida     │
+          └───────────────┘</pre></div><div class='content'></div><h1>Implementación de una LSTM en PyTorch</h1>
+<div class='content'></div><h2>Paso 1: Importar las Bibliotecas Necesarias</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IHRvcmNoCmltcG9ydCB0b3JjaC5ubiBhcyBubgppbXBvcnQgdG9yY2gub3B0aW0gYXMgb3B0aW0="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import torch
+import torch.nn as nn
+import torch.optim as optim</pre></div><div class='content'></div><h2>Paso 2: Definir la Arquitectura de la LSTM</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTFNUTU5ldHdvcmsobm4uTW9kdWxlKToKICAgIGRlZiBfX2luaXRfXyhzZWxmLCBpbnB1dF9zaXplLCBoaWRkZW5fc2l6ZSwgb3V0cHV0X3NpemUsIG51bV9sYXllcnMpOgogICAgICAgIHN1cGVyKExTVE1OZXR3b3JrLCBzZWxmKS5fX2luaXRfXygpCiAgICAgICAgc2VsZi5oaWRkZW5fc2l6ZSA9IGhpZGRlbl9zaXplCiAgICAgICAgc2VsZi5udW1fbGF5ZXJzID0gbnVtX2xheWVycwogICAgICAgIHNlbGYubHN0bSA9IG5uLkxTVE0oaW5wdXRfc2l6ZSwgaGlkZGVuX3NpemUsIG51bV9sYXllcnMsIGJhdGNoX2ZpcnN0PVRydWUpCiAgICAgICAgc2VsZi5mYyA9IG5uLkxpbmVhcihoaWRkZW5fc2l6ZSwgb3V0cHV0X3NpemUpCiAgICAKICAgIGRlZiBmb3J3YXJkKHNlbGYsIHgpOgogICAgICAgIGgwID0gdG9yY2guemVyb3Moc2VsZi5udW1fbGF5ZXJzLCB4LnNpemUoMCksIHNlbGYuaGlkZGVuX3NpemUpLnRvKHguZGV2aWNlKQogICAgICAgIGMwID0gdG9yY2guemVyb3Moc2VsZi5udW1fbGF5ZXJzLCB4LnNpemUoMCksIHNlbGYuaGlkZGVuX3NpemUpLnRvKHguZGV2aWNlKQogICAgICAgIAogICAgICAgIG91dCwgXyA9IHNlbGYubHN0bSh4LCAoaDAsIGMwKSkKICAgICAgICBvdXQgPSBzZWxmLmZjKG91dFs6LCAtMSwgOl0pCiAgICAgICAgcmV0dXJuIG91dA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class LSTMNetwork(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size, num_layers):
+        super(LSTMNetwork, self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
+        
+        out, _ = self.lstm(x, (h0, c0))
+        out = self.fc(out[:, -1, :])
+        return out</pre></div><div class='content'></div><h2>Paso 3: Preparar los Datos</h2>
+<div class='content'><p>Para este ejemplo, utilizaremos datos sintéticos. En un caso real, los datos deben ser preprocesados y divididos en secuencias.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("aW1wb3J0IG51bXB5IGFzIG5wCgojIERhdG9zIHNpbnTDqXRpY29zCmRhdGEgPSBucC5zaW4obnAubGluc3BhY2UoMCwgMTAwLCAxMDAwKSkKc2VxdWVuY2VfbGVuZ3RoID0gMTAKCmRlZiBjcmVhdGVfc2VxdWVuY2VzKGRhdGEsIHNlcV9sZW5ndGgpOgogICAgeHMgPSBbXQogICAgeXMgPSBbXQogICAgZm9yIGkgaW4gcmFuZ2UobGVuKGRhdGEpLXNlcV9sZW5ndGgpOgogICAgICAgIHggPSBkYXRhW2k6aStzZXFfbGVuZ3RoXQogICAgICAgIHkgPSBkYXRhW2krc2VxX2xlbmd0aF0KICAgICAgICB4cy5hcHBlbmQoeCkKICAgICAgICB5cy5hcHBlbmQoeSkKICAgIHJldHVybiBucC5hcnJheSh4cyksIG5wLmFycmF5KHlzKQoKWCwgeSA9IGNyZWF0ZV9zZXF1ZW5jZXMoZGF0YSwgc2VxdWVuY2VfbGVuZ3RoKQpYID0gdG9yY2gudGVuc29yKFgsIGR0eXBlPXRvcmNoLmZsb2F0MzIpLnVuc3F1ZWV6ZSgtMSkKeSA9IHRvcmNoLnRlbnNvcih5LCBkdHlwZT10b3JjaC5mbG9hdDMyKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>import numpy as np
+
+# Datos sint&eacute;ticos
+data = np.sin(np.linspace(0, 100, 1000))
+sequence_length = 10
+
+def create_sequences(data, seq_length):
+    xs = []
+    ys = []
+    for i in range(len(data)-seq_length):
+        x = data[i:i+seq_length]
+        y = data[i+seq_length]
+        xs.append(x)
+        ys.append(y)
+    return np.array(xs), np.array(ys)
+
+X, y = create_sequences(data, sequence_length)
+X = torch.tensor(X, dtype=torch.float32).unsqueeze(-1)
+y = torch.tensor(y, dtype=torch.float32)</pre></div><div class='content'></div><h2>Paso 4: Entrenar la Red LSTM</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("IyBIaXBlcnBhcsOhbWV0cm9zCmlucHV0X3NpemUgPSAxCmhpZGRlbl9zaXplID0gNTAKb3V0cHV0X3NpemUgPSAxCm51bV9sYXllcnMgPSAyCm51bV9lcG9jaHMgPSAxMDAKbGVhcm5pbmdfcmF0ZSA9IDAuMDAxCgojIE1vZGVsbywgY3JpdGVyaW8geSBvcHRpbWl6YWRvcgptb2RlbCA9IExTVE1OZXR3b3JrKGlucHV0X3NpemUsIGhpZGRlbl9zaXplLCBvdXRwdXRfc2l6ZSwgbnVtX2xheWVycykKY3JpdGVyaW9uID0gbm4uTVNFTG9zcygpCm9wdGltaXplciA9IG9wdGltLkFkYW0obW9kZWwucGFyYW1ldGVycygpLCBscj1sZWFybmluZ19yYXRlKQoKIyBFbnRyZW5hbWllbnRvCmZvciBlcG9jaCBpbiByYW5nZShudW1fZXBvY2hzKToKICAgIG1vZGVsLnRyYWluKCkKICAgIG91dHB1dHMgPSBtb2RlbChYKQogICAgb3B0aW1pemVyLnplcm9fZ3JhZCgpCiAgICBsb3NzID0gY3JpdGVyaW9uKG91dHB1dHMsIHkpCiAgICBsb3NzLmJhY2t3YXJkKCkKICAgIG9wdGltaXplci5zdGVwKCkKICAgIAogICAgaWYgKGVwb2NoKzEpICUgMTAgPT0gMDoKICAgICAgICBwcmludChmJ0Vwb2NoIFt7ZXBvY2grMX0ve251bV9lcG9jaHN9XSwgTG9zczoge2xvc3MuaXRlbSgpOi40Zn0nKQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'># Hiperpar&aacute;metros
+input_size = 1
+hidden_size = 50
+output_size = 1
+num_layers = 2
+num_epochs = 100
+learning_rate = 0.001
+
+# Modelo, criterio y optimizador
+model = LSTMNetwork(input_size, hidden_size, output_size, num_layers)
+criterion = nn.MSELoss()
+optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+# Entrenamiento
+for epoch in range(num_epochs):
+    model.train()
+    outputs = model(X)
+    optimizer.zero_grad()
+    loss = criterion(outputs, y)
+    loss.backward()
+    optimizer.step()
+    
+    if (epoch+1) % 10 == 0:
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')</pre></div><div class='content'></div><h2>Paso 5: Evaluar el Modelo</h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bW9kZWwuZXZhbCgpCndpdGggdG9yY2gubm9fZ3JhZCgpOgogICAgcHJlZGljdGVkID0gbW9kZWwoWCkuZGV0YWNoKCkubnVtcHkoKQoKaW1wb3J0IG1hdHBsb3RsaWIucHlwbG90IGFzIHBsdAoKcGx0LnBsb3QoZGF0YSwgbGFiZWw9J09yaWdpbmFsIERhdGEnKQpwbHQucGxvdChucC5hcmFuZ2Uoc2VxdWVuY2VfbGVuZ3RoLCBzZXF1ZW5jZV9sZW5ndGggKyBsZW4ocHJlZGljdGVkKSksIHByZWRpY3RlZCwgbGFiZWw9J1ByZWRpY3RlZCBEYXRhJykKcGx0LmxlZ2VuZCgpCnBsdC5zaG93KCk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>model.eval()
+with torch.no_grad():
+    predicted = model(X).detach().numpy()
+
+import matplotlib.pyplot as plt
+
+plt.plot(data, label='Original Data')
+plt.plot(np.arange(sequence_length, sequence_length + len(predicted)), predicted, label='Predicted Data')
+plt.legend()
+plt.show()</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'><p><strong>Ejercicio</strong>: Modifica el código anterior para predecir una secuencia de valores de una serie temporal diferente, como el precio de una acción o la temperatura diaria.</p>
+<p><strong>Solución</strong>:</p>
+<ol>
+<li><strong>Obtener y Preprocesar los Datos</strong>: Descarga los datos de una serie temporal diferente y preprocésalos de manera similar a como se hizo con los datos sintéticos.</li>
+<li><strong>Modificar la Arquitectura</strong>: Ajusta los hiperparámetros de la red LSTM según sea necesario.</li>
+<li><strong>Entrenar y Evaluar el Modelo</strong>: Entrena el modelo con los nuevos datos y evalúa su rendimiento.</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido sobre las Redes de Memoria a Largo Plazo (LSTM) y cómo implementarlas en PyTorch. Las LSTM son poderosas para modelar secuencias de datos y resolver problemas con dependencias a largo plazo. Hemos cubierto la arquitectura básica de una celda LSTM, cómo definir una red LSTM en PyTorch, y cómo entrenar y evaluar el modelo.</p>
+<p>En el próximo módulo, exploraremos las Unidades Recurrentes con Puerta (GRUs), que son una variante de las LSTM con una arquitectura más simple.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-02-building-rnn-from-scratch' title="Construcción de una RNN desde Cero" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-02-building-rnn-from-scratch' title="Construcción de una RNN desde Cero" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-04-gru-networks' title="Unidades Recurrentes con Puerta (GRUs)" class="py-2 px-3 btn btn-primary"
+				data-read-mod="pytorch" data-read-unit="5-3">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-04-gru-networks' title="Unidades Recurrentes con Puerta (GRUs)" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="pytorch" data-read-unit="5-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>PyTorch: De Principiante a Avanzado</h1>
+<h2>Módulo 1: Introducción a PyTorch</h2>
+<ul>
+<li><a href="01-01-what-is-pytorch">¿Qué es PyTorch?</a></li>
+<li><a href="01-02-setting-up-environment">Configuración del Entorno</a></li>
+<li><a href="01-03-basic-tensor-operations">Operaciones Básicas con Tensores</a></li>
+<li><a href="01-04-autograd">Autograd: Diferenciación Automática</a></li>
+</ul>
+<h2>Módulo 2: Construcción de Redes Neuronales</h2>
+<ul>
+<li><a href="02-01-introduction-to-neural-networks">Introducción a las Redes Neuronales</a></li>
+<li><a href="02-02-creating-simple-neural-network">Creación de una Red Neuronal Simple</a></li>
+<li><a href="02-03-activation-functions">Funciones de Activación</a></li>
+<li><a href="02-04-loss-functions-optimization">Funciones de Pérdida y Optimización</a></li>
+</ul>
+<h2>Módulo 3: Entrenamiento de Redes Neuronales</h2>
+<ul>
+<li><a href="03-01-data-loading-preprocessing">Carga y Preprocesamiento de Datos</a></li>
+<li><a href="03-02-training-loop">Bucle de Entrenamiento</a></li>
+<li><a href="03-03-validation-testing">Validación y Pruebas</a></li>
+<li><a href="03-04-saving-loading-models">Guardar y Cargar Modelos</a></li>
+</ul>
+<h2>Módulo 4: Redes Neuronales Convolucionales (CNNs)</h2>
+<ul>
+<li><a href="04-01-introduction-to-cnns">Introducción a las CNNs</a></li>
+<li><a href="04-02-building-cnn-from-scratch">Construcción de una CNN desde Cero</a></li>
+<li><a href="04-03-transfer-learning">Aprendizaje por Transferencia con Modelos Preentrenados</a></li>
+<li><a href="04-04-fine-tuning-cnns">Ajuste Fino de CNNs</a></li>
+</ul>
+<h2>Módulo 5: Redes Neuronales Recurrentes (RNNs)</h2>
+<ul>
+<li><a href="05-01-introduction-to-rnns">Introducción a las RNNs</a></li>
+<li><a href="05-02-building-rnn-from-scratch">Construcción de una RNN desde Cero</a></li>
+<li><a href="05-03-lstm-networks">Redes de Memoria a Largo Plazo (LSTM)</a></li>
+<li><a href="05-04-gru-networks">Unidades Recurrentes con Puerta (GRUs)</a></li>
+</ul>
+<h2>Módulo 6: Temas Avanzados</h2>
+<ul>
+<li><a href="06-01-gans">Redes Generativas Antagónicas (GANs)</a></li>
+<li><a href="06-02-reinforcement-learning">Aprendizaje por Refuerzo con PyTorch</a></li>
+<li><a href="06-03-deploying-models">Despliegue de Modelos PyTorch</a></li>
+<li><a href="06-04-optimizing-performance">Optimización del Rendimiento</a></li>
+</ul>
+<h2>Módulo 7: Estudios de Caso y Proyectos</h2>
+<ul>
+<li><a href="07-01-image-classification-project">Proyecto de Clasificación de Imágenes</a></li>
+<li><a href="07-02-nlp-project">Proyecto de Procesamiento de Lenguaje Natural</a></li>
+<li><a href="07-03-time-series-forecasting-project">Proyecto de Pronóstico de Series Temporales</a></li>
+<li><a href="07-04-custom-project">Proyecto Personalizado</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

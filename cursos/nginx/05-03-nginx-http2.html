@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> NGINX y HTTP/2 </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/nginx/05-03-nginx-http2" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/nginx/05-03-nginx-http2" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/nginx/05-03-nginx-http2" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "tech-tools";
+  		var MOD_NAME = "nginx";
+  		var TEMA_NAME = "5-3";
+  		var TYPE = "mod";
+  		var PATH = "mod/nginx/05-03-nginx-http2";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/nginx/05-03-nginx-http2" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/nginx/05-03-nginx-http2" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="nginx">
+		<a  href="#" class="text-secondary d-none" data-read-mod="nginx" data-read-unit="5-3" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="nginx" data-unread-unit="5-3" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-02-using-nginx-docker' title="Usando NGINX con Docker" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-02-using-nginx-docker' title="Usando NGINX con Docker" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">NGINX y HTTP/2</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-04-nginx-grpc' title="NGINX y gRPC" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nginx" data-read-unit="5-3">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-04-nginx-grpc' title="NGINX y gRPC" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nginx" data-read-unit="5-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción a HTTP/2</h1>
+<div class='content'><p>HTTP/2 es la segunda versión principal del protocolo de red HTTP, utilizado por la World Wide Web. HTTP/2 mejora significativamente el rendimiento en comparación con HTTP/1.1, ofreciendo características como:</p>
+<ul>
+<li><strong>Multiplexación</strong>: Permite múltiples solicitudes y respuestas simultáneas sobre una única conexión TCP.</li>
+<li><strong>Compresión de encabezados</strong>: Reduce el tamaño de los encabezados HTTP, mejorando la eficiencia.</li>
+<li><strong>Prioridad de solicitudes</strong>: Permite que las solicitudes más importantes se procesen primero.</li>
+<li><strong>Server Push</strong>: Permite al servidor enviar recursos al cliente antes de que los solicite.</li>
+</ul>
+</div><h1>Habilitando HTTP/2 en NGINX</h1>
+<div class='content'><p>Para habilitar HTTP/2 en NGINX, es necesario tener una versión de NGINX que soporte HTTP/2 (NGINX 1.9.5 o superior) y un certificado SSL/TLS configurado, ya que HTTP/2 requiere HTTPS.</p>
+</div><h2>Paso 1: Verificar la versión de NGINX</h2>
+<div class='content'><p>Primero, asegúrate de que tu versión de NGINX es compatible con HTTP/2:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("bmdpbnggLXY="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>nginx -v</pre></div><div class='content'></div><h2>Paso 2: Configurar SSL/TLS</h2>
+<div class='content'><p>Asegúrate de tener configurado SSL/TLS en tu servidor NGINX. Aquí hay un ejemplo básico de configuración SSL:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA0NDMgc3NsOwogICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb207CgogICAgc3NsX2NlcnRpZmljYXRlIC9ldGMvbmdpbngvc3NsL2V4YW1wbGUuY29tLmNydDsKICAgIHNzbF9jZXJ0aWZpY2F0ZV9rZXkgL2V0Yy9uZ2lueC9zc2wvZXhhbXBsZS5jb20ua2V5OwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHJvb3QgL3Vzci9zaGFyZS9uZ2lueC9odG1sOwogICAgICAgIGluZGV4IGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+    }
+}</pre></div><div class='content'></div><h2>Paso 3: Habilitar HTTP/2</h2>
+<div class='content'><p>Para habilitar HTTP/2, simplemente añade la directiva <code>http2</code> en la configuración del bloque <code>listen</code>:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA0NDMgc3NsIGh0dHAyOwogICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb207CgogICAgc3NsX2NlcnRpZmljYXRlIC9ldGMvbmdpbngvc3NsL2V4YW1wbGUuY29tLmNydDsKICAgIHNzbF9jZXJ0aWZpY2F0ZV9rZXkgL2V0Yy9uZ2lueC9zc2wvZXhhbXBsZS5jb20ua2V5OwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHJvb3QgL3Vzci9zaGFyZS9uZ2lueC9odG1sOwogICAgICAgIGluZGV4IGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+    }
+}</pre></div><div class='content'></div><h2>Paso 4: Reiniciar NGINX</h2>
+<div class='content'><p>Después de realizar los cambios en la configuración, reinicia NGINX para aplicar los cambios:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c3VkbyBzeXN0ZW1jdGwgcmVzdGFydCBuZ2lueA=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>sudo systemctl restart nginx</pre></div><div class='content'></div><h1>Verificación de HTTP/2</h1>
+<div class='content'><p>Para verificar que HTTP/2 está habilitado y funcionando, puedes usar herramientas como <code>curl</code> o el navegador web.</p>
+</div><h2>Usando <code>curl</code></h2>
+<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y3VybCAtSSAtLWh0dHAyIGh0dHBzOi8vZXhhbXBsZS5jb20="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>curl -I --http2 https://example.com</pre></div><div class='content'></div><h2>Usando el navegador</h2>
+<div class='content'><p>Abre las herramientas de desarrollo de tu navegador (F12 en la mayoría de los navegadores), navega a la pestaña de red y verifica que el protocolo utilizado es HTTP/2.</p>
+</div><h1>Ejemplo Completo de Configuración</h1>
+<div class='content'><p>Aquí tienes un ejemplo completo de configuración de NGINX con HTTP/2 habilitado:</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("c2VydmVyIHsKICAgIGxpc3RlbiA0NDMgc3NsIGh0dHAyOwogICAgc2VydmVyX25hbWUgZXhhbXBsZS5jb207CgogICAgc3NsX2NlcnRpZmljYXRlIC9ldGMvbmdpbngvc3NsL2V4YW1wbGUuY29tLmNydDsKICAgIHNzbF9jZXJ0aWZpY2F0ZV9rZXkgL2V0Yy9uZ2lueC9zc2wvZXhhbXBsZS5jb20ua2V5OwoKICAgIHNzbF9wcm90b2NvbHMgVExTdjEuMiBUTFN2MS4zOwogICAgc3NsX3ByZWZlcl9zZXJ2ZXJfY2lwaGVycyBvbjsKICAgIHNzbF9jaXBoZXJzICdFQ0RIRS1FQ0RTQS1BRVMyNTYtR0NNLVNIQTM4NDpFQ0RIRS1SU0EtQUVTMjU2LUdDTS1TSEEzODQnOwoKICAgIGxvY2F0aW9uIC8gewogICAgICAgIHJvb3QgL3Vzci9zaGFyZS9uZ2lueC9odG1sOwogICAgICAgIGluZGV4IGluZGV4Lmh0bWwgaW5kZXguaHRtOwogICAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384';
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+    }
+}</pre></div><div class='content'></div><h1>Ejercicio Práctico</h1>
+<div class='content'></div><h2>Ejercicio 1: Habilitar HTTP/2</h2>
+<div class='content'><ol>
+<li><strong>Objetivo</strong>: Configurar un servidor NGINX para que utilice HTTP/2.</li>
+<li><strong>Pasos</strong>:
+<ul>
+<li>Verifica la versión de NGINX.</li>
+<li>Configura SSL/TLS en tu servidor.</li>
+<li>Habilita HTTP/2 en la configuración de NGINX.</li>
+<li>Reinicia NGINX.</li>
+<li>Verifica que HTTP/2 está funcionando.</li>
+</ul>
+</li>
+</ol>
+</div><h2>Solución</h2>
+<div class='content'><ol>
+<li>
+<p>Verifica la versión de NGINX:</p>
+<pre><code class="language-bash">nginx -v
+</code></pre>
+</li>
+<li>
+<p>Configura SSL/TLS:</p>
+<pre><code class="language-nginx">server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>Habilita HTTP/2:</p>
+<pre><code class="language-nginx">server {
+    listen 443 ssl http2;
+    server_name example.com;
+
+    ssl_certificate /etc/nginx/ssl/example.com.crt;
+    ssl_certificate_key /etc/nginx/ssl/example.com.key;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html index.htm;
+    }
+}
+</code></pre>
+</li>
+<li>
+<p>Reinicia NGINX:</p>
+<pre><code class="language-bash">sudo systemctl restart nginx
+</code></pre>
+</li>
+<li>
+<p>Verifica que HTTP/2 está funcionando:</p>
+<pre><code class="language-bash">curl -I --http2 https://example.com
+</code></pre>
+</li>
+</ol>
+</div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos aprendido qué es HTTP/2 y cómo habilitarlo en NGINX. HTTP/2 ofrece mejoras significativas en el rendimiento y la eficiencia de las comunicaciones web. Habilitar HTTP/2 en NGINX es un proceso sencillo que puede proporcionar beneficios inmediatos en términos de velocidad y capacidad de respuesta de tu sitio web. En el próximo tema, exploraremos cómo NGINX puede trabajar con gRPC.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-02-using-nginx-docker' title="Usando NGINX con Docker" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-02-using-nginx-docker' title="Usando NGINX con Docker" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='05-04-nginx-grpc' title="NGINX y gRPC" class="py-2 px-3 btn btn-primary"
+				data-read-mod="nginx" data-read-unit="5-3">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='05-04-nginx-grpc' title="NGINX y gRPC" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="nginx" data-read-unit="5-3">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de NGINX</h1>
+<h2>Módulo 1: Introducción a NGINX</h2>
+<ul>
+<li><a href="01-01-what-is-nginx">¿Qué es NGINX?</a></li>
+<li><a href="01-02-installing-nginx">Instalando NGINX</a></li>
+<li><a href="01-03-basic-nginx-configuration">Configuración Básica de NGINX</a></li>
+<li><a href="01-04-starting-stopping-nginx">Iniciando y Deteniendo NGINX</a></li>
+</ul>
+<h2>Módulo 2: NGINX como Servidor Web</h2>
+<ul>
+<li><a href="02-01-serving-static-content">Sirviendo Contenido Estático</a></li>
+<li><a href="02-02-directory-listings">Listados de Directorios</a></li>
+<li><a href="02-03-custom-error-pages">Páginas de Error Personalizadas</a></li>
+<li><a href="02-04-logging-log-formats">Registro y Formatos de Registro</a></li>
+</ul>
+<h2>Módulo 3: NGINX como Proxy Inverso</h2>
+<ul>
+<li><a href="03-01-introduction-reverse-proxy">Introducción al Proxy Inverso</a></li>
+<li><a href="03-02-configuring-reverse-proxy">Configurando un Proxy Inverso</a></li>
+<li><a href="03-03-load-balancing">Balanceo de Carga</a></li>
+<li><a href="03-04-health-checks">Verificaciones de Salud</a></li>
+</ul>
+<h2>Módulo 4: Seguridad y Optimización</h2>
+<ul>
+<li><a href="04-01-basic-security-practices">Prácticas Básicas de Seguridad</a></li>
+<li><a href="04-02-rate-limiting">Limitación de Tasa</a></li>
+<li><a href="04-03-ssl-tls-configuration">Configuración SSL/TLS</a></li>
+<li><a href="04-04-caching">Caché</a></li>
+</ul>
+<h2>Módulo 5: Funciones Avanzadas de NGINX</h2>
+<ul>
+<li><a href="05-01-nginx-modules">Módulos de NGINX</a></li>
+<li><a href="05-02-using-nginx-docker">Usando NGINX con Docker</a></li>
+<li><a href="05-03-nginx-http2">NGINX y HTTP/2</a></li>
+<li><a href="05-04-nginx-grpc">NGINX y gRPC</a></li>
+</ul>
+<h2>Módulo 6: Monitoreo y Solución de Problemas</h2>
+<ul>
+<li><a href="06-01-monitoring-nginx">Monitoreando NGINX</a></li>
+<li><a href="06-02-common-issues-solutions">Problemas Comunes y Soluciones</a></li>
+<li><a href="06-03-performance-tuning">Ajuste de Rendimiento</a></li>
+<li><a href="06-04-debugging-nginx">Depuración de NGINX</a></li>
+</ul>
+<h2>Módulo 7: NGINX Plus</h2>
+<ul>
+<li><a href="07-01-introduction-nginx-plus">Introducción a NGINX Plus</a></li>
+<li><a href="07-02-advanced-load-balancing">Balanceo de Carga Avanzado</a></li>
+<li><a href="07-03-application-health-monitoring">Monitoreo de Salud de Aplicaciones</a></li>
+<li><a href="07-04-dynamic-configuration">Configuración Dinámica</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

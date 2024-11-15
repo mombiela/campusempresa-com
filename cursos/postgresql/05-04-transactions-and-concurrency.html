@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Transacciones y Concurrencia </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, nofollow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/mod/postgresql/05-04-transactions-and-concurrency" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/mod/postgresql/05-04-transactions-and-concurrency" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/mod/postgresql/05-04-transactions-and-concurrency" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "languages";
+  		var MOD_NAME = "postgresql";
+  		var TEMA_NAME = "5-4";
+  		var TYPE = "mod";
+  		var PATH = "mod/postgresql/05-04-transactions-and-concurrency";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.902a5a267d.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<h1 class="m-0 p-0">
+				<a href="/"><img src="/img/logo_header.png"></a>
+			</h1>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/mod/postgresql/05-04-transactions-and-concurrency" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/mod/postgresql/05-04-transactions-and-concurrency" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="postgresql">
+		<a  href="#" class="text-secondary d-none" data-read-mod="postgresql" data-read-unit="5-4" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="postgresql" data-unread-unit="5-4" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-03-stored-procedures-and-functions' title="Procedimientos y Funciones Almacenadas" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-03-stored-procedures-and-functions' title="Procedimientos y Funciones Almacenadas" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h2 style="text-decoration:underline">Transacciones y Concurrencia</h2>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-01-query-optimization' title="Optimización de Consultas" class="py-2 px-3 btn btn-primary"
+				data-read-mod="postgresql" data-read-unit="5-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-01-query-optimization' title="Optimización de Consultas" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="postgresql" data-read-unit="5-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'></div><h1>Introducción</h1>
+<div class='content'><p>En este tema, exploraremos las transacciones y la concurrencia en PostgreSQL. Las transacciones son fundamentales para garantizar la integridad y consistencia de los datos en una base de datos, mientras que la concurrencia se refiere a la capacidad de múltiples usuarios para acceder y modificar los datos simultáneamente sin causar inconsistencias.</p>
+</div><h1>Conceptos Clave</h1>
+<div class='content'></div><h2>Transacciones</h2>
+<div class='content'><p>Una transacción es una secuencia de operaciones SQL que se ejecutan como una unidad. Las transacciones tienen las siguientes propiedades, conocidas como ACID:</p>
+<ol>
+<li><strong>Atomicidad</strong>: Todas las operaciones dentro de una transacción se completan con éxito o ninguna lo hace.</li>
+<li><strong>Consistencia</strong>: Una transacción lleva la base de datos de un estado válido a otro estado válido.</li>
+<li><strong>Aislamiento</strong>: Las operaciones de una transacción son invisibles para otras transacciones hasta que se completan.</li>
+<li><strong>Durabilidad</strong>: Una vez que una transacción se ha completado, sus cambios son permanentes, incluso en caso de fallos del sistema.</li>
+</ol>
+</div><h2>Concurrencia</h2>
+<div class='content'><p>La concurrencia se refiere a la capacidad de múltiples transacciones para acceder y modificar la base de datos al mismo tiempo. PostgreSQL utiliza varios mecanismos para manejar la concurrencia, incluyendo:</p>
+<ul>
+<li><strong>Bloqueos (Locks)</strong>: Controlan el acceso simultáneo a los datos.</li>
+<li><strong>Control de Concurrencia Multiversión (MVCC)</strong>: Permite que múltiples transacciones lean y escriban en la base de datos sin interferir entre sí.</li>
+</ul>
+</div><h1>Transacciones en PostgreSQL</h1>
+<div class='content'></div><h2>Iniciando y Finalizando Transacciones</h2>
+<div class='content'><p>En PostgreSQL, puedes iniciar una transacción con <code>BEGIN</code> y finalizarla con <code>COMMIT</code> o <code>ROLLBACK</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU47CgotLSBPcGVyYWNpb25lcyBTUUwKSU5TRVJUIElOVE8gcHJvZHVjdG9zIChub21icmUsIHByZWNpbykgVkFMVUVTICgnUHJvZHVjdG8gQScsIDEwMCk7ClVQREFURSBpbnZlbnRhcmlvIFNFVCBjYW50aWRhZCA9IGNhbnRpZGFkIC0gMSBXSEVSRSBwcm9kdWN0b19pZCA9IDE7CgpDT01NSVQ7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN;
+
+-- Operaciones SQL
+INSERT INTO productos (nombre, precio) VALUES ('Producto A', 100);
+UPDATE inventario SET cantidad = cantidad - 1 WHERE producto_id = 1;
+
+COMMIT;</pre></div><div class='content'><p>Si ocurre un error y deseas deshacer todas las operaciones dentro de la transacción, puedes usar <code>ROLLBACK</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU47CgotLSBPcGVyYWNpb25lcyBTUUwKSU5TRVJUIElOVE8gcHJvZHVjdG9zIChub21icmUsIHByZWNpbykgVkFMVUVTICgnUHJvZHVjdG8gQicsIDIwMCk7ClVQREFURSBpbnZlbnRhcmlvIFNFVCBjYW50aWRhZCA9IGNhbnRpZGFkIC0gMSBXSEVSRSBwcm9kdWN0b19pZCA9IDI7CgpST0xMQkFDSzs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN;
+
+-- Operaciones SQL
+INSERT INTO productos (nombre, precio) VALUES ('Producto B', 200);
+UPDATE inventario SET cantidad = cantidad - 1 WHERE producto_id = 2;
+
+ROLLBACK;</pre></div><div class='content'></div><h2>Aislamiento de Transacciones</h2>
+<div class='content'><p>PostgreSQL soporta varios niveles de aislamiento de transacciones:</p>
+<ol>
+<li><strong>Read Uncommitted</strong>: Las transacciones pueden ver cambios no confirmados de otras transacciones.</li>
+<li><strong>Read Committed</strong>: Las transacciones solo ven cambios confirmados.</li>
+<li><strong>Repeatable Read</strong>: Las transacciones ven un estado consistente de la base de datos desde el inicio de la transacción.</li>
+<li><strong>Serializable</strong>: Las transacciones se ejecutan de manera que el resultado es el mismo que si se hubieran ejecutado secuencialmente.</li>
+</ol>
+<p>Puedes establecer el nivel de aislamiento con <code>SET TRANSACTION</code>.</p>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("U0VUIFRSQU5TQUNUSU9OIElTT0xBVElPTiBMRVZFTCBSRVBFQVRBQkxFIFJFQUQ7CgpCRUdJTjsKCi0tIE9wZXJhY2lvbmVzIFNRTApTRUxFQ1QgKiBGUk9NIHByb2R1Y3RvcyBXSEVSRSBwcmVjaW8gPiA1MDsKCkNPTU1JVDs="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+BEGIN;
+
+-- Operaciones SQL
+SELECT * FROM productos WHERE precio &gt; 50;
+
+COMMIT;</pre></div><div class='content'></div><h1>Concurrencia en PostgreSQL</h1>
+<div class='content'></div><h2>Control de Concurrencia Multiversión (MVCC)</h2>
+<div class='content'><p>MVCC permite que múltiples transacciones lean y escriban en la base de datos sin bloquearse entre sí. Cada transacción ve una &quot;instantánea&quot; consistente de la base de datos en el momento en que comenzó.</p>
+</div><h2>Bloqueos (Locks)</h2>
+<div class='content'><p>PostgreSQL utiliza varios tipos de bloqueos para manejar la concurrencia:</p>
+<ul>
+<li><strong>Row-level locks</strong>: Bloquean filas específicas.</li>
+<li><strong>Table-level locks</strong>: Bloquean tablas completas.</li>
+<li><strong>Advisory locks</strong>: Bloqueos definidos por el usuario para propósitos específicos.</li>
+</ul>
+<h4>Ejemplo de Bloqueo de Fila</h4>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU47CgotLSBCbG9xdWVhIGxhIGZpbGEgY29uIGlkID0gMQpTRUxFQ1QgKiBGUk9NIHByb2R1Y3RvcyBXSEVSRSBpZCA9IDEgRk9SIFVQREFURTsKCi0tIE9wZXJhY2lvbmVzIFNRTApVUERBVEUgcHJvZHVjdG9zIFNFVCBwcmVjaW8gPSAxNTAgV0hFUkUgaWQgPSAxOwoKQ09NTUlUOw=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN;
+
+-- Bloquea la fila con id = 1
+SELECT * FROM productos WHERE id = 1 FOR UPDATE;
+
+-- Operaciones SQL
+UPDATE productos SET precio = 150 WHERE id = 1;
+
+COMMIT;</pre></div><div class='content'></div><h2>Deadlocks</h2>
+<div class='content'><p>Un deadlock ocurre cuando dos o más transacciones se bloquean mutuamente esperando que la otra libere un recurso. PostgreSQL detecta automáticamente los deadlocks y aborta una de las transacciones involucradas.</p>
+</div><h1>Ejercicios Prácticos</h1>
+<div class='content'></div><h2>Ejercicio 1: Transacción Básica</h2>
+<div class='content'><ol>
+<li>Inicia una transacción.</li>
+<li>Inserta un nuevo producto en la tabla <code>productos</code>.</li>
+<li>Actualiza el inventario para reflejar la nueva cantidad del producto.</li>
+<li>Confirma la transacción.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QkVHSU47CgpJTlNFUlQgSU5UTyBwcm9kdWN0b3MgKG5vbWJyZSwgcHJlY2lvKSBWQUxVRVMgKCdQcm9kdWN0byBDJywgMzAwKTsKVVBEQVRFIGludmVudGFyaW8gU0VUIGNhbnRpZGFkID0gY2FudGlkYWQgKyAxMCBXSEVSRSBwcm9kdWN0b19pZCA9IDM7CgpDT01NSVQ7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>BEGIN;
+
+INSERT INTO productos (nombre, precio) VALUES ('Producto C', 300);
+UPDATE inventario SET cantidad = cantidad + 10 WHERE producto_id = 3;
+
+COMMIT;</pre></div><div class='content'></div><h2>Ejercicio 2: Manejo de Concurrencia</h2>
+<div class='content'><ol>
+<li>Inicia una transacción y selecciona una fila para actualizarla.</li>
+<li>En otra sesión, intenta seleccionar la misma fila para actualizarla.</li>
+<li>Observa el comportamiento y resuelve cualquier conflicto.</li>
+</ol>
+</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("LS0gU2VzacOzbiAxCkJFR0lOOwoKU0VMRUNUICogRlJPTSBwcm9kdWN0b3MgV0hFUkUgaWQgPSAyIEZPUiBVUERBVEU7CgotLSBPcGVyYWNpb25lcyBTUUwKVVBEQVRFIHByb2R1Y3RvcyBTRVQgcHJlY2lvID0gMjUwIFdIRVJFIGlkID0gMjsKCkNPTU1JVDsKCi0tIFNlc2nDs24gMgpCRUdJTjsKClNFTEVDVCAqIEZST00gcHJvZHVjdG9zIFdIRVJFIGlkID0gMiBGT1IgVVBEQVRFOwoKLS0gT3BlcmFjaW9uZXMgU1FMClVQREFURSBwcm9kdWN0b3MgU0VUIHByZWNpbyA9IDI2MCBXSEVSRSBpZCA9IDI7CgpDT01NSVQ7"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>-- Sesi&oacute;n 1
+BEGIN;
+
+SELECT * FROM productos WHERE id = 2 FOR UPDATE;
+
+-- Operaciones SQL
+UPDATE productos SET precio = 250 WHERE id = 2;
+
+COMMIT;
+
+-- Sesi&oacute;n 2
+BEGIN;
+
+SELECT * FROM productos WHERE id = 2 FOR UPDATE;
+
+-- Operaciones SQL
+UPDATE productos SET precio = 260 WHERE id = 2;
+
+COMMIT;</pre></div><div class='content'></div><h1>Conclusión</h1>
+<div class='content'><p>En esta sección, hemos cubierto los conceptos fundamentales de las transacciones y la concurrencia en PostgreSQL. Aprendimos cómo iniciar y finalizar transacciones, los niveles de aislamiento, y cómo PostgreSQL maneja la concurrencia utilizando MVCC y bloqueos. Estos conceptos son esenciales para garantizar la integridad y consistencia de los datos en aplicaciones de bases de datos concurrentes. En el próximo módulo, exploraremos características avanzadas de PostgreSQL, como vistas, triggers y procedimientos almacenados.</p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='05-03-stored-procedures-and-functions' title="Procedimientos y Funciones Almacenadas" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='05-03-stored-procedures-and-functions' title="Procedimientos y Funciones Almacenadas" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='06-01-query-optimization' title="Optimización de Consultas" class="py-2 px-3 btn btn-primary"
+				data-read-mod="postgresql" data-read-unit="5-4">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='06-01-query-optimization' title="Optimización de Consultas" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="postgresql" data-read-unit="5-4">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Curso de PostgreSQL</h1>
+<h2>Módulo 1: Introducción a PostgreSQL</h2>
+<ul>
+<li><a href="01-01-what-is-postgresql">¿Qué es PostgreSQL?</a></li>
+<li><a href="01-02-installing-postgresql">Instalando PostgreSQL</a></li>
+<li><a href="01-03-basic-sql-concepts">Conceptos Básicos de SQL</a></li>
+<li><a href="01-04-connecting-to-postgresql">Conectándose a PostgreSQL</a></li>
+</ul>
+<h2>Módulo 2: Operaciones Básicas de SQL</h2>
+<ul>
+<li><a href="02-01-creating-databases-and-tables">Creando Bases de Datos y Tablas</a></li>
+<li><a href="02-02-inserting-data">Insertando Datos</a></li>
+<li><a href="02-03-querying-data">Consultando Datos</a></li>
+<li><a href="02-04-updating-data">Actualizando Datos</a></li>
+<li><a href="02-05-deleting-data">Eliminando Datos</a></li>
+</ul>
+<h2>Módulo 3: Consultas Avanzadas de SQL</h2>
+<ul>
+<li><a href="03-01-joins">Joins</a></li>
+<li><a href="03-02-subqueries">Subconsultas</a></li>
+<li><a href="03-03-aggregate-functions">Funciones de Agregación</a></li>
+<li><a href="03-04-window-functions">Funciones de Ventana</a></li>
+<li><a href="03-05-common-table-expressions">Expresiones de Tabla Común (CTEs)</a></li>
+</ul>
+<h2>Módulo 4: Diseño de Bases de Datos y Normalización</h2>
+<ul>
+<li><a href="04-01-database-design-principles">Principios de Diseño de Bases de Datos</a></li>
+<li><a href="04-02-normalization">Normalización</a></li>
+<li><a href="04-03-primary-and-foreign-keys">Claves Primarias y Foráneas</a></li>
+<li><a href="04-04-indexes">Índices</a></li>
+</ul>
+<h2>Módulo 5: Características Avanzadas de PostgreSQL</h2>
+<ul>
+<li><a href="05-01-views">Vistas</a></li>
+<li><a href="05-02-triggers">Triggers</a></li>
+<li><a href="05-03-stored-procedures-and-functions">Procedimientos y Funciones Almacenadas</a></li>
+<li><a href="05-04-transactions-and-concurrency">Transacciones y Concurrencia</a></li>
+</ul>
+<h2>Módulo 6: Ajuste de Rendimiento y Optimización</h2>
+<ul>
+<li><a href="06-01-query-optimization">Optimización de Consultas</a></li>
+<li><a href="06-02-indexing-strategies">Estrategias de Indexación</a></li>
+<li><a href="06-03-analyzing-query-performance">Análisis del Rendimiento de Consultas</a></li>
+<li><a href="06-04-vacuuming-and-maintenance">Vacuuming y Mantenimiento</a></li>
+</ul>
+<h2>Módulo 7: Seguridad y Gestión de Usuarios</h2>
+<ul>
+<li><a href="07-01-user-roles-and-permissions">Roles de Usuario y Permisos</a></li>
+<li><a href="07-02-authentication-methods">Métodos de Autenticación</a></li>
+<li><a href="07-03-data-encryption">Encriptación de Datos</a></li>
+<li><a href="07-04-backup-and-restore">Respaldo y Restauración</a></li>
+</ul>
+<h2>Módulo 8: Trabajando con JSON y Características NoSQL</h2>
+<ul>
+<li><a href="08-01-json-data-types">Tipos de Datos JSON</a></li>
+<li><a href="08-02-json-functions-and-operators">Funciones y Operadores JSON</a></li>
+<li><a href="08-03-using-postgresql-as-nosql">Usando PostgreSQL como una Base de Datos NoSQL</a></li>
+</ul>
+<h2>Módulo 9: Extensiones y Herramientas Avanzadas</h2>
+<ul>
+<li><a href="09-01-postgis-for-geospatial-data">PostGIS para Datos Geoespaciales</a></li>
+<li><a href="09-02-full-text-search">Búsqueda de Texto Completo</a></li>
+<li><a href="09-03-foreign-data-wrappers">Wrappers de Datos Externos</a></li>
+<li><a href="09-04-plpgsql-and-other-procedural-languages">PL/pgSQL y Otros Lenguajes Procedurales</a></li>
+</ul>
+<h2>Módulo 10: Estudios de Caso y Aplicaciones del Mundo Real</h2>
+<ul>
+<li><a href="10-01-e-commerce-database-design">Diseño de Base de Datos para Comercio Electrónico</a></li>
+<li><a href="10-02-data-warehousing-with-postgresql">Almacenamiento de Datos con PostgreSQL</a></li>
+<li><a href="10-03-handling-big-data">Manejo de Big Data</a></li>
+<li><a href="10-04-postgresql-in-microservices-architecture">PostgreSQL en Arquitectura de Microservicios</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
