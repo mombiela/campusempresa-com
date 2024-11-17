@@ -13,7 +13,7 @@
 	<link rel="alternate" href="https://enterprisecampus.net/courses/flask/03-03-file-uploads" hreflang="en" />
     
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
-	<link href="/css/site.ea63f62b9e.css" rel="stylesheet">
+	<link href="/css/site.188a386f47.css" rel="stylesheet">
 	 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   	<script type="text/javascript" src="/js/math_init.js"></script>
@@ -38,9 +38,7 @@
 		<div id="header" class="container-xxl">
 	<div class="row">
 		<div class="col-12 col-md-6 p-0">
-			<h1 class="m-0 p-0">
-				<a href="/"><img src="/img/logo_header.png"></a>
-			</h1>
+			<a href="/"><img src="/img/logo_header.png" alt="Logo Campus Empresa"></a>
 		</div>
 		<div class="col-12 col-md-6 p-0 text-end">
 			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/courses/flask/03-03-file-uploads" class="px-2">EN</a></b>
@@ -129,7 +127,7 @@
 			</a>
 			</div>
 	<div class='col-8 text-center'>
-					<h2 style="text-decoration:underline">Carga de Archivos</h2>
+					<h1 style="text-decoration:underline">Carga de Archivos</h1>
 			</div>
 	<div class='col-2 text-end d-none d-md-block'>
 					<a href='04-01-intro-flask-sqlalchemy' title="Introducción a Flask-SQLAlchemy" class="py-2 px-3 btn btn-primary"
@@ -145,18 +143,18 @@
 			</div>
 </div>
 <div class='content'><p>En esta lección, aprenderemos cómo manejar la carga de archivos en una aplicación Flask. La capacidad de cargar archivos es una funcionalidad común en muchas aplicaciones web, como cuando los usuarios suben imágenes de perfil, documentos, etc.</p>
-</div><h1>Objetivos de Aprendizaje</h1>
+</div><h2>Objetivos de Aprendizaje</h2>
 <div class='content'><ul>
 <li>Configurar Flask para manejar cargas de archivos.</li>
 <li>Crear formularios para la carga de archivos.</li>
 <li>Procesar y guardar archivos en el servidor.</li>
 <li>Validar tipos de archivos y tamaños.</li>
 </ul>
-</div><h1>Configuración Inicial</h1>
+</div><h2>Configuración Inicial</h2>
 <div class='content'><p>Antes de comenzar, asegúrate de tener Flask instalado. Si no lo tienes, puedes instalarlo usando pip:</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2s="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask</pre></div><div class='content'></div><h1>Configuración de la Aplicación</h1>
+</div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("cGlwIGluc3RhbGwgRmxhc2s="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>pip install Flask</pre></div><div class='content'></div><h2>Configuración de la Aplicación</h2>
 <div class='content'><p>Primero, necesitamos configurar nuestra aplicación Flask para manejar cargas de archivos. Esto incluye definir una carpeta donde se guardarán los archivos subidos y establecer un tamaño máximo para los archivos.</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIHJlZGlyZWN0LCB1cmxfZm9yLCByZW5kZXJfdGVtcGxhdGUKaW1wb3J0IG9zCgphcHAgPSBGbGFzayhfX25hbWVfXykKCiMgQ29uZmlndXJhY2nDs24gZGUgbGEgY2FycGV0YSBkZSBjYXJnYQpVUExPQURfRk9MREVSID0gJ3VwbG9hZHMvJwphcHAuY29uZmlnWydVUExPQURfRk9MREVSJ10gPSBVUExPQURfRk9MREVSCgojIENvbmZpZ3VyYWNpw7NuIGRlbCB0YW1hw7FvIG3DoXhpbW8gZGUgYXJjaGl2byAoZW4gYnl0ZXMpCmFwcC5jb25maWdbJ01BWF9DT05URU5UX0xFTkdUSCddID0gMTYgKiAxMDI0ICogMTAyNCAgIyAxNiBNQg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, redirect, url_for, render_template
+</div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSBmbGFzayBpbXBvcnQgRmxhc2ssIHJlcXVlc3QsIHJlZGlyZWN0LCB1cmxfZm9yLCByZW5kZXJfdGVtcGxhdGUKaW1wb3J0IG9zCgphcHAgPSBGbGFzayhfX25hbWVfXykKCiMgQ29uZmlndXJhY2nDs24gZGUgbGEgY2FycGV0YSBkZSBjYXJnYQpVUExPQURfRk9MREVSID0gJ3VwbG9hZHMvJwphcHAuY29uZmlnWydVUExPQURfRk9MREVSJ10gPSBVUExPQURfRk9MREVSCgojIENvbmZpZ3VyYWNpw7NuIGRlbCB0YW1hw7FvIG3DoXhpbW8gZGUgYXJjaGl2byAoZW4gYnl0ZXMpCmFwcC5jb25maWdbJ01BWF9DT05URU5UX0xFTkdUSCddID0gMTYgKiAxMDI0ICogMTAyNCAgIyAxNiBNQg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from flask import Flask, request, redirect, url_for, render_template
 import os
 
 app = Flask(__name__)
@@ -166,9 +164,9 @@ UPLOAD_FOLDER = 'uploads/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Configuraci&oacute;n del tama&ntilde;o m&aacute;ximo de archivo (en bytes)
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB</pre></div><div class='content'></div><h1>Creación del Formulario de Carga</h1>
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB</pre></div><div class='content'></div><h2>Creación del Formulario de Carga</h2>
 <div class='content'><p>Vamos a crear un formulario HTML simple para permitir a los usuarios cargar archivos. Utilizaremos Jinja2 para renderizar la plantilla.</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvdXBsb2FkLmh0bWwgLS0+CjwhZG9jdHlwZSBodG1sPgo8aHRtbCBsYW5nPSJlbiI+CjxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogICAgPHRpdGxlPkNhcmdhciBBcmNoaXZvPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5DYXJnYXIgQXJjaGl2bzwvaDE+CiAgICA8Zm9ybSBtZXRob2Q9InBvc3QiIGVuY3R5cGU9Im11bHRpcGFydC9mb3JtLWRhdGEiPgogICAgICAgIDxpbnB1dCB0eXBlPSJmaWxlIiBuYW1lPSJmaWxlIj4KICAgICAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iU3ViaXIiPgogICAgPC9mb3JtPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/upload.html --&gt;
+</div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvdXBsb2FkLmh0bWwgLS0+CjwhZG9jdHlwZSBodG1sPgo8aHRtbCBsYW5nPSJlbiI+CjxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogICAgPHRpdGxlPkNhcmdhciBBcmNoaXZvPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5DYXJnYXIgQXJjaGl2bzwvaDE+CiAgICA8Zm9ybSBtZXRob2Q9InBvc3QiIGVuY3R5cGU9Im11bHRpcGFydC9mb3JtLWRhdGEiPgogICAgICAgIDxpbnB1dCB0eXBlPSJmaWxlIiBuYW1lPSJmaWxlIj4KICAgICAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iU3ViaXIiPgogICAgPC9mb3JtPgo8L2JvZHk+CjwvaHRtbD4="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/upload.html --&gt;
 &lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -182,9 +180,9 @@ app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16 MB</pre></div><div cla
         &lt;input type=&quot;submit&quot; value=&quot;Subir&quot;&gt;
     &lt;/form&gt;
 &lt;/body&gt;
-&lt;/html&gt;</pre></div><div class='content'></div><h1>Manejo de la Carga de Archivos</h1>
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Manejo de la Carga de Archivos</h2>
 <div class='content'><p>Ahora, vamos a crear una ruta en nuestra aplicación Flask para manejar la carga de archivos. Esta ruta procesará el formulario y guardará el archivo en la carpeta especificada.</p>
-</div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB3ZXJremV1Zy51dGlscyBpbXBvcnQgc2VjdXJlX2ZpbGVuYW1lCgojIEZ1bmNpw7NuIHBhcmEgcGVybWl0aXIgc29sbyBjaWVydG9zIHRpcG9zIGRlIGFyY2hpdm9zCmRlZiBhbGxvd2VkX2ZpbGUoZmlsZW5hbWUpOgogICAgcmV0dXJuICcuJyBpbiBmaWxlbmFtZSBhbmQgZmlsZW5hbWUucnNwbGl0KCcuJywgMSlbMV0ubG93ZXIoKSBpbiB7J3BuZycsICdqcGcnLCAnanBlZycsICdnaWYnfQoKQGFwcC5yb3V0ZSgnL3VwbG9hZCcsIG1ldGhvZHM9WydHRVQnLCAnUE9TVCddKQpkZWYgdXBsb2FkX2ZpbGUoKToKICAgIGlmIHJlcXVlc3QubWV0aG9kID09ICdQT1NUJzoKICAgICAgICAjIFZlcmlmaWNhciBzaSBlbCBwb3N0IHJlcXVlc3QgdGllbmUgbGEgcGFydGUgZGVsIGFyY2hpdm8KICAgICAgICBpZiAnZmlsZScgbm90IGluIHJlcXVlc3QuZmlsZXM6CiAgICAgICAgICAgIHJldHVybiAnTm8gZmlsZSBwYXJ0JwogICAgICAgIGZpbGUgPSByZXF1ZXN0LmZpbGVzWydmaWxlJ10KICAgICAgICAjIFNpIGVsIHVzdWFyaW8gbm8gc2VsZWNjaW9uYSB1biBhcmNoaXZvLCBlbCBuYXZlZ2Fkb3IgdGFtYmnDqW4KICAgICAgICAjIGVudmlhcsOhIHVuYSBwYXJ0ZSB2YWPDrWEgc2luIG5vbWJyZSBkZSBhcmNoaXZvCiAgICAgICAgaWYgZmlsZS5maWxlbmFtZSA9PSAnJzoKICAgICAgICAgICAgcmV0dXJuICdObyBzZWxlY3RlZCBmaWxlJwogICAgICAgIGlmIGZpbGUgYW5kIGFsbG93ZWRfZmlsZShmaWxlLmZpbGVuYW1lKToKICAgICAgICAgICAgZmlsZW5hbWUgPSBzZWN1cmVfZmlsZW5hbWUoZmlsZS5maWxlbmFtZSkKICAgICAgICAgICAgZmlsZS5zYXZlKG9zLnBhdGguam9pbihhcHAuY29uZmlnWydVUExPQURfRk9MREVSJ10sIGZpbGVuYW1lKSkKICAgICAgICAgICAgcmV0dXJuICdGaWxlIHN1Y2Nlc3NmdWxseSB1cGxvYWRlZCcKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ3VwbG9hZC5odG1sJyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from werkzeug.utils import secure_filename
+</div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZnJvbSB3ZXJremV1Zy51dGlscyBpbXBvcnQgc2VjdXJlX2ZpbGVuYW1lCgojIEZ1bmNpw7NuIHBhcmEgcGVybWl0aXIgc29sbyBjaWVydG9zIHRpcG9zIGRlIGFyY2hpdm9zCmRlZiBhbGxvd2VkX2ZpbGUoZmlsZW5hbWUpOgogICAgcmV0dXJuICcuJyBpbiBmaWxlbmFtZSBhbmQgZmlsZW5hbWUucnNwbGl0KCcuJywgMSlbMV0ubG93ZXIoKSBpbiB7J3BuZycsICdqcGcnLCAnanBlZycsICdnaWYnfQoKQGFwcC5yb3V0ZSgnL3VwbG9hZCcsIG1ldGhvZHM9WydHRVQnLCAnUE9TVCddKQpkZWYgdXBsb2FkX2ZpbGUoKToKICAgIGlmIHJlcXVlc3QubWV0aG9kID09ICdQT1NUJzoKICAgICAgICAjIFZlcmlmaWNhciBzaSBlbCBwb3N0IHJlcXVlc3QgdGllbmUgbGEgcGFydGUgZGVsIGFyY2hpdm8KICAgICAgICBpZiAnZmlsZScgbm90IGluIHJlcXVlc3QuZmlsZXM6CiAgICAgICAgICAgIHJldHVybiAnTm8gZmlsZSBwYXJ0JwogICAgICAgIGZpbGUgPSByZXF1ZXN0LmZpbGVzWydmaWxlJ10KICAgICAgICAjIFNpIGVsIHVzdWFyaW8gbm8gc2VsZWNjaW9uYSB1biBhcmNoaXZvLCBlbCBuYXZlZ2Fkb3IgdGFtYmnDqW4KICAgICAgICAjIGVudmlhcsOhIHVuYSBwYXJ0ZSB2YWPDrWEgc2luIG5vbWJyZSBkZSBhcmNoaXZvCiAgICAgICAgaWYgZmlsZS5maWxlbmFtZSA9PSAnJzoKICAgICAgICAgICAgcmV0dXJuICdObyBzZWxlY3RlZCBmaWxlJwogICAgICAgIGlmIGZpbGUgYW5kIGFsbG93ZWRfZmlsZShmaWxlLmZpbGVuYW1lKToKICAgICAgICAgICAgZmlsZW5hbWUgPSBzZWN1cmVfZmlsZW5hbWUoZmlsZS5maWxlbmFtZSkKICAgICAgICAgICAgZmlsZS5zYXZlKG9zLnBhdGguam9pbihhcHAuY29uZmlnWydVUExPQURfRk9MREVSJ10sIGZpbGVuYW1lKSkKICAgICAgICAgICAgcmV0dXJuICdGaWxlIHN1Y2Nlc3NmdWxseSB1cGxvYWRlZCcKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ3VwbG9hZC5odG1sJyk="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>from werkzeug.utils import secure_filename
 
 # Funci&oacute;n para permitir solo ciertos tipos de archivos
 def allowed_file(filename):
@@ -205,7 +203,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             return 'File successfully uploaded'
-    return render_template('upload.html')</pre></div><div class='content'></div><h1>Explicación del Código</h1>
+    return render_template('upload.html')</pre></div><div class='content'></div><h2>Explicación del Código</h2>
 <div class='content'><ol>
 <li>
 <p><strong>Configuración de la Aplicación</strong>:</p>
@@ -229,15 +227,15 @@ def upload_file():
 </ul>
 </li>
 </ol>
-</div><h1>Ejercicio Práctico</h1>
-<div class='content'></div><h2>Ejercicio 1: Validación de Tipos de Archivos</h2>
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'></div><h3>Ejercicio 1: Validación de Tipos de Archivos</h3>
 <div class='content'><p>Modifica la función <code>allowed_file</code> para permitir solo archivos PDF y DOCX.</p>
-</div><h2>Solución:</h2>
-<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGFsbG93ZWRfZmlsZShmaWxlbmFtZSk6CiAgICByZXR1cm4gJy4nIGluIGZpbGVuYW1lIGFuZCBmaWxlbmFtZS5yc3BsaXQoJy4nLCAxKVsxXS5sb3dlcigpIGluIHsncGRmJywgJ2RvY3gnfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'docx'}</pre></div><div class='content'></div><h2>Ejercicio 2: Mostrar Archivos Subidos</h2>
+</div><h3>Solución:</h3>
+<div class='content'></div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("ZGVmIGFsbG93ZWRfZmlsZShmaWxlbmFtZSk6CiAgICByZXR1cm4gJy4nIGluIGZpbGVuYW1lIGFuZCBmaWxlbmFtZS5yc3BsaXQoJy4nLCAxKVsxXS5sb3dlcigpIGluIHsncGRmJywgJ2RvY3gnfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in {'pdf', 'docx'}</pre></div><div class='content'></div><h3>Ejercicio 2: Mostrar Archivos Subidos</h3>
 <div class='content'><p>Modifica la aplicación para mostrar una lista de archivos subidos en la página de carga.</p>
-</div><h2>Solución:</h2>
-<div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL3VwbG9hZCcsIG1ldGhvZHM9WydHRVQnLCAnUE9TVCddKQpkZWYgdXBsb2FkX2ZpbGUoKToKICAgIGlmIHJlcXVlc3QubWV0aG9kID09ICdQT1NUJzoKICAgICAgICBpZiAnZmlsZScgbm90IGluIHJlcXVlc3QuZmlsZXM6CiAgICAgICAgICAgIHJldHVybiAnTm8gZmlsZSBwYXJ0JwogICAgICAgIGZpbGUgPSByZXF1ZXN0LmZpbGVzWydmaWxlJ10KICAgICAgICBpZiBmaWxlLmZpbGVuYW1lID09ICcnOgogICAgICAgICAgICByZXR1cm4gJ05vIHNlbGVjdGVkIGZpbGUnCiAgICAgICAgaWYgZmlsZSBhbmQgYWxsb3dlZF9maWxlKGZpbGUuZmlsZW5hbWUpOgogICAgICAgICAgICBmaWxlbmFtZSA9IHNlY3VyZV9maWxlbmFtZShmaWxlLmZpbGVuYW1lKQogICAgICAgICAgICBmaWxlLnNhdmUob3MucGF0aC5qb2luKGFwcC5jb25maWdbJ1VQTE9BRF9GT0xERVInXSwgZmlsZW5hbWUpKQogICAgICAgICAgICByZXR1cm4gcmVkaXJlY3QodXJsX2ZvcigndXBsb2FkX2ZpbGUnKSkKICAgIAogICAgZmlsZXMgPSBvcy5saXN0ZGlyKGFwcC5jb25maWdbJ1VQTE9BRF9GT0xERVInXSkKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ3VwbG9hZC5odG1sJywgZmlsZXM9ZmlsZXMp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/upload', methods=['GET', 'POST'])
+</div><h3>Solución:</h3>
+<div class='content'></div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("QGFwcC5yb3V0ZSgnL3VwbG9hZCcsIG1ldGhvZHM9WydHRVQnLCAnUE9TVCddKQpkZWYgdXBsb2FkX2ZpbGUoKToKICAgIGlmIHJlcXVlc3QubWV0aG9kID09ICdQT1NUJzoKICAgICAgICBpZiAnZmlsZScgbm90IGluIHJlcXVlc3QuZmlsZXM6CiAgICAgICAgICAgIHJldHVybiAnTm8gZmlsZSBwYXJ0JwogICAgICAgIGZpbGUgPSByZXF1ZXN0LmZpbGVzWydmaWxlJ10KICAgICAgICBpZiBmaWxlLmZpbGVuYW1lID09ICcnOgogICAgICAgICAgICByZXR1cm4gJ05vIHNlbGVjdGVkIGZpbGUnCiAgICAgICAgaWYgZmlsZSBhbmQgYWxsb3dlZF9maWxlKGZpbGUuZmlsZW5hbWUpOgogICAgICAgICAgICBmaWxlbmFtZSA9IHNlY3VyZV9maWxlbmFtZShmaWxlLmZpbGVuYW1lKQogICAgICAgICAgICBmaWxlLnNhdmUob3MucGF0aC5qb2luKGFwcC5jb25maWdbJ1VQTE9BRF9GT0xERVInXSwgZmlsZW5hbWUpKQogICAgICAgICAgICByZXR1cm4gcmVkaXJlY3QodXJsX2ZvcigndXBsb2FkX2ZpbGUnKSkKICAgIAogICAgZmlsZXMgPSBvcy5saXN0ZGlyKGFwcC5jb25maWdbJ1VQTE9BRF9GT0xERVInXSkKICAgIHJldHVybiByZW5kZXJfdGVtcGxhdGUoJ3VwbG9hZC5odG1sJywgZmlsZXM9ZmlsZXMp"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>@app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
@@ -251,7 +249,7 @@ def upload_file():
             return redirect(url_for('upload_file'))
     
     files = os.listdir(app.config['UPLOAD_FOLDER'])
-    return render_template('upload.html', files=files)</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvdXBsb2FkLmh0bWwgLS0+CjwhZG9jdHlwZSBodG1sPgo8aHRtbCBsYW5nPSJlbiI+CjxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogICAgPHRpdGxlPkNhcmdhciBBcmNoaXZvPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5DYXJnYXIgQXJjaGl2bzwvaDE+CiAgICA8Zm9ybSBtZXRob2Q9InBvc3QiIGVuY3R5cGU9Im11bHRpcGFydC9mb3JtLWRhdGEiPgogICAgICAgIDxpbnB1dCB0eXBlPSJmaWxlIiBuYW1lPSJmaWxlIj4KICAgICAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iU3ViaXIiPgogICAgPC9mb3JtPgogICAgPGgyPkFyY2hpdm9zIFN1Ymlkb3M8L2gyPgogICAgPHVsPgogICAgICAgIHslIGZvciBmaWxlIGluIGZpbGVzICV9CiAgICAgICAgICAgIDxsaT57eyBmaWxlIH19PC9saT4KICAgICAgICB7JSBlbmRmb3IgJX0KICAgIDwvdWw+CjwvYm9keT4KPC9odG1sPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/upload.html --&gt;
+    return render_template('upload.html', files=files)</pre></div><div class='content'></div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("PCEtLSB0ZW1wbGF0ZXMvdXBsb2FkLmh0bWwgLS0+CjwhZG9jdHlwZSBodG1sPgo8aHRtbCBsYW5nPSJlbiI+CjxoZWFkPgogICAgPG1ldGEgY2hhcnNldD0iVVRGLTgiPgogICAgPHRpdGxlPkNhcmdhciBBcmNoaXZvPC90aXRsZT4KPC9oZWFkPgo8Ym9keT4KICAgIDxoMT5DYXJnYXIgQXJjaGl2bzwvaDE+CiAgICA8Zm9ybSBtZXRob2Q9InBvc3QiIGVuY3R5cGU9Im11bHRpcGFydC9mb3JtLWRhdGEiPgogICAgICAgIDxpbnB1dCB0eXBlPSJmaWxlIiBuYW1lPSJmaWxlIj4KICAgICAgICA8aW5wdXQgdHlwZT0ic3VibWl0IiB2YWx1ZT0iU3ViaXIiPgogICAgPC9mb3JtPgogICAgPGgyPkFyY2hpdm9zIFN1Ymlkb3M8L2gyPgogICAgPHVsPgogICAgICAgIHslIGZvciBmaWxlIGluIGZpbGVzICV9CiAgICAgICAgICAgIDxsaT57eyBmaWxlIH19PC9saT4KICAgICAgICB7JSBlbmRmb3IgJX0KICAgIDwvdWw+CjwvYm9keT4KPC9odG1sPg=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>&lt;!-- templates/upload.html --&gt;
 &lt;!doctype html&gt;
 &lt;html lang=&quot;en&quot;&gt;
 &lt;head&gt;
@@ -271,7 +269,7 @@ def upload_file():
         {% endfor %}
     &lt;/ul&gt;
 &lt;/body&gt;
-&lt;/html&gt;</pre></div><div class='content'></div><h1>Conclusión</h1>
+&lt;/html&gt;</pre></div><div class='content'></div><h2>Conclusión</h2>
 <div class='content'><p>En esta lección, hemos aprendido cómo manejar la carga de archivos en una aplicación Flask. Hemos cubierto la configuración de la aplicación, la creación de formularios de carga, el procesamiento y almacenamiento de archivos, y la validación de tipos de archivos. Con estos conocimientos, puedes implementar la funcionalidad de carga de archivos en tus propias aplicaciones Flask.</p>
 <p>En la próxima lección, exploraremos cómo integrar bases de datos en nuestras aplicaciones Flask utilizando Flask-SQLAlchemy.</p>
 </div><div class='row navigation'>
