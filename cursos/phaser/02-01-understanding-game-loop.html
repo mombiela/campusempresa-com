@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title> Entendiendo el Bucle de Juego </title>
+        
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow, noarchive">
+    
+    <link rel="alternate" href="https://campusempresa.com/cursos/phaser/02-01-understanding-game-loop" hreflang="es" />
+	<link rel="alternate" href="https://campusempresa.cat/cursos/phaser/02-01-understanding-game-loop" hreflang="ca" />
+	<link rel="alternate" href="https://enterprisecampus.net/courses/phaser/02-01-understanding-game-loop" hreflang="en" />
+    
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+	<link href="/css/site.1ab297bfa4.css" rel="stylesheet">
+	 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  	<script type="text/javascript" src="/js/math_init.js"></script>
+  	<script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+  	<script>
+  		var LANG = "es";
+  		var CATEGORY = "frameworks";
+  		var MOD_NAME = "phaser";
+  		var TEMA_NAME = "2-1";
+  		var TYPE = "mod";
+  		var PATH = "mod/phaser/02-01-understanding-game-loop";
+  		var IS_INDEX = false;
+  	</script>
+  	<script type="text/javascript" src="/js/cookie.js"></script>
+  	<script type="module" src="/js/app.ae32789132.js"></script>
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0611338592562725" crossorigin="anonymous"></script>
+	  	
+	<!-- Google tag (gtag.js) -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-VVPMPJSR3P"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());	
+	  gtag('config', 'G-VVPMPJSR3P');
+	</script>
+</head>
+
+<body class="d-none">
+    <div id="content">
+		<div id="header" class="container-xxl">
+	<div class="row">
+		<div class="col-12 col-md-6 p-0">
+			<a href="/"><img src="/img/logo_header.png" alt="Logo Campus Empresa"></a>
+		</div>
+		<div class="col-12 col-md-6 p-0 text-end">
+			<p class="mb-0 p-0">	<a href="https://enterprisecampus.net/courses/phaser/02-01-understanding-game-loop" class="px-2">EN</a></b>
+	|
+	<b class="px-2">ES</b>
+	|
+	<a href="https://campusempresa.cat/cursos/phaser/02-01-understanding-game-loop" class="px-2">CA</a>
+</p>
+			<p class="mb-4 mt-0 mx-2  d-none d-md-block"><cite>Todo el conocimiento a tu alcance</cite></p>
+		</div>
+	</div>
+</div>
+<div class="subheader container-xxl d-none d-md-block">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+		<div class="top-bar container-fluid p-0">
+	<div class="container-xxl p-0">
+		<div class="row">
+			<div class="col">
+				<div class="d-flex justify-content-between">
+					<div class="left">
+						<a href="/" class="nav-link px-3" id="btnHome">
+	<i class="bi bi-house-fill"></i>
+	HOME
+</a>
+
+<a href="/mis-cursos" class="nav-link px-3 d-none" id="btnMyCourses">
+	<i class="bi bi-rocket-takeoff-fill"></i>
+	<i><b>Mis cursos</b></i>
+</a>
+<a href="/cursos-finalizados" class="nav-link px-3 d-none" id="trophy_button">
+	<i class="bi bi-trophy-fill"></i>
+	Finalizados             
+</a>
+
+					</div>
+                    <div class="ms-auto right">
+                        <a id="user_button" href="#" class="nav-link px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                            <i id="user_icon" class="bi"></i>                            
+                        </a>
+                    </div>					
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+		<div class="container-xxl" id="main_content">
+	<div class="row">
+		<div class="col-12 col-lg-8">
+										<div class="row py-1 m-0" id="buttonsModSection">
+	<div class="col-6 p-0" data-mod="phaser">
+		<a  href="#" class="text-secondary d-none" data-read-mod="phaser" data-read-unit="2-1" style="text-decoration:none;">
+			<i class="bi bi-check-circle-fill"></i> 
+			Marcar como leído
+		</a>
+		<a href="#" class="text-secondary d-none" data-unread-mod="phaser" data-unread-unit="2-1" style="text-decoration:none;">
+			<i class="bi bi-x-circle-fill"></i>
+			Marcar como no leído
+		</a>
+	</div>
+	<div class="col-6 text-end p-0">
+					<a href="./"  class="nav-link">
+				<i class="bi bi-journal-text"></i>
+				Contenido del curso
+			</a>
+			</div>
+</div>						<div id="inner_content">
+				<div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='01-04-your-first-phaser-project' title="Tu Primer Proyecto con Phaser" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='01-04-your-first-phaser-project' title="Tu Primer Proyecto con Phaser" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+					<h1 style="text-decoration:underline">Entendiendo el Bucle de Juego</h1>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='02-02-game-configuration-scenes' title="Configuración del Juego y Escenas" class="py-2 px-3 btn btn-primary"
+				data-read-mod="phaser" data-read-unit="2-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='02-02-game-configuration-scenes' title="Configuración del Juego y Escenas" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="phaser" data-read-unit="2-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+<div class='content'><p>El bucle de juego es el corazón de cualquier videojuego. Es el mecanismo que mantiene el juego en funcionamiento, actualizando la lógica y renderizando los gráficos de manera continua. Comprender cómo funciona el bucle de juego en Phaser es fundamental para crear juegos interactivos y fluidos.</p>
+<hr />
+</div><h2>¿Qué es un Bucle de Juego?</h2>
+<div class='content'><p>Un bucle de juego es un ciclo que se repite muchas veces por segundo (normalmente 60 veces por segundo, es decir, 60 FPS). En cada iteración, el bucle realiza dos tareas principales:</p>
+<ol>
+<li><strong>Actualizar</strong>: Procesa la lógica del juego (movimiento de personajes, detección de colisiones, actualización de puntuaciones, etc.).</li>
+<li><strong>Renderizar</strong>: Dibuja los elementos del juego en la pantalla según su estado actualizado.</li>
+</ol>
+</div><h3>Esquema del Bucle de Juego</h3>
+<div class='content'><table>
+<thead>
+<tr>
+<th>Paso</th>
+<th>Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Entrada</td>
+<td>Lee la entrada del usuario (teclado, ratón, etc.)</td>
+</tr>
+<tr>
+<td>Actualización</td>
+<td>Actualiza la lógica del juego (posiciones, físicas, estados, etc.)</td>
+</tr>
+<tr>
+<td>Renderizado</td>
+<td>Dibuja los elementos del juego en la pantalla</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</div><h2>El Bucle de Juego en Phaser</h2>
+<div class='content'><p>Phaser gestiona el bucle de juego automáticamente. Como desarrollador, solo necesitas definir dos métodos clave en tus escenas:</p>
+<ul>
+<li><code>update()</code>: Aquí colocas la lógica que debe ejecutarse en cada frame.</li>
+<li><code>render()</code>: (Opcional) Para renderizado personalizado, aunque Phaser maneja la mayoría de los casos automáticamente.</li>
+</ul>
+</div><h3>Estructura Básica de una Escena en Phaser</h3>
+<div class='content'></div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTWlFc2NlbmEgZXh0ZW5kcyBQaGFzZXIuU2NlbmUgewogIGNvbnN0cnVjdG9yKCkgewogICAgc3VwZXIoeyBrZXk6ICdNaUVzY2VuYScgfSk7CiAgfQoKICBwcmVsb2FkKCkgewogICAgLy8gQ2FyZ2FyIHJlY3Vyc29zIChpbcOhZ2VuZXMsIHNvbmlkb3MsIGV0Yy4pCiAgfQoKICBjcmVhdGUoKSB7CiAgICAvLyBJbmljaWFsaXphciBvYmpldG9zIGRlbCBqdWVnbwogIH0KCiAgdXBkYXRlKHRpbWUsIGRlbHRhKSB7CiAgICAvLyBMw7NnaWNhIHF1ZSBzZSBlamVjdXRhIGVuIGNhZGEgZnJhbWUKICAgIC8vIHRpbWU6IHRpZW1wbyB0b3RhbCB0cmFuc2N1cnJpZG8KICAgIC8vIGRlbHRhOiB0aWVtcG8gZGVzZGUgZWwgw7psdGltbyBmcmFtZQogIH0KfQ=="))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MiEscena extends Phaser.Scene {
+  constructor() {
+    super({ key: 'MiEscena' });
+  }
+
+  preload() {
+    // Cargar recursos (im&aacute;genes, sonidos, etc.)
+  }
+
+  create() {
+    // Inicializar objetos del juego
+  }
+
+  update(time, delta) {
+    // L&oacute;gica que se ejecuta en cada frame
+    // time: tiempo total transcurrido
+    // delta: tiempo desde el &uacute;ltimo frame
+  }
+}</pre></div><div class='content'><h4>Explicación del Código</h4>
+<ul>
+<li><strong>preload()</strong>: Se ejecuta una vez, antes de que la escena comience. Aquí cargas los recursos.</li>
+<li><strong>create()</strong>: Se ejecuta una vez, después de <code>preload()</code>. Aquí creas los objetos del juego.</li>
+<li><strong>update()</strong>: Se ejecuta en cada frame. Aquí actualizas la lógica del juego (movimiento, colisiones, etc.).</li>
+</ul>
+<hr />
+</div><h2>Ejemplo Práctico: Mover un Sprite con el Bucle de Juego</h2>
+<div class='content'><p>Supongamos que quieres mover un sprite hacia la derecha constantemente.</p>
+</div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgTWlFc2NlbmEgZXh0ZW5kcyBQaGFzZXIuU2NlbmUgewogIGNvbnN0cnVjdG9yKCkgewogICAgc3VwZXIoeyBrZXk6ICdNaUVzY2VuYScgfSk7CiAgfQoKICBwcmVsb2FkKCkgewogICAgdGhpcy5sb2FkLmltYWdlKCduYXZlJywgJ2Fzc2V0cy9uYXZlLnBuZycpOwogIH0KCiAgY3JlYXRlKCkgewogICAgdGhpcy5uYXZlID0gdGhpcy5hZGQuc3ByaXRlKDEwMCwgMjAwLCAnbmF2ZScpOwogIH0KCiAgdXBkYXRlKCkgewogICAgdGhpcy5uYXZlLnggKz0gMjsgLy8gTXVldmUgbGEgbmF2ZSAyIHDDrXhlbGVzIGEgbGEgZGVyZWNoYSBlbiBjYWRhIGZyYW1lCiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class MiEscena extends Phaser.Scene {
+  constructor() {
+    super({ key: 'MiEscena' });
+  }
+
+  preload() {
+    this.load.image('nave', 'assets/nave.png');
+  }
+
+  create() {
+    this.nave = this.add.sprite(100, 200, 'nave');
+  }
+
+  update() {
+    this.nave.x += 2; // Mueve la nave 2 p&iacute;xeles a la derecha en cada frame
+  }
+}</pre></div><div class='content'><p><strong>Explicación:</strong></p>
+<ul>
+<li>En <code>create()</code>, agregamos el sprite de la nave.</li>
+<li>En <code>update()</code>, incrementamos la posición <code>x</code> de la nave, haciendo que se mueva hacia la derecha en cada frame.</li>
+</ul>
+<hr />
+</div><h2>Ejercicio Práctico</h2>
+<div class='content'><p><strong>Ejercicio:</strong><br />
+Crea una escena donde un círculo (puedes usar un gráfico simple) se mueva hacia abajo constantemente. Cuando el círculo llegue al borde inferior de la pantalla, debe volver a aparecer en la parte superior.</p>
+</div><h3>Pistas</h3>
+<div class='content'><ul>
+<li>Usa <code>this.add.circle(x, y, radio, color)</code> para crear un círculo.</li>
+<li>Actualiza la posición <code>y</code> del círculo en el método <code>update()</code>.</li>
+<li>Usa una condición para detectar si el círculo ha salido de la pantalla.</li>
+</ul>
+</div><h3>Solución</h3>
+<div class='content'></div><div style='position:relative'><a class='copy_button d-none d-md-inline' href='#' onclick='navigator.clipboard.writeText(decodeURIComponent(escape(atob("Y2xhc3MgRXNjZW5hQ2lyY3VsbyBleHRlbmRzIFBoYXNlci5TY2VuZSB7CiAgY29uc3RydWN0b3IoKSB7CiAgICBzdXBlcih7IGtleTogJ0VzY2VuYUNpcmN1bG8nIH0pOwogIH0KCiAgY3JlYXRlKCkgewogICAgdGhpcy5jaXJjdWxvID0gdGhpcy5hZGQuY2lyY2xlKDQwMCwgNTAsIDMwLCAweDAwZmYwMCk7CiAgfQoKICB1cGRhdGUoKSB7CiAgICB0aGlzLmNpcmN1bG8ueSArPSAzOyAvLyBNdWV2ZSBlbCBjw61yY3VsbyBoYWNpYSBhYmFqbwoKICAgIC8vIFNpIGVsIGPDrXJjdWxvIHNhbGUgZGUgbGEgcGFudGFsbGEsIHZ1ZWx2ZSBhIGxhIHBhcnRlIHN1cGVyaW9yCiAgICBpZiAodGhpcy5jaXJjdWxvLnkgLSB0aGlzLmNpcmN1bG8ucmFkaXVzID4gdGhpcy5zeXMuZ2FtZS5jb25maWcuaGVpZ2h0KSB7CiAgICAgIHRoaXMuY2lyY3Vsby55ID0gMCAtIHRoaXMuY2lyY3Vsby5yYWRpdXM7CiAgICB9CiAgfQp9"))));alert("¡Copiado!");return false;'><i class='bi bi-copy'></i></a><pre class='code'>class EscenaCirculo extends Phaser.Scene {
+  constructor() {
+    super({ key: 'EscenaCirculo' });
+  }
+
+  create() {
+    this.circulo = this.add.circle(400, 50, 30, 0x00ff00);
+  }
+
+  update() {
+    this.circulo.y += 3; // Mueve el c&iacute;rculo hacia abajo
+
+    // Si el c&iacute;rculo sale de la pantalla, vuelve a la parte superior
+    if (this.circulo.y - this.circulo.radius &gt; this.sys.game.config.height) {
+      this.circulo.y = 0 - this.circulo.radius;
+    }
+  }
+}</pre></div><div class='content'><h4>Errores Comunes y Consejos</h4>
+<ul>
+<li><strong>Olvidar restablecer la posición:</strong> Si solo pones <code>this.circulo.y = 0;</code>, parte del círculo puede quedar fuera de la pantalla. Usa <code>0 - this.circulo.radius</code> para que aparezca completamente.</li>
+<li><strong>No usar el método <code>update()</code>:</strong> Recuerda que toda la lógica que debe repetirse va en <code>update()</code>, no en <code>create()</code>.</li>
+</ul>
+<hr />
+</div><h2>Resumen</h2>
+<div class='content'><ul>
+<li>El bucle de juego es el ciclo que mantiene el juego en funcionamiento, actualizando la lógica y renderizando los gráficos.</li>
+<li>En Phaser, el método <code>update()</code> de cada escena se ejecuta automáticamente en cada frame.</li>
+<li>Toda la lógica que debe repetirse (movimiento, colisiones, etc.) debe ir en <code>update()</code>.</li>
+<li>Comprender y utilizar correctamente el bucle de juego es esencial para crear juegos interactivos y dinámicos.</li>
+</ul>
+<p><strong>¡Ahora estás listo para profundizar en la configuración de juegos y escenas en Phaser!</strong></p>
+</div><div class='row navigation'>
+	<div class='col-2 d-none d-md-block'>
+					<a href='01-04-your-first-phaser-project' title="Tu Primer Proyecto con Phaser" class="py-2 px-3 btn btn-primary">
+				&#x25C4; Anterior 
+			</a>
+			</div>
+	<div class='col-2 d-md-none'>
+					<a href='01-04-your-first-phaser-project' title="Tu Primer Proyecto con Phaser" class="py-2 px-3 btn btn-primary">
+				&#x25C4;
+			</a>
+			</div>
+	<div class='col-8 text-center'>
+			</div>
+	<div class='col-2 text-end d-none d-md-block'>
+					<a href='02-02-game-configuration-scenes' title="Configuración del Juego y Escenas" class="py-2 px-3 btn btn-primary"
+				data-read-mod="phaser" data-read-unit="2-1">
+				Siguiente &#x25BA;
+			</a>
+			</div>
+	<div class='col-2 text-end d-md-none '>
+					<a href='02-02-game-configuration-scenes' title="Configuración del Juego y Escenas" class="py-2 px-3 btn btn-primary" 
+				data-read-mod="phaser" data-read-unit="2-1">
+				 &#x25BA;
+			</a>
+			</div>
+</div>
+
+			</div>
+		</div>
+		<div class="col-12 col-lg-4 publi" id="div_publi">
+						
+	<div class="container mt-2 d-none d-md-block index">
+		<h1>Phaser - Desarrollo de Juegos con JavaScript</h1>
+<h2>Módulo 1: Introducción al Desarrollo de Juegos y Phaser</h2>
+<ul>
+<li><a href="01-01-what-is-game-development">¿Qué es el Desarrollo de Juegos?</a></li>
+<li><a href="01-02-overview-of-phaser">Descripción general de Phaser</a></li>
+<li><a href="01-03-setting-up-environment">Configurando tu Entorno de Desarrollo</a></li>
+<li><a href="01-04-your-first-phaser-project">Tu Primer Proyecto con Phaser</a></li>
+</ul>
+<h2>Módulo 2: Fundamentos de Phaser</h2>
+<ul>
+<li><a href="02-01-understanding-game-loop">Entendiendo el Bucle de Juego</a></li>
+<li><a href="02-02-game-configuration-scenes">Configuración del Juego y Escenas</a></li>
+<li><a href="02-03-loading-displaying-images">Cargando y Mostrando Imágenes</a></li>
+<li><a href="02-04-working-with-text">Trabajando con Texto</a></li>
+<li><a href="02-05-handling-input">Manejo de Entrada (Teclado y Ratón)</a></li>
+</ul>
+<h2>Módulo 3: Sprites y Animación</h2>
+<ul>
+<li><a href="03-01-what-are-sprites">¿Qué son los Sprites?</a></li>
+<li><a href="03-02-adding-moving-sprites">Añadiendo y Moviendo Sprites</a></li>
+<li><a href="03-03-sprite-animation-basics">Fundamentos de Animación de Sprites</a></li>
+<li><a href="03-04-sprite-groups-management">Grupos de Sprites y Gestión</a></li>
+</ul>
+<h2>Módulo 4: Física e Interactividad en el Juego</h2>
+<ul>
+<li><a href="04-01-intro-to-physics">Introducción a la Física en Phaser</a></li>
+<li><a href="04-02-enabling-physics">Habilitando Física en Sprites</a></li>
+<li><a href="04-03-collisions-overlaps">Colisiones y Superposiciones</a></li>
+<li><a href="04-04-interactive-objects-events">Objetos Interactivos y Eventos</a></li>
+</ul>
+<h2>Módulo 5: Mundo del Juego y Cámara</h2>
+<ul>
+<li><a href="05-01-creating-tilemaps">Creando Tilemaps y Mundos de Juego</a></li>
+<li><a href="05-02-scrolling-camera-control">Desplazamiento y Control de Cámara</a></li>
+<li><a href="05-03-layers-depth-management">Capas y Gestión de Profundidad</a></li>
+</ul>
+<h2>Módulo 6: Audio e Interfaz de Usuario</h2>
+<ul>
+<li><a href="06-01-adding-sound-music">Añadiendo Efectos de Sonido y Música</a></li>
+<li><a href="06-02-creating-buttons-menus">Creando Botones y Menús</a></li>
+<li><a href="06-03-displaying-scores-hud">Mostrando Puntuaciones y HUD</a></li>
+</ul>
+<h2>Módulo 7: Arquitectura del Juego y Gestión de Estados</h2>
+<ul>
+<li><a href="07-01-organizing-game-code">Organizando el Código del Juego</a></li>
+<li><a href="07-02-managing-multiple-scenes">Gestionando Múltiples Escenas</a></li>
+<li><a href="07-03-saving-loading-game-state">Guardando y Cargando el Estado del Juego</a></li>
+</ul>
+<h2>Módulo 8: Características Avanzadas de Jugabilidad</h2>
+<ul>
+<li><a href="08-01-particle-effects">Efectos de Partículas</a></li>
+<li><a href="08-02-tweens-animations">Tweens y Animaciones</a></li>
+<li><a href="08-03-timers-delayed-events">Temporizadores y Eventos Retardados</a></li>
+<li><a href="08-04-ai-enemy-behavior">IA y Comportamiento de Enemigos</a></li>
+</ul>
+<h2>Módulo 9: Despliegue y Optimización</h2>
+<ul>
+<li><a href="09-01-exporting-publishing">Exportando y Publicando tu Juego</a></li>
+<li><a href="09-02-performance-optimization">Consejos para la Optimización del Rendimiento</a></li>
+<li><a href="09-03-debugging-testing">Depuración y Pruebas</a></li>
+</ul>
+<h2>Módulo 10: Proyecto Final</h2>
+<ul>
+<li><a href="10-01-planning-your-game">Planificando tu Juego</a></li>
+<li><a href="10-02-building-game-step-by-step">Construyendo el Juego Paso a Paso</a></li>
+<li><a href="10-03-polishing-finalizing">Pulido y Finalización</a></li>
+<li><a href="10-04-showcasing-your-game">Mostrando tu Juego</a></li>
+</ul>
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+		</div>
+	</div>
+</div>		
+<div class="container-xxl d-block d-md-none">
+	<div class="row">
+		<div class="col-12 p-2 p-md-0 m-0 text-end">
+			<a href="/objetivo" rel="nofollow">El Proyecto</a> | 
+<a href="/acerca-de" rel="nofollow">Sobre nosotros</a> | 
+<a href="/contribuir" rel="nofollow">Contribuir</a> | 
+<a href="/donar" rel="nofollow">Donaciones</a> | 
+<a href="/licencia" rel="nofollow">Licencia</a>
+		</div>
+	</div>
+</div>
+
+<div class="container-xxl my-3">
+	<div class="row">
+		<div class="col">
+			<footer>&copy; Copyright 2024. Todos los derechos reservados</footer>
+		</div>
+	</div>
+</div>	
+
+<div id="cookies_adv" style="display:none;">
+	Usamos cookies para mejorar tu experiencia de uso y ofrecer contenidos adaptados a tus intereses.
+    <a href="#" id="btn_accept_cookies" class="button">Aceptar</a>
+    <a href="/cookies">Mas información</a>
+</div>	
+
+		<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="loginModalLabel">Usuario no autenticado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            	<div id="modal-body-main"></div>
+            </div>
+        </div>
+    </div>
+</div>	</div>    
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+</body>
+</html>
